@@ -40,7 +40,7 @@ papers:
       authors: Yuntian Deng, Alexander M. Rush
       pdf: 
       image: 
-      slides:/slides/emnlp21_seq2lattice.pdf
+      slides: /slides/emnlp21_seq2lattice.pdf
       conference: EMNLP 2021 Findings
     - title: "Rationales for Sequential Predictions"
       authors: Keyon Vafa, Yuntian Deng, David Blei, Alexander Rush
