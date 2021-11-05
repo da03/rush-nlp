@@ -24,3 +24,7 @@ projects:
       abstract: A general-purpose, deep learning-based system to decompile an image into presentational markup. For example, we can infer the LaTeX or HTML source from a rendered image.
       authors: Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
       image: https://camo.githubusercontent.com/5a6350632dd43b69fff7f41928f27b8c8eb9a7d9/687474703a2f2f6c73746d2e736561732e686172766172642e6564752f6c617465782f6d61746865782e706e67
+    - link: https://github.com/da03/Attention-OCR
+      title: Attention OCR
+      abstract: An optical character recognition (OCR) system.
+      image: https://camo.githubusercontent.com/68da9d2c750e275c9e8de2e39cd64c7778575efa732c7d1048321f781df93717/687474703a2f2f63732e636d752e6564752f7e79756e7469616e642f4f43522d322e6a7067
