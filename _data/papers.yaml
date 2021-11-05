@@ -83,6 +83,12 @@ papers:
       pdf: https://arxiv.org/abs/1909.01496
       image: /images/emnlp19_arithmetic.png
       conference: EMNLP 2019
+    - title: "Challanges in end-to-end neural scientific table recognition"
+      authors: Yuntian Deng, David Rosenberg, Gideon Mann
+      conference: ICDAR 2019
+      pdf : /papers/Deng2019ICDAR.pdf
+      code: 
+      image: /images/ICDAR19_table.png
     - title: "Latent Alignment and Variational Attention"
       authors: Yuntian Deng*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
       conference: NIPS 2018
@@ -107,3 +113,45 @@ papers:
       pdf : https://arxiv.org/abs/1701.02810
       image: /images/overview.png
       slides:
+    - title: "Learning Latent Space Models with Angular Constraints"
+      authors: Pengtao Xie, Yuntian Deng, Yi Zhou, Abhimanu Kumar, Yaoliang Yu, James Zou, Eric P Xing
+      conference: ICML 2017
+      pdf : http://proceedings.mlr.press/v70/xie17a/xie17a.pdf
+      code : 
+      image: 
+      slides: 
+    - title: "Neural Machine Translation with Recurrent Attention Modeling"
+      authors: Zichao Yang, Zhiting Hu, Yuntian Deng, Chris Dyer, Alex Smola
+      conference: EACL 2017
+      pdf : https://www.aclweb.org/anthology/E17-2061.pdf
+      code :
+      image: 
+      slides: /slides/icml17.pdf
+    - title: "Dropout with expectation-linear regularization"
+      authors: Xuezhe Ma, Yingkai Gao, Zhiting Hu, Yaoliang Yu, Yuntian Deng, Eduard Hovy
+      conference: ICLR 2017
+      pdf : https://openreview.net/pdf?id=rkGabzZgl
+      code : 
+      image: 
+      slides: 
+    - title: "Learning Concept Taxonomies from Multi-modal Data"
+      authors: Hao Zhang, Zhiting Hu, Yuntian Deng, Mrinmaya Sachan, Zhicheng Yan, Eric P. Xing
+      conference: ACL 2016
+      pdf : https://www.aclweb.org/anthology/P16-1169.pdf
+      code :
+      image:
+      slides:
+    - title: "Diversifying Restricted Boltzmann Machine for Document Modeling"
+      authors: Pengtao Xie, Yuntian Deng, Eric P. Xing
+      conference: KDD 2015
+      pdf : https://dl.acm.org/doi/10.1145/2783258.2783264
+      code : 
+      image: 
+      slides: 
+    - title: "Entity Hierarchy Embedding"
+      authors: Zhiting Hu, Poyao Huang, \textbf{Yuntian Deng}, Yingkai Gao, Eric P. Xing
+      conference: ACL 2015
+      pdf : https://aclanthology.org/P15-1125.pdf
+      code : 
+      image: /images/acl15_entity.png
+      slides: 
