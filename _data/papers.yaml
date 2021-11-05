@@ -32,7 +32,7 @@ notable:
       image: /images/emnlp19_arithmetic.png
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
-      conference: ACL Demo 2017 
+      conference: ACL Demo 2017 (Best Demo Runner-up)
       pdf : https://arxiv.org/abs/1701.02810
       image: /images/overview.png
       slides:
