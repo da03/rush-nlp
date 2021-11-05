@@ -52,7 +52,7 @@ papers:
     - title: "Rationales for Sequential Predictions"
       authors: Keyon Vafa, Yuntian Deng, David Blei, Alexander Rush
       pdf: https://arxiv.org/pdf/2109.06387.pdf
-      image: 
+      image: /images/emnlp21_rationale.png
       slides: 
       conference: EMNLP 2021
     - title: "Residual Energy-Based Models for Text"
