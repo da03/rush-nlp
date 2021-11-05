@@ -3,13 +3,15 @@ notable:
       authors: Yuntian Deng, Alexander M. Rush
       pdf: https://arxiv.org/pdf/2006.01112
       image: /images/cascade.png
+      slides: /slides/neurips20_cascaded_generation_10min.pdf
       conference: NeurIPS 2020
     - title: "Residual Energy-Based Models for Text Generation"
       authors: Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc'Aurelio Ranzato
       conference: ICLR 2020
       pdf : https://openreview.net/pdf?id=B1l4SgHKDH
+      slides: /slides/openai_EBM.pdf
       code: https://github.com/da03/Residual-EBM
-      image: 
+      image: /images/ICLR20_REBM.png
     - title: "Latent Alignment and Variational Attention"
       authors: Yuntian Deng*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
       conference: NIPS 2018
@@ -56,19 +58,20 @@ papers:
     - title: "Residual Energy-Based Models for Text"
       authors: Anton Bakhtin*, Yuntian Deng*, Sam Gross, Myle Ott, Marc'Aurelio Ranzato, Arthur Szlam
       pdf: https://www.jmlr.org/papers/v22/20-326.html
-      image:
-      slides: 
+      image: /images/ICLR20_REBM.png
       conference: JMLR 2021
     - title: "Cascaded Text Generation with Markov Transformers"
       authors: Yuntian Deng, Alexander M. Rush
       pdf: https://arxiv.org/pdf/2006.01112
       image: /images/cascade.png
       conference: NeurIPS 2020
+      slides: /slides/neurips20_cascaded_generation_10min.pdf
     - title: "Residual Energy-Based Models for Text Generation"
       authors: Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc'Aurelio Ranzato
       conference: ICLR 2020
       pdf : https://openreview.net/pdf?id=B1l4SgHKDH
       code: https://github.com/da03/Residual-EBM
+      slides: /slides/openai_EBM.pdf
       image: 
     - title: "AdaptivFloat: A Floating-point based Data Type for Resilient Deep Learning Inference"
       authors: Thierry Tambe, En-Yu Yang, Zishen Wan, Yuntian Deng, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
