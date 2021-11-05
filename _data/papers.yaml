@@ -59,6 +59,17 @@ papers:
       image:
       slides: 
       conference: JMLR 2021
+    - title: "Cascaded Text Generation with Markov Transformers"
+      authors: Yuntian Deng, Alexander M. Rush
+      pdf: https://arxiv.org/pdf/2006.01112
+      image: /images/cascade.png
+      conference: NeurIPS 2020
+    - title: "Residual Energy-Based Models for Text Generation"
+      authors: Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc'Aurelio Ranzato
+      conference: ICLR 2020
+      pdf : https://openreview.net/pdf?id=B1l4SgHKDH
+      code: https://github.com/da03/Residual-EBM
+      image: 
     - title: "AdaptivFloat: A Floating-point based Data Type for Resilient Deep Learning Inference"
       authors: Thierry Tambe, En-Yu Yang, Zishen Wan, Yuntian Deng, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
       pdf: https://arxiv.org/pdf/1909.13271
@@ -69,11 +80,24 @@ papers:
       pdf: https://arxiv.org/abs/1909.01496
       image: /images/emnlp19_arithmetic.png
       conference: EMNLP 2019
+    - title: "Latent Alignment and Variational Attention"
+      authors: Yuntian Deng*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
+      conference: NIPS 2018
+      pdf : https://papers.nips.cc/paper/8179-latent-alignment-and-variational-attention.pdf
+      code: https://github.com/harvardnlp/var-attn
+      image: /images/VariationalAttention.png
     - title: "Bottom-Up Abstractive Summarization"
       authors: Sebastian Gehrmann, Yuntian Deng, Alexander Rush
       conference: EMNLP 2018
       pdf : https://arxiv.org/abs/1808.10792
       image: /images/bottomup.png
+    - title: "Image-to-Markup Generation with Coarse-to-Fine Attention"
+      authors: Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
+      conference: ICML 2017
+      pdf : http://lstm.seas.harvard.edu/latex/
+      code : http://lstm.seas.harvard.edu/latex/
+      image: https://camo.githubusercontent.com/5a6350632dd43b69fff7f41928f27b8c8eb9a7d9/687474703a2f2f6c73746d2e736561732e686172766172642e6564752f6c617465782f6d61746865782e706e67
+      slides: /slides/icml17.pdf
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
       conference: ACL Demo 2017 (Best Demo Runner-up)
