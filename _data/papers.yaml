@@ -46,7 +46,7 @@ papers:
     - title: "Sequence-to-Lattice Models for Fast Translation"
       authors: Yuntian Deng, Alexander M. Rush
       pdf: 
-      image: 
+      image: /images/emnlp21_seq2lattice.png
       slides: /slides/emnlp21_seq2lattice.pdf
       conference: EMNLP 2021 Findings
     - title: "Rationales for Sequential Predictions"
