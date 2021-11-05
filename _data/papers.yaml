@@ -23,6 +23,11 @@ notable:
       code : http://lstm.seas.harvard.edu/latex/
       image: https://camo.githubusercontent.com/5a6350632dd43b69fff7f41928f27b8c8eb9a7d9/687474703a2f2f6c73746d2e736561732e686172766172642e6564752f6c617465782f6d61746865782e706e67
       slides: /slides/icml17.pdf
+    - title: "Neural Linguistic Steganography"
+      authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
+      pdf: https://arxiv.org/abs/1909.01496
+      conference: EMNLP 2019
+      image: /images/emnlp19_arithmetic.png
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
       conference: ACL Demo 2017 
@@ -60,8 +65,9 @@ papers:
       image: /images/adapt.png
       conference: DAC 2020 (Best Paper)
     - title: "Neural Linguistic Steganography"
-      authors: Zachary Ziegler, Yuntian Deng and Alexander Rush
+      authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
       pdf: https://arxiv.org/abs/1909.01496
+      image: /images/emnlp19_arithmetic.png
       conference: EMNLP 2019
     - title: "Bottom-Up Abstractive Summarization"
       authors: Sebastian Gehrmann, Yuntian Deng, Alexander Rush
