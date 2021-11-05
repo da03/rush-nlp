@@ -72,7 +72,7 @@ papers:
       pdf : https://openreview.net/pdf?id=B1l4SgHKDH
       code: https://github.com/da03/Residual-EBM
       slides: /slides/openai_EBM.pdf
-      image: 
+      image: /images/ICLR20_REBM.png
     - title: "AdaptivFloat: A Floating-point based Data Type for Resilient Deep Learning Inference"
       authors: Thierry Tambe, En-Yu Yang, Zishen Wan, Yuntian Deng, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
       pdf: https://arxiv.org/pdf/1909.13271
