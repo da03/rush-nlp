@@ -28,7 +28,7 @@ notable:
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
       pdf: https://arxiv.org/abs/1909.01496
-      conference: EMNLP 2019
+      conference: EMNLP 2019 (oral)
       image: /images/emnlp19_arithmetic.png
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
@@ -54,7 +54,7 @@ papers:
       pdf: https://arxiv.org/pdf/2109.06387.pdf
       image: /images/emnlp21_rationale.png
       slides: 
-      conference: EMNLP 2021
+      conference: EMNLP 2021 (oral)
     - title: "Residual Energy-Based Models for Text"
       authors: Anton Bakhtin*, Yuntian Deng*, Sam Gross, Myle Ott, Marc'Aurelio Ranzato, Arthur Szlam
       pdf: https://www.jmlr.org/papers/v22/20-326.html
@@ -82,7 +82,7 @@ papers:
       authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
       pdf: https://arxiv.org/abs/1909.01496
       image: /images/emnlp19_arithmetic.png
-      conference: EMNLP 2019
+      conference: EMNLP 2019 (oral)
     - title: "Challanges in end-to-end neural scientific table recognition"
       authors: Yuntian Deng, David Rosenberg, Gideon Mann
       conference: ICDAR 2019
