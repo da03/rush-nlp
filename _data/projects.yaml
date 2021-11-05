@@ -1,9 +1,19 @@
 projects:
+    - link: https://github.com/harvardnlp/cascaded-generation
+      title: Cascaded Text Generation with Markov Transformers
+      authors: Yuntian Deng, Alexander M. Rush
+      abstract: A parallel, fast, autoregressive, and accurate text generation algorithm using high-order Conditional Random Fields (CRFs).
+      image: /images/cascade.png
     - link: https://tech.cornell.edu/impact/break-through-tech/break-through-ai/
       title: Break Through AI
       authors: BTT Team, Alexander Rush
       abstract: Break Through AI is a free summer program for supporting female undergraduates to learn AI and ML skills in an applied environment. I helped prepare some materials for a summer course my advisor Sasha taught (https://github.com/srush/BT-AI).
       image: https://tech.cornell.edu/wp-content/uploads/2021/03/primary-logo_high-res-225x125.png
+    - link: https://steganography.live/
+      title: Neural Linguistic Steganography
+      authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
+      abstract: A practical linguistic steganography algorithm via arithmetic coding and strong neural models.
+      image: /images/emnlp19_arithmetic.png
     - link: http://opennmt.net
       title: OpenNMT
       abstract: A full service open-source neural machine translation system. Originally developed in Lua with Systran, since ported to PyTorch and TensorFlow and maintained externally.
