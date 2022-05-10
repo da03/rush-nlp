@@ -19,7 +19,7 @@ projects:
       abstract: A full service open-source neural machine translation system. Originally developed in Lua with Systran, since ported to PyTorch and TensorFlow and maintained externally.
       image: /images/aesw2016.png
       authors: HarvardNLP + Systran
-    - link: http://lstm.seas.harvard.edu/latex/
+    - link: https://im2markup.yuntiandeng.com
       title: Image-to-Markup
       abstract: A general-purpose, deep learning-based system to decompile an image into presentational markup. For example, we can infer the LaTeX or HTML source from a rendered image.
       authors: Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
