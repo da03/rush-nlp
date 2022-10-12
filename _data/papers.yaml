@@ -49,7 +49,7 @@ papers:
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
       pdf: https://arxiv.org/pdf/2210.05147.pdf
-      image: /images/math_rendering.gif
+      image: /images/molecules_rendering.gif
     - title: "Model Criticism for Long-Form Text Generation"
       authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
       pdf: http://52.24.243.180/static/criticize_text.pdf
