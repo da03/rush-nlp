@@ -1,4 +1,13 @@
 notable: 
+    - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
+      authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
+      pdf: https://arxiv.org/pdf/2210.05147.pdf
+      image: /images/math_rendering.gif
+    - title: "Model Criticism for Long-Form Text Generation"
+      authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
+      pdf: http://52.24.243.180/static/criticize_text.pdf
+      image: /images/model_criticism.png
+      conference: EMNLP 2022
     - title: "Cascaded Text Generation with Markov Transformers"
       authors: Yuntian Deng, Alexander M. Rush
       pdf: https://arxiv.org/pdf/2006.01112
@@ -37,6 +46,15 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
+      authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
+      pdf: https://arxiv.org/pdf/2210.05147.pdf
+      image: /images/math_rendering.gif
+    - title: "Model Criticism for Long-Form Text Generation"
+      authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
+      pdf: http://52.24.243.180/static/criticize_text.pdf
+      image: /images/model_criticism.png
+      conference: EMNLP 2022
     - title: "Low-Rank Constraints for Fast Inference in Structured Models"
       authors: Justin Chiu*, Yuntian Deng*, Alexander M. Rush
       pdf: https://openreview.net/pdf?id=9Zi7t3c5CuF
