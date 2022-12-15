@@ -33,7 +33,7 @@ notable:
       conference: ICML 2017
       pdf : https://im2markup.yuntiandeng.com
       code : https://im2markup.yuntiandeng.com
-      image: https://im2markup.yuntiandeng.com/network.png
+      image: /images/im2latex.gif
       slides: /slides/icml17.pdf
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
@@ -124,7 +124,7 @@ papers:
       conference: ICML 2017
       pdf : https://im2markup.yuntiandeng.com
       code : https://im2markup.yuntiandeng.com
-      image: https://im2markup.yuntiandeng.com/network.png
+      image: /images/im2latex.gif
       slides: /slides/icml17.pdf
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
