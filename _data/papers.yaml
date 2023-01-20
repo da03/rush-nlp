@@ -4,6 +4,7 @@ notable:
       pdf: https://github.com/da03/markup2im/blob/main/README.md
       code: https://github.com/da03/markup2im/blob/main/README.md
       image: /images/molecules_rendering.gif
+      conferenc: ICLR 2023
     - title: "Model Criticism for Long-Form Text Generation"
       authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
       pdf: http://52.24.243.180/static/criticize_text.pdf
@@ -51,6 +52,7 @@ papers:
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
       pdf: https://github.com/da03/markup2im/blob/main/README.md
       image: /images/molecules_rendering.gif
+      conference: ICLR 2023
     - title: "Model Criticism for Long-Form Text Generation"
       authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
       pdf: http://52.24.243.180/static/criticize_text.pdf
