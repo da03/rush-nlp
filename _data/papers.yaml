@@ -175,7 +175,7 @@ papers:
       image: 
       slides: 
     - title: "Entity Hierarchy Embedding"
-      authors: Zhiting Hu, Poyao Huang, \textbf{Yuntian Deng}, Yingkai Gao, Eric P. Xing
+      authors: Zhiting Hu, Poyao Huang, Yuntian Deng, Yingkai Gao, Eric P. Xing
       conference: ACL 2015
       pdf : https://aclanthology.org/P15-1125.pdf
       code : 
