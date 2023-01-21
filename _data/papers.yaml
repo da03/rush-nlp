@@ -58,6 +58,11 @@ papers:
       pdf: http://52.24.243.180/static/criticize_text.pdf
       image: /images/model_criticism.png
       conference: EMNLP 2022
+    - title: "GenSLMs: Genome-scale language models reveal SARS-CoV-2 evolutionary dynamics"
+      authors: Maxim Zvyagin*, Alexander Brace*, Kyle Hippe*, Yuntian Deng*, Bin Zhang, Cindy Orozco Bohorquez, Austin Clyde, Bharat Kale, Danilo Perez-Rivera, Heng Ma, Carla M. Mann, Michael Irvin, J. Gregory Pauloski, Logan Ward, Valerie Hayot, Murali Emani, Sam Foreman, Zhen Xie, Diangen Lin, Maulik Shukla, Weili Nie, Josh Romero, Christian Dallago, Arash Vahdat, Chaowei Xiao, Thomas Gibbs, Ian Foster, James J. Davis, Michael E. Papka, Thomas Brettin, Rick Stevens, Anima Anandkumar, Venkatram Vishwanath, Arvind Ramanathan
+      pdf: https://www.biorxiv.org/content/biorxiv/early/2022/10/11/2022.10.10.511571.full.pdf
+      image: /images/phylogeny_with_generated_sequence.jpg
+      conference: <b>ACM Gordon Bell Special Prize for Covid Research</b>
     - title: "Low-Rank Constraints for Fast Inference in Structured Models"
       authors: Justin Chiu*, Yuntian Deng*, Alexander M. Rush
       pdf: https://openreview.net/pdf?id=9Zi7t3c5CuF
@@ -98,7 +103,7 @@ papers:
       authors: Thierry Tambe, En-Yu Yang, Zishen Wan, Yuntian Deng, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
       pdf: https://arxiv.org/pdf/1909.13271
       image: /images/adapt.png
-      conference: DAC 2020 (Best Paper)
+      conference: DAC 2020 (<b>Best Paper</b>)
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
       pdf: https://arxiv.org/abs/1909.01496
@@ -130,7 +135,7 @@ papers:
       slides: /slides/icml17.pdf
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
-      conference: ACL Demo 2017 (Best Demo Runner-up)
+      conference: ACL Demo 2017 (<b>Best Demo Runner-up<b/>)
       pdf : https://arxiv.org/abs/1701.02810
       image: /images/overview.png
       slides:
