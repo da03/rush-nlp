@@ -53,6 +53,11 @@ papers:
       pdf: https://github.com/da03/markup2im/blob/main/README.md
       image: /images/molecules_rendering.gif
       conference: ICLR 2023
+    - title: "Semi Parametric Inducing Point Networks"
+      authors: Richa Rastogi, Yair Schiff, Alon Hacohen, Zhaozhi Li, Ian Lee, Yuntian Deng, Mert R. Sabuncu, Volodymyr Kuleshov
+      pdf: https://openreview.net/pdf?id=FE99-fDrWd5
+      image: /images/genome_imputation_full.png
+      conference: ICLR 2023
     - title: "Model Criticism for Long-Form Text Generation"
       authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
       pdf: http://52.24.243.180/static/criticize_text.pdf
