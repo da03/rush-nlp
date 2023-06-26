@@ -1,18 +1,18 @@
 notable: 
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
-      pdf: https://github.com/da03/markup2im/blob/main/README.md
+      pdf: https://huggingface.co/spaces/yuntian-deng/latex2im
       code: https://github.com/da03/markup2im/blob/main/README.md
       image: /images/molecules_rendering.gif
       conference: ICLR 2023
     - title: "Model Criticism for Long-Form Text Generation"
       authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
-      pdf: http://52.24.243.180/static/criticize_text.pdf
+      pdf: https://aclanthology.org/2022.emnlp-main.815.pdf
       image: /images/model_criticism.png
       conference: EMNLP 2022
     - title: "Cascaded Text Generation with Markov Transformers"
       authors: Yuntian Deng, Alexander M. Rush
-      pdf: https://arxiv.org/pdf/2006.01112
+      pdf: https://proceedings.neurips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf
       image: /images/cascaded-generation.gif
       slides: /slides/neurips20_cascaded_generation_10min.pdf
       conference: NeurIPS 2020
@@ -38,19 +38,20 @@ notable:
       slides: /slides/icml17.pdf
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
-      pdf: https://arxiv.org/abs/1909.01496
+      pdf: https://steganography.live
       conference: EMNLP 2019 (Oral)
       image: /images/emnlp19_arithmetic.png
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
       conference: ACL Demo 2017 (Best Demo Runner-up)
-      pdf : https://arxiv.org/abs/1701.02810
+      pdf : https://aclanthology.org/P17-4012.pdf
+      code : https://github.com/OpenNMT/OpenNMT-py
       image: /images/overview.png
       slides:
 papers:
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
-      pdf: https://github.com/da03/markup2im/blob/main/README.md
+      pdf: https://huggingface.co/spaces/yuntian-deng/latex2im
       image: /images/molecules_rendering.gif
       conference: ICLR 2023
     - title: "Semi Parametric Inducing Point Networks"
@@ -60,7 +61,7 @@ papers:
       conference: ICLR 2023
     - title: "Model Criticism for Long-Form Text Generation"
       authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
-      pdf: http://52.24.243.180/static/criticize_text.pdf
+      pdf: https://aclanthology.org/2022.emnlp-main.815.pdf
       image: /images/model_criticism.png
       conference: EMNLP 2022
     - title: "GenSLMs: Genome-scale language models reveal SARS-CoV-2 evolutionary dynamics"
@@ -93,7 +94,7 @@ papers:
       conference: JMLR 2021
     - title: "Cascaded Text Generation with Markov Transformers"
       authors: Yuntian Deng, Alexander M. Rush
-      pdf: https://arxiv.org/pdf/2006.01112
+      pdf: https://proceedings.neurips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf
       image: /images/cascaded-generation.gif
       conference: NeurIPS 2020
       slides: /slides/neurips20_cascaded_generation_10min.pdf
@@ -111,7 +112,7 @@ papers:
       conference: DAC 2020 (<b>Best Paper</b>)
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
-      pdf: https://arxiv.org/abs/1909.01496
+      pdf: https://steganography.live
       image: /images/emnlp19_arithmetic.png
       conference: EMNLP 2019 (oral)
     - title: "Challanges in end-to-end neural scientific table recognition"
@@ -141,7 +142,8 @@ papers:
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
       conference: ACL Demo 2017 (<b>Best Demo Runner-up<b/>)
-      pdf : https://arxiv.org/abs/1701.02810
+      pdf : https://aclanthology.org/P17-4012.pdf
+      code : https://github.com/OpenNMT/OpenNMT-py
       image: /images/overview.png
       slides:
     - title: "Learning Latent Space Models with Angular Constraints"
