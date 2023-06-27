@@ -3,7 +3,7 @@ projects:
       title: OpenAI Watch
       authors: Yuntian Deng
       abstract: Monitoring the consistency of GPT-4 under greedy decoding (T=0) with a web-based application that commands GPT-4 to draw a unicorn every hour.
-      image: /images/unicorn.jpg
+      image: /images/unicorn_cropped.jpg
     - link: https://github.com/da03/markup2im
       title: Markup-to-Image Diffusion Models with Scheduled Sampling
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
@@ -14,11 +14,6 @@ projects:
       authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
       abstract: A practical linguistic steganography algorithm via arithmetic coding and strong neural models.
       image: /images/emnlp19_arithmetic.png
-    - link: https://github.com/harvardnlp/cascaded-generation
-      title: Cascaded Text Generation with Markov Transformers
-      authors: Yuntian Deng, Alexander M. Rush
-      abstract: A parallel, fast, autoregressive, and accurate text generation algorithm using high-order Conditional Random Fields (CRFs).
-      image: /images/cascade.png
     - link: http://opennmt.net
       title: OpenNMT
       abstract: A full service open-source neural machine translation system. Originally developed in Lua with Systran, since ported to PyTorch and TensorFlow and maintained externally.
@@ -29,6 +24,11 @@ projects:
       abstract: A learning-based system to decompile an image into presentational markup. For example, we can infer the LaTeX or HTML source from a rendered image.
       authors: Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
       image: https://im2markup.yuntiandeng.com/network.png
+    - link: https://github.com/harvardnlp/cascaded-generation
+      title: Cascaded Text Generation with Markov Transformers
+      authors: Yuntian Deng, Alexander M. Rush
+      abstract: A parallel, fast, autoregressive, and accurate text generation algorithm using high-order Conditional Random Fields (CRFs).
+      image: /images/cascade.png
         #- link: https://github.com/da03/Attention-OCR
         #  title: Attention OCR
         #  abstract: A deep learning-based optical character recognition (OCR) system implemented in TensorFlow.
