@@ -23,6 +23,12 @@ notable:
       slides: /slides/openai_EBM.pdf
       code: https://github.com/da03/Residual-EBM
       image: /images/ICLR20_REBM.png
+    - title: "Bottom-Up Abstractive Summarization"
+      authors: Sebastian Gehrmann, Yuntian Deng, Alexander Rush
+      conference: EMNLP 2018
+      pdf : https://arxiv.org/abs/1808.10792
+      code : https://github.com/sebastianGehrmann/bottom-up-summary
+      image: /images/bottomup.png
     - title: "Latent Alignment and Variational Attention"
       authors: Yuntian Deng*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
       conference: NIPS 2018
