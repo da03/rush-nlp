@@ -1,4 +1,10 @@
 notable: 
+    - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
+      authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
+      pdf: https://openreview.net/pdf?id=d0zla3M3LI
+      code: https://github.com/jxmorris12/tprompt-llm/blob/newapi/lib.py
+      image: /images/tree_prompt.png
+      conference: EMNLP 2023
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
       pdf: https://huggingface.co/spaces/yuntian-deng/latex2im
@@ -55,6 +61,12 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
+      authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
+      pdf: https://openreview.net/pdf?id=d0zla3M3LI
+      code: https://github.com/jxmorris12/tprompt-llm/blob/newapi/lib.py
+      image: /images/tree_prompt.png
+      conference: EMNLP 2023
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
       pdf: https://huggingface.co/spaces/yuntian-deng/latex2im
