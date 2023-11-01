@@ -176,7 +176,7 @@ papers:
       conference: EACL 2017
       pdf : https://www.aclweb.org/anthology/E17-2061.pdf
       code :
-      image: 
+      image: /images/recurrent_attention.png
       slides: /slides/icml17.pdf
     - title: "Dropout with expectation-linear regularization"
       authors: Xuezhe Ma, Yingkai Gao, Zhiting Hu, Yaoliang Yu, Yuntian Deng, Eduard Hovy
@@ -190,7 +190,7 @@ papers:
       conference: ACL 2016
       pdf : https://www.aclweb.org/anthology/P16-1169.pdf
       code :
-      image:
+      image: /images/concept_taxonomy.png
       slides:
     - title: "Diversifying Restricted Boltzmann Machine for Document Modeling"
       authors: Pengtao Xie, Yuntian Deng, Eric P. Xing
