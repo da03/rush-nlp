@@ -1,4 +1,10 @@
 notable: 
+    - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
+      authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
+      pdf: https://arxiv.org/pdf/2311.01460.pdf
+      code: https://github.com/da03/implicit_chain_of_thought
+      image: /images/implicit.png
+      conference: In submission
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
@@ -61,6 +67,12 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
+      authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
+      pdf: https://arxiv.org/pdf/2311.01460.pdf
+      code: https://github.com/da03/implicit_chain_of_thought
+      image: /images/implicit.png
+      conference: In submission
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
