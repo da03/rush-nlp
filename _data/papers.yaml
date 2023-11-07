@@ -3,7 +3,7 @@ notable:
       authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
       pdf: https://arxiv.org/pdf/2311.01460.pdf
       code: https://github.com/da03/implicit_chain_of_thought
-      image: /images/implicit_cot_large_cropped.gif
+      image: /images/implicit_cot_large_cropped_2x.gif
       conference: In submission
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
@@ -71,7 +71,7 @@ papers:
       authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
       pdf: https://arxiv.org/pdf/2311.01460.pdf
       code: https://github.com/da03/implicit_chain_of_thought
-      image: /images/implicit_cot_large_cropped.gif
+      image: /images/implicit_cot_large_cropped_2x.gif
       conference: In submission
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
