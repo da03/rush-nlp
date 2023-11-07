@@ -15,7 +15,7 @@ notable:
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
       pdf: https://huggingface.co/spaces/yuntian-deng/latex2im
       code: https://github.com/da03/markup2im/blob/main/README.md
-      image: /images/molecules_rendering.gif
+      image: /images/molecules_rendering_cropped.gif
       conference: ICLR 2023
     - title: "Model Criticism for Long-Form Text Generation"
       authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
@@ -82,7 +82,7 @@ papers:
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
       pdf: https://huggingface.co/spaces/yuntian-deng/latex2im
-      image: /images/molecules_rendering.gif
+      image: /images/molecules_rendering_cropped.gif
       conference: ICLR 2023
     - title: "Semi Parametric Inducing Point Networks"
       authors: Richa Rastogi, Yair Schiff, Alon Hacohen, Zhaozhi Li, Ian Lee, Yuntian Deng, Mert R. Sabuncu, Volodymyr Kuleshov
