@@ -10,7 +10,7 @@ notable:
       pdf: https://wenting-zhao.github.io/papers/wildchat.pdf
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
-      conference: In submission
+      conference: ICLR 2024 (Spotlight)
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
@@ -84,7 +84,7 @@ papers:
       pdf: https://wenting-zhao.github.io/papers/wildchat.pdf
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
-      conference: In submission
+      conference: ICLR 2024 (Spotlight)
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
