@@ -5,9 +5,9 @@ notable:
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
       conference: In submission
-    - title: "(InThe)WildChat: 570K ChatGPT Interaction Logs In The Wild"
+    - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, Yuntian Deng
-      pdf: https://wenting-zhao.github.io/papers/wildchat.pdf
+      pdf: https://openreview.net/pdf?id=Bl8u7ZRlbM
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight &amp; used in Anthropic's Claude 3 for evaluating refusals
@@ -79,9 +79,9 @@ papers:
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
       conference: In submission
-    - title: "(InThe)WildChat: 570K ChatGPT Interaction Logs In The Wild"
+    - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, Yuntian Deng
-      pdf: https://wenting-zhao.github.io/papers/wildchat.pdf
+      pdf: https://openreview.net/pdf?id=Bl8u7ZRlbM
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight &amp; used in Anthropic's Claude 3 for evaluating refusals
