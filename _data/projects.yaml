@@ -1,4 +1,9 @@
 projects:
+    - link: https://huggingface.co/spaces/yuntian-deng/AKSelectionPredictor
+      title: AK Hugging Face Paper Selection Predictor
+      authors: Yuntian Deng
+      abstract: Predict if @_akhaliq will select a paper into Hugging Face papers based on its title, authors, and abstract.
+      image: /images/ak_paper_selection_predictor.png
     - link: https://openaiwatch.com/
       title: OpenAI Watch
       authors: Yuntian Deng
@@ -29,12 +34,3 @@ projects:
       authors: Yuntian Deng, Alexander M. Rush
       abstract: A parallel, fast, autoregressive, and accurate text generation algorithm using high-order Conditional Random Fields (CRFs).
       image: /images/cascade.png
-        #- link: https://github.com/da03/Attention-OCR
-        #  title: Attention OCR
-        #  abstract: A deep learning-based optical character recognition (OCR) system implemented in TensorFlow.
-        #  image: https://camo.githubusercontent.com/68da9d2c750e275c9e8de2e39cd64c7778575efa732c7d1048321f781df93717/687474703a2f2f63732e636d752e6564752f7e79756e7469616e642f4f43522d322e6a7067
-        #- link: https://tech.cornell.edu/impact/break-through-tech/break-through-ai/
-        #  title: Break Through AI
-        #  authors: BTT Team, Alexander Rush
-        #  abstract: Break Through AI is a free summer program for supporting female undergraduates to learn AI and ML skills in an applied environment. I helped prepare some materials for a summer course my advisor Sasha taught (https://github.com/srush/BT-AI).
-        #  image: https://tech.cornell.edu/wp-content/uploads/2021/03/primary-logo_high-res-225x125.png
