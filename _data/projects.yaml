@@ -27,7 +27,7 @@ projects:
     - link: https://steganography.live/
       title: Neural Linguistic Steganography
       authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
-      abstract: A practical linguistic steganography algorithm via arithmetic coding and strong neural models.
+      abstract: Hide secret messages in fluent texts using arithmetic coding and strong neural models.
       image: /images/emnlp19_arithmetic.png
       demo: https://steganography.live/
       code: https://github.com/harvardnlp/NeuralSteganography
