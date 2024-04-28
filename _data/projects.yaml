@@ -4,33 +4,55 @@ projects:
       authors: Yuntian Deng
       abstract: Predict if @_akhaliq will select a paper into Hugging Face papers based on its title, authors, and abstract.
       image: /images/ak_paper_selection_predictor.png
+      demo: https://huggingface.co/spaces/yuntian-deng/AKSelectionPredictor
+      code: https://huggingface.co/spaces/yuntian-deng/AKSelectionPredictor/tree/main
+      data: https://huggingface.co/datasets/yuntian-deng/ak-paper-selection
+      models: https://huggingface.co/yuntian-deng/ak-paper-selection-deberta
     - link: https://openaiwatch.com/
       title: OpenAI Watch
       authors: Yuntian Deng
       abstract: Monitoring the consistency of GPT-4 under greedy decoding (T=0) with a web-based application that commands GPT-4 to draw a unicorn every hour.
       image: /images/unicorn_cropped.jpg
-    - link: https://github.com/da03/markup2im
+      demo: https://openaiwatch.com/
+      data: https://huggingface.co/datasets/yuntian-deng/openaiwatch
+    - link: https://huggingface.co/spaces/yuntian-deng/latex2im
       title: Markup-to-Image Diffusion Models with Scheduled Sampling
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
       abstract: A learning-based system to <q>compile</q> presentational markup, such as LaTeX, into corresponding images.
       image: /images/molecules_rendering.gif
+      demo: https://huggingface.co/spaces/yuntian-deng/latex2im
+      code: https://github.com/da03/markup2im
+      paper: https://openreview.net/pdf?id=81VJDmOE2ol
+      models: https://huggingface.co/yuntian-deng/latex2im_ss_finetunegptneo
     - link: https://steganography.live/
       title: Neural Linguistic Steganography
       authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
       abstract: A practical linguistic steganography algorithm via arithmetic coding and strong neural models.
       image: /images/emnlp19_arithmetic.png
+      demo: https://steganography.live/
+      code: https://github.com/harvardnlp/NeuralSteganography
+      paper: https://aclanthology.org/D19-1115/
     - link: http://opennmt.net
       title: OpenNMT
       abstract: A full service open-source neural machine translation system. Originally developed in Lua with Systran, since ported to PyTorch and TensorFlow and maintained externally.
       image: /images/aesw2016.png
       authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander Rush
+      code: https://github.com/OpenNMT/OpenNMT-py
+      paper: https://aclanthology.org/P17-4012/
     - link: https://im2markup.yuntiandeng.com
       title: Image-to-Markup
       abstract: A learning-based system to decompile an image into presentational markup. For example, we can infer the LaTeX or HTML source from a rendered image.
       authors: Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
       image: https://im2markup.yuntiandeng.com/network.png
+      demo: https://im2markup.yuntiandeng.com
+      code: https://github.com/harvardnlp/im2markup
+      paper: http://proceedings.mlr.press/v70/deng17a/deng17a.pdf
+      data: https://im2markup.yuntiandeng.com/data/
+      models: https://im2markup.yuntiandeng.com/model/latex/final-model
     - link: https://github.com/harvardnlp/cascaded-generation
       title: Cascaded Text Generation with Markov Transformers
       authors: Yuntian Deng, Alexander M. Rush
       abstract: A parallel, fast, autoregressive, and accurate text generation algorithm using high-order Conditional Random Fields (CRFs).
       image: /images/cascade.png
+      code: https://github.com/harvardnlp/cascaded-generation
+      paper: https://proceedings.neurips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf
