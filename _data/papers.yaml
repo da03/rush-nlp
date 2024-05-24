@@ -1,4 +1,10 @@
 notable: 
+    - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
+      authors: Yuntian Deng, Yejin Choi, Stuart Shieber
+      pdf: https://arxiv.org/pdf/2405.14838
+      code: https://github.com/da03/Internalize_CoT_Step_by_Step
+      image: /images/stepwise_internalization.png
+      conference: In submission
     - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
       authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
       pdf: https://arxiv.org/pdf/2311.01460.pdf
@@ -7,7 +13,7 @@ notable:
       conference: In submission
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, Yuntian Deng
-      pdf: https://openreview.net/pdf?id=Bl8u7ZRlbM
+      pdf: https://arxiv.org/abs/2405.01470
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight &amp; used in Anthropic's Claude 3 for evaluating refusals
@@ -73,6 +79,12 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
+      authors: Yuntian Deng, Yejin Choi, Stuart Shieber
+      pdf: https://arxiv.org/pdf/2405.14838
+      code: https://github.com/da03/Internalize_CoT_Step_by_Step
+      image: /images/stepwise_internalization.png
+      conference: In submission
     - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
       authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
       pdf: https://arxiv.org/pdf/2311.01460.pdf
@@ -81,7 +93,7 @@ papers:
       conference: In submission
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, Yuntian Deng
-      pdf: https://openreview.net/pdf?id=Bl8u7ZRlbM
+      pdf: https://arxiv.org/abs/2405.01470
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight &amp; used in Anthropic's Claude 3 for evaluating refusals
