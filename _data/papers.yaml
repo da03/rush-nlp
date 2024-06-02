@@ -3,7 +3,7 @@ notable:
       authors: Yuntian Deng, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
       code: https://github.com/da03/Internalize_CoT_Step_by_Step
-      image: /images/stepwise_internalization.gif
+      image: /images/internalize_step_by_step.gif
       conference: In submission
     - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
       authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
@@ -83,7 +83,7 @@ papers:
       authors: Yuntian Deng, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
       code: https://github.com/da03/Internalize_CoT_Step_by_Step
-      image: /images/stepwise_internalization.gif
+      image: /images/internalize_step_by_step.gif
       conference: In submission
     - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
       authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
