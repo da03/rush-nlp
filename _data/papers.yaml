@@ -91,6 +91,12 @@ papers:
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
       conference: In submission
+    - title: "WildBench: Benchmarking LLMs with Challenging Tasks from Real Users in the Wild"
+      authors: Bill Yuchen Lin, Yuntian Deng, Khyathi Chandu, Faeze Brahman, Abhilasha Ravichander, Valentina Pyatkin, Nouha Dziri, Ronan Le Bras, Yejin Choi
+      pdf: https://arxiv.org/pdf/2406.04770
+      code: https://github.com/allenai/WildBench
+      image: /images/wildbench.png
+      conference: In submission
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, Yuntian Deng
       pdf: https://arxiv.org/abs/2405.01470
