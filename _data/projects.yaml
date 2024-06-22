@@ -1,4 +1,11 @@
 projects:
+    - link: https://wildchat.yuntiandeng.com/
+      title: WildChat Visualizer (What Do People Use ChatGPT For?)
+      authors: Yuntian Deng
+      abstract: A search tool for exploring 1M real user-ChatGPT conversations in WildChat.
+      image: /images/wildchat_visualizer.gif
+      demo: https://wildchat.yuntiandeng.com/
+      data: https://huggingface.co/datasets/allenai/WildChat-1M
     - link: https://huggingface.co/spaces/yuntian-deng/AKSelectionPredictor
       title: AK Hugging Face Paper Selection Predictor
       authors: Yuntian Deng
