@@ -1,0 +1,40 @@
+---
+layout: page
+title: Demos
+weight: 2
+permalink: /demos/
+show: 1
+---
+<h3>Demos</h3>
+
+
+<p>
+
+  These are some of the open-source demos we built to make our research more readily available for developers and researchers.
+
+</p>
+
+<table>
+{% for demo in site.data.demos.demos %}
+  <tr><td style="padding:10px;width:200px;">
+{% if demo.image %}<a class="paper" href="{{demo.link}}"><img width="200px" src="{{demo.image}}"> </a>{% endif %}
+</td><td style="padding:10px">
+<a class="paper" href="{{demo.link}}">
+{{demo.title}}
+</a><br>
+{{demo.abstract}}<br>
+{% if demo.demo %}<a class="icon pdf label label-info" href="{{demo.demo}}">demo</a> {% endif %}
+{% if demo.code %} <a class="icon slides label label-success label-warning" href="{{demo.code}}">code</a>{% endif %}
+{% if demo.paper %}<a class="icon pdf label label-info" href="{{demo.paper}}">paper</a> {% endif %}
+{% if demo.data %}<a class="icon pdf label label-success" href="{{demo.data}}">data</a> {% endif %}
+{% if demo.models %}<a class="icon slides label label-warning" href="{{demo.models}}">models</a>{% endif %}
+
+
+<br>
+
+</td></tr>
+
+{% endfor %}
+</table>
+
+
