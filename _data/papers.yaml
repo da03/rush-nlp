@@ -1,79 +1,79 @@
 notable: 
     - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
-      authors: Yuntian Deng, Yejin Choi, Stuart Shieber
+      authors: <strong>Yuntian Deng</strong>, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
       code: https://github.com/da03/Internalize_CoT_Step_by_Step
       image: /images/internalize_step_by_step.gif
       conference: In submission
     - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
-      authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
+      authors: <strong>Yuntian Deng</strong>, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
       pdf: https://arxiv.org/pdf/2311.01460.pdf
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
       conference: In submission
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
-      authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, Yuntian Deng
+      authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/abs/2405.01470
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight
-      notes: <strong>used in Anthropic's Claude 3 for evaluating refusals</strong>
+      notes: <strong>Used in Anthropic's Claude 3 for evaluating refusals</strong>
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
-      authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
+      authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
       code: https://github.com/jxmorris12/tprompt-llm/blob/newapi/lib.py
       image: /images/tree_prompt.png
       conference: EMNLP 2023
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
-      authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
+      authors: <strong>Yuntian Deng</strong>, Noriyuki Kojima, Alexander M. Rush
       pdf: https://huggingface.co/spaces/yuntian-deng/latex2im
       code: https://github.com/da03/markup2im/blob/main/README.md
       image: /images/molecules_rendering_cropped.gif
       conference: ICLR 2023
     - title: "Model Criticism for Long-Form Text Generation"
-      authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
+      authors: <strong>Yuntian Deng</strong>, Volodymyr Kuleshov, Alexander M Rush
       pdf: https://aclanthology.org/2022.emnlp-main.815.pdf
       image: /images/model_criticism.png
       conference: EMNLP 2022
     - title: "Cascaded Text Generation with Markov Transformers"
-      authors: Yuntian Deng, Alexander M. Rush
+      authors: <strong>Yuntian Deng</strong>, Alexander M. Rush
       pdf: https://proceedings.neurips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf
       image: /images/cascaded-generation.gif
       slides: /slides/neurips20_cascaded_generation_10min.pdf
       conference: NeurIPS 2020
     - title: "Residual Energy-Based Models for Text Generation"
-      authors: Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc'Aurelio Ranzato
+      authors: <strong>Yuntian Deng</strong>, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc'Aurelio Ranzato
       conference: ICLR 2020
       pdf : https://openreview.net/pdf?id=B1l4SgHKDH
       slides: /slides/openai_EBM.pdf
       code: https://github.com/da03/Residual-EBM
       image: /images/ICLR20_REBM.png
     - title: "Bottom-Up Abstractive Summarization"
-      authors: Sebastian Gehrmann, Yuntian Deng, Alexander Rush
+      authors: Sebastian Gehrmann, <strong>Yuntian Deng</strong>, Alexander Rush
       conference: EMNLP 2018
       pdf : https://arxiv.org/abs/1808.10792
       code : https://github.com/sebastianGehrmann/bottom-up-summary
       image: /images/bottomup.png
     - title: "Latent Alignment and Variational Attention"
-      authors: Yuntian Deng*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
+      authors: <strong>Yuntian Deng</strong>*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
       conference: NIPS 2018
       pdf : https://papers.nips.cc/paper/8179-latent-alignment-and-variational-attention.pdf
       code: https://github.com/harvardnlp/var-attn
       image: /images/VariationalAttention.png
     - title: "Image-to-Markup Generation with Coarse-to-Fine Attention"
-      authors: Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
+      authors: <strong>Yuntian Deng</strong>, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
       conference: ICML 2017
       pdf : https://im2markup.yuntiandeng.com
       code : https://im2markup.yuntiandeng.com
       image: /images/im2latex_cropped.gif
       slides: /slides/icml17.pdf
     - title: "Neural Linguistic Steganography"
-      authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
+      authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       pdf: https://steganography.live
       conference: EMNLP 2019 (Oral)
       image: /images/emnlp19_arithmetic.png
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
-      authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
+      authors: Guillaume Klein, Yoon Kim, <strong>Yuntian Deng</strong>, Jean Senellart, Alexander M. Rush
       conference: ACL Demo 2017 (Best Demo Runner-up)
       pdf : https://aclanthology.org/P17-4012.pdf
       code : https://github.com/OpenNMT/OpenNMT-py
@@ -81,170 +81,170 @@ notable:
       slides:
 papers:
     - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
-      authors: Yuntian Deng, Yejin Choi, Stuart Shieber
+      authors: <strong>Yuntian Deng</strong>, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
       code: https://github.com/da03/Internalize_CoT_Step_by_Step
       image: /images/internalize_step_by_step.gif
       conference: In submission
     - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
-      authors: Yuntian Deng, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
+      authors: <strong>Yuntian Deng</strong>, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
       pdf: https://arxiv.org/pdf/2311.01460.pdf
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
       conference: In submission
     - title: "WildBench: Benchmarking LLMs with Challenging Tasks from Real Users in the Wild"
-      authors: Bill Yuchen Lin, Yuntian Deng, Khyathi Chandu, Faeze Brahman, Abhilasha Ravichander, Valentina Pyatkin, Nouha Dziri, Ronan Le Bras, Yejin Choi
+      authors: Bill Yuchen Lin, <strong>Yuntian Deng</strong>, Khyathi Chandu, Faeze Brahman, Abhilasha Ravichander, Valentina Pyatkin, Nouha Dziri, Ronan Le Bras, Yejin Choi
       pdf: https://arxiv.org/pdf/2406.04770
       code: https://github.com/allenai/WildBench
       image: /images/wildbench.png
       conference: In submission
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
-      authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, Yuntian Deng
+      authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/abs/2405.01470
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight
       notes: <strong>used in Anthropic's Claude 3 for evaluating refusals</strong>
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
-      authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, Yuntian Deng
+      authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
       code: https://github.com/jxmorris12/tprompt-llm/blob/newapi/lib.py
       image: /images/tree_prompt.png
       conference: EMNLP 2023
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
-      authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
+      authors: <strong>Yuntian Deng</strong>, Noriyuki Kojima, Alexander M. Rush
       pdf: https://huggingface.co/spaces/yuntian-deng/latex2im
       image: /images/molecules_rendering_cropped.gif
       conference: ICLR 2023
     - title: "Semi Parametric Inducing Point Networks"
-      authors: Richa Rastogi, Yair Schiff, Alon Hacohen, Zhaozhi Li, Ian Lee, Yuntian Deng, Mert R. Sabuncu, Volodymyr Kuleshov
+      authors: Richa Rastogi, Yair Schiff, Alon Hacohen, Zhaozhi Li, Ian Lee, <strong>Yuntian Deng</strong>, Mert R. Sabuncu, Volodymyr Kuleshov
       pdf: https://openreview.net/pdf?id=FE99-fDrWd5
       image: /images/genome_imputation_full.png
       conference: ICLR 2023
     - title: "Model Criticism for Long-Form Text Generation"
-      authors: Yuntian Deng, Volodymyr Kuleshov, Alexander M Rush
+      authors: <strong>Yuntian Deng</strong>, Volodymyr Kuleshov, Alexander M Rush
       pdf: https://aclanthology.org/2022.emnlp-main.815.pdf
       image: /images/model_criticism.png
       conference: EMNLP 2022
     - title: "GenSLMs: Genome-scale language models reveal SARS-CoV-2 evolutionary dynamics"
-      authors: Maxim Zvyagin*, Alexander Brace*, Kyle Hippe*, Yuntian Deng*, Bin Zhang, Cindy Orozco Bohorquez, Austin Clyde, Bharat Kale, Danilo Perez-Rivera, Heng Ma, Carla M. Mann, Michael Irvin, J. Gregory Pauloski, Logan Ward, Valerie Hayot, Murali Emani, Sam Foreman, Zhen Xie, Diangen Lin, Maulik Shukla, Weili Nie, Josh Romero, Christian Dallago, Arash Vahdat, Chaowei Xiao, Thomas Gibbs, Ian Foster, James J. Davis, Michael E. Papka, Thomas Brettin, Rick Stevens, Anima Anandkumar, Venkatram Vishwanath, Arvind Ramanathan
+      authors: Maxim Zvyagin*, Alexander Brace*, Kyle Hippe*, <strong>Yuntian Deng</strong>*, Bin Zhang, Cindy Orozco Bohorquez, Austin Clyde, Bharat Kale, Danilo Perez-Rivera, Heng Ma, Carla M. Mann, Michael Irvin, J. Gregory Pauloski, Logan Ward, Valerie Hayot, Murali Emani, Sam Foreman, Zhen Xie, Diangen Lin, Maulik Shukla, Weili Nie, Josh Romero, Christian Dallago, Arash Vahdat, Chaowei Xiao, Thomas Gibbs, Ian Foster, James J. Davis, Michael E. Papka, Thomas Brettin, Rick Stevens, Anima Anandkumar, Venkatram Vishwanath, Arvind Ramanathan
       pdf: https://www.biorxiv.org/content/biorxiv/early/2022/10/11/2022.10.10.511571.full.pdf
       image: /images/phylogeny_with_generated_sequence.jpg
       conference: <b>ACM Gordon Bell Special Prize for Covid Research</b>
     - title: "Low-Rank Constraints for Fast Inference in Structured Models"
-      authors: Justin Chiu*, Yuntian Deng*, Alexander M. Rush
+      authors: Justin Chiu*, <strong>Yuntian Deng</strong>*, Alexander M. Rush
       pdf: https://openreview.net/pdf?id=9Zi7t3c5CuF
       image: /images/neurips21_lowrank.png
       slides: /slides/neurips21_lowrank.pdf
       conference: NeurIPS 2021
     - title: "Sequence-to-Lattice Models for Fast Translation"
-      authors: Yuntian Deng, Alexander M. Rush
+      authors: <strong>Yuntian Deng</strong>, Alexander M. Rush
       pdf: 
       image: /images/emnlp21_seq2lattice.png
       slides: /slides/emnlp21_seq2lattice.pdf
       conference: EMNLP 2021 Findings
     - title: "Rationales for Sequential Predictions"
-      authors: Keyon Vafa, Yuntian Deng, David Blei, Alexander Rush
+      authors: Keyon Vafa, <strong>Yuntian Deng</strong>, David Blei, Alexander Rush
       pdf: https://arxiv.org/pdf/2109.06387.pdf
       image: /images/emnlp21_rationale.png
       slides: 
       conference: EMNLP 2021 (oral)
     - title: "Residual Energy-Based Models for Text"
-      authors: Anton Bakhtin*, Yuntian Deng*, Sam Gross, Myle Ott, Marc'Aurelio Ranzato, Arthur Szlam
+      authors: Anton Bakhtin*, <strong>Yuntian Deng</strong>*, Sam Gross, Myle Ott, Marc'Aurelio Ranzato, Arthur Szlam
       pdf: https://www.jmlr.org/papers/v22/20-326.html
       image: /images/ICLR20_REBM.png
       conference: JMLR 2021
     - title: "Cascaded Text Generation with Markov Transformers"
-      authors: Yuntian Deng, Alexander M. Rush
+      authors: <strong>Yuntian Deng</strong>, Alexander M. Rush
       pdf: https://proceedings.neurips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf
       image: /images/cascaded-generation.gif
       conference: NeurIPS 2020
       slides: /slides/neurips20_cascaded_generation_10min.pdf
     - title: "Residual Energy-Based Models for Text Generation"
-      authors: Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc'Aurelio Ranzato
+      authors: <strong>Yuntian Deng</strong>, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc'Aurelio Ranzato
       conference: ICLR 2020
       pdf : https://openreview.net/pdf?id=B1l4SgHKDH
       code: https://github.com/da03/Residual-EBM
       slides: /slides/openai_EBM.pdf
       image: /images/ICLR20_REBM.png
     - title: "AdaptivFloat: A Floating-point based Data Type for Resilient Deep Learning Inference"
-      authors: Thierry Tambe, En-Yu Yang, Zishen Wan, Yuntian Deng, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
+      authors: Thierry Tambe, En-Yu Yang, Zishen Wan, <strong>Yuntian Deng</strong>, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
       pdf: https://arxiv.org/pdf/1909.13271
       image: /images/adapt.png
       conference: DAC 2020 (<b>Best Paper</b>)
     - title: "Neural Linguistic Steganography"
-      authors: Zachary Ziegler*, Yuntian Deng*, Alexander Rush
+      authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       pdf: https://steganography.live
       image: /images/emnlp19_arithmetic.png
       conference: EMNLP 2019 (oral)
     - title: "Challanges in end-to-end neural scientific table recognition"
-      authors: Yuntian Deng, David Rosenberg, Gideon Mann
+      authors: <strong>Yuntian Deng</strong>, David Rosenberg, Gideon Mann
       conference: ICDAR 2019
       pdf : /papers/Deng2019ICDAR.pdf
       code: 
       image: /images/ICDAR19_table.png
     - title: "Latent Alignment and Variational Attention"
-      authors: Yuntian Deng*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
+      authors: <strong>Yuntian Deng</strong>*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
       conference: NIPS 2018
       pdf : https://papers.nips.cc/paper/8179-latent-alignment-and-variational-attention.pdf
       code: https://github.com/harvardnlp/var-attn
       image: /images/VariationalAttention.png
     - title: "Bottom-Up Abstractive Summarization"
-      authors: Sebastian Gehrmann, Yuntian Deng, Alexander Rush
+      authors: Sebastian Gehrmann, <strong>Yuntian Deng</strong>, Alexander Rush
       conference: EMNLP 2018
       pdf : https://arxiv.org/abs/1808.10792
       image: /images/bottomup.png
     - title: "Image-to-Markup Generation with Coarse-to-Fine Attention"
-      authors: Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
+      authors: <strong>Yuntian Deng</strong>, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
       conference: ICML 2017
       pdf : https://im2markup.yuntiandeng.com
       code : https://im2markup.yuntiandeng.com
       image: /images/im2latex_cropped.gif
       slides: /slides/icml17.pdf
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
-      authors: Guillaume Klein, Yoon Kim, Yuntian Deng, Jean Senellart, Alexander M. Rush
+      authors: Guillaume Klein, Yoon Kim, <strong>Yuntian Deng</strong>, Jean Senellart, Alexander M. Rush
       conference: ACL Demo 2017 (<b>Best Demo Runner-up<b/>)
       pdf : https://aclanthology.org/P17-4012.pdf
       code : https://github.com/OpenNMT/OpenNMT-py
       image: /images/overview.png
       slides:
     - title: "Learning Latent Space Models with Angular Constraints"
-      authors: Pengtao Xie, Yuntian Deng, Yi Zhou, Abhimanu Kumar, Yaoliang Yu, James Zou, Eric P Xing
+      authors: Pengtao Xie, <strong>Yuntian Deng</strong>, Yi Zhou, Abhimanu Kumar, Yaoliang Yu, James Zou, Eric P Xing
       conference: ICML 2017
       pdf : http://proceedings.mlr.press/v70/xie17a/xie17a.pdf
       code : 
       image: 
       slides: 
     - title: "Neural Machine Translation with Recurrent Attention Modeling"
-      authors: Zichao Yang, Zhiting Hu, Yuntian Deng, Chris Dyer, Alex Smola
+      authors: Zichao Yang, Zhiting Hu, <strong>Yuntian Deng</strong>, Chris Dyer, Alex Smola
       conference: EACL 2017
       pdf : https://www.aclweb.org/anthology/E17-2061.pdf
       code :
       image: /images/recurrent_attention.png
       slides: /slides/icml17.pdf
     - title: "Dropout with expectation-linear regularization"
-      authors: Xuezhe Ma, Yingkai Gao, Zhiting Hu, Yaoliang Yu, Yuntian Deng, Eduard Hovy
+      authors: Xuezhe Ma, Yingkai Gao, Zhiting Hu, Yaoliang Yu, <strong>Yuntian Deng</strong>, Eduard Hovy
       conference: ICLR 2017
       pdf : https://openreview.net/pdf?id=rkGabzZgl
       code : 
       image: 
       slides: 
     - title: "Learning Concept Taxonomies from Multi-modal Data"
-      authors: Hao Zhang, Zhiting Hu, Yuntian Deng, Mrinmaya Sachan, Zhicheng Yan, Eric P. Xing
+      authors: Hao Zhang, Zhiting Hu, <strong>Yuntian Deng</strong>, Mrinmaya Sachan, Zhicheng Yan, Eric P. Xing
       conference: ACL 2016
       pdf : https://www.aclweb.org/anthology/P16-1169.pdf
       code :
       image: /images/concept_taxonomy.png
       slides:
     - title: "Diversifying Restricted Boltzmann Machine for Document Modeling"
-      authors: Pengtao Xie, Yuntian Deng, Eric P. Xing
+      authors: Pengtao Xie, <strong>Yuntian Deng</strong>, Eric P. Xing
       conference: KDD 2015
       pdf : https://dl.acm.org/doi/10.1145/2783258.2783264
       code : 
       image: 
       slides: 
     - title: "Entity Hierarchy Embedding"
-      authors: Zhiting Hu, Poyao Huang, Yuntian Deng, Yingkai Gao, Eric P. Xing
+      authors: Zhiting Hu, Poyao Huang, <strong>Yuntian Deng</strong>, Yingkai Gao, Eric P. Xing
       conference: ACL 2015
       pdf : https://aclanthology.org/P15-1125.pdf
       code : 
