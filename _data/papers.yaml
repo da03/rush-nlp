@@ -225,7 +225,7 @@ papers:
       conference: ICML 2017
       pdf : http://proceedings.mlr.press/v70/xie17a/xie17a.pdf
       code : 
-      image: 
+      image: /images/angular.png
       slides: 
     - title: "Neural Machine Translation with Recurrent Attention Modeling"
       authors: Zichao Yang, Zhiting Hu, <strong>Yuntian Deng</strong>, Chris Dyer, Alex Smola
@@ -239,7 +239,7 @@ papers:
       conference: ICLR 2017
       pdf : https://openreview.net/pdf?id=rkGabzZgl
       code : 
-      image: 
+      image: /images/dropout.png
       slides: 
     - title: "Learning Concept Taxonomies from Multi-modal Data"
       authors: Hao Zhang, Zhiting Hu, <strong>Yuntian Deng</strong>, Mrinmaya Sachan, Zhicheng Yan, Eric P. Xing
@@ -253,7 +253,7 @@ papers:
       conference: KDD 2015
       pdf : https://dl.acm.org/doi/10.1145/2783258.2783264
       code : 
-      image: 
+      image: /images/diversity.png
       slides: 
     - title: "Entity Hierarchy Embedding"
       authors: Zhiting Hu, Poyao Huang, <strong>Yuntian Deng</strong>, Yingkai Gao, Eric P. Xing
