@@ -7,7 +7,7 @@ demos:
       demo: https://huggingface.co/spaces/yuntian-deng/implicit-cot-math
       code: https://github.com/da03/Internalize_CoT_Step_by_Step
     - link: https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication
-      title: Predicting Multiplication with GPT-2 without Intermediate Reasoning Steps
+      title: Predicting Multiplication without Intermediate Reasoning Steps
       authors: Yuntian Deng, Yejin Choi, Stuart Shieber
       abstract: Directly predict the product of <strong>15-digit multiplication</strong> without chain-of-thought reasoning, using a <strong>12-layer</strong> GPT-2.
       image: /images/implicit_cot_multiplication.gif
