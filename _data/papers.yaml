@@ -105,7 +105,7 @@ papers:
       image: /images/magpie.png
       conference: In submission
     - title: "MixEval: Deriving Wisdom of the Crowd from LLM Benchmark Mixtures"
-      authors: Jinjie Ni, Fuzhao Xue, Xiang Yue, Yuntian Deng, Mahir Shah, Kabir Jain, Graham Neubig, Yang You
+      authors: Jinjie Ni, Fuzhao Xue, Xiang Yue, <strong>Yuntian Deng</strong>, Mahir Shah, Kabir Jain, Graham Neubig, Yang You
       pdf: https://arxiv.org/pdf/2406.06565
       code: https://mixeval.github.io/
       image: /images/mixeval.jpg
