@@ -98,6 +98,18 @@ papers:
       code: https://github.com/allenai/WildBench
       image: /images/wildbench.png
       conference: In submission
+    - title: "Magpie: Alignment Data Synthesis from Scratch by Prompting Aligned LLMs with Nothing"
+      authors: Zhangchen Xu, Fengqing Jiang, Luyao Niu, <strong>Yuntian Deng</strong>, Radha Poovendran, Yejin Choi, Bill Yuchen Lin
+      pdf: https://arxiv.org/pdf/2406.08464
+      code: https://magpie-align.github.io/
+      image: /images/magpie.png
+      conference: In submission
+    - title: "MixEval: Deriving Wisdom of the Crowd from LLM Benchmark Mixtures"
+      authors: Jinjie Ni, Fuzhao Xue, Xiang Yue, Yuntian Deng, Mahir Shah, Kabir Jain, Graham Neubig, Yang You
+      pdf: https://arxiv.org/pdf/2406.06565
+      code: https://mixeval.github.io/
+      image: /images/mixeval.jpg
+      conference: In submission
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/abs/2405.01470
