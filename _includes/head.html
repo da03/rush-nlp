@@ -123,4 +123,34 @@
       ]
     }
     </script>
+
+<script>
+    function toggleNews() {
+        const newsList = document.getElementById('news-list');
+        const newsItems = newsList.querySelectorAll('li');
+        const toggleBtn = document.getElementById('toggle-news-btn');
+        const hiddenClass = 'hidden-news';
+
+        if (toggleBtn.textContent === 'Show More') {
+            newsItems.forEach(item => item.classList.remove(hiddenClass));
+            toggleBtn.textContent = 'Show Less';
+        } else {
+            newsItems.forEach((item, index) => {
+                if (index >= 5) {
+                    item.classList.add(hiddenClass);
+                }
+            });
+            toggleBtn.textContent = 'Show More';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        toggleNews();
+    });
+</script>
+<style>
+    .hidden-news {
+        display: none;
+    }
+</style>
 </head>
