@@ -92,12 +92,6 @@ papers:
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
       conference: In submission
-    - title: "WildBench: Benchmarking LLMs with Challenging Tasks from Real Users in the Wild"
-      authors: Bill Yuchen Lin, <strong>Yuntian Deng</strong>, Khyathi Chandu, Faeze Brahman, Abhilasha Ravichander, Valentina Pyatkin, Nouha Dziri, Ronan Le Bras, Yejin Choi
-      pdf: https://arxiv.org/pdf/2406.04770
-      code: https://github.com/allenai/WildBench
-      image: /images/wildbench.png
-      conference: In submission
     - title: "Magpie: Alignment Data Synthesis from Scratch by Prompting Aligned LLMs with Nothing"
       authors: Zhangchen Xu, Fengqing Jiang, Luyao Niu, <strong>Yuntian Deng</strong>, Radha Poovendran, Yejin Choi, Bill Yuchen Lin
       pdf: https://arxiv.org/pdf/2406.08464
@@ -109,6 +103,17 @@ papers:
       pdf: https://arxiv.org/pdf/2406.06565
       code: https://mixeval.github.io/
       image: /images/mixeval.jpg
+      conference: In submission
+    - title: "WildBench: Benchmarking LLMs with Challenging Tasks from Real Users in the Wild"
+      authors: Bill Yuchen Lin, <strong>Yuntian Deng</strong>, Khyathi Chandu, Faeze Brahman, Abhilasha Ravichander, Valentina Pyatkin, Nouha Dziri, Ronan Le Bras, Yejin Choi
+      pdf: https://arxiv.org/pdf/2406.04770
+      code: https://github.com/allenai/WildBench
+      image: /images/wildbench.png
+      conference: In submission
+    - title: "WildHallucinations: Evaluating Long-form Factuality in LLMs with Real-World Entity Queries"
+      authors: Wenting Zhao, Tanya Goyal, Yu Ying Chiu, Liwei Jiang, Benjamin Newman, Abhilasha Ravichander, Khyathi Chandu, Ronan Le Bras, Claire Cardie, <strong>Yuntian Deng</strong>, Yejin Choi
+      pdf: https://arxiv.org/pdf/2407.17468
+      image: /images/wildhallucinations.png
       conference: In submission
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, <strong>Yuntian Deng</strong>
