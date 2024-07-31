@@ -1,0 +1,30 @@
+---
+layout: page
+title: Teaching
+permalink: /teaching/
+weight: 5
+show: 1
+---
+
+<h3>Teaching</h3>
+
+<p>
+Below is a list of courses I have taught, organized by year and semester. Click on the course title to access the course page.
+</p>
+
+<table>
+  <tr>
+    <td style="padding:10px"><strong>Year</strong></td>
+    <td style="padding:10px"><strong>Semester</strong></td>
+    <td style="padding:10px"><strong>Course Title</strong></td>
+  </tr>
+
+  {% for course in site.data.teaching.teaching %}
+  <tr>
+    <td style="padding:10px">{{ course.year }}</td>
+    <td style="padding:10px">{{ course.semester }}</td>
+    <td style="padding:10px"><a href="{{ course.course_url }}">{{ course.course_title }}</a></td>
+  </tr>
+  {% endfor %}
+  
+</table>
