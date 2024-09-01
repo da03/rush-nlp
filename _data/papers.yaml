@@ -74,7 +74,7 @@ notable:
       image: /images/emnlp19_arithmetic.png
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, <strong>Yuntian Deng</strong>, Jean Senellart, Alexander M. Rush
-      conference: ACL Demo 2017 (Best Demo Runner-up)
+      conference: ACL Demo 2017 (<strong>Best Demo Runner-up</strong>)
       pdf : https://aclanthology.org/P17-4012.pdf
       code : https://github.com/OpenNMT/OpenNMT-py
       image: /images/overview.png
@@ -147,7 +147,7 @@ papers:
       authors: Maxim Zvyagin*, Alexander Brace*, Kyle Hippe*, <strong>Yuntian Deng</strong>*, Bin Zhang, Cindy Orozco Bohorquez, Austin Clyde, Bharat Kale, Danilo Perez-Rivera, Heng Ma, Carla M. Mann, Michael Irvin, J. Gregory Pauloski, Logan Ward, Valerie Hayot, Murali Emani, Sam Foreman, Zhen Xie, Diangen Lin, Maulik Shukla, Weili Nie, Josh Romero, Christian Dallago, Arash Vahdat, Chaowei Xiao, Thomas Gibbs, Ian Foster, James J. Davis, Michael E. Papka, Thomas Brettin, Rick Stevens, Anima Anandkumar, Venkatram Vishwanath, Arvind Ramanathan
       pdf: https://www.biorxiv.org/content/biorxiv/early/2022/10/11/2022.10.10.511571.full.pdf
       image: /images/phylogeny_with_generated_sequence.jpg
-      conference: <b>ACM Gordon Bell Special Prize for Covid Research</b>
+      conference: <strong>ACM Gordon Bell Special Prize for Covid Research</strong>
     - title: "Low-Rank Constraints for Fast Inference in Structured Models"
       authors: Justin Chiu*, <strong>Yuntian Deng</strong>*, Alexander M. Rush
       pdf: https://openreview.net/pdf?id=9Zi7t3c5CuF
@@ -188,7 +188,7 @@ papers:
       authors: Thierry Tambe, En-Yu Yang, Zishen Wan, <strong>Yuntian Deng</strong>, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
       pdf: https://arxiv.org/pdf/1909.13271
       image: /images/adapt.png
-      conference: DAC 2020 (<b>Best Paper</b>)
+      conference: DAC 2020 (<strong>Best Paper</strong>)
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       pdf: https://steganography.live
@@ -220,7 +220,7 @@ papers:
       slides: /slides/icml17.pdf
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, <strong>Yuntian Deng</strong>, Jean Senellart, Alexander M. Rush
-      conference: ACL Demo 2017 (<b>Best Demo Runner-up<b/>)
+      conference: ACL Demo 2017 (<strong>Best Demo Runner-up</strong>)
       pdf : https://aclanthology.org/P17-4012.pdf
       code : https://github.com/OpenNMT/OpenNMT-py
       image: /images/overview.png
