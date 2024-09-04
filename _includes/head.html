@@ -127,30 +127,6 @@
     }
     </script>
 
-<script>
-    function toggleNews() {
-        const newsList = document.getElementById('news-list');
-        const newsItems = newsList.querySelectorAll('li');
-        const toggleBtn = document.getElementById('toggle-news-btn');
-        const hiddenClass = 'hidden-news';
-
-        if (toggleBtn.textContent === 'Show Older News') {
-            newsItems.forEach(item => item.classList.remove(hiddenClass));
-            toggleBtn.textContent = 'Hide Older News';
-        } else {
-            newsItems.forEach((item, index) => {
-                if (index >= 5) {
-                    item.classList.add(hiddenClass);
-                }
-            });
-            toggleBtn.textContent = 'Show Older News';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        toggleNews();
-    });
-</script>
 <style>
     .hidden-news {
         display: none;
