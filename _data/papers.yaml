@@ -17,7 +17,7 @@ notable:
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight
-      notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a><br>Used in Anthropic's Claude 3 for evaluating refusals</strong>
+      notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a><br>Used in OpenAI's o1 for safety evaluation</strong><br>Used in Anthropic's Claude 3 for evaluating refusals</strong>
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
@@ -121,7 +121,7 @@ papers:
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight
-      notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a><br>Used in Anthropic's Claude 3 for evaluating refusals</strong>
+      notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a><br>Used in OpenAI's o1 for safety evaluation</strong><br>Used in Anthropic's Claude 3 for evaluating refusals</strong>
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
