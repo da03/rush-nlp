@@ -17,7 +17,7 @@ notable:
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight
-      notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a><br>Used in OpenAI's o1 for safety evaluation</strong><br>Used in Anthropic's Claude 3 for evaluating refusals</strong>
+      notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
@@ -48,6 +48,7 @@ notable:
       slides: /slides/openai_EBM.pdf
       code: https://github.com/da03/Residual-EBM
       image: /images/ICLR20_REBM.png
+      notes: <strong>Referenced by <a href="https://arxiv.org/pdf/2307.09288">Meta's Llama 2</a></strong><br><strong>Referenced by the <a href="https://proceedings.neurips.cc/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf">diffusion paper (DDPM)</a></strong>
     - title: "Bottom-Up Abstractive Summarization"
       authors: Sebastian Gehrmann, <strong>Yuntian Deng</strong>, Alexander Rush
       conference: EMNLP 2018
@@ -121,7 +122,7 @@ papers:
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight
-      notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a><br>Used in OpenAI's o1 for safety evaluation</strong><br>Used in Anthropic's Claude 3 for evaluating refusals</strong>
+      notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
@@ -184,6 +185,7 @@ papers:
       code: https://github.com/da03/Residual-EBM
       slides: /slides/openai_EBM.pdf
       image: /images/ICLR20_REBM.png
+      notes: <strong>Referenced by <a href="https://arxiv.org/pdf/2307.09288">Meta's Llama 2</a></strong><br><strong>Referenced by the <a href="https://proceedings.neurips.cc/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf">diffusion paper (DDPM)</a></strong>
     - title: "AdaptivFloat: A Floating-point based Data Type for Resilient Deep Learning Inference"
       authors: Thierry Tambe, En-Yu Yang, Zishen Wan, <strong>Yuntian Deng</strong>, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
       pdf: https://arxiv.org/pdf/1909.13271
