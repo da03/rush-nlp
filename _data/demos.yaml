@@ -20,7 +20,7 @@ demos:
       image: /images/wildchat.gif
       demo: https://vizchatgpt.com/
     - link: https://wildvisualizer.com/
-      title: WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild
+      title: "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild"
       authors: Yuntian Deng, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
       abstract: An interactive tool for searching and visualizing million-scale chat datasets such as WildChat and LMSYS-Chat.
       image: /images/wildvisualizer.gif
