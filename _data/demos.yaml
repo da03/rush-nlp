@@ -13,12 +13,18 @@ demos:
       image: /images/implicit_cot_grade_school_math_en.gif
       demo: https://huggingface.co/spaces/yuntian-deng/implicit-cot-math
       code: https://github.com/da03/Internalize_CoT_Step_by_Step
-    - link: https://wildchat.yuntiandeng.com/
-      title: WildChat Visualizer (What Do People Use ChatGPT For?)
+    - link: https://vizchatgpt.com/
+      title: Real-Time Visualization of WildChat Usage
       authors: Yuntian Deng
-      abstract: A search tool for exploring 1M real user-ChatGPT conversations in WildChat.
-      image: /images/wildchat_visualizer.gif
-      demo: https://wildchat.yuntiandeng.com/
+      abstract: A visualization of real-time user interactions with WildChat chatbots.
+      image: /images/wildchat.gif
+      demo: https://vizchatgpt.com/
+    - link: https://wildvisualizer.com/
+      title: WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild
+      authors: Yuntian Deng, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
+      abstract: An interactive tool for searching and visualizing million-scale chat datasets such as WildChat and LMSYS-Chat.
+      image: /images/wildvisualizer.gif
+      demo: https://wildvisualizer.com/
       data: https://huggingface.co/datasets/allenai/WildChat-1M
     - link: https://huggingface.co/spaces/yuntian-deng/AKSelectionPredictor
       title: AK Hugging Face Paper Selection Predictor
