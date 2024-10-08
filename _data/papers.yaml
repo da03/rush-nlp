@@ -87,12 +87,6 @@ notable:
       image: /images/overview.png
       slides:
 papers:
-    - title: "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild"
-      authors: <strong>Yuntian Deng</strong>, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
-      pdf: https://openreview.net/pdf?id=uVyk82wsr4
-      code: https://github.com/da03/WildVisualizer
-      image: /images/wildvisualizer.gif
-      conference: EMNLP 2024 Demo
     - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
       authors: <strong>Yuntian Deng</strong>, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
@@ -111,12 +105,6 @@ papers:
       code: https://magpie-align.github.io/
       image: /images/magpie.png
       conference: In submission
-    - title: "MixEval: Deriving Wisdom of the Crowd from LLM Benchmark Mixtures"
-      authors: Jinjie Ni, Fuzhao Xue, Xiang Yue, <strong>Yuntian Deng</strong>, Mahir Shah, Kabir Jain, Graham Neubig, Yang You
-      pdf: https://arxiv.org/pdf/2406.06565
-      code: https://mixeval.github.io/
-      image: /images/mixeval.jpg
-      conference: In submission
     - title: "WildBench: Benchmarking LLMs with Challenging Tasks from Real Users in the Wild"
       authors: Bill Yuchen Lin, <strong>Yuntian Deng</strong>, Khyathi Chandu, Faeze Brahman, Abhilasha Ravichander, Valentina Pyatkin, Nouha Dziri, Ronan Le Bras, Yejin Choi
       pdf: https://arxiv.org/pdf/2406.04770
@@ -128,6 +116,12 @@ papers:
       pdf: https://arxiv.org/pdf/2407.17468
       image: /images/wildhallucinations.png
       conference: In submission
+    - title: "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild"
+      authors: <strong>Yuntian Deng</strong>, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
+      pdf: https://openreview.net/pdf?id=uVyk82wsr4
+      code: https://github.com/da03/WildVisualizer
+      image: /images/wildvisualizer.gif
+      conference: EMNLP 2024 Demo
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/abs/2405.01470
@@ -135,6 +129,12 @@ papers:
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight
       notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
+    - title: "MixEval: Deriving Wisdom of the Crowd from LLM Benchmark Mixtures"
+      authors: Jinjie Ni, Fuzhao Xue, Xiang Yue, <strong>Yuntian Deng</strong>, Mahir Shah, Kabir Jain, Graham Neubig, Yang You
+      pdf: https://arxiv.org/pdf/2406.06565
+      code: https://mixeval.github.io/
+      image: /images/mixeval.jpg
+      conference: NeurIPS 2024
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
