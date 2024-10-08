@@ -11,12 +11,6 @@ notable:
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
       conference: In submission
-    - title: "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild"
-      authors: <strong>Yuntian Deng</strong>, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
-      pdf: https://openreview.net/pdf?id=uVyk82wsr4
-      code: https://github.com/da03/WildVisualizer
-      image: /images/wildvisualizer.gif
-      conference: EMNLP 2024 Demo
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/abs/2405.01470
@@ -24,6 +18,12 @@ notable:
       image: /images/wildchat.gif
       conference: ICLR 2024 Spotlight
       notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
+    - title: "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild"
+      authors: <strong>Yuntian Deng</strong>, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
+      pdf: https://openreview.net/pdf?id=uVyk82wsr4
+      code: https://github.com/da03/WildVisualizer
+      image: /images/wildvisualizer.gif
+      conference: EMNLP 2024 Demo
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
       pdf: https://openreview.net/pdf?id=d0zla3M3LI
