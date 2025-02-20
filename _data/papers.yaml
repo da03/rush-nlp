@@ -16,7 +16,7 @@ notable:
       pdf: https://arxiv.org/abs/2405.01470
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
-      conference: ICLR 2024 Spotlight
+      conference: ICLR 2024 (<strong>Spotlight</strong>)
       notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
     - title: "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild"
       authors: <strong>Yuntian Deng</strong>, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
@@ -104,13 +104,13 @@ papers:
       pdf: https://arxiv.org/pdf/2406.08464
       code: https://magpie-align.github.io/
       image: /images/magpie.png
-      conference: In submission
+      conference: ICLR 2025
     - title: "WildBench: Benchmarking LLMs with Challenging Tasks from Real Users in the Wild"
       authors: Bill Yuchen Lin, <strong>Yuntian Deng</strong>, Khyathi Chandu, Faeze Brahman, Abhilasha Ravichander, Valentina Pyatkin, Nouha Dziri, Ronan Le Bras, Yejin Choi
       pdf: https://arxiv.org/pdf/2406.04770
       code: https://github.com/allenai/WildBench
       image: /images/wildbench.png
-      conference: In submission
+      conference: ICLR 2025 (<strong>Spotlight</strong>)
     - title: "WildHallucinations: Evaluating Long-form Factuality in LLMs with Real-World Entity Queries"
       authors: Wenting Zhao, Tanya Goyal, Yu Ying Chiu, Liwei Jiang, Benjamin Newman, Abhilasha Ravichander, Khyathi Chandu, Ronan Le Bras, Claire Cardie, <strong>Yuntian Deng</strong>, Yejin Choi
       pdf: https://arxiv.org/pdf/2407.17468
@@ -127,7 +127,7 @@ papers:
       pdf: https://arxiv.org/abs/2405.01470
       code: https://wildchat.allen.ai
       image: /images/wildchat.gif
-      conference: ICLR 2024 Spotlight
+      conference: ICLR 2024 (<strong>Spotlight</strong>)
       notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
     - title: "MixEval: Deriving Wisdom of the Crowd from LLM Benchmark Mixtures"
       authors: Jinjie Ni, Fuzhao Xue, Xiang Yue, <strong>Yuntian Deng</strong>, Mahir Shah, Kabir Jain, Graham Neubig, Yang You
