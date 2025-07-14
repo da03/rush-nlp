@@ -1,4 +1,10 @@
 notable: 
+    - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
+      authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
+      pdf: https://arxiv.org/pdf/2507.08800
+      code: https://neural-os.com
+      image: /images/neural-os.gif
+      conference: In submission
     - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
       authors: <strong>Yuntian Deng</strong>, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
@@ -87,6 +93,11 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
+      authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
+      pdf: https://arxiv.org/pdf/2507.08800
+      code: https://neural-os.com
+      image: /images/neural-os.gif
     - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
       authors: <strong>Yuntian Deng</strong>, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
