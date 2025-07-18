@@ -1,4 +1,11 @@
 demos:
+    - link: https://neural-os.com
+      title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
+      authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, Yuntian Deng
+      abstract: An operating system entirely powered by neural networks.
+      image: /images/neural-os.gif
+      demo: https://neural-os.com
+      code: https://github.com/yuntian-group/neural-os
     - link: https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication
       title: Predicting Multiplication without Intermediate Reasoning Steps
       authors: Yuntian Deng, Yejin Choi, Stuart Shieber
