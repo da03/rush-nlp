@@ -93,6 +93,10 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "From Chat Logs to Collective Insights: Aggregative Question Answering"
+      authors: Wentao Zhang, Woojeong Kim, <strong>Yuntian Deng</strong>
+      pdf: https://arxiv.org/pdf/2505.23765
+      conference: EMNLP 2025 Main
     - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
       authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2507.08800
