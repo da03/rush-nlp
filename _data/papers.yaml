@@ -1,4 +1,8 @@
 notable: 
+    - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
+      authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
+      code: https://interactivetraining.ai
+      conference: EMNLP 2025 Demo
     - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
       authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2507.08800
@@ -93,6 +97,10 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
+      authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
+      code: https://interactivetraining.ai
+      conference: EMNLP 2025 Demo
     - title: "From Chat Logs to Collective Insights: Aggregative Question Answering"
       authors: Wentao Zhang, Woojeong Kim, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2505.23765
