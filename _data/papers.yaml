@@ -1,4 +1,8 @@
 notable: 
+    - title: "From Chat Logs to Collective Insights: Aggregative Question Answering"
+      authors: Wentao Zhang, Woojeong Kim, <strong>Yuntian Deng</strong>
+      pdf: https://arxiv.org/pdf/2505.23765
+      conference: EMNLP 2025 Main (<strong>Oral</strong>)
     - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
       authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
       code: https://interactivetraining.ai
