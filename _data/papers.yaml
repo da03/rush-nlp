@@ -6,6 +6,7 @@ notable:
       conference: EMNLP 2025 Main (<strong>Oral</strong>)
     - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
       authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
+      pdf: https://arxiv.org/pdf/2510.02297
       code: https://interactivetraining.ai
       image: /images/interactive_training.png
       conference: EMNLP 2025 Demo
@@ -105,6 +106,7 @@ notable:
 papers:
     - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
       authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
+      pdf: https://arxiv.org/pdf/2510.02297
       code: https://interactivetraining.ai
       image: /images/interactive_training.png
       conference: EMNLP 2025 Demo
