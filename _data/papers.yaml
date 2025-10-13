@@ -3,7 +3,7 @@ notable:
       authors: Wentao Zhang, Woojeong Kim, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2505.23765
       image: /images/aggregation.png
-      conference: EMNLP 2025 Main (<strong>Oral</strong>)
+      conference: EMNLP 2025 (<strong>Oral</strong>)
     - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
       authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2510.02297
@@ -114,7 +114,7 @@ papers:
       authors: Wentao Zhang, Woojeong Kim, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2505.23765
       image: /images/aggregation.png
-      conference: EMNLP 2025 Main (<strong>Oral</strong>)
+      conference: EMNLP 2025 (<strong>Oral</strong>)
     - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
       authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2507.08800
