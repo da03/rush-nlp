@@ -5,30 +5,25 @@
       url : "https://wentao-zhang.me/"
       github : wtzhang99
       githubid : 168630001
-      title : PhD Student
     - name : Luke Rivard
       email : jlrivard@uwaterloo.ca
       url : "https://luke-rivard.com/"
       github : EnronMusk
       githubid : 142634045
-      title : Master's Student
     - name : Liliana Hotsko
       email : lhotsko@uwaterloo.ca
       url : "https://lilianahotsko.github.io/"
       github : lilianahotsko
       githubid: 91615473
-      title : Master's Student
     - name : Henry Lin
       email: h293lin@uwaterloo.ca
       url : "https://github.com/Seoulsim2"
       github : Seoulsim2
       githubid : 239438559
-      title : PhD Student
     - name : Austing Dong
       url : "https://github.com/AustingDong"
       github : AustingDong
       githubid : 110651277
-      title : Undergraduate Research Fellow
 
 - group : Undergrad Alumni
   people :
@@ -43,10 +38,8 @@
       url : "https://cakeyan.github.io/"
       github: Cakeyan
       githubid: 77425002
-      title : Master's Student
     - name : Ziwei Tang
       url : "https://www.ziwei-tang.com/"
       github: tzw2698
       githubid: 68865752
-      title : PhD Student
 
