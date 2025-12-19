@@ -1,141 +1,52 @@
 - group : Graduate Students and Visitors
   people :
-    - name : Justin Chiu
-      email : yoonkim@seas.harvard.edu
-      url : "http://github.com/justinchiu/"
-      github: justinchiu
-      githubid: 2389353
+    - name : Wentao Zhang
+      email : w564zhan@uwaterloo.ca
+      url : "https://wentao-zhang.me/"
+      github : wtzhang99
+      githubid : 168630001
       title : PhD Student
-    - name : Yuntian Deng
-      email: dengyuntian@seas.harvard.edu
-      title: PhD Student
-      url: https://github.com/da03
-      githubid: 5753959
-    - name : Jiawei Zhou
-      email: jzhou02@g.harvard.edu
-      title: PhD Student
-      url: https://github.com/jzhou316
-      githubid: 31744226
-    - name : Zachary Ziegler
-      email: zachary.ziegler@featurex.ai
-      title: PhD Student
-      url: https://github.com/zackziegler95
-      githubid: 22876306
-
-- group: Grad Alumni
-  people:
-    - name: Sebastian Gehrmann (Google)
-      githubid: 2212304
-      github: sebastianGehrmann
-      url: "http://scholar.harvard.edu/gehrmann"
-      title: PhD Student
-    - name : Yoon Kim (MIT)
-      email : yoonkim@seas.harvard.edu
-      url : "http://www.people.fas.harvard.edu/~yoonkim/"
-      github: yoonkim
-      githubid: 5378003
+    - name : Luke Rivard
+      email : jlrivard@uwaterloo.ca
+      url : "https://luke-rivard.com/"
+      github : EnronMusk
+      githubid : 142634045
+      title : Master's Student
+    - name : Liliana Hotsko
+      email : lhotsko@uwaterloo.ca
+      url : "https://lilianahotsko.github.io/"
+      github : lilianahotsko
+      githubid: 91615473
+      title : Master's Student
+    - name : Henry Lin
+      email: h293lin@uwaterloo.ca
+      url : "https://github.com/Seoulsim2"
+      github : Seoulsim2
+      githubid : 239438559
       title : PhD Student
-    - name : Sam Wiseman (TTIC -> Duke)
-      email : swiseman@seas.harvard.edu
-      title :
-      githubid: 4635868
-      url: "https://swiseman.github.io/"
-      title: PhD Student
-    - name : Allen Schmaltz
-      github: allenschmaltz
-      githubid: 2748209
-      email : schmaltz@seas.harvard.edu
-      url: "http://github.com/allenschmaltz"
-      title: PhD Student
-    - name : Kelly Zhang
-      email: kz918@nyu.edu
-      title: PhD Student
-      url: https://github.com/kellywzhang
-      githubid: 14792301
+    - name : Austing Dong
+      url : "https://github.com/AustingDong"
+      github : AustingDong
+      githubid : 110651277
+      title : Undergraduate Research Fellow
 
-- group: Undergrad Alumni
+- group : Undergrad Alumni
+  people :
+    - name : Yifan Zong (xAI)
+      url : "https://github.com/zongyf02"
+      github: zongyf02
+      githubid: 66267484
+
+- group: Admitted Students (Did Not Enroll)
   people:
-    - name : Demi Guo (Stanford)
-      email: blank
-      title: Undergraduate
-      url: https://github.com/demiguo
-      githubid: 7954176
-    - name : Rachit Singh (DE Shaw)
-      email: blank
-      url: https://github.com/rachtsingh
-      githubid: 1606892
-      title: Undergrad Researcher
-    - name : Keyon Vafa (Columbia)
-      email: blank
-      title: Undergraduate
-      url: https://github.com/keyonvafa
-      githubid: 10766891
-      github: 10766891
-    - name : Hugh Zabriskie (Microsoft)
-      email: blank
-      title: Undergraduate
-      url: https://github.com/glasperfan
-      githubid: 6545534
-    - name: Victoria Krakovna (Deep Mind)
-      githubid: 13193139
-      url: "http://github.com/vkrakovna"
-    - name : Mike Zhai (JHU)
-      email: blank
-      title: Vistor
-      url: https://github.com/mzhai2
-      githubid: 5619828
-    - name : Jeffrey Ling (Vicarious)
-      email: blank
-      url: https://github.com/jeffreyling
-      githubid: 5473863
-      title: Undergrad Researcher
-    - name : Alex Wang (NYU)
-      email: blank
-      url: https://github.com/W4ngatang
-      githubid: 5520155
-      title: Undergrad Researcher
-    - name : Ankit Gupta (Reverie)
-      email: blank
-      url: http://ankitg.me/
-      githubid: 5473865
-      title: Undergrad Researcher
-    - name : Aidi Zhang
-      email: blank
-      url: http://github.com/aidizhang
-      githubid: 8845416
-      title: Undergrad Researcher
-    - name : Kevin Yang
-      email: blank
-      url: https://github.com/kyang01
-      githubid: 6758464
-      title: Undergrad Researcher
-    - name : Hirsh Jain
-      email: blank
-      url: https://github.com/hirshjain32
-      githubid: 3827097
-      title: Undergrad Researcher
-    - name : Raghu Dhara
-      email: blank
-      title: Undergraduate
-      url: https://github.com/rdhara
-      githubid: 12704053
-    - name : Emily Wang
-      email: blank
-      title: Undergraduate
-      url: https://github.com/emilysw
-      githubid: 9683395
-    - name : Katherine Scott
-      email: blank
-      title: Undergraduate
-      url: https://github.com/katherinescott
-      githubid: 11066166
-    - name : Artidoro Pagnoni
-      email: blank
-      title: Undergraduate
-      url: https://github.com/artidoro
-      githubid: 11949572
-    - name : Carl Denton
-      email: blank
-      title: Undergraduate
-      url: https://github.com/cfdenton
-      githubid: 13823589
+    - name : Xin Yan
+      url : "https://cakeyan.github.io/"
+      github: Cakeyan
+      githubid: 77425002
+      title : Master's Student
+    - name : Ziwei Tang
+      url : "https://www.ziwei-tang.com/"
+      github: tzw2698
+      githubid: 68865752
+      title : PhD Student
+
