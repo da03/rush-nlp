@@ -1,7 +1,7 @@
 notable: 
     - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
       authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
-      pdf: https://arxiv.org/pdf/2507.08800
+      pdf: https://neural-os.com
       code: https://neural-os.com
       image: /images/neural-os.gif
       conference: ICLR 2026
@@ -106,7 +106,7 @@ notable:
 papers:
     - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
       authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
-      pdf: https://arxiv.org/pdf/2507.08800
+      pdf: https://neural-os.com
       code: https://neural-os.com
       image: /images/neural-os.gif
       conference: ICLR 2026
