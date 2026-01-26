@@ -1,4 +1,10 @@
 notable: 
+    - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
+      authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
+      pdf: https://arxiv.org/pdf/2507.08800
+      code: https://neural-os.com
+      image: /images/neural-os.gif
+      conference: ICLR 2026
     - title: "From Chat Logs to Collective Insights: Aggregative Question Answering"
       authors: Wentao Zhang, Woojeong Kim, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2505.23765
@@ -10,12 +16,6 @@ notable:
       code: https://interactivetraining.ai
       image: /images/interactive_training.png
       conference: EMNLP 2025 Demo
-    - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
-      authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
-      pdf: https://arxiv.org/pdf/2507.08800
-      code: https://neural-os.com
-      image: /images/neural-os.gif
-      conference: In submission
     - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
       authors: <strong>Yuntian Deng</strong>, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
@@ -104,6 +104,16 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
+      authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
+      pdf: https://arxiv.org/pdf/2507.08800
+      code: https://neural-os.com
+      image: /images/neural-os.gif
+      conference: ICLR 2026
+    - title: "Learn to Reason Efficiently with Adaptive Length-based Reward Shaping"
+      authors: Wei Liu, Ruochen Zhou, Yiyun Deng, Yuzhen Huang, Junteng Liu, <strong>Yuntian Deng</strong>, Yizhe Zhang, Junxian He
+      pdf: https://arxiv.org/pdf/2505.15612
+      conference: ICLR 2026
     - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
       authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2510.02297
@@ -115,11 +125,6 @@ papers:
       pdf: https://arxiv.org/pdf/2505.23765
       image: /images/aggregation.png
       conference: EMNLP 2025 (<strong>Oral</strong>)
-    - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
-      authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
-      pdf: https://arxiv.org/pdf/2507.08800
-      code: https://neural-os.com
-      image: /images/neural-os.gif
     - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
       authors: <strong>Yuntian Deng</strong>, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
@@ -148,7 +153,7 @@ papers:
       authors: Wenting Zhao, Tanya Goyal, Yu Ying Chiu, Liwei Jiang, Benjamin Newman, Abhilasha Ravichander, Khyathi Chandu, Ronan Le Bras, Claire Cardie, <strong>Yuntian Deng</strong>, Yejin Choi
       pdf: https://arxiv.org/pdf/2407.17468
       image: /images/wildhallucinations.png
-      conference: In submission
+      conference: arXiv
     - title: "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild"
       authors: <strong>Yuntian Deng</strong>, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
       pdf: https://openreview.net/pdf?id=uVyk82wsr4
