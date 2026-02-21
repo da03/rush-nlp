@@ -8,9 +8,9 @@
 # Site settings
 title: yuntiandeng.com
 email: yuntian@uwaterloo.ca
-description:  # this means to ignore newlines until "baseurl:"
+description: "Yuntian Deng — Assistant Professor at the University of Waterloo researching language models and world models."
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://yuntiandeng.com/" # the base hostname & protocol for your site
+url: "https://yuntiandeng.com/" # the base hostname & protocol for your site
 twitter_username: yuntiandeng
 github_username: da03
 

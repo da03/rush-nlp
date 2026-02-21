@@ -21,13 +21,13 @@ notable:
       pdf: https://arxiv.org/pdf/2405.14838
       code: https://github.com/da03/Internalize_CoT_Step_by_Step
       image: /images/internalize_step_by_step.gif
-      conference: In submission
+      conference: arXiv
     - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
       authors: <strong>Yuntian Deng</strong>, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
       pdf: https://arxiv.org/pdf/2311.01460.pdf
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
-      conference: In submission
+      conference: arXiv
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/abs/2405.01470
@@ -80,7 +80,7 @@ notable:
       image: /images/bottomup.png
     - title: "Latent Alignment and Variational Attention"
       authors: <strong>Yuntian Deng</strong>*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
-      conference: NIPS 2018
+      conference: NeurIPS 2018
       pdf : https://papers.nips.cc/paper/8179-latent-alignment-and-variational-attention.pdf
       code: https://github.com/harvardnlp/var-attn
       image: /images/VariationalAttention.png
@@ -130,13 +130,13 @@ papers:
       pdf: https://arxiv.org/pdf/2405.14838
       code: https://github.com/da03/Internalize_CoT_Step_by_Step
       image: /images/internalize_step_by_step.gif
-      conference: In submission
+      conference: arXiv
     - title: "Implicit Chain of Thought Reasoning via Knowledge Distillation"
       authors: <strong>Yuntian Deng</strong>, Kiran Prasad, Roland Fernandez, Paul Smolensky, Vishrav Chaudhary, Stuart Shieber
       pdf: https://arxiv.org/pdf/2311.01460.pdf
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
-      conference: In submission
+      conference: arXiv
     - title: "Magpie: Alignment Data Synthesis from Scratch by Prompting Aligned LLMs with Nothing"
       authors: Zhangchen Xu, Fengqing Jiang, Luyao Niu, <strong>Yuntian Deng</strong>, Radha Poovendran, Yejin Choi, Bill Yuchen Lin
       pdf: https://arxiv.org/pdf/2406.08464
@@ -246,7 +246,7 @@ papers:
       pdf: https://steganography.live
       image: /images/emnlp19_arithmetic.png
       conference: EMNLP 2019 (oral)
-    - title: "Challanges in end-to-end neural scientific table recognition"
+    - title: "Challenges in end-to-end neural scientific table recognition"
       authors: <strong>Yuntian Deng</strong>, David Rosenberg, Gideon Mann
       conference: ICDAR 2019
       pdf : /papers/Deng2019ICDAR.pdf
@@ -254,7 +254,7 @@ papers:
       image: /images/ICDAR19_table.png
     - title: "Latent Alignment and Variational Attention"
       authors: <strong>Yuntian Deng</strong>*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
-      conference: NIPS 2018
+      conference: NeurIPS 2018
       pdf : https://papers.nips.cc/paper/8179-latent-alignment-and-variational-attention.pdf
       code: https://github.com/harvardnlp/var-attn
       image: /images/VariationalAttention.png
