@@ -34,7 +34,7 @@ show: 1
 
 <div class="profile-section">
   <div class="profile-photo">
-    <img width="200" class="rounded-circle" src="https://avatars.githubusercontent.com/u/5753959?v=4" alt="Photo of Yuntian Deng">
+    <img width="200" class="rounded-circle" src="https://cs.uwaterloo.ca/computer-science/sites/default/files/styles/uw_is_portrait/public/uploads/images/professor-yuntian-deng.jpg" alt="Photo of Yuntian Deng">
   </div>
   <div class="profile-info">
     <h1>Yuntian Deng</h1>
@@ -42,14 +42,76 @@ show: 1
     <b>Associate</b>, Harvard SEAS<br>
     <b>Faculty Affiliate</b>, Vector Institute<br>
     PhD in CS, Harvard<br>
-    <span style="font-size:16px"><a href="cv/cv.comp.pdf">[CV]</a> <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ&hl=en&oi=ao">[Google Scholar]</a> <a href="https://twitter.com/yuntiandeng">[Twitter]</a></span>
+    <span style="font-size:16px"><a href="cv/cv.comp.pdf">[CV]</a> <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ&hl=en&oi=ao">[Google Scholar]</a> <a href="https://github.com/da03">[GitHub]</a> <a href="https://x.com/yuntiandeng">[X/Twitter]</a> <a href="https://www.linkedin.com/in/yuntian-deng-536664a1/">[LinkedIn]</a> <a href="https://www.semanticscholar.org/author/Yuntian-Deng/47346830">[Semantic Scholar]</a></span>
   </div>
 </div>
 
 
 <p style="font-size: 16px">
-I am a researcher interested in language models and world models. I also enjoy building <a href="demos/">demos</a> such as <a href="https://neural-os.com">NeuralOS</a>, <a href="https://wildvisualizer.com">WildVis</a>, <a href="https://huggingface.co/spaces/yuntian-deng/ChatGPT4">WildChat</a>, <a href="https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication">Multiplication Predictor w/o CoT</a>, <a href="https://huggingface.co/spaces/yuntian-deng/implicit-cot-math">Grade School Math Solver w/o CoT</a>, <a href="https://openaiwatch.com/">OpenAI Watch</a>, <a href="https://steganography.live">Linguistic Steganography</a>, <a href="https://huggingface.co/spaces/yuntian-deng/AKSelectionPredictor">AKSelectionPredictor</a>, <a href="http://opennmt.net">OpenNMT</a>, <a href="https://huggingface.co/spaces/yuntian-deng/latex2im">Markup-to-Image Diffusion</a>, and <a href="https://im2markup.yuntiandeng.com/">Image-to-Markup</a>. I received my PhD from Harvard University, where I was advised by Prof. <a href="https://rush-nlp.com/">Alexander Rush</a> and Prof. <a href="https://www.eecs.harvard.edu/shieber/">Stuart Shieber</a>. I did a postdoc under the supervision of Prof. <a href="https://homes.cs.washington.edu/~yejin/">Yejin Choi</a>.
+My research focuses on understanding and improving how language models reason, with a particular emphasis on internalizing explicit reasoning processes into implicit computation. I also study real-world LLM usage at scale through large-scale conversation datasets and build open tools and <a href="demos/">demos</a> that make our research accessible.
 </p>
+
+<p style="font-size: 16px">
+Our work on <a href="https://wildchat.allen.ai">WildChat</a> has been featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a> and is used in <strong>OpenAI's o1</strong> and <strong>Anthropic's Claude 3</strong> for safety evaluation. Our open-source toolkit <a href="http://opennmt.net">OpenNMT</a> has been widely adopted in both industry and academia. I received my PhD from Harvard University, where I was advised by Prof. <a href="https://rush-nlp.com/">Alexander Rush</a> and Prof. <a href="https://www.eecs.harvard.edu/shieber/">Stuart Shieber</a>. I did a postdoc under the supervision of Prof. <a href="https://homes.cs.washington.edu/~yejin/">Yejin Choi</a>.
+</p>
+
+<br>
+<h4>Research Themes</h4>
+<div class="research-themes">
+  <div class="theme-card">
+    <h5>Neural World Models</h5>
+    <p>Revamping how machines interact with humans using generative AI instead of rigid menus and rules. We build neural models that simulate entire computing environments end-to-end.</p>
+    <span class="theme-papers">
+      <a href="https://neural-os.com">NeuralOS</a>
+    </span>
+  </div>
+  <div class="theme-card">
+    <h5>Program as Weights</h5>
+    <p>A new programming paradigm that replaces symbolic code for fuzzy functions with compiled neural programs. Towards programming without code as an intermediary.</p>
+    <span class="theme-papers">
+      <a href="https://programasweights.com">programasweights.com</a>
+    </span>
+  </div>
+  <div class="theme-card">
+    <h5>Implicit Reasoning</h5>
+    <p>Can language models learn to reason without explicitly articulating every step? We develop methods to internalize chain-of-thought reasoning into a model's hidden computation.</p>
+    <span class="theme-papers">
+      <a href="https://arxiv.org/pdf/2405.14838">Internalize CoT</a> &middot;
+      <a href="https://arxiv.org/pdf/2311.01460.pdf">Implicit CoT</a> &middot;
+      <a href="https://latent-implicit-thinking.github.io/">ICLR 2026 Workshop</a>
+    </span>
+  </div>
+  <div class="theme-card">
+    <h5>LLM Usage at Scale</h5>
+    <p>How do people actually use large language models? We collect and analyze millions of real-world conversations to understand usage patterns, safety, and emergent behaviors.</p>
+    <span class="theme-papers">
+      <a href="https://arxiv.org/abs/2405.01470">WildChat</a> &middot;
+      <a href="https://wildvisualizer.com">WildVis</a> &middot;
+      <a href="https://arxiv.org/pdf/2505.23765">Aggregative QA</a>
+    </span>
+  </div>
+</div>
+
+<br>
+<h4>In the Media</h4>
+<div class="media-highlights">
+  <a href="https://wapo.st/3A6e4me" class="media-item">
+    <strong>Washington Post</strong>
+    <span>WildChat dataset featured</span>
+  </a>
+  <a href="https://techcrunch.com/2024/10/02/why-is-chatgpt-so-bad-at-math" class="media-item">
+    <strong>TechCrunch</strong>
+    <span>LLMs and math reasoning</span>
+  </a>
+  <a href="https://www.ctvnews.ca/sci-tech/article/real-or-fake-researchers-to-develop-tool-that-would-help-courts-spot-ai-evidence/" class="media-item">
+    <strong>Canadian Press / CTV</strong>
+    <span>AI-generated evidence detection</span>
+  </a>
+  <a href="https://www.nzz.ch/technologie/schreibe-eine-erotische-kurzgeschichte-warum-sollte-man-in-wollishofen-wohnen-wieso-versteht-mich-meine-frau-nicht-was-leute-chat-gpt-wirklich-fragen-ld.1858229" class="media-item">
+    <strong>NZZ</strong>
+    <span>What people really ask ChatGPT</span>
+  </a>
+</div>
 
 <br>
 <h4>News</h4>
@@ -174,16 +236,31 @@ I am a researcher interested in language models and world models. I also enjoy b
 </ul>
 <button id="toggle-news-btn" class="toggle-news-btn" onclick="toggleNews()" aria-expanded="true" aria-controls="news-list">Hide Older News</button>
 
-<!--h3> Current Research Area </h3>
-<p style="font-size: 18px">
-<ul style="font-size: 18px">
-  <li> Deep generative models for probabilistic text generation. </li>
-</ul>
-</p-->
+<br>
+<h4>Current Research</h4>
+<div class="papers-list">
+{% for paper in site.data.papers.featured %}
+<div class="paper-card">
+  <div class="paper-card-image">
+    {% if paper.image %}
+    <a href="{{paper.pdf}}"><img src="{{paper.image}}" alt="Figure from {{paper.title}}"></a>
+    {% else %}
+    <a href="{{paper.pdf}}"><img src="https://avatar.tobi.sh/{{paper.title}}" alt="Figure from {{paper.title}}"></a>
+    {% endif %}
+  </div>
+  <div class="paper-card-body">
+    <a class="paper" href="{{paper.pdf}}">{{paper.title}}</a><br>
+    {{paper.authors}}.<br>
+    {{paper.conference}}<br>
+    {% if paper.notes %}{{paper.notes}}{% endif %}
+  </div>
+</div>
+{% endfor %}
+</div>
 
 <br>
-<h4>Representative Works</h4>
-<p style="font-size: 18px">These are some of my representative works. For all my papers, visit <a href="/publications">here</a> or my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.</p>
+<h4>Other Selected Works</h4>
+<p style="font-size: 16px">For all my papers, visit <a href="/publications">the publications page</a> or my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.</p>
 <div class="papers-list">
 {% for paper in site.data.papers.notable %}
 <div class="paper-card">
@@ -205,17 +282,15 @@ I am a researcher interested in language models and world models. I also enjoy b
 </div>
 
 <br>
+<h4>Service</h4>
+<ul class="service-list">
+    <li><strong>Co-Chief Technical Officer</strong>, <a href="https://aclrollingreview.org/organization">ACL Rolling Review (ARR)</a>, 2025&ndash;present</li>
+    <li><strong>Workshop Organizer</strong>, <a href="https://latent-implicit-thinking.github.io/">Latent &amp; Implicit Thinking Workshop</a>, ICLR 2026</li>
+</ul>
+
+<br>
 <h4>Prospective Students</h4>
 <p style="font-size: 16px">
-I do not currently have plans to take new students. Please do not send cold emails that do not contain a <strong>specific</strong> question. If you are interested in my work, please find my publications on this site or on platforms such as Google Scholar. I do not evaluate "chances" over email, and I will not respond to templated outreach or follow-up reminders.
+I am not actively recruiting new students at this time. If you are genuinely interested in my research, I encourage you to read my recent papers and reach out with specific questions about the work. Due to high volume, I am unable to respond to generic inquiries.
 </p>
-
-<!--h4>Contact</h4>
-
-<div class="paper-section">
-    Science and Engineering Complex 5.443 <br>
-    150 Western Avenue <br>
-    Boston, MA 02134 <br>
-    USA
-</div-->
 <br>

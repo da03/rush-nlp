@@ -8,15 +8,15 @@ show: 1
 
 <h3>Papers</h3>
 
-
-
 <p>
-  
-  
 My full list of papers can be found at my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.
 </p>
+
+{% assign papers_by_year = site.data.papers.papers | group_by: "year" | sort: "name" | reverse %}
+{% for year_group in papers_by_year %}
+<h4 class="year-header">{{ year_group.name }}</h4>
 <div class="papers-list">
-{% for paper in site.data.papers.papers %}
+{% for paper in year_group.items %}
 <div class="paper-card">
   <div class="paper-card-image">
     {% if paper.image %}
@@ -28,9 +28,13 @@ My full list of papers can be found at my <a href="https://scholar.google.com/ci
   <div class="paper-card-body">
     <a class="paper" href="{{paper.pdf}}">{{paper.title}}</a><br>
     {{paper.authors}}.<br>
-    {{paper.conference}}<br>
+    {{paper.conference}}
+    {% if paper.code %} <a class="badge bg-secondary text-decoration-none" href="{{paper.code}}">code</a>{% endif %}
+    {% if paper.slides %} <a class="badge bg-info text-decoration-none" href="{{paper.slides}}">slides</a>{% endif %}
+    <br>
     {% if paper.notes %}{{paper.notes}}{% endif %}
   </div>
 </div>
 {% endfor %}
 </div>
+{% endfor %}

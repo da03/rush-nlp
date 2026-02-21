@@ -16,6 +16,7 @@ show: 1
     <img class="member-photo" src="{% if member.githubid %}https://avatars2.githubusercontent.com/u/{{member.githubid}}?v=3&s=400{% else %}{{member.pic}}{% endif %}" alt="Photo of {{member.name}}">
   </a>
   <h5 class="member-name">{{member.name}}</h5>
+  {% if member.research %}<p class="member-research">{{member.research}}</p>{% endif %}
 </div>
 {% endfor %}
 </div>

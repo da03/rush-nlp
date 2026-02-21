@@ -5,11 +5,13 @@
       url : "https://wentao-zhang.me/"
       github : wtzhang99
       githubid : 168630001
+      research : "LLM reasoning, aggregative question answering, interactive training"
     - name : Luke Rivard
       email : jlrivard@uwaterloo.ca
       url : "https://luke-rivard.com/"
       github : EnronMusk
       githubid : 142634045
+      research : "Neural world models, NeuralOS"
     - name : Liliana Hotsko
       email : lhotsko@uwaterloo.ca
       url : "https://lilianahotsko.github.io/"
@@ -46,4 +48,5 @@
       url : "https://www.ziwei-tang.com/"
       github: tzw2698
       githubid: 68865752
+
 
