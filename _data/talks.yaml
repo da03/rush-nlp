@@ -1,0 +1,11 @@
+talks:
+  - year: 2024
+    title: "Implicit Chain of Thought Reasoning"
+    venue: "NYU CILVR Seminar Series"
+    date: "Nov 20, 2024"
+    url: "https://cims.nyu.edu/ai/seminars/cilvr-seminar-series/56/"
+  - year: 2024
+    title: "Challenges of Using LLMs for Basic Math"
+    venue: "TechCrunch (Interview)"
+    date: "Oct 2, 2024"
+    url: "https://techcrunch.com/2024/10/02/why-is-chatgpt-so-bad-at-math"
