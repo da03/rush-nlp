@@ -9,6 +9,7 @@ featured:
       authors: Wentao Zhang*, Liliana Hotsko*, Woojeong Kim*, Pengyu Nie, Stuart Shieber, <strong>Yuntian Deng</strong>
       pdf: https://programasweights.com
       code: https://programasweights.com
+      image: /images/paw.png
       conference: Coming soon
     - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
       authors: <strong>Yuntian Deng</strong>, Yejin Choi, Stuart Shieber
