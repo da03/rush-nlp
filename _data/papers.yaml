@@ -1,16 +1,16 @@
 featured:
-    - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
-      authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
-      pdf: https://neural-os.com
-      code: https://neural-os.com
-      image: /images/neural-os.gif
-      conference: ICLR 2026
     - title: "Program as Weights"
       authors: Wentao Zhang*, Liliana Hotsko*, Woojeong Kim*, Pengyu Nie, Stuart Shieber, <strong>Yuntian Deng</strong>
       pdf: https://programasweights.com
       code: https://programasweights.com
       image: /images/paw.png
       conference: Coming soon
+    - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
+      authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
+      pdf: https://neural-os.com
+      code: https://neural-os.com
+      image: /images/neural-os.gif
+      conference: ICLR 2026
     - title: "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step"
       authors: <strong>Yuntian Deng</strong>, Yejin Choi, Stuart Shieber
       pdf: https://arxiv.org/pdf/2405.14838
