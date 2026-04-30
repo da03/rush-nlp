@@ -1,0 +1,30 @@
+---
+layout: page
+title: Talks
+permalink: /talks/
+weight: 3
+show: 1
+---
+
+<h3>Talks &amp; Invited Presentations</h3>
+
+<p>
+Below is a selection of invited talks and presentations. This list is not exhaustive.
+</p>
+
+<table>
+  <tr>
+    <td style="padding:10px"><strong>Date</strong></td>
+    <td style="padding:10px"><strong>Title</strong></td>
+    <td style="padding:10px"><strong>Venue</strong></td>
+  </tr>
+
+  {% for talk in site.data.talks.talks %}
+  <tr>
+    <td style="padding:10px">{{ talk.date }}</td>
+    <td style="padding:10px">{% if talk.url %}<a href="{{ talk.url }}">{{ talk.title }}</a>{% else %}{{ talk.title }}{% endif %}</td>
+    <td style="padding:10px">{{ talk.venue }}</td>
+  </tr>
+  {% endfor %}
+
+</table>
