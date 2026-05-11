@@ -187,6 +187,15 @@
   margin-bottom: 0.5em;
 }
 
+/* Karpathy autoresearch loop SVG sizing. */
+.reveal svg.auto-loop {
+  display: block;
+  margin: 0.6em auto 0.2em;
+  max-width: 92%;
+  max-height: 42vh;
+  height: auto;
+}
+
 /* Blue callout for the actual opinion sentence (the focal point of the slide).
    Sibling of .cho-banner, different accent color. */
 .reveal .opinion-callout {
