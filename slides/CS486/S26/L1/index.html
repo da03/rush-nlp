@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 1 — Introduction to AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 1: Introduction to Artificial Intelligence. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- Slide 1: Title -->
+<section class="title-slide">
+  <div class="course-title">CS 486/686<br>Introduction to Artificial Intelligence</div>
+  <div class="author">Yuntian Deng</div>
+  <p>Lecture 1</p>
+  <p class="credit">(Adapted from CS486/686 slides by Alice Gao, Blake Vanberlo, and Wenhu Chen)</p>
+</section>
+
+<!-- Slide 2: Upcoming Distinguished Lecture (teaser) -->
+<section>
+  <h2>Upcoming: Distinguished Lecture</h2>
+  <p style="text-align:center; font-size:1.2em;"><strong>Don't miss it!</strong></p>
+  <div class="cho-banner">
+    <ul>
+      <li><strong>Prof. Kyunghyun Cho</strong> (NYU) — Distinguished Lecture</li>
+      <li><strong>Tuesday, May 26, 2026, 10:00–11:30 AM</strong></li>
+      <li><strong>Room: DC 1302</strong></li>
+      <li>Homepage: <a href="https://kyunghyuncho.me/" target="_blank" rel="noopener">https://kyunghyuncho.me/</a></li>
+    </ul>
+  </div>
+  <p style="text-align:center; margin-top:1em;"><em>(More about Prof. Cho and his work later in this lecture.)</em></p>
+</section>
+
+<!-- Slide 3: Learning goals -->
+<section>
+  <h2>Learning goals</h2>
+  <ul>
+    <li>Get to know a bit about the instructor and one or more classmates.</li>
+    <li>Understand the topics of the course.</li>
+    <li>Name an application of AI.</li>
+  </ul>
+</section>
+
+<!-- Slide 4: Who am I? -->
+<section class="dense">
+  <h2>Who am I?</h2>
+  <p>My name is Yuntian Deng. I am from China.</p>
+  <p><strong>Appointments:</strong></p>
+  <ul>
+    <li>Assistant Professor, University of Waterloo</li>
+    <li>Associate, Harvard CS</li>
+    <li>Faculty Affiliate, Vector Institute</li>
+  </ul>
+  <p><strong>Previous:</strong></p>
+  <ul>
+    <li>Postdoc at AI2 (Prof. Yejin Choi)</li>
+    <li>PhD, CS, Harvard University (Profs. Alexander Rush, Stuart Shieber)</li>
+    <li>MS, Language Technologies, CMU (Prof. Eric Xing)</li>
+    <li>BE, Automation, Tsinghua University (Prof. Jie Zhou)</li>
+  </ul>
+  <p><strong>Research:</strong> natural language processing, machine learning</p>
+</section>
+
+<!-- Slide 5: Who are the TAs? -->
+<section>
+  <h2>Who are the TAs?</h2>
+  <p>The TAs will monitor Piazza, grade your homework, host TA office hours, and grade the final exam.</p>
+  <ul>
+    <li>Liliana Hotsko (<code>lhotsko@</code>) — Piazza Management</li>
+    <li>Bihui Jin (<code>b27jin@</code>)</li>
+    <li>Larry Yinxi Li (<code>y3395li@</code>)</li>
+    <li>Yuxuan Li (<code>y624li@</code>)</li>
+    <li>Henry Lin (<code>h293lin@</code>)</li>
+    <li>Hala Sheta (<code>hsheta@</code>)</li>
+    <li>Dake Zhang (<code>d346zhan@</code>)</li>
+  </ul>
+</section>
+
+<!-- Slide 6: Topics 1/2 -->
+<section class="dense">
+  <h2>Topics in CS 486/686 (1/2)</h2>
+  <p><strong>Introduction to AI and CS486/686</strong><br>
+  1: Introduction to AI</p>
+  <p><strong>Search:</strong><br>
+  2: Uninformed Search<br>
+  3: Heuristic Search<br>
+  4: Heuristic Search (continued)<br>
+  5: Constraint Satisfaction Problems<br>
+  6: Local Search</p>
+  <p><strong>Uncertainty Estimation:</strong><br>
+  7: Probabilities<br>
+  8: Independence and Bayesian Networks I<br>
+  9: Independence and Bayesian Networks II<br>
+  10: Variable Elimination Algorithm<br>
+  11: Hidden Markov Models I<br>
+  12: Hidden Markov Models II</p>
+</section>
+
+<!-- Slide 7: Topics 2/2 -->
+<section class="dense">
+  <h2>Topics in CS 486/686 (2/2)</h2>
+  <p><strong>Markov Decision Process:</strong><br>
+  13: Decision Theory<br>
+  14: Markov Decision Processes I<br>
+  15: Markov Decision Processes II<br>
+  16: Reinforcement Learning</p>
+  <p><strong>Machine Learning &amp; Deep Learning:</strong><br>
+  17: Introduction to Machine Learning<br>
+  18: Unsupervised Learning<br>
+  19: Decision Trees<br>
+  20: Neural Networks I<br>
+  21: Neural Networks II<br>
+  22: Neural Networks III<br>
+  23: Course Recap</p>
+</section>
+
+<!-- Slide 8: What's included in Search -->
+<section>
+  <h2>What's included in Search</h2>
+  <ul>
+    <li>Learn the generic search algorithm</li>
+    <li>Discuss uninformed search algorithms like DFS and BFS</li>
+    <li>Discuss heuristic search algorithms like A*</li>
+    <li>Understand the complexity and completeness of search algorithms</li>
+    <li>Understand constraint satisfaction problems</li>
+    <li>Solve CSPs with arc-consistency and backtracking</li>
+    <li>Learn about local search algorithms like simulated annealing and genetic algorithms</li>
+  </ul>
+</section>
+
+<!-- Slide 9: What's included in Uncertainty Estimation -->
+<section>
+  <h2>What's included in Uncertainty Estimation</h2>
+  <ul>
+    <li>Sum Rule, Product Rule, Chain Rule, Bayes' Rule</li>
+    <li>Understand random variable independence</li>
+    <li>D-separation principle for testing independence</li>
+    <li>Construct Bayesian Networks</li>
+    <li>Answer queries about Bayesian Networks via the variable elimination algorithm</li>
+    <li>Understand Hidden Markov Models</li>
+    <li>Forward-Backward algorithm to compute hidden states</li>
+  </ul>
+</section>
+
+<!-- Slide 10: What's included in Markov Decision Process -->
+<section>
+  <h2>What's included in Markov Decision Process</h2>
+  <ul>
+    <li>Decision theory: actions, utility, and expected utility</li>
+    <li>Markov Decision Processes to make a sequence of decisions</li>
+    <li>Value Iteration algorithm to compute the optimal policy</li>
+    <li>Reinforcement Learning (Temporal Difference Learning + Q-Learning)</li>
+  </ul>
+</section>
+
+<!-- Slide 11: What's included in Machine Learning -->
+<section>
+  <h2>What's included in Machine Learning</h2>
+  <ul>
+    <li>Supervised vs. unsupervised learning, bias-variance trade-off</li>
+    <li>Unsupervised learning (e.g., k-means clustering)</li>
+    <li>Decision tree algorithm; learn to construct decision trees</li>
+    <li>Basics of neural networks</li>
+    <li>Backpropagation algorithm in neural networks</li>
+  </ul>
+</section>
+
+<!-- Slide 12: Main Website -->
+<section>
+  <h2>Main Website</h2>
+  <p style="text-align:center; font-size:1.3em;"><a href="https://bit.ly/cs486" target="_blank" rel="noopener">https://bit.ly/cs486</a></p>
+  <ul>
+    <li>Frequently updated with learning materials and announcements.</li>
+    <li>Includes all the deadlines, release dates, slides and notes.</li>
+  </ul>
+</section>
+
+<!-- Slide 13: Piazza -->
+<section>
+  <h2>Piazza</h2>
+  <p>Best way to reach me = office hour</p>
+  <p>Second-best way to reach me = private Piazza post</p>
+  <ul>
+    <li>Ask questions related to the course</li>
+    <li>You're encouraged to answer other students' questions</li>
+    <li>We will try to respond in 2 business days</li>
+  </ul>
+</section>
+
+<!-- Slide 14: TA Support -->
+<section>
+  <h2>TA Support</h2>
+  <p>If you have questions regarding assignments or learning materials, you can also consult TAs.</p>
+</section>
+
+<!-- Slide 15: Office Hours -->
+<section>
+  <h2>Office Hours</h2>
+  <ul>
+    <li>Instructor office hours: TBA</li>
+    <li>TA office hours: TBA on Piazza</li>
+  </ul>
+</section>
+
+<!-- Slide 16: Assignments (overview) -->
+<section>
+  <h2>Assignments</h2>
+  <p>There are 3 assignments — each has a written and programming part.</p>
+  <p><em>Written part</em></p>
+  <ul>
+    <li>E.g. trace through the algorithm, prove something, analyze results from programming part</li>
+    <li>Submit on Learn</li>
+  </ul>
+  <p><em>Programming part</em></p>
+  <ul>
+    <li>Implement functions for algorithms discussed</li>
+    <li>Submit code on Learn</li>
+    <li>Week 1, week 2, final test setups</li>
+  </ul>
+</section>
+
+<!-- Slide 17: Assignments (timing) -->
+<section>
+  <h2>Assignments</h2>
+  <p>Each assignment will have roughly 20 days of completion time.</p>
+  <ul>
+    <li>Assignment 1</li>
+    <li>Assignment 2</li>
+    <li>Assignment 3</li>
+  </ul>
+</section>
+
+<!-- Slide 18: Exam -->
+<section>
+  <h2>Exam</h2>
+  <p>Final: 2.5 hours, date/time (TBA)</p>
+  <ul>
+    <li>Every student must attend the final exam, no makeup exam.</li>
+    <li>CS 486 students must pass the final exam.</li>
+    <li>Final exam will cover all the materials.</li>
+  </ul>
+</section>
+
+<!-- Slide 19: Project (overview) -->
+<section>
+  <h2>Project</h2>
+  <p>Solve a problem with AI (or for AI) and write a report.</p>
+  <ul>
+    <li>CS 686 students must pass the project to pass the course.</li>
+    <li>Optional for CS 486 students (10% bonus).</li>
+    <li>Done individually or in groups of up to 3.</li>
+  </ul>
+  <p style="margin-top:1em;"><em>CS 686 students — free compute resources for GPUs:</em></p>
+  <ul>
+    <li><a href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a></li>
+    <li><a href="https://uwaterloo.ca/math-faculty-computing-facility/services/service-catalogue-teaching-linux/access-teaching-gpu-cluster" target="_blank" rel="noopener">Math Faculty Computing — Teaching GPU Cluster</a></li>
+  </ul>
+</section>
+
+<!-- Slide 20: Project (rules) -->
+<section>
+  <h2>Project</h2>
+  <ul>
+    <li>Topics are not restricted: reinforcement learning, image classification, NLP, HCI, biomedical, etc.</li>
+    <li>It does not need to reach publication-level novelty.</li>
+    <li>It cannot be trivial, like cloning some code from an existing public GitHub.</li>
+    <li>Students can form a team of up to 3 members, but the report must specify the responsibility of each member.</li>
+    <li>Proposal due around the middle of the term; final report due after the final exam.</li>
+  </ul>
+</section>
+
+<!-- Slide 21: Score Breakdown -->
+<section>
+  <h2>Score Breakdown</h2>
+  <ul>
+    <li><strong>CS486:</strong> 30% Assignments, 20% Chat Assignments (with Chrysalis), 50% Final Exam, 10% bonus from Project (optional)</li>
+    <li><strong>CS686:</strong> 30% Assignments, 30% Project, 40% Final Exam</li>
+  </ul>
+</section>
+
+<!-- Slide 22: The Goal of AI -->
+<section>
+  <h2>The Goal of AI</h2>
+  <p>Artificial Intelligence:</p>
+  <ul>
+    <li>Enable machines to sense, comprehend, act, and learn with human-like levels of intelligence.</li>
+    <li>Combined with computer science to solve challenging problems.</li>
+    <li>Not confined to methods that are biologically observable.</li>
+  </ul>
+</section>
+
+<!-- Slide 23: History: Alan Turing -->
+<section>
+  <h2>The History of AI: Alan Turing</h2>
+  <div style="text-align:center;">
+    <img src="images/Alan_Turing_Aged_16.jpg" alt="Alan Turing aged 16" class="narrow">
+  </div>
+  <p>Alan Turing: 1912–1954, primarily known for codebreaking in WW2 (see <a href="https://www.imdb.com/title/tt2084970/" target="_blank" rel="noopener">The Imitation Game</a>). Also asked "can machines think?", and proposed the imitation game.</p>
+</section>
+
+<!-- Slide 24: History: Dartmouth Conference -->
+<section>
+  <h2>The History of AI: Dartmouth Conference</h2>
+  <ul>
+    <li>During the Dartmouth Conference in the mid-1950s, <strong>John McCarthy</strong> proposed the term "Artificial Intelligence".</li>
+    <li>McCarthy also created Lisp, the standard programming language used in robotics.</li>
+  </ul>
+</section>
+
+<!-- Slide 25: History: Turing Test (description) -->
+<section>
+  <h2>The History of AI: the Turing Test</h2>
+  <div style="border:1px solid #888; padding:1em; background:#fafafa;">
+    The interrogator is connected to one person and one machine via a terminal, therefore can't see her counterparts. Her task is to find out which of the two candidates is the machine, and which is the human only by asking them questions. If the machine can <em>fool</em> the interrogator, it is considered intelligent.
+  </div>
+</section>
+
+<!-- Slide 26: History: ELIZA -->
+<section>
+  <h2>The History of AI: the Turing Test</h2>
+  <p>ELIZA — (1966, Joseph Weizenbaum, Lisp)</p>
+<pre class="dialogue">ME: Hi
+<span class="eliza">ELIZA: How do you do? What brings you to see me?</span>
+ME: I'm thinking of taking a course in artificial intelligence.
+<span class="eliza">ELIZA: Why do you say that?</span>
+ME: I'm worried about it
+<span class="eliza">ELIZA: Are you worried often?</span>
+ME: when I take AI courses
+<span class="eliza">ELIZA: What happened when you take ai courses?</span>
+ME: I usually spend long nights doing assignments
+<span class="eliza">ELIZA: Earlier you said you felt worried?</span>
+ME: about AI courses
+<span class="eliza">ELIZA: Maybe your plans have something to do with this.</span>
+ME: no
+<span class="eliza">ELIZA: Why not?</span>
+ME: because I think you are a computer
+<span class="eliza">ELIZA: Is it because you think I am a computer that you came to me?</span></pre>
+</section>
+
+<!-- Slide 27: Loebner Prize -->
+<section>
+  <h2>Loebner Prize — Turing test competition</h2>
+  <ul>
+    <li>Annual Turing test competition, launched in 1990 by Hugh Loebner.</li>
+    <li>Grand prizes ($25,000 text-only / $100,000 text+visual+auditory) were never awarded.</li>
+    <li>Competition discontinued after the final 2019 contest (source: Wikipedia, "Loebner Prize").</li>
+    <li>Example interaction:</li>
+  </ul>
+<pre class="dialogue"><span class="confederate">CONFEDERATE: Hello, my name is Sam and I am the human</span>
+JUDGE: Hi Sam, tell me which is larger, a TV screen or Belgium.
+<span class="confederate">CONFEDERATE: Belgium is a little bit larger.</span>
+JUDGE: Wljso lwjejdo wleje elwjeo wjeol, isn't it?
+<span class="confederate">CONFEDERATE: Is that Polish?</span>
+JUDGE: Which is further away from this apartment, Queens or the Queen of England?
+<span class="confederate">CONFEDERATE: If the Queen is visiting Manhattan, she is closer.</span></pre>
+</section>
+
+<!-- Slide 28: SHRDLU -->
+<section>
+  <h2>Blocks World — SHRDLU — Winograd 1968</h2>
+  <ul>
+    <li>First autonomous physical interaction.</li>
+    <li>Blocks world only.</li>
+  </ul>
+<pre class="dialogue">Pick up a big red block
+<span class="confederate">OK</span>
+Grasp the pyramid
+<span class="confederate">I DON'T UNDERSTAND WHICH PYRAMID YOU MEAN</span>
+What does the box contain?
+<span class="confederate">THE BLUE PYRAMID AND THE BLUE BLOCK.</span>
+What is the pyramid supported by?
+<span class="confederate">THE BOX.</span>
+How many blocks are not in the box?
+<span class="confederate">FOUR OF THEM</span></pre>
+</section>
+
+<!-- Slide 29: Game Playing -->
+<section>
+  <h2>Game Playing</h2>
+  <div style="text-align:center;">
+    <img src="images/zero_sum_game.png" alt="Zero-sum game tree" class="medium">
+  </div>
+  <ul>
+    <li>Game playing is also a very important metric to evaluate intelligence.</li>
+    <li>Min-Max game of two players: one wants to maximize the chance of winning, the other aims to minimize it.</li>
+    <li>Game playing can be formulated as a search problem with nodes representing the state.</li>
+  </ul>
+</section>
+
+<!-- Slide 30: Chess -->
+<section>
+  <h2>Chess</h2>
+  <div style="text-align:center;">
+    <img src="images/Chess_board.jpg" alt="Chess board" class="narrow">
+  </div>
+  <ul>
+    <li>Game tree has more than \(10^{100}\) nodes.</li>
+    <li>IBM Deep Blue uses lookahead search and a complex evaluation function to predict the outcome.</li>
+    <li>In 1997, IBM Deep Blue defeated the world champion Garry Kasparov in a 6-match game.</li>
+    <li><a href="https://www.scientificamerican.com/article/20-years-after-deep-blue-how-ai-has-advanced-since-conquering-chess/" target="_blank" rel="noopener">Deep Blue: 20 years later (Scientific American, 2022)</a></li>
+  </ul>
+</section>
+
+<!-- Slide 31: Go (Weiqi) -->
+<section>
+  <h2>Go (Weiqi)</h2>
+  <div style="text-align:center;">
+    <img src="images/Go.png" alt="Go board" class="narrow">
+  </div>
+  <ul>
+    <li>Game tree has more than \(10^{360}\) nodes — much harder than chess.</li>
+    <li>AlphaGo (DeepMind): Silver et al. (2016). <a href="https://doi.org/10.1038/nature16961" target="_blank" rel="noopener">Mastering the game of Go with deep neural networks and tree search.</a> <em>Nature</em>, 529(7587), 484–489.</li>
+    <li>Deep neural networks; supervised learning; reinforcement learning.</li>
+  </ul>
+</section>
+
+<!-- Slide 32: AlphaGo -->
+<section>
+  <h2>AlphaGo</h2>
+  <div style="text-align:center;">
+    <img src="images/alpha_go.png" alt="AlphaGo" class="medium">
+  </div>
+  <ul>
+    <li>AlphaGo combines machine learning and tree search techniques.</li>
+    <li>AlphaGo uses Monte-Carlo tree search, guided by a "value network" and a "policy network" (covered in our lectures).</li>
+    <li>AlphaGo learns by playing against both humans and itself.</li>
+  </ul>
+</section>
+
+<!-- Slide 33: Poker -->
+<section>
+  <h2>Poker</h2>
+  <div style="text-align:center;">
+    <img src="images/poker.jpg" alt="Poker" class="medium">
+  </div>
+  <ul>
+    <li>Play with uncertainty. Must model opponent(s). Care about long-term payoff.</li>
+    <li>Bowling, M., Burch, N., Johanson, M., &amp; Tammelin, O. (2015). <a href="https://science.sciencemag.org/content/347/6218/145" target="_blank" rel="noopener">Heads-up limit hold'em poker is solved.</a> <em>Science</em>, 347(6218), 145–149.</li>
+    <li>Brown, N., &amp; Sandholm, T. (2019). <a href="https://science.sciencemag.org/content/365/6456/885.abstract" target="_blank" rel="noopener">Superhuman AI for multiplayer poker.</a> <em>Science</em>, 365(6456), 885–890.</li>
+  </ul>
+</section>
+
+<!-- Slide 34: Atari Games -->
+<section>
+  <h2>Atari Games</h2>
+  <div style="text-align:center;">
+    <img src="images/Atari_game.jpeg" alt="Atari games" class="medium">
+  </div>
+  <ul>
+    <li>Mnih et al. (2013). <a href="https://arxiv.org/pdf/1312.5602v1.pdf" target="_blank" rel="noopener">Playing atari with deep reinforcement learning.</a> arXiv:1312.5602.</li>
+    <li>Reinforcement learning; CNN; high-dimensional sensory input. Previous approaches used hand-crafted visual features.</li>
+    <li>Outperforms previous approaches; surpasses a human expert on 3/7 Atari 2600 games.</li>
+  </ul>
+</section>
+
+<!-- Slide 35: StarCraft II -->
+<section>
+  <h2>StarCraft II</h2>
+  <div style="text-align:center;">
+    <img src="images/starcraft2_screenshot.png" alt="StarCraft II screenshot" class="medium">
+    <div class="photo-credit"><a href="https://snl.no/StarCraft_II" target="_blank" rel="noopener">snl.no/StarCraft_II</a></div>
+  </div>
+  <ul>
+    <li>Multi-agent problem; imperfect information; large action and state space; delayed credit assignment.</li>
+    <li>Vinyals et al. (2019). <a href="https://doi.org/10.1038/s41586-019-1724-z" target="_blank" rel="noopener">Grandmaster level in StarCraft II using multi-agent reinforcement learning.</a> <em>Nature</em>, 575(7782), 350–354.</li>
+    <li>Video: <a href="https://www.youtube.com/watch?v=jtlrWblOyP4" target="_blank" rel="noopener">youtube.com/watch?v=jtlrWblOyP4</a></li>
+  </ul>
+</section>
+
+<!-- Slide 36: AlphaFold -->
+<section>
+  <h2>AlphaFold</h2>
+  <div style="text-align:center;">
+    <img src="images/alphafold.png" alt="AlphaFold" class="medium">
+  </div>
+  <ul>
+    <li>Synthesize structures of unknown proteins (previously required painstaking months-to-years of human labor).</li>
+    <li>Jumper et al. (2021). <a href="https://www.nature.com/articles/s41586-021-03819-2" target="_blank" rel="noopener">Highly accurate protein structure prediction with AlphaFold.</a></li>
+    <li>Benefits greatly from the growth of the Protein Data Bank.</li>
+    <li>Uses a model called EvoFormer to make structure predictions.</li>
+  </ul>
+</section>
+
+<!-- Slide 37: Deep NN surge -->
+<section>
+  <h2>The Surge of Deep Neural Networks</h2>
+  <div style="text-align:center;">
+    <img src="images/neural_networks.png" alt="Deep neural network architecture" class="medium">
+  </div>
+  <ul>
+    <li>Old-fashioned ML used decision trees, SVMs, linear regression, and boosting algorithms.</li>
+    <li>Neural networks have existed for a while. They really took off with AlexNet (<a href="https://towardsdatascience.com/alexnet-the-architecture-that-challenged-cnns-e406d5297951" target="_blank" rel="noopener">ImageNet Classification with Deep Convolutional Neural Networks</a>).</li>
+    <li>Increasing the depth of neural networks to hundreds of layers.</li>
+  </ul>
+</section>
+
+<!-- Slide 38: Development of AI Models (Dynabench) -->
+<section>
+  <h2>Development of AI Models</h2>
+  <div style="text-align:center;">
+    <img src="images/AI-performance_Dynabench-paper.png" alt="AI performance vs human over time" class="wide">
+  </div>
+  <ul>
+    <li>Around 15 years ago, no machine could reliably do language or image recognition at human level. As the chart shows, AI systems steadily caught up and surpassed humans on these benchmarks.</li>
+    <li>Since then, benchmarks like MMLU and SuperGLUE have saturated, and the field has moved to harder evaluations (e.g., GPQA Diamond, SWE-bench, ARC-AGI) where progress is still rapid in 2025–2026.</li>
+  </ul>
+</section>
+
+<!-- Slide 39: Image Classification (ImageNet) -->
+<section>
+  <h2>Image Classification</h2>
+  <div style="text-align:center;">
+    <img src="images/imagenet_challenge.png" alt="ImageNet Challenge" class="wide">
+    <div class="photo-credit">ImageNet Challenge</div>
+  </div>
+  <p>A standard classification problem: categorize an image into 1 of 1000 object classes.</p>
+</section>
+
+<!-- Slide 40: Image Classification (LSVRC winners) -->
+<section>
+  <h2>Image Classification</h2>
+  <div style="text-align:center;">
+    <img src="images/LSVRC-winners-over-time.png" alt="ImageNet winners over time" class="wide">
+    <div class="photo-credit">ImageNet winners over time</div>
+  </div>
+  <p>Before 2011, the curve was relatively flat. In 2012, AlexNet was proposed as the first deep neural network to address the long-standing problem, and ImageNet classification is now considered essentially solved.</p>
+</section>
+
+<!-- Slide 41: Image Generation -->
+<section>
+  <h2>Image Generation</h2>
+  <div style="text-align:center;">
+    <img src="images/Timeline-of-AI-generated-faces.png" alt="Timeline of AI-generated faces" class="wide">
+  </div>
+</section>
+
+<!-- Slide 42: Supervised Learning -->
+<section>
+  <h2>Supervised Learning (Human Annotation)</h2>
+  <div style="text-align:center;">
+    <img src="images/Supervised-Learning.jpg" alt="Supervised learning" class="wide">
+  </div>
+</section>
+
+<!-- Slide 43: Self-Supervised Pre-training -->
+<section>
+  <h2>Self-Supervised Pre-training</h2>
+  <div style="text-align:center;">
+    <img src="images/pretraining.jpeg" alt="Self-supervised pre-training" class="wide">
+  </div>
+  <p>Instead of training on annotated data, the model trains on the crawled web with a self-supervised objective.</p>
+</section>
+
+<!-- Slide 44: Large Language Models -->
+<section>
+  <h2>Large Language Models</h2>
+  <div style="text-align:center;">
+    <img src="images/LLM.png" alt="Large language models" class="medium">
+  </div>
+  <ul>
+    <li>LLMs have grown rapidly in capability since GPT-3 (2020) and ChatGPT (2022).</li>
+    <li>The 2026 frontier includes <strong>GPT-5.5</strong> (OpenAI, Apr 2026), <strong>Claude Opus 4.7</strong> (Anthropic, Apr 2026), <strong>Gemini 3.1 Pro</strong> (Google, Feb 2026), and competitive open-weight models like <strong>Llama 4</strong>, <strong>DeepSeek V4</strong>, <strong>Qwen 3.6</strong>, and <strong>GLM-5.1</strong>.</li>
+    <li>Many frontier models use Mixture-of-Experts; exact parameter counts are often undisclosed for closed models.</li>
+    <li style="font-size:0.7em;">Source: <a href="https://www.buildfastwithai.com/blogs/best-ai-models-april-2026-comparison" target="_blank" rel="noopener">buildfastwithai.com — Best AI Models April 2026</a></li>
+  </ul>
+</section>
+
+<!-- Slide 45: What today's LLMs can do -->
+<section>
+  <h2>What today's LLMs can do</h2>
+  <p>Beyond fluent text generation, modern LLMs have gained several qualitatively new capabilities:</p>
+  <ul>
+    <li><strong>Reasoning / "thinking" models</strong> that spend extra compute at inference time to solve hard math, science, and coding problems (e.g., OpenAI o-series, DeepSeek-R1, Claude with extended thinking).</li>
+    <li><strong>Long context windows</strong> of 1M+ tokens, enabling whole-codebase or whole-book inputs.</li>
+    <li><strong>Multimodality:</strong> text, images, audio, and video in a single model.</li>
+    <li><strong>Agentic tool use:</strong> calling external tools, browsing, and executing code over long horizons (e.g., MCP, Claude Code, ChatGPT agent mode).</li>
+  </ul>
+</section>
+
+<!-- Slide 46: Cho bio + photo -->
+<section>
+  <h2>Distinguished Lecture: Prof. Kyunghyun Cho (NYU)</h2>
+  <div class="two-col">
+    <div style="flex:0 0 32%;">
+      <img src="images/kyunghyun_cho.jpg" alt="Prof. Kyunghyun Cho">
+      <div class="photo-credit">Photo: NYU Photo Bureau / Gallo</div>
+    </div>
+    <div style="flex:1; font-size:0.75em;">
+      <p><strong>Kyunghyun Cho</strong> is a Professor of Computer Science and Data Science at New York University and Co-Director of the Global Frontier AI Lab (with Yann LeCun).</p>
+      <p>He is best known for foundational work in neural sequence modeling:</p>
+      <ul>
+        <li>The <strong>GRU</strong> recurrent unit (Cho et al., EMNLP 2014).</li>
+        <li>One of the earliest <strong>attention mechanisms</strong> for neural machine translation (Bahdanau, Cho, Bengio, ICLR 2015) — a direct precursor to today's Transformers and LLMs on the previous slide.</li>
+      </ul>
+      <p><em>His work directly inspired my own PhD research.</em></p>
+      <p><strong>Talk:</strong> Tue May 26, 2026, 10:00–11:30 AM, DC 1302.<br>
+      Homepage: <a href="https://kyunghyuncho.me/" target="_blank" rel="noopener">https://kyunghyuncho.me/</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 47: Learning goals (recap) -->
+<section>
+  <h2>Learning goals</h2>
+  <ul>
+    <li>Get to know a bit about the instructor and one or more classmates.</li>
+    <li>Understand the topics of the course.</li>
+    <li>Name an application of AI.</li>
+  </ul>
+</section>
+
+<!-- Slide 48: Reminder: Don't Miss the Distinguished Lecture -->
+<section>
+  <h2>Reminder — Don't Miss the Distinguished Lecture!</h2>
+  <div style="text-align:center;">
+    <p style="font-size:1.5em;"><strong>Prof. Kyunghyun Cho</strong> (NYU)</p>
+    <p>Co-inventor of attention (Bahdanau, Cho, Bengio, ICLR 2015) and the GRU</p>
+    <p style="font-size:1.8em; color:#1d4ed8; margin-top:1em;"><strong>Tuesday, May 26, 2026</strong></p>
+    <p style="font-size:1.5em; color:#1d4ed8;"><strong>10:00–11:30 AM, DC 1302</strong></p>
+    <p style="margin-top:1.5em;"><a href="https://kyunghyuncho.me/" target="_blank" rel="noopener">https://kyunghyuncho.me/</a></p>
+  </div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      // Only treat \( ... \) and \[ ... \] as math delimiters.
+      // (Default behaviour also matches $...$ which collides with prize amounts like $100,000.)
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+</script>
+</body>
+</html>

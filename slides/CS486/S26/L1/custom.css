@@ -1,0 +1,93 @@
+/* Custom overrides on top of the reveal.js "white" theme for CS 486/686 lectures. */
+
+/* Tighten default heading sizes - reveal.js's defaults are too big for academic slides. */
+.reveal h1 { font-size: 1.8em; }
+.reveal h2 { font-size: 1.4em; line-height: 1.2; }
+.reveal h3 { font-size: 1.2em; }
+.reveal p, .reveal li { font-size: 0.85em; line-height: 1.4; }
+
+/* Lists shouldn't be centered. */
+.reveal ul, .reveal ol { display: block; margin-left: 1.2em; }
+
+/* Dense slides (topic outlines, "Who am I?") get smaller text. */
+.reveal .dense p,
+.reveal .dense li { font-size: 0.7em; line-height: 1.3; }
+.reveal .dense h2 { font-size: 1.1em; }
+
+/* Two-column layout (Cho bio frame). */
+.reveal .two-col {
+  display: flex;
+  gap: 1.5em;
+  align-items: flex-start;
+  text-align: left;
+}
+.reveal .two-col > div { min-width: 0; }
+.reveal .two-col img { width: 100%; border-radius: 4px; }
+
+/* Cho-talk callout banner. */
+.reveal .cho-banner {
+  background: #fff4d6;
+  border-left: 6px solid #d4a017;
+  padding: 0.8em 1em;
+  text-align: left;
+}
+
+/* Verbatim dialogue blocks (ELIZA, SHRDLU, Loebner). */
+.reveal pre.dialogue {
+  background: #fafafa;
+  border: 1px solid #e5e5e5;
+  padding: 0.8em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.55em;
+  line-height: 1.4;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+.reveal pre.dialogue .eliza,
+.reveal pre.dialogue .confederate { color: purple; }
+
+/* Image sizing helpers - max-height is constrained so bullets below the
+   image still fit within the reveal.js viewport (it is 720px tall by default
+   and the bottom is occupied by controls/progress indicator). */
+.reveal img.wide { max-width: 90%; max-height: 55vh; }
+.reveal img.medium { max-width: 55%; max-height: 38vh; }
+.reveal img.narrow { max-width: 28%; max-height: 32vh; }
+
+/* Slide footer with course/lecture info. */
+.reveal .slide-footer {
+  position: absolute;
+  bottom: 0.5em;
+  left: 0.5em;
+  font-size: 0.45em;
+  color: #888;
+}
+
+/* Tiny photo credit caption. */
+.reveal .photo-credit {
+  font-size: 0.5em;
+  color: #888;
+  margin-top: 0.2em;
+}
+
+/* Hyperlinks - subtle blue, with hover. */
+.reveal a { color: #1d4ed8; text-decoration: none; border-bottom: 1px dotted #1d4ed8; }
+.reveal a:hover { color: #1e40af; border-bottom-style: solid; }
+
+/* Title slide centering. */
+.reveal .title-slide { text-align: center; }
+.reveal .title-slide .course-title {
+  font-size: 1.3em;
+  color: #1d4ed8;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+.reveal .title-slide .author { font-size: 1em; margin-top: 1em; }
+.reveal .title-slide .credit { font-size: 0.55em; color: #666; margin-top: 2em; }
+
+/* PDF export:
+   - Open https://yuntiandeng.com/slides/CS486/S26/L1/?print-pdf in Chrome and Print > Save as PDF.
+   - Or use Decktape:
+       decktape reveal https://yuntiandeng.com/slides/CS486/S26/L1/ CS486_S26_L1.pdf
+*/
