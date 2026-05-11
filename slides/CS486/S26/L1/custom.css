@@ -144,6 +144,27 @@
   color: #374151;
 }
 
+/* Inline "score progression" strip for Weng Breakout 387/507/839/864. */
+.reveal .score-progression {
+  display: flex;
+  gap: 0.4em;
+  justify-content: center;
+  align-items: center;
+  margin: 0.8em 0 0.4em;
+}
+.reveal .score-progression .step {
+  background: #1d4ed8;
+  color: white;
+  padding: 0.35em 0.7em;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.9em;
+  min-width: 3em;
+  text-align: center;
+}
+.reveal .score-progression .arrow { color: #6b7280; font-size: 1em; }
+.reveal .score-progression .step.final { background: #16a34a; }
+
 /* Credit avatars (tiny circular photos inline with the slide-credit line). */
 .reveal .credit-avatar {
   width: 40px;

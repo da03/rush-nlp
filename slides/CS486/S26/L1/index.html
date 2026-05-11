@@ -621,10 +621,44 @@ How many blocks are not in the box?
 </section>
 
 <!-- ============================================================
+     Opinion: what replaces classical AI (1 slide)
+     ============================================================ -->
+
+<!-- 37. My take: this is what replaces classical AI -->
+<section>
+  <h2>My take: this is what replaces classical AI</h2>
+  <p style="font-style:italic; color:#6b7280; font-size:0.7em; margin-top:-0.3em;">Personal opinion; not consensus.</p>
+  <ul>
+    <li>An OpenAI engineer, <strong>Jiayi Weng</strong> (May 2026), used <strong>Codex (gpt-5.4)</strong> to iteratively write pure-code policies &mdash; <strong>no neural-network training</strong>. The deployed policy has no NN forward pass, but the iteration loop is entirely gated on a frontier LLM.</li>
+    <li>Results in environments that used to need Deep RL:
+      <ul>
+        <li><strong>Atari Breakout: 864/864</strong> (theoretical max).</li>
+        <li><strong>MuJoCo Ant 6000+</strong> and <strong>HalfCheetah ~11,800</strong> (both in Deep-RL range), using CPG + short-horizon MPC.</li>
+        <li><strong>Atari57: median HNS competitive with PPO</strong> across 342 unattended runs.</li>
+      </ul>
+    </li>
+    <li><strong>My read:</strong> LLM-driven program synthesis is a strong candidate for what replaces hand-derived classical algorithms like the ones in this course. I'm not going to argue this course is at the frontier &mdash; it isn't.</li>
+  </ul>
+  <div class="score-progression">
+    <span class="step">387</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step">507</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step">839</span>
+    <span class="arrow">&rarr;</span>
+    <span class="step final">864</span>
+  </div>
+  <p style="text-align:center; font-size:0.55em; color:#6b7280; margin-top:0.2em;">Codex's iterative Breakout score progression.</p>
+  <div class="footnote">
+    Jiayi Weng (OpenAI). <a href="https://trinkle23897.github.io/learning-beyond-gradients/" target="_blank" rel="noopener">"Learning Beyond Gradients"</a>, May 2026. Single blog post, not peer-reviewed. The "this replaces classical AI" framing is my personal opinion.
+  </div>
+</section>
+
+<!-- ============================================================
      Cho block (3 slides)
      ============================================================ -->
 
-<!-- 37. Cho bio + photo -->
+<!-- 38. Cho bio + photo -->
 <section>
   <h2>Distinguished Lecture: Prof. Kyunghyun Cho (NYU)</h2>
   <div class="two-col">
@@ -645,7 +679,7 @@ How many blocks are not in the box?
   </div>
 </section>
 
-<!-- 38. Learning goals (recap) -->
+<!-- 39. Learning goals (recap) -->
 <section class="center-slide">
   <h2>Learning goals (recap)</h2>
   <ul>
@@ -655,7 +689,7 @@ How many blocks are not in the box?
   </ul>
 </section>
 
-<!-- 39. Cho reminder -->
+<!-- 40. Cho reminder -->
 <section class="center-slide">
   <h2>Don't miss the Distinguished Lecture!</h2>
   <p style="text-align:center; font-size:1.4em; margin-top:0.5em;"><strong>Prof. Kyunghyun Cho</strong> (NYU)</p>
