@@ -165,6 +165,41 @@
 .reveal .score-progression .arrow { color: #6b7280; font-size: 1em; }
 .reveal .score-progression .step.final { background: #16a34a; }
 
+/* Enlarged hero variant for the "this replaces classical AI" slide. */
+.reveal .score-progression.large {
+  gap: 0.6em;
+  margin: 1.2em 0 0.4em;
+}
+.reveal .score-progression.large .step {
+  font-size: 1.4em;
+  min-width: 2.6em;
+  padding: 0.45em 0.85em;
+  border-radius: 6px;
+}
+.reveal .score-progression.large .arrow { font-size: 1.4em; }
+
+/* Italic-gray disclaimer sitting flush under the slide title. */
+.reveal .opinion-disclaimer {
+  font-style: italic;
+  color: #6b7280;
+  font-size: 0.65em;
+  margin-top: -0.3em;
+  margin-bottom: 0.5em;
+}
+
+/* Blue callout for the actual opinion sentence (the focal point of the slide).
+   Sibling of .cho-banner, different accent color. */
+.reveal .opinion-callout {
+  background: #eff6ff;
+  border-left: 5px solid #1d4ed8;
+  padding: 0.7em 1em;
+  font-size: 0.85em;
+  text-align: left;
+  margin-top: 1.2em;
+  color: #1e3a8a;
+}
+.reveal .opinion-callout strong { color: #1d4ed8; }
+
 /* Credit avatars (tiny circular photos inline with the slide-credit line). */
 .reveal .credit-avatar {
   width: 40px;

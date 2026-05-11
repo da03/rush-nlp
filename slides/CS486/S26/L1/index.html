@@ -627,30 +627,29 @@ How many blocks are not in the box?
 <!-- 37. My take: this is what replaces classical AI -->
 <section>
   <h2>My take: this is what replaces classical AI</h2>
-  <p style="font-style:italic; color:#6b7280; font-size:0.7em; margin-top:-0.3em;">Personal opinion; not consensus.</p>
-  <ul>
-    <li>An OpenAI engineer, <strong>Jiayi Weng</strong> (May 2026), used <strong>Codex (gpt-5.4)</strong> to iteratively write pure-code policies &mdash; <strong>no neural-network training</strong>. The deployed policy has no NN forward pass, but the iteration loop is entirely gated on a frontier LLM.</li>
-    <li>Results in environments that used to need Deep RL:
-      <ul>
-        <li><strong>Atari Breakout: 864/864</strong> (theoretical max).</li>
-        <li><strong>MuJoCo Ant 6000+</strong> and <strong>HalfCheetah ~11,800</strong> (both in Deep-RL range), using CPG + short-horizon MPC.</li>
-        <li><strong>Atari57: median HNS competitive with PPO</strong> across 342 unattended runs.</li>
-      </ul>
-    </li>
-    <li><strong>My read:</strong> LLM-driven program synthesis is a strong candidate for what replaces hand-derived classical algorithms like the ones in this course. I'm not going to argue this course is at the frontier &mdash; it isn't.</li>
-  </ul>
-  <div class="score-progression">
-    <span class="step">387</span>
-    <span class="arrow">&rarr;</span>
-    <span class="step">507</span>
-    <span class="arrow">&rarr;</span>
-    <span class="step">839</span>
-    <span class="arrow">&rarr;</span>
+  <p class="opinion-disclaimer">Personal opinion. Not consensus.</p>
+
+  <div class="score-progression large">
+    <span class="step">387</span><span class="arrow">&rarr;</span>
+    <span class="step">507</span><span class="arrow">&rarr;</span>
+    <span class="step">839</span><span class="arrow">&rarr;</span>
     <span class="step final">864</span>
+    <span style="margin-left:0.4em; font-size:0.7em; color:#6b7280;">(max)</span>
   </div>
-  <p style="text-align:center; font-size:0.55em; color:#6b7280; margin-top:0.2em;">Codex's iterative Breakout score progression.</p>
+  <p style="text-align:center; font-size:0.6em; color:#6b7280; margin-top:0.2em;">
+    Codex (OpenAI, May 2026) writes &amp; iterates a pure-Python Breakout policy. No neural network trained.
+  </p>
+
+  <p style="text-align:center; font-size:0.75em; margin-top:1em;">
+    Same recipe: MuJoCo Ant 6000+, HalfCheetah ~11,800 (Deep-RL range); Atari57 median &asymp; PPO across 342 unattended runs.
+  </p>
+
+  <div class="opinion-callout">
+    <strong>My read:</strong> LLM-driven code synthesis is what replaces the hand-derived classical algorithms in this course.
+  </div>
+
   <div class="footnote">
-    Jiayi Weng (OpenAI). <a href="https://trinkle23897.github.io/learning-beyond-gradients/" target="_blank" rel="noopener">"Learning Beyond Gradients"</a>, May 2026. Single blog post, not peer-reviewed. The "this replaces classical AI" framing is my personal opinion.
+    Jiayi Weng (OpenAI). <a href="https://trinkle23897.github.io/learning-beyond-gradients/" target="_blank" rel="noopener">"Learning Beyond Gradients"</a>, May 2026. Single blog post, not peer-reviewed. The framing is my personal opinion.
   </div>
 </section>
 
