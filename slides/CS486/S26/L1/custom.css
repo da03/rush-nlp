@@ -86,6 +86,58 @@
 .reveal .grade-bar .seg.project { background: #059669; }
 .reveal .grade-bar .seg.bonus { background: #f59e0b; }
 
+/* Classical-AI disclaimer callout (small, italic, orange accent) for the
+   teaser at the bottom of the Course roadmap slide. */
+.reveal .heads-up {
+  margin-top: 0.8em;
+  padding: 0.5em 0.9em;
+  background: #fff4d6;
+  border-left: 4px solid #d4a017;
+  font-size: 0.65em;
+  font-style: italic;
+  text-align: left;
+  line-height: 1.4;
+  color: #4b3a00;
+}
+
+/* IS / IS NOT comparison columns on the disclaimer slide. */
+.reveal .col-is,
+.reveal .col-isnot {
+  padding: 0.5em 0.8em;
+  border-left-width: 5px;
+  border-left-style: solid;
+  text-align: left;
+}
+.reveal .col-is { border-left-color: #16a34a; background: #f0fdf4; }
+.reveal .col-isnot { border-left-color: #dc2626; background: #fef2f2; }
+.reveal .col-is h3,
+.reveal .col-isnot h3 {
+  margin: 0 0 0.4em 0;
+  font-size: 0.95em;
+}
+.reveal .col-is h3 { color: #166534; }
+.reveal .col-isnot h3 { color: #991b1b; }
+.reveal .col-is ul,
+.reveal .col-isnot ul {
+  margin: 0 0 0 1em;
+  font-size: 0.95em;
+}
+.reveal .col-is li,
+.reveal .col-isnot li {
+  margin-bottom: 0.25em;
+  font-size: 0.85em;
+}
+.reveal .reality-check {
+  margin-top: 1em;
+  padding: 0.5em 0.8em;
+  background: #f3f4f6;
+  border-left: 4px solid #6b7280;
+  font-size: 0.65em;
+  line-height: 1.4;
+  text-align: left;
+  color: #374151;
+}
+
 /* Credit avatars (tiny circular photos inline with the slide-credit line). */
 .reveal .credit-avatar {
   width: 40px;
