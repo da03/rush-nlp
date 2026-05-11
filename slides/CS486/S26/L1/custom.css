@@ -16,13 +16,17 @@
 .reveal .slides section > * { max-width: 100%; }
 
 /* Vertical centering for short hero slides (title, learning goals, etc.).
-   Global default is top-aligned (center: false in Reveal.initialize) so that
-   dense content slides flow predictably; opt in with class="center-slide".
-   Reveal.js positions sections absolutely with top:0, so we force them down
-   with top:50% + a transform that pulls them back up by half their own height. */
+   NOTE: We do NOT override reveal.js's `transform` (which carries the
+   slide's scale-to-viewport factor) or `top` (which carries the slide's
+   computed position) -- doing so breaks the deck. Instead, make the
+   section itself a flex column so its children center within whatever
+   space the section is given. With min-height:100% this approximates
+   vertical centering on short slides; longer slides flow normally. */
 .reveal section.center-slide {
-  top: 50% !important;
-  transform: translate(-50%, -50%) !important;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
 }
 
 /* Universal text wrapping defense. Long titles / long kv-grid values were
