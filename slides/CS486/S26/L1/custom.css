@@ -1,23 +1,37 @@
 /* Custom overrides on top of the reveal.js "white" theme for CS 486/686 lectures. */
 
-/* Tighten default heading sizes - reveal.js's defaults are too big for academic slides. */
-.reveal h1 { font-size: 1.8em; }
-.reveal h2 { font-size: 1.4em; line-height: 1.2; margin-bottom: 0.6em; }
-.reveal h3 { font-size: 1.2em; }
+/* Tighten default heading sizes - reveal.js's defaults are too big for academic
+   slides, and several titles ("Module 3 -- Markov Decision Processes (L13-L16)",
+   "Distinguished Lecture: Prof. Kyunghyun Cho (NYU)") overflow the slide width
+   at the default 1.6em / 1.4em. Drop h2 to 1.2em. */
+.reveal h1 { font-size: 1.6em; }
+.reveal h2 { font-size: 1.2em; line-height: 1.2; margin-bottom: 0.6em; }
+.reveal h3 { font-size: 1.1em; }
 .reveal p, .reveal li { font-size: 0.85em; line-height: 1.4; }
 .reveal li { margin-bottom: 0.4em; }
 
-/* Lists shouldn't be centered. */
-.reveal ul, .reveal ol { display: block; margin-left: 1.2em; }
+/* Lists shouldn't be centered, and they shouldn't be allowed to overflow
+   the slide width. */
+.reveal ul, .reveal ol { display: block; margin-left: 1.2em; max-width: 100%; }
+.reveal .slides section > * { max-width: 100%; }
 
 /* Vertical centering for short hero slides (title, learning goals, etc.).
    Global default is top-aligned (center: false in Reveal.initialize) so that
-   dense content slides flow predictably; opt in with class="center-slide". */
+   dense content slides flow predictably; opt in with class="center-slide".
+   Reveal.js positions sections absolutely with top:0, so we force them down
+   with top:50% + a transform that pulls them back up by half their own height. */
 .reveal section.center-slide {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100%;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+/* Universal text wrapping defense. Long titles / long kv-grid values were
+   overflowing the slide's right edge; allow break-word everywhere. */
+.reveal h1, .reveal h2, .reveal h3,
+.reveal p, .reveal li, .reveal dd, .reveal dt,
+.reveal a, .reveal span, .reveal strong, .reveal em {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 /* Footnote-style citations pinned to the bottom of a slide. */
