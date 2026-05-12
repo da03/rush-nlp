@@ -12,7 +12,13 @@
   <link rel="stylesheet" href="custom.css">
 </head>
 <body>
-<a class="course-home-link" href="/cs486-introduction-to-artificial-intelligence-spring2026.html" title="Back to CS 486/686 (Spring 2026) course page">&larr; Course page</a>
+<a class="course-home-link" href="/cs486-introduction-to-artificial-intelligence-spring2026.html" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
 <div class="reveal">
 <div class="slides">
 
@@ -853,6 +859,16 @@ How many blocks are not in the box?
       ]
     },
     plugins: [ RevealMath.KaTeX ]
+  });
+
+  // Hide the corner "Course page" link whenever the deck is in true browser
+  // fullscreen (presentation mode). Listening to all four prefixed events
+  // covers Safari/older Chromium; modern browsers fire `fullscreenchange`.
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
   });
 </script>
 </body>
