@@ -323,32 +323,29 @@
 .reveal .title-slide .author { font-size: 1em; margin-top: 1em; }
 .reveal .title-slide .credit { font-size: 0.55em; color: #666; margin-top: 2em; }
 
-/* Persistent "back to course page" link in the top-right corner.
+/* Persistent "back to course page" link in the top-left corner.
    Lives outside `.reveal` in the body so it doesn't move with slides.
-   Top-right was chosen because slide titles (<h2>) sit in the top-left
-   and reveal.js's own controls (arrows) sit bottom-right -- this corner
-   is otherwise unused. Icon-only by default; the label appears on hover.
-
-   Hidden when the deck is in true browser fullscreen (a body.is-fullscreen
-   class is set by JS on `fullscreenchange`) and in reveal.js's `?print-pdf`
-   export so it doesn't end up in handouts. */
+   Icon + label always visible (icon-only with hover-reveal was too easy
+   to miss). Hidden when the deck is in true browser fullscreen (body
+   gets `is-fullscreen` from JS on `fullscreenchange`) and in reveal.js's
+   `?print-pdf` export so it doesn't end up in handouts. */
 .course-home-link {
   position: fixed;
   top: 10px;
-  right: 12px;
+  left: 14px;
   z-index: 1000;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 8px;
+  padding: 6px 10px;
   line-height: 1;
-  color: #6b7280;
+  color: #4b5563;
   text-decoration: none;
   border: none;
   border-radius: 6px;
   background: transparent;
-  opacity: 0.5;
-  transition: opacity 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+  opacity: 0.75;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 .course-home-link svg {
   display: block;
@@ -356,22 +353,16 @@
 }
 .course-home-link .course-home-label {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: 0.01em;
-  max-width: 0;
-  overflow: hidden;
   white-space: nowrap;
-  transition: max-width 0.22s ease;
 }
 .course-home-link:hover {
   opacity: 1;
-  color: #1f2937;
-  background-color: rgba(0, 0, 0, 0.05);
-}
-.course-home-link:hover .course-home-label {
-  max-width: 120px;
+  color: #1d4ed8;
+  background-color: rgba(29, 78, 216, 0.07);
 }
 body.is-fullscreen .course-home-link { display: none; }
 body.print-pdf .course-home-link { display: none; }
