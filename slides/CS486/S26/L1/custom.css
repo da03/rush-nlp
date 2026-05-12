@@ -323,6 +323,35 @@
 .reveal .title-slide .author { font-size: 1em; margin-top: 1em; }
 .reveal .title-slide .credit { font-size: 0.55em; color: #666; margin-top: 2em; }
 
+/* Persistent "back to course page" link in the top-left corner.
+   Lives outside `.reveal` in the body so it doesn't move with slides.
+   Hidden when the browser is in fullscreen (presentation mode) and in
+   reveal.js's `?print-pdf` export so it doesn't end up in handouts. */
+.course-home-link {
+  position: fixed;
+  top: 10px;
+  left: 14px;
+  z-index: 1000;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 12px;
+  color: #1d4ed8;
+  text-decoration: none;
+  opacity: 0.45;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+}
+.course-home-link:hover {
+  opacity: 1;
+  background-color: rgba(29, 78, 216, 0.08);
+  text-decoration: underline;
+}
+/* Hide when actively presenting (true browser fullscreen) ... */
+:fullscreen .course-home-link,
+:-webkit-full-screen .course-home-link { display: none; }
+/* ... and in print/PDF export. */
+body.print-pdf .course-home-link { display: none; }
+
 /* PDF export:
    - Open https://yuntiandeng.com/slides/CS486/S26/L1/?print-pdf in Chrome and Print > Save as PDF.
    - Or use Decktape:
