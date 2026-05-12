@@ -106,10 +106,11 @@
   color: #4b3a00;
 }
 
-/* IS / IS NOT comparison columns on the disclaimer slide. */
+/* IS / IS NOT comparison columns on the disclaimer slide. Tightened to keep
+   the trailing Reality-check block visible within the slide canvas. */
 .reveal .col-is,
 .reveal .col-isnot {
-  padding: 0.5em 0.8em;
+  padding: 0.4em 0.7em;
   border-left-width: 5px;
   border-left-style: solid;
   text-align: left;
@@ -118,28 +119,29 @@
 .reveal .col-isnot { border-left-color: #dc2626; background: #fef2f2; }
 .reveal .col-is h3,
 .reveal .col-isnot h3 {
-  margin: 0 0 0.4em 0;
-  font-size: 0.95em;
+  margin: 0 0 0.3em 0;
+  font-size: 0.85em;
 }
 .reveal .col-is h3 { color: #166534; }
 .reveal .col-isnot h3 { color: #991b1b; }
 .reveal .col-is ul,
 .reveal .col-isnot ul {
   margin: 0 0 0 1em;
-  font-size: 0.95em;
+  font-size: 0.9em;
 }
 .reveal .col-is li,
 .reveal .col-isnot li {
-  margin-bottom: 0.25em;
-  font-size: 0.85em;
+  margin-bottom: 0.15em;
+  font-size: 0.75em;
+  line-height: 1.25;
 }
 .reveal .reality-check {
-  margin-top: 1em;
-  padding: 0.5em 0.8em;
+  margin-top: 0.7em;
+  padding: 0.45em 0.8em;
   background: #f3f4f6;
   border-left: 4px solid #6b7280;
-  font-size: 0.65em;
-  line-height: 1.4;
+  font-size: 0.58em;
+  line-height: 1.3;
   text-align: left;
   color: #374151;
 }
@@ -165,18 +167,22 @@
 .reveal .score-progression .arrow { color: #6b7280; font-size: 1em; }
 .reveal .score-progression .step.final { background: #16a34a; }
 
-/* Enlarged hero variant for the "this replaces classical AI" slide. */
+/* Enlarged hero variant for the "this replaces classical AI" slide.
+   Sized so 4 boxes + 3 arrows + a trailing "(max)" caption fit comfortably
+   in the 1280-wide slide canvas with margin to spare. flex-wrap added as a
+   defensive fallback in case the host viewport is unusually narrow. */
 .reveal .score-progression.large {
-  gap: 0.6em;
-  margin: 1.2em 0 0.4em;
+  gap: 0.45em;
+  margin: 1.0em 0 0.4em;
+  flex-wrap: wrap;
 }
 .reveal .score-progression.large .step {
-  font-size: 1.4em;
-  min-width: 2.6em;
-  padding: 0.45em 0.85em;
-  border-radius: 6px;
+  font-size: 1.15em;
+  min-width: 2.4em;
+  padding: 0.35em 0.7em;
+  border-radius: 5px;
 }
-.reveal .score-progression.large .arrow { font-size: 1.4em; }
+.reveal .score-progression.large .arrow { font-size: 1.15em; }
 
 /* Italic-gray disclaimer sitting flush under the slide title. */
 .reveal .opinion-disclaimer {
@@ -185,6 +191,22 @@
   font-size: 0.65em;
   margin-top: -0.3em;
   margin-bottom: 0.5em;
+}
+
+/* Hero images for the four module slides. */
+.reveal .module-img {
+  max-width: 100%;
+  max-height: 45vh;
+  display: block;
+  margin: 0 auto;
+}
+.reveal .module-caption {
+  text-align: center;
+  font-size: 0.55em;
+  color: #6b7280;
+  font-style: italic;
+  margin-top: 0.3em;
+  line-height: 1.3;
 }
 
 /* Karpathy autoresearch loop SVG sizing. */
