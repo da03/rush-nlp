@@ -193,10 +193,11 @@
   margin-bottom: 0.5em;
 }
 
-/* Hero images for the four module slides. */
+/* Hero images for the four module slides. Pixel-based (not vh) so the size
+   is measured against the 720-px slide canvas, not the browser viewport. */
 .reveal .module-img {
   max-width: 100%;
-  max-height: 45vh;
+  max-height: 320px;
   display: block;
   margin: 0 auto;
 }
@@ -280,12 +281,15 @@
 .reveal pre.dialogue .eliza,
 .reveal pre.dialogue .confederate { color: purple; }
 
-/* Image sizing helpers - max-height is constrained so bullets below the
-   image still fit within the reveal.js viewport (it is 720px tall by default
-   and the bottom is occupied by controls/progress indicator). */
-.reveal img.wide { max-width: 90%; max-height: 55vh; }
-.reveal img.medium { max-width: 55%; max-height: 38vh; }
-.reveal img.narrow { max-width: 28%; max-height: 32vh; }
+/* Image sizing helpers - max-height in pixels (NOT vh) so they are measured
+   against the 720-px slide canvas, not the browser viewport. Using `vh` here
+   blows the images up on tall browser windows and pushes the bullet content
+   below them off the slide. Tightened so slides that pair a hero image with
+   bullets and a footnote below ("The deep learning era", "What an overnight
+   autoresearch run looks like") keep all bottom content on-canvas. */
+.reveal img.wide { max-width: 90%; max-height: 280px; }
+.reveal img.medium { max-width: 55%; max-height: 230px; }
+.reveal img.narrow { max-width: 28%; max-height: 190px; }
 
 /* Slide footer with course/lecture info. */
 .reveal .slide-footer {
