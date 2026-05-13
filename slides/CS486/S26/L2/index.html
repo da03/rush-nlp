@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 2 — Uninformed Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 2: Uninformed Search. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../_shared/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================
+     Intro (2 slides)
+     ============================================================ -->
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Uninformed Search</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 2</p>
+  <p class="credit">Readings: Russell &amp; Norvig 3.1, 3.2, 3.3, 3.4.1, 3.4.3, 3.4.4</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Formulate a real-world problem as a search problem.</li>
+    <li>Trace and implement <strong>DFS, BFS, IDS</strong>.</li>
+    <li>Reason about each algorithm's space/time complexity, completeness, and optimality &mdash; and when each is the right choice.</li>
+  </ul>
+</section>
+
+<!-- ============================================================
+     Applications (1 slide, replaces 7 separate frames)
+     ============================================================ -->
+
+<!-- 3. Applications of search -->
+<section>
+  <h2>Where does search show up?</h2>
+  <div class="app-grid">
+    <div class="app">
+      <img src="images/search_in_robotics_1.jpg" alt="Roomba">
+      <div class="app-caption"><strong>Robotics</strong>Roomba, Mars rovers, search &amp; rescue</div>
+    </div>
+    <div class="app">
+      <img src="images/search_route_planning.png" alt="Route planning">
+      <div class="app-caption"><strong>Route planning</strong>Maps, GPS navigation</div>
+    </div>
+    <div class="app">
+      <img src="images/content_bbeeTSP2.jpg" alt="Travelling Salesperson">
+      <div class="app-caption"><strong>TSP</strong>DNA sequencing, school bus routes, parcel delivery</div>
+    </div>
+    <div class="app">
+      <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.7em; padding: 1em 0.4em; line-height: 1.3;">
+        \( ((a \land b) \lor c) \land d \)
+        <br>\( \lor (\neg e) \)
+      </div>
+      <div class="app-caption"><strong>SAT</strong>FCC spectrum auction</div>
+    </div>
+    <div class="app">
+      <div class="puzzle-grid" style="grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); margin-top: 0.6em;">
+        <div>5</div><div>3</div><div class="empty"></div>
+        <div>8</div><div>7</div><div>6</div>
+        <div>2</div><div>4</div><div>1</div>
+      </div>
+      <div class="app-caption"><strong>8-puzzle</strong>Sliding tile</div>
+    </div>
+    <div class="app">
+      <img src="images/Animation_of_Cabbage,_Sheep_and_Dog_Crossing_the_River.png" alt="River crossing puzzle">
+      <div class="app-caption"><strong>River crossing</strong>Classic logic puzzle</div>
+    </div>
+    <div class="app">
+      <img src="images/8-queen_solution.png" alt="N-queens">
+      <div class="app-caption"><strong>N-queens</strong>Constraint satisfaction</div>
+    </div>
+    <div class="app">
+      <div style="font-size: 1.6em; padding: 0.6em 0.4em; color: #4b5563;">&hellip;</div>
+      <div class="app-caption"><strong>And many more</strong>Planning, scheduling, theorem proving</div>
+    </div>
+  </div>
+  <p class="footnote">
+    TSP breakthrough &mdash; <a href="https://www.quantamagazine.org/computer-scientists-break-traveling-salesperson-record-20201008/">Quanta, 2020</a>.
+    FCC spectrum auction &mdash; <a href="https://science.ubc.ca/news/how-ai-helped-fcc-auction-19-billion-worth-radio-spectrum">UBC news</a>,
+    <a href="https://www.cs.ubc.ca/~newmanne/papers/cacm_deep_opt.pdf">CACM paper</a>.
+  </p>
+</section>
+
+<!-- ============================================================
+     Formulating a search problem (5 slides)
+     ============================================================ -->
+
+<!-- 4. Why search? -->
+<section>
+  <h2>Why search?</h2>
+  <ul>
+    <li>Problems that require <strong>sequential decision making</strong>: a series of moves, not a single closed-form computation.</li>
+    <li>Used when no efficient direct algorithm exists. (Unlike, e.g., solving a linear system: that has fast specialized solvers.)</li>
+    <li>Often <strong>easy to verify</strong> a candidate solution, but <strong>hard to find</strong> one &mdash; the defining feature of NP-hard problems.</li>
+    <li>A search algorithm explores the space of possibilities <strong>systematically</strong>, instead of trial-and-error.</li>
+  </ul>
+</section>
+
+<!-- 5. What is a search problem? -->
+<section>
+  <h2>What is a search problem?</h2>
+  <div class="defbox">
+    <h3>A search problem is defined by:</h3>
+    <ul>
+      <li>A set of <strong>states</strong>.</li>
+      <li>An <strong>initial state</strong>.</li>
+      <li><strong>Goal states</strong> &mdash; or a <strong>goal test</strong>: a boolean function on a state.</li>
+      <li>A <strong>successor (neighbour) function</strong>: which states can we reach from this one?</li>
+      <li><em>(Optional)</em> a <strong>cost</strong> on each action.</li>
+    </ul>
+  </div>
+  <p style="text-align:left; font-size:0.8em; margin-top: 0.4em;">A <strong>solution</strong> is a path from the initial state to a goal state &mdash; optionally one with minimum total cost.</p>
+</section>
+
+<!-- 6. Search graph -> search tree -->
+<section>
+  <h2>Graph &rarr; search tree</h2>
+  <div style="display:flex; gap:1.5em; align-items: flex-start;">
+    <div style="flex:1; max-width: 55%;">
+      <svg viewBox="0 0 380 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow-static" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+          </marker>
+        </defs>
+        <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arrow-static)">
+          <line x1="190" y1="35" x2="80" y2="78"/>
+          <line x1="190" y1="35" x2="190" y2="78"/>
+          <line x1="190" y1="35" x2="300" y2="78"/>
+          <line x1="300" y1="92" x2="300" y2="138"/>
+          <line x1="190" y1="92" x2="140" y2="138"/>
+          <line x1="190" y1="92" x2="240" y2="138"/>
+          <line x1="240" y1="152" x2="240" y2="200"/>
+          <line x1="240" y1="214" x2="190" y2="218"/>
+          <line x1="240" y1="214" x2="290" y2="218"/>
+        </g>
+        <g font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+          <g><circle cx="190" cy="25" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="190" y="29" fill="#111827">S</text></g>
+          <g><circle cx="70"  cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="70"  y="89" fill="#111827">D</text></g>
+          <g><circle cx="190" cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="190" y="89" fill="#111827">E</text></g>
+          <g><circle cx="300" cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="300" y="89" fill="#111827">P</text></g>
+          <g><circle cx="130" cy="145" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="130" y="149" fill="#111827">H</text></g>
+          <g><circle cx="240" cy="145" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="240" y="149" fill="#111827">R</text></g>
+          <g><circle cx="300" cy="145" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="300" y="149" fill="#111827">Q</text></g>
+          <g><circle cx="240" cy="207" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="240" y="211" fill="#111827">F</text></g>
+          <g><circle cx="178" cy="221" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="178" y="225" fill="#111827">C</text></g>
+          <g><circle cx="302" cy="221" r="14" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="302" y="225" fill="#991b1b">G</text></g>
+        </g>
+      </svg>
+    </div>
+    <div style="flex:1;">
+      <ul style="text-align:left;">
+        <li>Each <strong>state</strong> is a node; each <strong>action</strong> is a directed edge.</li>
+        <li>Search is: find a path from <strong>S</strong> (start) to <strong>G</strong> (goal).</li>
+        <li>We rarely build the graph upfront &mdash; it can be huge or infinite. Instead, grow a <strong>search tree</strong> from S, expanding one path at a time.</li>
+        <li>The <strong>frontier</strong> is the set of paths that are candidates for expansion.</li>
+      </ul>
+      <p style="font-size: 0.75em; margin-top: 0.5em; color: #6b7280;">For this lecture, every edge has cost 1.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Formulating 8-puzzle -->
+<section>
+  <h2>Example: formulating the 8-puzzle</h2>
+  <div class="puzzle-wrap" style="margin-bottom: 0.6em;">
+    <div class="puzzle-block">
+      <div class="puzzle-label">Initial</div>
+      <div class="puzzle-grid">
+        <div>5</div><div>3</div><div class="empty"></div>
+        <div>8</div><div>7</div><div>6</div>
+        <div>2</div><div>4</div><div>1</div>
+      </div>
+    </div>
+    <div class="puzzle-block">
+      <div class="puzzle-label">Goal</div>
+      <div class="puzzle-grid">
+        <div>1</div><div>2</div><div>3</div>
+        <div>4</div><div>5</div><div>6</div>
+        <div>7</div><div>8</div><div class="empty"></div>
+      </div>
+    </div>
+  </div>
+  <ul class="reveal-list">
+    <li class="fragment"><strong>State:</strong> 9 tile positions \(x_{ij} \in \{0, \ldots, 8\}\), with \(0\) = empty square.</li>
+    <li class="fragment"><strong>Initial state:</strong> <code>530,876,241</code></li>
+    <li class="fragment"><strong>Goal states:</strong> <code>123,456,780</code></li>
+    <li class="fragment"><strong>Successor function:</strong> slide a neighbour of the empty square into it (up/down/left/right).</li>
+    <li class="fragment"><strong>Cost function:</strong> 1 per move.</li>
+  </ul>
+</section>
+
+<!-- 8. Q: 8-puzzle successor function -->
+<section>
+  <h2>Quick check: successors</h2>
+  <p class="quiz-q"><strong>Q.</strong> Which of the following is a successor of <code>530,876,241</code>?</p>
+  <div style="display:flex; gap:2em; align-items: flex-start;">
+    <ol class="quiz-options" style="flex:1;">
+      <li><code>350,876,241</code></li>
+      <li><code>536,870,241</code></li>
+      <li><code>537,806,241</code></li>
+      <li><code>538,076,241</code></li>
+    </ol>
+    <div class="puzzle-block" style="flex:0;">
+      <div class="puzzle-label">Initial</div>
+      <div class="puzzle-grid">
+        <div>5</div><div>3</div><div class="empty"></div>
+        <div>8</div><div>7</div><div>6</div>
+        <div>2</div><div>4</div><div>1</div>
+      </div>
+    </div>
+  </div>
+  <div class="quiz-answer fragment">
+    <strong>Answer: B.</strong> Sliding the <code>6</code> up into the empty square gives <code>536,870,241</code>.
+  </div>
+</section>
+
+<!-- 9. Choosing the right formulation -->
+<section>
+  <h2>Choosing among multiple formulations</h2>
+  <ul style="text-align:left;">
+    <li>The <strong>state</strong> definition determines the nodes; the <strong>successor function</strong> determines the edges.</li>
+    <li>We usually want to <em>minimize</em> the number of nodes and edges.</li>
+    <li>The state definition also makes the successor function easier or harder to implement.</li>
+  </ul>
+  <div class="opinion-callout fragment" style="font-size: 0.75em; margin-top: 0.7em;">
+    <strong>Alternative formulation:</strong> a state is 9 coordinates, \((x_i, y_i)\) for each tile \(i\), \(0 \le i \le 8\).
+    <br><span style="color:#6b7280;">Same problem, ~2&times; the space; successor function now &ldquo;swap the empty tile's coords with a neighbour's coords&rdquo;.</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     Generic search algorithm (1 slide)
+     ============================================================ -->
+
+<!-- 10. Generic search algorithm -->
+<section>
+  <h2>Generic search algorithm</h2>
+  <p style="font-size: 0.78em; text-align: left;">Maintain a <strong>frontier</strong> of paths from \(s\). At each step, pull one out, check the goal, and add neighbouring extensions.</p>
+<pre class="algo"><span class="cmt">// Inputs: graph, start node s, goal test goal(n)</span>
+<span class="kw">function</span> Search(graph, s, goal):
+    frontier &larr; { &lt;s&gt; }
+    <span class="kw">while</span> frontier is not empty:
+        <span class="kw">select</span> and <span class="kw">remove</span> a path &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt; from frontier
+        <span class="kw">if</span> goal(n<sub>k</sub>):
+            <span class="kw">return</span> &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt;
+        <span class="kw">for each</span> neighbour n of n<sub>k</sub>:
+            add &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>, n&gt; to frontier
+    <span class="kw">return</span> &ldquo;no solution&rdquo;</pre>
+  <p class="footnote">Every uninformed search algorithm in this lecture is this skeleton; they only differ in <em>how</em> they pick the next path out of the frontier.</p>
+</section>
+
+<!-- ============================================================
+     DFS (5 slides)
+     ============================================================ -->
+
+<!-- 11. DFS intro -->
+<section>
+  <h2>Depth-first search (DFS)</h2>
+  <ul>
+    <li>Treat the frontier as a <strong>stack</strong> (LIFO).</li>
+    <li>Expand the <em>last</em> path added.</li>
+    <li>Goes down one path to the bottom before backtracking to alternatives.</li>
+  </ul>
+  <div class="opinion-callout" style="font-size: 0.75em; margin-top: 1.5em;">
+    Push neighbours of the last node, pop the newest. Same generic skeleton; the choice of data structure is the entire difference.
+  </div>
+</section>
+
+<!-- 12. DFS trace -->
+<section>
+  <h2>Trace: DFS on a search graph</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Push neighbours in alphabetical order. Step numbers = order of expansion.</p>
+  <div class="search-trace">
+    <div class="frontier-bar">
+      <strong>Frontier:</strong>
+      <span class="frontier-step fragment current-visible" data-fragment-index="0">(S)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="1">(D, E, P)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="2">(D, E, Q)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="3">(D, E)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="4">(D, H, R)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="5">(D, H, F)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="6">(D, H, C, G)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="7">goal G reached!</span>
+    </div>
+    <svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow-dfs" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+        </marker>
+      </defs>
+      <!-- S always visible -->
+      <g class="node">
+        <circle cx="350" cy="40" r="18"/>
+        <text x="350" y="40">S</text>
+      </g>
+      <!-- Step 1: S expanded, D/E/P appear -->
+      <g class="fragment" data-fragment-index="1">
+        <text class="step-number" x="372" y="32">1</text>
+        <line class="edge" x1="338" y1="55" x2="138" y2="115" marker-end="url(#arrow-dfs)"/>
+        <line class="edge" x1="350" y1="58" x2="350" y2="112" marker-end="url(#arrow-dfs)"/>
+        <line class="edge" x1="362" y1="55" x2="562" y2="115" marker-end="url(#arrow-dfs)"/>
+        <g class="node"><circle cx="120" cy="130" r="18"/><text x="120" y="130">D</text></g>
+        <g class="node"><circle cx="350" cy="130" r="18"/><text x="350" y="130">E</text></g>
+        <g class="node"><circle cx="580" cy="130" r="18"/><text x="580" y="130">P</text></g>
+      </g>
+      <!-- Step 2: P expanded, Q appears -->
+      <g class="fragment" data-fragment-index="2">
+        <text class="step-number" x="602" y="122">2</text>
+        <line class="edge" x1="580" y1="148" x2="580" y2="212" marker-end="url(#arrow-dfs)"/>
+        <g class="node"><circle cx="580" cy="230" r="18"/><text x="580" y="230">Q</text></g>
+      </g>
+      <!-- Step 3: Q expanded (no kids) -->
+      <g class="fragment" data-fragment-index="3">
+        <text class="step-number" x="602" y="222">3</text>
+      </g>
+      <!-- Step 4: E expanded, H/R appear -->
+      <g class="fragment" data-fragment-index="4">
+        <text class="step-number" x="372" y="122">4</text>
+        <line class="edge" x1="338" y1="145" x2="252" y2="212" marker-end="url(#arrow-dfs)"/>
+        <line class="edge" x1="362" y1="145" x2="438" y2="212" marker-end="url(#arrow-dfs)"/>
+        <g class="node"><circle cx="240" cy="230" r="18"/><text x="240" y="230">H</text></g>
+        <g class="node"><circle cx="450" cy="230" r="18"/><text x="450" y="230">R</text></g>
+      </g>
+      <!-- Step 5: R expanded, F appears -->
+      <g class="fragment" data-fragment-index="5">
+        <text class="step-number" x="472" y="222">5</text>
+        <line class="edge" x1="450" y1="248" x2="450" y2="302" marker-end="url(#arrow-dfs)"/>
+        <g class="node"><circle cx="450" cy="320" r="18"/><text x="450" y="320">F</text></g>
+      </g>
+      <!-- Step 6: F expanded, C/G appear -->
+      <g class="fragment" data-fragment-index="6">
+        <text class="step-number" x="472" y="312">6</text>
+        <line class="edge" x1="438" y1="335" x2="402" y2="362" marker-end="url(#arrow-dfs)"/>
+        <line class="edge" x1="462" y1="335" x2="498" y2="362" marker-end="url(#arrow-dfs)"/>
+        <g class="node"><circle cx="390" cy="380" r="18"/><text x="390" y="380">C</text></g>
+        <g class="node"><circle cx="510" cy="380" r="18"/><text x="510" y="380">G</text></g>
+      </g>
+      <!-- Step 7: G selected = goal -->
+      <g class="fragment" data-fragment-index="7">
+        <text class="step-number" x="532" y="372" fill="#dc2626">7</text>
+        <circle cx="510" cy="380" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+        <text x="510" y="380" fill="#991b1b" font-size="16" font-weight="600" text-anchor="middle" dominant-baseline="middle">G</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- 13. DFS properties -->
+<section>
+  <h2>DFS &mdash; properties</h2>
+  <p style="font-size: 0.72em; text-align: left;">Let \(b\) = branching factor, \(m\) = max depth of the search tree, \(d\) = depth of the shallowest goal.</p>
+  <table class="props">
+    <tr><th style="width:30%;">Space complexity</th><td>\(O(bm)\) &mdash; <strong>linear</strong> in \(m\). Remembers the current path (\(m\) nodes) + up to \(b\) siblings per level.</td></tr>
+    <tr><th>Time complexity</th><td>\(O(b^m)\) &mdash; <strong>exponential</strong> in \(m\). May visit the entire tree.</td></tr>
+    <tr><th>Complete?</th><td><span class="no">No.</span> Can get stuck in an infinite path (cycle or unbounded depth).</td></tr>
+    <tr><th>Optimal?</th><td><span class="no">No.</span> Returns the first goal it finds, regardless of cost.</td></tr>
+  </table>
+</section>
+
+<!-- 14. DFS failure modes -->
+<section>
+  <h2>DFS &mdash; failure modes</h2>
+  <div class="two-col" style="margin-top: 0.3em;">
+    <div style="flex:1;">
+      <h3 style="text-align:center; font-size:0.9em; color:#991b1b;">Cycle &rarr; not complete</h3>
+      <svg viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto;">
+        <defs>
+          <marker id="arr-fm1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+          </marker>
+        </defs>
+        <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arr-fm1)">
+          <line x1="60" y1="115" x2="130" y2="60"/>
+          <line x1="60" y1="125" x2="100" y2="190"/>
+          <line x1="155" y1="60" x2="225" y2="60"/>
+          <line x1="225" y1="75" x2="175" y2="115"/>
+          <line x1="145" y1="115" x2="145" y2="78"/>
+        </g>
+        <g font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+          <circle cx="50" cy="120" r="16" fill="#fff" stroke="#111827" stroke-width="2"/>
+          <text x="50" y="120">S</text>
+          <circle cx="145" cy="60" r="16" fill="#fff" stroke="#111827" stroke-width="2"/>
+          <text x="145" y="60">H</text>
+          <circle cx="240" cy="60" r="16" fill="#fff" stroke="#111827" stroke-width="2"/>
+          <text x="240" y="60">I</text>
+          <circle cx="160" cy="125" r="16" fill="#fff" stroke="#111827" stroke-width="2"/>
+          <text x="160" y="125">J</text>
+          <circle cx="105" cy="205" r="16" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+          <text x="105" y="205" fill="#991b1b">G</text>
+        </g>
+      </svg>
+      <p style="font-size: 0.7em; text-align: center; margin-top: 0.3em;">Loop \(H\to I\to J\to H\) traps DFS forever; goal \(G\) is never reached.</p>
+    </div>
+    <div style="flex:1;">
+      <h3 style="text-align:center; font-size:0.9em; color:#991b1b;">Returns first goal &rarr; not optimal</h3>
+      <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto;">
+        <defs>
+          <marker id="arr-fm2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+          </marker>
+        </defs>
+        <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arr-fm2)">
+          <line x1="180" y1="38" x2="80" y2="78"/>
+          <line x1="180" y1="38" x2="180" y2="78"/>
+          <line x1="180" y1="38" x2="280" y2="78"/>
+          <line x1="180" y1="100" x2="180" y2="138"/>
+          <line x1="180" y1="160" x2="180" y2="198"/>
+          <line x1="180" y1="220" x2="180" y2="238"/>
+        </g>
+        <path d="M 80,95 Q 180,210 280,238" stroke="#9ca3af" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arr-fm2)"/>
+        <g font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+          <circle cx="180" cy="30" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="30">S</text>
+          <circle cx="70"  cy="90" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="70"  y="90">D</text>
+          <circle cx="180" cy="90" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="90">E</text>
+          <circle cx="290" cy="90" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="290" y="90">P</text>
+          <circle cx="180" cy="150" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="150">J</text>
+          <circle cx="180" cy="210" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="210">F</text>
+          <circle cx="280" cy="245" r="15" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="280" y="245" fill="#991b1b">G</text>
+        </g>
+      </svg>
+      <p style="font-size: 0.7em; text-align: center; margin-top: 0.3em;">DFS finds the long \(S\to E\to J\to F\to G\) path; the short \(S\to D \dashrightarrow G\) is ignored.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 15. When to use DFS -->
+<section>
+  <h2>When to use DFS</h2>
+  <div class="two-col" style="margin-top: 1em;">
+    <div style="flex:1;">
+      <h3 style="color:#166534;">Good fit</h3>
+      <ul>
+        <li>Memory is restricted.</li>
+        <li>Many solutions exist (so getting <em>some</em> goal quickly is OK).</li>
+        <li>Solutions are deep / paths are long.</li>
+      </ul>
+    </div>
+    <div style="flex:1;">
+      <h3 style="color:#991b1b;">Bad fit</h3>
+      <ul>
+        <li>There are infinite paths or cycles (without cycle pruning).</li>
+        <li>Solutions are shallow.</li>
+        <li>You need the optimal (shortest) solution.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BFS (4 slides)
+     ============================================================ -->
+
+<!-- 16. BFS intro -->
+<section>
+  <h2>Breadth-first search (BFS)</h2>
+  <ul>
+    <li>Treat the frontier as a <strong>queue</strong> (FIFO).</li>
+    <li>Expand the <em>first</em> path added.</li>
+    <li>Explore the tree level-by-level &mdash; the path with the fewest arcs first.</li>
+  </ul>
+  <div class="opinion-callout" style="font-size: 0.75em; margin-top: 1.5em;">
+    The only difference from DFS is the data structure: queue instead of stack.
+  </div>
+</section>
+
+<!-- 17. BFS trace -->
+<section>
+  <h2>Trace: BFS on a search graph</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Push neighbours in alphabetical order. The graph contains multiple paths to <em>P</em> and <em>B</em>.</p>
+  <div class="search-trace">
+    <div class="frontier-bar">
+      <strong>Frontier:</strong>
+      <span class="frontier-step fragment current-visible" data-fragment-index="0">(S)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="1">(D, E, P)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="2">(B, C, H, J, Q)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="3">(P, B, G)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="4">G is the goal &mdash; found!</span>
+    </div>
+    <svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow-bfs" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+        </marker>
+      </defs>
+      <!-- S always visible -->
+      <g class="node"><circle cx="450" cy="30" r="18"/><text x="450" y="30">S</text></g>
+      <text class="step-number" x="472" y="22">1</text>
+      <!-- Fragment 1: D, E, P -->
+      <g class="fragment" data-fragment-index="1">
+        <text class="step-number" x="182" y="102">2</text>
+        <text class="step-number" x="472" y="102">3</text>
+        <text class="step-number" x="762" y="102">4</text>
+        <line class="edge" x1="438" y1="44" x2="172" y2="92" marker-end="url(#arrow-bfs)"/>
+        <line class="edge" x1="450" y1="48" x2="450" y2="92" marker-end="url(#arrow-bfs)"/>
+        <line class="edge" x1="462" y1="44" x2="728" y2="92" marker-end="url(#arrow-bfs)"/>
+        <g class="node"><circle cx="160" cy="110" r="18"/><text x="160" y="110">D</text></g>
+        <g class="node"><circle cx="450" cy="110" r="18"/><text x="450" y="110">E</text></g>
+        <g class="node"><circle cx="740" cy="110" r="18"/><text x="740" y="110">P</text></g>
+      </g>
+      <!-- Fragment 2: B, C, H, J, Q -->
+      <g class="fragment" data-fragment-index="2">
+        <text class="step-number" x="102" y="187">5</text>
+        <text class="step-number" x="262" y="187">6</text>
+        <text class="step-number" x="402" y="187">7</text>
+        <text class="step-number" x="542" y="187">8</text>
+        <text class="step-number" x="762" y="187">9</text>
+        <line class="edge" x1="148" y1="124" x2="92" y2="177" marker-end="url(#arrow-bfs)"/>
+        <line class="edge" x1="172" y1="124" x2="228" y2="177" marker-end="url(#arrow-bfs)"/>
+        <line class="edge" x1="438" y1="124" x2="392" y2="177" marker-end="url(#arrow-bfs)"/>
+        <line class="edge" x1="462" y1="124" x2="508" y2="177" marker-end="url(#arrow-bfs)"/>
+        <line class="edge" x1="740" y1="128" x2="740" y2="177" marker-end="url(#arrow-bfs)"/>
+        <g class="node"><circle cx="80"  cy="195" r="18"/><text x="80"  y="195">B</text></g>
+        <g class="node"><circle cx="240" cy="195" r="18"/><text x="240" y="195">C</text></g>
+        <g class="node"><circle cx="380" cy="195" r="18"/><text x="380" y="195">H</text></g>
+        <g class="node"><circle cx="520" cy="195" r="18"/><text x="520" y="195">J</text></g>
+        <g class="node"><circle cx="740" cy="195" r="18"/><text x="740" y="195">Q</text></g>
+      </g>
+      <!-- Fragment 3: P (under B), B (under Q), G -->
+      <g class="fragment" data-fragment-index="3">
+        <line class="edge" x1="80"  y1="213" x2="80"  y2="262" marker-end="url(#arrow-bfs)"/>
+        <line class="edge" x1="728" y1="208" x2="672" y2="262" marker-end="url(#arrow-bfs)"/>
+        <line class="edge" x1="752" y1="208" x2="808" y2="262" marker-end="url(#arrow-bfs)"/>
+        <g class="node"><circle cx="80"  cy="280" r="18"/><text x="80"  y="280">P</text></g>
+        <g class="node"><circle cx="660" cy="280" r="18"/><text x="660" y="280">B</text></g>
+        <g class="node"><circle cx="820" cy="280" r="18"/><text x="820" y="280">G</text></g>
+      </g>
+      <!-- Fragment 4: Q under P-of-B, P under B-of-Q, G as goal -->
+      <g class="fragment" data-fragment-index="4">
+        <line class="edge" x1="80"  y1="298" x2="80"  y2="347" marker-end="url(#arrow-bfs)"/>
+        <line class="edge" x1="660" y1="298" x2="660" y2="347" marker-end="url(#arrow-bfs)"/>
+        <g class="node"><circle cx="80"  cy="365" r="18"/><text x="80"  y="365">Q</text></g>
+        <g class="node"><circle cx="660" cy="365" r="18"/><text x="660" y="365">P</text></g>
+        <circle cx="820" cy="280" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+        <text x="820" y="280" font-size="16" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#991b1b">G</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- 18. BFS properties -->
+<section>
+  <h2>BFS &mdash; properties</h2>
+  <p style="font-size: 0.72em; text-align: left;">Let \(b\) = branching factor, \(d\) = depth of the shallowest goal.</p>
+  <table class="props">
+    <tr><th style="width:30%;">Space complexity</th><td>\(O(b^d)\) &mdash; <strong>exponential</strong> in \(d\). Must hold the whole frontier at level \(d\).</td></tr>
+    <tr><th>Time complexity</th><td>\(O(b^d)\) &mdash; <strong>exponential</strong> in \(d\). Visits the entire top \(d\) levels in the worst case.</td></tr>
+    <tr><th>Complete?</th><td><span class="ok">Yes.</span> Explores level by level until a goal is found.</td></tr>
+    <tr><th>Optimal?</th><td><span class="no">No</span> <em>in general</em>, but guaranteed to find the <strong>shallowest</strong> goal &mdash; which is optimal when all edges have equal cost.</td></tr>
+  </table>
+</section>
+
+<!-- 19. When to use BFS -->
+<section>
+  <h2>When to use BFS</h2>
+  <div class="two-col" style="margin-top: 1em;">
+    <div style="flex:1;">
+      <h3 style="color:#166534;">Good fit</h3>
+      <ul>
+        <li>Memory is plentiful.</li>
+        <li>You want the solution with the fewest arcs.</li>
+        <li>Cycles are possible.</li>
+      </ul>
+    </div>
+    <div style="flex:1;">
+      <h3 style="color:#991b1b;">Bad fit</h3>
+      <ul>
+        <li>All the solutions are deep.</li>
+        <li>The branching factor is large.</li>
+        <li>The graph is large or generated on the fly.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     DFS vs BFS quick quizzes (6 slides)
+     ============================================================ -->
+
+<!-- 20a. Q1 - memory limited -->
+<section>
+  <h2>BFS vs DFS &mdash; Q1</h2>
+  <p class="quiz-q"><strong>Q.</strong> Memory is very limited. Which would you choose?</p>
+  <ol class="quiz-options">
+    <li>BFS</li>
+    <li>DFS</li>
+    <li>Both are fine</li>
+    <li>Neither</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>Answer: B &mdash; DFS.</strong> DFS uses linear memory \(O(bm)\); BFS uses exponential \(O(b^d)\).
+  </div>
+</section>
+
+<!-- 20b. Q2 - deep solutions -->
+<section>
+  <h2>BFS vs DFS &mdash; Q2</h2>
+  <p class="quiz-q"><strong>Q.</strong> All solutions are deep in the search tree. Which would you choose?</p>
+  <ol class="quiz-options">
+    <li>BFS</li>
+    <li>DFS</li>
+    <li>Both are fine</li>
+    <li>Neither</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>Answer: B &mdash; DFS.</strong> DFS dives down long paths quickly; BFS would waste time enumerating every shallower level first.
+  </div>
+</section>
+
+<!-- 20c. Q3 - cycles -->
+<section>
+  <h2>BFS vs DFS &mdash; Q3</h2>
+  <p class="quiz-q"><strong>Q.</strong> The graph contains cycles. Which would you choose?</p>
+  <ol class="quiz-options">
+    <li>BFS</li>
+    <li>DFS</li>
+    <li>Both are fine</li>
+    <li>Neither</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>Answer: A &mdash; BFS.</strong> DFS can get stuck looping forever; BFS is unaffected (it always advances by level).
+  </div>
+</section>
+
+<!-- 20d. Q4 - large branching -->
+<section>
+  <h2>BFS vs DFS &mdash; Q4</h2>
+  <p class="quiz-q"><strong>Q.</strong> The branching factor is huge (or infinite). Which would you choose?</p>
+  <ol class="quiz-options">
+    <li>BFS</li>
+    <li>DFS</li>
+    <li>Both are fine</li>
+    <li>Neither</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>Answer: B &mdash; DFS.</strong> BFS's frontier blows up with \(b\); DFS keeps memory linear regardless of \(b\).
+  </div>
+</section>
+
+<!-- 20e. Q5 - shallowest goal -->
+<section>
+  <h2>BFS vs DFS &mdash; Q5</h2>
+  <p class="quiz-q"><strong>Q.</strong> You must find the <em>shallowest</em> goal. Which would you choose?</p>
+  <ol class="quiz-options">
+    <li>BFS</li>
+    <li>DFS</li>
+    <li>Both are fine</li>
+    <li>Neither</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>Answer: A &mdash; BFS.</strong> BFS is guaranteed to find the shallowest goal; DFS may return a deep one first.
+  </div>
+</section>
+
+<!-- 20f. Q6 - shallow solutions -->
+<section>
+  <h2>BFS vs DFS &mdash; Q6</h2>
+  <p class="quiz-q"><strong>Q.</strong> All solutions are very shallow. Which would you choose?</p>
+  <ol class="quiz-options">
+    <li>BFS</li>
+    <li>DFS</li>
+    <li>Both are fine</li>
+    <li>Neither</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>Answer: A &mdash; BFS.</strong> BFS finds the shallowest goal first; DFS may dive into a deep dead-end before checking shallower neighbours.
+  </div>
+</section>
+
+<!-- ============================================================
+     IDS (3 slides)
+     ============================================================ -->
+
+<!-- 21. Combining BFS + DFS = IDS -->
+<section>
+  <h2>Combining the best of BFS and DFS</h2>
+  <table class="compare" style="margin-top: 0.3em;">
+    <tr>
+      <th></th>
+      <th style="color:#1d4ed8;">BFS</th>
+      <th style="color:#1d4ed8;">DFS</th>
+    </tr>
+    <tr><th>Space</th><td>\(O(b^d)\) &mdash; exponential</td><td>\(O(bm)\) &mdash; linear</td></tr>
+    <tr><th>Completeness</th><td><span class="ok">Yes</span></td><td><span class="no">No</span> &mdash; can loop forever</td></tr>
+  </table>
+  <p style="font-size: 0.85em; margin-top: 1em;">Can we have both <em>linear space</em> and <em>completeness</em>?</p>
+  <div class="opinion-callout fragment" style="font-size: 0.85em; margin-top: 0.7em;">
+    <strong>Iterative-Deepening Search (IDS):</strong> for each depth limit \(\ell = 1, 2, 3, \ldots\), run depth-first search up to depth \(\ell\). Stop when you find a goal.
+  </div>
+</section>
+
+<!-- 22. IDS trace -->
+<section>
+  <h2>Trace: IDS on a search graph</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Same graph as BFS. Within each depth limit, push children in alphabetical order; pop LIFO (DFS).</p>
+  <div class="search-trace">
+    <div class="frontier-bar">
+      <strong>Depth limit:</strong>
+      <span class="frontier-step fragment current-visible" data-fragment-index="0">1 &mdash; visit S only.</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="1">2 &mdash; visit S, P, E, D (DFS, alphabetical push order).</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="2">3 &mdash; explore level 3, no goal yet.</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="3">4 &mdash; S &rarr; P &rarr; Q &rarr; G. Goal found!</span>
+    </div>
+    <!-- We swap between 4 mini-SVGs using current-visible fragments -->
+    <div style="position: relative; min-height: 320px;">
+      <!-- Depth 1 -->
+      <div class="fragment current-visible" data-fragment-index="0" style="position:absolute; left:0; right:0; top:0;">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="max-height:300px;">
+          <g class="node"><circle cx="350" cy="40" r="18"/><text x="350" y="40">S</text></g>
+          <text class="step-number" x="372" y="32">1</text>
+        </svg>
+      </div>
+      <!-- Depth 2 -->
+      <div class="fragment current-visible" data-fragment-index="1" style="position:absolute; left:0; right:0; top:0;">
+        <svg viewBox="0 0 700 280" xmlns="http://www.w3.org/2000/svg" style="max-height:300px;">
+          <defs>
+            <marker id="arrow-ids-2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+          </defs>
+          <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arrow-ids-2)">
+            <line x1="338" y1="55" x2="138" y2="115"/>
+            <line x1="350" y1="58" x2="350" y2="112"/>
+            <line x1="362" y1="55" x2="562" y2="115"/>
+          </g>
+          <g class="node"><circle cx="350" cy="40" r="18"/><text x="350" y="40">S</text></g>
+          <text class="step-number" x="372" y="32">1</text>
+          <g class="node"><circle cx="120" cy="130" r="18"/><text x="120" y="130">D</text></g>
+          <text class="step-number" x="142" y="122">4</text>
+          <g class="node"><circle cx="350" cy="130" r="18"/><text x="350" y="130">E</text></g>
+          <text class="step-number" x="372" y="122">3</text>
+          <g class="node"><circle cx="580" cy="130" r="18"/><text x="580" y="130">P</text></g>
+          <text class="step-number" x="602" y="122">2</text>
+        </svg>
+      </div>
+      <!-- Depth 3 -->
+      <div class="fragment current-visible" data-fragment-index="2" style="position:absolute; left:0; right:0; top:0;">
+        <svg viewBox="0 0 800 320" xmlns="http://www.w3.org/2000/svg" style="max-height:320px;">
+          <defs>
+            <marker id="arrow-ids-3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+          </defs>
+          <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arrow-ids-3)">
+            <line x1="388" y1="55" x2="148" y2="115"/>
+            <line x1="400" y1="58" x2="400" y2="112"/>
+            <line x1="412" y1="55" x2="652" y2="115"/>
+            <line x1="108" y1="148" x2="68" y2="195"/>
+            <line x1="132" y1="148" x2="172" y2="195"/>
+            <line x1="388" y1="148" x2="308" y2="195"/>
+            <line x1="412" y1="148" x2="492" y2="195"/>
+            <line x1="660" y1="148" x2="660" y2="195"/>
+          </g>
+          <g class="node"><circle cx="400" cy="40" r="18"/><text x="400" y="40">S</text></g>
+          <text class="step-number" x="422" y="32">1</text>
+          <g class="node"><circle cx="120" cy="130" r="18"/><text x="120" y="130">D</text></g>
+          <text class="step-number" x="142" y="122">7</text>
+          <g class="node"><circle cx="400" cy="130" r="18"/><text x="400" y="130">E</text></g>
+          <text class="step-number" x="422" y="122">4</text>
+          <g class="node"><circle cx="660" cy="130" r="18"/><text x="660" y="130">P</text></g>
+          <text class="step-number" x="682" y="122">2</text>
+          <g class="node"><circle cx="60"  cy="210" r="18"/><text x="60"  y="210">B</text></g>
+          <text class="step-number" x="82"  y="202">9</text>
+          <g class="node"><circle cx="180" cy="210" r="18"/><text x="180" y="210">C</text></g>
+          <text class="step-number" x="202" y="202">8</text>
+          <g class="node"><circle cx="300" cy="210" r="18"/><text x="300" y="210">H</text></g>
+          <text class="step-number" x="322" y="202">6</text>
+          <g class="node"><circle cx="500" cy="210" r="18"/><text x="500" y="210">J</text></g>
+          <text class="step-number" x="522" y="202">5</text>
+          <g class="node"><circle cx="660" cy="210" r="18"/><text x="660" y="210">Q</text></g>
+          <text class="step-number" x="682" y="202">3</text>
+        </svg>
+      </div>
+      <!-- Depth 4 -->
+      <div class="fragment current-visible" data-fragment-index="3" style="position:absolute; left:0; right:0; top:0;">
+        <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" style="max-height:320px;">
+          <defs>
+            <marker id="arrow-ids-4" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+          </defs>
+          <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arrow-ids-4)">
+            <line x1="362" y1="55" x2="562" y2="115"/>
+            <line x1="580" y1="148" x2="580" y2="195"/>
+            <line x1="580" y1="228" x2="580" y2="275"/>
+          </g>
+          <g class="node"><circle cx="350" cy="40" r="18"/><text x="350" y="40">S</text></g>
+          <text class="step-number" x="372" y="32">1</text>
+          <g class="node"><circle cx="580" cy="130" r="18"/><text x="580" y="130">P</text></g>
+          <text class="step-number" x="602" y="122">2</text>
+          <g class="node"><circle cx="580" cy="210" r="18"/><text x="580" y="210">Q</text></g>
+          <text class="step-number" x="602" y="202">3</text>
+          <g class="node goal"><circle cx="580" cy="290" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/><text x="580" y="290" fill="#991b1b">G</text></g>
+          <text class="step-number" x="602" y="282" fill="#dc2626">4</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 23. IDS properties -->
+<section>
+  <h2>IDS &mdash; properties</h2>
+  <table class="props">
+    <tr><th style="width:30%;">Space complexity</th><td>\(O(bd)\) &mdash; <strong>linear</strong> in \(d\). Each iteration is a depth-bounded DFS.</td></tr>
+    <tr><th>Time complexity</th><td>\(O(b^d)\) &mdash; <strong>exponential</strong> in \(d\). Repeats work but dominated by the last iteration.</td></tr>
+    <tr><th>Complete?</th><td><span class="ok">Yes.</span> Always terminates at depth \(d\).</td></tr>
+    <tr><th>Optimal?</th><td><span class="no">No</span> <em>in general</em>, but guaranteed to find the <strong>shallowest</strong> goal.</td></tr>
+  </table>
+  <p class="footnote">IDS pays a small constant-factor time overhead for the re-work, but gets BFS-like completeness with DFS-like memory. Best of both.</p>
+</section>
+
+<!-- ============================================================
+     Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 24. Summary - 3-way comparison -->
+<section>
+  <h2>Summary: DFS vs BFS vs IDS</h2>
+  <table class="compare">
+    <tr>
+      <th></th>
+      <th style="color:#1d4ed8;">DFS</th>
+      <th style="color:#1d4ed8;">BFS</th>
+      <th style="color:#1d4ed8;">IDS</th>
+    </tr>
+    <tr>
+      <th>Frontier</th>
+      <td>Stack (LIFO)</td>
+      <td>Queue (FIFO)</td>
+      <td>Stack, repeated at deeper limits</td>
+    </tr>
+    <tr>
+      <th>Space</th>
+      <td>\(O(bm)\)</td>
+      <td>\(O(b^d)\)</td>
+      <td>\(O(bd)\)</td>
+    </tr>
+    <tr>
+      <th>Time</th>
+      <td>\(O(b^m)\)</td>
+      <td>\(O(b^d)\)</td>
+      <td>\(O(b^d)\)</td>
+    </tr>
+    <tr>
+      <th>Complete?</th>
+      <td><span class="no">No</span></td>
+      <td><span class="ok">Yes</span></td>
+      <td><span class="ok">Yes</span></td>
+    </tr>
+    <tr>
+      <th>Optimal?</th>
+      <td><span class="no">No</span></td>
+      <td>Shallowest goal</td>
+      <td>Shallowest goal</td>
+    </tr>
+  </table>
+  <p class="footnote">\(b\) = branching factor; \(m\) = max depth of the search tree; \(d\) = depth of the shallowest goal.</p>
+</section>
+
+<!-- 25. Learning goals recap -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <ul style="text-align:left; margin-left:2em; list-style:none;">
+    <li>&#10003; Formulate a real-world problem as a search problem.</li>
+    <li>&#10003; Trace and implement <strong>DFS, BFS, IDS</strong>.</li>
+    <li>&#10003; Reason about each algorithm's space/time complexity, completeness, and optimality &mdash; and when each is the right choice.</li>
+  </ul>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  // Hide the corner "Course page" link whenever the deck is in true browser
+  // fullscreen (presentation mode).
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>

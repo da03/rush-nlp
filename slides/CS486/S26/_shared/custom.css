@@ -1,0 +1,193 @@
+/* Shared reveal.js overrides for CS 486/686 lecture decks.
+   Loaded BEFORE each lecture's lecture-specific custom.css so per-lecture
+   rules can override these. Contains the generic typography, layout
+   helpers, link styling, title-slide centering, and the persistent
+   "Course page" corner widget. */
+
+/* Tighten default heading sizes - reveal.js's defaults are too big for
+   academic slides. */
+.reveal h1 { font-size: 1.6em; }
+.reveal h2 { font-size: 1.2em; line-height: 1.2; margin-bottom: 0.6em; }
+.reveal h3 { font-size: 1.1em; }
+.reveal p, .reveal li { font-size: 0.85em; line-height: 1.4; }
+.reveal li { margin-bottom: 0.4em; }
+
+/* Lists shouldn't be centered, and shouldn't be allowed to overflow. */
+.reveal ul, .reveal ol { display: block; margin-left: 1.2em; max-width: 100%; }
+.reveal .slides section > * { max-width: 100%; }
+
+/* Vertical centering for short hero slides (title, learning goals, etc.).
+   NOTE: We do NOT override reveal.js's `transform` (carries the scale-to-
+   viewport factor) or `top` (carries the computed position). Instead, make
+   the section a flex column so children center within their given space. */
+.reveal section.center-slide {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+}
+
+/* Universal text wrapping defense. Long titles / long kv-grid values
+   were overflowing the slide's right edge. */
+.reveal h1, .reveal h2, .reveal h3,
+.reveal p, .reveal li, .reveal dd, .reveal dt,
+.reveal a, .reveal span, .reveal strong, .reveal em {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* Footnote-style citations. In-flow (not absolute) with a top separator
+   so they never collide with the bullet list above. */
+.reveal .footnote {
+  margin-top: 1.2em;
+  padding-top: 0.5em;
+  border-top: 1px solid #d1d5db;
+  font-size: 0.5em;
+  color: #888;
+  text-align: left;
+  line-height: 1.5;
+}
+.reveal .footnote a { font-size: inherit; }
+
+/* "Now / Research / Before" style key-value blocks. */
+.reveal .kv { display: grid; grid-template-columns: 7em 1fr; gap: 0.25em 0.8em; text-align: left; }
+.reveal .kv dt { font-weight: bold; color: #1d4ed8; }
+.reveal .kv dd { margin: 0; }
+
+/* Two-column CSS-columns layout for long lists (TAs, module bullets). */
+.reveal .two-col-list { column-count: 2; column-gap: 2em; text-align: left; }
+.reveal .two-col-list li { break-inside: avoid; }
+
+/* Two-column flex layout (image left + bullets right, side-by-side blocks). */
+.reveal .two-col {
+  display: flex;
+  gap: 1.5em;
+  align-items: flex-start;
+  text-align: left;
+}
+.reveal .two-col > div { min-width: 0; }
+.reveal .two-col img { width: 100%; border-radius: 4px; }
+
+/* Italic-gray disclaimer sitting flush under the slide title. */
+.reveal .opinion-disclaimer {
+  font-style: italic;
+  color: #6b7280;
+  font-size: 0.65em;
+  margin-top: -0.3em;
+  margin-bottom: 0.5em;
+}
+
+/* Blue callout for an opinion / focal sentence on a slide. */
+.reveal .opinion-callout {
+  background: #eff6ff;
+  border-left: 5px solid #1d4ed8;
+  padding: 0.7em 1em;
+  font-size: 0.85em;
+  text-align: left;
+  margin-top: 1.2em;
+  color: #1e3a8a;
+}
+.reveal .opinion-callout strong { color: #1d4ed8; }
+
+/* Credit avatars (tiny circular photos inline with the slide-credit line). */
+.reveal .credit-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+  margin: 0 0.15em 0 0.4em;
+  border: 1px solid #ddd;
+}
+
+/* Dense slides (topic outlines, "Who am I?") get smaller text. */
+.reveal .dense p,
+.reveal .dense li { font-size: 0.7em; line-height: 1.3; }
+.reveal .dense h2 { font-size: 1.1em; }
+
+/* Image sizing helpers - max-height in pixels (NOT vh) so they are
+   measured against the 720-px slide canvas, not the browser viewport. */
+.reveal img.wide { max-width: 90%; max-height: 280px; }
+.reveal img.medium { max-width: 55%; max-height: 230px; }
+.reveal img.narrow { max-width: 28%; max-height: 190px; }
+
+/* Slide footer with course/lecture info. */
+.reveal .slide-footer {
+  position: absolute;
+  bottom: 0.5em;
+  left: 0.5em;
+  font-size: 0.45em;
+  color: #888;
+}
+
+/* Tiny photo credit caption. */
+.reveal .photo-credit {
+  font-size: 0.5em;
+  color: #888;
+  margin-top: 0.2em;
+}
+
+/* Hyperlinks - subtle blue, with hover. */
+.reveal a { color: #1d4ed8; text-decoration: none; border-bottom: 1px dotted #1d4ed8; }
+.reveal a:hover { color: #1e40af; border-bottom-style: solid; }
+
+/* Title slide centering. */
+.reveal .title-slide { text-align: center; }
+.reveal .title-slide .course-title {
+  font-size: 1.3em;
+  color: #1d4ed8;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+.reveal .title-slide .author { font-size: 1em; margin-top: 1em; }
+.reveal .title-slide .credit { font-size: 0.55em; color: #666; margin-top: 2em; }
+
+/* Persistent "back to course page" link in the top-left corner.
+   Lives outside `.reveal` in the body so it doesn't move with slides.
+   Icon + label always visible. Hidden when the deck is in true browser
+   fullscreen (body gets `is-fullscreen` from JS on `fullscreenchange`)
+   and in reveal.js's `?print-pdf` export so it doesn't end up in handouts. */
+.course-home-link {
+  position: fixed;
+  top: 10px;
+  left: 14px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  line-height: 1;
+  color: #4b5563;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  opacity: 0.75;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+.course-home-link svg {
+  display: block;
+  stroke-width: 1.8;
+}
+.course-home-link .course-home-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.course-home-link:hover {
+  opacity: 1;
+  color: #1d4ed8;
+  background-color: rgba(29, 78, 216, 0.07);
+}
+body.is-fullscreen .course-home-link { display: none; }
+body.print-pdf .course-home-link { display: none; }
+
+/* PDF export:
+   - Open ?print-pdf in Chrome and Print > Save as PDF.
+   - Or use Decktape:
+       decktape reveal https://yuntiandeng.com/slides/CS486/S26/L<n>/ CS486_S26_L<n>.pdf
+*/

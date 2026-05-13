@@ -1,66 +1,6 @@
-/* Custom overrides on top of the reveal.js "white" theme for CS 486/686 lectures. */
-
-/* Tighten default heading sizes - reveal.js's defaults are too big for academic
-   slides, and several titles ("Module 3 -- Markov Decision Processes (L13-L16)",
-   "Distinguished Lecture: Prof. Kyunghyun Cho (NYU)") overflow the slide width
-   at the default 1.6em / 1.4em. Drop h2 to 1.2em. */
-.reveal h1 { font-size: 1.6em; }
-.reveal h2 { font-size: 1.2em; line-height: 1.2; margin-bottom: 0.6em; }
-.reveal h3 { font-size: 1.1em; }
-.reveal p, .reveal li { font-size: 0.85em; line-height: 1.4; }
-.reveal li { margin-bottom: 0.4em; }
-
-/* Lists shouldn't be centered, and they shouldn't be allowed to overflow
-   the slide width. */
-.reveal ul, .reveal ol { display: block; margin-left: 1.2em; max-width: 100%; }
-.reveal .slides section > * { max-width: 100%; }
-
-/* Vertical centering for short hero slides (title, learning goals, etc.).
-   NOTE: We do NOT override reveal.js's `transform` (which carries the
-   slide's scale-to-viewport factor) or `top` (which carries the slide's
-   computed position) -- doing so breaks the deck. Instead, make the
-   section itself a flex column so its children center within whatever
-   space the section is given. With min-height:100% this approximates
-   vertical centering on short slides; longer slides flow normally. */
-.reveal section.center-slide {
-  display: flex !important;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100%;
-}
-
-/* Universal text wrapping defense. Long titles / long kv-grid values were
-   overflowing the slide's right edge; allow break-word everywhere. */
-.reveal h1, .reveal h2, .reveal h3,
-.reveal p, .reveal li, .reveal dd, .reveal dt,
-.reveal a, .reveal span, .reveal strong, .reveal em {
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-}
-
-/* Footnote-style citations. In-flow (not absolute) with a visible top
-   separator and generous margin, so they never collide with the bullet
-   list above them. Previously absolute-positioned at bottom:0.4em which
-   caused the content above to inch into the footnote. */
-.reveal .footnote {
-  margin-top: 1.2em;
-  padding-top: 0.5em;
-  border-top: 1px solid #d1d5db;
-  font-size: 0.5em;
-  color: #888;
-  text-align: left;
-  line-height: 1.5;
-}
-.reveal .footnote a { font-size: inherit; }
-
-/* "Now / Research / Before" key-value blocks on the bio slide. */
-.reveal .kv { display: grid; grid-template-columns: 7em 1fr; gap: 0.25em 0.8em; text-align: left; }
-.reveal .kv dt { font-weight: bold; color: #1d4ed8; }
-.reveal .kv dd { margin: 0; }
-
-/* Two-column CSS-only column layout for long lists (TAs, module bullets). */
-.reveal .two-col-list { column-count: 2; column-gap: 2em; text-align: left; }
-.reveal .two-col-list li { break-inside: avoid; }
+/* L1-specific overrides on top of _shared/custom.css. Loaded AFTER the
+   shared stylesheet, so any rule here will win over a shared one with
+   the same specificity. Anything reusable lives in _shared/custom.css. */
 
 /* 2x2 grid for the "What today's LLMs can do" slide. */
 .reveal .grid-2x2 {
@@ -92,8 +32,8 @@
 .reveal .grade-bar .seg.project { background: #059669; }
 .reveal .grade-bar .seg.bonus { background: #f59e0b; }
 
-/* Classical-AI disclaimer callout (small, italic, orange accent) for the
-   teaser at the bottom of the Course roadmap slide. */
+/* Classical-AI disclaimer callout (orange/yellow accent) on the
+   Course roadmap slide. */
 .reveal .heads-up {
   margin-top: 0.8em;
   padding: 0.5em 0.9em;
@@ -106,8 +46,7 @@
   color: #4b3a00;
 }
 
-/* IS / IS NOT comparison columns on the disclaimer slide. Tightened to keep
-   the trailing Reality-check block visible within the slide canvas. */
+/* IS / IS NOT comparison columns on the disclaimer slide. */
 .reveal .col-is,
 .reveal .col-isnot {
   padding: 0.4em 0.7em;
@@ -167,10 +106,7 @@
 .reveal .score-progression .arrow { color: #6b7280; font-size: 1em; }
 .reveal .score-progression .step.final { background: #16a34a; }
 
-/* Enlarged hero variant for the "this replaces classical AI" slide.
-   Sized so 4 boxes + 3 arrows + a trailing "(max)" caption fit comfortably
-   in the 1280-wide slide canvas with margin to spare. flex-wrap added as a
-   defensive fallback in case the host viewport is unusually narrow. */
+/* Enlarged hero variant for the "this replaces classical AI" slide. */
 .reveal .score-progression.large {
   gap: 0.45em;
   margin: 1.0em 0 0.4em;
@@ -184,17 +120,7 @@
 }
 .reveal .score-progression.large .arrow { font-size: 1.15em; }
 
-/* Italic-gray disclaimer sitting flush under the slide title. */
-.reveal .opinion-disclaimer {
-  font-style: italic;
-  color: #6b7280;
-  font-size: 0.65em;
-  margin-top: -0.3em;
-  margin-bottom: 0.5em;
-}
-
-/* Hero images for the four module slides. Pixel-based (not vh) so the size
-   is measured against the 720-px slide canvas, not the browser viewport. */
+/* Hero images for the four module slides. Pixel-based (not vh). */
 .reveal .module-img {
   max-width: 100%;
   max-height: 320px;
@@ -219,45 +145,6 @@
   height: auto;
 }
 
-/* Blue callout for the actual opinion sentence (the focal point of the slide).
-   Sibling of .cho-banner, different accent color. */
-.reveal .opinion-callout {
-  background: #eff6ff;
-  border-left: 5px solid #1d4ed8;
-  padding: 0.7em 1em;
-  font-size: 0.85em;
-  text-align: left;
-  margin-top: 1.2em;
-  color: #1e3a8a;
-}
-.reveal .opinion-callout strong { color: #1d4ed8; }
-
-/* Credit avatars (tiny circular photos inline with the slide-credit line). */
-.reveal .credit-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  vertical-align: middle;
-  margin: 0 0.15em 0 0.4em;
-  border: 1px solid #ddd;
-}
-
-/* Dense slides (topic outlines, "Who am I?") get smaller text. */
-.reveal .dense p,
-.reveal .dense li { font-size: 0.7em; line-height: 1.3; }
-.reveal .dense h2 { font-size: 1.1em; }
-
-/* Two-column layout (Cho bio frame). */
-.reveal .two-col {
-  display: flex;
-  gap: 1.5em;
-  align-items: flex-start;
-  text-align: left;
-}
-.reveal .two-col > div { min-width: 0; }
-.reveal .two-col img { width: 100%; border-radius: 4px; }
-
 /* Cho-talk callout banner. */
 .reveal .cho-banner {
   background: #fff4d6;
@@ -280,95 +167,3 @@
 }
 .reveal pre.dialogue .eliza,
 .reveal pre.dialogue .confederate { color: purple; }
-
-/* Image sizing helpers - max-height in pixels (NOT vh) so they are measured
-   against the 720-px slide canvas, not the browser viewport. Using `vh` here
-   blows the images up on tall browser windows and pushes the bullet content
-   below them off the slide. Tightened so slides that pair a hero image with
-   bullets and a footnote below ("The deep learning era", "What an overnight
-   autoresearch run looks like") keep all bottom content on-canvas. */
-.reveal img.wide { max-width: 90%; max-height: 280px; }
-.reveal img.medium { max-width: 55%; max-height: 230px; }
-.reveal img.narrow { max-width: 28%; max-height: 190px; }
-
-/* Slide footer with course/lecture info. */
-.reveal .slide-footer {
-  position: absolute;
-  bottom: 0.5em;
-  left: 0.5em;
-  font-size: 0.45em;
-  color: #888;
-}
-
-/* Tiny photo credit caption. */
-.reveal .photo-credit {
-  font-size: 0.5em;
-  color: #888;
-  margin-top: 0.2em;
-}
-
-/* Hyperlinks - subtle blue, with hover. */
-.reveal a { color: #1d4ed8; text-decoration: none; border-bottom: 1px dotted #1d4ed8; }
-.reveal a:hover { color: #1e40af; border-bottom-style: solid; }
-
-/* Title slide centering. */
-.reveal .title-slide { text-align: center; }
-.reveal .title-slide .course-title {
-  font-size: 1.3em;
-  color: #1d4ed8;
-  font-weight: bold;
-  margin-bottom: 0.5em;
-  line-height: 1.2;
-}
-.reveal .title-slide .author { font-size: 1em; margin-top: 1em; }
-.reveal .title-slide .credit { font-size: 0.55em; color: #666; margin-top: 2em; }
-
-/* Persistent "back to course page" link in the top-left corner.
-   Lives outside `.reveal` in the body so it doesn't move with slides.
-   Icon + label always visible (icon-only with hover-reveal was too easy
-   to miss). Hidden when the deck is in true browser fullscreen (body
-   gets `is-fullscreen` from JS on `fullscreenchange`) and in reveal.js's
-   `?print-pdf` export so it doesn't end up in handouts. */
-.course-home-link {
-  position: fixed;
-  top: 10px;
-  left: 14px;
-  z-index: 1000;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  line-height: 1;
-  color: #4b5563;
-  text-decoration: none;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  opacity: 0.75;
-  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
-}
-.course-home-link svg {
-  display: block;
-  stroke-width: 1.8;
-}
-.course-home-link .course-home-label {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-}
-.course-home-link:hover {
-  opacity: 1;
-  color: #1d4ed8;
-  background-color: rgba(29, 78, 216, 0.07);
-}
-body.is-fullscreen .course-home-link { display: none; }
-body.print-pdf .course-home-link { display: none; }
-
-/* PDF export:
-   - Open https://yuntiandeng.com/slides/CS486/S26/L1/?print-pdf in Chrome and Print > Save as PDF.
-   - Or use Decktape:
-       decktape reveal https://yuntiandeng.com/slides/CS486/S26/L1/ CS486_S26_L1.pdf
-*/

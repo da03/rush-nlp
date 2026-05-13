@@ -1,0 +1,217 @@
+/* L2-specific overrides on top of _shared/custom.css. */
+
+/* Applications-grid: 4-up image+caption grid for the visual landing slide. */
+.reveal .app-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7em 1em;
+  text-align: center;
+  margin-top: 0.4em;
+}
+.reveal .app-grid .app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.reveal .app-grid img {
+  max-width: 100%;
+  max-height: 110px;
+  width: auto;
+  height: auto;
+  border-radius: 4px;
+  object-fit: contain;
+}
+.reveal .app-grid .app-caption {
+  font-size: 0.55em;
+  line-height: 1.25;
+  margin-top: 0.25em;
+  color: #374151;
+}
+.reveal .app-grid .app-caption strong { display: block; color: #111827; }
+
+/* 8-puzzle CSS grid (reusable for initial / goal states). */
+.reveal .puzzle-wrap { display: flex; gap: 2em; justify-content: center; align-items: flex-start; }
+.reveal .puzzle-block { text-align: center; }
+.reveal .puzzle-label { font-size: 0.7em; font-weight: bold; margin-bottom: 0.3em; color: #1f2937; }
+.reveal .puzzle-grid {
+  display: inline-grid;
+  grid-template-columns: repeat(3, 48px);
+  grid-template-rows: repeat(3, 48px);
+  border: 2px solid #111827;
+  background: #111827;
+  gap: 1px;
+}
+.reveal .puzzle-grid div {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #111827;
+}
+.reveal .puzzle-grid div.empty { background: #f3f4f6; }
+
+/* Definition / boxed block (used for "A search problem", "Why search"). */
+.reveal .defbox {
+  border: 1px solid #cbd5e1;
+  border-left: 5px solid #1d4ed8;
+  background: #f8fafc;
+  padding: 0.7em 1em;
+  text-align: left;
+  margin: 0.4em 0;
+}
+.reveal .defbox h3 {
+  font-size: 0.9em;
+  margin: 0 0 0.4em 0;
+  color: #1d4ed8;
+}
+.reveal .defbox ul { margin: 0.2em 0 0.2em 1em; }
+.reveal .defbox li { font-size: 0.8em; line-height: 1.3; margin-bottom: 0.2em; }
+
+/* Search trace SVG layout. The SVG sits centered with the frontier bar
+   immediately above it. */
+.reveal .search-trace { max-width: 760px; margin: 0.4em auto; text-align: center; }
+.reveal .frontier-bar {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.75em;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  padding: 0.4em 0.8em;
+  margin-bottom: 0.5em;
+  text-align: left;
+  color: #111827;
+  min-height: 1.4em;
+}
+.reveal .frontier-bar strong { color: #6b7280; margin-right: 0.4em; }
+/* For fragment "current-visible": only the current step's text shows. */
+.reveal .frontier-bar .frontier-step { display: none; }
+.reveal .frontier-bar .frontier-step.current-fragment { display: inline; }
+/* Reveal.js applies `.current-fragment` to the active fragment in
+   `current-visible` mode (where prior fragments hide). */
+
+/* Trace SVG node styling. */
+.reveal .search-trace svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+.reveal .search-trace svg .node circle {
+  fill: #fff;
+  stroke: #111827;
+  stroke-width: 2;
+}
+.reveal .search-trace svg .node text {
+  font-size: 16px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .search-trace svg .node.goal circle { fill: #fee2e2; stroke: #dc2626; }
+.reveal .search-trace svg .node.goal text { fill: #991b1b; }
+.reveal .search-trace svg .step-number {
+  font-size: 11px;
+  font-weight: bold;
+  fill: #1d4ed8;
+}
+.reveal .search-trace svg .edge {
+  stroke: #4b5563;
+  stroke-width: 1.5;
+  fill: none;
+  marker-end: url(#arrow);
+}
+.reveal .search-trace svg .edge.dashed {
+  stroke-dasharray: 4 3;
+  stroke: #9ca3af;
+}
+
+/* Algorithm pseudocode block. */
+.reveal pre.algo {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #1d4ed8;
+  padding: 0.8em 1.2em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.65em;
+  line-height: 1.55;
+  text-align: left;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 0.5em auto;
+  max-width: 90%;
+  color: #111827;
+}
+.reveal pre.algo .kw { color: #1d4ed8; font-weight: bold; }
+.reveal pre.algo .cmt { color: #6b7280; font-style: italic; }
+
+/* Properties / compare tables (used for DFS/BFS/IDS). */
+.reveal table.props,
+.reveal table.compare {
+  width: 80%;
+  margin: 0.5em auto;
+  border-collapse: collapse;
+  font-size: 0.75em;
+  text-align: left;
+}
+.reveal table.props th,
+.reveal table.compare th,
+.reveal table.props td,
+.reveal table.compare td {
+  padding: 0.5em 0.9em;
+  border-bottom: 1px solid #e5e7eb;
+}
+.reveal table.props th,
+.reveal table.compare th {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+.reveal table.compare th:first-child { width: 18%; }
+.reveal table.props .ok { color: #166534; font-weight: 600; }
+.reveal table.props .no { color: #991b1b; font-weight: 600; }
+.reveal table.compare .ok { color: #166534; font-weight: 600; }
+.reveal table.compare .no { color: #991b1b; font-weight: 600; }
+
+/* Quiz Q / answer pattern. */
+.reveal .quiz-q {
+  text-align: left;
+  margin: 0.3em 0;
+  font-size: 0.85em;
+}
+.reveal .quiz-q strong { color: #1d4ed8; }
+.reveal .quiz-options {
+  list-style: upper-alpha;
+  text-align: left;
+  margin: 0.4em 0 0.4em 2em;
+}
+.reveal .quiz-options li { font-size: 0.82em; margin-bottom: 0.2em; }
+.reveal .quiz-answer {
+  margin-top: 0.6em;
+  padding: 0.55em 0.9em;
+  background: #ecfdf5;
+  border-left: 4px solid #059669;
+  font-size: 0.75em;
+  text-align: left;
+  line-height: 1.4;
+}
+.reveal .quiz-answer strong { color: #065f46; }
+
+/* Bullets list that gets revealed step-by-step but stays visible
+   (used on Formulating 8-puzzle, Choosing the right formulation). */
+.reveal .reveal-list { text-align: left; }
+.reveal .reveal-list li { margin-bottom: 0.5em; }
+
+/* Tiny info note (replaces Beamer's `inote`). */
+.reveal .inote {
+  margin: 0.5em 0;
+  padding: 0.4em 0.8em;
+  background: #fef9c3;
+  border-left: 4px solid #ca8a04;
+  font-size: 0.7em;
+  line-height: 1.4;
+  text-align: left;
+  color: #422006;
+}
