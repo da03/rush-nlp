@@ -1,6 +1,6 @@
-/* L1-specific overrides on top of _shared/custom.css. Loaded AFTER the
+/* L1-specific overrides on top of shared/custom.css. Loaded AFTER the
    shared stylesheet, so any rule here will win over a shared one with
-   the same specificity. Anything reusable lives in _shared/custom.css. */
+   the same specificity. Anything reusable lives in shared/custom.css. */
 
 /* 2x2 grid for the "What today's LLMs can do" slide. */
 .reveal .grid-2x2 {
