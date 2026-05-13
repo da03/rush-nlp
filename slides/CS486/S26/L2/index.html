@@ -32,16 +32,17 @@
   <div class="course-title">CS 486/686<br>Uninformed Search</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 2</p>
-  <p class="credit">Readings: Russell &amp; Norvig 3.1, 3.2, 3.3, 3.4.1, 3.4.3, 3.4.4</p>
+  <p class="credit">RN 3.1&ndash;3.4</p>
 </section>
 
 <!-- 2. Learning goals -->
 <section class="center-slide">
   <h2>Learning goals</h2>
-  <ul style="text-align:left; margin-left:2em;">
-    <li>Formulate a real-world problem as a search problem.</li>
-    <li>Trace and implement <strong>DFS, BFS, IDS</strong>.</li>
-    <li>Reason about each algorithm's space/time complexity, completeness, and optimality &mdash; and when each is the right choice.</li>
+  <ul style="text-align:left; margin-left:2em; list-style:disc;">
+    <li>Formulate problems as search</li>
+    <li>Trace DFS, BFS, IDS</li>
+    <li>Analyze: space, time, completeness, optimality</li>
+    <li>Pick the right algorithm</li>
   </ul>
 </section>
 
@@ -55,22 +56,22 @@
   <div class="app-grid">
     <div class="app">
       <img src="images/search_in_robotics_1.jpg" alt="Roomba">
-      <div class="app-caption"><strong>Robotics</strong>Roomba, Mars rovers, search &amp; rescue</div>
+      <div class="app-caption"><strong>Robotics</strong></div>
     </div>
     <div class="app">
       <img src="images/search_route_planning.png" alt="Route planning">
-      <div class="app-caption"><strong>Route planning</strong>Maps, GPS navigation</div>
+      <div class="app-caption"><strong>Route planning</strong></div>
     </div>
     <div class="app">
       <img src="images/content_bbeeTSP2.jpg" alt="Travelling Salesperson">
-      <div class="app-caption"><strong>TSP</strong>DNA sequencing, school bus routes, parcel delivery</div>
+      <div class="app-caption"><strong>TSP</strong></div>
     </div>
     <div class="app">
       <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.7em; padding: 1em 0.4em; line-height: 1.3;">
         \( ((a \land b) \lor c) \land d \)
         <br>\( \lor (\neg e) \)
       </div>
-      <div class="app-caption"><strong>SAT</strong>FCC spectrum auction</div>
+      <div class="app-caption"><strong>SAT</strong></div>
     </div>
     <div class="app">
       <div class="puzzle-grid" style="grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); margin-top: 0.6em;">
@@ -78,25 +79,24 @@
         <div>8</div><div>7</div><div>6</div>
         <div>2</div><div>4</div><div>1</div>
       </div>
-      <div class="app-caption"><strong>8-puzzle</strong>Sliding tile</div>
+      <div class="app-caption"><strong>8-puzzle</strong></div>
     </div>
     <div class="app">
       <img src="images/Animation_of_Cabbage,_Sheep_and_Dog_Crossing_the_River.png" alt="River crossing puzzle">
-      <div class="app-caption"><strong>River crossing</strong>Classic logic puzzle</div>
+      <div class="app-caption"><strong>River crossing</strong></div>
     </div>
     <div class="app">
       <img src="images/8-queen_solution.png" alt="N-queens">
-      <div class="app-caption"><strong>N-queens</strong>Constraint satisfaction</div>
+      <div class="app-caption"><strong>N-queens</strong></div>
     </div>
     <div class="app">
       <div style="font-size: 1.6em; padding: 0.6em 0.4em; color: #4b5563;">&hellip;</div>
-      <div class="app-caption"><strong>And many more</strong>Planning, scheduling, theorem proving</div>
+      <div class="app-caption"><strong>And many more</strong></div>
     </div>
   </div>
   <p class="footnote">
-    TSP breakthrough &mdash; <a href="https://www.quantamagazine.org/computer-scientists-break-traveling-salesperson-record-20201008/">Quanta, 2020</a>.
-    FCC spectrum auction &mdash; <a href="https://science.ubc.ca/news/how-ai-helped-fcc-auction-19-billion-worth-radio-spectrum">UBC news</a>,
-    <a href="https://www.cs.ubc.ca/~newmanne/papers/cacm_deep_opt.pdf">CACM paper</a>.
+    TSP: <a href="https://www.quantamagazine.org/computer-scientists-break-traveling-salesperson-record-20201008/">Quanta</a>.
+    SAT / FCC auction: <a href="https://science.ubc.ca/news/how-ai-helped-fcc-auction-19-billion-worth-radio-spectrum">UBC news</a>.
   </p>
 </section>
 
@@ -105,13 +105,13 @@
      ============================================================ -->
 
 <!-- 4. Why search? -->
-<section>
+<section class="center-slide">
   <h2>Why search?</h2>
-  <ul>
-    <li>Problems that require <strong>sequential decision making</strong>: a series of moves, not a single closed-form computation.</li>
-    <li>Used when no efficient direct algorithm exists. (Unlike, e.g., solving a linear system: that has fast specialized solvers.)</li>
-    <li>Often <strong>easy to verify</strong> a candidate solution, but <strong>hard to find</strong> one &mdash; the defining feature of NP-hard problems.</li>
-    <li>A search algorithm explores the space of possibilities <strong>systematically</strong>, instead of trial-and-error.</li>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Sequential decisions</li>
+    <li>No closed-form algorithm</li>
+    <li>Easy to verify, hard to find</li>
+    <li>Systematic, not guesswork</li>
   </ul>
 </section>
 
@@ -119,23 +119,23 @@
 <section>
   <h2>What is a search problem?</h2>
   <div class="defbox">
-    <h3>A search problem is defined by:</h3>
+    <h3>Five components:</h3>
     <ul>
-      <li>A set of <strong>states</strong>.</li>
-      <li>An <strong>initial state</strong>.</li>
-      <li><strong>Goal states</strong> &mdash; or a <strong>goal test</strong>: a boolean function on a state.</li>
-      <li>A <strong>successor (neighbour) function</strong>: which states can we reach from this one?</li>
-      <li><em>(Optional)</em> a <strong>cost</strong> on each action.</li>
+      <li><strong>States</strong></li>
+      <li><strong>Initial state</strong></li>
+      <li><strong>Goal test</strong></li>
+      <li><strong>Successor function</strong></li>
+      <li><strong>Cost</strong> (optional)</li>
     </ul>
   </div>
-  <p style="text-align:left; font-size:0.8em; margin-top: 0.4em;">A <strong>solution</strong> is a path from the initial state to a goal state &mdash; optionally one with minimum total cost.</p>
+  <p style="text-align:left; font-size:0.8em; margin-top: 0.6em;"><strong>Solution</strong> = path from start to goal.</p>
 </section>
 
-<!-- 6. Search graph -> search tree -->
+<!-- 6a. Search graph -->
 <section>
-  <h2>Graph &rarr; search tree</h2>
-  <div style="display:flex; gap:1.5em; align-items: flex-start;">
-    <div style="flex:1; max-width: 55%;">
+  <h2>Search graph</h2>
+  <div style="display:flex; gap:1.5em; align-items: center;">
+    <div style="flex:1.2;">
       <svg viewBox="0 0 380 240" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <marker id="arrow-static" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
@@ -154,7 +154,7 @@
           <line x1="240" y1="214" x2="290" y2="218"/>
         </g>
         <g font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle">
-          <g><circle cx="190" cy="25" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="190" y="29" fill="#111827">S</text></g>
+          <g><circle cx="190" cy="25" r="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="190" y="29" fill="#1e3a8a">S</text></g>
           <g><circle cx="70"  cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="70"  y="89" fill="#111827">D</text></g>
           <g><circle cx="190" cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="190" y="89" fill="#111827">E</text></g>
           <g><circle cx="300" cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="300" y="89" fill="#111827">P</text></g>
@@ -169,19 +169,60 @@
     </div>
     <div style="flex:1;">
       <ul style="text-align:left;">
-        <li>Each <strong>state</strong> is a node; each <strong>action</strong> is a directed edge.</li>
-        <li>Search is: find a path from <strong>S</strong> (start) to <strong>G</strong> (goal).</li>
-        <li>We rarely build the graph upfront &mdash; it can be huge or infinite. Instead, grow a <strong>search tree</strong> from S, expanding one path at a time.</li>
-        <li>The <strong>frontier</strong> is the set of paths that are candidates for expansion.</li>
+        <li>States &rarr; <strong>nodes</strong></li>
+        <li>Actions &rarr; <strong>edges</strong></li>
+        <li>Goal: find a path <strong>S &rarr; G</strong></li>
       </ul>
-      <p style="font-size: 0.75em; margin-top: 0.5em; color: #6b7280;">For this lecture, every edge has cost 1.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6b. Search tree + frontier -->
+<section>
+  <h2>Search tree &amp; frontier</h2>
+  <div style="display:flex; gap:1.5em; align-items: center;">
+    <div style="flex:1.2;">
+      <svg viewBox="0 0 420 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow-tree" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+          </marker>
+        </defs>
+        <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arrow-tree)">
+          <line x1="210" y1="35" x2="100" y2="78"/>
+          <line x1="210" y1="35" x2="210" y2="78"/>
+          <line x1="210" y1="35" x2="320" y2="78"/>
+          <line x1="100" y1="98" x2="60"  y2="148"/>
+          <line x1="100" y1="98" x2="140" y2="148"/>
+          <line x1="320" y1="98" x2="320" y2="148"/>
+        </g>
+        <!-- Frontier highlight rectangle around the leaves -->
+        <rect x="20" y="138" width="380" height="60" fill="#fef3c7" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3" rx="8" opacity="0.9"/>
+        <text x="210" y="225" text-anchor="middle" font-size="13" font-style="italic" fill="#92400e">frontier</text>
+        <g font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+          <g><circle cx="210" cy="25" r="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="210" y="29" fill="#1e3a8a">S</text></g>
+          <g><circle cx="90"  cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="90"  y="89" fill="#111827">D</text></g>
+          <g><circle cx="210" cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="210" y="89" fill="#111827">E</text></g>
+          <g><circle cx="330" cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="330" y="89" fill="#111827">P</text></g>
+          <g><circle cx="50"  cy="160" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="50"  y="164" fill="#111827">B</text></g>
+          <g><circle cx="150" cy="160" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="150" y="164" fill="#111827">C</text></g>
+          <g><circle cx="330" cy="160" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="330" y="164" fill="#111827">Q</text></g>
+        </g>
+      </svg>
+    </div>
+    <div style="flex:1;">
+      <ul style="text-align:left;">
+        <li>Don't enumerate the graph</li>
+        <li>Grow a tree from S, one path at a time</li>
+        <li><strong>Frontier</strong> = paths to expand next</li>
+      </ul>
     </div>
   </div>
 </section>
 
 <!-- 7. Formulating 8-puzzle -->
 <section>
-  <h2>Example: formulating the 8-puzzle</h2>
+  <h2>Example: 8-puzzle</h2>
   <div class="puzzle-wrap" style="margin-bottom: 0.6em;">
     <div class="puzzle-block">
       <div class="puzzle-label">Initial</div>
@@ -201,18 +242,18 @@
     </div>
   </div>
   <ul class="reveal-list">
-    <li class="fragment"><strong>State:</strong> 9 tile positions \(x_{ij} \in \{0, \ldots, 8\}\), with \(0\) = empty square.</li>
-    <li class="fragment"><strong>Initial state:</strong> <code>530,876,241</code></li>
-    <li class="fragment"><strong>Goal states:</strong> <code>123,456,780</code></li>
-    <li class="fragment"><strong>Successor function:</strong> slide a neighbour of the empty square into it (up/down/left/right).</li>
-    <li class="fragment"><strong>Cost function:</strong> 1 per move.</li>
+    <li class="fragment"><strong>State:</strong> 9 positions, <code>0</code> = empty</li>
+    <li class="fragment"><strong>Initial:</strong> <code>530,876,241</code></li>
+    <li class="fragment"><strong>Goal:</strong> <code>123,456,780</code></li>
+    <li class="fragment"><strong>Successor:</strong> slide adjacent tile into empty</li>
+    <li class="fragment"><strong>Cost:</strong> 1 per move</li>
   </ul>
 </section>
 
 <!-- 8. Q: 8-puzzle successor function -->
 <section>
   <h2>Quick check: successors</h2>
-  <p class="quiz-q"><strong>Q.</strong> Which of the following is a successor of <code>530,876,241</code>?</p>
+  <p class="quiz-q"><strong>Q.</strong> Which is a successor of <code>530,876,241</code>?</p>
   <div style="display:flex; gap:2em; align-items: flex-start;">
     <ol class="quiz-options" style="flex:1;">
       <li><code>350,876,241</code></li>
@@ -230,22 +271,44 @@
     </div>
   </div>
   <div class="quiz-answer fragment">
-    <strong>Answer: B.</strong> Sliding the <code>6</code> up into the empty square gives <code>536,870,241</code>.
+    <strong>B.</strong> Slide the <code>6</code> up.
   </div>
 </section>
 
-<!-- 9. Choosing the right formulation -->
-<section>
-  <h2>Choosing among multiple formulations</h2>
-  <ul style="text-align:left;">
-    <li>The <strong>state</strong> definition determines the nodes; the <strong>successor function</strong> determines the edges.</li>
-    <li>We usually want to <em>minimize</em> the number of nodes and edges.</li>
-    <li>The state definition also makes the successor function easier or harder to implement.</li>
+<!-- 9a. State + successor define the graph -->
+<section class="center-slide">
+  <h2>Multiple formulations possible</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>State def &rarr; nodes</li>
+    <li>Successor &rarr; edges</li>
+    <li>Minimize both</li>
   </ul>
-  <div class="opinion-callout fragment" style="font-size: 0.75em; margin-top: 0.7em;">
-    <strong>Alternative formulation:</strong> a state is 9 coordinates, \((x_i, y_i)\) for each tile \(i\), \(0 \le i \le 8\).
-    <br><span style="color:#6b7280;">Same problem, ~2&times; the space; successor function now &ldquo;swap the empty tile's coords with a neighbour's coords&rdquo;.</span>
+</section>
+
+<!-- 9b. Alternative formulation example -->
+<section>
+  <h2>Same 8-puzzle, different state</h2>
+  <div style="display:flex; gap:2em; align-items: center; justify-content: center;">
+    <div style="text-align:center;">
+      <div class="puzzle-label">By grid</div>
+      <div class="puzzle-grid" style="grid-template-columns: repeat(3, 38px); grid-template-rows: repeat(3, 38px);">
+        <div>5</div><div>3</div><div class="empty"></div>
+        <div>8</div><div>7</div><div>6</div>
+        <div>2</div><div>4</div><div>1</div>
+      </div>
+      <p style="font-size:0.6em; margin-top:0.3em; color:#6b7280;">9 cells, 0&ndash;8</p>
+    </div>
+    <div style="font-size: 1.8em; color:#9ca3af;">vs</div>
+    <div style="text-align:center; font-family: ui-monospace, Menlo, monospace; font-size: 0.7em;">
+      <div class="puzzle-label" style="font-family: -apple-system, sans-serif;">By coordinates</div>
+      <div style="padding: 0.8em 1em; background:#f9fafb; border:1px solid #e5e7eb; border-radius:4px;">
+        \((x_0, y_0), (x_1, y_1),\)<br>
+        \((x_2, y_2), \ldots, (x_8, y_8)\)
+      </div>
+      <p style="font-size:0.6em; margin-top:0.3em; color:#6b7280; font-family:-apple-system,sans-serif;">9 (x,y) pairs &mdash; ~2&times; the space</p>
+    </div>
   </div>
+  <p class="footnote">Successor swaps empty tile's coords with a neighbour's.</p>
 </section>
 
 <!-- ============================================================
@@ -255,7 +318,6 @@
 <!-- 10. Generic search algorithm -->
 <section>
   <h2>Generic search algorithm</h2>
-  <p style="font-size: 0.78em; text-align: left;">Maintain a <strong>frontier</strong> of paths from \(s\). At each step, pull one out, check the goal, and add neighbouring extensions.</p>
 <pre class="algo"><span class="cmt">// Inputs: graph, start node s, goal test goal(n)</span>
 <span class="kw">function</span> Search(graph, s, goal):
     frontier &larr; { &lt;s&gt; }
@@ -266,30 +328,33 @@
         <span class="kw">for each</span> neighbour n of n<sub>k</sub>:
             add &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>, n&gt; to frontier
     <span class="kw">return</span> &ldquo;no solution&rdquo;</pre>
-  <p class="footnote">Every uninformed search algorithm in this lecture is this skeleton; they only differ in <em>how</em> they pick the next path out of the frontier.</p>
+</section>
+
+<!-- 11. One template, three algorithms -->
+<section class="center-slide">
+  <h2>One template, three algorithms</h2>
+  <p style="font-size: 1.2em; margin-top: 1em;">DFS, BFS, IDS all use this skeleton.</p>
+  <p style="font-size: 1.2em; margin-top: 0.5em;">They differ only in <strong>which path</strong> they pull from the frontier.</p>
 </section>
 
 <!-- ============================================================
      DFS (5 slides)
      ============================================================ -->
 
-<!-- 11. DFS intro -->
-<section>
+<!-- 12. DFS intro -->
+<section class="center-slide">
   <h2>Depth-first search (DFS)</h2>
-  <ul>
-    <li>Treat the frontier as a <strong>stack</strong> (LIFO).</li>
-    <li>Expand the <em>last</em> path added.</li>
-    <li>Goes down one path to the bottom before backtracking to alternatives.</li>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Frontier = <strong>stack</strong> (LIFO)</li>
+    <li>Pop newest</li>
+    <li>Dive deep, then backtrack</li>
   </ul>
-  <div class="opinion-callout" style="font-size: 0.75em; margin-top: 1.5em;">
-    Push neighbours of the last node, pop the newest. Same generic skeleton; the choice of data structure is the entire difference.
-  </div>
 </section>
 
-<!-- 12. DFS trace -->
+<!-- 13. DFS trace -->
 <section>
-  <h2>Trace: DFS on a search graph</h2>
-  <p style="font-size: 0.7em; text-align: left; margin: 0;">Push neighbours in alphabetical order. Step numbers = order of expansion.</p>
+  <h2>Trace: DFS</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Push children alphabetically. Step numbers = order of expansion.</p>
   <div class="search-trace">
     <div class="frontier-bar">
       <strong>Frontier:</strong>
@@ -365,102 +430,146 @@
   </div>
 </section>
 
-<!-- 13. DFS properties -->
+<!-- 14. Tree parameters: b, m, d -->
 <section>
-  <h2>DFS &mdash; properties</h2>
-  <p style="font-size: 0.72em; text-align: left;">Let \(b\) = branching factor, \(m\) = max depth of the search tree, \(d\) = depth of the shallowest goal.</p>
-  <table class="props">
-    <tr><th style="width:30%;">Space complexity</th><td>\(O(bm)\) &mdash; <strong>linear</strong> in \(m\). Remembers the current path (\(m\) nodes) + up to \(b\) siblings per level.</td></tr>
-    <tr><th>Time complexity</th><td>\(O(b^m)\) &mdash; <strong>exponential</strong> in \(m\). May visit the entire tree.</td></tr>
-    <tr><th>Complete?</th><td><span class="no">No.</span> Can get stuck in an infinite path (cycle or unbounded depth).</td></tr>
-    <tr><th>Optimal?</th><td><span class="no">No.</span> Returns the first goal it finds, regardless of cost.</td></tr>
-  </table>
-</section>
-
-<!-- 14. DFS failure modes -->
-<section>
-  <h2>DFS &mdash; failure modes</h2>
-  <div class="two-col" style="margin-top: 0.3em;">
-    <div style="flex:1;">
-      <h3 style="text-align:center; font-size:0.9em; color:#991b1b;">Cycle &rarr; not complete</h3>
-      <svg viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto;">
-        <defs>
-          <marker id="arr-fm1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
-          </marker>
-        </defs>
-        <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arr-fm1)">
-          <line x1="60" y1="115" x2="130" y2="60"/>
-          <line x1="60" y1="125" x2="100" y2="190"/>
-          <line x1="155" y1="60" x2="225" y2="60"/>
-          <line x1="225" y1="75" x2="175" y2="115"/>
-          <line x1="145" y1="115" x2="145" y2="78"/>
-        </g>
-        <g font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle">
-          <circle cx="50" cy="120" r="16" fill="#fff" stroke="#111827" stroke-width="2"/>
-          <text x="50" y="120">S</text>
-          <circle cx="145" cy="60" r="16" fill="#fff" stroke="#111827" stroke-width="2"/>
-          <text x="145" y="60">H</text>
-          <circle cx="240" cy="60" r="16" fill="#fff" stroke="#111827" stroke-width="2"/>
-          <text x="240" y="60">I</text>
-          <circle cx="160" cy="125" r="16" fill="#fff" stroke="#111827" stroke-width="2"/>
-          <text x="160" y="125">J</text>
-          <circle cx="105" cy="205" r="16" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
-          <text x="105" y="205" fill="#991b1b">G</text>
-        </g>
-      </svg>
-      <p style="font-size: 0.7em; text-align: center; margin-top: 0.3em;">Loop \(H\to I\to J\to H\) traps DFS forever; goal \(G\) is never reached.</p>
-    </div>
-    <div style="flex:1;">
-      <h3 style="text-align:center; font-size:0.9em; color:#991b1b;">Returns first goal &rarr; not optimal</h3>
-      <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto;">
-        <defs>
-          <marker id="arr-fm2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
-          </marker>
-        </defs>
-        <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arr-fm2)">
-          <line x1="180" y1="38" x2="80" y2="78"/>
-          <line x1="180" y1="38" x2="180" y2="78"/>
-          <line x1="180" y1="38" x2="280" y2="78"/>
-          <line x1="180" y1="100" x2="180" y2="138"/>
-          <line x1="180" y1="160" x2="180" y2="198"/>
-          <line x1="180" y1="220" x2="180" y2="238"/>
-        </g>
-        <path d="M 80,95 Q 180,210 280,238" stroke="#9ca3af" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arr-fm2)"/>
-        <g font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle">
-          <circle cx="180" cy="30" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="30">S</text>
-          <circle cx="70"  cy="90" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="70"  y="90">D</text>
-          <circle cx="180" cy="90" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="90">E</text>
-          <circle cx="290" cy="90" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="290" y="90">P</text>
-          <circle cx="180" cy="150" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="150">J</text>
-          <circle cx="180" cy="210" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="210">F</text>
-          <circle cx="280" cy="245" r="15" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="280" y="245" fill="#991b1b">G</text>
-        </g>
-      </svg>
-      <p style="font-size: 0.7em; text-align: center; margin-top: 0.3em;">DFS finds the long \(S\to E\to J\to F\to G\) path; the short \(S\to D \dashrightarrow G\) is ignored.</p>
+  <h2>Tree parameters: \(b\), \(m\), \(d\)</h2>
+  <div style="display:flex; gap:2em; align-items: center; justify-content: center;">
+    <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" style="max-height: 320px;">
+      <defs>
+        <marker id="arrow-bmd" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+      </defs>
+      <g stroke="#4b5563" stroke-width="1.4" fill="none" marker-end="url(#arrow-bmd)">
+        <line x1="180" y1="30" x2="80" y2="68"/>
+        <line x1="180" y1="30" x2="180" y2="68"/>
+        <line x1="180" y1="30" x2="280" y2="68"/>
+        <line x1="80" y1="92" x2="50" y2="128"/>
+        <line x1="80" y1="92" x2="110" y2="128"/>
+        <line x1="180" y1="92" x2="180" y2="128"/>
+        <line x1="280" y1="92" x2="280" y2="128"/>
+        <line x1="50" y1="152" x2="50" y2="188"/>
+        <line x1="50" y1="212" x2="50" y2="232"/>
+      </g>
+      <g font-size="13" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+        <circle cx="180" cy="20" r="12" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="20">S</text>
+        <circle cx="80"  cy="80" r="12" fill="#fff" stroke="#111827" stroke-width="2"/>
+        <circle cx="180" cy="80" r="12" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="180" y="80" fill="#991b1b">G</text>
+        <circle cx="280" cy="80" r="12" fill="#fff" stroke="#111827" stroke-width="2"/>
+        <circle cx="50"  cy="140" r="12" fill="#fff" stroke="#111827" stroke-width="2"/>
+        <circle cx="110" cy="140" r="12" fill="#fff" stroke="#111827" stroke-width="2"/>
+        <circle cx="180" cy="140" r="12" fill="#fff" stroke="#111827" stroke-width="2"/>
+        <circle cx="280" cy="140" r="12" fill="#fff" stroke="#111827" stroke-width="2"/>
+        <circle cx="50"  cy="200" r="12" fill="#fff" stroke="#111827" stroke-width="2"/>
+        <circle cx="50"  cy="244" r="12" fill="#fff" stroke="#111827" stroke-width="2"/>
+      </g>
+      <!-- b annotation: brace under S's children -->
+      <g font-size="13" font-style="italic" fill="#1d4ed8">
+        <line x1="80" y1="100" x2="280" y2="100" stroke="#1d4ed8" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="320" y="85" font-weight="600">b = 3</text>
+      </g>
+      <!-- d annotation -->
+      <g font-size="13" fill="#dc2626" font-weight="600">
+        <text x="220" y="55">d = 1</text>
+      </g>
+      <!-- m annotation -->
+      <g font-size="13" fill="#16a34a" font-weight="600">
+        <text x="80" y="248">m = 4</text>
+      </g>
+    </svg>
+    <div style="text-align:left;">
+      <p style="margin:0.3em 0;"><strong style="color:#1d4ed8;">\(b\)</strong> &mdash; branching factor</p>
+      <p style="margin:0.3em 0;"><strong style="color:#dc2626;">\(d\)</strong> &mdash; depth of shallowest goal</p>
+      <p style="margin:0.3em 0;"><strong style="color:#16a34a;">\(m\)</strong> &mdash; max depth of tree</p>
     </div>
   </div>
 </section>
 
-<!-- 15. When to use DFS -->
+<!-- 15. DFS properties -->
+<section>
+  <h2>DFS &mdash; properties</h2>
+  <table class="props">
+    <tr><th style="width:22%;">Space</th><td>\(O(bm)\) <span class="meta">linear</span></td></tr>
+    <tr><th>Time</th><td>\(O(b^m)\) <span class="meta">exponential</span></td></tr>
+    <tr><th>Complete?</th><td><span class="no">No</span></td></tr>
+    <tr><th>Optimal?</th><td><span class="no">No</span></td></tr>
+  </table>
+</section>
+
+<!-- 16. DFS failure: cycle -->
+<section class="center-slide">
+  <h2>DFS fails on cycles</h2>
+  <svg viewBox="0 0 300 230" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto; max-height: 320px;">
+    <defs>
+      <marker id="arr-fm1" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+        <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+      </marker>
+    </defs>
+    <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arr-fm1)">
+      <line x1="60" y1="115" x2="130" y2="60"/>
+      <line x1="60" y1="125" x2="100" y2="190"/>
+      <line x1="155" y1="60" x2="225" y2="60"/>
+      <line x1="225" y1="75" x2="175" y2="115"/>
+      <line x1="145" y1="115" x2="145" y2="78"/>
+    </g>
+    <g font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+      <circle cx="50" cy="120" r="16" fill="#fff" stroke="#111827" stroke-width="2"/><text x="50" y="120">S</text>
+      <circle cx="145" cy="60" r="16" fill="#fff" stroke="#111827" stroke-width="2"/><text x="145" y="60">H</text>
+      <circle cx="240" cy="60" r="16" fill="#fff" stroke="#111827" stroke-width="2"/><text x="240" y="60">I</text>
+      <circle cx="160" cy="125" r="16" fill="#fff" stroke="#111827" stroke-width="2"/><text x="160" y="125">J</text>
+      <circle cx="105" cy="205" r="16" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="105" y="205" fill="#991b1b">G</text>
+    </g>
+  </svg>
+  <p style="font-size: 0.85em; text-align: center; margin-top: 0.5em;">\(H \to I \to J \to H\) traps DFS forever.</p>
+</section>
+
+<!-- 17. DFS failure: not optimal -->
+<section class="center-slide">
+  <h2>DFS takes the first goal, not the best</h2>
+  <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" style="display:block; margin:0 auto; max-height: 320px;">
+    <defs>
+      <marker id="arr-fm2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+        <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+      </marker>
+    </defs>
+    <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arr-fm2)">
+      <line x1="180" y1="38" x2="80" y2="78"/>
+      <line x1="180" y1="38" x2="180" y2="78"/>
+      <line x1="180" y1="38" x2="280" y2="78"/>
+      <line x1="180" y1="100" x2="180" y2="138"/>
+      <line x1="180" y1="160" x2="180" y2="198"/>
+      <line x1="180" y1="220" x2="180" y2="238"/>
+    </g>
+    <path d="M 80,95 Q 180,210 280,238" stroke="#9ca3af" stroke-width="1.5" fill="none" stroke-dasharray="4 3" marker-end="url(#arr-fm2)"/>
+    <g font-size="14" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+      <circle cx="180" cy="30" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="30">S</text>
+      <circle cx="70"  cy="90" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="70"  y="90">D</text>
+      <circle cx="180" cy="90" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="90">E</text>
+      <circle cx="290" cy="90" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="290" y="90">P</text>
+      <circle cx="180" cy="150" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="150">J</text>
+      <circle cx="180" cy="210" r="15" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="210">F</text>
+      <circle cx="280" cy="245" r="15" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="280" y="245" fill="#991b1b">G</text>
+    </g>
+  </svg>
+  <p style="font-size: 0.85em; text-align: center; margin-top: 0.5em;">Returns the long path; ignores the shorter \(S \to D \dashrightarrow G\).</p>
+</section>
+
+<!-- 18. When to use DFS -->
 <section>
   <h2>When to use DFS</h2>
   <div class="two-col" style="margin-top: 1em;">
     <div style="flex:1;">
       <h3 style="color:#166534;">Good fit</h3>
       <ul>
-        <li>Memory is restricted.</li>
-        <li>Many solutions exist (so getting <em>some</em> goal quickly is OK).</li>
-        <li>Solutions are deep / paths are long.</li>
+        <li>Memory limited</li>
+        <li>Many goals exist</li>
+        <li>Deep solutions</li>
       </ul>
     </div>
     <div style="flex:1;">
       <h3 style="color:#991b1b;">Bad fit</h3>
       <ul>
-        <li>There are infinite paths or cycles (without cycle pruning).</li>
-        <li>Solutions are shallow.</li>
-        <li>You need the optimal (shortest) solution.</li>
+        <li>Cycles</li>
+        <li>Shallow solutions</li>
+        <li>Need optimality</li>
       </ul>
     </div>
   </div>
@@ -470,23 +579,20 @@
      BFS (4 slides)
      ============================================================ -->
 
-<!-- 16. BFS intro -->
-<section>
+<!-- 19. BFS intro -->
+<section class="center-slide">
   <h2>Breadth-first search (BFS)</h2>
-  <ul>
-    <li>Treat the frontier as a <strong>queue</strong> (FIFO).</li>
-    <li>Expand the <em>first</em> path added.</li>
-    <li>Explore the tree level-by-level &mdash; the path with the fewest arcs first.</li>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Frontier = <strong>queue</strong> (FIFO)</li>
+    <li>Pop oldest</li>
+    <li>Level by level</li>
   </ul>
-  <div class="opinion-callout" style="font-size: 0.75em; margin-top: 1.5em;">
-    The only difference from DFS is the data structure: queue instead of stack.
-  </div>
 </section>
 
-<!-- 17. BFS trace -->
+<!-- 20. BFS trace -->
 <section>
-  <h2>Trace: BFS on a search graph</h2>
-  <p style="font-size: 0.7em; text-align: left; margin: 0;">Push neighbours in alphabetical order. The graph contains multiple paths to <em>P</em> and <em>B</em>.</p>
+  <h2>Trace: BFS</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Push children alphabetically. Multiple paths to <em>P</em> and <em>B</em>.</p>
   <div class="search-trace">
     <div class="frontier-bar">
       <strong>Frontier:</strong>
@@ -557,36 +663,35 @@
   </div>
 </section>
 
-<!-- 18. BFS properties -->
+<!-- 21. BFS properties -->
 <section>
   <h2>BFS &mdash; properties</h2>
-  <p style="font-size: 0.72em; text-align: left;">Let \(b\) = branching factor, \(d\) = depth of the shallowest goal.</p>
   <table class="props">
-    <tr><th style="width:30%;">Space complexity</th><td>\(O(b^d)\) &mdash; <strong>exponential</strong> in \(d\). Must hold the whole frontier at level \(d\).</td></tr>
-    <tr><th>Time complexity</th><td>\(O(b^d)\) &mdash; <strong>exponential</strong> in \(d\). Visits the entire top \(d\) levels in the worst case.</td></tr>
-    <tr><th>Complete?</th><td><span class="ok">Yes.</span> Explores level by level until a goal is found.</td></tr>
-    <tr><th>Optimal?</th><td><span class="no">No</span> <em>in general</em>, but guaranteed to find the <strong>shallowest</strong> goal &mdash; which is optimal when all edges have equal cost.</td></tr>
+    <tr><th style="width:22%;">Space</th><td>\(O(b^d)\) <span class="meta">exponential</span></td></tr>
+    <tr><th>Time</th><td>\(O(b^d)\) <span class="meta">exponential</span></td></tr>
+    <tr><th>Complete?</th><td><span class="ok">Yes</span></td></tr>
+    <tr><th>Optimal?</th><td>Shallowest goal <span class="meta">(optimal at equal cost)</span></td></tr>
   </table>
 </section>
 
-<!-- 19. When to use BFS -->
+<!-- 22. When to use BFS -->
 <section>
   <h2>When to use BFS</h2>
   <div class="two-col" style="margin-top: 1em;">
     <div style="flex:1;">
       <h3 style="color:#166534;">Good fit</h3>
       <ul>
-        <li>Memory is plentiful.</li>
-        <li>You want the solution with the fewest arcs.</li>
-        <li>Cycles are possible.</li>
+        <li>Memory plentiful</li>
+        <li>Want fewest arcs</li>
+        <li>Cycles possible</li>
       </ul>
     </div>
     <div style="flex:1;">
       <h3 style="color:#991b1b;">Bad fit</h3>
       <ul>
-        <li>All the solutions are deep.</li>
-        <li>The branching factor is large.</li>
-        <li>The graph is large or generated on the fly.</li>
+        <li>Deep solutions</li>
+        <li>Large branching</li>
+        <li>Graph generated on the fly</li>
       </ul>
     </div>
   </div>
@@ -599,7 +704,7 @@
 <!-- 20a. Q1 - memory limited -->
 <section>
   <h2>BFS vs DFS &mdash; Q1</h2>
-  <p class="quiz-q"><strong>Q.</strong> Memory is very limited. Which would you choose?</p>
+  <p class="quiz-q"><strong>Q.</strong> Memory is very limited.</p>
   <ol class="quiz-options">
     <li>BFS</li>
     <li>DFS</li>
@@ -607,14 +712,14 @@
     <li>Neither</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>Answer: B &mdash; DFS.</strong> DFS uses linear memory \(O(bm)\); BFS uses exponential \(O(b^d)\).
+    <strong>B &mdash; DFS.</strong> DFS: \(O(bm)\) vs BFS: \(O(b^d)\).
   </div>
 </section>
 
 <!-- 20b. Q2 - deep solutions -->
 <section>
   <h2>BFS vs DFS &mdash; Q2</h2>
-  <p class="quiz-q"><strong>Q.</strong> All solutions are deep in the search tree. Which would you choose?</p>
+  <p class="quiz-q"><strong>Q.</strong> All solutions are deep in the search tree.</p>
   <ol class="quiz-options">
     <li>BFS</li>
     <li>DFS</li>
@@ -622,14 +727,14 @@
     <li>Neither</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>Answer: B &mdash; DFS.</strong> DFS dives down long paths quickly; BFS would waste time enumerating every shallower level first.
+    <strong>B &mdash; DFS.</strong> Dives down long paths instead of enumerating every shallower level.
   </div>
 </section>
 
 <!-- 20c. Q3 - cycles -->
 <section>
   <h2>BFS vs DFS &mdash; Q3</h2>
-  <p class="quiz-q"><strong>Q.</strong> The graph contains cycles. Which would you choose?</p>
+  <p class="quiz-q"><strong>Q.</strong> The graph contains cycles.</p>
   <ol class="quiz-options">
     <li>BFS</li>
     <li>DFS</li>
@@ -637,14 +742,14 @@
     <li>Neither</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>Answer: A &mdash; BFS.</strong> DFS can get stuck looping forever; BFS is unaffected (it always advances by level).
+    <strong>A &mdash; BFS.</strong> DFS can loop forever; BFS always advances by level.
   </div>
 </section>
 
 <!-- 20d. Q4 - large branching -->
 <section>
   <h2>BFS vs DFS &mdash; Q4</h2>
-  <p class="quiz-q"><strong>Q.</strong> The branching factor is huge (or infinite). Which would you choose?</p>
+  <p class="quiz-q"><strong>Q.</strong> The branching factor is huge or infinite.</p>
   <ol class="quiz-options">
     <li>BFS</li>
     <li>DFS</li>
@@ -652,14 +757,14 @@
     <li>Neither</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>Answer: B &mdash; DFS.</strong> BFS's frontier blows up with \(b\); DFS keeps memory linear regardless of \(b\).
+    <strong>B &mdash; DFS.</strong> BFS's frontier blows up with \(b\); DFS stays linear.
   </div>
 </section>
 
 <!-- 20e. Q5 - shallowest goal -->
 <section>
   <h2>BFS vs DFS &mdash; Q5</h2>
-  <p class="quiz-q"><strong>Q.</strong> You must find the <em>shallowest</em> goal. Which would you choose?</p>
+  <p class="quiz-q"><strong>Q.</strong> You must find the <em>shallowest</em> goal.</p>
   <ol class="quiz-options">
     <li>BFS</li>
     <li>DFS</li>
@@ -667,14 +772,14 @@
     <li>Neither</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>Answer: A &mdash; BFS.</strong> BFS is guaranteed to find the shallowest goal; DFS may return a deep one first.
+    <strong>A &mdash; BFS.</strong> BFS guarantees the shallowest goal.
   </div>
 </section>
 
 <!-- 20f. Q6 - shallow solutions -->
 <section>
   <h2>BFS vs DFS &mdash; Q6</h2>
-  <p class="quiz-q"><strong>Q.</strong> All solutions are very shallow. Which would you choose?</p>
+  <p class="quiz-q"><strong>Q.</strong> All solutions are very shallow.</p>
   <ol class="quiz-options">
     <li>BFS</li>
     <li>DFS</li>
@@ -682,7 +787,7 @@
     <li>Neither</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>Answer: A &mdash; BFS.</strong> BFS finds the shallowest goal first; DFS may dive into a deep dead-end before checking shallower neighbours.
+    <strong>A &mdash; BFS.</strong> Checks shallow neighbours before diving deep.
   </div>
 </section>
 
@@ -690,28 +795,32 @@
      IDS (3 slides)
      ============================================================ -->
 
-<!-- 21. Combining BFS + DFS = IDS -->
-<section>
-  <h2>Combining the best of BFS and DFS</h2>
-  <table class="compare" style="margin-top: 0.3em;">
+<!-- 29. BFS vs DFS tradeoff -->
+<section class="center-slide">
+  <h2>BFS vs DFS tradeoff</h2>
+  <table class="compare" style="margin: 0 auto;">
     <tr>
       <th></th>
       <th style="color:#1d4ed8;">BFS</th>
       <th style="color:#1d4ed8;">DFS</th>
     </tr>
-    <tr><th>Space</th><td>\(O(b^d)\) &mdash; exponential</td><td>\(O(bm)\) &mdash; linear</td></tr>
-    <tr><th>Completeness</th><td><span class="ok">Yes</span></td><td><span class="no">No</span> &mdash; can loop forever</td></tr>
+    <tr><th>Space</th><td>\(O(b^d)\)</td><td>\(O(bm)\)</td></tr>
+    <tr><th>Complete?</th><td><span class="ok">Yes</span></td><td><span class="no">No</span></td></tr>
   </table>
-  <p style="font-size: 0.85em; margin-top: 1em;">Can we have both <em>linear space</em> and <em>completeness</em>?</p>
-  <div class="opinion-callout fragment" style="font-size: 0.85em; margin-top: 0.7em;">
-    <strong>Iterative-Deepening Search (IDS):</strong> for each depth limit \(\ell = 1, 2, 3, \ldots\), run depth-first search up to depth \(\ell\). Stop when you find a goal.
-  </div>
+  <p style="font-size: 1.2em; margin-top: 1.2em;">Can we have <strong>both</strong>?</p>
 </section>
 
-<!-- 22. IDS trace -->
+<!-- 30. IDS = repeated depth-limited DFS -->
+<section class="center-slide">
+  <h2>Iterative-Deepening Search (IDS)</h2>
+  <p style="font-size: 1.1em; margin-top: 1em;">For \(\ell = 1, 2, 3, \ldots\), run DFS up to depth \(\ell\).</p>
+  <p style="font-size: 1.1em; margin-top: 0.5em;">Stop when a goal is found.</p>
+</section>
+
+<!-- 31. IDS trace -->
 <section>
-  <h2>Trace: IDS on a search graph</h2>
-  <p style="font-size: 0.7em; text-align: left; margin: 0;">Same graph as BFS. Within each depth limit, push children in alphabetical order; pop LIFO (DFS).</p>
+  <h2>Trace: IDS</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Same graph as BFS. Each iteration is depth-limited DFS.</p>
   <div class="search-trace">
     <div class="frontier-bar">
       <strong>Depth limit:</strong>
@@ -811,16 +920,15 @@
   </div>
 </section>
 
-<!-- 23. IDS properties -->
+<!-- 32. IDS properties -->
 <section>
   <h2>IDS &mdash; properties</h2>
   <table class="props">
-    <tr><th style="width:30%;">Space complexity</th><td>\(O(bd)\) &mdash; <strong>linear</strong> in \(d\). Each iteration is a depth-bounded DFS.</td></tr>
-    <tr><th>Time complexity</th><td>\(O(b^d)\) &mdash; <strong>exponential</strong> in \(d\). Repeats work but dominated by the last iteration.</td></tr>
-    <tr><th>Complete?</th><td><span class="ok">Yes.</span> Always terminates at depth \(d\).</td></tr>
-    <tr><th>Optimal?</th><td><span class="no">No</span> <em>in general</em>, but guaranteed to find the <strong>shallowest</strong> goal.</td></tr>
+    <tr><th style="width:22%;">Space</th><td>\(O(bd)\) <span class="meta">linear</span></td></tr>
+    <tr><th>Time</th><td>\(O(b^d)\) <span class="meta">exponential</span></td></tr>
+    <tr><th>Complete?</th><td><span class="ok">Yes</span></td></tr>
+    <tr><th>Optimal?</th><td>Shallowest goal</td></tr>
   </table>
-  <p class="footnote">IDS pays a small constant-factor time overhead for the re-work, but gets BFS-like completeness with DFS-like memory. Best of both.</p>
 </section>
 
 <!-- ============================================================
@@ -871,13 +979,14 @@
   <p class="footnote">\(b\) = branching factor; \(m\) = max depth of the search tree; \(d\) = depth of the shallowest goal.</p>
 </section>
 
-<!-- 25. Learning goals recap -->
+<!-- 34. Learning goals recap -->
 <section class="center-slide">
   <h2>Learning goals (recap)</h2>
   <ul style="text-align:left; margin-left:2em; list-style:none;">
-    <li>&#10003; Formulate a real-world problem as a search problem.</li>
-    <li>&#10003; Trace and implement <strong>DFS, BFS, IDS</strong>.</li>
-    <li>&#10003; Reason about each algorithm's space/time complexity, completeness, and optimality &mdash; and when each is the right choice.</li>
+    <li>&#10003; Formulate problems as search</li>
+    <li>&#10003; Trace DFS, BFS, IDS</li>
+    <li>&#10003; Analyze: space, time, completeness, optimality</li>
+    <li>&#10003; Pick the right algorithm</li>
   </ul>
 </section>
 

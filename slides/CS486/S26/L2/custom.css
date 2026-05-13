@@ -22,12 +22,13 @@
   object-fit: contain;
 }
 .reveal .app-grid .app-caption {
-  font-size: 0.55em;
+  font-size: 0.65em;
   line-height: 1.25;
-  margin-top: 0.25em;
-  color: #374151;
+  margin-top: 0.3em;
+  color: #111827;
+  font-weight: 600;
 }
-.reveal .app-grid .app-caption strong { display: block; color: #111827; }
+.reveal .app-grid .app-caption strong { color: #111827; font-weight: 600; }
 
 /* 8-puzzle CSS grid (reusable for initial / goal states). */
 .reveal .puzzle-wrap { display: flex; gap: 2em; justify-content: center; align-items: flex-start; }
@@ -169,11 +170,15 @@
   color: #1e3a8a;
   font-weight: 600;
 }
+.reveal table.props th:first-child { width: 22%; }
 .reveal table.compare th:first-child { width: 18%; }
 .reveal table.props .ok { color: #166534; font-weight: 600; }
 .reveal table.props .no { color: #991b1b; font-weight: 600; }
 .reveal table.compare .ok { color: #166534; font-weight: 600; }
 .reveal table.compare .no { color: #991b1b; font-weight: 600; }
+/* Small grey italic label that follows the main cell content. */
+.reveal table.props .meta,
+.reveal table.compare .meta { color: #6b7280; font-size: 0.85em; margin-left: 0.5em; font-style: italic; font-weight: 400; }
 
 /* Quiz Q / answer pattern. */
 .reveal .quiz-q {
