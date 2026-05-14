@@ -5,10 +5,13 @@
    "Course page" corner widget. */
 
 /* Tighten default heading sizes - reveal.js's defaults are too big for
-   academic slides. */
-.reveal h1 { font-size: 1.6em; }
-.reveal h2 { font-size: 1.2em; line-height: 1.2; margin-bottom: 0.6em; }
-.reveal h3 { font-size: 1.1em; }
+   academic slides. Also strip the white theme's default `text-transform:
+   uppercase` so math variables (b, m, d, n_k, ...) stay lowercase in
+   slide titles. */
+.reveal h1 { font-size: 1.6em; text-transform: none; }
+.reveal h2 { font-size: 1.2em; line-height: 1.2; margin-bottom: 0.6em; text-transform: none; }
+.reveal h3 { font-size: 1.1em; text-transform: none; }
+.reveal h4, .reveal h5, .reveal h6 { text-transform: none; }
 .reveal p, .reveal li { font-size: 0.85em; line-height: 1.4; }
 .reveal li { margin-bottom: 0.4em; }
 
