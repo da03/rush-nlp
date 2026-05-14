@@ -1,0 +1,111 @@
+[
+  {
+    "id": 1,
+    "question": "What is the Turing Test? Describe how it works, who proposed it, and what passing it would demonstrate.",
+    "key_concepts": [
+      "Alan Turing's imitation game",
+      "Interrogator, machine, human confederate",
+      "Pass = machine fools the interrogator",
+      "Still discussed as a test of machine intelligence"
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "id": 2,
+    "question": "What are the five components that define a search problem? Use any example you like to illustrate them.",
+    "key_concepts": [
+      "States",
+      "Initial state",
+      "Goal test (or goal states)",
+      "Successor function",
+      "Cost (optional)",
+      "Solution = path from start to goal"
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "id": 3,
+    "question": "Why do we work with a search tree instead of building the whole search graph up front?",
+    "key_concepts": [
+      "State spaces can be huge or infinite",
+      "Tree is built incrementally from the start state",
+      "Frontier = paths still to expand",
+      "Memory and time tradeoff"
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "id": 4,
+    "question": "Explain how depth-first search (DFS) works. What data structure represents the frontier, and how does that data structure shape the exploration order?",
+    "key_concepts": [
+      "Stack / LIFO",
+      "Pop the most recently added path",
+      "Dive deep, then backtrack",
+      "Push children of the popped node"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 5,
+    "question": "Explain how breadth-first search (BFS) works. How does its exploration order differ from DFS?",
+    "key_concepts": [
+      "Queue / FIFO",
+      "Pop the oldest path",
+      "Explore level by level",
+      "Finds shallowest goal first"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 6,
+    "question": "DFS has space complexity O(bm) and BFS has space complexity O(b^d). Using the definitions of b, m, and d from class, give a rough picture of what each algorithm is keeping in memory.",
+    "key_concepts": [
+      "b = branching factor, m = max depth of tree, d = depth of shallowest goal",
+      "DFS keeps roughly one path + siblings (linear in m)",
+      "BFS keeps the whole frontier at depth d (exponential in d)"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 7,
+    "question": "Is DFS complete? Is it optimal? Justify your answers with specific failure modes.",
+    "key_concepts": [
+      "Not complete (can loop forever on cycles or infinite paths)",
+      "Not optimal (returns first goal it finds, regardless of cost)",
+      "Concrete examples (cycle graph, sub-optimal path)"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 8,
+    "question": "What is iterative-deepening search (IDS)? What does it achieve compared to plain DFS and plain BFS?",
+    "key_concepts": [
+      "Repeated depth-limited DFS for l = 1, 2, 3, ...",
+      "Linear space O(bd) like DFS",
+      "Complete + finds shallowest goal like BFS",
+      "Best of both"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 9,
+    "question": "DFS can get stuck in cycles forever. What technique from class fixes this, and what's the basic idea behind it?",
+    "key_concepts": [
+      "Cycle pruning / visited set",
+      "Skip a state once it has already been expanded",
+      "Trade-off: more memory, but no infinite loops"
+    ],
+    "difficulty": "hard"
+  },
+  {
+    "id": 10,
+    "question": "Suppose the edges in the search graph have different costs. Why does BFS no longer return an optimal solution? Which uninformed algorithm would you switch to, and what data structure does it use for the frontier?",
+    "key_concepts": [
+      "BFS minimizes # of arcs, not total cost",
+      "Uniform-cost search (UCS)",
+      "Priority queue keyed by path cost g(n)",
+      "Complete + optimal when all edge costs are positive"
+    ],
+    "difficulty": "hard"
+  }
+]
