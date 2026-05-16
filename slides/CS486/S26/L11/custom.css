@@ -1,0 +1,108 @@
+/* L11-specific styles on top of shared/custom.css, L7/custom.css, L9/custom.css, L10/custom.css. */
+
+/* Forward / backward sweep overlays on smoothing chain. */
+.reveal .smoothing-sweep .sweep-fwd {
+  stroke: #1d4ed8;
+  stroke-width: 3;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.7;
+}
+.reveal .smoothing-sweep .sweep-bwd {
+  stroke: #16a34a;
+  stroke-width: 3;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.7;
+}
+.reveal .smoothing-sweep .sweep-label {
+  font-size: 11px;
+  font-weight: 700;
+}
+.reveal .smoothing-sweep .sweep-label.fwd { fill: #1d4ed8; }
+.reveal .smoothing-sweep .sweep-label.bwd { fill: #166534; }
+
+/* 1-line filtering vs smoothing comparison strip. */
+.reveal .smoothing-recap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7em;
+  margin: 0.4em 0;
+}
+.reveal .smoothing-recap .compare-card {
+  padding: 0.5em 0.8em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #6b7280;
+  border-radius: 4px;
+  text-align: left;
+  font-size: 0.82em;
+}
+.reveal .smoothing-recap .compare-card.now { border-left-color: #1d4ed8; }
+.reveal .smoothing-recap .compare-card.past { border-left-color: #16a34a; }
+.reveal .smoothing-recap .compare-card strong {
+  display: block;
+  margin-bottom: 0.2em;
+}
+.reveal .smoothing-recap .compare-card.now strong { color: #1d4ed8; }
+.reveal .smoothing-recap .compare-card.past strong { color: #166534; }
+
+/* Viterbi trellis visualization. */
+.reveal .trellis-viz { display: block; margin: 0.3em auto; max-height: 320px; }
+.reveal .trellis-viz .trellis-node circle {
+  fill: #fff;
+  stroke: #6b7280;
+  stroke-width: 1.5;
+}
+.reveal .trellis-viz .trellis-node text {
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #374151;
+}
+.reveal .trellis-viz .trellis-edge {
+  stroke: #d1d5db;
+  stroke-width: 1;
+  fill: none;
+}
+.reveal .trellis-viz .trellis-edge.best {
+  stroke: #dc2626;
+  stroke-width: 2.5;
+  opacity: 0.95;
+}
+.reveal .trellis-viz .trellis-node.best circle {
+  stroke: #dc2626;
+  stroke-width: 2.5;
+  fill: #fee2e2;
+}
+.reveal .trellis-viz .trellis-axis {
+  font-size: 11px;
+  fill: #6b7280;
+  text-anchor: middle;
+}
+.reveal .trellis-viz .trellis-axis.left { text-anchor: end; }
+
+/* 3-up step cards (base / recurse / traceback). */
+.reveal .viterbi-step {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6em;
+  margin: 0.3em 0;
+}
+.reveal .viterbi-step .vcard {
+  padding: 0.55em 0.7em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 3px solid #1d4ed8;
+  border-radius: 4px;
+  text-align: left;
+  font-size: 0.72em;
+}
+.reveal .viterbi-step .vcard h3 {
+  font-size: 0.95em;
+  color: #1d4ed8;
+  margin: 0 0 0.3em 0;
+}
+.reveal .viterbi-step .vcard.trace { border-top-color: #dc2626; }
+.reveal .viterbi-step .vcard.trace h3 { color: #991b1b; }
