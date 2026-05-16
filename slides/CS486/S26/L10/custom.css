@@ -1,0 +1,229 @@
+/* L10-specific styles on top of shared/custom.css, L7/custom.css, L9/custom.css. */
+
+/* HMM chain diagrams: states row (filled white) + observations row (light gray). */
+.reveal .hmm-chain { display: block; margin: 0.3em auto; max-height: 240px; }
+.reveal .hmm-chain .state-node circle {
+  fill: #fff;
+  stroke: #111827;
+  stroke-width: 2;
+}
+.reveal .hmm-chain .obs-node circle {
+  fill: #f3f4f6;
+  stroke: #6b7280;
+  stroke-width: 2;
+}
+.reveal .hmm-chain .state-node.evidence circle { fill: #d1d5db; }
+.reveal .hmm-chain .state-node.query circle { fill: #fef3c7; }
+.reveal .hmm-chain text {
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .hmm-chain .edge {
+  stroke: #4b5563;
+  stroke-width: 1.5;
+  fill: none;
+}
+.reveal .hmm-chain .edge-skip {
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+/* Mini umbrella-story illustration. */
+.reveal .umbrella-mini { display: block; margin: 0.2em auto; max-height: 200px; }
+
+/* 2x2 grid for inference tasks. */
+.reveal .task-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7em;
+  margin: 0.4em 0;
+}
+.reveal .task-cards .task-card {
+  padding: 0.6em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+  text-align: left;
+}
+.reveal .task-cards .task-card.highlight { border-top-color: #16a34a; background: #f0fdf4; }
+.reveal .task-cards .task-card h3 {
+  font-size: 0.9em;
+  margin: 0 0 0.3em 0;
+  color: #1d4ed8;
+}
+.reveal .task-cards .task-card.highlight h3 { color: #166534; }
+.reveal .task-cards .task-card p { font-size: 0.78em; margin: 0; }
+.reveal .task-cards .task-card .query {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.75em;
+  color: #4b5563;
+  margin-top: 0.3em;
+}
+
+/* Derivation block: stacked lines with right-aligned justification labels. */
+.reveal .derive-block {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.3em 1.2em;
+  align-items: baseline;
+  margin: 0.4em auto;
+  max-width: 92%;
+  font-size: 0.82em;
+}
+.reveal .derive-block .derive-line {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  text-align: left;
+}
+.reveal .derive-block .derive-label {
+  font-size: 0.85em;
+  color: #1d4ed8;
+  font-style: italic;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 3-up quiz cards for justification slides. */
+.reveal .justify-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6em;
+  margin: 0.3em 0;
+}
+.reveal .justify-cards .jcard {
+  padding: 0.6em 0.7em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-left: 3px solid #1d4ed8;
+  border-radius: 4px;
+  font-size: 0.72em;
+  text-align: left;
+}
+.reveal .justify-cards .jcard .step {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  display: block;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 3px;
+  padding: 0.3em 0.4em;
+  margin-bottom: 0.4em;
+  font-size: 0.9em;
+}
+.reveal .justify-cards .jcard .ans {
+  display: block;
+  margin-top: 0.3em;
+  padding: 0.3em 0.4em;
+  background: #ecfdf5;
+  border-left: 3px solid #059669;
+  color: #065f46;
+  font-weight: 600;
+  font-size: 0.95em;
+}
+
+/* 2-up filtering comparison + flow box. */
+.reveal .filtering-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7em;
+  margin: 0.3em 0;
+}
+.reveal .filtering-cards .fcard {
+  padding: 0.7em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #dc2626;
+  border-radius: 6px;
+  text-align: left;
+}
+.reveal .filtering-cards .fcard.good { border-top-color: #16a34a; }
+.reveal .filtering-cards .fcard h3 {
+  font-size: 0.9em;
+  color: #991b1b;
+  margin: 0 0 0.3em 0;
+}
+.reveal .filtering-cards .fcard.good h3 { color: #166534; }
+.reveal .filtering-cards .fcard p { font-size: 0.78em; margin: 0.2em 0; }
+.reveal .filtering-cards .fcard .complexity {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85em;
+  font-weight: 700;
+  margin-top: 0.4em;
+}
+
+/* Predict / update flow row. */
+.reveal .pu-flow {
+  display: flex;
+  gap: 0.5em;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5em auto;
+  flex-wrap: wrap;
+}
+.reveal .pu-flow .pu-box {
+  padding: 0.5em 0.9em;
+  background: #fff;
+  border: 2px solid #1d4ed8;
+  border-radius: 6px;
+  font-size: 0.78em;
+  font-weight: 600;
+  color: #1d4ed8;
+  text-align: center;
+  min-width: 120px;
+}
+.reveal .pu-flow .pu-box.predict { background: #eff6ff; }
+.reveal .pu-flow .pu-box.update { background: #ecfdf5; border-color: #16a34a; color: #166534; }
+.reveal .pu-flow .pu-arrow {
+  font-size: 1.6em;
+  color: #6b7280;
+}
+
+/* CPT side box next to chain SVG. */
+.reveal .cpt-box {
+  display: inline-block;
+  padding: 0.4em 0.7em;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.7em;
+  text-align: left;
+}
+.reveal .cpt-box .cpt-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 600;
+  color: #1d4ed8;
+  display: block;
+  margin-bottom: 0.2em;
+  font-size: 1.05em;
+}
+
+/* Speech-rec waveform mock (slide 3). */
+.reveal .app-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.6em;
+  margin: 0.4em 0;
+}
+.reveal .app-row .app-card {
+  padding: 0.5em 0.4em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.75em;
+}
+.reveal .app-row .app-card svg {
+  display: block;
+  margin: 0 auto 0.3em;
+  width: 100%;
+  height: 36px;
+}
+.reveal .app-row .app-card .app-label {
+  font-size: 0.9em;
+  color: #1f2937;
+  font-weight: 500;
+}
