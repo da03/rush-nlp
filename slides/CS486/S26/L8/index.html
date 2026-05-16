@@ -45,6 +45,540 @@
   <p class="credit">RN 13.2 &middot; PM 8.3</p>
 </section>
 
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Apply <strong>d-separation</strong> to check (conditional) independence in any Bayes net</li>
+    <li class="fragment">Given a BN and a variable ordering, <strong>construct a correct Bayes net</strong></li>
+    <li class="fragment">Distinguish <strong>correlation</strong> from <strong>causation</strong></li>
+  </ul>
+</section>
+
+<!-- 3. Recap: 3 structures from L7 -->
+<section>
+  <h2>Recap: the three structures from L7</h2>
+  <div class="structures-row">
+    <div class="structure-card">
+      <h3>Chain</h3>
+      <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+        <line class="bn-edge" x1="32" y1="40" x2="84" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="118" y1="40" x2="168" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="20"  cy="40" r="14"/><text x="20"  y="44">A</text>
+          <circle cx="100" cy="40" r="14"/><text x="100" y="44">B</text>
+          <circle cx="180" cy="40" r="14"/><text x="180" y="44">C</text>
+        </g>
+      </svg>
+    </div>
+    <div class="structure-card">
+      <h3>Common cause</h3>
+      <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+        <line class="bn-edge" x1="92"  y1="32" x2="32"  y2="78" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="108" y1="32" x2="168" y2="78" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="100" cy="20" r="14"/><text x="100" y="24">A</text>
+          <circle cx="20"  cy="85" r="14"/><text x="20"  y="89">B</text>
+          <circle cx="180" cy="85" r="14"/><text x="180" y="89">C</text>
+        </g>
+      </svg>
+    </div>
+    <div class="structure-card">
+      <h3>V-structure</h3>
+      <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+        <line class="bn-edge" x1="32"  y1="32" x2="92"  y2="78" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="168" y1="32" x2="108" y2="78" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="20"  cy="20" r="14"/><text x="20"  y="24">A</text>
+          <circle cx="180" cy="20" r="14"/><text x="180" y="24">B</text>
+          <circle cx="100" cy="85" r="14"/><text x="100" y="89">C</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <p class="fragment" style="text-align: center; font-size: 0.9em; margin-top: 0.8em; color: #1d4ed8;">Today: generalize the 3 structures to <strong>arbitrary paths</strong> using <strong>d-separation</strong>.</p>
+</section>
+
+<!-- ============================================================
+     D-separation (5 slides)
+     ============================================================ -->
+
+<!-- 4. D-separation: the rule -->
+<section class="center-slide">
+  <h2>D-separation: the rule</h2>
+  <div class="theorem">
+    <strong>D-separation.</strong> A set of observed variables \(E\) <em>d-separates</em> \(X\) and \(Y\) iff \(E\) <strong>blocks every undirected path</strong> between \(X\) and \(Y\).
+  </div>
+  <p class="fragment" style="font-size: 0.92em; margin-top: 0.8em;">If \(E\) d-separates \(X\) and \(Y\), then \(X\) and \(Y\) are <strong>conditionally independent given \(E\)</strong>.</p>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">A single open path is enough to break independence. We have to check every path and ask: is it blocked?</p>
+</section>
+
+<!-- 5. The three blocking rules -->
+<section>
+  <h2>The three blocking rules</h2>
+  <p style="text-align:center; font-size: 0.82em; color:#6b7280; margin: 0;">A path through middle node \(B\) is <strong>blocked</strong> iff:</p>
+  <div class="dsep-rules">
+    <div class="dsep-card">
+      <h3>Chain &nbsp;\(X \to B \to Y\)</h3>
+      <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+        <line stroke="#4b5563" stroke-width="2" x1="32" y1="40" x2="84" y2="40" marker-end="url(#arrow-bn)"/>
+        <line stroke="#4b5563" stroke-width="2" x1="118" y1="40" x2="168" y2="40" marker-end="url(#arrow-bn)"/>
+        <g><circle cx="20" cy="40" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="20" y="44" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="600">X</text></g>
+        <g><circle cx="100" cy="40" r="14" fill="#d1d5db" stroke="#111827" stroke-width="2"/><text x="100" y="44" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="600">B</text></g>
+        <g><circle cx="180" cy="40" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="44" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="600">Y</text></g>
+      </svg>
+      <p class="blocking"><span class="green">Blocked</span> when \(B \in E\)<br>(middle is observed)</p>
+    </div>
+    <div class="dsep-card">
+      <h3>Common cause &nbsp;\(X \leftarrow B \to Y\)</h3>
+      <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+        <line stroke="#4b5563" stroke-width="2" x1="92" y1="32" x2="32" y2="78" marker-end="url(#arrow-bn)"/>
+        <line stroke="#4b5563" stroke-width="2" x1="108" y1="32" x2="168" y2="78" marker-end="url(#arrow-bn)"/>
+        <g><circle cx="100" cy="20" r="14" fill="#d1d5db" stroke="#111827" stroke-width="2"/><text x="100" y="24" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="600">B</text></g>
+        <g><circle cx="20"  cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="20"  y="89" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="600">X</text></g>
+        <g><circle cx="180" cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="89" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="600">Y</text></g>
+      </svg>
+      <p class="blocking"><span class="green">Blocked</span> when \(B \in E\)<br>(middle is observed)</p>
+    </div>
+    <div class="dsep-card">
+      <h3>V-structure &nbsp;\(X \to B \leftarrow Y\)</h3>
+      <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+        <line stroke="#4b5563" stroke-width="2" x1="32" y1="32" x2="92" y2="78" marker-end="url(#arrow-bn)"/>
+        <line stroke="#4b5563" stroke-width="2" x1="168" y1="32" x2="108" y2="78" marker-end="url(#arrow-bn)"/>
+        <g><circle cx="20" cy="20" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="20" y="24" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="600">X</text></g>
+        <g><circle cx="180" cy="20" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="180" y="24" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="600">Y</text></g>
+        <g><circle cx="100" cy="85" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="100" y="89" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="600">B</text></g>
+      </svg>
+      <p class="blocking"><span class="red">Reversed:</span> blocked when neither \(B\) nor any of its descendants are in \(E\)</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Quiz pack 1: chain (TravelSubway / HighTemp) -->
+<section>
+  <h2>Quiz pack 1: chain blocking</h2>
+  <div style="text-align: center; margin: 0.2em 0;" class="dsep-graph">
+    <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" style="max-height: 230px;">
+      <line class="edge-path" x1="115" y1="55" x2="155" y2="85" marker-end="url(#arrow-red)"/>
+      <line x1="180" y1="120" x2="135" y2="170" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line class="edge-path" x1="195" y1="120" x2="235" y2="170" marker-end="url(#arrow-red)"/>
+      <line x1="425" y1="120" x2="285" y2="170" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line x1="475" y1="120" x2="520" y2="170" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line class="edge-path" x1="270" y1="200" x2="345" y2="225" marker-end="url(#arrow-red)"/>
+      <line x1="510" y1="55"  x2="465" y2="85"  stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <g>
+        <rect x="40"  y="30" width="150" height="30"/><text x="115" y="50" text-anchor="middle" font-size="12">TravelSubway</text>
+        <rect x="155" y="90" width="60"  height="30"/><text x="185" y="110" text-anchor="middle" font-size="12">Flu</text>
+        <rect x="60"  y="170" width="80" height="30"/><text x="100" y="190" text-anchor="middle" font-size="12">Aches</text>
+        <rect x="230" y="170" width="80" height="30"/><text x="270" y="190" text-anchor="middle" font-size="12">Fever</text>
+        <rect x="345" y="225" width="100" height="30"/><text x="395" y="245" text-anchor="middle" font-size="12">HighTemp</text>
+        <rect x="415" y="90" width="80"  height="30"/><text x="455" y="110" text-anchor="middle" font-size="12">Malaria</text>
+        <rect x="510" y="170" width="80" height="30"/><text x="550" y="190" text-anchor="middle" font-size="12">Jaundice</text>
+        <rect x="450" y="30" width="100" height="30"/><text x="500" y="50" text-anchor="middle" font-size="12">ExoticTrip</text>
+      </g>
+    </svg>
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin: 0;"><strong>Q1.</strong> Are <strong>TravelSubway</strong> and <strong>HighTemp</strong> independent?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.8em;">
+    <strong>No.</strong> The path Subway \(\to\) Flu \(\to\) Fever \(\to\) HighTemp has two chain middles (Flu, Fever); both unobserved \(\Rightarrow\) path open.
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin-top: 0.4em;"><strong>Q2.</strong> Are <strong>TravelSubway</strong> and <strong>HighTemp</strong> independent <em>given Flu</em>?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.8em;">
+    <strong>Yes.</strong> Observing Flu blocks the chain at the first middle \(\Rightarrow\) path closed.
+  </div>
+</section>
+
+<!-- 7. Quiz pack 2: another chain test (Aches / HighTemp) -->
+<section>
+  <h2>Quiz pack 2: another chain test</h2>
+  <div style="text-align: center; margin: 0.2em 0;" class="dsep-graph">
+    <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" style="max-height: 230px;">
+      <line x1="115" y1="55" x2="155" y2="85" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line class="edge-path" x1="180" y1="120" x2="135" y2="170" marker-end="url(#arrow-red)"/>
+      <line class="edge-path" x1="195" y1="120" x2="235" y2="170" marker-end="url(#arrow-red)"/>
+      <line x1="425" y1="120" x2="285" y2="170" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line x1="475" y1="120" x2="520" y2="170" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line class="edge-path" x1="270" y1="200" x2="345" y2="225" marker-end="url(#arrow-red)"/>
+      <line x1="510" y1="55"  x2="465" y2="85"  stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <g>
+        <rect x="40"  y="30" width="150" height="30"/><text x="115" y="50" text-anchor="middle" font-size="12">TravelSubway</text>
+        <rect x="155" y="90" width="60"  height="30"/><text x="185" y="110" text-anchor="middle" font-size="12">Flu</text>
+        <rect x="60"  y="170" width="80" height="30"/><text x="100" y="190" text-anchor="middle" font-size="12">Aches</text>
+        <rect x="230" y="170" width="80" height="30"/><text x="270" y="190" text-anchor="middle" font-size="12">Fever</text>
+        <rect x="345" y="225" width="100" height="30"/><text x="395" y="245" text-anchor="middle" font-size="12">HighTemp</text>
+        <rect x="415" y="90" width="80"  height="30"/><text x="455" y="110" text-anchor="middle" font-size="12">Malaria</text>
+        <rect x="510" y="170" width="80" height="30"/><text x="550" y="190" text-anchor="middle" font-size="12">Jaundice</text>
+        <rect x="450" y="30" width="100" height="30"/><text x="500" y="50" text-anchor="middle" font-size="12">ExoticTrip</text>
+      </g>
+    </svg>
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin: 0;"><strong>Q3.</strong> Are <strong>Aches</strong> and <strong>HighTemp</strong> independent?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.8em;">
+    <strong>No.</strong> Path Aches \(\leftarrow\) Flu \(\to\) Fever \(\to\) HighTemp: common cause (Flu, unobserved) and chain (Fever, unobserved). Both open \(\Rightarrow\) path open.
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin-top: 0.4em;"><strong>Q4.</strong> Are <strong>Aches</strong> and <strong>HighTemp</strong> independent <em>given Flu</em>?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.8em;">
+    <strong>Yes.</strong> Observing Flu (the common cause) blocks the path at the first middle.
+  </div>
+</section>
+
+<!-- 8. Quiz pack 3: v-structure with descendant -->
+<section>
+  <h2>Quiz pack 3: v-structure with a descendant</h2>
+  <div style="text-align: center; margin: 0.2em 0;" class="dsep-graph">
+    <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" style="max-height: 230px;">
+      <line x1="115" y1="55" x2="155" y2="85" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line x1="180" y1="120" x2="135" y2="170" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line class="edge-path" x1="195" y1="120" x2="235" y2="170" marker-end="url(#arrow-red)"/>
+      <line class="edge-path" x1="425" y1="120" x2="285" y2="170" marker-end="url(#arrow-red)"/>
+      <line x1="475" y1="120" x2="520" y2="170" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line x1="270" y1="200" x2="345" y2="225" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line class="edge-path" x1="510" y1="55"  x2="465" y2="85"  marker-end="url(#arrow-red)"/>
+      <g>
+        <rect x="40"  y="30" width="150" height="30"/><text x="115" y="50" text-anchor="middle" font-size="12">TravelSubway</text>
+        <rect x="155" y="90" width="60"  height="30"/><text x="185" y="110" text-anchor="middle" font-size="12">Flu</text>
+        <rect x="60"  y="170" width="80" height="30"/><text x="100" y="190" text-anchor="middle" font-size="12">Aches</text>
+        <rect x="230" y="170" width="80" height="30"/><text x="270" y="190" text-anchor="middle" font-size="12">Fever</text>
+        <rect x="345" y="225" width="100" height="30"/><text x="395" y="245" text-anchor="middle" font-size="12">HighTemp</text>
+        <rect x="415" y="90" width="80"  height="30"/><text x="455" y="110" text-anchor="middle" font-size="12">Malaria</text>
+        <rect x="510" y="170" width="80" height="30"/><text x="550" y="190" text-anchor="middle" font-size="12">Jaundice</text>
+        <rect x="450" y="30" width="100" height="30"/><text x="500" y="50" text-anchor="middle" font-size="12">ExoticTrip</text>
+      </g>
+    </svg>
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin: 0;"><strong>Q5.</strong> Are <strong>Flu</strong> and <strong>ExoticTrip</strong> independent?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.8em;">
+    <strong>Yes.</strong> Path Flu \(\to\) Fever \(\leftarrow\) Malaria \(\leftarrow\) ExoticTrip. Fever is a v-structure middle; neither Fever nor its descendant HighTemp is observed \(\Rightarrow\) v-structure blocks the path.
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin-top: 0.4em;"><strong>Q6.</strong> Independent <em>given HighTemp</em>?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.8em;">
+    <strong>No.</strong> HighTemp is a descendant of the v-structure middle Fever, so the v-structure now <em>opens</em> the path (explaining-away).
+  </div>
+</section>
+
+<!-- ============================================================
+     Constructing Bayes nets (8 slides)
+     ============================================================ -->
+
+<!-- 9. Many correct Bayes nets -->
+<section>
+  <h2>Many correct Bayes nets exist</h2>
+  <p style="font-size: 0.92em;">For a fixed joint distribution, more than one Bayes net is "correct".</p>
+  <ul style="font-size: 0.88em;">
+    <li class="fragment"><strong>Correctness:</strong> Bayes net B is correct (w.r.t. A) iff every independence that B requires also holds in A.</li>
+    <li class="fragment"><strong>Missing independence is OK</strong> &mdash; a denser network still encodes the joint.</li>
+    <li class="fragment"><strong>Missing dependence is NOT OK</strong> &mdash; a too-sparse network forces a wrong independence.</li>
+    <li class="fragment">We prefer the BN with the <strong>fewest probabilities</strong> &mdash; usually the one with fewest edges.</li>
+  </ul>
+</section>
+
+<!-- 10. Construction algorithm -->
+<section class="center-slide">
+  <h2>Construction algorithm</h2>
+  <ol style="text-align: left; margin-left: 2em; font-size: 0.92em;">
+    <li class="fragment">Order the variables \(X_1, \ldots, X_n\).</li>
+    <li class="fragment">For each \(X_i\), choose the <strong>smallest</strong> subset of \(\{X_1, \ldots, X_{i-1}\}\) such that, given those parents, \(X_i\) is independent of the rest.</li>
+    <li class="fragment">Add edges from each parent to \(X_i\); write down \(P(X_i \,|\, \mathrm{Parents}(X_i))\).</li>
+  </ol>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.8em;">Ordering matters: a bad order can force every later variable to depend on many earlier ones.</p>
+</section>
+
+<!-- 11. Example 1: chain BN, order W, A, B -->
+<section>
+  <h2>Example 1: chain BN, order \(W, A, B\)</h2>
+  <p class="original-bn-mini">
+    <strong>Original BN:</strong>
+    <svg viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg">
+      <line x1="32" y1="20" x2="92"  y2="20" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line x1="128" y1="20" x2="188" y2="20" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <g class="bn-node">
+        <ellipse cx="20"  cy="20" rx="14" ry="12"/><text x="20"  y="24">B</text>
+        <ellipse cx="110" cy="20" rx="14" ry="12"/><text x="110" y="24">A</text>
+        <ellipse cx="200" cy="20" rx="14" ry="12"/><text x="200" y="24">W</text>
+      </g>
+    </svg>
+  </p>
+  <p class="construction-step">
+    <span class="fragment current-visible" data-fragment-index="0"><span class="set-label">Set { }</span> &mdash; add \(W\) first.</span>
+    <span class="fragment current-visible" data-fragment-index="1"><span class="set-label">Set { W }</span> &mdash; is \(A\) dependent on \(W\)? <em>Yes (chain in original).</em> Add edge \(W \to A\).</span>
+    <span class="fragment current-visible" data-fragment-index="2"><span class="set-label">Set { W, A }</span> &mdash; \(B\) and \(W\) independent given \(A\)? <em>Yes</em> (chain blocked). So \(A\) is \(B\)'s only parent.</span>
+  </p>
+  <div class="construction-bn" style="text-align: center;">
+    <svg viewBox="0 0 360 80" xmlns="http://www.w3.org/2000/svg">
+      <g class="fragment" data-fragment-index="0">
+        <g class="bn-node"><ellipse cx="40" cy="40" rx="18" ry="14"/><text x="40" y="44">W</text></g>
+      </g>
+      <g class="fragment" data-fragment-index="1">
+        <line x1="58" y1="40" x2="142" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node"><ellipse cx="160" cy="40" rx="18" ry="14"/><text x="160" y="44">A</text></g>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <line x1="178" y1="40" x2="262" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node"><ellipse cx="280" cy="40" rx="18" ry="14"/><text x="280" y="44">B</text></g>
+      </g>
+    </svg>
+  </div>
+  <p class="fragment" style="text-align: center; font-size: 0.85em; color: #166534; margin-top: 0.3em;"><strong>Final:</strong> \(W \to A \to B\). Same shape as the original (2 edges).</p>
+</section>
+
+<!-- 12. Example 1 alt: chain BN, order A, W, B -->
+<section>
+  <h2>Example 1 alt: same BN, order \(A, W, B\)</h2>
+  <p class="original-bn-mini">
+    <strong>Original BN:</strong>
+    <svg viewBox="0 0 220 40" xmlns="http://www.w3.org/2000/svg">
+      <line x1="32" y1="20" x2="92"  y2="20" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line x1="128" y1="20" x2="188" y2="20" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <g class="bn-node">
+        <ellipse cx="20"  cy="20" rx="14" ry="12"/><text x="20"  y="24">B</text>
+        <ellipse cx="110" cy="20" rx="14" ry="12"/><text x="110" y="24">A</text>
+        <ellipse cx="200" cy="20" rx="14" ry="12"/><text x="200" y="24">W</text>
+      </g>
+    </svg>
+  </p>
+  <p class="construction-step">
+    <span class="fragment current-visible" data-fragment-index="0"><span class="set-label">Set { }</span> &mdash; add \(A\) first.</span>
+    <span class="fragment current-visible" data-fragment-index="1"><span class="set-label">Set { A }</span> &mdash; \(W\) depends on \(A\). Add \(A \to W\).</span>
+    <span class="fragment current-visible" data-fragment-index="2"><span class="set-label">Set { A, W }</span> &mdash; \(B\) and \(W\) independent given \(A\)? <em>Yes.</em> \(B\) and \(A\) independent given \(W\)? <em>No.</em> So only \(A\) is \(B\)'s parent.</span>
+  </p>
+  <div class="construction-bn" style="text-align: center;">
+    <svg viewBox="0 0 360 130" xmlns="http://www.w3.org/2000/svg">
+      <g class="fragment" data-fragment-index="0">
+        <g class="bn-node"><ellipse cx="40" cy="40" rx="18" ry="14"/><text x="40" y="44">A</text></g>
+      </g>
+      <g class="fragment" data-fragment-index="1">
+        <line x1="58" y1="40" x2="142" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node"><ellipse cx="160" cy="40" rx="18" ry="14"/><text x="160" y="44">W</text></g>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <line x1="42" y1="56" x2="262" y2="100" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node"><ellipse cx="280" cy="105" rx="18" ry="14"/><text x="280" y="109">B</text></g>
+      </g>
+    </svg>
+  </div>
+  <p class="fragment" style="text-align: center; font-size: 0.85em; color: #166534; margin-top: 0.3em;"><strong>Final:</strong> \(A \to W\) and \(A \to B\). Different shape, still 2 edges &mdash; <em>different but equally compact</em>.</p>
+</section>
+
+<!-- 13. Example 2: common cause, order W, G, A -->
+<section>
+  <h2>Example 2: common cause, order \(W, G, A\)</h2>
+  <p class="original-bn-mini">
+    <strong>Original BN:</strong>
+    <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+      <line x1="92"  y1="32" x2="32"  y2="68" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line x1="108" y1="32" x2="168" y2="68" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <g class="bn-node">
+        <ellipse cx="100" cy="20" rx="14" ry="12"/><text x="100" y="24">A</text>
+        <ellipse cx="20"  cy="75" rx="14" ry="12"/><text x="20"  y="79">W</text>
+        <ellipse cx="180" cy="75" rx="14" ry="12"/><text x="180" y="79">G</text>
+      </g>
+    </svg>
+  </p>
+  <p class="construction-step">
+    <span class="fragment current-visible" data-fragment-index="0"><span class="set-label">Set { }</span> &mdash; add \(W\).</span>
+    <span class="fragment current-visible" data-fragment-index="1"><span class="set-label">Set { W }</span> &mdash; \(G\) and \(W\) dependent (shared cause \(A\) is hidden). Add \(W \to G\).</span>
+    <span class="fragment current-visible" data-fragment-index="2"><span class="set-label">Set { W, G }</span> &mdash; \(A\) is the parent of both. Both \(W\) and \(G\) must be parents of \(A\).</span>
+  </p>
+  <div class="construction-bn" style="text-align: center;">
+    <svg viewBox="0 0 360 80" xmlns="http://www.w3.org/2000/svg">
+      <g class="fragment" data-fragment-index="0">
+        <g class="bn-node"><ellipse cx="40" cy="40" rx="18" ry="14"/><text x="40" y="44">W</text></g>
+      </g>
+      <g class="fragment" data-fragment-index="1">
+        <line x1="58" y1="40" x2="142" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node"><ellipse cx="160" cy="40" rx="18" ry="14"/><text x="160" y="44">G</text></g>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <line x1="178" y1="40" x2="262" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <path d="M 50 30 Q 160 5 270 35" stroke="#4b5563" stroke-width="2" fill="none" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node"><ellipse cx="280" cy="40" rx="18" ry="14"/><text x="280" y="44">A</text></g>
+      </g>
+    </svg>
+  </div>
+  <p class="fragment" style="text-align: center; font-size: 0.85em; color: #92400e; margin-top: 0.3em;"><strong>Final:</strong> 3 edges (\(W \to G, W \to A, G \to A\)) &mdash; <em>more than the original's 2 edges</em>. Suboptimal!</p>
+</section>
+
+<!-- 14. Example 3: v-structure, order A, B, E -->
+<section>
+  <h2>Example 3: v-structure, order \(A, B, E\)</h2>
+  <p class="original-bn-mini">
+    <strong>Original BN:</strong>
+    <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+      <line x1="32"  y1="32" x2="92"  y2="68" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <line x1="168" y1="32" x2="108" y2="68" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+      <g class="bn-node">
+        <ellipse cx="20" cy="20" rx="14" ry="12"/><text x="20" y="24">E</text>
+        <ellipse cx="180" cy="20" rx="14" ry="12"/><text x="180" y="24">B</text>
+        <ellipse cx="100" cy="75" rx="14" ry="12"/><text x="100" y="79">A</text>
+      </g>
+    </svg>
+  </p>
+  <p class="construction-step">
+    <span class="fragment current-visible" data-fragment-index="0"><span class="set-label">Set { }</span> &mdash; add \(A\).</span>
+    <span class="fragment current-visible" data-fragment-index="1"><span class="set-label">Set { A }</span> &mdash; \(B\) depends on \(A\) (direct neighbours). Add \(A \to B\).</span>
+    <span class="fragment current-visible" data-fragment-index="2"><span class="set-label">Set { A, B }</span> &mdash; \(E\) and \(B\) NOT independent given \(A\) (v-structure middle observed!). \(E\) and \(A\) always dependent. Both are \(E\)'s parents.</span>
+  </p>
+  <div class="construction-bn" style="text-align: center;">
+    <svg viewBox="0 0 360 80" xmlns="http://www.w3.org/2000/svg">
+      <g class="fragment" data-fragment-index="0">
+        <g class="bn-node"><ellipse cx="40" cy="40" rx="18" ry="14"/><text x="40" y="44">A</text></g>
+      </g>
+      <g class="fragment" data-fragment-index="1">
+        <line x1="58" y1="40" x2="142" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node"><ellipse cx="160" cy="40" rx="18" ry="14"/><text x="160" y="44">B</text></g>
+      </g>
+      <g class="fragment" data-fragment-index="2">
+        <line x1="178" y1="40" x2="262" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <path d="M 50 30 Q 160 5 270 35" stroke="#4b5563" stroke-width="2" fill="none" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node"><ellipse cx="280" cy="40" rx="18" ry="14"/><text x="280" y="44">E</text></g>
+      </g>
+    </svg>
+  </div>
+  <p class="fragment" style="text-align: center; font-size: 0.85em; color: #92400e; margin-top: 0.3em;"><strong>Final:</strong> 3 edges (\(A \to B, A \to E, B \to E\)) &mdash; <em>more than the original's 2</em>. Reversed v-structures are expensive.</p>
+</section>
+
+<!-- 15. Reconstruct Holmes with a bad order -->
+<section>
+  <h2>Holmes with a bad order: \(G, W, E, B, A, R\)</h2>
+  <p style="font-size: 0.85em;">Adding effects before causes forces every later node to depend on every earlier one.</p>
+  <div style="text-align: center;">
+    <svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg" class="construction-bn" style="max-height: 240px;">
+      <!-- 10 edges (G,W,E,B,A,R) -->
+      <line x1="60" y1="240" x2="380" y2="240" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <line x1="60" y1="240" x2="220" y2="160" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <line x1="60" y1="240" x2="220" y2="60"  stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <line x1="60" y1="240" x2="60"  y2="160" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <line x1="400" y1="240" x2="240" y2="160" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <line x1="400" y1="240" x2="240" y2="60"  stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <line x1="400" y1="240" x2="80"  y2="160" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <line x1="220" y1="140" x2="220" y2="80"  stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <line x1="220" y1="140" x2="80"  y2="160" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <line x1="220" y1="60" x2="430" y2="140" stroke="#4b5563" stroke-width="1.5" marker-end="url(#arrow-bn)"/>
+      <g class="bn-node">
+        <circle cx="40"  cy="250" r="18"/><text x="40"  y="254">G</text>
+        <circle cx="400" cy="250" r="18"/><text x="400" y="254">W</text>
+        <circle cx="220" cy="150" r="18"/><text x="220" y="154">E</text>
+        <circle cx="220" cy="50"  r="18"/><text x="220" y="54">B</text>
+        <circle cx="60"  cy="150" r="18"/><text x="60"  y="154">A</text>
+        <circle cx="440" cy="150" r="18"/><text x="440" y="154">R</text>
+      </g>
+    </svg>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; text-align: center; margin-top: 0.4em; color: #991b1b;">
+    \(1 + 2 + 4 + 8 + 16 + 2 = \mathbf{33}\) probabilities &mdash; vs <strong>12</strong> with the causal order.
+  </p>
+</section>
+
+<!-- 16. Lesson: pick a causal order -->
+<section>
+  <h2>Pick a causal order</h2>
+  <p style="font-size: 0.9em; text-align: center;">Causes precede effects. Add root causes first; effects last.</p>
+  <table class="compare" style="margin: 0.4em auto; font-size: 0.78em;">
+    <thead>
+      <tr><th>Example</th><th>Original</th><th>Order</th><th>Reconstructed</th><th>#Edges</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Ex 1</td>     <td>\(B \to A \to W\)</td><td>\(W, A, B\)</td><td>\(W \to A \to B\)</td><td>2 (same)</td></tr>
+      <tr><td>Ex 1 alt</td> <td>\(B \to A \to W\)</td><td>\(A, W, B\)</td><td>\(A \to W, A \to B\)</td><td>2 (different)</td></tr>
+      <tr><td>Ex 2</td>     <td>\(A \to W, A \to G\)</td><td>\(W, G, A\)</td><td>\(W \to G, W \to A, G \to A\)</td><td><span class="no">3</span></td></tr>
+      <tr><td>Ex 3</td>     <td>\(E \to A, B \to A\)</td><td>\(A, B, E\)</td><td>\(A \to B, A \to E, B \to E\)</td><td><span class="no">3</span></td></tr>
+      <tr><td>Holmes</td>   <td>12 probs</td><td>bad: \(G, W, E, B, A, R\)</td><td>10-edge mess</td><td><span class="no">33 probs</span></td></tr>
+    </tbody>
+  </table>
+  <p class="footnote" style="text-align: center; margin-top: 0.3em;">Finding the most compact BN is NP-hard in general &mdash; but a causal ordering is a good heuristic.</p>
+</section>
+
+<!-- ============================================================
+     Causality (3 slides)
+     ============================================================ -->
+
+<!-- 17. Correlation != causation -->
+<section>
+  <h2>Correlation \(\ne\) causation</h2>
+  <p style="font-size: 0.9em;">Two variables can be highly correlated without one causing the other.</p>
+  <div class="two-col" style="margin-top: 0.4em;">
+    <div style="flex: 1;">
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" class="spurious-chart">
+        <line class="axis" x1="30" y1="170" x2="300" y2="170"/>
+        <line class="axis" x1="30" y1="170" x2="30"  y2="20"/>
+        <text class="axis-label" x="165" y="190" text-anchor="middle">year</text>
+        <text class="axis-label" x="15" y="95" text-anchor="middle" transform="rotate(-90 15 95)">value</text>
+        <polyline class="curve-a" points="40,140 70,110 100,80 130,60 160,75 190,95 220,55 250,40 280,30"/>
+        <polyline class="curve-b" points="40,150 70,120 100,90 130,75 160,85 190,100 220,65 250,50 280,40"/>
+        <text x="282" y="32" font-size="10" fill="#1d4ed8">Curve A</text>
+        <text x="282" y="42" font-size="10" fill="#dc2626">Curve B</text>
+      </svg>
+    </div>
+    <div style="flex: 1.1;">
+      <ul style="font-size: 0.85em;">
+        <li class="fragment"><strong>Ice cream sales</strong> correlate with <strong>shark attacks</strong>. Does ice cream attract sharks?</li>
+        <li class="fragment">No &mdash; both rise in <strong>summer</strong>. Temperature is a hidden common cause.</li>
+        <li class="fragment">An edge in a Bayes net is associational, <em>not necessarily causal</em>.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 18. Confounding variables -->
+<section>
+  <h2>Confounding variables</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 200px;">
+        <line x1="125" y1="55" x2="60"  y2="135" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <line x1="155" y1="55" x2="220" y2="135" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <line x1="200" y1="155" x2="80"  y2="155" stroke="#dc2626" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-red)"/>
+        <g class="bn-node">
+          <ellipse cx="140" cy="35"  rx="42" ry="22"/><text x="140" y="39">Age</text>
+          <ellipse cx="50"  cy="160" rx="42" ry="22"/><text x="50"  y="164">Reading</text>
+          <ellipse cx="230" cy="160" rx="42" ry="22"/><text x="230" y="164">Shoe</text>
+        </g>
+        <text x="140" y="180" text-anchor="middle" font-size="11" fill="#dc2626" font-style="italic">spurious</text>
+      </svg>
+    </div>
+    <div style="flex: 1;">
+      <ul style="font-size: 0.85em;">
+        <li class="fragment">Bigger shoes correlate with better reading scores.</li>
+        <li class="fragment"><strong>Hidden cause:</strong> Age. Older children have bigger feet <em>and</em> read better.</li>
+        <li class="fragment">The Shoe \(\to\) Reading "effect" is <strong>spurious</strong>; controlling for Age would erase it.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 19. Causal intervention (do-calculus teaser) -->
+<section>
+  <h2>Causal intervention: the \(\mathrm{do}\) operator</h2>
+  <p style="font-size: 0.9em;">Observing vs. <em>forcing</em>:</p>
+  <ul style="font-size: 0.88em;">
+    <li class="fragment">\(P(R | \text{Shoe} = 1)\) &mdash; what we see when we <em>condition</em> (large feet correlate with reading).</li>
+    <li class="fragment">\(P(R | \mathrm{do}(\text{Shoe} = 1))\) &mdash; what would happen if we <em>intervene</em> and force big shoes onto a random child.</li>
+  </ul>
+  <p class="fragment" style="font-size: 0.85em; margin-top: 0.6em;"><strong>Average Treatment Effect</strong> (adjusting for confounders):</p>
+  <p class="fragment" style="text-align: center; font-size: 0.95em;">\(\mathrm{ATE} = \sum_A P(R | S{=}1, A)\, P(A) - \sum_A P(R | S{=}0, A)\, P(A) \approx 0\)</p>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">\(\mathrm{ATE} \approx 0\) tells us shoe size doesn't <em>cause</em> reading skill &mdash; randomised experiments confirm this.</p>
+</section>
+
+<!-- ============================================================
+     Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 20. Learning goals recap -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment"><span class="ok">&check;</span> Apply d-separation to check (conditional) independence</li>
+    <li class="fragment"><span class="ok">&check;</span> Construct a correct Bayes net from a variable ordering</li>
+    <li class="fragment"><span class="ok">&check;</span> Distinguish correlation from causation</li>
+  </ul>
+</section>
+
+<!-- 21. Next: decision theory -->
+<section class="center-slide">
+  <h2>Next: decision theory</h2>
+  <p style="font-size: 0.95em; margin-top: 1em;">We can now reason under uncertainty. Next, we combine these probabilities with <strong>utilities</strong> to <em>act</em> &mdash; choose the action that maximizes expected reward.</p>
+</section>
+
 </div>
 </div>
 
