@@ -1,0 +1,134 @@
+/* L14-specific styles on top of shared/custom.css, L10/custom.css, L12/custom.css, L13/custom.css. */
+
+/* V/Q backup-diagram visualization (slide 6). */
+.reveal .backup-diagram { display: block; margin: 0.3em auto; max-height: 320px; }
+.reveal .backup-diagram .v-node ellipse {
+  fill: #fef3c7;
+  stroke: #92400e;
+  stroke-width: 1.5;
+}
+.reveal .backup-diagram .q-node rect {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+}
+.reveal .backup-diagram text {
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .backup-diagram .edge {
+  stroke: #6b7280;
+  stroke-width: 1.4;
+  fill: none;
+}
+.reveal .backup-diagram .edge-label {
+  font-size: 10px;
+  fill: #1d4ed8;
+  font-style: italic;
+}
+.reveal .backup-diagram .edge-label.policy { fill: #92400e; }
+.reveal .backup-diagram .edge-label.trans { fill: #6b7280; }
+
+/* Side-by-side V_i and V_{i+1} grid layout (slides 11-12). */
+.reveal .value-grid-row {
+  display: flex;
+  gap: 0.6em;
+  align-items: center;
+  justify-content: center;
+  margin: 0.3em 0;
+}
+.reveal .value-grid-row .vgrid-label {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85em;
+  font-weight: 700;
+  color: #1d4ed8;
+  display: block;
+  text-align: center;
+  margin-bottom: 0.1em;
+}
+.reveal .value-grid-row .vgrid-arrow {
+  font-size: 1.6em;
+  color: #6b7280;
+  align-self: center;
+}
+
+/* Highlight an updated cell in V_i. */
+.reveal .gridworld .gw-highlight {
+  background: #fef3c7;
+  font-weight: 700;
+  color: #92400e;
+}
+.reveal .gridworld .gw-highlight-2 {
+  background: #dcfce7;
+  font-weight: 700;
+  color: #166534;
+}
+
+/* 2-up side-by-side cards for PE vs Bellman (slide 14). */
+.reveal .bellman-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7em;
+  margin: 0.4em 0;
+}
+.reveal .bellman-compare .bcard {
+  padding: 0.7em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+  text-align: left;
+}
+.reveal .bellman-compare .bcard.linear { border-top-color: #16a34a; }
+.reveal .bellman-compare .bcard h3 {
+  font-size: 0.95em;
+  color: #1d4ed8;
+  margin: 0 0 0.3em 0;
+}
+.reveal .bellman-compare .bcard.linear h3 { color: #166534; }
+.reveal .bellman-compare .bcard .formula {
+  font-size: 0.85em;
+  margin: 0.4em 0;
+  text-align: center;
+}
+.reveal .bellman-compare .bcard .tag {
+  display: inline-block;
+  margin-top: 0.4em;
+  padding: 0.2em 0.5em;
+  border-radius: 3px;
+  font-size: 0.75em;
+  font-weight: 600;
+}
+.reveal .bellman-compare .bcard .tag.nonlinear { background: #fee2e2; color: #991b1b; }
+.reveal .bellman-compare .bcard .tag.linear-tag { background: #dcfce7; color: #166534; }
+
+/* 2-up cards for "exact vs iterative" PE solving (slide 15). */
+.reveal .pe-solvers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7em;
+  margin: 0.4em 0;
+}
+.reveal .pe-solvers .pcard {
+  padding: 0.7em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+  text-align: left;
+}
+.reveal .pe-solvers .pcard h3 {
+  font-size: 0.95em;
+  color: #1d4ed8;
+  margin: 0 0 0.3em 0;
+}
+.reveal .pe-solvers .pcard .cost {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.9em;
+  font-weight: 700;
+  margin-top: 0.5em;
+  color: #166534;
+}
