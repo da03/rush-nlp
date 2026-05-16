@@ -166,6 +166,314 @@
   <p class="fragment" style="text-align:center; font-size: 0.85em; margin-top: 0.6em;">6 Boolean variables &rArr; \(2^6 = 64\) joint probabilities.</p>
 </section>
 
+<!-- ============================================================
+     Sum rule (3 slides)
+     ============================================================ -->
+
+<!-- 9. Sum rule -->
+<section>
+  <h2>The sum rule (marginalization)</h2>
+  <p style="font-size: 0.9em;">Given a joint distribution, we can compute the probability over a <em>subset</em> of variables by summing out the rest.</p>
+  <div class="worked">
+    <p class="fragment"><span class="label-step">From \(P(A, B, C)\) to \(P(A, B)\):</span> sum out \(C\):</p>
+    <p class="fragment" style="text-align:center;">\(P(A \wedge B) = P(A \wedge B \wedge C) + P(A \wedge B \wedge \neg C)\)</p>
+    <p class="fragment"><span class="label-step">From \(P(A, B)\) to \(P(A)\):</span> sum out \(B\):</p>
+    <p class="fragment" style="text-align:center;">\(P(A) = P(A \wedge B) + P(A \wedge \neg B)\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; color:#6b7280; text-align:center;">Add up all probabilities while varying the variables we don't care about.</p>
+</section>
+
+<!-- 10. Visual: marginalizing the Holmes joint -->
+<section>
+  <h2>Marginalizing the Holmes joint</h2>
+  <p style="text-align: center; font-size: 0.85em;">\(P(A, W, G)\) over Watson \(W\), Gibbon \(G\), and the alarm \(A\):</p>
+  <table class="joint-table" id="joint-AWG">
+    <thead>
+      <tr><th rowspan="2"></th><th colspan="2">\(A\)</th><th colspan="2">\(\neg A\)</th></tr>
+      <tr><th>\(G\)</th><th>\(\neg G\)</th><th>\(G\)</th><th>\(\neg G\)</th></tr>
+    </thead>
+    <tbody>
+      <tr><th>\(W\)</th>
+        <td>0.032</td>
+        <td>0.048</td>
+        <td class="fragment hl" data-fragment-index="1">0.036</td>
+        <td class="fragment hl" data-fragment-index="1">0.324</td>
+      </tr>
+      <tr><th>\(\neg W\)</th>
+        <td>0.008</td>
+        <td>0.012</td>
+        <td>0.054</td>
+        <td>0.486</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="fragment" data-fragment-index="2" style="text-align: center; font-size: 0.9em; margin-top: 0.6em;">Example &mdash; \(P(\neg A \wedge W)\): sum out \(G\) within the highlighted cells.</p>
+  <p class="fragment" data-fragment-index="3" style="text-align: center; font-size: 0.95em; color: #166534;">\(P(\neg A \wedge W) = 0.036 + 0.324 = \mathbf{0.36}\)</p>
+</section>
+
+<!-- 11. Sum rule quiz pack -->
+<section>
+  <h2>Quiz pack: marginalization</h2>
+  <div class="two-col" style="margin-top: 0.3em;">
+    <div style="flex: 1.05;">
+      <p class="quiz-q" style="font-size: 0.8em; margin: 0;"><strong>Q1.</strong> \(P(\neg A \wedge W)\)?</p>
+      <div class="quiz-answer fragment" style="font-size: 0.78em;">\(= 0.036 + 0.324 = 0.36\). &nbsp;<strong>(A)</strong></div>
+      <p class="quiz-q" style="font-size: 0.8em; margin-top: 0.5em; margin-bottom: 0;"><strong>Q2.</strong> \(P(A \wedge \neg G)\)?</p>
+      <div class="quiz-answer fragment" style="font-size: 0.78em;">\(= 0.048 + 0.012 = 0.06\). &nbsp;<strong>(B)</strong></div>
+      <p class="quiz-q" style="font-size: 0.8em; margin-top: 0.5em; margin-bottom: 0;"><strong>Q3.</strong> \(P(\neg A)\)?</p>
+      <div class="quiz-answer fragment" style="font-size: 0.78em;">\(= 0.036 + 0.324 + 0.054 + 0.486 = 0.9\). &nbsp;<strong>(E)</strong></div>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <table class="joint-table" style="font-size: 0.7em;">
+        <thead>
+          <tr><th rowspan="2"></th><th colspan="2">\(A\)</th><th colspan="2">\(\neg A\)</th></tr>
+          <tr><th>\(G\)</th><th>\(\neg G\)</th><th>\(G\)</th><th>\(\neg G\)</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>\(W\)</th><td>0.032</td><td>0.048</td><td>0.036</td><td>0.324</td></tr>
+          <tr><th>\(\neg W\)</th><td>0.008</td><td>0.012</td><td>0.054</td><td>0.486</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Product rule (2 slides)
+     ============================================================ -->
+
+<!-- 12. Product rule + conditional probability -->
+<section>
+  <h2>The product rule (conditioning)</h2>
+  <p style="font-size: 0.9em;">The <strong>conditional probability</strong> of \(A\) given \(B\) is the fraction of the \(B\)-world in which \(A\) also holds:</p>
+  <p style="text-align: center; font-size: 1.05em; margin: 0.4em 0;">\(P(A | B) = \dfrac{P(A \wedge B)}{P(B)}\)</p>
+  <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" class="ratio-viz">
+    <rect class="universe" x="10" y="20" width="460" height="120"/>
+    <text x="20" y="40" font-size="11" fill="#6b7280">all worlds &nbsp;(total prob = 1)</text>
+    <rect class="region-B" x="40" y="50" width="280" height="80"/>
+    <text x="180" y="98" text-anchor="middle" font-size="14" font-weight="600" fill="#991b1b">B</text>
+    <rect class="region-AB" x="160" y="60" width="120" height="60"/>
+    <text x="220" y="98" text-anchor="middle" font-size="13" font-weight="600" fill="#7c2d12">A &and; B</text>
+    <text class="ratio-label" x="380" y="80" text-anchor="middle" fill="#1d4ed8">\(P(A|B) =\)</text>
+    <text class="ratio-label" x="380" y="100" text-anchor="middle" fill="#7c2d12">A &and; B</text>
+    <line x1="350" y1="105" x2="410" y2="105" stroke="#374151" stroke-width="1"/>
+    <text class="ratio-label" x="380" y="122" text-anchor="middle" fill="#991b1b">B</text>
+  </svg>
+</section>
+
+<!-- 13. Product rule quiz pack -->
+<section>
+  <h2>Quiz pack: conditional probability</h2>
+  <p style="text-align:center; font-size: 0.8em; color: #6b7280; margin: 0;">From the previous slide: \(P(\neg A \wedge W) = 0.36\), \(P(A \wedge \neg G) = 0.06\), \(P(\neg A) = 0.9\).</p>
+  <div style="margin-top: 0.5em;">
+    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q1.</strong> \(P(W | \neg A)\) &mdash; the probability that Watson calls, given that the alarm is NOT going?</p>
+    <div class="quiz-answer fragment" style="font-size: 0.85em;">
+      \(P(W | \neg A) = \dfrac{P(\neg A \wedge W)}{P(\neg A)} = \dfrac{0.36}{0.9} = \mathbf{0.4}\). &nbsp;<strong>(B)</strong>
+    </div>
+  </div>
+  <div style="margin-top: 0.8em;">
+    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q2.</strong> \(P(\neg G | A)\) &mdash; the probability that Gibbon does NOT call, given the alarm is going?</p>
+    <div class="quiz-answer fragment" style="font-size: 0.85em;">
+      \(P(A) = 1 - 0.9 = 0.1\), so &nbsp;\(P(\neg G | A) = \dfrac{P(A \wedge \neg G)}{P(A)} = \dfrac{0.06}{0.1} = \mathbf{0.6}\). &nbsp;<strong>(C)</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Chain rule (2 slides)
+     ============================================================ -->
+
+<!-- 14. Chain rule -->
+<section>
+  <h2>The chain rule (joint factorization)</h2>
+  <p style="font-size: 0.9em;">The product rule, repeated:</p>
+  <div class="worked">
+    <p class="fragment"><span class="label-step">Two variables:</span> &nbsp;\(P(A \wedge B) = P(A | B)\, P(B)\)</p>
+    <p class="fragment"><span class="label-step">Three variables:</span> &nbsp;\(P(A \wedge B \wedge C) = P(A | B \wedge C)\, P(B | C)\, P(C)\)</p>
+    <p class="fragment"><span class="label-step">In general:</span></p>
+    <p class="fragment" style="text-align:center; font-size: 0.9em;">\[ P(X_1 \wedge X_2 \wedge \cdots \wedge X_n) = \prod_{i=1}^{n} P(X_i \,|\, X_1 \wedge \cdots \wedge X_{i-1}) \]</p>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center;">Pick any ordering of variables; condition each on its predecessors.</p>
+</section>
+
+<!-- 15. Chain rule quiz pack -->
+<section>
+  <h2>Quiz pack: chain rule</h2>
+  <p style="text-align:center; font-size: 0.8em; color: #6b7280; margin: 0;">Given: \(P(A) = 0.1\), \(P(W|A) = 0.9\), \(P(W|\neg A) = 0.4\), \(P(G|A \wedge W) = 0.3\), \(P(G|\neg A \wedge \neg W) = 0.1\).</p>
+  <div style="margin-top: 0.5em;">
+    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q1.</strong> \(P(A \wedge W \wedge \neg G)\)?</p>
+    <div class="quiz-answer fragment" style="font-size: 0.85em;">
+      \(P(A \wedge W \wedge \neg G) = P(A) \cdot P(W | A) \cdot P(\neg G | A \wedge W) = 0.1 \times 0.9 \times 0.7 = \mathbf{0.063}\). &nbsp;<strong>(D)</strong>
+    </div>
+  </div>
+  <div style="margin-top: 0.7em;">
+    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q2.</strong> \(P(\neg A \wedge \neg W \wedge \neg G)\)?</p>
+    <div class="quiz-answer fragment" style="font-size: 0.85em;">
+      \(= P(\neg A) \cdot P(\neg W | \neg A) \cdot P(\neg G | \neg A \wedge \neg W) = 0.9 \times 0.6 \times 0.9 = \mathbf{0.486}\). &nbsp;<strong>(A)</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Bayes' rule (3 slides)
+     ============================================================ -->
+
+<!-- 16. Why flip conditionals? -->
+<section>
+  <h2>Why flip conditionals?</h2>
+  <p style="font-size: 0.9em; text-align: center; margin: 0;">Models give us <strong>causal</strong> knowledge. Diagnosis needs <strong>evidential</strong> reasoning.</p>
+  <svg viewBox="0 0 600 180" xmlns="http://www.w3.org/2000/svg" class="bayes-flip">
+    <rect class="node-rect" x="40"  y="40" width="170" height="40"/>
+    <text x="125" y="65" text-anchor="middle" font-size="14">disease &rarr; symptom</text>
+    <rect class="node-rect" x="40"  y="110" width="170" height="40"/>
+    <text x="125" y="135" text-anchor="middle" font-size="14">fire &rarr; alarm</text>
+    <rect class="node-rect" x="390" y="40" width="170" height="40"/>
+    <text x="475" y="65" text-anchor="middle" font-size="14">symptom &rarr; disease</text>
+    <rect class="node-rect" x="390" y="110" width="170" height="40"/>
+    <text x="475" y="135" text-anchor="middle" font-size="14">alarm &rarr; fire</text>
+    <defs>
+      <marker id="flip-tip" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
+    </defs>
+    <path class="arrow-evidential" d="M 215 60 Q 300 0 385 60" marker-end="url(#flip-tip)"/>
+    <path class="arrow-evidential" d="M 215 130 Q 300 180 385 130" marker-end="url(#flip-tip)"/>
+    <text class="arrow-label" x="300" y="22" text-anchor="middle" fill="#dc2626">Bayes' rule flips the conditional</text>
+  </svg>
+  <p style="font-size: 0.82em; margin-top: 0.3em;">We know \(P(\text{symptom} | \text{disease})\) and want \(P(\text{disease} | \text{symptom})\).</p>
+</section>
+
+<!-- 17. Bayes' rule + derivation -->
+<section>
+  <h2>Bayes' rule</h2>
+  <div class="theorem">
+    <strong>Bayes' rule.</strong> &nbsp;\(P(X | Y) = \dfrac{P(Y | X)\, P(X)}{P(Y)}\)
+  </div>
+  <p class="fragment" style="font-size: 0.85em; margin-top: 0.6em;">You don't memorize it &mdash; you derive it from the product rule:</p>
+  <div class="worked">
+    <p class="fragment">By the product rule (both directions): &nbsp;\(P(X \wedge Y) = P(X | Y)\, P(Y) = P(Y | X)\, P(X)\).</p>
+    <p class="fragment">Divide both sides by \(P(Y)\): &nbsp;\(P(X | Y) = \dfrac{P(Y | X)\, P(X)}{P(Y)}\).</p>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.6em;">The denominator \(P(Y)\) is just a normalization constant &mdash; compute \(P(X | Y)\) and \(P(\neg X | Y)\), then normalize.</p>
+</section>
+
+<!-- 18. Bayes' rule quiz pack -->
+<section>
+  <h2>Quiz pack: Bayes' rule</h2>
+  <p style="text-align:center; font-size: 0.8em; color: #6b7280; margin: 0;">Given: \(P(A) = 0.1\), \(P(W|A) = 0.9\), \(P(W|\neg A) = 0.4\), \(P(G|A) = 0.3\), \(P(G|\neg A) = 0.1\).</p>
+  <div style="margin-top: 0.5em;">
+    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q1.</strong> \(P(\neg A | W)\) &mdash; alarm NOT going, given Watson calls?</p>
+    <div class="quiz-answer fragment" style="font-size: 0.85em;">
+      Marginalize \(W\): \(P(W) = P(A) P(W|A) + P(\neg A) P(W|\neg A) = 0.09 + 0.36 = 0.45\). <br>
+      Bayes: \(P(\neg A | W) = \dfrac{P(\neg A) P(W|\neg A)}{P(W)} = \dfrac{0.36}{0.45} = \mathbf{0.8}\). &nbsp;<strong>(C)</strong>
+    </div>
+  </div>
+  <div style="margin-top: 0.7em;">
+    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q2.</strong> \(P(A | \neg G)\) &mdash; alarm going, given Gibbon does NOT call?</p>
+    <div class="quiz-answer fragment" style="font-size: 0.85em;">
+      \(P(\neg G) = P(A) P(\neg G|A) + P(\neg A) P(\neg G|\neg A) = 0.07 + 0.81 = 0.88\). <br>
+      Bayes: \(P(A | \neg G) = \dfrac{P(A) P(\neg G|A)}{P(\neg G)} = \dfrac{0.07}{0.88} \approx \mathbf{0.08}\). &nbsp;<strong>(E)</strong>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Universal approach (3 slides)
+     ============================================================ -->
+
+<!-- 19. The 3-step recipe -->
+<section class="center-slide">
+  <h2>A universal approach</h2>
+  <p style="font-size: 0.85em; color:#6b7280;">Any conditional probability can be calculated by combining three rules.</p>
+  <ol style="text-align: left; margin-left: 2em; font-size: 0.92em;">
+    <li class="fragment"><strong>Conditional &rarr; joint:</strong> &nbsp;rewrite \(P(X | Y)\) as a ratio of joint probabilities (the product rule, reversed).</li>
+    <li class="fragment"><strong>Partial joint &rarr; full joint:</strong> &nbsp;introduce any missing variables by summing over them (the sum rule, reversed).</li>
+    <li class="fragment"><strong>Full joint &rarr; chain:</strong> &nbsp;factor each full-joint probability using the chain rule.</li>
+  </ol>
+</section>
+
+<!-- 20. Worked example: setup + step 1 -->
+<section>
+  <h2>Worked example: \(P(A | C)\)</h2>
+  <p style="font-size: 0.85em;"><strong>Given:</strong> &nbsp;\(P(A) = 0.6\); &nbsp;\(P(B | A) = 0.4\), \(P(\neg B | \neg A) = 0.2\); &nbsp;\(P(C | A \wedge B) = 0.1\), \(P(C | \neg A \wedge B) = 0.2\), \(P(C | A \wedge \neg B) = 0.5\), \(P(C | \neg A \wedge \neg B) = 0.8\).</p>
+  <div class="worked">
+    <p><span class="label-step">Step 1.</span> Convert the conditional into a ratio of joints:</p>
+    <p class="fragment" style="text-align: center;">\(P(A | C) = \dfrac{P(A \wedge C)}{P(C)} = \dfrac{P(A \wedge C)}{P(A \wedge C) + P(\neg A \wedge C)}\)</p>
+  </div>
+</section>
+
+<!-- 21. Worked example: steps 2-3 -->
+<section>
+  <h2>Worked example, continued</h2>
+  <div class="worked">
+    <p><span class="label-step">Step 2.</span> Sum out \(B\) to get full-joint probabilities:</p>
+    <p class="fragment" style="font-size: 0.85em; text-align: center;">\(P(A \wedge C) = P(A \wedge B \wedge C) + P(A \wedge \neg B \wedge C)\)</p>
+    <p class="fragment" style="font-size: 0.85em; text-align: center;">\(P(\neg A \wedge C) = P(\neg A \wedge B \wedge C) + P(\neg A \wedge \neg B \wedge C)\)</p>
+    <p class="fragment"><span class="label-step">Step 3.</span> Apply the chain rule to each:</p>
+    <p class="fragment" style="font-size: 0.78em; text-align: center;">\(P(A \wedge B \wedge C) = P(C | A \wedge B)\, P(B | A)\, P(A) = 0.1 \times 0.4 \times 0.6 = 0.024\)</p>
+    <p class="fragment" style="font-size: 0.78em; text-align: center;">\(P(A \wedge \neg B \wedge C) = 0.5 \times 0.6 \times 0.6 = 0.180\)</p>
+    <p class="fragment" style="font-size: 0.78em; text-align: center;">\(P(\neg A \wedge B \wedge C) = 0.2 \times 0.8 \times 0.4 = 0.064, \quad P(\neg A \wedge \neg B \wedge C) = 0.8 \times 0.2 \times 0.4 = 0.064\)</p>
+    <p class="fragment" style="text-align: center; color: #166534; font-size: 0.92em;">\(P(A | C) = \dfrac{0.024 + 0.180}{0.024 + 0.180 + 0.064 + 0.064} = \dfrac{0.204}{0.332} \approx \mathbf{0.614}\)</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     Wrap-up (3 slides)
+     ============================================================ -->
+
+<!-- 22. Four rules at a glance -->
+<section>
+  <h2>Four rules at a glance</h2>
+  <table class="compare rules-summary">
+    <thead>
+      <tr>
+        <th>Rule</th>
+        <th>Formula</th>
+        <th>Use when</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Sum</strong></td>
+        <td class="formula">\(P(A) = \sum_b P(A \wedge B{=}b)\)</td>
+        <td>marginalizing out variables</td>
+      </tr>
+      <tr>
+        <td><strong>Product</strong></td>
+        <td class="formula">\(P(A \wedge B) = P(A | B)\, P(B)\)</td>
+        <td>defining or applying a conditional</td>
+      </tr>
+      <tr>
+        <td><strong>Chain</strong></td>
+        <td class="formula">\(P(X_1 \wedge \cdots \wedge X_n) = \prod_i P(X_i | X_1 \wedge \cdots \wedge X_{i-1})\)</td>
+        <td>computing a full joint from conditionals</td>
+      </tr>
+      <tr>
+        <td><strong>Bayes'</strong></td>
+        <td class="formula">\(P(X | Y) = \dfrac{P(Y | X)\, P(X)}{P(Y)}\)</td>
+        <td>flipping causal &rarr; evidential</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 23. Learning goals recap -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <p style="font-size:0.85em; color:#6b7280;">Calculate prior, posterior, and joint probabilities using:</p>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment"><span class="ok">&check;</span> the <strong>sum rule</strong></li>
+    <li class="fragment"><span class="ok">&check;</span> the <strong>product rule</strong></li>
+    <li class="fragment"><span class="ok">&check;</span> the <strong>chain rule</strong></li>
+    <li class="fragment"><span class="ok">&check;</span> <strong>Bayes' rule</strong></li>
+    <li class="fragment"><span class="ok">&check;</span> the <strong>universal 3-step recipe</strong></li>
+  </ul>
+</section>
+
+<!-- 24. Next: independence + Bayes nets -->
+<section class="center-slide">
+  <h2>Next: independence and Bayes nets</h2>
+  <p style="font-size: 0.95em; margin-top: 1em;">The chain rule gives a full joint &mdash; but \(2^n\) probabilities for \(n\) variables is too many. <strong>Conditional independence</strong> and <strong>Bayesian networks</strong> let us write huge joints with far fewer numbers.</p>
+</section>
+
 </div>
 </div>
 
