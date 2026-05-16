@@ -1,0 +1,190 @@
+/* L12-specific styles on top of shared/custom.css, L7/custom.css, L9/custom.css, L10/custom.css. */
+
+/* Decision-network SVG: chance ellipses, decision rectangles, utility diamonds. */
+.reveal .dn-graph { display: block; margin: 0.3em auto; max-height: 320px; }
+.reveal .dn-graph .chance ellipse,
+.reveal .dn-graph .chance circle {
+  fill: #fff;
+  stroke: #111827;
+  stroke-width: 2;
+}
+.reveal .dn-graph .chance.evidence ellipse,
+.reveal .dn-graph .chance.evidence circle { fill: #d1d5db; }
+.reveal .dn-graph .decision rect {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 2;
+}
+.reveal .dn-graph .utility polygon {
+  fill: #dcfce7;
+  stroke: #16a34a;
+  stroke-width: 2;
+}
+.reveal .dn-graph text {
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .dn-graph .edge {
+  stroke: #4b5563;
+  stroke-width: 1.6;
+  fill: none;
+}
+.reveal .dn-graph .edge.added {
+  stroke: #16a34a;
+  stroke-width: 2.5;
+  stroke-dasharray: 5 3;
+}
+
+/* Node-type legend cards (slide 5). */
+.reveal .node-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6em;
+  margin: 0.5em 0;
+}
+.reveal .node-legend .legend-card {
+  padding: 0.7em 0.5em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  text-align: center;
+}
+.reveal .node-legend .legend-card svg { display: block; margin: 0 auto 0.4em; height: 60px; }
+.reveal .node-legend .legend-card h3 { font-size: 0.95em; margin: 0 0 0.2em 0; }
+.reveal .node-legend .legend-card .chance-h { color: #111827; }
+.reveal .node-legend .legend-card .decision-h { color: #1d4ed8; }
+.reveal .node-legend .legend-card .utility-h { color: #166534; }
+.reveal .node-legend .legend-card p { font-size: 0.75em; margin: 0; color: #4b5563; }
+
+/* EU vs q line chart. */
+.reveal .eu-chart { display: block; margin: 0.3em auto; max-height: 360px; }
+.reveal .eu-chart .axis { stroke: #6b7280; stroke-width: 1; }
+.reveal .eu-chart .grid { stroke: #e5e7eb; stroke-width: 0.7; stroke-dasharray: 3 3; }
+.reveal .eu-chart .axis-label { font-size: 11px; fill: #6b7280; text-anchor: middle; }
+.reveal .eu-chart .axis-label.left { text-anchor: end; }
+.reveal .eu-chart .line-nps  { stroke: #1d4ed8; stroke-width: 2.5; fill: none; }
+.reveal .eu-chart .line-nps-s { stroke: #16a34a; stroke-width: 2.5; fill: none; }
+.reveal .eu-chart .line-ps   { stroke: #dc2626; stroke-width: 2.5; fill: none; }
+.reveal .eu-chart .line-ps-s { stroke: #d97706; stroke-width: 2.5; fill: none; }
+.reveal .eu-chart .crossing { stroke: #1f2937; stroke-width: 1; stroke-dasharray: 4 3; }
+.reveal .eu-chart .crossing-dot { fill: #1f2937; }
+.reveal .eu-chart .line-label { font-size: 11px; font-weight: 600; }
+.reveal .eu-chart .label-nps  { fill: #1d4ed8; }
+.reveal .eu-chart .label-nps-s { fill: #166534; }
+.reveal .eu-chart .label-ps   { fill: #991b1b; }
+.reveal .eu-chart .label-ps-s { fill: #92400e; }
+
+/* Utility table (slide 7): grey out "impossible" rows. */
+.reveal table.dn-utility-table {
+  margin: 0.3em auto;
+  border-collapse: collapse;
+  font-size: 0.78em;
+}
+.reveal table.dn-utility-table th,
+.reveal table.dn-utility-table td {
+  padding: 0.3em 0.7em;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+}
+.reveal table.dn-utility-table th {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+.reveal table.dn-utility-table tr.impossible td {
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-style: italic;
+}
+.reveal table.dn-utility-table .val { font-weight: 700; color: #166534; }
+
+/* 2x2 grid for 4 expected utilities (slide 10). */
+.reveal .eu-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin: 0.4em 0;
+}
+.reveal .eu-cards .eu-card {
+  padding: 0.6em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+  text-align: left;
+  font-size: 0.78em;
+}
+.reveal .eu-cards .eu-card.best { border-top-color: #16a34a; background: #f0fdf4; }
+.reveal .eu-cards .eu-card h3 {
+  font-size: 0.95em;
+  color: #1d4ed8;
+  margin: 0 0 0.3em 0;
+}
+.reveal .eu-cards .eu-card.best h3 { color: #166534; }
+.reveal .eu-cards .eu-card .closed {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 700;
+  margin-top: 0.3em;
+}
+
+/* Two-column policy comparison cards (slide 17, 22). */
+.reveal .policy-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7em;
+  margin: 0.4em 0;
+}
+.reveal .policy-cards .pcard {
+  padding: 0.6em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+  text-align: left;
+  font-size: 0.82em;
+}
+.reveal .policy-cards .pcard.best { border-top-color: #16a34a; background: #f0fdf4; }
+.reveal .policy-cards .pcard h3 {
+  font-size: 0.95em;
+  color: #1d4ed8;
+  margin: 0 0 0.3em 0;
+}
+.reveal .policy-cards .pcard.best h3 { color: #166534; }
+.reveal .policy-cards .pcard .total {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 700;
+  margin-top: 0.4em;
+  font-size: 0.95em;
+}
+
+/* VEA flow: factor name -> arrow -> factor name -> ... (slide 21). */
+.reveal .vea-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3em;
+  margin: 0.4em 0;
+}
+.reveal .vea-flow .vea-step {
+  padding: 0.35em 0.6em;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.75em;
+  color: #111827;
+  text-align: center;
+}
+.reveal .vea-flow .vea-step .op {
+  display: block;
+  font-size: 0.85em;
+  color: #6b7280;
+  margin-top: 0.15em;
+}
+.reveal .vea-flow .vea-step.start { border-left: 4px solid #1d4ed8; }
+.reveal .vea-flow .vea-step.final { border: 2px solid #16a34a; background: #f0fdf4; color: #166534; }
+.reveal .vea-flow .vea-arrow { color: #6b7280; font-size: 1.2em; }
