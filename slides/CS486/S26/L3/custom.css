@@ -1,0 +1,116 @@
+/* L3-specific styles on top of shared/custom.css. */
+
+/* Heuristic-search graph: SVG with edge costs (blue) and h(n) labels (green). */
+.reveal .heuristic-graph .cost-label {
+  font-size: 12px;
+  font-weight: 600;
+  fill: #1d4ed8;
+}
+.reveal .heuristic-graph .h-label {
+  font-size: 11px;
+  font-style: italic;
+  fill: #16a34a;
+}
+.reveal .heuristic-graph .f-label {
+  font-size: 11px;
+  font-weight: bold;
+  fill: #dc2626;
+}
+
+/* Inline g/h/f color hints (used in body text to match SVG color coding). */
+.reveal .g-color { color: #1d4ed8; font-weight: 600; }
+.reveal .h-color { color: #16a34a; font-weight: 600; }
+.reveal .f-color { color: #dc2626; font-weight: 600; }
+
+/* Three-up algorithm summary cards (Three algorithms, one knob). */
+.reveal .alg-cards {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  margin: 1em 0;
+}
+.reveal .alg-cards .alg-card {
+  flex: 1;
+  padding: 1em 0.8em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+  text-align: center;
+}
+.reveal .alg-cards .alg-card .alg-name {
+  font-size: 0.95em;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 0.3em;
+}
+.reveal .alg-cards .alg-card .alg-key {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 1em;
+  color: #111827;
+  padding: 0.3em 0;
+}
+.reveal .alg-cards .alg-card .alg-sub {
+  font-size: 0.7em;
+  color: #6b7280;
+  margin-top: 0.4em;
+  line-height: 1.3;
+}
+
+/* Side-by-side GBFS-failure mini-panels using the existing PNGs. */
+.reveal .failure-pair {
+  display: flex;
+  gap: 1.5em;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 0.5em;
+}
+.reveal .failure-pair > div { flex: 1; text-align: center; }
+.reveal .failure-pair img {
+  max-width: 100%;
+  max-height: 320px;
+  width: auto;
+  height: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+.reveal .failure-pair .failure-label {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #991b1b;
+  margin-top: 0.4em;
+}
+
+/* Proof / derivation block (cleaner contradiction proof for A*-optimality). */
+.reveal .proof {
+  background: #f9fafb;
+  border-left: 4px solid #1d4ed8;
+  padding: 0.7em 1em;
+  text-align: left;
+  margin: 0.4em auto;
+  max-width: 90%;
+  font-size: 0.82em;
+}
+.reveal .proof ol {
+  margin: 0.3em 0 0 1.4em;
+  padding: 0;
+}
+.reveal .proof li { margin-bottom: 0.4em; }
+.reveal .proof .qed { color: #1d4ed8; font-weight: bold; }
+
+/* Theorem-style block (for "Theorem: ..." statements). */
+.reveal .theorem {
+  background: #eff6ff;
+  border-left: 4px solid #1d4ed8;
+  padding: 0.6em 1em;
+  text-align: left;
+  margin: 0.4em auto;
+  max-width: 90%;
+  font-size: 0.85em;
+}
+.reveal .theorem strong { color: #1d4ed8; }
+
+/* Inline frontier-as-priority-queue annotations: "(SBE: 2, SCH: 2, SBD: 10)" */
+.reveal .pq-state {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}

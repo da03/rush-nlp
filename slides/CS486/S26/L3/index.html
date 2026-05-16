@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 3 — Heuristic Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 3: Heuristic Search. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============================================================
+     Intro (3 slides)
+     ============================================================ -->
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Heuristic Search</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 3</p>
+  <p class="credit">RN 3.5 &middot; PM 3.6&ndash;3.7</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Motivate heuristic search</li>
+    <li>Trace LCFS, GBFS, A*</li>
+    <li>Analyze: space, time, completeness, optimality</li>
+    <li>Design and dominate admissible heuristics</li>
+    <li>Prune the search space</li>
+  </ul>
+</section>
+
+<!-- 3. Why heuristic search? -->
+<section>
+  <h2>Why heuristic search?</h2>
+  <p style="text-align:center; font-size: 0.85em;">Which state should we expand next?</p>
+  <div class="puzzle-wrap">
+    <div class="puzzle-block">
+      <div class="puzzle-label">State A</div>
+      <div class="puzzle-grid">
+        <div>5</div><div>3</div><div class="empty"></div>
+        <div>8</div><div>7</div><div>6</div>
+        <div>2</div><div>4</div><div>1</div>
+      </div>
+    </div>
+    <div class="puzzle-block">
+      <div class="puzzle-label">State B</div>
+      <div class="puzzle-grid">
+        <div>1</div><div>2</div><div>3</div>
+        <div>4</div><div>5</div><div class="empty"></div>
+        <div>7</div><div>8</div><div>6</div>
+      </div>
+    </div>
+  </div>
+  <div class="two-col" style="margin-top: 0.8em;">
+    <div style="flex:1;">
+      <h3 style="color:#991b1b; font-size: 0.9em;">Uninformed search</h3>
+      <ul style="font-size:0.85em;">
+        <li>Treats every state the same</li>
+        <li>No idea which is closer to goal</li>
+      </ul>
+    </div>
+    <div style="flex:1;">
+      <h3 style="color:#166534; font-size: 0.9em;">Heuristic search</h3>
+      <ul style="font-size:0.85em;">
+        <li>Estimates distance to goal</li>
+        <li>Expands the most promising state</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Framework (4 slides)
+     ============================================================ -->
+
+<!-- 4. Cost function + heuristic -->
+<section class="center-slide">
+  <h2>Two quantities at every node \(n\)</h2>
+  <div class="two-col" style="max-width: 90%; margin: 0.5em auto;">
+    <div style="flex:1; padding: 0.7em; background:#eff6ff; border-left:5px solid #1d4ed8; border-radius:4px;">
+      <h3 style="color:#1d4ed8; margin-top:0;"><span class="g-color">\(g(n)\)</span> &mdash; cost so far</h3>
+      <p style="font-size: 0.85em;">Actual cost of the path from start to \(n\).</p>
+    </div>
+    <div style="flex:1; padding: 0.7em; background:#f0fdf4; border-left:5px solid #16a34a; border-radius:4px;">
+      <h3 style="color:#16a34a; margin-top:0;"><span class="h-color">\(h(n)\)</span> &mdash; heuristic</h3>
+      <p style="font-size: 0.85em;">Estimated cost from \(n\) to a goal.</p>
+    </div>
+  </div>
+  <p style="text-align:center; font-size: 0.9em; margin-top: 1em;">Combined: <span class="f-color">\(f(n) = g(n) + h(n)\)</span> &mdash; total estimated cost through \(n\).</p>
+</section>
+
+<!-- 5. What makes a good heuristic? -->
+<section class="center-slide">
+  <h2>What makes a good heuristic?</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Problem-specific</li>
+    <li>Non-negative</li>
+    <li>\(h(\text{goal}) = 0\)</li>
+    <li>Easy to compute (no search)</li>
+  </ul>
+</section>
+
+<!-- 6. Three algorithms, one knob -->
+<section class="center-slide">
+  <h2>Three algorithms, one knob</h2>
+  <p style="text-align:center; font-size: 0.85em; color:#6b7280;">Frontier is a priority queue. The three algorithms differ in the priority key.</p>
+  <div class="alg-cards">
+    <div class="alg-card">
+      <div class="alg-name">LCFS</div>
+      <div class="alg-key"><span class="g-color">\(g(n)\)</span></div>
+      <div class="alg-sub">cheapest-path-so-far</div>
+    </div>
+    <div class="alg-card">
+      <div class="alg-name">GBFS</div>
+      <div class="alg-key"><span class="h-color">\(h(n)\)</span></div>
+      <div class="alg-sub">looks-closest-to-goal</div>
+    </div>
+    <div class="alg-card">
+      <div class="alg-name">A*</div>
+      <div class="alg-key"><span class="f-color">\(g(n) + h(n)\)</span></div>
+      <div class="alg-sub">total estimated cost</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. The trace graph -->
+<section>
+  <h2>The trace graph</h2>
+  <p style="text-align:center; font-size: 0.75em; color: #6b7280;">All four traces use this graph. Edge labels are <span class="g-color">costs</span>. Note that F has two parents (E and D).</p>
+  <svg viewBox="0 0 750 380" xmlns="http://www.w3.org/2000/svg" class="heuristic-graph" style="display:block; margin:0 auto; max-height:380px;">
+    <defs>
+      <marker id="arrow-tg" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+        <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+      </marker>
+    </defs>
+    <g stroke="#4b5563" stroke-width="1.5" fill="none" marker-end="url(#arrow-tg)">
+      <line x1="68" y1="195" x2="232" y2="200"/>
+      <line x1="66" y1="186" x2="232" y2="92"/>
+      <line x1="268" y1="200" x2="432" y2="200"/>
+      <line x1="262" y1="214" x2="318" y2="306"/>
+      <line x1="268" y1="80" x2="432" y2="80"/>
+      <line x1="462" y1="214" x2="518" y2="306"/>
+      <line x1="468" y1="200" x2="632" y2="200"/>
+      <line x1="348" y1="320" x2="512" y2="320"/>
+    </g>
+    <g class="cost-label">
+      <text x="150" y="190" text-anchor="middle">1</text>
+      <text x="135" y="135" text-anchor="middle">1</text>
+      <text x="350" y="190" text-anchor="middle">9</text>
+      <text x="305" y="270" text-anchor="middle">1</text>
+      <text x="350" y="70" text-anchor="middle">1</text>
+      <text x="475" y="270" text-anchor="middle">1</text>
+      <text x="550" y="190" text-anchor="middle">1</text>
+      <text x="430" y="312" text-anchor="middle">9</text>
+    </g>
+    <g class="node" font-size="15" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+      <g><circle cx="50"  cy="200" r="18" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="50"  y="200" fill="#1e3a8a">S</text></g>
+      <g><circle cx="250" cy="200" r="18"/><text x="250" y="200">B</text></g>
+      <g><circle cx="250" cy="80"  r="18"/><text x="250" y="80">C</text></g>
+      <g><circle cx="330" cy="320" r="18"/><text x="330" y="320">E</text></g>
+      <g><circle cx="450" cy="200" r="18"/><text x="450" y="200">D</text></g>
+      <g><circle cx="450" cy="80"  r="18"/><text x="450" y="80">H</text></g>
+      <g><circle cx="530" cy="320" r="18"/><text x="530" y="320">F</text></g>
+      <g><circle cx="650" cy="200" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="650" y="200" fill="#991b1b">G</text></g>
+    </g>
+  </svg>
+  <p class="footnote">Optimal path: <code>S &rarr; B &rarr; D &rarr; G</code> with total cost <span class="g-color">11</span>.</p>
+</section>
+
+<!-- ============================================================
+     LCFS section (3 slides)
+     ============================================================ -->
+
+<!-- 8. LCFS intro -->
+<section class="center-slide">
+  <h2>Lowest-cost-first search (LCFS)</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Frontier = <strong>priority queue</strong>, key = <span class="g-color">\(g(n)\)</span></li>
+    <li>Pop the cheapest path so far</li>
+  </ul>
+  <p style="font-size: 0.78em; margin-top: 1.2em; color: #6b7280;">a.k.a. <strong>Uniform-cost search (UCS)</strong> in RN, or <strong>Dijkstra's algorithm</strong> in algorithms textbooks.</p>
+</section>
+
+<!-- 9. LCFS trace -->
+<section>
+  <h2>Trace: LCFS</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Path notation <code>SBE: 2</code> = path S&rarr;B&rarr;E with cumulative cost 2. Ties broken alphabetically.</p>
+  <div class="search-trace">
+    <div class="frontier-bar">
+      <strong>Frontier:</strong>
+      <span class="frontier-step fragment current-visible" data-fragment-index="0">(S: 0)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="1">pop S &rarr; (SB: 1, SC: 1)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="2">pop SB &rarr; (SC: 1, SBE: 2, SBD: 10)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="3">pop SC &rarr; (SBE: 2, SCH: 2, SBD: 10)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="4">pop SBE &rarr; (SCH: 2, SBD: 10, SBEF: 11)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="5">pop SCH (leaf) &rarr; (SBD: 10, SBEF: 11)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="6">pop SBD &rarr; (SBDF: 11, SBDG: 11, SBEF: 11)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="7">pop SBDF (leaf) &rarr; (SBDG: 11, SBEF: 11)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="8"><strong>pop SBDG &mdash; goal! cost = 11</strong></span>
+    </div>
+    <svg viewBox="0 0 750 380" xmlns="http://www.w3.org/2000/svg" class="heuristic-graph">
+      <defs>
+        <marker id="arrow-lcfs" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+      </defs>
+      <!-- S always visible -->
+      <g class="node"><circle cx="50" cy="200" r="18"/><text x="50" y="200">S</text></g>
+      <!-- F1: pop S, push B, C -->
+      <g class="fragment" data-fragment-index="1">
+        <text class="step-number" x="72" y="190">1</text>
+        <line class="edge" x1="68" y1="195" x2="232" y2="200" marker-end="url(#arrow-lcfs)"/>
+        <line class="edge" x1="66" y1="186" x2="232" y2="92" marker-end="url(#arrow-lcfs)"/>
+        <text class="cost-label" x="150" y="190" text-anchor="middle">1</text>
+        <text class="cost-label" x="135" y="135" text-anchor="middle">1</text>
+        <g class="node"><circle cx="250" cy="200" r="18"/><text x="250" y="200">B</text></g>
+        <g class="node"><circle cx="250" cy="80" r="18"/><text x="250" y="80">C</text></g>
+      </g>
+      <!-- F2: pop SB, push SBE, SBD -->
+      <g class="fragment" data-fragment-index="2">
+        <text class="step-number" x="272" y="190">2</text>
+        <line class="edge" x1="268" y1="200" x2="432" y2="200" marker-end="url(#arrow-lcfs)"/>
+        <line class="edge" x1="262" y1="214" x2="318" y2="306" marker-end="url(#arrow-lcfs)"/>
+        <text class="cost-label" x="350" y="190" text-anchor="middle">9</text>
+        <text class="cost-label" x="305" y="270" text-anchor="middle">1</text>
+        <g class="node"><circle cx="330" cy="320" r="18"/><text x="330" y="320">E</text></g>
+        <g class="node"><circle cx="450" cy="200" r="18"/><text x="450" y="200">D</text></g>
+      </g>
+      <!-- F3: pop SC, push SCH -->
+      <g class="fragment" data-fragment-index="3">
+        <text class="step-number" x="272" y="70">3</text>
+        <line class="edge" x1="268" y1="80" x2="432" y2="80" marker-end="url(#arrow-lcfs)"/>
+        <text class="cost-label" x="350" y="70" text-anchor="middle">1</text>
+        <g class="node"><circle cx="450" cy="80" r="18"/><text x="450" y="80">H</text></g>
+      </g>
+      <!-- F4: pop SBE, push SBEF (cost 11) -->
+      <g class="fragment" data-fragment-index="4">
+        <text class="step-number" x="352" y="310">4</text>
+        <line class="edge" x1="348" y1="320" x2="512" y2="320" marker-end="url(#arrow-lcfs)"/>
+        <text class="cost-label" x="430" y="312" text-anchor="middle">9</text>
+        <g class="node"><circle cx="530" cy="320" r="18"/><text x="530" y="320">F</text></g>
+      </g>
+      <!-- F5: pop SCH (leaf) -->
+      <g class="fragment" data-fragment-index="5">
+        <text class="step-number" x="472" y="70">5</text>
+      </g>
+      <!-- F6: pop SBD, push SBDF, SBDG -->
+      <g class="fragment" data-fragment-index="6">
+        <text class="step-number" x="472" y="190">6</text>
+        <line class="edge" x1="462" y1="214" x2="518" y2="306" marker-end="url(#arrow-lcfs)"/>
+        <line class="edge" x1="468" y1="200" x2="632" y2="200" marker-end="url(#arrow-lcfs)"/>
+        <text class="cost-label" x="475" y="270" text-anchor="middle">1</text>
+        <text class="cost-label" x="550" y="190" text-anchor="middle">1</text>
+        <g class="node"><circle cx="650" cy="200" r="18"/><text x="650" y="200">G</text></g>
+      </g>
+      <!-- F7: pop SBDF (leaf) -->
+      <g class="fragment" data-fragment-index="7">
+        <text class="step-number" x="552" y="310">7</text>
+      </g>
+      <!-- F8: pop SBDG, goal! -->
+      <g class="fragment" data-fragment-index="8">
+        <text class="step-number" x="672" y="190" fill="#dc2626">8</text>
+        <circle cx="650" cy="200" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+        <text x="650" y="200" font-size="15" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#991b1b">G</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- 10. LCFS properties -->
+<section>
+  <h2>LCFS &mdash; properties</h2>
+  <table class="props">
+    <tr><th style="width:22%;">Space</th><td>\(O(b^d)\) <span class="meta">exponential</span></td></tr>
+    <tr><th>Time</th><td>\(O(b^d)\) <span class="meta">exponential</span></td></tr>
+    <tr><th>Complete?</th><td><span class="ok">Yes</span> <span class="meta">if branching finite and edge cost &ge; some &epsilon; &gt; 0</span></td></tr>
+    <tr><th>Optimal?</th><td><span class="ok">Yes</span> <span class="meta">under the same conditions</span></td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     GBFS section (4 slides)
+     ============================================================ -->
+
+<!-- 11. GBFS intro -->
+<section class="center-slide">
+  <h2>Greedy best-first search (GBFS)</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Frontier = <strong>priority queue</strong>, key = <span class="h-color">\(h(n)\)</span></li>
+    <li>Pop the most promising path (lowest \(h\))</li>
+  </ul>
+</section>
+
+<!-- 12. GBFS trace -->
+<section>
+  <h2>Trace: GBFS</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Path notation <code>SBD: 1</code> = path with \(h(D) = 1\). Heuristic values shown <span class="h-color">in green</span>.</p>
+  <div class="search-trace">
+    <div class="frontier-bar">
+      <strong>Frontier:</strong>
+      <span class="frontier-step fragment current-visible" data-fragment-index="0">(S: 8)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="1">pop S &rarr; (SC: 3, SB: 7)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="2">pop SC &rarr; (SB: 7, SCH: 100)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="3">pop SB &rarr; (SBD: 1, SBE: 4, SCH: 100)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="4">pop SBD &rarr; (SBDG: 0, SBE: 4, SCH: 100)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="5"><strong>pop SBDG &mdash; goal! cost = 11 (not optimal!)</strong></span>
+    </div>
+    <svg viewBox="0 0 750 380" xmlns="http://www.w3.org/2000/svg" class="heuristic-graph">
+      <defs>
+        <marker id="arrow-gbfs" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+      </defs>
+      <!-- S always visible -->
+      <g class="node"><circle cx="50" cy="200" r="18"/><text x="50" y="200">S</text></g>
+      <text class="h-label" x="50" y="240" text-anchor="middle">h=8</text>
+      <!-- F1: pop S, add B, C -->
+      <g class="fragment" data-fragment-index="1">
+        <text class="step-number" x="72" y="190">1</text>
+        <line class="edge" x1="68" y1="195" x2="232" y2="200" marker-end="url(#arrow-gbfs)"/>
+        <line class="edge" x1="66" y1="186" x2="232" y2="92" marker-end="url(#arrow-gbfs)"/>
+        <g class="node"><circle cx="250" cy="200" r="18"/><text x="250" y="200">B</text></g>
+        <text class="h-label" x="250" y="240" text-anchor="middle">h=7</text>
+        <g class="node"><circle cx="250" cy="80" r="18"/><text x="250" y="80">C</text></g>
+        <text class="h-label" x="250" y="50" text-anchor="middle">h=3</text>
+      </g>
+      <!-- F2: pop SC, add SCH -->
+      <g class="fragment" data-fragment-index="2">
+        <text class="step-number" x="272" y="70">2</text>
+        <line class="edge" x1="268" y1="80" x2="432" y2="80" marker-end="url(#arrow-gbfs)"/>
+        <g class="node"><circle cx="450" cy="80" r="18"/><text x="450" y="80">H</text></g>
+        <text class="h-label" x="450" y="50" text-anchor="middle">h=100</text>
+      </g>
+      <!-- F3: pop SB, add SBE, SBD -->
+      <g class="fragment" data-fragment-index="3">
+        <text class="step-number" x="272" y="190">3</text>
+        <line class="edge" x1="268" y1="200" x2="432" y2="200" marker-end="url(#arrow-gbfs)"/>
+        <line class="edge" x1="262" y1="214" x2="318" y2="306" marker-end="url(#arrow-gbfs)"/>
+        <g class="node"><circle cx="330" cy="320" r="18"/><text x="330" y="320">E</text></g>
+        <text class="h-label" x="330" y="360" text-anchor="middle">h=4</text>
+        <g class="node"><circle cx="450" cy="200" r="18"/><text x="450" y="200">D</text></g>
+        <text class="h-label" x="450" y="240" text-anchor="middle">h=1</text>
+      </g>
+      <!-- F4: pop SBD, add SBDG -->
+      <g class="fragment" data-fragment-index="4">
+        <text class="step-number" x="472" y="190">4</text>
+        <line class="edge" x1="468" y1="200" x2="632" y2="200" marker-end="url(#arrow-gbfs)"/>
+        <g class="node"><circle cx="650" cy="200" r="18"/><text x="650" y="200">G</text></g>
+        <text class="h-label" x="650" y="240" text-anchor="middle">h=0</text>
+      </g>
+      <!-- F5: pop SBDG, goal! -->
+      <g class="fragment" data-fragment-index="5">
+        <text class="step-number" x="672" y="190" fill="#dc2626">5</text>
+        <circle cx="650" cy="200" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+        <text x="650" y="200" font-size="15" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#991b1b">G</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- 13. GBFS properties -->
+<section>
+  <h2>GBFS &mdash; properties</h2>
+  <table class="props">
+    <tr><th style="width:22%;">Space</th><td>\(O(b^m)\) <span class="meta">exponential</span></td></tr>
+    <tr><th>Time</th><td>\(O(b^m)\) <span class="meta">exponential</span></td></tr>
+    <tr><th>Complete?</th><td><span class="no">No</span> <span class="meta">can get stuck following a misleading heuristic</span></td></tr>
+    <tr><th>Optimal?</th><td><span class="no">No</span> <span class="meta">greedy choice may be wrong</span></td></tr>
+  </table>
+</section>
+
+<!-- 14. GBFS failures -->
+<section>
+  <h2>GBFS &mdash; failure modes</h2>
+  <div class="failure-pair">
+    <div>
+      <img src="images/greedy_depth_first_search_not_complete.png" alt="GBFS gets stuck">
+      <div class="failure-label">Not complete &mdash; gets stuck</div>
+    </div>
+    <div>
+      <img src="images/greedy_best_first_search_not_optimal.png" alt="GBFS picks suboptimal path">
+      <div class="failure-label">Not optimal &mdash; greedy &ne; best</div>
+    </div>
+  </div>
+  <p class="footnote">Left: arc cost = length, \(h\) = straight-line distance. Right: GBFS finds <em>S&rarr;A&rarr;G</em> (cost 21); optimal is <em>S&rarr;B&rarr;C&rarr;G</em> (cost 11).</p>
+</section>
+
+<!-- ============================================================
+     A* section (5 slides)
+     ============================================================ -->
+
+<!-- 15. A* intro -->
+<section class="center-slide">
+  <h2>A* search</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Frontier = <strong>priority queue</strong>, key = <span class="f-color">\(f(n) = g(n) + h(n)\)</span></li>
+    <li>Pop the path with smallest total estimated cost</li>
+  </ul>
+  <p style="font-size: 0.78em; margin-top: 1.2em; color: #6b7280;">A* combines LCFS's <span class="g-color">cost-so-far</span> with GBFS's <span class="h-color">goal-pull</span>.</p>
+</section>
+
+<!-- 16. A* trace -->
+<section>
+  <h2>Trace: A*</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Path notation <code>SBE: 6</code> = path with \(f = g+h = 6\). <span class="g-color">g</span> in blue, <span class="h-color">h</span> in green.</p>
+  <div class="search-trace">
+    <div class="frontier-bar">
+      <strong>Frontier:</strong>
+      <span class="frontier-step fragment current-visible" data-fragment-index="0">(S: 8)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="1">pop S &rarr; (SC: 4, SB: 8)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="2">pop SC &rarr; (SB: 8, SCH: 102)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="3">pop SB &rarr; (SBE: 6, SBD: 11, SCH: 102)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="4">pop SBE &rarr; (SBD: 11, SBEF: 17, SCH: 102)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="5">pop SBD &rarr; (SBDG: 11, SBDF: 17, SBEF: 17, SCH: 102)</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="6"><strong>pop SBDG &mdash; goal! cost = 11</strong></span>
+    </div>
+    <svg viewBox="0 0 750 380" xmlns="http://www.w3.org/2000/svg" class="heuristic-graph">
+      <defs>
+        <marker id="arrow-astar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+      </defs>
+      <!-- S always visible -->
+      <g class="node"><circle cx="50" cy="200" r="18"/><text x="50" y="200">S</text></g>
+      <text class="h-label" x="50" y="170" text-anchor="middle">h=8</text>
+      <!-- F1: pop S, push B, C -->
+      <g class="fragment" data-fragment-index="1">
+        <text class="step-number" x="72" y="190">1</text>
+        <line class="edge" x1="68" y1="195" x2="232" y2="200" marker-end="url(#arrow-astar)"/>
+        <line class="edge" x1="66" y1="186" x2="232" y2="92" marker-end="url(#arrow-astar)"/>
+        <text class="cost-label" x="150" y="190" text-anchor="middle">1</text>
+        <text class="cost-label" x="135" y="135" text-anchor="middle">1</text>
+        <g class="node"><circle cx="250" cy="200" r="18"/><text x="250" y="200">B</text></g>
+        <text class="h-label" x="250" y="240" text-anchor="middle">h=7</text>
+        <g class="node"><circle cx="250" cy="80" r="18"/><text x="250" y="80">C</text></g>
+        <text class="h-label" x="250" y="50" text-anchor="middle">h=3</text>
+      </g>
+      <!-- F2: pop SC, push SCH -->
+      <g class="fragment" data-fragment-index="2">
+        <text class="step-number" x="272" y="70">2</text>
+        <line class="edge" x1="268" y1="80" x2="432" y2="80" marker-end="url(#arrow-astar)"/>
+        <text class="cost-label" x="350" y="70" text-anchor="middle">1</text>
+        <g class="node"><circle cx="450" cy="80" r="18"/><text x="450" y="80">H</text></g>
+        <text class="h-label" x="450" y="50" text-anchor="middle">h=100</text>
+      </g>
+      <!-- F3: pop SB, push SBE, SBD -->
+      <g class="fragment" data-fragment-index="3">
+        <text class="step-number" x="272" y="190">3</text>
+        <line class="edge" x1="268" y1="200" x2="432" y2="200" marker-end="url(#arrow-astar)"/>
+        <line class="edge" x1="262" y1="214" x2="318" y2="306" marker-end="url(#arrow-astar)"/>
+        <text class="cost-label" x="350" y="190" text-anchor="middle">9</text>
+        <text class="cost-label" x="305" y="270" text-anchor="middle">1</text>
+        <g class="node"><circle cx="330" cy="320" r="18"/><text x="330" y="320">E</text></g>
+        <text class="h-label" x="330" y="360" text-anchor="middle">h=4</text>
+        <g class="node"><circle cx="450" cy="200" r="18"/><text x="450" y="200">D</text></g>
+        <text class="h-label" x="450" y="240" text-anchor="middle">h=1</text>
+      </g>
+      <!-- F4: pop SBE, push SBEF -->
+      <g class="fragment" data-fragment-index="4">
+        <text class="step-number" x="352" y="310">4</text>
+        <line class="edge" x1="348" y1="320" x2="512" y2="320" marker-end="url(#arrow-astar)"/>
+        <text class="cost-label" x="430" y="312" text-anchor="middle">9</text>
+        <g class="node"><circle cx="530" cy="320" r="18"/><text x="530" y="320">F</text></g>
+        <text class="h-label" x="530" y="360" text-anchor="middle">h=6</text>
+      </g>
+      <!-- F5: pop SBD, push SBDF, SBDG -->
+      <g class="fragment" data-fragment-index="5">
+        <text class="step-number" x="472" y="190">5</text>
+        <line class="edge" x1="462" y1="214" x2="518" y2="306" marker-end="url(#arrow-astar)"/>
+        <line class="edge" x1="468" y1="200" x2="632" y2="200" marker-end="url(#arrow-astar)"/>
+        <text class="cost-label" x="475" y="270" text-anchor="middle">1</text>
+        <text class="cost-label" x="550" y="190" text-anchor="middle">1</text>
+        <g class="node"><circle cx="650" cy="200" r="18"/><text x="650" y="200">G</text></g>
+        <text class="h-label" x="650" y="170" text-anchor="middle">h=0</text>
+      </g>
+      <!-- F6: pop SBDG, goal! -->
+      <g class="fragment" data-fragment-index="6">
+        <text class="step-number" x="672" y="190" fill="#dc2626">6</text>
+        <circle cx="650" cy="200" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+        <text x="650" y="200" font-size="15" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#991b1b">G</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- 17. A* properties -->
+<section>
+  <h2>A* &mdash; properties</h2>
+  <table class="props">
+    <tr><th style="width:22%;">Space</th><td>\(O(b^m)\) <span class="meta">worst case; often much better</span></td></tr>
+    <tr><th>Time</th><td>\(O(b^m)\) <span class="meta">worst case; often much better</span></td></tr>
+    <tr><th>Complete?</th><td><span class="ok">Yes</span> <span class="meta">under the usual finite-branching condition</span></td></tr>
+    <tr><th>Optimal?</th><td><span class="ok">Yes</span> <span class="meta">if \(h\) is <strong>admissible</strong></span></td></tr>
+  </table>
+</section>
+
+<!-- 18. A* optimality proof -->
+<section>
+  <h2>A* is optimal when \(h\) is admissible</h2>
+  <div class="theorem">
+    <strong>Admissible:</strong> \(h(n) \le\) true cost from \(n\) to any goal, for every \(n\). <em>(Never over-estimates.)</em>
+  </div>
+  <div class="theorem">
+    <strong>Theorem.</strong> If \(h\) is admissible, A* returns an optimal path.
+  </div>
+  <div class="proof">
+    <strong>Proof sketch (contradiction):</strong>
+    <ol>
+      <li>Suppose A* returns a path with cost \(C^*\), but the true optimal cost is \(C' &lt; C^*\).</li>
+      <li>The optimal path passes through some node \(N\) still on the frontier when A* terminated. By admissibility, \(f(N) = g(N) + h(N) \le C'\).</li>
+      <li>So \(f(N) \le C' &lt; C^*\). But then A* would have popped \(N\) before the returned path. <span class="qed">Contradiction.</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 19. A* is optimally efficient -->
+<section class="center-slide">
+  <h2>A* is optimally efficient</h2>
+  <p style="font-size: 1em; margin: 0.8em 0;">No other optimal algorithm using the same heuristic \(h\) expands fewer nodes than A*.</p>
+  <p style="font-size: 0.78em; color: #6b7280;">Intuition: any algorithm that doesn't expand all nodes with \(f(n) &lt; C^*\) risks missing the optimum.</p>
+</section>
+
+<!-- ============================================================
+     Designing admissible heuristics (4 slides)
+     ============================================================ -->
+
+<!-- 20. 8-puzzle heuristics -->
+<section>
+  <h2>Two heuristics for 8-puzzle</h2>
+  <div class="puzzle-wrap" style="margin-bottom: 0.5em;">
+    <div class="puzzle-block">
+      <div class="puzzle-label">Initial</div>
+      <div class="puzzle-grid">
+        <div>5</div><div>3</div><div class="empty"></div>
+        <div>8</div><div>7</div><div>6</div>
+        <div>2</div><div>4</div><div>1</div>
+      </div>
+    </div>
+    <div class="puzzle-block">
+      <div class="puzzle-label">Goal</div>
+      <div class="puzzle-grid">
+        <div>1</div><div>2</div><div>3</div>
+        <div>4</div><div>5</div><div>6</div>
+        <div>7</div><div>8</div><div class="empty"></div>
+      </div>
+    </div>
+  </div>
+  <div class="two-col" style="margin-top: 0.6em;">
+    <div style="flex:1;">
+      <h3 style="color:#1d4ed8; font-size:0.95em;">Manhattan distance</h3>
+      <p style="font-size:0.8em;">Sum of grid distances of each tile from its goal position.</p>
+    </div>
+    <div style="flex:1;">
+      <h3 style="color:#1d4ed8; font-size:0.95em;">Misplaced tile count</h3>
+      <p style="font-size:0.8em;">Number of tiles not in their goal position.</p>
+    </div>
+  </div>
+  <p style="text-align:center; font-size:0.78em; margin-top: 0.5em;">Both are <strong>admissible</strong>.</p>
+</section>
+
+<!-- 21. Constructing admissible heuristics -->
+<section>
+  <h2>Recipe: relax the problem</h2>
+  <ol style="font-size: 0.9em;">
+    <li><span class="g-color">Relax</span> the problem by dropping constraints.</li>
+    <li><span class="g-color">Solve</span> the relaxed problem (without search).</li>
+    <li>The cost of that solution is an <strong>admissible heuristic</strong> for the original.</li>
+  </ol>
+  <div class="theorem" style="margin-top:1em;">
+    <strong>8-puzzle constraints:</strong> a tile moves from A to B if (a) A and B are <em>adjacent</em> and (b) B is <em>empty</em>.
+  </div>
+  <p style="font-size: 0.82em; margin-top: 0.5em;">Dropping a constraint gives an easier problem, and its optimal cost lower-bounds the original.</p>
+</section>
+
+<!-- 22. Quiz: which relaxation? -->
+<section>
+  <h2>Quick check: heuristic from relaxation</h2>
+  <p class="quiz-q"><strong>Q.</strong> Drop the "B is empty" constraint: a tile can move from A to B if A and B are adjacent. Which heuristic does this give?</p>
+  <ol class="quiz-options">
+    <li>Manhattan distance</li>
+    <li>Misplaced tile count</li>
+    <li>Another heuristic not listed</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>A &mdash; Manhattan distance.</strong> Without the "B must be empty" constraint, each tile slides freely along the grid to its goal &mdash; cost = number of grid steps = Manhattan distance.
+  </div>
+</section>
+
+<!-- 23. Dominating heuristics + Q2 -->
+<section>
+  <h2>Dominating heuristics</h2>
+  <div class="theorem">
+    <strong>Definition.</strong> \(h_2\) <em>dominates</em> \(h_1\) if \(h_2(n) \ge h_1(n)\) for all \(n\), and \(h_2(n) &gt; h_1(n)\) for some \(n\).
+  </div>
+  <div class="theorem">
+    <strong>Theorem.</strong> If \(h_2\) dominates \(h_1\), A* with \(h_2\) expands no more nodes than A* with \(h_1\). <em>(Higher = better, as long as still admissible.)</em>
+  </div>
+  <p class="quiz-q" style="margin-top: 0.8em;"><strong>Q.</strong> Manhattan distance vs. Misplaced tile &mdash; which dominates?</p>
+  <div class="quiz-answer fragment">
+    <strong>Manhattan dominates.</strong> Each misplaced tile contributes at least 1 to both heuristics, but Manhattan adds the actual grid distance &mdash; so Manhattan \(\ge\) Misplaced, strictly &gt; whenever any tile is more than one step from its goal.
+  </div>
+</section>
+
+<!-- ============================================================
+     Pruning the search space (5 slides)
+     ============================================================ -->
+
+<!-- 24. Cycle pruning -->
+<section>
+  <h2>Cycle pruning</h2>
+  <p style="font-size: 0.9em;">Don't follow a path that revisits a node already on the current path.</p>
+<pre class="algo"><span class="cmt">// In the generic search algorithm, when expanding path &lt;n0, ..., nk&gt;:</span>
+<span class="kw">for each</span> neighbour n of n<sub>k</sub>:
+    <span class="kw">if</span> n &notin; &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt;:        <span class="cmt"># skip cycles</span>
+        add &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>, n&gt; to frontier</pre>
+  <p style="font-size: 0.78em; color: #6b7280;">Time check is linear in path length. Saves DFS from infinite loops.</p>
+</section>
+
+<!-- 25. Multi-path pruning -->
+<section>
+  <h2>Multi-path pruning</h2>
+  <p style="font-size: 0.9em;">Don't expand a node we've already expanded. Cycle pruning is a special case.</p>
+<pre class="algo">explored &larr; { }
+<span class="kw">while</span> frontier is not empty:
+    pop path &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt;
+    <span class="kw">if</span> n<sub>k</sub> &notin; explored:           <span class="cmt"># multi-path pruning</span>
+        add n<sub>k</sub> to explored
+        <span class="kw">if</span> goal(n<sub>k</sub>): <span class="kw">return</span> path
+        <span class="kw">for each</span> neighbour n of n<sub>k</sub>:
+            add &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>, n&gt; to frontier</pre>
+</section>
+
+<!-- 26. Caveats of multi-path pruning -->
+<section class="center-slide">
+  <h2>Caveats of multi-path pruning</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li>Paths to already-explored nodes still get pushed &mdash; just skipped when popped</li>
+    <li>Saves time, spends memory (we keep the <code>explored</code> set)</li>
+    <li>And&hellip; may sacrifice optimality (see next slides)</li>
+  </ul>
+</section>
+
+<!-- 27. Quizzes: pruning + optimality -->
+<section>
+  <h2>Does multi-path pruning preserve optimality?</h2>
+  <p class="quiz-q"><strong>Q1.</strong> LCFS with multi-path pruning &mdash; can it discard the optimal solution?</p>
+  <div class="quiz-answer fragment">
+    <strong>No.</strong> LCFS always pops the cheapest path first &mdash; so the first time a node is popped, the path through it is optimal. Pruning later paths to the same node is safe.
+  </div>
+  <p class="quiz-q" style="margin-top: 1em;"><strong>Q2.</strong> A* with admissible heuristic + multi-path pruning &mdash; can it discard the optimal?</p>
+  <div class="quiz-answer fragment">
+    <strong>Yes &mdash; it can.</strong> A* pops by \(f = g + h\), not pure \(g\). A node's first pop might use a suboptimal \(g\). The next slide shows an explicit counterexample.
+  </div>
+</section>
+
+<!-- ============================================================
+     Consistency (2 slides) - inserted before the trace counterexample? No,
+     actually keep the order in the plan: counterexample BEFORE consistency.
+     ============================================================ -->
+
+<!-- 28. A* + multi-path counterexample trace -->
+<section>
+  <h2>A* + multi-path: counterexample</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0;">Optimal path is <code>S&rarr;C&rarr;E&rarr;G</code> (cost <strong>23</strong>). With multi-path pruning, A* returns <code>S&rarr;B&rarr;E&rarr;G</code> (cost <strong>25</strong>) instead.</p>
+  <div class="search-trace">
+    <div class="frontier-bar">
+      <strong>Frontier &amp; Explored:</strong>
+      <span class="frontier-step fragment current-visible" data-fragment-index="0">Frontier: (S) &nbsp; Explored: { }</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="1">pop S &rarr; Frontier: (SB:4, SC:21, SD:22) &nbsp; Explored: {S}</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="2">pop SB &rarr; Frontier: (SBE:9, SC:21, SD:22) &nbsp; Explored: {S, B}</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="3">pop SBE &rarr; Frontier: (SC:21, SD:22, SBEG:25) &nbsp; Explored: {S, B, E}</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="4">pop SC &rarr; Frontier: (SCE:7, SD:22, SBEG:25) &nbsp; Explored: {S, B, E, C}</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="5"><span style="color:#dc2626;">pop SCE &rarr; E already explored &rarr; SKIP (the optimal path is lost here!)</span></span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="6">pop SD &rarr; Frontier: (SDE:8, SBEG:25) &nbsp; Explored: {S, B, E, C, D}</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="7">pop SDE &rarr; E already explored &rarr; SKIP</span>
+      <span class="frontier-step fragment current-visible" data-fragment-index="8"><strong>pop SBEG &mdash; goal returned with cost 25 (suboptimal!)</strong></span>
+    </div>
+    <svg viewBox="0 0 650 400" xmlns="http://www.w3.org/2000/svg" class="heuristic-graph" style="max-height: 380px;">
+      <defs>
+        <marker id="arrow-mp" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+      </defs>
+      <!-- S always visible -->
+      <g class="node"><circle cx="50" cy="200" r="18"/><text x="50" y="200">S</text></g>
+      <!-- F1: pop S, push SB, SC, SD -->
+      <g class="fragment" data-fragment-index="1">
+        <text class="step-number" x="72" y="190">1</text>
+        <line class="edge" x1="68" y1="190" x2="202" y2="92" marker-end="url(#arrow-mp)"/>
+        <line class="edge" x1="68" y1="200" x2="202" y2="200" marker-end="url(#arrow-mp)"/>
+        <line class="edge" x1="68" y1="210" x2="202" y2="308" marker-end="url(#arrow-mp)"/>
+        <text class="cost-label" x="130" y="135" text-anchor="middle">1</text>
+        <text class="cost-label" x="130" y="190" text-anchor="middle">2</text>
+        <text class="cost-label" x="130" y="278" text-anchor="middle">2</text>
+        <g class="node"><circle cx="220" cy="80" r="18"/><text x="220" y="80">C</text></g>
+        <text class="h-label" x="220" y="50" text-anchor="middle">h=20</text>
+        <g class="node"><circle cx="220" cy="200" r="18"/><text x="220" y="200">B</text></g>
+        <text class="h-label" x="220" y="170" text-anchor="middle">h=2</text>
+        <g class="node"><circle cx="220" cy="320" r="18"/><text x="220" y="320">D</text></g>
+        <text class="h-label" x="220" y="360" text-anchor="middle">h=20</text>
+      </g>
+      <!-- F2: pop SB, push SBE -->
+      <g class="fragment" data-fragment-index="2">
+        <text class="step-number" x="242" y="190">2</text>
+        <line class="edge" x1="238" y1="200" x2="382" y2="200" marker-end="url(#arrow-mp)"/>
+        <text class="cost-label" x="310" y="190" text-anchor="middle">3</text>
+        <g class="node"><circle cx="400" cy="200" r="18"/><text x="400" y="200">E</text></g>
+        <text class="h-label" x="400" y="170" text-anchor="middle">h=4</text>
+      </g>
+      <!-- F3: pop SBE, push SBEG -->
+      <g class="fragment" data-fragment-index="3">
+        <text class="step-number" x="422" y="190">3</text>
+        <line class="edge" x1="418" y1="200" x2="552" y2="200" marker-end="url(#arrow-mp)"/>
+        <text class="cost-label" x="485" y="190" text-anchor="middle">20</text>
+        <g class="node"><circle cx="570" cy="200" r="18"/><text x="570" y="200">G</text></g>
+        <text class="h-label" x="570" y="170" text-anchor="middle">h=0</text>
+      </g>
+      <!-- F4: pop SC, push SCE -->
+      <g class="fragment" data-fragment-index="4">
+        <text class="step-number" x="242" y="70">4</text>
+        <line class="edge" x1="238" y1="92" x2="382" y2="190" marker-end="url(#arrow-mp)"/>
+        <text class="cost-label" x="290" y="130" text-anchor="middle">2</text>
+      </g>
+      <!-- F5: pop SCE = skip (E in explored). Mark this with a grey ✗ near the C-E edge -->
+      <g class="fragment" data-fragment-index="5">
+        <text x="310" y="115" font-size="14" font-weight="bold" fill="#dc2626" text-anchor="middle">SKIP</text>
+      </g>
+      <!-- F6: pop SD, push SDE -->
+      <g class="fragment" data-fragment-index="6">
+        <text class="step-number" x="242" y="310">5</text>
+        <line class="edge" x1="238" y1="308" x2="382" y2="210" marker-end="url(#arrow-mp)"/>
+        <text class="cost-label" x="290" y="280" text-anchor="middle">4</text>
+      </g>
+      <!-- F7: pop SDE = skip -->
+      <g class="fragment" data-fragment-index="7">
+        <text x="310" y="290" font-size="14" font-weight="bold" fill="#dc2626" text-anchor="middle">SKIP</text>
+      </g>
+      <!-- F8: pop SBEG, goal (but suboptimal) -->
+      <g class="fragment" data-fragment-index="8">
+        <text class="step-number" x="592" y="190" fill="#dc2626">6</text>
+        <circle cx="570" cy="200" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+        <text x="570" y="200" font-size="15" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#991b1b">G</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- ============================================================
+     Consistency (2 slides)
+     ============================================================ -->
+
+<!-- 29. Cleaner derivation: when multi-path fails -->
+<section>
+  <h2>When does multi-path pruning fail?</h2>
+  <div class="proof">
+    <strong>Setup.</strong> Node \(n\) is explored first via parent \(p\) (cheaper \(f\)). Later a path through \(p'\) reaches \(n\) with smaller \(g\) (cheaper actual cost) but larger \(f\) (so it was popped later).
+    <ol>
+      <li>By the order of pops: \(f(\langle\ldots,p,n\rangle) \le f(\langle\ldots,p',n\rangle)\).</li>
+      <li>So \(g(p) + \text{cost}(p,n) + h(n) \le g(p') + \text{cost}(p',n) + h(n)\).</li>
+      <li>Simplify: \(g(p) + \text{cost}(p,n) \le g(p') + \text{cost}(p',n)\). &nbsp; <span class="meta">(*)</span></li>
+    </ol>
+    <p style="margin-top: 0.4em;">For the path-via-\(p'\) to actually be <em>better</em>, we need the reverse: \(g(p') + \text{cost}(p',n) &lt; g(p) + \text{cost}(p,n)\). &nbsp; <span class="meta">(**)</span></p>
+    <p>Both (*) and (**) can hold only if A* mis-ranked the \(f\)-values &mdash; which happens when the heuristic violates:</p>
+    <p style="text-align:center; font-size: 1.05em;">\(h(p) - h(n) \le \text{cost}(p,n)\)</p>
+    <p>i.e., the heuristic drops too fast across an edge. <span class="qed">Fix that, and multi-path pruning is safe.</span></p>
+  </div>
+</section>
+
+<!-- 30. Consistent heuristic -->
+<section class="center-slide">
+  <h2>Consistent (monotone) heuristic</h2>
+  <div class="theorem">
+    <strong>Definition.</strong> \(h\) is <em>consistent</em> if for every edge \(m \to n\),
+    <p style="text-align:center; font-size: 1.1em; margin: 0.3em 0;">\(h(m) \le \text{cost}(m, n) + h(n)\).</p>
+    Equivalently: \(h(m) - h(n) \le \text{cost}(m, n)\). The heuristic decreases by no more than the edge cost.
+  </div>
+  <div class="theorem">
+    <strong>Theorem.</strong> If \(h\) is consistent, A* with multi-path pruning is <strong>optimal</strong>.
+  </div>
+  <p style="font-size: 0.78em; margin-top: 0.8em; color: #6b7280;">Most natural heuristics (Manhattan, straight-line distance, &hellip;) are consistent &mdash; consistency is the stronger and friendlier condition.</p>
+</section>
+
+<!-- ============================================================
+     Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 31. Summary table: 5 algorithms -->
+<section>
+  <h2>Five search algorithms</h2>
+  <table class="compare">
+    <thead>
+      <tr>
+        <th>Algorithm</th>
+        <th>Frontier key</th>
+        <th>Space</th>
+        <th>Time</th>
+        <th>Halts?</th>
+        <th>Optimal?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>DFS</strong></td><td>LIFO (stack)</td><td>\(O(bm)\)</td><td>\(O(b^m)\)</td><td><span class="no">No</span> <span class="meta">cycles</span></td><td><span class="no">No</span></td></tr>
+      <tr><td><strong>BFS</strong></td><td>FIFO (queue)</td><td>\(O(b^d)\)</td><td>\(O(b^d)\)</td><td><span class="ok">Yes</span></td><td><span class="ok">Yes</span> <span class="meta">unit cost</span></td></tr>
+      <tr><td><strong>LCFS</strong></td><td>\(g(n)\)</td><td>\(O(b^d)\)</td><td>\(O(b^d)\)</td><td><span class="ok">Yes</span></td><td><span class="ok">Yes</span></td></tr>
+      <tr><td><strong>GBFS</strong></td><td>\(h(n)\)</td><td>\(O(b^m)\)</td><td>\(O(b^m)\)</td><td><span class="no">No</span></td><td><span class="no">No</span></td></tr>
+      <tr><td><strong>A*</strong></td><td>\(g(n)+h(n)\)</td><td>\(O(b^m)\)</td><td>\(O(b^m)\)</td><td><span class="ok">Yes</span></td><td><span class="ok">Yes</span> <span class="meta">admissible \(h\)</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 32. Learning goals (recap) -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li><span class="ok">&check;</span> Motivate heuristic search</li>
+    <li><span class="ok">&check;</span> Trace LCFS, GBFS, A*</li>
+    <li><span class="ok">&check;</span> Analyze space, time, completeness, optimality</li>
+    <li><span class="ok">&check;</span> Design and dominate admissible heuristics</li>
+    <li><span class="ok">&check;</span> Prune the search space (cycle, multi-path, consistency)</li>
+  </ul>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  // Hide the corner "Course page" link in true browser fullscreen.
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>
