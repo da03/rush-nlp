@@ -446,6 +446,243 @@
   <p class="fragment" style="font-size: 0.85em; color: #166534; text-align: center; margin-top: 0.5em;">Burglary is unlikely (\(\approx 12\%\)) given that the alarm did NOT sound.</p>
 </section>
 
+<!-- ============================================================
+     Elimination ordering complexity (4 slides)
+     ============================================================ -->
+
+<!-- 16. Ordering matters -->
+<section>
+  <h2>Ordering matters</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 250px;">
+        <line class="bn-edge" x1="80"  y1="80"  x2="170" y2="146" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="100" y1="56"  x2="240" y2="56"  marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="80"  y1="200" x2="170" y2="160" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="200" y1="170" x2="270" y2="226" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="200" y1="170" x2="270" y2="266" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="80"  cy="56"  r="22"/><text x="80"  y="60">E</text>
+          <circle cx="260" cy="56"  r="22"/><text x="260" y="60">R</text>
+          <circle cx="80"  cy="220" r="22"/><text x="80"  y="224">B</text>
+          <circle cx="180" cy="156" r="22"/><text x="180" y="160">A</text>
+          <circle cx="290" cy="220" r="22"/><text x="290" y="224">W</text>
+          <circle cx="290" cy="280" r="22" fill="#fef3c7"/><text x="290" y="284">G</text>
+        </g>
+      </svg>
+    </div>
+    <div style="flex: 1.1;">
+      <p style="font-size: 0.85em;">Compute \(P(G)\) (no evidence). Initial factors:</p>
+      <p style="font-size: 0.72em; font-family: ui-monospace, Menlo, monospace; text-align: center; margin: 0.2em 0;">
+        \(f_1(E), f_2(E, R), f_3(B)\)<br>
+        \(f_4(E, B, A), f_5(W, A), f_6(G, A)\)
+      </p>
+      <ul style="font-size: 0.85em; margin-top: 0.6em;">
+        <li class="fragment"><strong>Every</strong> ordering of \(\{R, W, E, B, A\}\) yields a correct algorithm.</li>
+        <li class="fragment">Different orderings produce <strong>different intermediate factors</strong>.</li>
+        <li class="fragment">Larger intermediate factors \(\Rightarrow\) more space + ops.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 17. Two orderings, two costs -->
+<section>
+  <h2>Two orderings, very different costs</h2>
+  <div class="ordering-compare">
+    <div class="ordering-card">
+      <h3>Good: \(R \to W \to E \to B \to A\)</h3>
+      <ul>
+        <li>\(f_2(E, R) \to f_7(E)\): 2 ops</li>
+        <li>\(f_5(W, A) \to f_8(A)\): 2 ops</li>
+        <li>\(f_1 \cdot f_7 \cdot f_4 \to f_9(B, A)\): 20 ops</li>
+        <li>\(f_9 \cdot f_8 \to f_{10}(A)\): 6 ops</li>
+        <li>\(f_{10} \cdot f_6 \to f_{11}(G)\): 6 ops</li>
+      </ul>
+      <p class="total" style="color: #166534;">Total: 36 ops</p>
+    </div>
+    <div class="ordering-card bad">
+      <h3>Bad: \(A \to B \to E \to R \to W\)</h3>
+      <ul>
+        <li>\(f_4 \cdot f_5 \cdot f_6 \to f_7(E, B, W, G)\): 80 ops</li>
+        <li>\(f_7 \cdot f_3 \to f_8(E, W, G)\): 24 ops</li>
+        <li>\(f_1 \cdot f_8 \cdot f_2 \to f_9(W, G, R)\): 24 ops</li>
+        <li>\(f_9 \to f_{10}(W, G)\): 4 ops</li>
+        <li>\(f_{10} \to f_{11}(G)\): 2 ops</li>
+      </ul>
+      <p class="total" style="color: #991b1b;">Total: 134 ops</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; text-align: center; margin-top: 0.5em;">The bad ordering builds a 4-variable intermediate factor \(f_7(E, B, W, G)\) &mdash; <strong>that's what we pay for</strong>.</p>
+</section>
+
+<!-- 18. Elimination width + tree width -->
+<section>
+  <h2>Elimination width + tree width</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1;">
+      <ul style="font-size: 0.82em;">
+        <li><strong>Hypergraph view:</strong> each factor is a hyperedge over its variables.</li>
+        <li class="fragment"><strong>Elimination width</strong> of ordering \(\pi\): the largest hyperedge size produced during elimination.</li>
+        <li class="fragment"><strong>Tree width</strong> \(\omega\) = minimum elim width over all orderings.</li>
+        <li class="fragment">VE complexity is \(2^{O(\omega)}\) in both time and space.</li>
+        <li class="fragment">Finding an optimal ordering is <strong>NP-hard</strong>; in practice, heuristics work well (often \(\omega \approx 8\)&ndash;\(10\) even with 1000s of variables).</li>
+      </ul>
+    </div>
+    <div style="flex: 0.8; text-align: center;">
+      <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" class="hypergraph-viz">
+        <ellipse class="hg-edge hg-edge-a" cx="80" cy="80" rx="55" ry="42" transform="rotate(-25 80 80)"/>
+        <ellipse class="hg-edge hg-edge-b" cx="160" cy="100" rx="55" ry="42" transform="rotate(30 160 100)"/>
+        <ellipse class="hg-edge hg-edge-c" cx="120" cy="170" rx="55" ry="32"/>
+        <g class="hg-node">
+          <circle cx="55"  cy="55"  r="14"/><text x="55"  y="55">X</text>
+          <circle cx="120" cy="60"  r="14"/><text x="120" y="60">Y</text>
+          <circle cx="185" cy="80"  r="14"/><text x="185" y="80">Z</text>
+          <circle cx="80"  cy="155" r="14"/><text x="80"  y="155">U</text>
+          <circle cx="160" cy="155" r="14"/><text x="160" y="155">V</text>
+        </g>
+      </svg>
+      <p style="font-size: 0.7em; color: #6b7280; margin: 0;">Hyperedges (colored bubbles) = factors.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19. Polytrees -->
+<section>
+  <h2>Polytrees: an easy case</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1;">
+      <div class="theorem">
+        A <strong>polytree</strong> is a singly-connected BN: at most one undirected path between any two nodes. (Nodes may still have multiple parents.)
+      </div>
+      <ul style="font-size: 0.82em; margin-top: 0.5em;">
+        <li class="fragment">Heuristic: <strong>always eliminate a singly-connected node</strong>.</li>
+        <li class="fragment">A singly-connected node always exists \(\Rightarrow\) factor size <em>never grows</em>.</li>
+        <li class="fragment">Tree width = max # of parents of any node.</li>
+        <li class="fragment">VE runs in time <strong>linear in the size of the network</strong>.</li>
+      </ul>
+    </div>
+    <div style="flex: 0.8; text-align: center;">
+      <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" class="polytree-viz bn-graph">
+        <line class="bn-edge" x1="40"  y1="40"  x2="105" y2="105" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="200" y1="40"  x2="135" y2="105" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="120" y1="125" x2="120" y2="155" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="120" y1="125" x2="60"  y2="200" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="120" y1="125" x2="180" y2="200" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="30"  cy="30"  r="16"/><text x="30"  y="34">A</text>
+          <circle cx="210" cy="30"  r="16"/><text x="210" y="34">B</text>
+          <circle cx="120" cy="115" r="16"/><text x="120" y="119">C</text>
+          <circle cx="50"  cy="210" r="16"/><text x="50"  y="214">D</text>
+          <circle cx="120" cy="170" r="16"/><text x="120" y="174">E</text>
+          <circle cx="190" cy="210" r="16"/><text x="190" y="214">F</text>
+        </g>
+      </svg>
+      <p style="font-size: 0.7em; color: #6b7280; margin: 0;">Eliminate leaves D, E, F first &mdash; factors never grow beyond original CPTs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Approximate inference (2 slides)
+     ============================================================ -->
+
+<!-- 20. Forward sampling -->
+<section>
+  <h2>Forward sampling: estimate \(P(G)\)</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 240px;">
+        <line class="bn-edge" x1="80"  y1="80"  x2="170" y2="146" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="100" y1="56"  x2="240" y2="56"  marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="80"  y1="200" x2="170" y2="160" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="200" y1="170" x2="270" y2="226" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="200" y1="170" x2="270" y2="266" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="80"  cy="56"  r="22"/><text x="80"  y="60">E</text>
+          <circle cx="260" cy="56"  r="22"/><text x="260" y="60">R</text>
+          <circle cx="80"  cy="220" r="22"/><text x="80"  y="224">B</text>
+          <circle cx="180" cy="156" r="22"/><text x="180" y="160">A</text>
+          <circle cx="290" cy="220" r="22"/><text x="290" y="224">W</text>
+          <circle cx="290" cy="280" r="22" fill="#fef3c7"/><text x="290" y="284">G</text>
+        </g>
+      </svg>
+    </div>
+    <div style="flex: 1.1;">
+      <p style="font-size: 0.85em;">When the BN is too large for exact VE, just <strong>simulate</strong> it.</p>
+      <div class="sample-algo">
+for i in 1..n:
+  e<sub>i</sub> ~ P(E)
+  b<sub>i</sub> ~ P(B)
+  a<sub>i</sub> ~ P(A | E=e<sub>i</sub>, B=b<sub>i</sub>)
+  g<sub>i</sub> ~ P(G | A=a<sub>i</sub>)
+P(G = T) &approx; (1/n) &sum;<sub>i</sub> g<sub>i</sub>
+      </div>
+      <p class="fragment" style="font-size: 0.78em; color: #6b7280;">Sample in <strong>topological order</strong> so every CPT input is already known. Estimate converges to true \(P(G)\) as \(n \to \infty\).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 21. Rejection sampling -->
+<section>
+  <h2>Rejection sampling: estimate \(P(G | \neg b)\)</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 240px;">
+        <line class="bn-edge" x1="80"  y1="80"  x2="170" y2="146" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="100" y1="56"  x2="240" y2="56"  marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="80"  y1="200" x2="170" y2="160" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="200" y1="170" x2="270" y2="226" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="200" y1="170" x2="270" y2="266" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="80"  cy="56"  r="22"/><text x="80"  y="60">E</text>
+          <circle cx="260" cy="56"  r="22"/><text x="260" y="60">R</text>
+          <circle cx="80"  cy="220" r="22" fill="#d1d5db"/><text x="80"  y="224">B</text>
+          <circle cx="180" cy="156" r="22"/><text x="180" y="160">A</text>
+          <circle cx="290" cy="220" r="22"/><text x="290" y="224">W</text>
+          <circle cx="290" cy="280" r="22" fill="#fef3c7"/><text x="290" y="284">G</text>
+        </g>
+      </svg>
+    </div>
+    <div style="flex: 1.1;">
+      <div class="sample-algo">
+for i in 1..n:
+  forward-sample e<sub>i</sub>, b<sub>i</sub>, a<sub>i</sub>, g<sub>i</sub>
+  <span style="color:#dc2626;">if b<sub>i</sub> == T: reject sample</span>
+  else: keep g&#771;<sub>i</sub>
+P(G = T | &not;b) &approx; (&sum;<sub>i</sub> g&#771;<sub>i</sub>) / n&#771;
+      </div>
+      <ul style="font-size: 0.78em; margin-top: 0.5em;">
+        <li class="fragment">Only "accepted" samples (consistent with evidence) count.</li>
+        <li class="fragment" style="color:#991b1b;"><strong>Wasteful</strong> when evidence is rare &mdash; most samples thrown away.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 22. Learning goals (recap) -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0;">
+    <li>&#10003; &nbsp;Do inference in Bayes nets <strong>more efficiently</strong> than the joint</li>
+    <li>&#10003; &nbsp;Define <strong>factors</strong> and the four operations on them</li>
+    <li>&#10003; &nbsp;Trace the <strong>variable elimination algorithm</strong></li>
+    <li>&#10003; &nbsp;Explain how the <strong>elimination ordering</strong> affects complexity</li>
+    <li>&#10003; &nbsp;Know the basics of <strong>approximate</strong> inference</li>
+  </ul>
+</section>
+
+<!-- 23. Next: HMMs -->
+<section class="center-slide">
+  <h2>Next: Hidden Markov Models</h2>
+  <p style="font-size: 0.9em;">A Bayes net <strong>unrolled over time</strong> &mdash; inference about what's happening <em>now</em> given a sequence of observations.</p>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; margin-top: 0.7em;">VEA in disguise: forward-backward, Viterbi, smoothing.</p>
+</section>
+
 </div>
 </div>
 
