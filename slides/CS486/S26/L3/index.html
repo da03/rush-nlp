@@ -39,18 +39,17 @@
 <section class="center-slide">
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li>Motivate heuristic search</li>
-    <li>Trace LCFS, GBFS, A*</li>
-    <li>Analyze: space, time, completeness, optimality</li>
-    <li>Design and dominate admissible heuristics</li>
-    <li>Prune the search space</li>
+    <li class="fragment">Motivate heuristic search</li>
+    <li class="fragment">Trace LCFS, GBFS, A*</li>
+    <li class="fragment">Analyze: space, time, completeness, optimality</li>
+    <li class="fragment">Design and dominate admissible heuristics</li>
+    <li class="fragment">Prune the search space</li>
   </ul>
 </section>
 
-<!-- 3. Why heuristic search? -->
+<!-- 3a. Which state is closer to the goal? -->
 <section>
-  <h2>Why heuristic search?</h2>
-  <p style="text-align:center; font-size: 0.85em;">Which state should we expand next?</p>
+  <h2>Which state is closer to the goal?</h2>
   <div class="puzzle-wrap">
     <div class="puzzle-block">
       <div class="puzzle-label">State A</div>
@@ -68,17 +67,31 @@
         <div>7</div><div>8</div><div>6</div>
       </div>
     </div>
+    <div class="puzzle-block fragment" data-fragment-index="1">
+      <div class="puzzle-label" style="color:#166534;">Goal</div>
+      <div class="puzzle-grid">
+        <div>1</div><div>2</div><div>3</div>
+        <div>4</div><div>5</div><div>6</div>
+        <div>7</div><div>8</div><div class="empty"></div>
+      </div>
+    </div>
   </div>
-  <div class="two-col" style="margin-top: 0.8em;">
-    <div style="flex:1;">
-      <h3 style="color:#991b1b; font-size: 0.9em;">Uninformed search</h3>
+  <p class="fragment" data-fragment-index="2" style="text-align:center; font-size: 0.95em; margin-top: 1em; color:#166534;"><strong>B is just one move away.</strong> Humans see this instantly &mdash; uninformed search does not.</p>
+</section>
+
+<!-- 3b. Uninformed vs heuristic -->
+<section class="center-slide">
+  <h2>Uninformed vs heuristic</h2>
+  <div class="two-col" style="max-width: 90%; margin: 0.5em auto;">
+    <div style="flex:1; padding: 0.7em; background:#fef2f2; border-left:5px solid #dc2626; border-radius:4px;">
+      <h3 style="color:#991b1b; margin-top:0;">Uninformed</h3>
       <ul style="font-size:0.85em;">
         <li>Treats every state the same</li>
         <li>No idea which is closer to goal</li>
       </ul>
     </div>
-    <div style="flex:1;">
-      <h3 style="color:#166534; font-size: 0.9em;">Heuristic search</h3>
+    <div style="flex:1; padding: 0.7em; background:#f0fdf4; border-left:5px solid #16a34a; border-radius:4px;">
+      <h3 style="color:#166534; margin-top:0;">Heuristic</h3>
       <ul style="font-size:0.85em;">
         <li>Estimates distance to goal</li>
         <li>Expands the most promising state</li>
@@ -94,27 +107,37 @@
 <!-- 4. Cost function + heuristic -->
 <section class="center-slide">
   <h2>Two quantities at every node \(n\)</h2>
-  <div class="two-col" style="max-width: 90%; margin: 0.5em auto;">
-    <div style="flex:1; padding: 0.7em; background:#eff6ff; border-left:5px solid #1d4ed8; border-radius:4px;">
-      <h3 style="color:#1d4ed8; margin-top:0;"><span class="g-color">\(g(n)\)</span> &mdash; cost so far</h3>
-      <p style="font-size: 0.85em;">Actual cost of the path from start to \(n\).</p>
-    </div>
-    <div style="flex:1; padding: 0.7em; background:#f0fdf4; border-left:5px solid #16a34a; border-radius:4px;">
-      <h3 style="color:#16a34a; margin-top:0;"><span class="h-color">\(h(n)\)</span> &mdash; heuristic</h3>
-      <p style="font-size: 0.85em;">Estimated cost from \(n\) to a goal.</p>
-    </div>
-  </div>
-  <p style="text-align:center; font-size: 0.9em; margin-top: 1em;">Combined: <span class="f-color">\(f(n) = g(n) + h(n)\)</span> &mdash; total estimated cost through \(n\).</p>
+  <svg class="gh-path" viewBox="0 0 600 130" xmlns="http://www.w3.org/2000/svg">
+    <!-- nodes -->
+    <g>
+      <circle cx="60" cy="50" r="22" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+      <text x="60" y="55" text-anchor="middle" font-weight="600" font-size="16" fill="#1e3a8a">S</text>
+      <circle cx="300" cy="50" r="22" fill="#fff" stroke="#111827" stroke-width="2"/>
+      <text x="300" y="55" text-anchor="middle" font-weight="600" font-size="16">n</text>
+      <circle cx="540" cy="50" r="22" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+      <text x="540" y="55" text-anchor="middle" font-weight="600" font-size="16" fill="#991b1b">G</text>
+    </g>
+    <!-- g segment (S to n, blue) -->
+    <line class="g-arc" x1="82" y1="50" x2="278" y2="50"/>
+    <text x="180" y="35" text-anchor="middle" fill="#1d4ed8" font-style="italic">g(n)  &mdash;  cost so far</text>
+    <!-- h segment (n to G, green dashed) -->
+    <line class="h-arc" x1="322" y1="50" x2="518" y2="50" stroke-dasharray="6 4"/>
+    <text x="420" y="35" text-anchor="middle" fill="#16a34a" font-style="italic">h(n)  &mdash;  estimated cost to goal</text>
+    <!-- brace for f -->
+    <path class="brace" d="M82 95 Q 82 110 95 110 L 285 110 Q 300 110 300 120 Q 300 110 315 110 L 505 110 Q 518 110 518 95"/>
+    <text x="300" y="128" text-anchor="middle" fill="#dc2626" font-style="italic" font-weight="bold">f(n) = g(n) + h(n)</text>
+  </svg>
+  <p style="text-align:center; font-size: 0.8em; color: #6b7280; margin-top: 0.3em;">Solid <span class="g-color">blue</span>: known. Dashed <span class="h-color">green</span>: estimated. <span class="f-color">Red</span>: total estimate.</p>
 </section>
 
 <!-- 5. What makes a good heuristic? -->
 <section class="center-slide">
   <h2>What makes a good heuristic?</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li>Problem-specific</li>
-    <li>Non-negative</li>
-    <li>\(h(\text{goal}) = 0\)</li>
-    <li>Easy to compute (no search)</li>
+    <li class="fragment">Problem-specific</li>
+    <li class="fragment">Non-negative</li>
+    <li class="fragment">\(h(\text{goal}) = 0\)</li>
+    <li class="fragment">Easy to compute (no search)</li>
   </ul>
 </section>
 
@@ -123,17 +146,17 @@
   <h2>Three algorithms, one knob</h2>
   <p style="text-align:center; font-size: 0.85em; color:#6b7280;">Frontier is a priority queue. The three algorithms differ in the priority key.</p>
   <div class="alg-cards">
-    <div class="alg-card">
+    <div class="alg-card fragment">
       <div class="alg-name">LCFS</div>
       <div class="alg-key"><span class="g-color">\(g(n)\)</span></div>
       <div class="alg-sub">cheapest-path-so-far</div>
     </div>
-    <div class="alg-card">
+    <div class="alg-card fragment">
       <div class="alg-name">GBFS</div>
       <div class="alg-key"><span class="h-color">\(h(n)\)</span></div>
       <div class="alg-sub">looks-closest-to-goal</div>
     </div>
-    <div class="alg-card">
+    <div class="alg-card fragment">
       <div class="alg-name">A*</div>
       <div class="alg-key"><span class="f-color">\(g(n) + h(n)\)</span></div>
       <div class="alg-sub">total estimated cost</div>
@@ -181,8 +204,14 @@
       <g><circle cx="530" cy="320" r="18"/><text x="530" y="320">F</text></g>
       <g><circle cx="650" cy="200" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="650" y="200" fill="#991b1b">G</text></g>
     </g>
+    <!-- Fragment overlay: optimal path S -> B -> D -> G in red -->
+    <g class="fragment" stroke="#dc2626" stroke-width="5" fill="none" stroke-linecap="round">
+      <line x1="68" y1="200" x2="232" y2="200"/>
+      <line x1="268" y1="200" x2="432" y2="200"/>
+      <line x1="468" y1="200" x2="632" y2="200"/>
+    </g>
   </svg>
-  <p class="footnote">Optimal path: <code>S &rarr; B &rarr; D &rarr; G</code> with total cost <span class="g-color">11</span>.</p>
+  <p class="fragment footnote" style="color:#dc2626;">Optimal path: <code>S &rarr; B &rarr; D &rarr; G</code> with total cost <strong>11</strong>.</p>
 </section>
 
 <!-- ============================================================
@@ -193,10 +222,10 @@
 <section class="center-slide">
   <h2>Lowest-cost-first search (LCFS)</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li>Frontier = <strong>priority queue</strong>, key = <span class="g-color">\(g(n)\)</span></li>
-    <li>Pop the cheapest path so far</li>
+    <li class="fragment">Frontier = <strong>priority queue</strong>, key = <span class="g-color">\(g(n)\)</span></li>
+    <li class="fragment">Pop the cheapest path so far</li>
   </ul>
-  <p style="font-size: 0.78em; margin-top: 1.2em; color: #6b7280;">a.k.a. <strong>Uniform-cost search (UCS)</strong> in RN, or <strong>Dijkstra's algorithm</strong> in algorithms textbooks.</p>
+  <p class="fragment" style="font-size: 0.78em; margin-top: 1.2em; color: #6b7280;">a.k.a. <strong>Uniform-cost search (UCS)</strong> in RN, or <strong>Dijkstra's algorithm</strong> in algorithms textbooks.</p>
 </section>
 
 <!-- 9. LCFS trace -->
@@ -289,7 +318,7 @@
   <table class="props">
     <tr><th style="width:22%;">Space</th><td>\(O(b^d)\) <span class="meta">exponential</span></td></tr>
     <tr><th>Time</th><td>\(O(b^d)\) <span class="meta">exponential</span></td></tr>
-    <tr><th>Complete?</th><td><span class="ok">Yes</span> <span class="meta">if branching finite and edge cost &ge; some &epsilon; &gt; 0</span></td></tr>
+    <tr><th>Complete?</th><td><span class="ok">Yes</span> <span class="meta">finite branching, edge cost &ge; &epsilon; &gt; 0</span></td></tr>
     <tr><th>Optimal?</th><td><span class="ok">Yes</span> <span class="meta">under the same conditions</span></td></tr>
   </table>
 </section>
@@ -302,8 +331,8 @@
 <section class="center-slide">
   <h2>Greedy best-first search (GBFS)</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li>Frontier = <strong>priority queue</strong>, key = <span class="h-color">\(h(n)\)</span></li>
-    <li>Pop the most promising path (lowest \(h\))</li>
+    <li class="fragment">Frontier = <strong>priority queue</strong>, key = <span class="h-color">\(h(n)\)</span></li>
+    <li class="fragment">Pop the most promising path (lowest \(h\))</li>
   </ul>
 </section>
 
@@ -390,13 +419,14 @@
     <div>
       <img src="images/greedy_depth_first_search_not_complete.png" alt="GBFS gets stuck">
       <div class="failure-label">Not complete &mdash; gets stuck</div>
+      <p class="footnote" style="margin-top: 0.2em;">Arc cost = length, \(h\) = straight-line distance.</p>
     </div>
     <div>
       <img src="images/greedy_best_first_search_not_optimal.png" alt="GBFS picks suboptimal path">
       <div class="failure-label">Not optimal &mdash; greedy &ne; best</div>
+      <p class="footnote" style="margin-top: 0.2em;">GBFS finds <em>S&rarr;A&rarr;G</em> (21); optimal is <em>S&rarr;B&rarr;C&rarr;G</em> (11).</p>
     </div>
   </div>
-  <p class="footnote">Left: arc cost = length, \(h\) = straight-line distance. Right: GBFS finds <em>S&rarr;A&rarr;G</em> (cost 21); optimal is <em>S&rarr;B&rarr;C&rarr;G</em> (cost 11).</p>
 </section>
 
 <!-- ============================================================
@@ -407,10 +437,10 @@
 <section class="center-slide">
   <h2>A* search</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li>Frontier = <strong>priority queue</strong>, key = <span class="f-color">\(f(n) = g(n) + h(n)\)</span></li>
-    <li>Pop the path with smallest total estimated cost</li>
+    <li class="fragment">Frontier = <strong>priority queue</strong>, key = <span class="f-color">\(f(n) = g(n) + h(n)\)</span></li>
+    <li class="fragment">Pop the path with smallest total estimated cost</li>
   </ul>
-  <p style="font-size: 0.78em; margin-top: 1.2em; color: #6b7280;">A* combines LCFS's <span class="g-color">cost-so-far</span> with GBFS's <span class="h-color">goal-pull</span>.</p>
+  <p class="fragment" style="font-size: 0.78em; margin-top: 1.2em; color: #6b7280;">A* combines LCFS's <span class="g-color">cost-so-far</span> with GBFS's <span class="h-color">goal-pull</span>.</p>
 </section>
 
 <!-- 16. A* trace -->
@@ -506,21 +536,42 @@
   </table>
 </section>
 
-<!-- 18. A* optimality proof -->
+<!-- 18a. Admissible heuristic + theorem -->
 <section>
-  <h2>A* is optimal when \(h\) is admissible</h2>
+  <h2>Admissible heuristic</h2>
+  <svg class="admissible-viz" viewBox="0 0 520 180" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="adm-tip-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1d4ed8"/></marker>
+      <marker id="adm-tip-green" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#16a34a"/></marker>
+    </defs>
+    <circle cx="80"  cy="90" r="28" fill="#fff" stroke="#111827" stroke-width="2"/>
+    <text x="80" y="95" text-anchor="middle" font-size="20" font-weight="600">n</text>
+    <circle cx="440" cy="90" r="28" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+    <text x="440" y="95" text-anchor="middle" font-size="18" font-weight="600" fill="#991b1b">goal</text>
+    <!-- true cost (top arc) -->
+    <path class="true-arrow" d="M105 75 Q 260 10 415 75" marker-end="url(#adm-tip-blue)"/>
+    <text x="260" y="30" text-anchor="middle" fill="#1d4ed8" font-size="14" font-weight="600" font-style="italic">true cost = 10</text>
+    <!-- h estimate (bottom arc) -->
+    <path class="h-arrow" d="M105 105 Q 260 170 415 105" marker-end="url(#adm-tip-green)"/>
+    <text x="260" y="165" text-anchor="middle" fill="#16a34a" font-size="14" font-weight="600" font-style="italic">h(n) = 8  (an estimate)</text>
+  </svg>
   <div class="theorem">
-    <strong>Admissible:</strong> \(h(n) \le\) true cost from \(n\) to any goal, for every \(n\). <em>(Never over-estimates.)</em>
+    <strong>Admissible:</strong> \(h(n) \le\) true cost from \(n\) to any goal, for every \(n\). <em>Never over-estimates.</em>
   </div>
-  <div class="theorem">
+  <div class="theorem fragment">
     <strong>Theorem.</strong> If \(h\) is admissible, A* returns an optimal path.
   </div>
+</section>
+
+<!-- 18b. Proof sketch -->
+<section>
+  <h2>A* optimality &mdash; proof sketch</h2>
+  <p style="font-size: 0.85em;">Suppose, for contradiction, A* returns a path of cost \(C^*\) but the true optimum is \(C' &lt; C^*\).</p>
   <div class="proof">
-    <strong>Proof sketch (contradiction):</strong>
     <ol>
-      <li>Suppose A* returns a path with cost \(C^*\), but the true optimal cost is \(C' &lt; C^*\).</li>
-      <li>The optimal path passes through some node \(N\) still on the frontier when A* terminated. By admissibility, \(f(N) = g(N) + h(N) \le C'\).</li>
-      <li>So \(f(N) \le C' &lt; C^*\). But then A* would have popped \(N\) before the returned path. <span class="qed">Contradiction.</span></li>
+      <li class="fragment">The optimal path must pass through some node \(N\) still on the frontier when A* halted (otherwise A* would have returned through \(N\)).</li>
+      <li class="fragment">By admissibility, \(h(N) \le\) true cost from \(N\) to goal, so \(f(N) = g(N) + h(N) \le C'\).</li>
+      <li class="fragment">Hence \(f(N) \le C' &lt; C^*\). A* would have popped \(N\) before the returned path. <span class="qed">Contradiction. \(\blacksquare\)</span></li>
     </ol>
   </div>
 </section>
@@ -528,18 +579,29 @@
 <!-- 19. A* is optimally efficient -->
 <section class="center-slide">
   <h2>A* is optimally efficient</h2>
-  <p style="font-size: 1em; margin: 0.8em 0;">No other optimal algorithm using the same heuristic \(h\) expands fewer nodes than A*.</p>
-  <p style="font-size: 0.78em; color: #6b7280;">Intuition: any algorithm that doesn't expand all nodes with \(f(n) &lt; C^*\) risks missing the optimum.</p>
+  <p style="font-size: 1em; margin: 0.4em 0;">No other optimal algorithm using the same \(h\) expands fewer nodes.</p>
+  <svg class="f-contour" viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
+    <ellipse class="ring-outer" cx="180" cy="110" rx="170" ry="100"/>
+    <ellipse class="ring-mid"   cx="180" cy="110" rx="115" ry="68"/>
+    <ellipse class="ring-inner" cx="180" cy="110" rx="55"  ry="34"/>
+    <circle cx="180" cy="110" r="9" fill="#dc2626"/>
+    <text x="180" y="113" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">G</text>
+    <text x="180" y="148" text-anchor="middle" font-size="11" font-weight="600" fill="#991b1b">f &lt; C*  (must expand)</text>
+    <text x="180" y="183" text-anchor="middle" font-size="11" font-weight="600" fill="#92400e">f = C*  (some expanded)</text>
+    <text x="180" y="208" text-anchor="middle" font-size="11" font-weight="600" fill="#374151">f &gt; C*  (skipped)</text>
+  </svg>
+  <p class="footnote">A* expands exactly the inner two regions &mdash; the minimum any optimal algorithm with this \(h\) must touch.</p>
 </section>
 
 <!-- ============================================================
      Designing admissible heuristics (4 slides)
      ============================================================ -->
 
-<!-- 20. 8-puzzle heuristics -->
+<!-- 20a. Manhattan distance -->
 <section>
-  <h2>Two heuristics for 8-puzzle</h2>
-  <div class="puzzle-wrap" style="margin-bottom: 0.5em;">
+  <h2>Manhattan distance</h2>
+  <p style="text-align:center; font-size: 0.8em; color:#6b7280; margin: 0;">Sum of grid distances of each tile to its goal position.</p>
+  <div class="puzzle-wrap" style="margin: 0.4em 0;">
     <div class="puzzle-block">
       <div class="puzzle-label">Initial</div>
       <div class="puzzle-grid">
@@ -557,31 +619,54 @@
       </div>
     </div>
   </div>
-  <div class="two-col" style="margin-top: 0.6em;">
-    <div style="flex:1;">
-      <h3 style="color:#1d4ed8; font-size:0.95em;">Manhattan distance</h3>
-      <p style="font-size:0.8em;">Sum of grid distances of each tile from its goal position.</p>
+  <table style="margin: 0.3em auto; font-size: 0.75em; border-collapse: collapse;">
+    <tr style="color:#6b7280;"><th style="padding: 0 0.4em;">tile</th>
+      <th style="padding: 0 0.4em;">1</th><th style="padding: 0 0.4em;">2</th><th style="padding: 0 0.4em;">3</th><th style="padding: 0 0.4em;">4</th><th style="padding: 0 0.4em;">5</th><th style="padding: 0 0.4em;">6</th><th style="padding: 0 0.4em;">7</th><th style="padding: 0 0.4em;">8</th></tr>
+    <tr><th style="padding: 0 0.4em;">distance</th>
+      <td style="padding: 0 0.4em; text-align:center;">4</td><td style="padding: 0 0.4em; text-align:center;">3</td><td style="padding: 0 0.4em; text-align:center;">1</td><td style="padding: 0 0.4em; text-align:center;">2</td><td style="padding: 0 0.4em; text-align:center;">2</td><td style="padding: 0 0.4em; text-align:center; color:#166534;">0</td><td style="padding: 0 0.4em; text-align:center;">2</td><td style="padding: 0 0.4em; text-align:center;">2</td></tr>
+  </table>
+  <p class="heuristic-total fragment">Manhattan(start) = 4 + 3 + 1 + 2 + 2 + 0 + 2 + 2 = <span style="color:#dc2626;">16</span></p>
+</section>
+
+<!-- 20b. Misplaced tile count -->
+<section>
+  <h2>Misplaced tile count</h2>
+  <p style="text-align:center; font-size: 0.8em; color:#6b7280; margin: 0;">Number of tiles not yet in their goal position.</p>
+  <div class="puzzle-wrap" style="margin: 0.4em 0;">
+    <div class="puzzle-block">
+      <div class="puzzle-label">Initial</div>
+      <div class="puzzle-grid">
+        <div class="tile-misplaced">5</div><div class="tile-misplaced">3</div><div class="empty"></div>
+        <div class="tile-misplaced">8</div><div class="tile-misplaced">7</div><div class="tile-correct">6</div>
+        <div class="tile-misplaced">2</div><div class="tile-misplaced">4</div><div class="tile-misplaced">1</div>
+      </div>
     </div>
-    <div style="flex:1;">
-      <h3 style="color:#1d4ed8; font-size:0.95em;">Misplaced tile count</h3>
-      <p style="font-size:0.8em;">Number of tiles not in their goal position.</p>
+    <div class="puzzle-block">
+      <div class="puzzle-label">Goal</div>
+      <div class="puzzle-grid">
+        <div>1</div><div>2</div><div>3</div>
+        <div>4</div><div>5</div><div>6</div>
+        <div>7</div><div>8</div><div class="empty"></div>
+      </div>
     </div>
   </div>
-  <p style="text-align:center; font-size:0.78em; margin-top: 0.5em;">Both are <strong>admissible</strong>.</p>
+  <p style="text-align: center; font-size: 0.85em; margin-top: 0.6em;">Red = misplaced. Green = already at goal.</p>
+  <p class="heuristic-total fragment">Misplaced(start) = <span style="color:#dc2626;">7</span></p>
+  <p style="text-align: center; font-size: 0.78em; color: #6b7280;">Both heuristics are <strong>admissible</strong>. We'll compare them on slide 23b.</p>
 </section>
 
 <!-- 21. Constructing admissible heuristics -->
 <section>
   <h2>Recipe: relax the problem</h2>
   <ol style="font-size: 0.9em;">
-    <li><span class="g-color">Relax</span> the problem by dropping constraints.</li>
-    <li><span class="g-color">Solve</span> the relaxed problem (without search).</li>
-    <li>The cost of that solution is an <strong>admissible heuristic</strong> for the original.</li>
+    <li class="fragment"><span class="g-color">Relax</span> the problem by dropping constraints.</li>
+    <li class="fragment"><span class="g-color">Solve</span> the relaxed problem (without search).</li>
+    <li class="fragment">The cost of that solution is an <strong>admissible heuristic</strong> for the original.</li>
   </ol>
-  <div class="theorem" style="margin-top:1em;">
+  <div class="theorem fragment" style="margin-top:1em;">
     <strong>8-puzzle constraints:</strong> a tile moves from A to B if (a) A and B are <em>adjacent</em> and (b) B is <em>empty</em>.
   </div>
-  <p style="font-size: 0.82em; margin-top: 0.5em;">Dropping a constraint gives an easier problem, and its optimal cost lower-bounds the original.</p>
+  <p class="fragment" style="font-size: 0.82em; margin-top: 0.5em;">Dropping a constraint gives an easier problem, and its optimal cost lower-bounds the original.</p>
 </section>
 
 <!-- 22. Quiz: which relaxation? -->
@@ -598,18 +683,28 @@
   </div>
 </section>
 
-<!-- 23. Dominating heuristics + Q2 -->
-<section>
+<!-- 23a. Dominating heuristics -->
+<section class="center-slide">
   <h2>Dominating heuristics</h2>
   <div class="theorem">
     <strong>Definition.</strong> \(h_2\) <em>dominates</em> \(h_1\) if \(h_2(n) \ge h_1(n)\) for all \(n\), and \(h_2(n) &gt; h_1(n)\) for some \(n\).
   </div>
-  <div class="theorem">
-    <strong>Theorem.</strong> If \(h_2\) dominates \(h_1\), A* with \(h_2\) expands no more nodes than A* with \(h_1\). <em>(Higher = better, as long as still admissible.)</em>
+  <div class="theorem fragment">
+    <strong>Theorem.</strong> If \(h_2\) dominates \(h_1\), A* with \(h_2\) expands no more nodes than A* with \(h_1\). <em>Higher = better &mdash; as long as still admissible.</em>
   </div>
-  <p class="quiz-q" style="margin-top: 0.8em;"><strong>Q.</strong> Manhattan distance vs. Misplaced tile &mdash; which dominates?</p>
+</section>
+
+<!-- 23b. Quiz: which dominates? -->
+<section>
+  <h2>Manhattan vs Misplaced</h2>
+  <p class="quiz-q"><strong>Q.</strong> On our example state, Manhattan = 16 and Misplaced = 7. Which heuristic dominates the other in general?</p>
+  <ol class="quiz-options">
+    <li>Manhattan dominates Misplaced</li>
+    <li>Misplaced dominates Manhattan</li>
+    <li>Neither dominates the other</li>
+  </ol>
   <div class="quiz-answer fragment">
-    <strong>Manhattan dominates.</strong> Each misplaced tile contributes at least 1 to both heuristics, but Manhattan adds the actual grid distance &mdash; so Manhattan \(\ge\) Misplaced, strictly &gt; whenever any tile is more than one step from its goal.
+    <strong>A &mdash; Manhattan dominates.</strong> Each misplaced tile contributes at least 1 to both heuristics; Manhattan adds the actual grid distance, so Manhattan \(\ge\) Misplaced, and strictly \(&gt;\) whenever any tile is more than one step from its goal.
   </div>
 </section>
 
@@ -621,34 +716,74 @@
 <section>
   <h2>Cycle pruning</h2>
   <p style="font-size: 0.9em;">Don't follow a path that revisits a node already on the current path.</p>
-<pre class="algo"><span class="cmt">// In the generic search algorithm, when expanding path &lt;n0, ..., nk&gt;:</span>
+  <div class="with-mini-diagram">
+<pre class="algo"><span class="cmt">// when expanding path &lt;n0, ..., nk&gt;:</span>
 <span class="kw">for each</span> neighbour n of n<sub>k</sub>:
-    <span class="kw">if</span> n &notin; &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt;:        <span class="cmt"># skip cycles</span>
+    <span class="kw">if</span> n &notin; &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt;:
         add &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>, n&gt; to frontier</pre>
-  <p style="font-size: 0.78em; color: #6b7280;">Time check is linear in path length. Saves DFS from infinite loops.</p>
+    <svg class="cycle-mini" viewBox="0 0 150 130" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="cyc-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#4b5563"/></marker>
+      </defs>
+      <g stroke="#4b5563" stroke-width="1.5" fill="none">
+        <line x1="75" y1="33" x2="35" y2="83" marker-end="url(#cyc-arrow)"/>
+        <line x1="45" y1="93" x2="105" y2="93" marker-end="url(#cyc-arrow)"/>
+        <line x1="115" y1="83" x2="80" y2="40" marker-end="url(#cyc-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
+      </g>
+      <line class="strike" x1="80" y1="40" x2="115" y2="85"/>
+      <g font-size="13" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+        <circle cx="75" cy="25" r="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="75" y="28" fill="#1e3a8a">A</text>
+        <circle cx="30" cy="95" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="30" y="98">B</text>
+        <circle cx="120" cy="95" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="120" y="98">C</text>
+      </g>
+      <text x="125" y="50" font-size="10" font-style="italic" fill="#dc2626">skip</text>
+    </svg>
+  </div>
+  <p style="font-size: 0.78em; color: #6b7280; margin-top: 0.4em;">Check is linear in path length. Saves DFS from infinite loops.</p>
 </section>
 
 <!-- 25. Multi-path pruning -->
 <section>
   <h2>Multi-path pruning</h2>
-  <p style="font-size: 0.9em;">Don't expand a node we've already expanded. Cycle pruning is a special case.</p>
+  <p style="font-size: 0.9em;">Don't expand a node we've already expanded (across <em>different</em> paths). Cycle pruning is a special case.</p>
+  <div class="with-mini-diagram">
 <pre class="algo">explored &larr; { }
 <span class="kw">while</span> frontier is not empty:
     pop path &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt;
-    <span class="kw">if</span> n<sub>k</sub> &notin; explored:           <span class="cmt"># multi-path pruning</span>
+    <span class="kw">if</span> n<sub>k</sub> &notin; explored:
         add n<sub>k</sub> to explored
         <span class="kw">if</span> goal(n<sub>k</sub>): <span class="kw">return</span> path
         <span class="kw">for each</span> neighbour n of n<sub>k</sub>:
             add &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>, n&gt; to frontier</pre>
+    <svg class="diamond-mini" viewBox="0 0 170 130" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="mp-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#4b5563"/></marker>
+      </defs>
+      <g stroke="#4b5563" stroke-width="1.5" fill="none">
+        <line x1="35" y1="35" x2="80" y2="20" marker-end="url(#mp-arrow)"/>
+        <line x1="35" y1="55" x2="80" y2="70" marker-end="url(#mp-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
+        <line x1="100" y1="20" x2="125" y2="40" marker-end="url(#mp-arrow)"/>
+        <line x1="100" y1="70" x2="125" y2="50" marker-end="url(#mp-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
+      </g>
+      <line class="strike" x1="35" y1="60" x2="105" y2="75"/>
+      <g font-size="13" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+        <circle cx="20" cy="45" r="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="20" y="48" fill="#1e3a8a">S</text>
+        <circle cx="90" cy="15" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="90" y="18">p</text>
+        <circle cx="90" cy="75" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="90" y="78">p'</text>
+        <circle cx="140" cy="45" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="140" y="48">n</text>
+      </g>
+      <text x="85" y="120" font-size="10" font-style="italic" fill="#dc2626" text-anchor="middle">second path to n: skip</text>
+    </svg>
+  </div>
 </section>
 
 <!-- 26. Caveats of multi-path pruning -->
 <section class="center-slide">
   <h2>Caveats of multi-path pruning</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li>Paths to already-explored nodes still get pushed &mdash; just skipped when popped</li>
-    <li>Saves time, spends memory (we keep the <code>explored</code> set)</li>
-    <li>And&hellip; may sacrifice optimality (see next slides)</li>
+    <li class="fragment">Paths to already-explored nodes still get pushed &mdash; just skipped when popped</li>
+    <li class="fragment">Saves time, spends memory (we keep the <code>explored</code> set)</li>
+    <li class="fragment">And&hellip; may sacrifice optimality (see next slides)</li>
   </ul>
 </section>
 
@@ -661,7 +796,7 @@
   </div>
   <p class="quiz-q" style="margin-top: 1em;"><strong>Q2.</strong> A* with admissible heuristic + multi-path pruning &mdash; can it discard the optimal?</p>
   <div class="quiz-answer fragment">
-    <strong>Yes &mdash; it can.</strong> A* pops by \(f = g + h\), not pure \(g\). A node's first pop might use a suboptimal \(g\). The next slide shows an explicit counterexample.
+    <strong>Yes &mdash; it can.</strong> A* pops by \(f = g + h\), not by \(g\) alone. Once \(n\) is marked explored, a cheaper \(g(n)\) discovered later is discarded. Next slide: explicit counterexample.
   </div>
 </section>
 
@@ -731,9 +866,11 @@
         <line class="edge" x1="238" y1="92" x2="382" y2="190" marker-end="url(#arrow-mp)"/>
         <text class="cost-label" x="290" y="130" text-anchor="middle">2</text>
       </g>
-      <!-- F5: pop SCE = skip (E in explored). Mark this with a grey ✗ near the C-E edge -->
+      <!-- F5: pop SCE = skip (E in explored). Red strike across C-E edge. -->
       <g class="fragment" data-fragment-index="5">
-        <text x="310" y="115" font-size="14" font-weight="bold" fill="#dc2626" text-anchor="middle">SKIP</text>
+        <line x1="238" y1="92" x2="382" y2="190" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="302" y1="153" x2="318" y2="129" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/>
+        <text x="350" y="118" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">SKIP</text>
       </g>
       <!-- F6: pop SD, push SDE -->
       <g class="fragment" data-fragment-index="6">
@@ -741,9 +878,11 @@
         <line class="edge" x1="238" y1="308" x2="382" y2="210" marker-end="url(#arrow-mp)"/>
         <text class="cost-label" x="290" y="280" text-anchor="middle">4</text>
       </g>
-      <!-- F7: pop SDE = skip -->
+      <!-- F7: pop SDE = skip. Red strike across D-E edge. -->
       <g class="fragment" data-fragment-index="7">
-        <text x="310" y="290" font-size="14" font-weight="bold" fill="#dc2626" text-anchor="middle">SKIP</text>
+        <line x1="238" y1="308" x2="382" y2="210" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/>
+        <line x1="302" y1="247" x2="318" y2="271" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/>
+        <text x="350" y="280" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">SKIP</text>
       </g>
       <!-- F8: pop SBEG, goal (but suboptimal) -->
       <g class="fragment" data-fragment-index="8">
@@ -759,20 +898,48 @@
      Consistency (2 slides)
      ============================================================ -->
 
-<!-- 29. Cleaner derivation: when multi-path fails -->
+<!-- 29a. Setup: two parents reach n -->
 <section>
-  <h2>When does multi-path pruning fail?</h2>
+  <h2>Setup: two paths reach \(n\)</h2>
+  <svg class="two-parent-viz" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="par-tip" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1d4ed8"/></marker>
+      <marker id="par-tip-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
+    </defs>
+    <!-- preferred path: S -> p -> n (popped first because lower f) -->
+    <line class="preferred" x1="78" y1="60" x2="178" y2="60" marker-end="url(#par-tip)"/>
+    <line class="preferred" x1="222" y1="60" x2="322" y2="118" marker-end="url(#par-tip)"/>
+    <!-- discarded path: S -> p' -> n (popped second, then pruned) -->
+    <line class="discarded" x1="78" y1="180" x2="178" y2="180" marker-end="url(#par-tip-red)"/>
+    <line class="discarded" x1="222" y1="180" x2="322" y2="122" marker-end="url(#par-tip-red)"/>
+    <!-- nodes -->
+    <g font-size="16" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+      <circle cx="50"  cy="120" r="22" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="50" y="125" fill="#1e3a8a">S</text>
+      <circle cx="200" cy="60"  r="22" fill="#fff" stroke="#1d4ed8" stroke-width="2"/><text x="200" y="65" fill="#1e3a8a">p</text>
+      <circle cx="200" cy="180" r="22" fill="#fff" stroke="#dc2626" stroke-width="2"/><text x="200" y="185" fill="#991b1b">p'</text>
+      <circle cx="350" cy="120" r="22" fill="#fff" stroke="#111827" stroke-width="2"/><text x="350" y="125">n</text>
+    </g>
+    <text x="130" y="50" font-size="12" font-weight="600" fill="#1d4ed8">lower f &mdash; popped first</text>
+    <text x="130" y="208" font-size="12" font-weight="600" fill="#dc2626">cheaper g &mdash; but popped later</text>
+    <text x="430" y="125" font-size="11" fill="#6b7280" font-style="italic">explored</text>
+  </svg>
+  <p style="font-size: 0.85em;">A* pops the path through <span class="g-color">p</span> first (lower \(f\)) and marks \(n\) explored. The path through <span style="color:#dc2626; font-weight:600;">p'</span> with cheaper actual cost \(g\) gets discarded by multi-path pruning. When can this make A* sub-optimal?</p>
+</section>
+
+<!-- 29b. Derivation -->
+<section>
+  <h2>When can pruning lose the optimal?</h2>
   <div class="proof">
-    <strong>Setup.</strong> Node \(n\) is explored first via parent \(p\) (cheaper \(f\)). Later a path through \(p'\) reaches \(n\) with smaller \(g\) (cheaper actual cost) but larger \(f\) (so it was popped later).
+    <p>Order of pops gives:</p>
     <ol>
-      <li>By the order of pops: \(f(\langle\ldots,p,n\rangle) \le f(\langle\ldots,p',n\rangle)\).</li>
-      <li>So \(g(p) + \text{cost}(p,n) + h(n) \le g(p') + \text{cost}(p',n) + h(n)\).</li>
-      <li>Simplify: \(g(p) + \text{cost}(p,n) \le g(p') + \text{cost}(p',n)\). &nbsp; <span class="meta">(*)</span></li>
+      <li class="fragment">\(f(\langle\ldots,p,n\rangle) \le f(\langle\ldots,p',n\rangle)\).</li>
+      <li class="fragment">Expand: \(g(p) + c(p,n) + h(n) \le g(p') + c(p',n) + h(n)\).</li>
+      <li class="fragment">Cancel \(h(n)\): &nbsp;\(g(p) + c(p,n) \le g(p') + c(p',n)\). &nbsp; <span class="meta">(*)</span></li>
     </ol>
-    <p style="margin-top: 0.4em;">For the path-via-\(p'\) to actually be <em>better</em>, we need the reverse: \(g(p') + \text{cost}(p',n) &lt; g(p) + \text{cost}(p,n)\). &nbsp; <span class="meta">(**)</span></p>
-    <p>Both (*) and (**) can hold only if A* mis-ranked the \(f\)-values &mdash; which happens when the heuristic violates:</p>
-    <p style="text-align:center; font-size: 1.05em;">\(h(p) - h(n) \le \text{cost}(p,n)\)</p>
-    <p>i.e., the heuristic drops too fast across an edge. <span class="qed">Fix that, and multi-path pruning is safe.</span></p>
+    <p class="fragment">For p' to actually be better, we'd need: &nbsp;\(g(p') + c(p',n) &lt; g(p) + c(p,n)\). &nbsp; <span class="meta">(**)</span></p>
+    <p class="fragment">(*) and (**) can both hold only when the heuristic violates &mdash; for some edge \(p \to n\):</p>
+    <p class="fragment" style="text-align:center; font-size: 1.1em; padding: 0.4em; background:#fef2f2; border-left:4px solid #dc2626;">\(h(p) - h(n) &gt; c(p,n)\)</p>
+    <p class="fragment">i.e., the heuristic drops too fast across an edge. <span class="qed">Fix that constraint, and pruning is safe.</span></p>
   </div>
 </section>
 
@@ -780,14 +947,14 @@
 <section class="center-slide">
   <h2>Consistent (monotone) heuristic</h2>
   <div class="theorem">
-    <strong>Definition.</strong> \(h\) is <em>consistent</em> if for every edge \(m \to n\),
-    <p style="text-align:center; font-size: 1.1em; margin: 0.3em 0;">\(h(m) \le \text{cost}(m, n) + h(n)\).</p>
-    Equivalently: \(h(m) - h(n) \le \text{cost}(m, n)\). The heuristic decreases by no more than the edge cost.
+    <strong>Definition.</strong> \(h\) is <em>consistent</em> if for every edge \(m \to n\):
+    <p style="text-align:center; font-size: 1.15em; margin: 0.4em 0; color:#1d4ed8;">\(h(m) \le \text{cost}(m, n) + h(n)\)</p>
+    <p style="font-size: 0.85em; color:#6b7280; margin: 0;">i.e., the heuristic decreases by no more than the edge cost as we move toward the goal.</p>
   </div>
-  <div class="theorem">
+  <div class="theorem fragment">
     <strong>Theorem.</strong> If \(h\) is consistent, A* with multi-path pruning is <strong>optimal</strong>.
   </div>
-  <p style="font-size: 0.78em; margin-top: 0.8em; color: #6b7280;">Most natural heuristics (Manhattan, straight-line distance, &hellip;) are consistent &mdash; consistency is the stronger and friendlier condition.</p>
+  <p class="fragment" style="font-size: 0.78em; margin-top: 0.8em; color: #6b7280;">Most natural heuristics (Manhattan, straight-line distance, &hellip;) are consistent.</p>
 </section>
 
 <!-- ============================================================
@@ -822,11 +989,11 @@
 <section class="center-slide">
   <h2>Learning goals (recap)</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li><span class="ok">&check;</span> Motivate heuristic search</li>
-    <li><span class="ok">&check;</span> Trace LCFS, GBFS, A*</li>
-    <li><span class="ok">&check;</span> Analyze space, time, completeness, optimality</li>
-    <li><span class="ok">&check;</span> Design and dominate admissible heuristics</li>
-    <li><span class="ok">&check;</span> Prune the search space (cycle, multi-path, consistency)</li>
+    <li class="fragment"><span class="ok">&check;</span> Motivate heuristic search</li>
+    <li class="fragment"><span class="ok">&check;</span> Trace LCFS, GBFS, A*</li>
+    <li class="fragment"><span class="ok">&check;</span> Analyze space, time, completeness, optimality</li>
+    <li class="fragment"><span class="ok">&check;</span> Design and dominate admissible heuristics</li>
+    <li class="fragment"><span class="ok">&check;</span> Prune the search space (cycle, multi-path, consistency)</li>
   </ul>
 </section>
 

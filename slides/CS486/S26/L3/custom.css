@@ -114,3 +114,53 @@
 .reveal .pq-state {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
 }
+
+/* ============================================================
+   Visual mini-diagrams added during polish pass.
+   ============================================================ */
+
+/* g/h/f path visual on slide 4 - thick colored segments. */
+.reveal .gh-path { display: block; margin: 0 auto 0.4em auto; max-height: 120px; }
+.reveal .gh-path .g-arc  { stroke: #1d4ed8; stroke-width: 7; fill: none; stroke-linecap: round; }
+.reveal .gh-path .h-arc  { stroke: #16a34a; stroke-width: 7; fill: none; stroke-linecap: round; }
+.reveal .gh-path .brace  { stroke: #dc2626; stroke-width: 1.5; fill: none; }
+.reveal .gh-path text    { font-size: 13px; font-weight: 600; }
+
+/* Admissible-heuristic visual (slide 18a). */
+.reveal .admissible-viz { display: block; margin: 0.3em auto; max-height: 200px; }
+.reveal .admissible-viz .true-arrow { stroke: #1d4ed8; stroke-width: 2; fill: none; }
+.reveal .admissible-viz .h-arrow    { stroke: #16a34a; stroke-width: 2; fill: none; stroke-dasharray: 5 3; }
+
+/* Concentric f-contour visual (slide 19). */
+.reveal .f-contour { display: block; margin: 0.3em auto; max-height: 220px; }
+.reveal .f-contour .ring-inner { fill: #fee2e2; stroke: #dc2626; stroke-width: 1.5; }
+.reveal .f-contour .ring-mid   { fill: #fef3c7; stroke: #d97706; stroke-width: 1.2; }
+.reveal .f-contour .ring-outer { fill: #f3f4f6; stroke: #9ca3af; stroke-width: 1.2; stroke-dasharray: 4 3; }
+
+/* Small inline diagrams sat next to pseudocode (slides 24, 25). */
+.reveal .with-mini-diagram { display: flex; gap: 1em; align-items: center; }
+.reveal .with-mini-diagram pre.algo { flex: 1; margin: 0; }
+.reveal .cycle-mini   { width: 150px; flex-shrink: 0; }
+.reveal .diamond-mini { width: 170px; flex-shrink: 0; }
+.reveal .cycle-mini .strike, .reveal .diamond-mini .strike {
+  stroke: #dc2626; stroke-width: 3; stroke-linecap: round;
+}
+
+/* 8-puzzle decorations for slides 20a/20b. */
+.reveal .puzzle-grid .tile-misplaced { background: #fee2e2; color: #991b1b; }
+.reveal .puzzle-grid .tile-correct   { background: #dcfce7; color: #166534; }
+.reveal .puzzle-overlay-wrap { position: relative; display: inline-block; }
+.reveal .puzzle-overlay-wrap svg.tile-arrows {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;
+}
+.reveal .puzzle-overlay-wrap .tile-arrow {
+  stroke: #dc2626; stroke-width: 2; fill: none; marker-end: url(#tile-arrow-head);
+}
+.reveal .heuristic-total {
+  text-align: center; font-size: 1em; font-weight: 600; color: #1d4ed8; margin-top: 0.3em;
+}
+
+/* Two-parent visual for slide 29a. */
+.reveal .two-parent-viz { display: block; margin: 0.3em auto; max-height: 240px; }
+.reveal .two-parent-viz .preferred  { stroke: #1d4ed8; stroke-width: 2.5; fill: none; }
+.reveal .two-parent-viz .discarded  { stroke: #dc2626; stroke-width: 2.5; fill: none; stroke-dasharray: 5 3; }
