@@ -1,0 +1,168 @@
+/* L4-specific styles on top of shared/custom.css. */
+
+/* 2x2 grid of CSP-example cards (slide 6). */
+.reveal .example-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.2em;
+  max-width: 900px;
+  margin: 0.5em auto;
+}
+.reveal .example-grid .example-card {
+  text-align: center;
+}
+.reveal .example-grid .example-card img,
+.reveal .example-grid .example-card svg {
+  max-width: 100%;
+  max-height: 180px;
+  height: auto;
+  width: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+.reveal .example-grid .example-caption {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #1d4ed8;
+  margin-top: 0.3em;
+}
+
+/* 4-queens chessboard (reusable; embedded in trace SVGs and intro slides). */
+.reveal .chessboard {
+  display: inline-grid;
+  grid-template-columns: repeat(4, 36px);
+  grid-template-rows: repeat(4, 36px);
+  border: 2px solid #111827;
+  background: #111827;
+  gap: 1px;
+}
+.reveal .chessboard div {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  font-weight: 600;
+  color: #111827;
+}
+.reveal .chessboard div.queen {
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+.reveal .chessboard div.attack {
+  background: #f3f4f6;
+  color: #9ca3af;
+  font-size: 0.85em;
+}
+.reveal .chessboard div.pruned {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.75em;
+}
+.reveal .chess-wrap {
+  display: inline-block;
+  text-align: center;
+}
+.reveal .chess-wrap .chess-axis-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.reveal .chess-wrap .row-labels {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-right: 4px;
+}
+.reveal .chess-wrap .row-labels span {
+  height: 36px;
+  display: flex;
+  align-items: center;
+  font-size: 0.7em;
+  color: #6b7280;
+}
+.reveal .chess-wrap .col-labels {
+  display: grid;
+  grid-template-columns: repeat(4, 36px);
+  gap: 1px;
+  margin-bottom: 3px;
+  margin-left: 22px;
+}
+.reveal .chess-wrap .col-labels span {
+  font-size: 0.7em;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* X / D / C three-up boxes on slide 9. */
+.reveal .csp-defboxes {
+  display: flex;
+  gap: 1em;
+  margin: 0.6em 0;
+}
+.reveal .csp-defboxes .defcard {
+  flex: 1;
+  padding: 0.7em 0.8em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+}
+.reveal .csp-defboxes .defcard h3 {
+  color: #1d4ed8;
+  font-size: 0.95em;
+  margin: 0 0 0.3em 0;
+}
+.reveal .csp-defboxes .defcard p {
+  font-size: 0.78em;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Constraint network graph (slides 23, 24). */
+.reveal .constraint-network { display: block; margin: 0.3em auto; max-width: 100%; max-height: 420px; }
+.reveal .constraint-network .cn-var circle  { fill: #fff; stroke: #111827; stroke-width: 2; }
+.reveal .constraint-network .cn-var text    { font-size: 14px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+.reveal .constraint-network .cn-cons rect   { fill: #fff; stroke: #111827; stroke-width: 1.5; }
+.reveal .constraint-network .cn-cons text   { font-size: 10px; text-anchor: middle; dominant-baseline: middle; }
+.reveal .constraint-network .cn-edge        { stroke: #4b5563; stroke-width: 1.5; }
+.reveal .constraint-network .cn-edge.removed { stroke: #d1d5db; stroke-dasharray: 5 3; }
+.reveal .constraint-network .cn-edge.active { stroke: #dc2626; stroke-width: 2.5; }
+.reveal .constraint-network .cn-domain      { font-size: 12px; font-family: ui-monospace, "SF Mono", Menlo, monospace; fill: #1d4ed8; }
+.reveal .constraint-network .cn-domain .strike { text-decoration: line-through; fill: #dc2626; }
+.reveal .constraint-network .cn-step circle { fill: #fef3c7; stroke: #92400e; stroke-width: 1.5; }
+.reveal .constraint-network .cn-step text   { font-size: 11px; fill: #92400e; font-weight: bold; text-anchor: middle; dominant-baseline: middle; }
+
+/* Backtracking search-tree SVG (slides 17, 28). */
+.reveal .bt-tree           { display: block; margin: 0.3em auto; max-width: 100%; max-height: 380px; }
+.reveal .bt-tree .bt-node rect  { fill: #fff; stroke: #111827; stroke-width: 1.5; rx: 3; ry: 3; }
+.reveal .bt-tree .bt-node.dead rect { fill: #fef3c7; stroke: #92400e; }
+.reveal .bt-tree .bt-node.solved rect { fill: #dcfce7; stroke: #166534; stroke-width: 2.5; }
+.reveal .bt-tree .bt-node text   { font-family: ui-monospace, Menlo, monospace; font-size: 11px; text-anchor: middle; dominant-baseline: middle; }
+.reveal .bt-tree .bt-edge        { stroke: #6b7280; stroke-width: 1.5; fill: none; }
+.reveal .bt-tree .bt-step        { font-size: 11px; font-weight: bold; fill: #1d4ed8; }
+.reveal .bt-tree .bt-mark-x      { stroke: #dc2626; stroke-width: 2.5; stroke-linecap: round; }
+
+/* Side-by-side trace layout (search tree | chessboard) for slides 17, 28. */
+.reveal .bt-layout { display: flex; gap: 1em; align-items: center; justify-content: center; }
+.reveal .bt-layout .bt-tree-col { flex: 1.6; }
+.reveal .bt-layout .bt-board-col { flex: 1; text-align: center; }
+
+/* Notation diagram (slide 20): X - c(X,Y) - Y. */
+.reveal .arc-notation { display: block; margin: 0.5em auto; max-height: 180px; }
+.reveal .arc-notation .cn-var circle  { fill: #fff; stroke: #111827; stroke-width: 2; }
+.reveal .arc-notation .cn-var text    { font-size: 16px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+.reveal .arc-notation .cn-cons rect   { fill: #f9fafb; stroke: #111827; stroke-width: 1.5; rx: 3; ry: 3; }
+.reveal .arc-notation .cn-cons text   { font-size: 13px; text-anchor: middle; dominant-baseline: middle; }
+.reveal .arc-notation .cn-arc         { stroke: #4b5563; stroke-width: 1.5; }
+.reveal .arc-notation .cn-arc.primary { stroke: #1d4ed8; stroke-width: 2.5; }
+.reveal .arc-notation .label-primary  { font-size: 12px; fill: #1d4ed8; font-style: italic; }
+
+/* Domain display list with strikethrough capability for AC-3 trace. */
+.reveal .domain-list {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85em;
+}
+.reveal .domain-list .strike { text-decoration: line-through; color: #dc2626; }

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 4 — Constraint Satisfaction Problems</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 4: Constraint Satisfaction Problems. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Constraint Satisfaction Problems</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 4</p>
+  <p class="credit">RN 6.1&ndash;6.3 &middot; PM 4.1&ndash;4.4</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Formulate a real-world problem as a CSP</li>
+    <li class="fragment">Trace backtracking search</li>
+    <li class="fragment">Verify whether a constraint is arc-consistent</li>
+    <li class="fragment">Trace the AC-3 algorithm</li>
+    <li class="fragment">Trace backtracking <em>combined</em> with arc consistency</li>
+  </ul>
+</section>
+
+<!-- ============================================================
+     Recap from L3 (3 slides)
+     ============================================================ -->
+
+<!-- 3. Recap: Admissibility intuition -->
+<section>
+  <h2>Recap: admissibility intuition</h2>
+  <p style="font-size: 0.85em; color:#6b7280;">Why must \(h\) never over-estimate?</p>
+  <ul style="font-size: 0.85em;">
+    <li class="fragment">Suppose the optimal path has true cost \(C^*\); a sub-optimal goal has cost \(C' &gt; C^*\).</li>
+    <li class="fragment">By admissibility, the optimal path's intermediate node \(n\) has \(f(n) = g(n) + h(n) \le C^*\).</li>
+    <li class="fragment">So A* expands \(n\) <strong>before</strong> popping the sub-optimal goal.</li>
+    <li class="fragment"><strong>First visit to the goal = least-cost visit.</strong></li>
+  </ul>
+</section>
+
+<!-- 4. Recap: Consistency intuition -->
+<section>
+  <h2>Recap: consistency intuition</h2>
+  <p style="font-size: 0.85em; color:#6b7280;">Why must \(h\) decrease no faster than the edge cost?</p>
+  <ul style="font-size: 0.85em;">
+    <li class="fragment">For every edge \(n \to m\): &nbsp;\(h(n) - h(m) \le \text{cost}(n, m)\).</li>
+    <li class="fragment">Hence \(f(n) = g(n) + h(n) \le g(n) + \text{cost}(n, m) + h(m) = f(m)\).</li>
+    <li class="fragment">\(f\) is <strong>non-decreasing</strong> along any path A* explores.</li>
+    <li class="fragment"><strong>First visit to any node = least-cost visit.</strong></li>
+  </ul>
+</section>
+
+<!-- 5. Admissibility vs consistency -->
+<section class="center-slide">
+  <h2>Admissibility vs consistency</h2>
+  <div class="theorem">
+    <strong>Consistent:</strong> \(h(n) - h(m) \le \text{cost}(n, m)\) for every edge \(n \to m\).
+  </div>
+  <div class="theorem fragment">
+    <strong>Admissible:</strong> \(h(n) \le \text{cost}(n, \text{goal})\), i.e. with \(h(\text{goal}) = 0\) this is just \(h(n) - h(\text{goal}) \le \text{cost}(n, \text{goal})\) &mdash; the consistency inequality for the special edge to the goal.
+  </div>
+  <p class="fragment" style="font-size: 0.85em; margin-top: 1em;"><strong>Consistency \(\Rightarrow\) admissibility.</strong> Today's "consistency" means something different: <em>arc</em>-consistency for constraints.</p>
+</section>
+
+<!-- ============================================================
+     CSP examples (1 slide)
+     ============================================================ -->
+
+<!-- 6. CSPs you've seen -->
+<section>
+  <h2>CSPs you've seen</h2>
+  <div class="example-grid">
+    <div class="example-card">
+      <img src="images/Crossword_solved.png" alt="Crossword puzzle">
+      <div class="example-caption">Crosswords</div>
+    </div>
+    <div class="example-card">
+      <img src="images/sudoku_wikipedia.png" alt="Sudoku">
+      <div class="example-caption">Sudoku</div>
+    </div>
+    <div class="example-card">
+      <img src="images/graph_coloring.png" alt="Graph colouring">
+      <div class="example-caption">Graph colouring</div>
+    </div>
+    <div class="example-card">
+      <div style="display:inline-block;">
+        <div class="chessboard" style="grid-template-columns: repeat(4, 30px); grid-template-rows: repeat(4, 30px);">
+          <div></div><div></div><div class="queen">Q</div><div></div>
+          <div class="queen">Q</div><div></div><div></div><div></div>
+          <div></div><div></div><div></div><div class="queen">Q</div>
+          <div></div><div class="queen">Q</div><div></div><div></div>
+        </div>
+      </div>
+      <div class="example-caption">N-queens</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Why CSPs? (3 slides)
+     ============================================================ -->
+
+<!-- 7. Generate-and-test fails -->
+<section class="center-slide">
+  <h2>Naive idea: generate-and-test</h2>
+  <p style="font-size: 0.9em;">Enumerate every assignment, test if it satisfies the constraints.</p>
+  <pre class="algo" style="margin: 0.6em auto;">A=1, B=1, C=1, D=1, E=1   <span class="cmt"># fail</span>
+A=1, B=1, C=1, D=1, E=2   <span class="cmt"># fail</span>
+A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
+&hellip;</pre>
+  <p class="fragment" style="text-align: center; font-size: 1.05em; margin-top: 0.8em;">5 variables, domain size 4: &nbsp; \(4^5 = 1024\) assignments. Doesn't scale.</p>
+  <p class="fragment" style="text-align:center; font-size: 0.85em; color:#6b7280;">And it's wasteful: many constraints can be checked on <em>partial</em> assignments.</p>
+</section>
+
+<!-- 8. Search algorithms are structure-blind -->
+<section class="center-slide">
+  <h2>Search algorithms are structure-blind</h2>
+  <p class="fragment" style="font-size: 0.9em;">A search algorithm sees only "generate successors" and "is this a goal?".</p>
+  <div class="fragment" style="margin: 0.6em 0;">
+    <div class="chess-wrap">
+      <div class="chessboard">
+        <div class="queen">Q</div><div class="queen">Q</div><div></div><div></div>
+        <div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div>
+        <div></div><div></div><div></div><div></div>
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.85em;">Two queens already in the same row &mdash; clearly a dead end &mdash; yet the search keeps generating successors. We need to <strong>see the structure</strong>.</p>
+</section>
+
+<!-- 9. Defining a CSP -->
+<section>
+  <h2>A CSP is a triple \((X, D, C)\)</h2>
+  <div class="csp-defboxes">
+    <div class="defcard fragment">
+      <h3>Variables \(X\)</h3>
+      <p>\(\{X_1, X_2, \ldots, X_n\}\)</p>
+    </div>
+    <div class="defcard fragment">
+      <h3>Domains \(D\)</h3>
+      <p>Each \(X_i\) draws values from a finite set \(D_i\).</p>
+    </div>
+    <div class="defcard fragment">
+      <h3>Constraints \(C\)</h3>
+      <p>Each \(c \in C\) restricts allowed combinations of variable values.</p>
+    </div>
+  </div>
+  <p class="fragment" style="text-align:center; font-size: 0.9em; margin-top: 0.8em;"><strong>Solution</strong>: an assignment to all variables that satisfies every constraint.</p>
+</section>
+
+<!-- ============================================================
+     4-queens CSP (3 slides)
+     ============================================================ -->
+
+<!-- 10. 4-queens: variables and domains -->
+<section>
+  <h2>4-queens: variables and domains</h2>
+  <div class="two-col" style="align-items: center;">
+    <div style="flex: 1;">
+      <ul style="font-size: 0.9em;">
+        <li class="fragment">One queen per column &rArr; track its <em>row</em>.</li>
+        <li class="fragment"><strong>Variables:</strong> \(x_0, x_1, x_2, x_3\) (column index).</li>
+        <li class="fragment"><strong>Domains:</strong> \(D_{x_i} = \{0, 1, 2, 3\}\).</li>
+      </ul>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <div class="chess-wrap">
+        <div class="col-labels">
+          <span>\(x_0\)</span><span>\(x_1\)</span><span>\(x_2\)</span><span>\(x_3\)</span>
+        </div>
+        <div class="chess-axis-row">
+          <div class="row-labels"><span>0</span><span>1</span><span>2</span><span>3</span></div>
+          <div class="chessboard">
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. 4-queens: constraints -->
+<section>
+  <h2>4-queens: constraints</h2>
+  <p style="font-size: 0.9em;"><strong>No pair of queens in the same row or diagonal.</strong></p>
+  <p style="text-align: center; font-size: 0.95em; margin-top: 0.6em;">
+    \(\forall i \ne j: \quad (x_i \ne x_j) \;\land\; (|x_i - x_j| \ne |i - j|)\)
+  </p>
+  <p class="fragment" style="font-size: 0.85em; color:#6b7280; margin-top: 1em;">Example for columns 0 and 1: &nbsp;\((x_0 \ne x_1) \;\land\; (|x_0 - x_1| \ne 1)\).</p>
+  <p class="fragment" style="font-size: 0.85em; color:#6b7280;">No <em>column</em> constraint needed &mdash; our variables already encode "one queen per column".</p>
+</section>
+
+<!-- 12. Quiz: which constraints do we need? -->
+<section>
+  <h2>Q: which constraints do we need?</h2>
+  <p class="quiz-q"><strong>Q.</strong> Given the variables \(x_0, \ldots, x_3\) and their domains, which row/column/diagonal constraints must we enforce?</p>
+  <ol class="quiz-options">
+    <li>No two queens in the same row</li>
+    <li>No two queens in the same column</li>
+    <li>No two queens on the same diagonal</li>
+    <li>Two of (A), (B), (C)</li>
+    <li>All of (A), (B), (C)</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>D &mdash; row + diagonal only.</strong> The column constraint is already implied by our choice of variables: there's exactly one \(x_i\) per column, so no two queens can ever share a column.
+  </div>
+</section>
+
+<!-- ============================================================
+     Expressing constraints (2 slides)
+     ============================================================ -->
+
+<!-- 13. Formula vs table -->
+<section>
+  <h2>Two ways to express a constraint</h2>
+  <p style="text-align:center; font-size: 0.8em; color:#6b7280; margin: 0;">Constraint: queens in columns 0 and 2 are not in the same row or diagonal.</p>
+  <div class="two-col" style="margin-top: 0.6em;">
+    <div style="flex: 1; padding: 0.7em; background:#eff6ff; border-left:4px solid #1d4ed8;">
+      <h3 style="font-size:0.95em; color:#1d4ed8; margin-top:0;">As a formula</h3>
+      <p style="text-align:center; font-size: 0.95em;">\((x_0 \ne x_2) \;\land\; (|x_0 - x_2| \ne 2)\)</p>
+    </div>
+    <div style="flex: 1; padding: 0.7em; background:#f0fdf4; border-left:4px solid #16a34a;">
+      <h3 style="font-size:0.95em; color:#16a34a; margin-top:0;">As a table</h3>
+      <table style="margin: 0 auto; font-size: 0.75em; border-collapse: collapse;">
+        <thead><tr><th style="padding: 0 0.6em; border-bottom: 1px solid #d1d5db;">\(x_0\)</th><th style="padding: 0 0.6em; border-bottom: 1px solid #d1d5db;">\(x_2\)</th></tr></thead>
+        <tbody style="font-family: ui-monospace, Menlo, monospace;">
+          <tr><td style="text-align:center; padding: 0 0.6em;">0</td><td style="text-align:center;">1</td></tr>
+          <tr><td style="text-align:center; padding: 0 0.6em;">0</td><td style="text-align:center;">3</td></tr>
+          <tr><td style="text-align:center; padding: 0 0.6em;">1</td><td style="text-align:center;">0</td></tr>
+          <tr><td style="text-align:center; padding: 0 0.6em;">1</td><td style="text-align:center;">2</td></tr>
+          <tr><td style="text-align:center; padding: 0 0.6em;">2</td><td style="text-align:center;">1</td></tr>
+          <tr><td style="text-align:center; padding: 0 0.6em;">2</td><td style="text-align:center;">3</td></tr>
+          <tr><td style="text-align:center; padding: 0 0.6em;">3</td><td style="text-align:center;">0</td></tr>
+          <tr><td style="text-align:center; padding: 0 0.6em;">3</td><td style="text-align:center;">2</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p style="text-align: center; font-size: 0.78em; color: #6b7280; margin-top: 0.4em;">Implementations usually pick the formula form &mdash; faster to check, no table to store.</p>
+</section>
+
+<!-- 14. Quiz: formula for (x0, x2) constraint -->
+<section>
+  <h2>Q: encode \((x_0, x_2)\) as a formula</h2>
+  <p class="quiz-q"><strong>Q.</strong> Which formula encodes "queens in columns 0 and 2 are not in the same row or diagonal"?</p>
+  <ol class="quiz-options">
+    <li>\((x_0 \ne x_2)\)</li>
+    <li>\((x_0 \ne x_2) \;\land\; ((x_0 - x_2) \ne 1)\)</li>
+    <li>\((x_0 \ne x_2) \;\land\; ((x_0 - x_2) \ne 2)\)</li>
+    <li>\((x_0 \ne x_2) \;\land\; (|x_0 - x_2| \ne 1)\)</li>
+    <li>\((x_0 \ne x_2) \;\land\; (|x_0 - x_2| \ne 2)\)</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>E.</strong> The two columns are 2 apart, so diagonal conflict means \(|x_0 - x_2| = 2\). We need both the row and diagonal exclusions, and the absolute value because the queens could be above <em>or</em> below each other.
+  </div>
+</section>
+
+<!-- ============================================================
+     Backtracking search (3 slides)
+     ============================================================ -->
+
+<!-- 15. Incremental CSP formulation -->
+<section>
+  <h2>4-queens as an incremental search problem</h2>
+  <ul style="font-size: 0.9em;">
+    <li class="fragment"><strong>State:</strong> one queen per column in the leftmost \(k\) columns, no pair attacking each other.</li>
+    <li class="fragment"><strong>Initial state:</strong> empty board <code>_ _ _ _</code>.</li>
+    <li class="fragment"><strong>Goal state:</strong> 4 queens placed, no pair attacking. e.g. <code>1 3 0 2</code>.</li>
+    <li class="fragment"><strong>Successor:</strong> place a queen in the leftmost empty column that no current queen attacks. e.g. <code>0 _ _ _</code> &rarr; <code>0 2 _ _</code>, <code>0 3 _ _</code>.</li>
+  </ul>
+</section>
+
+<!-- 16. Backtracking algorithm -->
+<section>
+  <h2>Backtracking search</h2>
+<pre class="algo"><span class="kw">def</span> backtrack(assignment, csp):
+    <span class="kw">if</span> assignment is complete: <span class="kw">return</span> assignment
+    var &larr; an unassigned variable
+    <span class="kw">for each</span> value <span class="kw">in</span> domain(var):
+        <span class="kw">if</span> {var = value} satisfies every constraint:
+            add {var = value} to assignment
+            result &larr; backtrack(assignment, csp)
+            <span class="kw">if</span> result &ne; failure: <span class="kw">return</span> result
+            remove {var = value} from assignment
+    <span class="kw">return</span> failure</pre>
+  <p style="font-size: 0.78em; color:#6b7280;">DFS through assignment space, pruning whenever a constraint is violated.</p>
+</section>
+
+<!-- 17. Trace: backtracking on 4-queens -->
+<section>
+  <h2>Trace: backtracking on 4-queens</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0; color: #6b7280;">Each node = partial assignment. Yellow = dead end. Green = solution.</p>
+  <div class="bt-tree-wrap">
+    <p style="font-size: 0.75em; text-align: left; margin: 0.2em 0; font-family: ui-monospace, Menlo, monospace;">
+      <strong>Step:</strong>
+      <span class="fragment current-visible frontier-step" data-fragment-index="0">0 &mdash; start with root</span>
+      <span class="fragment current-visible frontier-step" data-fragment-index="1">1 &mdash; expand root: try \(x_0 \in \{0,1,2,3\}\)</span>
+      <span class="fragment current-visible frontier-step" data-fragment-index="2">2 &mdash; try \(x_0 = 0\): valid \(x_1\) values are \(\{2, 3\}\)</span>
+      <span class="fragment current-visible frontier-step" data-fragment-index="3">3 &mdash; try \(x_1 = 2\) (i.e. <code>0 2 _ _</code>): no valid \(x_2\)</span>
+      <span class="fragment current-visible frontier-step" data-fragment-index="4">4 &mdash; try \(x_1 = 3\) (i.e. <code>0 3 _ _</code>): \(x_2 = 1\) works</span>
+      <span class="fragment current-visible frontier-step" data-fragment-index="5">5 &mdash; <code>0 3 1 _</code>: no valid \(x_3\) &rarr; dead end, backtrack</span>
+      <span class="fragment current-visible frontier-step" data-fragment-index="6">6 &mdash; try \(x_0 = 1\): valid \(x_1\) values are \(\{3\}\)</span>
+      <span class="fragment current-visible frontier-step" data-fragment-index="7">7 &mdash; <code>1 3 _ _</code>: \(x_2 = 0\) works</span>
+      <span class="fragment current-visible frontier-step" data-fragment-index="8">8 &mdash; <code>1 3 0 _</code>: \(x_3 = 2\) works</span>
+      <span class="fragment current-visible frontier-step" data-fragment-index="9"><strong>9 &mdash; <code>1 3 0 2</code> is the solution!</strong></span>
+    </p>
+    <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" class="bt-tree">
+      <!-- Root always visible -->
+      <g class="bt-node"><rect x="270" y="14" width="80" height="22"/><text x="310" y="25">_ _ _ _</text></g>
+      <!-- F1: expand root, 4 children -->
+      <g class="fragment" data-fragment-index="1">
+        <path class="bt-edge" d="M310 36 L100 75"/>
+        <path class="bt-edge" d="M310 36 L240 75"/>
+        <path class="bt-edge" d="M310 36 L380 75"/>
+        <path class="bt-edge" d="M310 36 L520 75"/>
+        <g class="bt-node"><rect x="60"  y="75" width="80" height="22"/><text x="100" y="86">0 _ _ _</text></g>
+        <g class="bt-node"><rect x="200" y="75" width="80" height="22"/><text x="240" y="86">1 _ _ _</text></g>
+        <g class="bt-node"><rect x="340" y="75" width="80" height="22"/><text x="380" y="86">2 _ _ _</text></g>
+        <g class="bt-node"><rect x="480" y="75" width="80" height="22"/><text x="520" y="86">3 _ _ _</text></g>
+      </g>
+      <!-- F2: expand 0___, add 02__ and 03__ -->
+      <g class="fragment" data-fragment-index="2">
+        <path class="bt-edge" d="M100 97 L65  135"/>
+        <path class="bt-edge" d="M100 97 L145 135"/>
+        <g class="bt-node"><rect x="25"  y="135" width="80" height="22"/><text x="65"  y="146">0 2 _ _</text></g>
+        <g class="bt-node"><rect x="105" y="135" width="80" height="22"/><text x="145" y="146">0 3 _ _</text></g>
+      </g>
+      <!-- F3: 02__ is dead -->
+      <g class="fragment" data-fragment-index="3">
+        <g class="bt-node dead"><rect x="25" y="135" width="80" height="22"/><text x="65" y="146">0 2 _ _</text></g>
+        <line class="bt-mark-x" x1="30" y1="140" x2="100" y2="152"/>
+        <line class="bt-mark-x" x1="30" y1="152" x2="100" y2="140"/>
+      </g>
+      <!-- F4: expand 03__, add 031_ -->
+      <g class="fragment" data-fragment-index="4">
+        <path class="bt-edge" d="M145 157 L145 195"/>
+        <g class="bt-node"><rect x="105" y="195" width="80" height="22"/><text x="145" y="206">0 3 1 _</text></g>
+      </g>
+      <!-- F5: 031_ dead -->
+      <g class="fragment" data-fragment-index="5">
+        <g class="bt-node dead"><rect x="105" y="195" width="80" height="22"/><text x="145" y="206">0 3 1 _</text></g>
+        <line class="bt-mark-x" x1="110" y1="200" x2="180" y2="212"/>
+        <line class="bt-mark-x" x1="110" y1="212" x2="180" y2="200"/>
+      </g>
+      <!-- F6: expand 1___, add 13__ -->
+      <g class="fragment" data-fragment-index="6">
+        <path class="bt-edge" d="M240 97 L240 135"/>
+        <g class="bt-node"><rect x="200" y="135" width="80" height="22"/><text x="240" y="146">1 3 _ _</text></g>
+      </g>
+      <!-- F7: expand 13__, add 130_ -->
+      <g class="fragment" data-fragment-index="7">
+        <path class="bt-edge" d="M240 157 L240 195"/>
+        <g class="bt-node"><rect x="200" y="195" width="80" height="22"/><text x="240" y="206">1 3 0 _</text></g>
+      </g>
+      <!-- F8: expand 130_, add 1302 -->
+      <g class="fragment" data-fragment-index="8">
+        <path class="bt-edge" d="M240 217 L240 255"/>
+        <g class="bt-node"><rect x="200" y="255" width="80" height="22"/><text x="240" y="266">1 3 0 2</text></g>
+      </g>
+      <!-- F9: 1302 is the goal -->
+      <g class="fragment" data-fragment-index="9">
+        <g class="bt-node solved"><rect x="200" y="255" width="80" height="22"/><text x="240" y="266" fill="#166534">1 3 0 2</text></g>
+      </g>
+    </svg>
+  </div>
+  <p class="fragment" style="text-align: center; font-size: 0.85em; color: #166534; margin-top: 0.3em;">Found in 9 expansions &mdash; vs 1024 generate-and-test calls.</p>
+</section>
+
+<!-- ============================================================
+     Arc consistency intro (4 slides)
+     ============================================================ -->
+
+<!-- 18. Why partial assignments can dead-end -->
+<section>
+  <h2>Partial assignment, fatal future</h2>
+  <p style="font-size: 0.9em;">After placing \(x_0 = 0\), is \(x_1 = 2\) safe?</p>
+  <div style="text-align:center; margin: 0.6em 0;">
+    <div class="chess-wrap">
+      <div class="col-labels">
+        <span>\(x_0\)</span><span>\(x_1\)</span><span>\(x_2\)</span><span>\(x_3\)</span>
+      </div>
+      <div class="chess-axis-row">
+        <div class="row-labels"><span>0</span><span>1</span><span>2</span><span>3</span></div>
+        <div class="chessboard">
+          <div class="queen">Q</div><div class="attack">x</div><div class="attack">x</div><div class="attack">x</div>
+          <div class="attack">x</div><div class="attack">x</div><div class="attack">x</div><div></div>
+          <div class="attack">x</div><div class="queen">Q</div><div class="attack">x</div><div class="attack">x</div>
+          <div class="attack">x</div><div class="attack">x</div><div class="attack">x</div><div class="attack">x</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; text-align:center;">Every cell of column \(x_3\) is attacked &rarr; <strong>no future</strong> for the remaining queens.</p>
+  <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center;">If we'd known this <em>before</em> trying \(x_2\) at all, we could've pruned the branch immediately. That's <strong>arc consistency</strong>.</p>
+</section>
+
+<!-- 19. Binary constraints only -->
+<section class="center-slide">
+  <h2>Binary constraints only</h2>
+  <p style="font-size: 0.9em;">Arc consistency is defined on <em>binary</em> constraints \(c(X, Y)\). For the others:</p>
+  <ul style="text-align: left; margin-left: 2em; font-size: 0.9em;">
+    <li class="fragment"><strong>Unary</strong> \(c(X)\): drop disallowed values directly from \(D_X\).</li>
+    <li class="fragment"><strong>k-ary</strong> \((k \ge 3)\): convert to an equivalent set of binary constraints.</li>
+  </ul>
+</section>
+
+<!-- 20. Notation: arcs -->
+<section>
+  <h2>Notation: arcs</h2>
+  <svg class="arc-notation" viewBox="0 0 600 140" xmlns="http://www.w3.org/2000/svg">
+    <line class="cn-arc primary" x1="60" y1="70" x2="230" y2="70"/>
+    <line class="cn-arc" x1="370" y1="70" x2="540" y2="70"/>
+    <g class="cn-var"><circle cx="40" cy="70" r="22"/><text x="40" y="74">X</text></g>
+    <text x="40" y="118" text-anchor="middle" font-size="12" fill="#6b7280">\(D_X\)</text>
+    <g class="cn-cons"><rect x="230" y="50" width="140" height="40" rx="4" ry="4"/><text x="300" y="74">c(X, Y)</text></g>
+    <g class="cn-var"><circle cx="560" cy="70" r="22"/><text x="560" y="74">Y</text></g>
+    <text x="560" y="118" text-anchor="middle" font-size="12" fill="#6b7280">\(D_Y\)</text>
+    <text x="145" y="56" class="label-primary" text-anchor="middle">\(\langle X, c(X,Y) \rangle\)</text>
+    <text x="455" y="56" font-size="12" fill="#4b5563" font-style="italic" text-anchor="middle">\(\langle Y, c(X,Y) \rangle\)</text>
+  </svg>
+  <ul style="font-size: 0.85em;">
+    <li class="fragment">An <strong>arc</strong> \(\langle X, c(X,Y) \rangle\) pairs a constraint with one of its variables.</li>
+    <li class="fragment">\(X\) is the <strong>primary</strong> variable (the one we'll prune); \(Y\) is the <strong>secondary</strong>.</li>
+    <li class="fragment">Each binary constraint defines <em>two</em> arcs &mdash; one per primary choice.</li>
+  </ul>
+</section>
+
+<!-- 21. Arc-consistency definition + Q -->
+<section>
+  <h2>Arc-consistency definition</h2>
+  <div class="theorem">
+    <strong>Arc consistency.</strong> The arc \(\langle X, c(X,Y) \rangle\) is <em>arc-consistent</em> iff for every \(v \in D_X\) there exists a \(w \in D_Y\) such that \((v, w)\) satisfies \(c(X, Y)\).
+  </div>
+  <p class="quiz-q fragment" style="margin-top: 1em;"><strong>Q.</strong> Constraint \(X &lt; Y\), with \(D_X = D_Y = \{1, 2\}\). Is \(\langle X, X &lt; Y \rangle\) arc-consistent?</p>
+  <div class="quiz-answer fragment">
+    <strong>No.</strong> For \(v = 2 \in D_X\), there is no \(w \in D_Y\) with \(2 &lt; w\). We can <strong>remove \(2\) from \(D_X\)</strong> to make the arc consistent.
+  </div>
+</section>
+
+<!-- ============================================================
+     AC-3 algorithm (5 slides)
+     ============================================================ -->
+
+<!-- 22. AC-3 algorithm -->
+<section>
+  <h2>The AC-3 algorithm</h2>
+<pre class="algo">put every arc into the set S
+<span class="kw">while</span> S is not empty:
+    select and remove &lt;X, c(X,Y)&gt; from S
+    remove every v in D<sub>X</sub> with no w in D<sub>Y</sub> satisfying c(X,Y)
+    <span class="kw">if</span> D<sub>X</sub> was reduced:
+        <span class="kw">if</span> D<sub>X</sub> is empty: <span class="kw">return</span> false
+        <span class="kw">for each</span> Z &ne; Y: add &lt;Z, c'(Z, X)&gt; to S
+<span class="kw">return</span> true</pre>
+  <p style="font-size: 0.78em; color:#6b7280;">Each iteration enforces one arc, then re-queues neighbours whose consistency may have broken.</p>
+</section>
+
+<!-- 23. Why add arcs back to S? -->
+<section>
+  <h2>Why re-queue arcs?</h2>
+  <p style="font-size: 0.9em;">Shrinking one domain can break a previously-consistent neighbouring arc.</p>
+  <svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg" class="arc-notation" style="max-height: 160px;">
+    <line class="cn-arc" x1="60" y1="80" x2="170" y2="80"/>
+    <line class="cn-arc" x1="270" y1="80" x2="330" y2="80"/>
+    <line class="cn-arc" x1="430" y1="80" x2="540" y2="80"/>
+    <g class="cn-var"><circle cx="40" cy="80" r="22"/><text x="40" y="84">Y</text></g>
+    <text x="40" y="130" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="ui-monospace, Menlo, monospace">{2}</text>
+    <g class="cn-cons"><rect x="170" y="60" width="100" height="40" rx="4" ry="4"/><text x="220" y="84">Y = X</text></g>
+    <g class="cn-var"><circle cx="350" cy="80" r="22"/><text x="350" y="84">X</text></g>
+    <text x="350" y="130" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="ui-monospace, Menlo, monospace">{1, 2}</text>
+    <g class="cn-cons"><rect x="430" y="60" width="100" height="40" rx="4" ry="4"/><text x="480" y="84">X &lt; Z</text></g>
+    <g class="cn-var"><circle cx="560" cy="80" r="22"/><text x="560" y="84">Z</text></g>
+    <text x="560" y="130" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="ui-monospace, Menlo, monospace">{2, 3}</text>
+  </svg>
+  <p style="font-size: 0.83em;"><span class="g-color">Initially</span>: arc \(\langle X, X{&lt;}Z \rangle\) is consistent (1&lt;2, 1&lt;3, 2&lt;3 all work).</p>
+  <p class="fragment" style="font-size: 0.83em;"><span style="color:#dc2626; font-weight:600;">Then</span> arc \(\langle X, Y{=}X \rangle\) forces \(D_X \to \{2\}\). Now \(\langle Z, X{&lt;}Z \rangle\) breaks: for \(w = 2 \in D_Z\) we'd need \(v \in D_X\) with \(v &lt; 2\), but only \(v = 2\) remains. Must re-check.</p>
+</section>
+
+<!-- 24. Trace: AC-3 on 4-queens -->
+<section>
+  <h2>Trace: AC-3 on 4-queens with \(x_0 = 0\)</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0; color: #6b7280;">
+    <span class="fragment current-visible frontier-step" data-fragment-index="0">Initial domains: \(D_{x_0} = \{0\}\), others \(= \{0, 1, 2, 3\}\).</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="1"><strong>Step 1.</strong> Process \(\langle x_1, c_{01} \rangle\): drop 0, 1 from \(D_{x_1}\). \(D_{x_1} = \{2, 3\}\).</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="2"><strong>Step 2.</strong> Process \(\langle x_2, c_{02} \rangle\): drop 0, 2. \(D_{x_2} = \{1, 3\}\).</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="3"><strong>Step 3.</strong> Process \(\langle x_3, c_{03} \rangle\): drop 0, 3. \(D_{x_3} = \{1, 2\}\).</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="4"><strong>Step 4.</strong> Process \(\langle x_2, c_{23} \rangle\): no \(w \in D_{x_3}\) works for \(v = 1\). \(D_{x_2} = \{3\}\).</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="5"><strong>Step 5.</strong> Re-process \(\langle x_3, c_{23} \rangle\): now drops 2. \(D_{x_3} = \{1\}\).</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="6"><strong>Step 6.</strong> Re-process \(\langle x_1, c_{13} \rangle\): drops 3. \(D_{x_1} = \{2\}\).</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="7"><strong>Step 7.</strong> Re-process \(\langle x_1, c_{12} \rangle\): drops 2. \(D_{x_1} = \emptyset\). <span style="color:#dc2626;">Return false &mdash; no solution with \(x_0 = 0\).</span></span>
+  </p>
+  <svg viewBox="0 0 720 400" xmlns="http://www.w3.org/2000/svg" class="constraint-network">
+    <!-- Edges between vars and constraints (always visible). Each var has 3 edges (to its 3 constraint partners). -->
+    <g class="cn-edge">
+      <line x1="80" y1="200" x2="155" y2="110"/>   <!-- x0 -- c01 -->
+      <line x1="80" y1="200" x2="155" y2="290"/>   <!-- x0 -- c03 -->
+      <line x1="100" y1="200" x2="320" y2="200"/>  <!-- x0 -- c02 (horizontal middle) -->
+      <line x1="350" y1="75"  x2="195" y2="110"/>  <!-- x1 -- c01 -->
+      <line x1="350" y1="75"  x2="505" y2="110"/>  <!-- x1 -- c12 -->
+      <line x1="355" y1="75"  x2="425" y2="220"/>  <!-- x1 -- c13 (offset to avoid overlap with c02) -->
+      <line x1="620" y1="200" x2="545" y2="110"/>  <!-- x2 -- c12 -->
+      <line x1="620" y1="200" x2="545" y2="290"/>  <!-- x2 -- c23 -->
+      <line x1="600" y1="200" x2="380" y2="200"/>  <!-- x2 -- c02 -->
+      <line x1="350" y1="325" x2="195" y2="290"/>  <!-- x3 -- c03 -->
+      <line x1="350" y1="325" x2="505" y2="290"/>  <!-- x3 -- c23 -->
+      <line x1="355" y1="325" x2="425" y2="240"/>  <!-- x3 -- c13 -->
+    </g>
+    <!-- Constraint rectangles -->
+    <g class="cn-cons">
+      <rect x="135" y="98"  width="80" height="24" rx="3" ry="3"/><text x="175" y="113">c_01</text>
+      <rect x="485" y="98"  width="80" height="24" rx="3" ry="3"/><text x="525" y="113">c_12</text>
+      <rect x="485" y="278" width="80" height="24" rx="3" ry="3"/><text x="525" y="293">c_23</text>
+      <rect x="135" y="278" width="80" height="24" rx="3" ry="3"/><text x="175" y="293">c_03</text>
+      <rect x="320" y="188" width="60" height="24" rx="3" ry="3"/><text x="350" y="203">c_02</text>
+      <rect x="395" y="218" width="60" height="24" rx="3" ry="3"/><text x="425" y="233">c_13</text>
+    </g>
+    <!-- Variables -->
+    <g class="cn-var">
+      <circle cx="80" cy="200" r="20"/><text x="80" y="204">\(x_0\)</text>
+      <circle cx="350" cy="55" r="20"/><text x="350" y="59">\(x_1\)</text>
+      <circle cx="620" cy="200" r="20"/><text x="620" y="204">\(x_2\)</text>
+      <circle cx="350" cy="345" r="20"/><text x="350" y="349">\(x_3\)</text>
+    </g>
+    <!-- Domain labels -->
+    <text class="cn-domain" x="80" y="252" text-anchor="middle">D = {0}</text>
+    <!-- D_x1: 4 states -->
+    <g class="fragment current-visible" data-fragment-index="0"><text class="cn-domain" x="350" y="25" text-anchor="middle">D = {0, 1, 2, 3}</text></g>
+    <g class="fragment current-visible" data-fragment-index="1"><text class="cn-domain" x="350" y="25" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, 2, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="2"><text class="cn-domain" x="350" y="25" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, 2, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="3"><text class="cn-domain" x="350" y="25" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, 2, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="4"><text class="cn-domain" x="350" y="25" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, 2, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="5"><text class="cn-domain" x="350" y="25" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, 2, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="6"><text class="cn-domain" x="350" y="25" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, 2, <tspan class="strike">3</tspan></text></g>
+    <g class="fragment current-visible" data-fragment-index="7"><text class="cn-domain" x="350" y="25" text-anchor="middle" fill="#dc2626"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, <tspan class="strike">2</tspan>, <tspan class="strike">3</tspan> = &empty;</text></g>
+    <!-- D_x2: 3 states -->
+    <g class="fragment current-visible" data-fragment-index="0"><text class="cn-domain" x="620" y="252" text-anchor="middle">{0, 1, 2, 3}</text></g>
+    <g class="fragment current-visible" data-fragment-index="1"><text class="cn-domain" x="620" y="252" text-anchor="middle">{0, 1, 2, 3}</text></g>
+    <g class="fragment current-visible" data-fragment-index="2"><text class="cn-domain" x="620" y="252" text-anchor="middle"><tspan class="strike">0</tspan>, 1, <tspan class="strike">2</tspan>, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="3"><text class="cn-domain" x="620" y="252" text-anchor="middle"><tspan class="strike">0</tspan>, 1, <tspan class="strike">2</tspan>, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="4"><text class="cn-domain" x="620" y="252" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, <tspan class="strike">2</tspan>, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="5"><text class="cn-domain" x="620" y="252" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, <tspan class="strike">2</tspan>, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="6"><text class="cn-domain" x="620" y="252" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, <tspan class="strike">2</tspan>, 3</text></g>
+    <g class="fragment current-visible" data-fragment-index="7"><text class="cn-domain" x="620" y="252" text-anchor="middle"><tspan class="strike">0</tspan>, <tspan class="strike">1</tspan>, <tspan class="strike">2</tspan>, 3</text></g>
+    <!-- D_x3: 3 states -->
+    <g class="fragment current-visible" data-fragment-index="0"><text class="cn-domain" x="350" y="385" text-anchor="middle">{0, 1, 2, 3}</text></g>
+    <g class="fragment current-visible" data-fragment-index="1"><text class="cn-domain" x="350" y="385" text-anchor="middle">{0, 1, 2, 3}</text></g>
+    <g class="fragment current-visible" data-fragment-index="2"><text class="cn-domain" x="350" y="385" text-anchor="middle">{0, 1, 2, 3}</text></g>
+    <g class="fragment current-visible" data-fragment-index="3"><text class="cn-domain" x="350" y="385" text-anchor="middle"><tspan class="strike">0</tspan>, 1, 2, <tspan class="strike">3</tspan></text></g>
+    <g class="fragment current-visible" data-fragment-index="4"><text class="cn-domain" x="350" y="385" text-anchor="middle"><tspan class="strike">0</tspan>, 1, 2, <tspan class="strike">3</tspan></text></g>
+    <g class="fragment current-visible" data-fragment-index="5"><text class="cn-domain" x="350" y="385" text-anchor="middle"><tspan class="strike">0</tspan>, 1, <tspan class="strike">2</tspan>, <tspan class="strike">3</tspan></text></g>
+    <g class="fragment current-visible" data-fragment-index="6"><text class="cn-domain" x="350" y="385" text-anchor="middle"><tspan class="strike">0</tspan>, 1, <tspan class="strike">2</tspan>, <tspan class="strike">3</tspan></text></g>
+    <g class="fragment current-visible" data-fragment-index="7"><text class="cn-domain" x="350" y="385" text-anchor="middle"><tspan class="strike">0</tspan>, 1, <tspan class="strike">2</tspan>, <tspan class="strike">3</tspan></text></g>
+    <!-- Step number badges -->
+    <g class="cn-step fragment" data-fragment-index="1"><circle cx="240" cy="85"  r="10"/><text x="240" y="89">1</text></g>
+    <g class="cn-step fragment" data-fragment-index="2"><circle cx="385" cy="178" r="10"/><text x="385" y="182">2</text></g>
+    <g class="cn-step fragment" data-fragment-index="3"><circle cx="240" cy="315" r="10"/><text x="240" y="319">3</text></g>
+    <g class="cn-step fragment" data-fragment-index="4"><circle cx="580" cy="265" r="10"/><text x="580" y="269">4</text></g>
+    <g class="cn-step fragment" data-fragment-index="5"><circle cx="475" cy="318" r="10"/><text x="475" y="322">5</text></g>
+    <g class="cn-step fragment" data-fragment-index="6"><circle cx="455" cy="195" r="10"/><text x="455" y="199">6</text></g>
+    <g class="cn-step fragment" data-fragment-index="7"><circle cx="470" cy="85"  r="10" fill="#fee2e2" stroke="#dc2626"/><text x="470" y="89" fill="#dc2626">7</text></g>
+  </svg>
+</section>
+
+<!-- 25. AC-3 outcomes -->
+<section class="center-slide">
+  <h2>Three outcomes of AC-3</h2>
+  <ul style="text-align: left; margin-left: 2em; font-size: 0.95em;">
+    <li class="fragment"><strong>A domain becomes empty</strong> &rarr; no solution.</li>
+    <li class="fragment"><strong>Every domain has exactly one value</strong> &rarr; solution found, no search needed.</li>
+    <li class="fragment"><strong>Some domains have multiple values</strong> &rarr; need backtracking search on what remains.</li>
+  </ul>
+</section>
+
+<!-- 26. AC-3 properties -->
+<section>
+  <h2>AC-3 &mdash; properties</h2>
+  <table class="props">
+    <tr><th style="width: 28%;">Terminates?</th><td><span class="ok">Yes</span> <span class="meta">each arc enqueued at most \(d\) times</span></td></tr>
+    <tr><th>Order of arcs?</th><td>Doesn't matter <span class="meta">same final domains</span></td></tr>
+    <tr><th>Time complexity</th><td>\(O(c\,d^3)\) <span class="meta">\(c\) constraints, max domain size \(d\); each arc check \(O(d^2)\)</span></td></tr>
+  </table>
+</section>
+
+<!-- ============================================================
+     Combining BT + AC-3 (3 slides)
+     ============================================================ -->
+
+<!-- 27. Combining recipe -->
+<section>
+  <h2>Combining backtracking with AC-3</h2>
+  <ol style="font-size: 0.9em;">
+    <li class="fragment">Run backtracking search.</li>
+    <li class="fragment">After each value assignment, run AC-3.</li>
+    <li class="fragment">If a domain becomes empty &rarr; <strong>fail this branch</strong>, backtrack.</li>
+    <li class="fragment">If every domain has exactly one value &rarr; <strong>solution found</strong>.</li>
+    <li class="fragment">Otherwise &rarr; continue backtracking on the remaining unassigned variables.</li>
+  </ol>
+</section>
+
+<!-- 28. Trace: BT + AC-3 on 4-queens -->
+<section>
+  <h2>Trace: backtracking + AC-3 on 4-queens</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0; color: #6b7280;">
+    <span class="fragment current-visible frontier-step" data-fragment-index="0">BT starts at the root with 4 candidate values for \(x_0\).</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="1">Try \(x_0 = 0\). Run AC-3 on the propagated domains.</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="2">AC-3 empties \(D_{x_1}\) (slide 24) &rarr; <strong>this branch is dead</strong>. Backtrack.</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="3">Try \(x_0 = 1\). Run AC-3.</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="4">AC-3 reduces every domain to a single value: \(x_1 = 3, x_2 = 0, x_3 = 2\).</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="5"><strong>Solution found without any further search!</strong></span>
+  </p>
+  <div class="bt-layout" style="margin-top: 0.4em;">
+    <div class="bt-tree-col">
+      <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" class="bt-tree">
+        <g class="bt-node"><rect x="180" y="14" width="80" height="22"/><text x="220" y="25">_ _ _ _</text></g>
+        <path class="bt-edge" d="M220 36 L60 95"/>
+        <path class="bt-edge" d="M220 36 L160 95"/>
+        <path class="bt-edge" d="M220 36 L280 95"/>
+        <path class="bt-edge" d="M220 36 L420 95"/>
+        <g class="bt-node"><rect x="20"  y="95" width="80" height="22"/><text x="60"  y="106">0 _ _ _</text></g>
+        <g class="bt-node"><rect x="120" y="95" width="80" height="22"/><text x="160" y="106">1 _ _ _</text></g>
+        <g class="bt-node"><rect x="240" y="95" width="80" height="22"/><text x="280" y="106">2 _ _ _</text></g>
+        <g class="bt-node"><rect x="380" y="95" width="80" height="22"/><text x="420" y="106">3 _ _ _</text></g>
+        <!-- F2: x0=0 dead -->
+        <g class="fragment" data-fragment-index="2">
+          <g class="bt-node dead"><rect x="20" y="95" width="80" height="22"/><text x="60" y="106">0 _ _ _</text></g>
+          <line class="bt-mark-x" x1="25" y1="100" x2="95" y2="112"/>
+          <line class="bt-mark-x" x1="25" y1="112" x2="95" y2="100"/>
+        </g>
+        <!-- F5: x0=1 solved -->
+        <g class="fragment" data-fragment-index="5">
+          <path class="bt-edge" d="M160 117 L160 155"/>
+          <g class="bt-node solved"><rect x="120" y="155" width="80" height="22"/><text x="160" y="166" fill="#166534">1 3 0 2</text></g>
+        </g>
+      </svg>
+    </div>
+    <div class="bt-board-col">
+      <!-- Chessboard variants, fragment-swapped -->
+      <div class="fragment current-visible" data-fragment-index="0">
+        <div class="chess-wrap">
+          <div class="chessboard">
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+        <p style="font-size: 0.7em; color:#6b7280; margin: 0.3em 0 0;">Empty board.</p>
+      </div>
+      <div class="fragment current-visible" data-fragment-index="1">
+        <div class="chess-wrap">
+          <div class="chessboard">
+            <div class="queen">Q</div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+          </div>
+        </div>
+        <p style="font-size: 0.7em; color:#6b7280; margin: 0.3em 0 0;">Try \(x_0 = 0\).</p>
+      </div>
+      <div class="fragment current-visible" data-fragment-index="2">
+        <div class="chess-wrap">
+          <div class="chessboard">
+            <div class="queen">Q</div><div class="attack">x</div><div class="attack">x</div><div class="attack">x</div>
+            <div class="attack">x</div><div class="attack">x</div><div class="attack">x</div><div class="attack">x</div>
+            <div class="attack">x</div><div class="attack">x</div><div class="attack">x</div><div class="attack">x</div>
+            <div class="attack">x</div><div class="attack">x</div><div class="attack">x</div><div class="attack">x</div>
+          </div>
+        </div>
+        <p style="font-size: 0.7em; color:#dc2626; margin: 0.3em 0 0;">AC-3: every \(x_1\) row blocked. Fail.</p>
+      </div>
+      <div class="fragment current-visible" data-fragment-index="3">
+        <div class="chess-wrap">
+          <div class="chessboard">
+            <div class="attack">x</div><div></div><div></div><div></div>
+            <div class="queen">Q</div><div class="attack">x</div><div class="attack">x</div><div class="attack">x</div>
+            <div class="attack">x</div><div></div><div></div><div></div>
+            <div class="attack">x</div><div></div><div></div><div></div>
+          </div>
+        </div>
+        <p style="font-size: 0.7em; color:#6b7280; margin: 0.3em 0 0;">Try \(x_0 = 1\).</p>
+      </div>
+      <div class="fragment current-visible" data-fragment-index="4">
+        <div class="chess-wrap">
+          <div class="chessboard">
+            <div class="attack">x</div><div class="attack">x</div><div class="queen">Q</div><div class="attack">x</div>
+            <div class="queen">Q</div><div class="attack">x</div><div class="attack">x</div><div class="attack">x</div>
+            <div class="attack">x</div><div class="attack">x</div><div class="attack">x</div><div class="queen">Q</div>
+            <div class="attack">x</div><div class="queen">Q</div><div class="attack">x</div><div class="attack">x</div>
+          </div>
+        </div>
+        <p style="font-size: 0.7em; color:#166534; margin: 0.3em 0 0;">AC-3: every domain size 1.</p>
+      </div>
+      <div class="fragment current-visible" data-fragment-index="5">
+        <div class="chess-wrap">
+          <div class="chessboard">
+            <div class="attack">x</div><div class="attack">x</div><div class="queen">Q</div><div class="attack">x</div>
+            <div class="queen">Q</div><div class="attack">x</div><div class="attack">x</div><div class="attack">x</div>
+            <div class="attack">x</div><div class="attack">x</div><div class="attack">x</div><div class="queen">Q</div>
+            <div class="attack">x</div><div class="queen">Q</div><div class="attack">x</div><div class="attack">x</div>
+          </div>
+        </div>
+        <p style="font-size: 0.7em; color:#166534; margin: 0.3em 0 0; font-weight: 600;">Solved: <code>1 3 0 2</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 29. Why combine? -->
+<section class="center-slide">
+  <h2>Why combine BT with AC-3?</h2>
+  <ul style="text-align: left; margin-left: 2em; font-size: 0.95em;">
+    <li class="fragment"><strong>AC-3 prunes branches BT would otherwise explore</strong> &mdash; it kills bad partial assignments before they grow.</li>
+    <li class="fragment"><strong>BT decides what AC-3 can't</strong> &mdash; when AC-3 leaves multi-value domains, BT picks a value and triggers another AC-3 pass.</li>
+    <li class="fragment">On 4-queens with \(x_0 = 1\), AC-3 alone reduced everything to a single solution &mdash; <strong>zero further search</strong>.</li>
+  </ul>
+</section>
+
+<!-- ============================================================
+     Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 30. Summary table -->
+<section>
+  <h2>Three techniques for CSPs</h2>
+  <table class="compare">
+    <thead>
+      <tr>
+        <th>Technique</th>
+        <th>How</th>
+        <th>Finds a solution?</th>
+        <th>Best at</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Backtracking</strong></td>
+        <td>DFS through assignments, prune on constraint violation</td>
+        <td><span class="ok">Yes</span></td>
+        <td>generic, easy to implement</td>
+      </tr>
+      <tr>
+        <td><strong>AC-3 alone</strong></td>
+        <td>Repeatedly enforce arc consistency</td>
+        <td><span class="meta">only if all domains become singletons</span></td>
+        <td>shrinking domains pre-emptively</td>
+      </tr>
+      <tr>
+        <td><strong>BT + AC-3</strong></td>
+        <td>BT picks a value, AC-3 propagates</td>
+        <td><span class="ok">Yes</span> <span class="meta">far fewer expansions</span></td>
+        <td>practical CSP solving</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 31. Learning goals (recap) -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment"><span class="ok">&check;</span> Formulate a real-world problem as a CSP</li>
+    <li class="fragment"><span class="ok">&check;</span> Trace backtracking search</li>
+    <li class="fragment"><span class="ok">&check;</span> Verify arc consistency</li>
+    <li class="fragment"><span class="ok">&check;</span> Trace AC-3</li>
+    <li class="fragment"><span class="ok">&check;</span> Combine backtracking with arc consistency</li>
+  </ul>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  // Hide the corner "Course page" link in true browser fullscreen.
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>
