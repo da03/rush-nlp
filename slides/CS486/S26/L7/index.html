@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 7 — Independence and Bayesian Networks I</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 7: Independence and Bayesian Networks I. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L5/custom.css">
+  <link rel="stylesheet" href="../L6/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<!-- Shared SVG defs for arrow markers -->
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <marker id="arrow-bn" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Independence and<br>Bayesian Networks I</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 7</p>
+  <p class="credit">RN 12.4, 13.1&ndash;13.2 &middot; PM 8.2&ndash;8.3</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Tell if two variables are <strong>independent</strong>, or <strong>conditionally independent</strong> given a third</li>
+    <li class="fragment">Derive a <strong>compact representation</strong> of a joint distribution using independence</li>
+    <li class="fragment">Describe the components of a <strong>Bayesian network</strong></li>
+    <li class="fragment">Compute joint probabilities <em>from</em> a Bayes net</li>
+    <li class="fragment">Explain independence in the three key structures</li>
+  </ul>
+</section>
+
+<!-- 3. Why Bayes nets? The 2^n problem -->
+<section>
+  <h2>Why Bayes nets? The \(2^n\) problem</h2>
+  <p style="font-size: 0.9em;">A joint distribution over \(n\) Boolean variables needs \(2^n\) probabilities.</p>
+  <table class="compare" style="margin: 0.5em auto; max-width: 70%;">
+    <thead>
+      <tr><th>Variables</th><th>Probabilities</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>6 (Holmes)</td><td>64</td></tr>
+      <tr><td>10</td><td>1,024</td></tr>
+      <tr><td>20</td><td>~ 1 million</td></tr>
+      <tr><td>30</td><td>~ 1 billion</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment" style="text-align: center; font-size: 0.95em; margin-top: 0.6em; color: #1d4ed8;"><strong>Independence</strong> lets us factor this huge joint into tiny pieces.</p>
+</section>
+
+<!-- ============================================================
+     Independence (3 slides)
+     ============================================================ -->
+
+<!-- 4. Unconditional independence -->
+<section>
+  <h2>Unconditional independence</h2>
+  <div class="theorem">
+    <strong>Independence.</strong> \(X\) and \(Y\) are <em>(unconditionally) independent</em> iff any (and therefore all) of:
+    <p style="text-align:center; font-size: 1em; margin: 0.4em 0;">\(P(X | Y) = P(X), \quad P(Y | X) = P(Y), \quad P(X \wedge Y) = P(X)\, P(Y)\).</p>
+  </div>
+  <p class="fragment" style="font-size: 0.88em; text-align:center; margin-top: 0.6em;">Learning \(Y\) does <strong>not</strong> change our belief about \(X\).</p>
+  <p class="fragment" style="font-size: 0.78em; color:#6b7280; text-align:center;">Two probabilities (the priors) suffice to recover four joint probabilities.</p>
+</section>
+
+<!-- 5. Conditional independence -->
+<section>
+  <h2>Conditional independence</h2>
+  <div class="theorem">
+    <strong>Conditional independence.</strong> \(X\) and \(Y\) are <em>conditionally independent given \(Z\)</em> iff:
+    <p style="text-align:center; font-size: 0.95em; margin: 0.4em 0;">\(P(X | Y \wedge Z) = P(X | Z), \quad P(Y | X \wedge Z) = P(Y | Z), \quad P(X \wedge Y | Z) = P(X | Z)\, P(Y | Z)\).</p>
+  </div>
+  <p class="fragment" style="font-size: 0.88em; text-align:center; margin-top: 0.5em;">Once we know \(Z\), learning \(Y\) doesn't change our belief about \(X\).</p>
+  <p class="fragment surprise-box" style="font-size: 0.85em;"><strong>Important:</strong> independence does <em>not</em> imply conditional independence, and vice versa. We'll see both on later slides.</p>
+</section>
+
+<!-- 6. Compact rep quiz pack -->
+<section>
+  <h2>Quiz pack: compact representation</h2>
+  <p style="font-size: 0.82em; color:#6b7280; text-align: center; margin: 0;">Three Boolean variables \(A, B, C\). How many probabilities are needed to specify the joint?</p>
+  <div style="margin-top: 0.5em;">
+    <p class="quiz-q" style="font-size: 0.88em; margin: 0.2em 0;"><strong>Q1.</strong> No independence assumed.</p>
+    <div class="quiz-answer fragment" style="font-size: 0.82em;">
+      <strong>7.</strong> &nbsp;Use the chain rule: \(P(A) + P(B | A) + P(C | A \wedge B)\) needs \(1 + 2 + 4 = 7\) probabilities.
+    </div>
+  </div>
+  <div style="margin-top: 0.5em;">
+    <p class="quiz-q" style="font-size: 0.88em; margin: 0.2em 0;"><strong>Q2.</strong> \(A, B, C\) all mutually independent.</p>
+    <div class="quiz-answer fragment" style="font-size: 0.82em;">
+      <strong>3.</strong> &nbsp;Just the three priors: \(P(A), P(B), P(C) = 1 + 1 + 1 = 3\).
+    </div>
+  </div>
+  <div style="margin-top: 0.5em;">
+    <p class="quiz-q" style="font-size: 0.88em; margin: 0.2em 0;"><strong>Q3.</strong> \(A\) and \(B\) conditionally independent given \(C\).</p>
+    <div class="quiz-answer fragment" style="font-size: 0.82em;">
+      <strong>5.</strong> &nbsp;\(P(C) + P(A | C) + P(B | C) = 1 + 2 + 2 = 5\). The compactness comes from the missing dependence.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Bayes nets (4 slides)
+     ============================================================ -->
+
+<!-- 7. Bayes net = DAG + CPTs -->
+<section class="center-slide">
+  <h2>Bayes net = DAG + CPTs</h2>
+  <div class="theorem">
+    A <strong>Bayesian network</strong> is a <em>directed acyclic graph</em> (DAG) in which:
+    <ul style="font-size: 0.95em; margin-top: 0.4em;">
+      <li class="fragment">each node is a random variable,</li>
+      <li class="fragment">each edge \(X \to Y\) says "\(X\) directly affects \(Y\)" &mdash; \(X\) is a <em>parent</em> of \(Y\),</li>
+      <li class="fragment">each node \(X_i\) carries a conditional probability table \(P(X_i \,|\, \mathrm{Parents}(X_i))\).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8. Examples of BNs -->
+<section>
+  <h2>Examples of Bayes nets</h2>
+  <div class="two-col" style="margin-top: 0.4em;">
+    <div style="flex: 1; text-align: center;">
+      <p style="font-size: 0.82em; color: #6b7280; margin: 0;">Inheritance of handedness</p>
+      <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 240px;">
+        <line class="bn-edge" x1="80"  y1="56" x2="170" y2="116" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="280" y1="56" x2="190" y2="116" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="80"  y1="56" x2="80"  y2="156" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="280" y1="56" x2="280" y2="156" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="180" y1="148" x2="180" y2="208" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <ellipse cx="80"  cy="40" rx="50" ry="18"/><text x="80"  y="44">G(mother)</text>
+          <ellipse cx="280" cy="40" rx="50" ry="18"/><text x="280" y="44">G(father)</text>
+          <ellipse cx="80"  cy="180" rx="50" ry="18"/><text x="80"  y="184">H(mother)</text>
+          <ellipse cx="280" cy="180" rx="50" ry="18"/><text x="280" y="184">H(father)</text>
+          <ellipse cx="180" cy="130" rx="45" ry="18"/><text x="180" y="134">G(child)</text>
+          <ellipse cx="180" cy="225" rx="45" ry="18"/><text x="180" y="229">H(child)</text>
+        </g>
+      </svg>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <p style="font-size: 0.82em; color: #6b7280; margin: 0;">Car diagnostic network</p>
+      <img class="bn-img" src="images/cardiagnosis.png" alt="Car diagnostic Bayes net">
+    </div>
+  </div>
+</section>
+
+<!-- 9. The Holmes Bayes net -->
+<section>
+  <h2>The Holmes Bayes net</h2>
+  <div class="two-col" style="margin-top: 0.3em;">
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 320px;">
+        <line class="bn-edge" x1="100" y1="56" x2="240" y2="56" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="80"  y1="76" x2="170" y2="146" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="80"  y1="200" x2="170" y2="160" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="200" y1="170" x2="270" y2="226" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="200" y1="170" x2="270" y2="266" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="80"  cy="56"  r="22"/><text x="80"  y="60">E</text>
+          <circle cx="260" cy="56"  r="22"/><text x="260" y="60">R</text>
+          <circle cx="80"  cy="220" r="22"/><text x="80"  y="224">B</text>
+          <circle cx="180" cy="156" r="22"/><text x="180" y="160">A</text>
+          <circle cx="290" cy="220" r="22"/><text x="290" y="224">W</text>
+          <circle cx="290" cy="280" r="22"/><text x="290" y="284">G</text>
+        </g>
+      </svg>
+    </div>
+    <div style="flex: 1.05;" class="cpt-list">
+      <div class="cpt-block"><span class="cpt-var">P(E)</span>= 0.0003</div>
+      <div class="cpt-block"><span class="cpt-var">P(B)</span>= 0.0001</div>
+      <div class="cpt-block"><span class="cpt-var">P(R | &middot;)</span><br>
+        E: 0.9 &nbsp; &not;E: 0.0002</div>
+      <div class="cpt-block"><span class="cpt-var">P(A | &middot;)</span><br>
+        B&and;E:&nbsp;&nbsp;0.96 &nbsp; B&and;&not;E:&nbsp;0.95<br>
+        &not;B&and;E: 0.20 &nbsp; &not;B&and;&not;E: 0.01</div>
+      <div class="cpt-block"><span class="cpt-var">P(W | &middot;)</span><br>
+        A: 0.80 &nbsp; &not;A: 0.40</div>
+      <div class="cpt-block"><span class="cpt-var">P(G | &middot;)</span><br>
+        A: 0.40 &nbsp; &not;A: 0.04</div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. 64 to 12 -->
+<section class="center-slide">
+  <h2>From 64 numbers to 12</h2>
+  <table class="compare" style="margin: 0.5em auto; max-width: 80%;">
+    <thead>
+      <tr><th>Representation</th><th>Probabilities needed</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Full joint over 6 Boolean variables</td><td>\(2^6 = 64\)</td></tr>
+      <tr><td>Holmes Bayes net: \(1 + 1 + 2 + 4 + 2 + 2\)</td><td><strong>12</strong></td></tr>
+    </tbody>
+  </table>
+  <p class="fragment" style="text-align: center; font-size: 0.92em; margin-top: 0.6em; color: #1d4ed8;">From those 12 numbers we can reconstruct every one of the 64 joint probabilities.</p>
+  <p class="fragment" style="text-align: center; font-size: 0.82em; color: #6b7280;">For larger networks, the savings are exponential.</p>
+</section>
+
+<!-- ============================================================
+     Joint from a BN (3 slides)
+     ============================================================ -->
+
+<!-- 11. Joint = product of conditionals -->
+<section class="center-slide">
+  <h2>Joint = product of conditionals</h2>
+  <div class="theorem">
+    <strong>Bayes-net factorization.</strong> For a Bayes net over variables \(X_1, \ldots, X_n\):
+    <p style="text-align:center; font-size: 1.1em; margin: 0.5em 0;">\(P(X_1, \ldots, X_n) = \prod_{i=1}^{n} P(X_i \,|\, \mathrm{Parents}(X_i))\).</p>
+  </div>
+  <p style="font-size: 0.88em; text-align: center; margin-top: 0.6em;">Each variable is conditionally independent of its non-descendants given its parents.</p>
+</section>
+
+<!-- 12. Worked example -->
+<section>
+  <h2>Worked example: a joint from the Holmes BN</h2>
+  <p style="font-size: 0.88em;"><strong>Goal:</strong> &nbsp;\(P(\neg B \wedge \neg E \wedge A \wedge \neg R \wedge G \wedge W)\). All neighbours call but neither a burglary nor an earthquake actually happened.</p>
+  <div class="worked">
+    <p class="fragment"><span class="label-step">Step 1.</span> Factor by the BN structure (using parents):</p>
+    <p class="fragment" style="text-align:center; font-size: 0.82em;">\(= P(\neg B) \cdot P(\neg E) \cdot P(A | \neg B \wedge \neg E) \cdot P(\neg R | \neg E) \cdot P(G | A) \cdot P(W | A)\)</p>
+    <p class="fragment"><span class="label-step">Step 2.</span> Plug in numbers:</p>
+    <p class="fragment" style="text-align:center; font-size: 0.82em;">\(= 0.9999 \times 0.9997 \times 0.01 \times 0.9998 \times 0.40 \times 0.80\)</p>
+    <p class="fragment" style="text-align:center; color: #166534; font-size: 0.95em;">\(\approx \mathbf{3.2 \times 10^{-3}}\)</p>
+  </div>
+</section>
+
+<!-- 13. Quiz Q4 -->
+<section>
+  <h2>Q: a different all-negatives joint</h2>
+  <p class="quiz-q" style="font-size: 0.9em;"><strong>Q.</strong> What is &nbsp;\(P(\neg B \wedge \neg E \wedge \neg A \wedge \neg R \wedge \neg G \wedge \neg W)\)?</p>
+  <ol class="quiz-options" style="margin-top: 0.4em;">
+    <li>0.5699</li>
+    <li>0.6699</li>
+    <li>0.7699</li>
+    <li>0.8699</li>
+    <li>0.9699</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>A &mdash; 0.5699.</strong> By the same factorization, each factor is now a "no event happened" version:
+    <br><span style="font-size: 0.82em;">\(= 0.9999 \times 0.9997 \times (1 - 0.01) \times (1 - 0.0002) \times (1 - 0.04) \times (1 - 0.40) \approx 0.5699\).</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     Three key structures (5 slides)
+     ============================================================ -->
+
+<!-- 14. Three patterns overview -->
+<section>
+  <h2>Three key structures</h2>
+  <div class="structures-row">
+    <div class="structure-card">
+      <h3>Chain</h3>
+      <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+        <line class="bn-edge" x1="32" y1="40" x2="84" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="118" y1="40" x2="168" y2="40" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="20"  cy="40" r="14"/><text x="20"  y="44">A</text>
+          <circle cx="100" cy="40" r="14"/><text x="100" y="44">B</text>
+          <circle cx="180" cy="40" r="14"/><text x="180" y="44">C</text>
+        </g>
+      </svg>
+      <p>\(A\) and \(C\) talk <em>through</em> \(B\).</p>
+    </div>
+    <div class="structure-card">
+      <h3>Common cause</h3>
+      <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+        <line class="bn-edge" x1="92"  y1="32" x2="32"  y2="78" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="108" y1="32" x2="168" y2="78" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="100" cy="20" r="14"/><text x="100" y="24">A</text>
+          <circle cx="20"  cy="85" r="14"/><text x="20"  y="89">B</text>
+          <circle cx="180" cy="85" r="14"/><text x="180" y="89">C</text>
+        </g>
+      </svg>
+      <p>\(B\) and \(C\) share a hidden cause \(A\).</p>
+    </div>
+    <div class="structure-card">
+      <h3>Common effect</h3>
+      <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+        <line class="bn-edge" x1="32"  y1="32" x2="92"  y2="78" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="168" y1="32" x2="108" y2="78" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <circle cx="20"  cy="20" r="14"/><text x="20"  y="24">A</text>
+          <circle cx="180" cy="20" r="14"/><text x="180" y="24">B</text>
+          <circle cx="100" cy="85" r="14"/><text x="100" y="89">C</text>
+        </g>
+      </svg>
+      <p>\(A\) and \(B\) both cause \(C\) (a v-structure).</p>
+    </div>
+  </div>
+  <p style="text-align: center; font-size: 0.85em; color: #6b7280; margin-top: 0.4em;">Each structure has its own independence pattern. Let's check.</p>
+</section>
+
+<!-- 15. Chain -->
+<section>
+  <h2>Chain: \(B \to A \to W\)</h2>
+  <div style="text-align: center; margin: 0.3em 0;">
+    <svg viewBox="0 0 360 80" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 70px;">
+      <line class="bn-edge" x1="40"  y1="40" x2="150" y2="40" marker-end="url(#arrow-bn)"/>
+      <line class="bn-edge" x1="210" y1="40" x2="320" y2="40" marker-end="url(#arrow-bn)"/>
+      <g class="bn-node">
+        <ellipse cx="25"  cy="40" rx="22" ry="16"/><text x="25"  y="44">B</text>
+        <ellipse cx="180" cy="40" rx="22" ry="16"/><text x="180" y="44">A</text>
+        <ellipse cx="335" cy="40" rx="22" ry="16"/><text x="335" y="44">W</text>
+      </g>
+    </svg>
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin: 0.3em 0 0;"><strong>Q1.</strong> Are \(B\) and \(W\) <em>unconditionally</em> independent?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.82em;">
+    <strong>No.</strong> Knowing \(B\) makes the alarm more likely, which makes \(W\) more likely. Information flows through \(A\).
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin: 0.6em 0 0;"><strong>Q2.</strong> Are \(B\) and \(W\) <em>conditionally</em> independent given \(A\)?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.82em;">
+    <strong>Yes.</strong> Once we know whether the alarm is going, \(W\) only depends on \(A\); \(B\) adds nothing more. <em>The middle node "blocks" the path.</em>
+  </div>
+</section>
+
+<!-- 16. Common cause -->
+<section>
+  <h2>Common cause: \(W \leftarrow A \to G\)</h2>
+  <div style="text-align: center; margin: 0.3em 0;">
+    <svg viewBox="0 0 360 130" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 110px;">
+      <line class="bn-edge" x1="170" y1="30" x2="60"  y2="80" marker-end="url(#arrow-bn)"/>
+      <line class="bn-edge" x1="190" y1="30" x2="300" y2="80" marker-end="url(#arrow-bn)"/>
+      <g class="bn-node">
+        <ellipse cx="180" cy="20" rx="22" ry="16"/><text x="180" y="24">A</text>
+        <ellipse cx="45"  cy="90" rx="22" ry="16"/><text x="45"  y="94">W</text>
+        <ellipse cx="315" cy="90" rx="22" ry="16"/><text x="315" y="94">G</text>
+      </g>
+    </svg>
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin: 0.3em 0 0;"><strong>Q1.</strong> Are \(W\) and \(G\) <em>unconditionally</em> independent?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.82em;">
+    <strong>No.</strong> If \(W\) is calling, the alarm is more likely going, so \(G\) is more likely too. The shared cause \(A\) couples them.
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin: 0.6em 0 0;"><strong>Q2.</strong> Are \(W\) and \(G\) <em>conditionally</em> independent given \(A\)?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.82em;">
+    <strong>Yes.</strong> Once \(A\) is known, the two callers are independent observers. <em>The common cause "blocks" the path when conditioned.</em>
+  </div>
+</section>
+
+<!-- 17. Common effect (v-structure) -->
+<section>
+  <h2>Common effect: \(E \to A \leftarrow B\)</h2>
+  <div style="text-align: center; margin: 0.3em 0;">
+    <svg viewBox="0 0 360 130" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 110px;">
+      <line class="bn-edge" x1="60"  y1="30" x2="170" y2="80" marker-end="url(#arrow-bn)"/>
+      <line class="bn-edge" x1="300" y1="30" x2="190" y2="80" marker-end="url(#arrow-bn)"/>
+      <g class="bn-node">
+        <ellipse cx="45"  cy="20" rx="22" ry="16"/><text x="45"  y="24">E</text>
+        <ellipse cx="315" cy="20" rx="22" ry="16"/><text x="315" y="24">B</text>
+        <ellipse cx="180" cy="90" rx="22" ry="16"/><text x="180" y="94">A</text>
+      </g>
+    </svg>
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin: 0.3em 0 0;"><strong>Q1.</strong> Are \(E\) and \(B\) <em>unconditionally</em> independent?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.82em;">
+    <strong>Yes.</strong> Earthquakes and burglaries don't influence each other &mdash; they only share the same downstream alarm.
+  </div>
+  <p class="quiz-q" style="font-size: 0.85em; margin: 0.6em 0 0;"><strong>Q2.</strong> Are \(E\) and \(B\) <em>conditionally</em> independent given \(A\)?</p>
+  <div class="quiz-answer fragment" style="font-size: 0.82em;">
+    <strong>No &mdash; the opposite!</strong> If the alarm is going and we learn there was an earthquake, the burglary explanation becomes less likely &mdash; this is <strong>explaining away</strong>. Conditioning on the common effect <em>creates</em> a dependence.
+  </div>
+  <p class="fragment surprise-box" style="font-size: 0.8em;"><strong>The v-structure is the surprise:</strong> the only structure where conditioning on the middle node <em>opens</em> a previously closed path.</p>
+</section>
+
+<!-- 18. Three structures summary -->
+<section>
+  <h2>The three rules</h2>
+  <table class="compare" style="margin: 0.5em auto;">
+    <thead>
+      <tr>
+        <th>Structure</th>
+        <th>Are endpoints independent?</th>
+        <th>Given the middle node?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Chain</strong> &nbsp;\(A \to B \to C\)</td>            <td><span class="no">No</span></td>  <td><span class="ok">Yes</span> &nbsp;<em>blocked</em></td></tr>
+      <tr><td><strong>Common cause</strong> &nbsp;\(B \leftarrow A \to C\)</td><td><span class="no">No</span></td>  <td><span class="ok">Yes</span> &nbsp;<em>blocked</em></td></tr>
+      <tr><td><strong>Common effect</strong> &nbsp;\(A \to C \leftarrow B\)</td><td><span class="ok">Yes</span></td> <td><span class="no">No</span> &nbsp;<em>opens up</em></td></tr>
+    </tbody>
+  </table>
+  <p class="footnote" style="text-align: center; margin-top: 0.5em;">In the chain and common-cause structures, knowing the middle node <em>blocks</em> information flow. In the v-structure, knowing the middle node <em>opens</em> it (explaining away).</p>
+</section>
+
+<!-- ============================================================
+     Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 19. Learning goals (recap) -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment"><span class="ok">&check;</span> Tell if two variables are independent or conditionally independent</li>
+    <li class="fragment"><span class="ok">&check;</span> Derive a compact representation using independence</li>
+    <li class="fragment"><span class="ok">&check;</span> Describe the components of a Bayesian network</li>
+    <li class="fragment"><span class="ok">&check;</span> Compute joint probabilities from a Bayes net</li>
+    <li class="fragment"><span class="ok">&check;</span> Explain independence in the three key structures</li>
+  </ul>
+</section>
+
+<!-- 20. Next: d-separation -->
+<section class="center-slide">
+  <h2>Next: d-separation</h2>
+  <p style="font-size: 0.95em; margin-top: 1em;">The three structures cover paths of length 2. For arbitrary paths in a Bayes net, we generalize to <strong>d-separation</strong> &mdash; the rule for reading off all (conditional) independences from any DAG.</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>

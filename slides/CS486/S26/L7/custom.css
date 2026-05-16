@@ -1,0 +1,120 @@
+/* L7-specific styles on top of shared/custom.css. */
+
+/* Bayes-net graph SVG. */
+.reveal .bn-graph { display: block; margin: 0.3em auto; max-width: 100%; max-height: 400px; }
+.reveal .bn-graph .bn-node circle,
+.reveal .bn-graph .bn-node ellipse {
+  fill: #fff;
+  stroke: #111827;
+  stroke-width: 2;
+}
+.reveal .bn-graph .bn-node.observed circle,
+.reveal .bn-graph .bn-node.observed ellipse {
+  fill: #d1d5db;
+  stroke: #374151;
+}
+.reveal .bn-graph .bn-node text {
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .bn-graph .bn-edge {
+  stroke: #4b5563;
+  stroke-width: 1.8;
+  fill: none;
+}
+.reveal .bn-graph .bn-edge.thick {
+  stroke-width: 2.6;
+}
+
+/* CPT compact listing (Holmes BN slide). */
+.reveal .cpt-list {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.7em;
+  line-height: 1.5;
+}
+.reveal .cpt-list .cpt-block {
+  margin-bottom: 0.5em;
+  padding: 0.3em 0.5em;
+  background: #f9fafb;
+  border-left: 3px solid #1d4ed8;
+}
+.reveal .cpt-list .cpt-var {
+  color: #1d4ed8;
+  font-weight: 700;
+  margin-right: 0.5em;
+}
+
+/* 3-up structures row (slide 14). */
+.reveal .structures-row {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  margin: 0.5em 0;
+}
+.reveal .structures-row .structure-card {
+  flex: 1;
+  text-align: center;
+  padding: 0.7em 0.5em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+}
+.reveal .structures-row .structure-card h3 {
+  font-size: 0.85em;
+  color: #1d4ed8;
+  margin: 0 0 0.3em 0;
+}
+.reveal .structures-row .structure-card p {
+  font-size: 0.72em;
+  color: #6b7280;
+  margin: 0.3em 0 0;
+  line-height: 1.4;
+}
+.reveal .structures-row .structure-card svg {
+  max-width: 100%;
+  max-height: 100px;
+  width: auto;
+  height: auto;
+}
+
+/* Mini-DAG row for compact-rep quiz pack. */
+.reveal .mini-dag-row {
+  display: flex;
+  gap: 0.8em;
+  justify-content: center;
+  margin-top: 0.3em;
+}
+.reveal .mini-dag-row .mini-dag {
+  flex: 1;
+  text-align: center;
+}
+.reveal .mini-dag-row .mini-dag svg {
+  max-height: 70px;
+  width: auto;
+}
+
+/* Car-diagnosis image. */
+.reveal img.bn-img {
+  max-width: 100%;
+  max-height: 320px;
+  width: auto;
+  height: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+/* Highlight surprise box (explaining-away v-structure slide). */
+.reveal .surprise-box {
+  margin: 0.4em auto;
+  padding: 0.5em 0.9em;
+  background: #fef3c7;
+  border-left: 4px solid #d97706;
+  font-size: 0.85em;
+  text-align: left;
+  max-width: 92%;
+}
+.reveal .surprise-box strong { color: #92400e; }
