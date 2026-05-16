@@ -1,0 +1,123 @@
+/* L9-specific styles on top of shared/custom.css, L6/custom.css, L7/custom.css. */
+
+/* Compact factor-table styling (variant of L6's joint-table). */
+.reveal table.factor-table {
+  width: auto;
+  margin: 0.3em auto;
+  border-collapse: collapse;
+  font-size: 0.72em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal table.factor-table th,
+.reveal table.factor-table td {
+  padding: 0.25em 0.6em;
+  border: 1px solid #d1d5db;
+  text-align: center;
+}
+.reveal table.factor-table thead th {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+.reveal table.factor-table caption {
+  caption-side: top;
+  font-size: 0.95em;
+  font-weight: 600;
+  color: #1d4ed8;
+  text-align: center;
+  padding-bottom: 0.2em;
+}
+
+/* 3-up layout for worked-example factor slides. */
+.reveal .factor-row {
+  display: flex;
+  gap: 0.8em;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0.3em 0;
+  flex-wrap: wrap;
+}
+.reveal .factor-row > div {
+  text-align: center;
+  flex-basis: 30%;
+  min-width: 200px;
+}
+
+/* "from -> to" arrow for factor transformations. */
+.reveal .factor-derive {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85em;
+  text-align: center;
+  margin: 0.3em 0;
+  color: #1d4ed8;
+}
+.reveal .factor-derive .arrow { color: #6b7280; padding: 0 0.5em; }
+
+/* 2-up column layout for ordering comparison slide. */
+.reveal .ordering-compare {
+  display: flex;
+  gap: 1em;
+  margin: 0.4em 0;
+}
+.reveal .ordering-compare .ordering-card {
+  flex: 1;
+  padding: 0.7em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+}
+.reveal .ordering-compare .ordering-card.bad { border-top-color: #dc2626; }
+.reveal .ordering-compare .ordering-card h3 {
+  color: #1d4ed8;
+  font-size: 0.92em;
+  margin: 0 0 0.4em 0;
+}
+.reveal .ordering-compare .ordering-card.bad h3 { color: #991b1b; }
+.reveal .ordering-compare .ordering-card ul {
+  font-size: 0.72em;
+  margin: 0;
+  padding-left: 1.2em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal .ordering-compare .ordering-card .total {
+  font-size: 0.9em;
+  font-weight: 700;
+  margin-top: 0.5em;
+}
+
+/* Hypergraph visualization. */
+.reveal .hypergraph-viz { display: block; margin: 0.3em auto; max-height: 220px; }
+.reveal .hypergraph-viz .hg-edge {
+  fill-opacity: 0.2;
+  stroke-width: 2;
+}
+.reveal .hypergraph-viz .hg-edge-a { fill: #dbeafe; stroke: #1d4ed8; }
+.reveal .hypergraph-viz .hg-edge-b { fill: #fee2e2; stroke: #dc2626; }
+.reveal .hypergraph-viz .hg-edge-c { fill: #dcfce7; stroke: #16a34a; }
+.reveal .hypergraph-viz .hg-node circle {
+  fill: #fff;
+  stroke: #111827;
+  stroke-width: 2;
+}
+.reveal .hypergraph-viz .hg-node text {
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* Polytree small visual. */
+.reveal .polytree-viz { display: block; margin: 0.3em auto; max-height: 240px; }
+
+/* Sampling algorithm box. */
+.reveal .sample-algo {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #16a34a;
+  padding: 0.5em 0.9em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78em;
+  margin: 0.3em auto;
+  max-width: 90%;
+}
