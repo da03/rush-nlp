@@ -1,0 +1,58 @@
+/* L5-specific styles on top of shared/custom.css. */
+
+/* 1-D landscape SVG used on slides 8, 10, 17. */
+.reveal .landscape-svg { display: block; margin: 0.3em auto; max-width: 100%; max-height: 360px; }
+.reveal .landscape-svg .axis        { stroke: #9ca3af; stroke-width: 1; }
+.reveal .landscape-svg .axis-label  { font-size: 11px; fill: #6b7280; }
+.reveal .landscape-svg .curve       { stroke: #1d4ed8; stroke-width: 2.5; fill: none; stroke-linejoin: round; }
+.reveal .landscape-svg .curve-fill  { fill: #dbeafe; opacity: 0.45; }
+.reveal .landscape-svg .ball        { fill: #dc2626; stroke: #7f1d1d; stroke-width: 1.5; }
+.reveal .landscape-svg .ball-trail  { stroke: #fca5a5; stroke-width: 2; stroke-dasharray: 4 3; fill: none; }
+.reveal .landscape-svg .label-opt   { font-size: 12px; font-weight: 600; }
+.reveal .landscape-svg .pt-marker   { stroke: #4b5563; stroke-width: 1; stroke-dasharray: 3 3; }
+.reveal .landscape-svg .step-arrow  { stroke: #dc2626; stroke-width: 2; fill: none; }
+
+/* SA probability decay chart (slide 20). */
+.reveal .prob-chart { display: block; margin: 0.3em auto; max-width: 100%; max-height: 320px; }
+.reveal .prob-chart .axis      { stroke: #6b7280; stroke-width: 1.2; }
+.reveal .prob-chart .grid      { stroke: #e5e7eb; stroke-width: 1; }
+.reveal .prob-chart .axis-label { font-size: 11px; fill: #6b7280; }
+.reveal .prob-chart .tick-label { font-size: 10px; fill: #6b7280; }
+.reveal .prob-chart .curve-hot  { stroke: #dc2626; stroke-width: 2.5; fill: none; }   /* T = 100 */
+.reveal .prob-chart .curve-mid  { stroke: #d97706; stroke-width: 2.5; fill: none; }   /* T = 10  */
+.reveal .prob-chart .curve-cold { stroke: #1d4ed8; stroke-width: 2.5; fill: none; }   /* T = 1   */
+.reveal .prob-chart .legend     { font-size: 11px; font-weight: 600; }
+
+/* 2-up compare cards (slides 16, 24). */
+.reveal .algo-compare-cards { display: flex; gap: 1em; margin: 0.6em 0; }
+.reveal .algo-compare-cards .ac-card {
+  flex: 1;
+  padding: 0.7em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+}
+.reveal .algo-compare-cards .ac-card h3 {
+  color: #1d4ed8;
+  font-size: 0.95em;
+  margin: 0 0 0.3em 0;
+}
+.reveal .algo-compare-cards .ac-card p,
+.reveal .algo-compare-cards .ac-card ul {
+  font-size: 0.78em;
+  margin: 0;
+  line-height: 1.4;
+}
+.reveal .algo-compare-cards .ac-card ul { padding-left: 1.2em; margin-top: 0.3em; }
+
+/* Beam search image sizing. */
+.reveal img.beam-img { max-height: 280px; width: auto; border: 1px solid #e5e7eb; border-radius: 4px; }
+.reveal img.ga-img   { max-height: 180px; width: auto; }
+.reveal img.tsp-img  { max-height: 260px; width: auto; border: 1px solid #e5e7eb; border-radius: 4px; }
+
+/* Pseudocode block tweak when we need it narrower. */
+.reveal pre.algo.narrow { max-width: 70%; }
+
+/* Two-column simple layout (re-uses .two-col but with vertical alignment center). */
+.reveal .two-col.vcenter { align-items: center; }

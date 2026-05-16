@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 5 — Local Search</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 5: Local Search. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L4/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Local Search</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 5</p>
+  <p class="credit">RN 4.1 &middot; PM 4.7&ndash;4.8</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Describe the advantages of local search</li>
+    <li class="fragment">Formulate a real-world problem as local search</li>
+    <li class="fragment">Verify whether a state is a local / global optimum</li>
+    <li class="fragment">Describe strategies for escaping local optima</li>
+    <li class="fragment">Trace greedy descent, random restarts, simulated annealing, genetic algorithms</li>
+    <li class="fragment">Compare and contrast local-search algorithms</li>
+  </ul>
+</section>
+
+<!-- 3. Why local search? -->
+<section>
+  <h2>Why local search?</h2>
+  <p style="font-size: 0.9em;">Classical search algorithms&hellip;</p>
+  <ul style="font-size: 0.9em;">
+    <li class="fragment">&hellip; explore the space <strong>systematically</strong>. <em>What if the space is too large, or infinite?</em></li>
+    <li class="fragment">&hellip; remember a <strong>path</strong> from the initial state. <em>What if we only care about the final state (e.g. CSP solution)?</em></li>
+  </ul>
+  <p class="fragment" style="text-align: center; font-size: 1em; margin-top: 1.2em; color:#1d4ed8;"><strong>Solution: local search.</strong></p>
+</section>
+
+<!-- ============================================================
+     Setup (3 slides)
+     ============================================================ -->
+
+<!-- 4. Properties of local search -->
+<section>
+  <h2>Properties of local search</h2>
+  <ul style="font-size: 0.92em;">
+    <li class="fragment">Does not explore the search space systematically.</li>
+    <li class="fragment">Finds reasonably good states quickly on average.</li>
+    <li class="fragment">Not guaranteed to find a solution &mdash; cannot prove none exists.</li>
+    <li class="fragment">Does not remember a path to the current state.</li>
+    <li class="fragment">Requires very little memory.</li>
+    <li class="fragment">Can solve pure <em>optimization</em> problems (no goal test).</li>
+  </ul>
+</section>
+
+<!-- 5. What is local search? -->
+<section>
+  <h2>What is local search?</h2>
+  <p style="font-size: 0.9em;">Start with a <strong>complete</strong> assignment to all variables. Take iterative steps to improve it.</p>
+  <div class="csp-defboxes">
+    <div class="defcard fragment">
+      <h3>State</h3>
+      <p>A complete assignment to all variables.</p>
+    </div>
+    <div class="defcard fragment">
+      <h3>Neighbour relation</h3>
+      <p>Which states can we step to next?</p>
+    </div>
+    <div class="defcard fragment">
+      <h3>Cost function</h3>
+      <p>How good is each state? Lower is better.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. 4-queens as local search -->
+<section>
+  <h2>4-queens as local search</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1;">
+      <ul style="font-size: 0.85em;">
+        <li class="fragment"><strong>State:</strong> a queen in every column (any row); e.g. <code>(3, 2, 1, 1)</code>.</li>
+        <li class="fragment"><strong>Initial state:</strong> a random state.</li>
+        <li class="fragment"><strong>Goal:</strong> no pair of queens attacking.</li>
+        <li class="fragment"><strong>Neighbours:</strong> <em>(A)</em> move one queen within its column. <em>(B)</em> swap rows of two queens.</li>
+        <li class="fragment"><strong>Cost:</strong> number of attacking pairs.</li>
+      </ul>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <div class="chess-wrap">
+        <div class="col-labels">
+          <span>\(x_0\)</span><span>\(x_1\)</span><span>\(x_2\)</span><span>\(x_3\)</span>
+        </div>
+        <div class="chess-axis-row">
+          <div class="row-labels"><span>0</span><span>1</span><span>2</span><span>3</span></div>
+          <div class="chessboard">
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div class="queen">Q</div><div class="queen">Q</div>
+            <div></div><div class="queen">Q</div><div></div><div></div>
+            <div class="queen">Q</div><div></div><div></div><div></div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size: 0.7em; color:#6b7280; margin-top: 0.4em;"><code>(3, 2, 1, 1)</code>, cost = 4.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Greedy descent (3 slides)
+     ============================================================ -->
+
+<!-- 7. Greedy descent -->
+<section class="center-slide">
+  <h2>Greedy descent</h2>
+  <p style="font-size: 0.8em; color:#6b7280;">a.k.a. hill climbing</p>
+  <ul style="text-align:left; margin-left:2em; font-size: 0.95em;">
+    <li class="fragment"><strong>Start</strong> from a random state.</li>
+    <li class="fragment"><strong>Move</strong> to the neighbour with the lowest cost &mdash; <em>if it improves on the current state</em>.</li>
+    <li class="fragment"><strong>Stop</strong> when no neighbour is better.</li>
+  </ul>
+</section>
+
+<!-- 8. Greedy descent on a landscape -->
+<section>
+  <h2>Greedy descent on a landscape</h2>
+  <p style="font-size: 0.7em; text-align: left; margin: 0; color: #6b7280;">
+    <span class="fragment current-visible frontier-step" data-fragment-index="0">A random starting state, somewhere on the cost landscape.</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="1">Step 1: move to the lower-cost neighbour.</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="2">Step 2: keep descending.</span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="3">Stuck: every neighbour is higher. <strong>Local optimum.</strong></span>
+    <span class="fragment current-visible frontier-step" data-fragment-index="4">The global optimum (deeper valley) is never reached.</span>
+  </p>
+  <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" class="landscape-svg">
+    <!-- Axes -->
+    <line class="axis" x1="40" y1="290" x2="680" y2="290"/>
+    <line class="axis" x1="40" y1="290" x2="40"  y2="20"/>
+    <text class="axis-label" x="345" y="312" text-anchor="middle">state</text>
+    <text class="axis-label" x="20"  y="155" text-anchor="middle" transform="rotate(-90 20 155)">cost</text>
+    <!-- Landscape filled curve -->
+    <path class="curve-fill" d="M 40 90 L 120 60 Q 180 80 240 200 Q 300 220 360 120 Q 440 110 520 260 Q 600 240 670 140 L 670 290 L 40 290 Z"/>
+    <path class="curve"      d="M 40 90 L 120 60 Q 180 80 240 200 Q 300 220 360 120 Q 440 110 520 260 Q 600 240 670 140"/>
+    <!-- Static labels for optima -->
+    <line class="pt-marker" x1="240" y1="200" x2="240" y2="290"/>
+    <text class="label-opt" x="240" y="285" text-anchor="middle" fill="#92400e">local opt</text>
+    <line class="pt-marker" x1="520" y1="260" x2="520" y2="290"/>
+    <text class="label-opt" x="520" y="285" text-anchor="middle" fill="#166534">global opt</text>
+    <!-- Initial ball -->
+    <circle class="ball" cx="120" cy="60" r="8"/>
+    <!-- F1: ball at (180, 140) with trail -->
+    <g class="fragment" data-fragment-index="1">
+      <path class="ball-trail" d="M 120 60 Q 150 90 180 140"/>
+      <circle class="ball" cx="180" cy="140" r="8"/>
+    </g>
+    <!-- F2: ball at (240, 200) with extended trail -->
+    <g class="fragment" data-fragment-index="2">
+      <path class="ball-trail" d="M 180 140 Q 210 175 240 200"/>
+      <circle class="ball" cx="240" cy="200" r="8"/>
+    </g>
+    <!-- F3: STUCK label -->
+    <g class="fragment" data-fragment-index="3">
+      <circle cx="240" cy="200" r="14" fill="none" stroke="#dc2626" stroke-width="3"/>
+      <text x="240" y="170" text-anchor="middle" font-size="14" font-weight="700" fill="#dc2626">STUCK</text>
+      <line class="step-arrow" x1="240" y1="180" x2="195" y2="160" marker-end="url(#arrow-up-1)"/>
+      <line class="step-arrow" x1="240" y1="180" x2="285" y2="160" marker-end="url(#arrow-up-1)"/>
+      <defs>
+        <marker id="arrow-up-1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
+      </defs>
+    </g>
+    <!-- F4: global optimum unreached -->
+    <g class="fragment" data-fragment-index="4">
+      <circle cx="520" cy="260" r="14" fill="none" stroke="#166534" stroke-width="3"/>
+      <path d="M 280 110 Q 400 80 500 245" stroke="#166534" stroke-width="2" stroke-dasharray="4 3" fill="none"/>
+      <text x="400" y="70" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">never reached</text>
+    </g>
+  </svg>
+</section>
+
+<!-- 9. Properties of greedy descent -->
+<section class="center-slide">
+  <h2>Greedy descent: in a sentence</h2>
+  <blockquote style="font-style: italic; font-size: 1em; color:#1d4ed8; border-left: 4px solid #1d4ed8; padding: 0.4em 1em; margin: 0.6em 2em; background:#f8fafc;">
+    Descend into a canyon in a thick fog, with amnesia.
+  </blockquote>
+  <ul style="text-align:left; margin-left:2em; font-size: 0.85em;">
+    <li class="fragment"><strong>Descend:</strong> move to the best neighbour.</li>
+    <li class="fragment"><strong>Thick fog:</strong> only see immediate neighbours.</li>
+    <li class="fragment"><strong>Amnesia:</strong> may revisit the same state.</li>
+  </ul>
+  <p class="fragment" style="text-align:center; font-size: 0.9em; margin-top: 0.8em;">Fast in practice &mdash; but only finds <strong>local</strong> optima.</p>
+</section>
+
+<!-- ============================================================
+     Local vs global optima (4 slides)
+     ============================================================ -->
+
+<!-- 10. State-space landscape -->
+<section>
+  <h2>State-space landscape</h2>
+  <p style="font-size: 0.8em; color:#6b7280; margin: 0;"><strong>Local optimum</strong>: no neighbour has strictly lower cost. &nbsp;<strong>Global optimum</strong>: lowest cost overall.</p>
+  <svg viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" class="landscape-svg" style="max-height: 320px;">
+    <!-- Axes -->
+    <line class="axis" x1="40" y1="305" x2="780" y2="305"/>
+    <line class="axis" x1="40" y1="305" x2="40"  y2="20"/>
+    <text class="axis-label" x="395" y="328" text-anchor="middle">state</text>
+    <text class="axis-label" x="20"  y="165" text-anchor="middle" transform="rotate(-90 20 165)">cost</text>
+    <!-- Landscape curve. Features L to R: ridge, plateau, shoulder, local opt, ridge, global opt. -->
+    <path class="curve-fill" d="M 40 70 L 100 60 L 180 60 L 220 100 Q 260 120 320 130 Q 360 130 400 230 Q 440 240 470 150 Q 510 90 560 130 Q 590 165 640 270 Q 700 220 760 110 L 760 305 L 40 305 Z"/>
+    <path class="curve"      d="M 40 70 L 100 60 L 180 60 L 220 100 Q 260 120 320 130 Q 360 130 400 230 Q 440 240 470 150 Q 510 90 560 130 Q 590 165 640 270 Q 700 220 760 110"/>
+    <!-- Plateau label -->
+    <line class="pt-marker" x1="140" y1="60" x2="140" y2="22"/>
+    <text class="label-opt" x="140" y="18" text-anchor="middle" fill="#92400e">plateau</text>
+    <!-- Shoulder -->
+    <line class="pt-marker" x1="320" y1="130" x2="320" y2="170"/>
+    <text class="label-opt" x="320" y="186" text-anchor="middle" fill="#92400e">shoulder</text>
+    <!-- Local optimum -->
+    <circle cx="400" cy="230" r="6" fill="#d97706" stroke="#92400e" stroke-width="1.5"/>
+    <line class="pt-marker" x1="400" y1="230" x2="400" y2="270"/>
+    <text class="label-opt" x="400" y="288" text-anchor="middle" fill="#92400e">local optimum</text>
+    <!-- Ridge -->
+    <line class="pt-marker" x1="475" y1="135" x2="475" y2="80"/>
+    <text class="label-opt" x="475" y="72" text-anchor="middle" fill="#7c3aed">ridge</text>
+    <!-- Global optimum -->
+    <circle cx="640" cy="270" r="7" fill="#166534" stroke="#14532d" stroke-width="1.5"/>
+    <line class="pt-marker" x1="640" y1="270" x2="640" y2="300" stroke="#166534"/>
+    <text class="label-opt" x="640" y="298" text-anchor="middle" fill="#166534">global optimum</text>
+  </svg>
+  <p class="footnote">A flat region with no slope is a <em>plateau</em>; a flat region at the top of a slope is a <em>shoulder</em>.</p>
+</section>
+
+<!-- 11. Q: Local/global with neighbour B (swap) -->
+<section>
+  <h2>Q: local or global optimum?</h2>
+  <p class="quiz-q" style="margin: 0;"><strong>Q.</strong> Consider neighbour relation <strong>B</strong>: swap the row positions of two queens. Is this state a local / global optimum?</p>
+  <div style="text-align: center; margin: 0.5em 0;">
+    <div class="chess-wrap">
+      <div class="chessboard">
+        <div></div><div></div><div class="queen">Q</div><div></div>
+        <div></div><div></div><div></div><div class="queen">Q</div>
+        <div></div><div class="queen">Q</div><div></div><div></div>
+        <div class="queen">Q</div><div></div><div></div><div></div>
+      </div>
+    </div>
+    <p style="font-size: 0.7em; color:#6b7280; margin-top: 0.3em;">State \((x_0, x_1, x_2, x_3) = (3, 2, 0, 1)\). Cost = 2.</p>
+  </div>
+  <ol class="quiz-options" style="margin: 0.3em 0 0.3em 2em;">
+    <li>Local optimum and global optimum.</li>
+    <li>Local optimum, but not global.</li>
+    <li>Not a local optimum, but it is the global optimum.</li>
+    <li>Neither a local nor a global optimum.</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>D &mdash; neither.</strong> Swap \(x_0\) and \(x_2\): new state \((0, 2, 3, 1)\) has cost 1 (better). So not a local optimum, and definitely not global (which would be cost 0).
+  </div>
+</section>
+
+<!-- 12. Q: Local/global with neighbour A (move single queen) -->
+<section>
+  <h2>Q: local or global optimum?</h2>
+  <p class="quiz-q" style="margin: 0;"><strong>Q.</strong> Same state, but now neighbour relation <strong>A</strong>: move <em>one</em> queen to another row in the same column.</p>
+  <div style="text-align: center; margin: 0.5em 0;">
+    <div class="chess-wrap">
+      <div class="chessboard">
+        <div></div><div></div><div class="queen">Q</div><div></div>
+        <div></div><div></div><div></div><div class="queen">Q</div>
+        <div></div><div class="queen">Q</div><div></div><div></div>
+        <div class="queen">Q</div><div></div><div></div><div></div>
+      </div>
+    </div>
+    <p style="font-size: 0.7em; color:#6b7280; margin-top: 0.3em;">State \((3, 2, 0, 1)\). Cost = 2.</p>
+  </div>
+  <ol class="quiz-options" style="margin: 0.3em 0 0.3em 2em;">
+    <li>Local optimum and global optimum.</li>
+    <li>Local optimum, but not global.</li>
+    <li>Not a local optimum, but it is the global optimum.</li>
+    <li>Neither a local nor a global optimum.</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>B &mdash; local optimum, but not global.</strong> Moving any single queen to a different row of its column either keeps the same cost or makes it worse. But the global optimum has cost 0, not 2.
+  </div>
+</section>
+
+<!-- 13. Escaping flat local optima -->
+<section>
+  <h2>Escaping flat local optima</h2>
+  <div class="csp-defboxes">
+    <div class="defcard fragment">
+      <h3>Sideway moves</h3>
+      <p>Allow moves to a neighbour with the <em>same</em> cost. Limit the number of consecutive sideways to avoid infinite loops.</p>
+    </div>
+    <div class="defcard fragment">
+      <h3>Tabu list</h3>
+      <p>Keep a small list of recently visited states; forbid returning to them. A bit of short-term memory.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Performance + neighbourhood (2 slides)
+     ============================================================ -->
+
+<!-- 14. Performance: sideway moves on 8-queens -->
+<section>
+  <h2>Sideway moves help &mdash; a lot</h2>
+  <p style="text-align:center; font-size: 0.85em; color: #6b7280; margin: 0;">8-queens: \(\approx 17\) million states.</p>
+  <table class="compare" style="width: 80%; margin: 0.5em auto; font-size: 0.85em;">
+    <thead>
+      <tr>
+        <th>Algorithm</th>
+        <th>% solved</th>
+        <th>Steps to success</th>
+        <th>Steps to failure</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Greedy descent</td>
+        <td><span class="no">14%</span></td>
+        <td>3&ndash;4</td>
+        <td>3&ndash;4</td>
+      </tr>
+      <tr>
+        <td>Greedy + \(\le 100\) sideway moves</td>
+        <td><span class="ok">94%</span></td>
+        <td>21</td>
+        <td>64</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="text-align:center; font-size: 0.82em; color:#6b7280;">A tiny tolerance for flat moves turns 14% into 94%.</p>
+</section>
+
+<!-- 15. Choosing the neighbour relation -->
+<section class="center-slide">
+  <h2>Choosing the neighbour relation</h2>
+  <p style="font-size: 0.9em; margin: 0;">Aim for a <strong>small incremental change</strong> to the variable assignment.</p>
+  <div class="algo-compare-cards" style="margin-top: 1em;">
+    <div class="ac-card fragment">
+      <h3>Bigger neighbourhoods</h3>
+      <ul>
+        <li>Compare more nodes per step</li>
+        <li>More likely to find the best step</li>
+        <li>Each step takes more time</li>
+      </ul>
+    </div>
+    <div class="ac-card fragment">
+      <h3>Smaller neighbourhoods</h3>
+      <ul>
+        <li>Compare fewer nodes per step</li>
+        <li>May miss the best step</li>
+        <li>Each step is fast</li>
+      </ul>
+    </div>
+  </div>
+  <p class="fragment" style="text-align:center; font-size: 0.85em; margin-top: 0.7em;">Usually we prefer <strong>small</strong> neighbourhoods.</p>
+</section>
+
+<!-- ============================================================
+     Random moves (3 slides)
+     ============================================================ -->
+
+<!-- 16. Random restarts vs random walks -->
+<section>
+  <h2>Greedy descent gets stuck. What now?</h2>
+  <div class="algo-compare-cards" style="margin-top: 0.6em;">
+    <div class="ac-card fragment">
+      <h3>Random restarts</h3>
+      <p>Restart the search from a fresh random state in a different part of the space.</p>
+      <p style="margin-top: 0.4em; color:#6b7280;"><em>Example: greedy descent with random restarts.</em></p>
+    </div>
+    <div class="ac-card fragment">
+      <h3>Random walks</h3>
+      <p>Take steps to <em>random</em> neighbours, not just better ones.</p>
+      <p style="margin-top: 0.4em; color:#6b7280;"><em>Example: simulated annealing.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- 17. Which works on which landscape? -->
+<section>
+  <h2>Q: which random move helps where?</h2>
+  <div class="two-col" style="margin-top: 0.4em;">
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg" class="landscape-svg" style="max-height: 200px;">
+        <line class="axis" x1="20" y1="195" x2="345" y2="195"/>
+        <line class="axis" x1="20" y1="195" x2="20" y2="15"/>
+        <path class="curve-fill" d="M 20 40 L 50 35 L 80 38 L 110 40 L 140 35 L 170 38 L 190 90 L 210 38 L 250 35 L 280 38 L 310 130 L 320 150 L 330 130 L 345 40 L 345 195 L 20 195 Z"/>
+        <path class="curve"      d="M 20 40 L 50 35 L 80 38 L 110 40 L 140 35 L 170 38 L 190 90 L 210 38 L 250 35 L 280 38 L 310 130 L 320 150 L 330 130 L 345 40"/>
+        <text class="axis-label" x="180" y="215" text-anchor="middle"><tspan font-weight="600">(a)</tspan> mostly flat, hidden deep valleys</text>
+      </svg>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg" class="landscape-svg" style="max-height: 200px;">
+        <line class="axis" x1="20" y1="195" x2="345" y2="195"/>
+        <line class="axis" x1="20" y1="195" x2="20" y2="15"/>
+        <path class="curve-fill" d="M 20 40 L 60 100 L 90 75 L 130 130 L 170 100 L 210 155 L 240 120 L 270 165 L 305 130 L 345 50 L 345 195 L 20 195 Z"/>
+        <path class="curve"      d="M 20 40 L 60 100 L 90 75 L 130 130 L 170 100 L 210 155 L 240 120 L 270 165 L 305 130 L 345 50"/>
+        <text class="axis-label" x="180" y="215" text-anchor="middle"><tspan font-weight="600">(b)</tspan> bumpy bowl with one deep valley</text>
+      </svg>
+    </div>
+  </div>
+  <p class="quiz-q" style="margin-top: 0.4em;"><strong>Q.</strong> Which random move is better for each landscape?</p>
+  <div class="quiz-answer fragment">
+    <strong>(a) Random restarts</strong> &mdash; basins are widely separated; a walk can't drift between them, but a fresh restart can land in a different valley.
+    <br>
+    <strong>(b) Random walks</strong> &mdash; the bumps are small; a few random steps slip out of a shallow local optimum and into the global basin.
+  </div>
+</section>
+
+<!-- 18. Greedy descent with random restarts -->
+<section class="center-slide">
+  <h2>Greedy descent with random restarts</h2>
+  <blockquote style="font-style: italic; font-size: 1em; color:#1d4ed8; border-left: 4px solid #1d4ed8; padding: 0.4em 1em; margin: 0.6em 2em; background:#f8fafc;">
+    If at first you don't succeed, try, try again.
+  </blockquote>
+  <ul style="text-align:left; margin-left: 2em; font-size: 0.9em;">
+    <li class="fragment">Run greedy descent multiple times, each from a fresh random state.</li>
+    <li class="fragment">Keep the best state seen across runs.</li>
+    <li class="fragment"><strong>With enough restarts</strong>, finds the global optimum with probability \(\to 1\) &mdash; eventually a restart will start in the global basin.</li>
+  </ul>
+</section>
+
+<!-- ============================================================
+     Simulated annealing (6 slides)
+     ============================================================ -->
+
+<!-- 19. Simulated annealing intro -->
+<section>
+  <h2>Simulated annealing</h2>
+  <p style="font-size: 0.85em; color:#6b7280;"><em>Annealing</em>: cool a molten metal slowly to make it strong.</p>
+  <ul style="font-size: 0.9em;">
+    <li class="fragment">Start with a <strong>high temperature</strong> \(T\), then reduce it.</li>
+    <li class="fragment">At each step, try a <em>random</em> neighbour.</li>
+    <li class="fragment">If the neighbour is an improvement, take it.</li>
+    <li class="fragment">If it's worse, take it <strong>probabilistically</strong>, based on \(T\) and how much worse.</li>
+  </ul>
+  <p class="fragment" style="text-align:center; font-size: 0.88em; margin-top: 0.8em; color:#1d4ed8;">High \(T\): exploration. Low \(T\): exploitation.</p>
+</section>
+
+<!-- 20. Worse-neighbour probability -->
+<section>
+  <h2>Probability of accepting a worse neighbour</h2>
+  <p style="font-size: 0.9em;">Current state \(A\), worse neighbour \(A'\), \(\Delta C = \mathrm{cost}(A') - \mathrm{cost}(A) &gt; 0\), temperature \(T\):</p>
+  <p style="text-align:center; font-size: 1.1em; margin: 0.4em 0;">\(p = e^{-\Delta C / T}\)</p>
+  <svg viewBox="0 0 620 300" xmlns="http://www.w3.org/2000/svg" class="prob-chart">
+    <!-- Grid -->
+    <g class="grid">
+      <line x1="60" y1="30"  x2="580" y2="30"/>
+      <line x1="60" y1="84"  x2="580" y2="84"/>
+      <line x1="60" y1="138" x2="580" y2="138"/>
+      <line x1="60" y1="192" x2="580" y2="192"/>
+    </g>
+    <!-- Axes -->
+    <line class="axis" x1="60" y1="260" x2="580" y2="260"/>
+    <line class="axis" x1="60" y1="260" x2="60"  y2="20"/>
+    <!-- X ticks -->
+    <text class="tick-label" x="60"  y="278" text-anchor="middle">0</text>
+    <text class="tick-label" x="227" y="278" text-anchor="middle">10</text>
+    <text class="tick-label" x="393" y="278" text-anchor="middle">20</text>
+    <text class="tick-label" x="560" y="278" text-anchor="middle">30</text>
+    <!-- Y ticks -->
+    <text class="tick-label" x="52" y="34"  text-anchor="end">1.0</text>
+    <text class="tick-label" x="52" y="142" text-anchor="end">0.5</text>
+    <text class="tick-label" x="52" y="263" text-anchor="end">0.0</text>
+    <!-- Axis labels -->
+    <text class="axis-label" x="320" y="296" text-anchor="middle">\(\Delta C\)</text>
+    <text class="axis-label" x="20"  y="140" text-anchor="middle" transform="rotate(-90 20 140)">probability \(p\)</text>
+    <!-- Curves: piecewise polylines sampled at DC = 0, 2, 5, 10, 15, 20, 25, 30 -->
+    <!-- T = 100 (hot, slow decay) -->
+    <polyline class="curve-hot fragment" data-fragment-index="1" points="60,30 93,34 143,42 227,53 310,62 393,70 477,78 560,86"/>
+    <!-- T = 10 (medium) -->
+    <polyline class="curve-mid fragment" data-fragment-index="2" points="60,30 93,71 143,119 227,175 310,209 393,228 477,242 560,249"/>
+    <!-- T = 1 (cold, sharp decay) -->
+    <polyline class="curve-cold fragment" data-fragment-index="3" points="60,30 93,228 143,258 227,260 310,260 393,260 477,260 560,260"/>
+    <!-- Legend -->
+    <g class="legend fragment" data-fragment-index="1"><line x1="430" y1="36" x2="460" y2="36" stroke="#dc2626" stroke-width="2.5"/><text x="468" y="40" fill="#dc2626">T = 100 (hot)</text></g>
+    <g class="legend fragment" data-fragment-index="2"><line x1="430" y1="56" x2="460" y2="56" stroke="#d97706" stroke-width="2.5"/><text x="468" y="60" fill="#d97706">T = 10</text></g>
+    <g class="legend fragment" data-fragment-index="3"><line x1="430" y1="76" x2="460" y2="76" stroke="#1d4ed8" stroke-width="2.5"/><text x="468" y="80" fill="#1d4ed8">T = 1 (cold)</text></g>
+  </svg>
+  <p style="text-align:center; font-size: 0.78em; color:#6b7280; margin: 0;">Hot temperatures stay willing to accept bad moves; cold temperatures barely budge.</p>
+</section>
+
+<!-- 21. Quiz: probability behaviour -->
+<section>
+  <h2>Q: how does the acceptance probability behave?</h2>
+  <p class="quiz-q"><strong>Q1.</strong> As \(T\) <em>decreases</em>, the probability of moving to a worse neighbour&hellip;</p>
+  <div class="quiz-answer fragment">
+    <strong>&hellip; decreases.</strong> Example with \(\Delta C = 10\): &nbsp;\(T = 100 \Rightarrow p = e^{-0.1} \approx 0.90\); &nbsp;\(T = 10 \Rightarrow p = e^{-1} \approx 0.37\).
+  </div>
+  <p class="quiz-q" style="margin-top: 1em;"><strong>Q2.</strong> As \(\Delta C\) <em>increases</em> (the neighbour is much worse), the probability&hellip;</p>
+  <div class="quiz-answer fragment">
+    <strong>&hellip; also decreases.</strong> Example with \(T = 10\): &nbsp;\(\Delta C = 10 \Rightarrow p \approx 0.37\); &nbsp;\(\Delta C = 100 \Rightarrow p \approx 0.000045\).
+  </div>
+</section>
+
+<!-- 22. SA algorithm -->
+<section>
+  <h2>Simulated annealing algorithm</h2>
+<pre class="algo">current &larr; initial-state
+T &larr; a large positive value
+<span class="kw">while</span> T &gt; 0:
+    next &larr; a random neighbour of current
+    &Delta;C &larr; cost(next) - cost(current)
+    <span class="kw">if</span> &Delta;C &lt; 0:
+        current &larr; next                <span class="cmt"># improvement: always accept</span>
+    <span class="kw">else</span>:
+        current &larr; next with probability p = e<sup>-&Delta;C / T</sup>   <span class="cmt"># worse: accept stochastically</span>
+    decrease T
+<span class="kw">return</span> current</pre>
+</section>
+
+<!-- 23. Annealing schedule -->
+<section class="center-slide">
+  <h2>Annealing schedule</h2>
+  <p style="font-size: 0.9em;">How fast should \(T\) cool?</p>
+  <ul style="text-align: left; margin-left: 2em; font-size: 0.9em;">
+    <li class="fragment"><strong>In theory:</strong> very slowly. If \(T\) decreases slowly enough, simulated annealing finds the global optimum with probability \(\to 1\).</li>
+    <li class="fragment"><strong>In practice:</strong> <strong>geometric cooling</strong> &mdash; \(T_{k+1} = \alpha T_k\) with \(\alpha\) close to 1.</li>
+  </ul>
+  <p class="fragment" style="font-size: 0.85em; color:#6b7280; margin-top: 0.8em;">Example: start at \(T_0 = 10\), \(\alpha = 0.99\). After 500 steps, \(T \approx 0.07\).</p>
+</section>
+
+<!-- 24. SA for TSP + life analogy -->
+<section>
+  <h2>SA in action &mdash; and as life</h2>
+  <div class="algo-compare-cards">
+    <div class="ac-card" style="text-align: center;">
+      <h3>Travelling salesman</h3>
+      <img class="tsp-img" src="images/annealing.png" alt="SA TSP example">
+      <p style="margin-top: 0.3em; font-size: 0.78em;">30 cities: \(30! \approx 2.6 \times 10^{32}\) tours. NP-hard, but SA finds great tours fast.</p>
+    </div>
+    <div class="ac-card fragment">
+      <h3>SA as life</h3>
+      <ul>
+        <li>High \(T\): young, exploring &mdash; many sub-optimal moves.</li>
+        <li>Low \(T\): older, settled &mdash; refining what works.</li>
+        <li>An exploration-vs-exploitation trade-off.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Population-based (5 slides)
+     ============================================================ -->
+
+<!-- 25. From single state to population -->
+<section class="center-slide">
+  <h2>From a single state to a population</h2>
+  <ul style="text-align: left; margin-left: 2em; font-size: 0.95em;">
+    <li class="fragment">So far, every algorithm remembers <em>one</em> state at a time.</li>
+    <li class="fragment">What if we keep <strong>\(k\) states</strong> in parallel?</li>
+  </ul>
+</section>
+
+<!-- 26. Beam search -->
+<section>
+  <h2>Beam search</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1;">
+      <ul style="font-size: 0.9em;">
+        <li class="fragment">Remember the \(k\) best states.</li>
+        <li class="fragment">At each step, generate <em>all</em> neighbours of those \(k\) states.</li>
+        <li class="fragment">Keep the \(k\) best out of the entire neighbour pool.</li>
+        <li class="fragment">\(k\) controls space and parallelism.</li>
+      </ul>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <img class="beam-img" src="images/beam_search.png" alt="Beam search tree">
+    </div>
+  </div>
+</section>
+
+<!-- 27. Beam search corner cases -->
+<section>
+  <h2>Beam search &mdash; corner cases</h2>
+  <ul style="font-size: 0.85em;">
+    <li class="fragment"><strong>\(k = 1\)?</strong> &mdash; <span class="quiz-answer" style="display: inline-block; padding: 0.1em 0.5em; margin: 0;"><span class="fragment">greedy descent.</span></span></li>
+    <li class="fragment"><strong>\(k = \infty\)?</strong> &mdash; <span class="quiz-answer" style="display: inline-block; padding: 0.1em 0.5em; margin: 0;"><span class="fragment">breadth-first search.</span></span></li>
+    <li class="fragment"><strong>Beam vs running \(k\) random restarts in parallel?</strong> &mdash; <span class="quiz-answer" style="display: inline-block; padding: 0.1em 0.5em; margin: 0;"><span class="fragment">beam <em>shares information</em> across the \(k\) threads; restarts are independent.</span></span></li>
+    <li class="fragment"><strong>Problem?</strong> &mdash; <span class="quiz-answer" style="display: inline-block; padding: 0.1em 0.5em; margin: 0;"><span class="fragment">lack of diversity &mdash; \(k\) states can clump into one region.</span></span></li>
+  </ul>
+</section>
+
+<!-- 28. Stochastic beam search + genetic bridge -->
+<section class="center-slide">
+  <h2>Stochastic beam search</h2>
+  <ul style="text-align: left; margin-left: 2em; font-size: 0.92em;">
+    <li class="fragment">Pick the next \(k\) states <strong>probabilistically</strong>, with probability proportional to fitness (e.g. \(\propto e^{-\text{cost}/T}\)).</li>
+    <li class="fragment">Maintains <strong>diversity</strong> in the population.</li>
+    <li class="fragment">Mimics natural selection &mdash; <em>asexual</em> reproduction (mutate, keep best).</li>
+  </ul>
+  <p class="fragment" style="font-size: 0.85em; margin-top: 0.8em; color:#1d4ed8;">Adding <em>sexual</em> reproduction gives the <strong>genetic algorithm</strong>.</p>
+</section>
+
+<!-- 29. Genetic algorithm -->
+<section>
+  <h2>Genetic algorithm</h2>
+<pre class="algo narrow">randomly initialize population P
+<span class="kw">while not</span> converged:
+    select parents from P, weighted by fitness
+    crossover parents to produce offspring
+    mutate offspring with small probability
+    P &larr; new population of offspring
+    re-compute fitness</pre>
+  <div class="two-col" style="margin-top: 0.4em;">
+    <div style="flex: 1; text-align: center;">
+      <img class="ga-img" src="images/genetic-algorithm1.png" alt="Crossover">
+      <p style="font-size: 0.75em; color: #6b7280; margin: 0.2em 0 0;">Crossover: parents' genes combine.</p>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <img class="ga-img" src="images/genetic-algorithm2.png" alt="Mutation">
+      <p style="font-size: 0.75em; color: #6b7280; margin: 0.2em 0 0;">Mutation: occasional random tweaks.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Wrap-up (3 slides)
+     ============================================================ -->
+
+<!-- 30. Compare 4 algorithms -->
+<section>
+  <h2>Four local-search algorithms</h2>
+  <table class="compare">
+    <thead>
+      <tr>
+        <th>Algorithm</th>
+        <th>Explores how</th>
+        <th>Remembers</th>
+        <th>Finds global?</th>
+        <th>Best at</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Greedy descent</strong></td>
+        <td>best neighbour</td>
+        <td>1 state</td>
+        <td><span class="no">No</span> <span class="meta">stuck at local optimum</span></td>
+        <td>fast first cut</td>
+      </tr>
+      <tr>
+        <td><strong>GD + random restarts</strong></td>
+        <td>best, then restart</td>
+        <td>1 state + best so far</td>
+        <td><span class="ok">Yes</span> <span class="meta">in the limit</span></td>
+        <td>landscapes with wide basins</td>
+      </tr>
+      <tr>
+        <td><strong>Simulated annealing</strong></td>
+        <td>random; accept worse with \(p = e^{-\Delta C/T}\)</td>
+        <td>1 state + T</td>
+        <td><span class="ok">Yes</span> <span class="meta">slow enough cooling</span></td>
+        <td>bumpy landscapes</td>
+      </tr>
+      <tr>
+        <td><strong>Genetic algorithm</strong></td>
+        <td>crossover + mutation</td>
+        <td>population of \(k\)</td>
+        <td><span class="meta">probabilistically</span></td>
+        <td>complex combinatorial spaces</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 31. Learning goals recap -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment"><span class="ok">&check;</span> Describe the advantages of local search</li>
+    <li class="fragment"><span class="ok">&check;</span> Formulate a real-world problem as local search</li>
+    <li class="fragment"><span class="ok">&check;</span> Verify whether a state is a local / global optimum</li>
+    <li class="fragment"><span class="ok">&check;</span> Describe strategies for escaping local optima</li>
+    <li class="fragment"><span class="ok">&check;</span> Trace greedy descent, random restarts, simulated annealing, genetic algorithms</li>
+    <li class="fragment"><span class="ok">&check;</span> Compare and contrast local-search algorithms</li>
+  </ul>
+</section>
+
+<!-- 32. Next lecture teaser -->
+<section class="center-slide">
+  <h2>Next: probabilities</h2>
+  <p style="font-size: 0.95em; margin-top: 1em;">We've optimized in the <em>deterministic</em> world. Next, we add <strong>uncertainty</strong> &mdash; probability and Bayesian networks.</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  // Hide the corner "Course page" link in true browser fullscreen.
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>

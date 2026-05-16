@@ -1,0 +1,89 @@
+/* L6-specific styles on top of shared/custom.css. */
+
+/* Joint-distribution table styling. */
+.reveal table.joint-table {
+  width: auto;
+  margin: 0.4em auto;
+  border-collapse: collapse;
+  font-size: 0.8em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal table.joint-table th,
+.reveal table.joint-table td {
+  padding: 0.35em 0.7em;
+  border: 1px solid #d1d5db;
+  text-align: center;
+}
+.reveal table.joint-table thead th {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+.reveal table.joint-table tbody th {
+  background: #f3f4f6;
+  color: #374151;
+  font-weight: 600;
+  text-align: right;
+}
+.reveal table.joint-table td.marginal {
+  background: #ecfdf5;
+  color: #166534;
+  font-weight: 700;
+}
+.reveal table.joint-table th.marginal {
+  background: #d1fae5;
+  color: #065f46;
+}
+.reveal table.joint-table td.hl {
+  background: #fef3c7;
+}
+
+/* Venn diagram for inclusion-exclusion (slide 6). */
+.reveal .venn-axiom { display: block; margin: 0.3em auto; max-width: 100%; max-height: 160px; }
+.reveal .venn-axiom .venn-A { fill: #dbeafe; fill-opacity: 0.75; stroke: #1d4ed8; stroke-width: 2; }
+.reveal .venn-axiom .venn-B { fill: #fee2e2; fill-opacity: 0.75; stroke: #dc2626; stroke-width: 2; }
+.reveal .venn-axiom .venn-label { font-size: 16px; font-weight: 600; }
+
+/* Conditional-probability ratio visual (slide 12). */
+.reveal .ratio-viz { display: block; margin: 0.3em auto; max-width: 100%; max-height: 180px; }
+.reveal .ratio-viz .universe { fill: #f3f4f6; stroke: #9ca3af; stroke-width: 1.5; }
+.reveal .ratio-viz .region-B  { fill: #fee2e2; fill-opacity: 0.85; stroke: #dc2626; stroke-width: 1.5; }
+.reveal .ratio-viz .region-AB { fill: #fde68a; fill-opacity: 0.9;  stroke: #b45309; stroke-width: 1.5; }
+.reveal .ratio-viz .ratio-label { font-size: 13px; font-weight: 600; }
+
+/* Bayes-rule causal vs evidential flip (slide 16). */
+.reveal .bayes-flip { display: block; margin: 0.3em auto; max-width: 100%; max-height: 160px; }
+.reveal .bayes-flip .node-rect {
+  fill: #fff;
+  stroke: #111827;
+  stroke-width: 1.5;
+  rx: 4;
+  ry: 4;
+}
+.reveal .bayes-flip .arrow-causal     { stroke: #1d4ed8; stroke-width: 2; fill: none; }
+.reveal .bayes-flip .arrow-evidential { stroke: #dc2626; stroke-width: 2; fill: none; }
+.reveal .bayes-flip .arrow-label { font-size: 12px; font-style: italic; }
+
+/* Worked example formula block (slide 20-21). */
+.reveal .worked {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-left: 4px solid #1d4ed8;
+  padding: 0.5em 0.9em;
+  font-size: 0.85em;
+  margin: 0.4em auto;
+  max-width: 92%;
+  text-align: left;
+}
+.reveal .worked p { margin: 0.3em 0; }
+.reveal .worked .label-step { color: #1d4ed8; font-weight: 700; }
+
+/* Rules-summary table */
+.reveal table.rules-summary th:first-child { width: 22%; }
+.reveal table.rules-summary td.formula {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85em;
+}
+
+/* Inline math color hints. */
+.reveal .prob { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
