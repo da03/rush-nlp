@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 13 — Markov Decision Processes I</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 13: Markov decision processes — components, discounted rewards, grid worlds, and computing the optimal action from V*. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="../L12/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <marker id="arrow-mdp" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/>
+    </marker>
+    <marker id="arrow-mdp-green" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Markov Decision Processes I</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 13</p>
+  <p class="credit">RN 17.1 &middot; PM 9.5</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Motivate modeling a decision problem as a <strong>Markov decision process</strong>.</li>
+    <li class="fragment">Describe the <strong>components</strong> of a fully-observable MDP.</li>
+    <li class="fragment">Explain why we use a <strong>discounted</strong> reward function.</li>
+    <li class="fragment">Define the <strong>policy</strong> of an MDP.</li>
+    <li class="fragment">Give examples of how the <strong>reward function</strong> shapes the optimal policy.</li>
+  </ul>
+</section>
+
+<!-- 3. From one-shot decisions to ongoing ones -->
+<section>
+  <h2>From one-shot decisions to ongoing ones</h2>
+  <div class="defbox">
+    <h3>Two new things</h3>
+    <ul style="margin: 0;">
+      <li><strong>Horizon:</strong> the problem may never end.
+        <ul style="font-size: 0.9em;">
+          <li><em>Infinite horizon:</em> the process may go on forever.</li>
+          <li><em>Indefinite horizon:</em> the agent will stop eventually, but not at a known time.</li>
+        </ul>
+      </li>
+      <li class="fragment"><strong>Rewards along the way</strong>, not just utility at the end.
+        <ul style="font-size: 0.9em;">
+          <li>The agent may never reach an "end".</li>
+          <li>Each step's reward includes action costs + bonuses/penalties.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.6em;">A <strong>Markov decision process (MDP)</strong> formalizes this.</p>
+</section>
+
+<!-- ============================================================
+     The MDP definition (3 slides)
+     ============================================================ -->
+
+<!-- 4. The MDP tuple -->
+<section>
+  <h2>A Markov decision process</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1; text-align: center;">
+      <svg viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg" class="mdp-loop">
+        <line class="edge" x1="60" y1="90" x2="105" y2="90" marker-end="url(#arrow-mdp)"/>
+        <line class="edge" x1="175" y1="90" x2="245" y2="90" marker-end="url(#arrow-mdp)"/>
+        <line class="edge" x1="305" y1="90" x2="395" y2="90" marker-end="url(#arrow-mdp)"/>
+        <path class="reward-edge" d="M 150 75 Q 200 25 270 75" fill="none" marker-end="url(#arrow-mdp-green)"/>
+        <text class="reward-label" x="210" y="35" font-size="12" text-anchor="middle">R(s, a, s')</text>
+        <g class="state"><circle cx="40" cy="90" r="22"/></g>
+        <text x="40" y="90">s</text>
+        <g class="action"><rect x="120" y="74" width="56" height="32" rx="3"/></g>
+        <text x="148" y="90">a</text>
+        <g class="state"><circle cx="270" cy="90" r="22"/></g>
+        <text x="270" y="90">s'</text>
+        <text x="335" y="86" font-size="11" fill="#6b7280">future</text>
+        <text x="335" y="102" font-size="11" fill="#6b7280">steps...</text>
+        <text x="40" y="138" font-size="11" fill="#6b7280" text-anchor="middle">current</text>
+        <text x="40" y="152" font-size="11" fill="#6b7280" text-anchor="middle">state</text>
+        <text x="148" y="138" font-size="11" fill="#6b7280" text-anchor="middle">action</text>
+        <text x="270" y="138" font-size="11" fill="#6b7280" text-anchor="middle">next</text>
+        <text x="270" y="152" font-size="11" fill="#6b7280" text-anchor="middle">state</text>
+      </svg>
+    </div>
+    <div style="flex: 0.9;">
+      <p style="font-size: 0.88em;"><strong>An MDP is a 4-tuple</strong> \((S, A, P, R)\):</p>
+      <ul style="font-size: 0.85em;">
+        <li>\(S\): set of states.</li>
+        <li>\(A\): set of actions.</li>
+        <li>\(P(s' \mid s, a)\): transition probabilities. <em>Stationary</em>: same for every \(t\).</li>
+        <li>\(R(s, a, s')\): reward function.</li>
+      </ul>
+      <p style="font-size: 0.78em; color: #6b7280; margin-top: 0.3em;">For this lecture we'll use the simpler form \(R(s)\) = reward for entering state \(s\).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Three reward criteria -->
+<section>
+  <h2>How do we aggregate rewards over time?</h2>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="task-card">
+      <h3>Total reward</h3>
+      <p style="text-align: center; font-size: 0.9em;">\(\sum_{t = 0}^{\infty} R(S_t)\)</p>
+      <p style="color: #991b1b; font-size: 0.78em;">May diverge \(\Rightarrow\) policies are not comparable.</p>
+    </div>
+    <div class="task-card">
+      <h3>Average reward</h3>
+      <p style="text-align: center; font-size: 0.9em;">\(\lim_{n \to \infty} \tfrac{1}{n} \sum_{t = 0}^{n} R(S_t)\)</p>
+      <p style="color: #991b1b; font-size: 0.78em;">Zero whenever the total reward is finite.</p>
+    </div>
+    <div class="task-card highlight">
+      <h3>Discounted reward</h3>
+      <p style="text-align: center; font-size: 0.9em;">\(\sum_{t = 0}^{\infty} \gamma^t\, R(S_t),\;\; \gamma \in [0, 1)\)</p>
+      <p style="color: #166534; font-size: 0.78em;">Always finite; the standard choice.</p>
+    </div>
+  </div>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.5em;">The discounted sum is also called the <strong>return</strong> \(G(S_0)\).</p>
+</section>
+
+<!-- 6. Discount factor + POMDP variant -->
+<section>
+  <h2>The discount factor \(\gamma\)</h2>
+  <ul style="font-size: 0.88em;">
+    <li><strong>Time preference.</strong> A dollar today is worth more than a dollar tomorrow.</li>
+    <li class="fragment"><strong>Finiteness.</strong> If \(R(s) \in [-R_{\max}, R_{\max}]\) and \(\gamma \in [0, 1)\):
+      <p style="text-align: center; margin: 0.3em 0;">\(\bigl|\textstyle\sum_{t = 0}^{\infty} \gamma^t R(S_t)\bigr| \leq \dfrac{R_{\max}}{1 - \gamma}.\)</p>
+    </li>
+    <li class="fragment"><strong>Effective horizon.</strong> Roughly \(\tfrac{1}{1 - \gamma}\) steps matter (e.g. \(\gamma = 0.9 \Rightarrow\) about 10 steps).</li>
+  </ul>
+  <div class="defbox fragment" style="margin-top: 0.6em;">
+    <h3>Variants</h3>
+    <ul style="margin: 0; font-size: 0.85em;">
+      <li><strong>Fully-observable MDP</strong> &mdash; the agent always knows its current state. (Today.)</li>
+      <li><strong>Partially observable MDP (POMDP)</strong> &mdash; combine MDP + HMM; the state is hidden behind observations.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     The grid world (3 slides)
+     ============================================================ -->
+
+<!-- 7. The 3x4 grid world -->
+<section>
+  <h2>A 3 &times; 4 grid world</h2>
+  <p style="font-size: 0.88em; text-align: center;">What should the robot do to maximize its rewards?</p>
+  <div style="text-align: center; margin: 0.4em 0;">
+    <div class="gridworld">
+      <div class="gw-cell gw-start">Start</div>
+      <div class="gw-cell"></div>
+      <div class="gw-cell"></div>
+      <div class="gw-cell"></div>
+      <div class="gw-cell"></div>
+      <div class="gw-cell gw-wall">X</div>
+      <div class="gw-cell"></div>
+      <div class="gw-cell gw-goal-neg">&minus;1</div>
+      <div class="gw-cell"></div>
+      <div class="gw-cell"></div>
+      <div class="gw-cell"></div>
+      <div class="gw-cell gw-goal-pos">+1</div>
+    </div>
+  </div>
+  <ul style="font-size: 0.85em;">
+    <li>Let \(s_{ij}\) be row \(i\), column \(j\). \(s_{11}\) is the start.</li>
+    <li>\(s_{22}\) is a wall. \(s_{24}\) and \(s_{34}\) are goal states &mdash; the robot exits the world there.</li>
+  </ul>
+</section>
+
+<!-- 8. MDP for the grid world -->
+<section>
+  <h2>The grid world as an MDP</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 0.85; text-align: center;">
+      <div class="gridworld">
+        <div class="gw-cell gw-start">Start</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+    <div style="flex: 1.1;">
+      <p style="font-size: 0.85em;"><strong>Actions:</strong> &nbsp;up / down / left / right (in every state).</p>
+      <p style="font-size: 0.85em; margin-top: 0.3em;"><strong>Transition \(P(s' \mid s, a)\):</strong></p>
+      <ul style="font-size: 0.82em; margin-top: 0.1em;">
+        <li>0.8 &mdash; action takes intended effect.</li>
+        <li>0.1 &mdash; 90&deg; left of intended.</li>
+        <li>0.1 &mdash; 90&deg; right of intended.</li>
+        <li>If the robot bumps a wall, it stays put.</li>
+      </ul>
+      <p style="font-size: 0.85em; margin-top: 0.3em;"><strong>Reward \(R(s)\):</strong> &nbsp;\(R(s_{24}) = -1\), \(R(s_{34}) = +1\); otherwise \(R(s) = -0.04\).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Q1: P(stays in s_14 trying right) -->
+<section>
+  <h2>Understanding the transition model</h2>
+  <p class="quiz-q"><strong>Q1.</strong> The robot is in \(s_{14}\) (top-right corner) and tries to move right. What is the probability it <em>stays</em> in \(s_{14}\)?</p>
+  <div class="two-col">
+    <div style="flex: 0.6; text-align: center;">
+      <div class="gridworld">
+        <div class="gw-cell gw-start">Start</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell" style="background: #fef3c7;">\(s_{14}\)</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <ol class="quiz-options">
+        <li>0.1</li>
+        <li>0.2</li>
+        <li>0.8</li>
+        <li><strong>0.9</strong></li>
+        <li>1.0</li>
+      </ol>
+      <div class="quiz-answer fragment">
+        <strong>D &mdash; 0.9.</strong> Trying right: 0.8 it bumps the wall (stays) + 0.1 it veers up (also bumps wall, stays) = 0.9. The remaining 0.1 veers down to \(s_{24}\).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     From action sequences to policies (2 slides)
+     ============================================================ -->
+
+<!-- 10. Q2 + Q3 + Q4 combined -->
+<section>
+  <h2>Why a fixed action sequence is not enough</h2>
+  <div class="two-col">
+    <div style="flex: 1;">
+      <p class="quiz-q" style="margin-top: 0;"><strong>Q2.</strong> In a <em>deterministic</em> env, the sequence <em>down, down, right, right, right</em> is optimal for the grid world.</p>
+      <p style="font-size: 0.82em; color: #166534;"><strong>True.</strong> Five steps take us from \(s_{11}\) to \(s_{34}\).</p>
+      <p class="quiz-q fragment" data-fragment-index="0"><strong>Q3.</strong> In the <em>stochastic</em> env, the same sequence may end at <em>more than one</em> square.</p>
+      <p class="fragment" data-fragment-index="0" style="font-size: 0.82em; color: #166534;"><strong>True.</strong> E.g. five right-veers in a row send us to \(s_{12}\).</p>
+      <p class="quiz-q fragment" data-fragment-index="1"><strong>Q4.</strong> So in the stochastic env, a fixed sequence is still good enough.</p>
+      <p class="fragment" data-fragment-index="1" style="font-size: 0.82em; color: #991b1b;"><strong>False.</strong> Actions misfire &mdash; we need to <em>re-plan</em> from whatever state we end up in.</p>
+    </div>
+    <div style="flex: 0.7; text-align: center;">
+      <div class="gridworld">
+        <div class="gw-cell gw-start">Start</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell"></div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+      <p class="fragment" data-fragment-index="2" style="font-size: 0.78em; color: #1d4ed8; margin-top: 0.5em;">Need an action for <strong>every state</strong> &mdash; a <strong>policy</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11. Policy definition -->
+<section class="center-slide">
+  <h2>A policy</h2>
+  <div class="defbox" style="max-width: 80%; margin: 0 auto;">
+    <h3>Policy</h3>
+    A <strong>policy</strong> \(\pi\) specifies the agent's action as a function of the current state.
+  </div>
+  <ul style="text-align: left; margin: 0.6em auto; max-width: 75%;">
+    <li><strong>Stationary</strong> &mdash; depends only on the state: \(\pi: S \to A\).</li>
+    <li><strong>Non-stationary</strong> &mdash; also depends on the time step: \(\pi: S \times \mathbb{N} \to A\).</li>
+  </ul>
+  <p class="fragment" style="font-size: 0.88em; color: #166534; text-align: center; margin-top: 0.4em;">For an infinite-horizon fully-observable MDP, the optimal policy is <strong>stationary</strong>.</p>
+</section>
+
+<!-- ============================================================
+     Reward shapes the policy (2 slides)
+     ============================================================ -->
+
+<!-- 12. The reward function reshapes the optimal policy -->
+<section>
+  <h2>The reward function reshapes the optimal policy</h2>
+  <p style="font-size: 0.88em;">Same dynamics; different \(R(s)\) for non-goal states &mdash; very different optimal behaviors.</p>
+  <p style="font-size: 0.85em;">We will look at five qualitatively different reward regions:</p>
+  <ol style="font-size: 0.85em;">
+    <li>\(R(s) &lt; -1.6284\) &mdash; <em>life is painful</em></li>
+    <li>\(-0.4278 &lt; R(s) &lt; -0.0850\) &mdash; <em>life is quite unpleasant</em></li>
+    <li>\(R(s) = -0.04\) &mdash; <em>life is unpleasant</em> (the default)</li>
+    <li>\(-0.0221 &lt; R(s) \leq 0\) &mdash; <em>life is only slightly dreary</em></li>
+    <li>\(R(s) &gt; 0\) &mdash; <em>life is GOOD</em></li>
+  </ol>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Each region balances <strong>risk</strong> (falling into &minus;1) against <strong>reward</strong> (reaching +1 quickly).</p>
+</section>
+
+<!-- 13. Five policies side by side -->
+<section>
+  <h2>Five reward regions, five optimal policies</h2>
+  <div class="gridworld-row">
+    <!-- 1. Painful -->
+    <div class="reward-region">
+      <div class="region-label">painful</div>
+      <div style="font-size: 0.65em; color: #6b7280;">\(R &lt; -1.6284\)</div>
+      <div class="gridworld mini">
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+      <div class="region-blurb">head to nearest exit, even &minus;1</div>
+    </div>
+    <!-- 2. Quite unpleasant -->
+    <div class="reward-region">
+      <div class="region-label">quite unpleasant</div>
+      <div style="font-size: 0.65em; color: #6b7280;">\(-0.43 &lt; R &lt; -0.085\)</div>
+      <div class="gridworld mini">
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-arrow">&larr;</div>
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+      <div class="region-blurb">shortcut through \(s_{13}\)</div>
+    </div>
+    <!-- 3. Unpleasant (R = -0.04) -->
+    <div class="reward-region">
+      <div class="region-label">unpleasant</div>
+      <div style="font-size: 0.65em; color: #6b7280;">\(R = -0.04\)</div>
+      <div class="gridworld mini">
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-arrow">&larr;</div>
+        <div class="gw-cell gw-arrow">&larr;</div>
+        <div class="gw-cell gw-arrow">&larr;</div>
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+      <div class="region-blurb">long way around; avoid &minus;1</div>
+    </div>
+    <!-- 4. Slightly dreary -->
+    <div class="reward-region">
+      <div class="region-label">slightly dreary</div>
+      <div style="font-size: 0.65em; color: #6b7280;">\(-0.022 &lt; R \leq 0\)</div>
+      <div class="gridworld mini">
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-arrow">&larr;</div>
+        <div class="gw-cell gw-arrow">&larr;</div>
+        <div class="gw-cell gw-arrow">&uarr;</div>
+        <div class="gw-cell gw-arrow">&darr;</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell gw-arrow">&larr;</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-arrow">&rarr;</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+      <div class="region-blurb">no risk; bang against walls</div>
+    </div>
+    <!-- 5. GOOD -->
+    <div class="reward-region">
+      <div class="region-label">GOOD</div>
+      <div style="font-size: 0.65em; color: #6b7280;">\(R &gt; 0\)</div>
+      <div class="gridworld mini">
+        <div class="gw-cell gw-arrows">&#8853;</div>
+        <div class="gw-cell gw-arrows">&#8853;</div>
+        <div class="gw-cell gw-arrows">&#8853;</div>
+        <div class="gw-cell gw-arrow">&uarr;</div>
+        <div class="gw-cell gw-arrows">&#8853;</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell gw-arrow">&larr;</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell gw-arrows">&#8853;</div>
+        <div class="gw-cell gw-arrows">&#8853;</div>
+        <div class="gw-cell gw-arrow">&larr;</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+      <div class="region-blurb">wander forever; avoid both goals</div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.78em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Watch the action at \(s_{13}\) (top, third column): it changes with every region.</p>
+</section>
+
+<!-- ============================================================
+     Solving with V* (3 slides)
+     ============================================================ -->
+
+<!-- 14. V^pi and V* -->
+<section>
+  <h2>The value function</h2>
+  <div class="defbox">
+    <h3>Expected utility of a policy</h3>
+    <ul style="margin: 0;">
+      <li>\(V^\pi(s)\): expected utility of entering state \(s\) and following \(\pi\) thereafter.</li>
+      <li>\(V^\star(s)\): expected utility of entering \(s\) and following the <strong>optimal</strong> policy \(\pi^\star\).</li>
+    </ul>
+  </div>
+  <div style="text-align: center; margin-top: 0.6em;">
+    <div class="gridworld v-values">
+      <div class="gw-cell">0.705</div>
+      <div class="gw-cell">0.655</div>
+      <div class="gw-cell">0.611</div>
+      <div class="gw-cell">0.388</div>
+      <div class="gw-cell">0.762</div>
+      <div class="gw-cell gw-wall">X</div>
+      <div class="gw-cell">0.660</div>
+      <div class="gw-cell gw-goal-neg">&minus;1</div>
+      <div class="gw-cell">0.812</div>
+      <div class="gw-cell">0.868</div>
+      <div class="gw-cell">0.918</div>
+      <div class="gw-cell gw-goal-pos">+1</div>
+    </div>
+  </div>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.3em;">\(V^\star(s)\) for \(\gamma = 1\), \(R(s) = -0.04\) on non-goal states.</p>
+</section>
+
+<!-- 15. Q* and pi* -->
+<section class="center-slide">
+  <h2>The Q-function and the optimal policy</h2>
+  <div class="defbox" style="max-width: 80%; margin: 0 auto;">
+    <h3>Q-function</h3>
+    <p style="margin: 0.2em 0; text-align: center;">\(Q^\star(s, a) = R(s) + \sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
+    <p style="margin: 0.4em 0; font-size: 0.85em; color: #4b5563;">"If I were in \(s\) and took action \(a\) now, then followed \(\pi^\star\) forever after &mdash; how good is my future?"</p>
+  </div>
+  <p style="text-align: center; margin-top: 0.6em; font-size: 0.95em;">
+    \(\pi^\star(s) = \arg\max_a Q^\star(s, a)\)
+  </p>
+  <p class="fragment" style="font-size: 0.85em; color: #166534; text-align: center; margin-top: 0.4em;">Given \(V^\star\), the optimal policy is one greedy step away.</p>
+</section>
+
+<!-- 16. Q5: optimal action at s_13 -->
+<section>
+  <h2>Optimal action at \(s_{13}\)?</h2>
+  <p class="quiz-q"><strong>Q5.</strong> Using \(Q^\star(s, a) = R(s) + \sum_{s'} P(s' \mid s, a) V^\star(s')\), what is \(\pi^\star(s_{13})\)?</p>
+  <div class="two-col vcenter">
+    <div style="flex: 0.7; text-align: center;">
+      <div class="gridworld v-values">
+        <div class="gw-cell">0.705</div>
+        <div class="gw-cell">0.655</div>
+        <div class="gw-cell" style="background: #fef3c7;">0.611</div>
+        <div class="gw-cell">0.388</div>
+        <div class="gw-cell">0.762</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell">0.660</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell">0.812</div>
+        <div class="gw-cell">0.868</div>
+        <div class="gw-cell">0.918</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+      <p style="font-size: 0.7em; color: #6b7280; margin-top: 0.2em;">\(s_{13}\) is the yellow cell (\(V^\star = 0.611\)).</p>
+    </div>
+    <div style="flex: 1.1;">
+      <p style="font-size: 0.82em; margin: 0;"><strong>Computing each Q-value (4 actions):</strong></p>
+      <div class="q-values">
+Left:  -0.04 + 0.8*0.655 + 0.1*0.611 + 0.1*0.660 = <span class="best">0.6111</span>
+Right: -0.04 + 0.8*0.388 + 0.1*0.611 + 0.1*0.660 = 0.3975
+Down:  -0.04 + 0.8*0.660 + 0.1*0.388 + 0.1*0.655 = 0.5923
+Up:    -0.04 + 0.8*0.611 + 0.1*0.655 + 0.1*0.388 = 0.5531
+      </div>
+      <div class="quiz-answer fragment">
+        <strong>C &mdash; Left.</strong> Left has the highest \(Q^\star\) (0.6111). It moves toward the safer states; the &minus;1 to the right is too close.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 17. Learning goals (recap) -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0;">
+    <li>&#10003; &nbsp;Motivate modeling a decision problem as a Markov decision process.</li>
+    <li>&#10003; &nbsp;Describe the <strong>components</strong> of a fully-observable MDP.</li>
+    <li>&#10003; &nbsp;Explain why we use a <strong>discounted</strong> reward function.</li>
+    <li>&#10003; &nbsp;Define the <strong>policy</strong> of an MDP.</li>
+    <li>&#10003; &nbsp;Give examples of how the <strong>reward function</strong> shapes the optimal policy.</li>
+  </ul>
+</section>
+
+<!-- 18. Next: how do we compute V*? -->
+<section class="center-slide">
+  <h2>Next: how do we compute \(V^\star\)?</h2>
+  <p style="font-size: 0.92em;">Today: given \(V^\star\), the optimal policy is just an argmax. But how do we <em>find</em> \(V^\star\) in the first place?</p>
+  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L14: <strong>Bellman equations</strong> &amp; <strong>value iteration</strong>.</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>

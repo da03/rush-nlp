@@ -1,0 +1,135 @@
+/* L13-specific styles on top of shared/custom.css, L10/custom.css, L12/custom.css. */
+
+/* 3x4 grid world: 4 columns (j = 1..4), 3 rows (i = 1..3). */
+.reveal .gridworld {
+  display: inline-grid;
+  grid-template-columns: repeat(4, 56px);
+  grid-template-rows: repeat(3, 48px);
+  border: 2px solid #1f2937;
+  background: #1f2937;
+  gap: 1px;
+  margin: 0.2em auto;
+}
+.reveal .gridworld .gw-cell {
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #111827;
+}
+.reveal .gridworld .gw-start    { background: #fef3c7; }
+.reveal .gridworld .gw-wall     { background: #6b7280; color: #fff; font-weight: 700; }
+.reveal .gridworld .gw-goal-pos { background: #bbf7d0; color: #166534; font-weight: 700; }
+.reveal .gridworld .gw-goal-neg { background: #fecaca; color: #991b1b; font-weight: 700; }
+.reveal .gridworld .gw-arrow {
+  font-size: 1.1em;
+  color: #1d4ed8;
+  font-weight: 700;
+}
+.reveal .gridworld .gw-arrows {
+  font-size: 0.7em;
+  color: #1d4ed8;
+  font-weight: 700;
+  letter-spacing: -0.1em;
+}
+
+/* Tighter cells for V* and Q* number grids. */
+.reveal .gridworld.v-values {
+  grid-template-columns: repeat(4, 56px);
+  grid-template-rows: repeat(3, 42px);
+}
+.reveal .gridworld.v-values .gw-cell {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.75em;
+  font-weight: 600;
+}
+
+/* Mini grids for the 5 reward-region row (slide 13). */
+.reveal .gridworld.mini {
+  grid-template-columns: repeat(4, 32px);
+  grid-template-rows: repeat(3, 28px);
+}
+.reveal .gridworld.mini .gw-cell {
+  font-size: 0.6em;
+}
+.reveal .gridworld.mini .gw-arrow {
+  font-size: 0.9em;
+}
+
+/* Row of mini grids for slide 13 (5 across). */
+.reveal .gridworld-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4em;
+  align-items: start;
+  margin: 0.4em 0;
+}
+.reveal .gridworld-row .reward-region {
+  text-align: center;
+  font-size: 0.7em;
+}
+.reveal .gridworld-row .reward-region .region-label {
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 0.15em;
+}
+.reveal .gridworld-row .reward-region .region-blurb {
+  color: #4b5563;
+  margin-top: 0.2em;
+  line-height: 1.2;
+}
+
+/* MDP state-action-state loop diagram (slide 4). */
+.reveal .mdp-loop { display: block; margin: 0.3em auto; max-height: 200px; }
+.reveal .mdp-loop .state circle {
+  fill: #fff;
+  stroke: #111827;
+  stroke-width: 2;
+}
+.reveal .mdp-loop .action rect {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+}
+.reveal .mdp-loop text {
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .mdp-loop .edge {
+  stroke: #4b5563;
+  stroke-width: 1.5;
+  fill: none;
+}
+.reveal .mdp-loop .reward-edge {
+  stroke: #16a34a;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+  fill: none;
+}
+.reveal .mdp-loop .reward-label { fill: #166534; font-weight: 700; }
+
+/* Q-value list (slide 16, monospace cards). */
+.reveal .q-values {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78em;
+  line-height: 1.5;
+  margin: 0.3em auto;
+  text-align: left;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 0.5em 0.8em;
+  max-width: 92%;
+}
+.reveal .q-values .best {
+  color: #166534;
+  font-weight: 700;
+  background: #ecfdf5;
+  padding: 0 0.3em;
+  border-radius: 2px;
+}
