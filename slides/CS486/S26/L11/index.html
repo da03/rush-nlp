@@ -201,11 +201,16 @@
 <section>
   <h2>Backward recursion</h2>
   <p style="font-size: 0.88em;">Compute \(b_{(k+1):(t-1)} \;\overset{\Delta}{=}\; P(o_{(k+1):(t-1)} | S_k)\) right-to-left.</p>
-<pre class="algo"><span class="cmt"># Base case (k = t - 1: no future observations)</span>
-b<sub>t:(t-1)</sub> = &langle;1, 1&rangle;
-
-<span class="cmt"># Recursive case (k &lt; t - 1)</span>
-b<sub>(k+1):(t-1)</sub> = &sum;<sub>s<sub>k+1</sub></sub> P(o<sub>k+1</sub> | s<sub>k+1</sub>) &middot; b<sub>(k+2):(t-1)</sub> &middot; P(s<sub>k+1</sub> | S<sub>k</sub>)</pre>
+  <div class="recursion-formula">
+    <div class="case">
+      <span class="case-label">Base case (k = t &minus; 1, no future observations)</span>
+      \[ b_{t:(t-1)} = \langle 1, 1 \rangle \]
+    </div>
+    <div class="case">
+      <span class="case-label">Recursive case (k &lt; t &minus; 1)</span>
+      \[ b_{(k+1):(t-1)} = \sum_{s_{k+1}} P(o_{k+1} \mid s_{k+1}) \, b_{(k+2):(t-1)} \, P(s_{k+1} \mid S_k) \]
+    </div>
+  </div>
   <p style="font-size: 0.82em; text-align: center; margin-top: 0.4em;">Same factor sizes as forward recursion &mdash; total cost <strong>\(O(t)\)</strong> for the whole backward pass.</p>
   <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center;">No normalization here: \(b\) is a likelihood, not a probability. Normalize <em>after</em> multiplying \(f \times b\).</p>
 </section>
@@ -380,16 +385,20 @@ b<sub>(k+1):(t-1)</sub> = &sum;<sub>s<sub>k+1</sub></sub> P(o<sub>k+1</sub> | s<
       <text class="sweep-label bwd" x="280" y="220">backward pass &mdash; compute all \(b_{(k+1):(t-1)}\)</text>
     </svg>
   </div>
-<pre class="algo" style="margin-top: 0.4em;"><span class="cmt"># Forward pass: k = 0, 1, ..., t - 1</span>
-f<sub>0:0</sub> = &alpha; P(o<sub>0</sub> | S<sub>0</sub>) P(S<sub>0</sub>)
-f<sub>0:k</sub> = &alpha; P(o<sub>k</sub> | S<sub>k</sub>) &sum;<sub>s<sub>k-1</sub></sub> P(S<sub>k</sub> | s<sub>k-1</sub>) f<sub>0:(k-1)</sub>
-
-<span class="cmt"># Backward pass: k = t - 1, t - 2, ..., 0</span>
-b<sub>t:(t-1)</sub> = &langle;1, 1&rangle;
-b<sub>(k+1):(t-1)</sub> = &sum;<sub>s<sub>k+1</sub></sub> P(o<sub>k+1</sub> | s<sub>k+1</sub>) b<sub>(k+2):(t-1)</sub> P(s<sub>k+1</sub> | S<sub>k</sub>)
-
-<span class="cmt"># Smoothed posterior at every k</span>
-P(S<sub>k</sub> | o<sub>0:(t-1)</sub>) = &alpha; f<sub>0:k</sub> &middot; b<sub>(k+1):(t-1)</sub></pre>
+  <div class="recursion-formula" style="margin-top: 0.4em;">
+    <div class="case">
+      <span class="case-label">Forward pass (k = 0, 1, &hellip;, t &minus; 1)</span>
+      \[ f_{0:k} = \alpha \, P(o_k \mid S_k) \sum_{s_{k-1}} P(S_k \mid s_{k-1}) \, f_{0:(k-1)} \]
+    </div>
+    <div class="case">
+      <span class="case-label">Backward pass (k = t &minus; 1, &hellip;, 0)</span>
+      \[ b_{(k+1):(t-1)} = \sum_{s_{k+1}} P(o_{k+1} \mid s_{k+1}) \, b_{(k+2):(t-1)} \, P(s_{k+1} \mid S_k) \]
+    </div>
+    <div class="case">
+      <span class="case-label">Smoothed posterior at every k</span>
+      \[ P(S_k \mid o_{0:(t-1)}) = \alpha \, f_{0:k} \cdot b_{(k+1):(t-1)} \]
+    </div>
+  </div>
   <p style="font-size: 0.78em; color: #166534; text-align: center; margin-top: 0.2em;">Total cost: <strong>\(O(t)\)</strong> &mdash; one full sweep in each direction.</p>
 </section>
 
