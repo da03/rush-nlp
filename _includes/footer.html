@@ -6,14 +6,17 @@
       </div>
       <div class="footer-social">
         <ul class="social-media-list">
+          <li><a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ" aria-label="Google Scholar">Scholar</a></li>
           {% if site.github_username %}
           <li>{% include icon-github.html username=site.github_username %}</li>
           {% endif %}
           {% if site.twitter_username %}
           <li>{% include icon-twitter.html username=site.twitter_username %}</li>
           {% endif %}
+          <li><a href="https://www.linkedin.com/in/yuntian-deng-536664a1/" aria-label="LinkedIn">LinkedIn</a></li>
         </ul>
       </div>
     </div>
+    <p class="footer-updated">Last updated: {{ site.time | date: "%b %Y" }}</p>
   </div>
 </footer>
