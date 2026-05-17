@@ -4,397 +4,390 @@ title: CS 486/686 Introduction to Artificial Intelligence (Spring 26)
 permalink: /teaching/spring2026/cs486-introduction-to-artificial-intelligence/
 weight: 6
 mathjax: true
+description: "CS 486/686 (Spring 2026) at the University of Waterloo. Instructor Yuntian Deng. Schedule, slides, chat assignments with Chrysalis, and project info."
+excerpt: "CS 486/686: Introduction to Artificial Intelligence (Spring 2026) at the University of Waterloo. Instructor Yuntian Deng. Schedule, slides, and assignments."
 ---
 
-<h3>CS 486/686: Introduction to Artificial Intelligence (Spring 26)</h3>
-<p><strong>Instructor:</strong> Yuntian Deng</p>
-<p><strong>Instructor Email:</strong> <a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a></p>
-<p><strong>Course Piazza:</strong> <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">https://piazza.com/uwaterloo.ca/spring2026/cs486686</a></p>
+{%- assign cs = site.data.cs486_s26 -%}
+{%- assign course = cs.course -%}
 
-<p><strong>Course Schedule:</strong></p>
-<ul>
-  <li>Section 001 (CS 486-001 / CS 686-001): TTh 1:00PM &ndash; 2:20PM, MC 4021</li>
-  <li>Section 002 (CS 486-002 / CS 686-002): TTh 2:30PM &ndash; 3:50PM, MC 4021</li>
-</ul>
-<p><strong>Class Dates:</strong> May 11, 2026 &ndash; Aug 5, 2026</p>
-<p><strong>Final Exam:</strong> TBA</p>
+<a class="skip-link" href="#main">Skip to main content</a>
 
-<!--p style="color: red;"><strong>Note:</strong> This is a provisional version of the syllabus. Expect changes over time.</p-->
+<article class="course-page" id="main">
 
-<h4>Announcements</h4>
-<p style="background:#fff4d6; padding:10px; border-left:4px solid #d4a017;">
-  <strong>Chrysalis chat assignments &mdash; when do I stop?</strong>
-  Chrysalis may circle back and re-ask questions after you've gone through them all &mdash; that's normal, and there is <strong>no fixed stopping point</strong>. Once you've covered every question at least once, you can simply stop and close the tab. Your chat is auto-saved, and the evaluator (which runs after the deadline) checks coverage separately &mdash; so you do not need to keep chatting indefinitely.
-</p>
-<p style="background:#fff4d6; padding:10px; border-left:4px solid #d4a017;">
-  <strong>Waitlisted students &mdash; permission numbers:</strong>
-  I have forwarded all permission-number requests I've received to the CS Graduate Office. You should hear back from them with a permission number during the <strong>week of May 18</strong>. If you have not received one by <strong>Friday, May 22</strong>, please email me at <a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a>. In the meantime, you're welcome to attend lectures and access course materials.
-</p>
-<!-- Sasha Rush talk (May 14, 2026) - past event, banner commented out after the talk.
-     Kept in source for reference; uncomment if posting a "recording available" follow-up.
-<p style="background:#eff6ff; padding:10px; border-left:4px solid #1d4ed8;">
-  <strong>Highly recommended online talk &mdash; tomorrow, Thursday May 14, 1:00&ndash;1:30 PM EDT:</strong>
-  <a href="https://x.com/srush_nlp">Sasha Rush</a> (Cornell / Cursor) is giving a 30-minute talk &mdash;
-  <a href="https://luma.com/b62tuosv">Cursor: Training Composer</a> &mdash;
-  on the two-phase training pipeline behind Composer 2 (continued pretraining + large-scale RL), the CursorBench evaluation, and the infrastructure (custom MoE kernels, async RL pipeline, sandboxed coding environments).
-  Honestly, this is more relevant to how AI actually works in 2026 than uninformed search.
-  <strong>The talk overlaps section 001's slot</strong> &mdash; if you want to attend live, just come to section 002 (2:30 PM) instead; the two sections cover identical material. The talk will be recorded and shared with everyone registered, so you can also watch later. <a href="https://luma.com/b62tuosv">Register here</a>.
-</p>
--->
+  {%- comment -%} ====================== Hero ====================== {%- endcomment -%}
+  <header class="course-hero" aria-labelledby="course-title">
+    <p class="course-hero__eyebrow">{{ course.code }} &middot; {{ course.term }}</p>
+    <h1 class="course-page__title" id="course-title">{{ course.title }}</h1>
+    <p class="course-hero__instructor">
+      Taught by <a href="{{ course.instructor.url }}">{{ course.instructor.name }}</a>
+      &middot; <a href="mailto:{{ course.instructor.email }}">{{ course.instructor.email }}</a>
+    </p>
+    <div class="course-hero__meta">
+      {%- for s in course.sections -%}
+        <span><strong>Section {{ s.id }}:</strong> {{ s.time }} &middot; {{ s.room }}</span>
+      {%- endfor -%}
+      <span><strong>Class dates:</strong> {{ course.dates }}</span>
+      <span><strong>Final exam:</strong> {{ course.final_exam.window }} ({{ course.final_exam.note }})</span>
+    </div>
+    <nav class="quick-links" aria-label="Course resources">
+      <a class="pill pill--primary" href="{{ course.links.piazza }}">Piazza</a>
+      <a class="pill" href="{{ course.links.chrysalis }}">Chrysalis</a>
+      <a class="pill" href="{{ course.links.learn }}">LEARN</a>
+      <a class="pill" href="/course-cs486-s26.ics" download>Add to calendar (.ics)</a>
+      <a class="pill" href="#schedule">Schedule</a>
+    </nav>
+    <p class="course-hero__deadline" data-next-deadline hidden>
+      <span class="label">Next deadline:</span>
+      <span class="text"></span>
+    </p>
+  </header>
 
-<p style="background:#fff4d6; padding:10px; border-left:4px solid #d4a017;">
-  <strong>Distinguished Lecture:</strong> Prof. <a href="https://kyunghyuncho.me/">Kyunghyun Cho</a> (NYU) will give a Distinguished Lecture on <strong>Tuesday, May 26, 2026, 10:00&ndash;11:30 AM</strong> in <strong>DC 1302</strong>. Kyunghyun is one of the inventors of the modern attention mechanism (Bahdanau, Cho, Bengio, ICLR 2015) and the GRU recurrent cell &mdash; foundational work for today's large language models. Highly recommended for everyone in CS 486/686. Please mark your calendars.
-</p>
+  {%- comment -%} ====================== Announcements ====================== {%- endcomment -%}
+  {%- assign visible_announcements = cs.announcements | where: "show", true -%}
+  {%- if visible_announcements.size > 0 -%}
+  <section aria-label="Course announcements">
+    {%- for a in visible_announcements -%}
+    <aside class="announcement announcement--{{ a.severity }}" role="note">
+      <div class="announcement__body">
+        <span class="announcement__title">{{ a.title }}</span>
+        {{ a.body }}
+      </div>
+    </aside>
+    {%- endfor -%}
+  </section>
+  {%- endif -%}
 
-<h4>Teaching Assistants</h4>
-<ul>
-  <li>Liliana Hotsko (<a href="mailto:lhotsko@uwaterloo.ca">lhotsko@uwaterloo.ca</a>) (Piazza Management)</li>
-  <li>Bihui Jin (<a href="mailto:b27jin@uwaterloo.ca">b27jin@uwaterloo.ca</a>)</li>
-  <li>Larry Yinxi Li (<a href="mailto:y3395li@uwaterloo.ca">y3395li@uwaterloo.ca</a>)</li>
-  <li>Yuxuan Li (<a href="mailto:y624li@uwaterloo.ca">y624li@uwaterloo.ca</a>)</li>
-  <li>Henry Lin (<a href="mailto:h293lin@uwaterloo.ca">h293lin@uwaterloo.ca</a>)</li>
-  <li>Hala Sheta (<a href="mailto:hsheta@uwaterloo.ca">hsheta@uwaterloo.ca</a>)</li>
-  <li>Dake Zhang (<a href="mailto:d346zhan@uwaterloo.ca">d346zhan@uwaterloo.ca</a>)</li>
-</ul>
-
-<p><strong>Important:</strong> For Piazza-related inquiries, please reach out directly to Liliana and cc the instructor. The instructor receives many emails and response time may be slow.</p>
-
-<h4>Office Hours</h4>
-<p>Office hours start the week of May 18. Zoom links below are one-click (passcodes are embedded).</p>
-<ul>
-  <li>Larry Yinxi Li &mdash; Mondays 1:00&ndash;2:00 PM (<a href="https://uwaterloo.zoom.us/j/93611814134?pwd=WnHccgVF97b7e02XYvhpyQHlaimoZu.1">Zoom</a>)</li>
-  <li>Dake Zhang &mdash; Mondays 2:00&ndash;3:00 PM (<a href="https://uwaterloo.zoom.us/j/6586436343?pwd=cmV6NHhhSGx4L054R2QzVkIzUU5UZz09">Zoom</a>)</li>
-  <li>Yuxuan Li &mdash; Mondays 3:00&ndash;4:00 PM (<a href="https://uwaterloo.zoom.us/j/2376368802?pwd=LpG4bU4YHqaaOjk9v9FdbmD7BQaOTw.1">Zoom</a>)</li>
-  <li>Hala Sheta &mdash; Wednesdays 1:00&ndash;2:00 PM (<a href="https://uwaterloo.zoom.us/j/96262579733?pwd=miRk3XhmDayBDtfzndKOsSrOchieVA.1">Zoom</a>)</li>
-  <li>Henry Lin &mdash; Thursdays 10:00&ndash;11:00 AM (<a href="https://us04web.zoom.us/j/7934782144?pwd=9cOQxecD8bQDNkFpTVf6PG5Dy0aABo.1">Zoom</a>)</li>
-  <li>Bihui Jin &mdash; Fridays 3:00&ndash;4:00 PM (in person, DC 2555)</li>
-</ul>
-
-<h4>Communication</h4>
-<ul>
-  <li>All communication should take place using the <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza discussion board</a>.</li>
-  <li>We do not upload materials or assignments to Piazza; these materials will appear on LEARN.</li>
-  <li>Public Piazza posts (can be anonymous) are the preferred method for questions about course material. Students can then help each other and instructors can read/reply.</li>
-  <li>Private Piazza posts (to instructors only) can be used for any posts that contain solution snippets or private questions.</li>
-  <li>Only in exceptional cases where you need to contact only the instructor should you use the personal email above.</li>
-</ul>
-
-<h4>Waitlist</h4>
-<p>If you cannot register for the course, please send an email to <a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a> to join the waitlist.</p>
-
-
-<h4>Course Description</h4>
-<p>This course provides an introduction to the field of artificial intelligence. Topics include search algorithms, game playing, knowledge representation and reasoning, uncertainty and probabilistic reasoning, machine learning, neural networks, and reinforcement learning.</p>
-
-<h4>Assessment</h4>
-<div>
-<h5>For CS486 students:</h5>
-<ul>
-  <li>3 Assignments (30% - to be done individually - dates to be announced)</li>
-  <li>10 chat assignments with Chrysalis (20% - 2% each - see <a href="#chat-assignments">Chat Assignments with Chrysalis</a> for details)</li>
-  <li>Two and a half hour written final examination (50% and must pass the final to pass the course)</li>
-  <li>Optional project (10% bonus) - see <a href="#project">Project</a> for details</li>
-</ul>
-
-<h5>For CS686 (grad) students:</h5>
-<ul>
-  <li>3 Assignments (30% - to be done individually - dates to be announced)</li>
-  <li>Project (30%) - done individually or in groups of up to 3 - see <a href="#project">Project</a> for details</li>
-  <li>Two and a half hour written final examination (40%)</li>
-</ul>
-</div>
-
-
-<h4 id="chat-assignments">Chat Assignments with Chrysalis</h4>
-<p>There will be 10 chat assignments with Chrysalis, each worth 2% of the final grade. In each chat assignment you must teach Chrysalis what you learned in the course by answering a set of questions. You will answer those questions in a chat interface where Chrysalis will prompt you and possibly ask you for clarifications. The grading for chat assignments is based on participation. You will get full marks for each question that you answer. No mark will be deducted for incorrect answers. Instead marks will be deducted for not answering questions or not trying to answer questions sufficiently.</p>
-
-<p><strong>To get started with the chat assignments, sign up with Chrysalis as follows:</strong></p>
-<ul>
-  <li>For data security reasons, we are hosting Chrysalis on university machines. The URL is <a href="https://andromeda-208.cs.uwaterloo.ca"><strong>https://andromeda-208.cs.uwaterloo.ca</strong></a>; please bookmark this site as you will be using it all term.</li>
-  <li>Create an account by signing up with your <strong>@uwaterloo.ca</strong> email.
+  {%- comment -%} ====================== Mini ToC ====================== {%- endcomment -%}
+  <nav class="course-toc" aria-label="On this page">
     <ul>
-      <li><strong>Important:</strong> You must use your <em>WatIAM</em>@uwaterloo.ca email to sign up; if you have a friendly email, for instance <em>firstname.lastname</em>@uwaterloo.ca, do not use this, as we will not be able to link your usage with your Quest ID.</li>
+      <li><a href="#staff">Staff</a></li>
+      <li><a href="#office-hours">Office hours</a></li>
+      <li><a href="#communication">Communication</a></li>
+      <li><a href="#assessment">Assessment</a></li>
+      <li><a href="#chats">Chat assignments</a></li>
+      <li><a href="#project">Project</a></li>
+      <li><a href="#readings">Readings</a></li>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#integrity">Integrity</a></li>
     </ul>
-  </li>
-  <li>Verify your email: once you sign up, you will receive a verification request at the email address you've provided. Follow the instructions to activate your account.</li>
-</ul>
+  </nav>
 
-<p>Once you sign in, you should be added automatically to the course "CS 486/686". All your chat assignments will be done in Chrysalis. If you do not see this course on your dashboard, contact us by making a private post on Piazza.</p>
+  {%- comment -%} ====================== Staff ====================== {%- endcomment -%}
+  <section id="staff" aria-labelledby="staff-title">
+    <h2 class="course-section__title" id="staff-title">Course staff</h2>
+    <p class="instructor-line"><strong>Instructor.</strong> <a href="{{ course.instructor.url }}">{{ course.instructor.name }}</a> &middot; <a href="mailto:{{ course.instructor.email }}">{{ course.instructor.email }}</a></p>
+    <p class="staff-note">For Piazza-related inquiries, please contact Liliana and cc the instructor. The instructor receives many emails and response time may be slow.</p>
+    <h3 class="subhead">Teaching assistants</h3>
+    <ul class="staff-grid">
+      {%- for ta in cs.tas -%}
+      <li class="staff-card">
+        <span class="staff-card__name">{{ ta.name }}</span>
+        {%- if ta.role -%}<span class="staff-card__role">{{ ta.role }}</span>{%- endif -%}
+        <a href="mailto:{{ ta.email }}">{{ ta.email }}</a>
+      </li>
+      {%- endfor -%}
+    </ul>
+  </section>
 
-<p><strong>Communication:</strong></p>
-<ul>
-  <li>We will be using Piazza as the primary means of class-wide communication for anything related to Chrysalis.</li>
-  <li>For individual queries (e.g. questions about chat assignments, issues), please make a private post addressed to Prashanth Arun and Robert Cai (designers of Chrysalis).</li>
-</ul>
+  {%- comment -%} ====================== Office Hours ====================== {%- endcomment -%}
+  <section id="office-hours" aria-labelledby="office-hours-title">
+    <h2 class="course-section__title" id="office-hours-title">Office hours</h2>
+    <p class="instructor-line">Office hours start the {{ cs.office_hours_start }}.</p>
+    <table class="course-table">
+      <caption>Weekly office hours (Zoom links are one-click; passcodes embedded).</caption>
+      <thead>
+        <tr>
+          <th scope="col">Day</th>
+          <th scope="col">Time</th>
+          <th scope="col">TA</th>
+          <th scope="col">Mode</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for oh in cs.office_hours -%}
+        <tr>
+          <td data-label="Day">{{ oh.day }}</td>
+          <td data-label="Time">{{ oh.time }}</td>
+          <td data-label="TA">{{ oh.ta }}</td>
+          <td data-label="Mode">
+            {%- if oh.link -%}
+              <a href="{{ oh.link }}">{{ oh.mode }}</a>
+            {%- else -%}
+              {{ oh.mode }}{% if oh.location %} &middot; {{ oh.location }}{% endif %}
+            {%- endif -%}
+          </td>
+        </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </section>
 
-<p><strong>The expected out and due dates for each chat assignment are:</strong></p>
-<ul>
-  <li>Chat 1: out Thu May 14, due <s>Tue May 19</s> <strong>Tue May 26</strong> (11:59 pm) &mdash; <em>deadline extended one-time so students still finalizing enrollment can participate</em></li>
-  <li>Chat 2: out Thu May 21, due Tue May 26 (11:59 pm)</li>
-  <li>Chat 3: out Thu May 28, due Tue Jun 2 (11:59 pm)</li>
-  <li>Chat 4: out Thu Jun 4, due Tue Jun 9 (11:59 pm)</li>
-  <li>Chat 5: out Thu Jun 11, due Tue Jun 16 (11:59 pm)</li>
-  <li>Chat 6: out Thu Jun 18, due Tue Jun 23 (11:59 pm)</li>
-  <li>Chat 7: out Thu Jun 25, due Tue Jun 30 (11:59 pm)</li>
-  <li>Chat 8: out Thu Jul 2, due Tue Jul 7 (11:59 pm)</li>
-  <li>Chat 9: out Thu Jul 9, due Tue Jul 14 (11:59 pm)</li>
-  <li>Chat 10: out Thu Jul 16, due Tue Jul 21 (11:59 pm)</li>
-</ul>
+  {%- comment -%} ====================== Communication ====================== {%- endcomment -%}
+  <section id="communication" aria-labelledby="communication-title">
+    <h2 class="course-section__title" id="communication-title">Communication</h2>
+    <ul>
+      <li>All class-wide communication happens on the <a href="{{ course.links.piazza }}">Piazza discussion board</a>.</li>
+      <li><strong>Public posts</strong> (can be anonymous) are the preferred way to ask questions about course material - other students can help and instructors can read/reply.</li>
+      <li><strong>Private posts</strong> (to instructors only) are for anything containing solution snippets or private questions.</li>
+      <li>For Chrysalis-specific issues, make a private Piazza post addressed to Prashanth Arun and Robert Cai.</li>
+      <li>Course materials and assignments live on LEARN, not Piazza.</li>
+      <li>Email <a href="mailto:{{ course.instructor.email }}">{{ course.instructor.email }}</a> only in exceptional cases where you need to reach the instructor directly.</li>
+    </ul>
+  </section>
 
-<p>Once you have answered all the questions for a chat assignment, there is no "submit" button. You simply leave your chat as it is and close the tab; Chrysalis automatically saves your chat. <strong>Note:</strong> Chrysalis may circle back and re-ask questions you've already answered &mdash; that's normal, and there is no fixed stopping point. Once you've covered every question at least once, you can stop. After the deadline, your chat will be automatically graded for participation (i.e., 100% for each question answered regardless of correctness as long as you made a genuine attempt to answer the question). The quality of your answers will be indirectly assessed via a quiz that Chrysalis will answer on your behalf. There are no marks for this quiz and you do not have to do anything. This is a self diagnosis piece meant to provide feedback and help you identify concepts that you may want to further study. After the deadline for each chat assignment, you will be able to see the quiz questions and which questions Chrysalis answered correctly/incorrectly based on your teaching in the chat interface.</p>
+  {%- comment -%} ====================== Course Description ====================== {%- endcomment -%}
+  <section aria-labelledby="description-title">
+    <h2 class="course-section__title" id="description-title">Course description</h2>
+    <p>This course provides an introduction to the field of artificial intelligence. Topics include search algorithms, game playing, knowledge representation and reasoning, uncertainty and probabilistic reasoning, machine learning, neural networks, and reinforcement learning.</p>
+  </section>
 
+  {%- comment -%} ====================== Assessment ====================== {%- endcomment -%}
+  <section id="assessment" aria-labelledby="assessment-title">
+    <h2 class="course-section__title" id="assessment-title">Assessment</h2>
+    <div class="compare-grid">
+      <article class="compare-card">
+        <h3>CS 486 (undergrad)</h3>
+        <ul>
+          {%- for line in cs.assessment.cs486 -%}
+          <li><span>{{ line.label }}</span><span class="weight">{{ line.weight }}</span></li>
+          {%- endfor -%}
+        </ul>
+      </article>
+      <article class="compare-card compare-card--alt">
+        <h3>CS 686 (graduate)</h3>
+        <ul>
+          {%- for line in cs.assessment.cs686 -%}
+          <li><span>{{ line.label }}</span><span class="weight">{{ line.weight }}</span></li>
+          {%- endfor -%}
+        </ul>
+      </article>
+    </div>
+    <p class="muted-note">CS486 students must pass the final exam to pass the course. Dates for the three assignments are announced as the term progresses.</p>
+  </section>
 
-<h4 id="project">Project</h4>
-<ul>
-  <li>Required for CS686 students; optional (10% bonus) for CS486 students.</li>
-  <li>The project can be done individually or in groups of up to 3 students. If working in a group, the report must specify the responsibility of each member.</li>
-  <li>Project proposal due Tue Jul 7. Final report due during the Aug 7&ndash;20 exam period (specific date TBA).</li>
-  <li>The project can consist of a new AI algorithm, a new theoretical analysis of an existing AI algorithm, a new dataset or benchmark to evaluate existing AI algorithms, an empirical evaluation of existing AI algorithms, or a literature survey.</li>
-  <li>The proposal should contain a 1-page description about the problem you aim to solve, including background, motivation, and proposed methods.</li>
-  <li>The project needs to be related to the course, including search algorithms, hidden Markov models, reinforcement learning, neural networks.</li>
-  <li>The project needs to contain the following sections: problem definition, dataset construction, algorithm design, experiments, evaluation, conclusion.</li>
-  <li>Please use LaTeX template to write the final report.</li>
-  <li>Please make sure the code is not copied from public repositories. Any violation will be seen as plagiarism with serious consequences.</li>
-</ul>
+  {%- comment -%} ====================== Chat assignments ====================== {%- endcomment -%}
+  <section id="chats" aria-labelledby="chats-title">
+    <h2 class="course-section__title" id="chats-title">Chat assignments with Chrysalis</h2>
+    <p>Ten chat assignments, 2% each. In each one you teach Chrysalis what you learned in the lecture by answering a set of questions in a chat interface. Grading is based on participation - you get full marks for each question you genuinely attempt, regardless of whether the answer is correct. Marks are only deducted for skipping questions or not engaging.</p>
 
-<h4>Submission Guidelines</h4>
-<ul>
-  <li>Assignments are to be done individually unless otherwise stated.</li>
-  <li>Submit assignments and receive marks through Learn.</li>
-  <li>No late assignments will be accepted.</li>
-  <li>Submit project proposals on LEARN before the deadline.</li>
-  <li>Students wishing to write a project (and all CS686 students) must submit a project proposal.</li>
-</ul>
+    <h3 class="subhead">How to sign up</h3>
+    <ol class="numbered-steps">
+      <li>
+        Open <a href="{{ course.links.chrysalis }}"><strong>{{ course.links.chrysalis }}</strong></a> (hosted on university machines for data security). Bookmark it - you'll use it all term.
+      </li>
+      <li>
+        Create an account with your <strong>WatIAM @uwaterloo.ca</strong> email. Do <em>not</em> use the friendly alias (e.g. <em>firstname.lastname</em>@uwaterloo.ca) - we won't be able to link your usage to your Quest ID.
+      </li>
+      <li>
+        Click the verification link in the email Chrysalis sends you. Once you sign in, you should be added to "CS 486/686" automatically. If you don't see the course on your dashboard, make a private Piazza post.
+      </li>
+    </ol>
 
-<h4>Reading Materials</h4>
-<p><strong>Primary Text:</strong></p>
-<p>David Poole and Alan Mackworth "Artificial Intelligence: Foundations of Computational Agents". Cambridge University Press, (2nd edition: 2017).</p>
-<p>(Available online. Check the online resources and in particular the Python programs.)</p>
+    <h3 class="subhead">Schedule</h3>
+    <table class="course-table">
+      <caption>10 chat assignments. Deadlines are 11:59 PM Waterloo time.</caption>
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Released</th>
+          <th scope="col">Due</th>
+          <th scope="col">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for c in cs.chats -%}
+        <tr data-date="{{ c.due | date: '%Y-%m-%d' }}">
+          <td data-label="#">Chat {{ c.num }}</td>
+          <td data-label="Released">{{ c.out | date: '%a %b %-d' }}</td>
+          <td data-label="Due">{{ c.due | date: '%a %b %-d' }}</td>
+          <td data-label="Notes">{% if c.note %}{{ c.note }}{% endif %}</td>
+        </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
 
-<p><strong>Secondary Readings:</strong></p>
-<ul>
-  <li>Russell and Norvig "Artificial Intelligence: A Modern Approach"</li>
-  <li>Ian Goodfellow, Yoshua Bengio, and Aaron Courville "Deep Learning"</li>
-  <li>Richard Sutton and Andrew Barto "Reinforcement Learning: An Introduction"</li>
-</ul>
+    <details class="course-faq">
+      <summary>When do I stop chatting? How are chats actually graded?</summary>
+      <div class="faq-body">
+        <p>Once you've covered every question at least once, you can stop and close the tab - Chrysalis auto-saves your chat. There is no submit button and no fixed stopping point. Chrysalis may circle back and re-ask questions you've already answered; that's normal.</p>
+        <p>After the deadline, your chat is automatically graded for participation (full marks for each question genuinely attempted). The quality of your answers is also assessed indirectly via a quiz that Chrysalis answers <em>on your behalf</em> - there are no marks for this quiz; it's a self-diagnostic so you can see which concepts to revisit. After the deadline you'll be able to see which quiz questions Chrysalis got right or wrong based on your teaching.</p>
+      </div>
+    </details>
+  </section>
 
-<h4>Course Schedule</h4>
-<p>The exact schedule will be updated as the course progresses.</p>
+  {%- comment -%} ====================== Project ====================== {%- endcomment -%}
+  <section id="project" aria-labelledby="project-title">
+    <h2 class="course-section__title" id="project-title">Project</h2>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th style="width:10%">Date</th>
-      <th style="width:10%">Lecture</th>
-      <th style="width:40%">Topic</th>
-      <th>Notes</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Search -->
-    <tr>
-      <td colspan="4"><strong>Search</strong></td>
-    </tr>
-    <tr>
-      <td>Tue May 12</td>
-      <td>L1</td>
-      <td>Introduction to Artificial Intelligence</td>
-      <td><a href="/slides/CS486/S26/L1/">Slides</a></td>
-    </tr>
-    <tr>
-      <td>Thu May 14</td>
-      <td>L2</td>
-      <td>Uninformed Search</td>
-      <td><a href="/slides/CS486/S26/L2/">Slides</a>, Chat 1 out</td>
-    </tr>
-    <tr>
-      <td>Tue May 19</td>
-      <td>L3</td>
-      <td>Heuristic Search</td>
-      <td><a href="/slides/CS486/S26/L3/">Slides</a></td>
-    </tr>
-    <tr>
-      <td>Thu May 21</td>
-      <td>L4</td>
-      <td>Heuristic Search (continued)</td>
-      <td><a href="/slides/CS486/S26/L3/">Slides</a>, Chat 2 out</td>
-    </tr>
-    <tr style="background:#fff4d6;">
-      <td colspan="4"><strong>Tue May 26, 10:00&ndash;11:30 AM, DC 1302:</strong> Distinguished Lecture by Prof. <a href="https://kyunghyuncho.me/">Kyunghyun Cho</a> (NYU) &mdash; highly recommended; co-inventor of attention (Bahdanau, Cho, Bengio, ICLR 2015) and the GRU.</td>
-    </tr>
-    <tr style="background:#fef9c3;">
-      <td>Tue May 26</td>
-      <td>L5</td>
-      <td>Constraint Satisfaction Problems</td>
-      <td><a href="/slides/CS486/S26/L4/">Slides</a>, Chat 1 due (extended), Chat 2 due &nbsp;<span style="font-size:0.85em; color:#854d0e;">&larr; next deadline</span></td>
-    </tr>
+    <h3>Who and when</h3>
+    <ul>
+      <li>Required for CS686 students; optional 10% bonus for CS486 students.</li>
+      <li>Individual or groups of up to 3 (group reports must specify each member's responsibility).</li>
+      <li>Proposal due Tue Jul 7. Final report due during the Aug 7-20 exam period (specific date TBA).</li>
+    </ul>
 
+    <h3>Scope</h3>
+    <ul>
+      <li>Must relate to course content: search, hidden Markov models, reinforcement learning, neural networks, etc.</li>
+      <li>Acceptable shapes: a new AI algorithm, a theoretical analysis of an existing algorithm, a new dataset or benchmark, an empirical evaluation, or a literature survey.</li>
+      <li>The proposal is a 1-page description: problem, background, motivation, proposed methods.</li>
+      <li>The final report needs: problem definition, dataset, algorithm design, experiments, evaluation, conclusion.</li>
+    </ul>
 
-    <tr>
-      <td>Thu May 28</td>
-      <td>L6</td>
-      <td>Local Search</td>
-      <td><a href="/slides/CS486/S26/L5/">Slides</a>, Chat 3 out</td>
-    </tr>
-        <!-- Uncertainty and Bayesian Networks -->
-    <tr>
-      <td colspan="4"><strong>Uncertainty Estimation</strong></td>
-    </tr>
-    <tr>
-      <td>Tue Jun 2</td>
-      <td>L7</td>
-      <td>Probabilities</td>
-      <td><a href="/slides/CS486/S26/L6/">Slides</a>, Chat 3 due</td>
-    </tr>
-    <tr>
-      <td>Thu Jun 4</td>
-      <td>L8</td>
-      <td>Independence and Bayesian Networks I</td>
-      <td><a href="/slides/CS486/S26/L7/">Slides</a>, Chat 4 out, <strong>Assignment 1 Release</strong></td>
-    </tr>
-    <tr>
-      <td>Tue Jun 9</td>
-      <td>L9</td>
-      <td>Independence and Bayesian Networks II</td>
-      <td><a href="/slides/CS486/S26/L8/">Slides</a>, Chat 4 due</td>
-    </tr>
-    <tr>
-      <td>Thu Jun 11</td>
-      <td>L10</td>
-      <td>Variable Elimination Algorithm</td>
-      <td><a href="/slides/CS486/S26/L9/">Slides</a>, Chat 5 out</td>
-    </tr>
-    <tr>
-      <td>Tue Jun 16</td>
-      <td>L11</td>
-      <td>Hidden Markov Models I</td>
-      <td><a href="/slides/CS486/S26/L10/">Slides</a>, Chat 5 due</td>
-    </tr>
-    <tr>
-      <td>Thu Jun 18</td>
-      <td>L12</td>
-      <td>Hidden Markov Models II</td>
-      <td><a href="/slides/CS486/S26/L11/">Slides</a>, Chat 6 out, <strong>Assignment 1 Due</strong></td>
-    </tr>
-    <!-- Markov Decision Process -->
-    <tr>
-      <td colspan="4"><strong>Markov Decision Process</strong></td>
-    </tr>
-    <tr>
-      <td>Tue Jun 23</td>
-      <td>L13</td>
-      <td>Decision Theory</td>
-      <td><a href="/slides/CS486/S26/L12/">Slides</a>, Chat 6 due</td>
-    </tr>
-    <tr>
-      <td>Thu Jun 25</td>
-      <td>L14</td>
-      <td>Markov Decision Processes I</td>
-      <td><a href="/slides/CS486/S26/L13/">Slides</a>, Chat 7 out, <strong>Assignment 2 Release</strong></td>
-    </tr>
-    <tr>
-      <td>Tue Jun 30</td>
-      <td>L15</td>
-      <td>Markov Decision Processes II</td>
-      <td><a href="/slides/CS486/S26/L14/">Slides</a>, Chat 7 due</td>
-    </tr>
+    <h3>Submission</h3>
+    <ul>
+      <li>Use the standard LaTeX template for the final report.</li>
+      <li>Submit the proposal and the final report on LEARN before each deadline.</li>
+      <li>Code must not be copied from public repositories - any violation is treated as plagiarism.</li>
+    </ul>
+  </section>
 
+  {%- comment -%} ====================== Submission Guidelines ====================== {%- endcomment -%}
+  <section aria-labelledby="submission-title">
+    <h2 class="course-section__title" id="submission-title">Submission guidelines</h2>
+    <ul>
+      <li>Assignments are individual unless otherwise stated.</li>
+      <li>Submit and receive marks through LEARN.</li>
+      <li>No late assignments are accepted.</li>
+    </ul>
+  </section>
 
-    <tr>
-      <td>Thu Jul 2</td>
-      <td>L16</td>
-      <td>Reinforcement Learning</td>
-      <td><a href="/slides/CS486/S26/L15/">Slides</a>, Chat 8 out</td>
-    </tr>
+  {%- comment -%} ====================== Readings ====================== {%- endcomment -%}
+  <section id="readings" aria-labelledby="readings-title">
+    <h2 class="course-section__title" id="readings-title">Readings</h2>
+    <h3>Primary text</h3>
+    <ul class="reading-list">
+      <li class="primary">
+        <div class="reading-title">{{ cs.readings.primary.title }}</div>
+        <div class="reading-authors">{{ cs.readings.primary.authors }} &middot; {{ cs.readings.primary.edition }}</div>
+        <div class="reading-cta">
+          {%- if cs.readings.primary.url -%}<a href="{{ cs.readings.primary.url }}">Read online</a> &middot; {%- endif -%}
+          <span class="muted-note">{{ cs.readings.primary.note }}</span>
+        </div>
+      </li>
+    </ul>
+    <h3 class="subhead">Secondary readings</h3>
+    <ul class="reading-list">
+      {%- for r in cs.readings.secondary -%}
+      <li>
+        <div class="reading-title">
+          {%- if r.url -%}<a href="{{ r.url }}">{{ r.title }}</a>{%- else -%}{{ r.title }}{%- endif -%}
+        </div>
+        <div class="reading-authors">{{ r.authors }}</div>
+      </li>
+      {%- endfor -%}
+    </ul>
+  </section>
 
-     <!-- Machine Learning & Deep Learning -->
-     <tr>
-      <td colspan="4"><strong>Machine Learning &amp; Deep Learning</strong></td>
-    </tr>
-    <tr>
-      <td>Tue Jul 7</td>
-      <td>L17</td>
-      <td>Introduction to Machine Learning</td>
-      <td><a href="/slides/CS486/S26/L16/">Slides</a>, Chat 8 due, <strong>Project Proposal Due (CS686)</strong></td>
-    </tr>
+  {%- comment -%} ====================== Schedule ====================== {%- endcomment -%}
+  <section id="schedule" aria-labelledby="schedule-title">
+    <h2 class="course-section__title" id="schedule-title">Course schedule</h2>
+    <p class="muted-note">The exact schedule is updated as the course progresses. The closest upcoming class is highlighted automatically.</p>
+    <table class="course-table schedule-table" id="schedule-table">
+      <caption>{{ course.code }} ({{ course.term }}) - class meetings, deadlines, and the final-exam window.</caption>
+      <thead>
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Lecture</th>
+          <th scope="col">Topic</th>
+          <th scope="col">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for e in cs.schedule -%}
+          {%- if e.type == 'module' -%}
+            <tr class="row--module"><th colspan="4" scope="rowgroup">{{ e.label }}</th></tr>
+          {%- elsif e.type == 'lecture' -%}
+            <tr data-date="{{ e.date | date: '%Y-%m-%d' }}" data-type="lecture">
+              <td data-label="Date">{{ e.date | date: '%a %b %-d' }}</td>
+              <td data-label="Lecture"><span class="lecture-num">L{{ e.lecture_num }}</span></td>
+              <td data-label="Topic">{{ e.topic }}</td>
+              <td data-label="Notes">
+                <span class="badges">
+                  {%- if e.slides -%}
+                    <a class="badge badge--slides" href="{{ e.slides }}" aria-label="L{{ e.lecture_num }} slides: {{ e.topic }}">Slides</a>
+                  {%- endif -%}
+                  {%- for d in e.deadlines -%}
+                    <span class="badge badge--{{ d.kind }}"{% if d.chat %} data-deadline="chat-{{ d.chat }}-{{ d.kind }}"{% endif %}>{{ d.label }}</span>
+                  {%- endfor -%}
+                </span>
+              </td>
+            </tr>
+          {%- elsif e.type == 'special_event' -%}
+            <tr class="row--special-event" data-date="{{ e.date | date: '%Y-%m-%d' }}" data-type="special_event">
+              <td data-label="Date">{{ e.date | date: '%a %b %-d' }}{% if e.time %}<br><small>{{ e.time }}</small>{% endif %}</td>
+              <td data-label="Lecture"><em>Event</em></td>
+              <td data-label="Topic" colspan="2">
+                <strong>{%- if e.url -%}<a href="{{ e.url }}">{{ e.title }}</a>{%- else -%}{{ e.title }}{%- endif -%}</strong>
+                {% if e.location %} &middot; {{ e.location }}{% endif %}
+                {% if e.note %}<br><small>{{ e.note }}</small>{% endif %}
+              </td>
+            </tr>
+          {%- elsif e.type == 'no_class' -%}
+            <tr class="row--no-class" data-date="{{ e.date | date: '%Y-%m-%d' }}" data-type="no_class">
+              <td data-label="Date">{{ e.date | date: '%a %b %-d' }}</td>
+              <td data-label="Lecture">&mdash;</td>
+              <td data-label="Topic">{{ e.label }}</td>
+              <td data-label="Notes">
+                {%- if e.deadlines -%}
+                  <span class="badges">
+                  {%- for d in e.deadlines -%}
+                    <span class="badge badge--{{ d.kind }}">{{ d.label }}</span>
+                  {%- endfor -%}
+                  </span>
+                {%- endif -%}
+              </td>
+            </tr>
+          {%- elsif e.type == 'final_exam' -%}
+            <tr class="row--final-exam" data-type="final_exam">
+              <td data-label="Date">{{ e.window }}</td>
+              <td data-label="Lecture"><span class="badge badge--exam">Exam</span></td>
+              <td data-label="Topic" colspan="2">{{ e.note }}</td>
+            </tr>
+          {%- endif -%}
+        {%- endfor -%}
+      </tbody>
+    </table>
+  </section>
 
-    <!-- Neural Networks -->
-    <!-- <tr>
-      <td colspan="4"><strong>Neural Networks</strong></td>
-    </tr> -->
-    <tr>
-      <td>Thu Jul 9</td>
-      <td>L18</td>
-      <td>Unsupervised Learning</td>
-      <td><a href="/slides/CS486/S26/L17/">Slides</a>, Chat 9 out, <strong>Assignment 2 Due, Assignment 3 Release</strong></td>
-    </tr>
-    <tr>
-      <td>Tue Jul 14</td>
-      <td>L19</td>
-      <td>Decision Trees</td>
-      <td><a href="/slides/CS486/S26/L18/">Slides</a>, Chat 9 due</td>
-    </tr>
-    <tr>
-      <td>Thu Jul 16</td>
-      <td>L20</td>
-      <td>Neural Networks I</td>
-      <td><a href="/slides/CS486/S26/L19/">Slides</a>, Chat 10 out</td>
-    </tr>
-    <tr>
-      <td>Tue Jul 21</td>
-      <td>L21</td>
-      <td>Neural Networks II</td>
-      <td><a href="/slides/CS486/S26/L20/">Slides</a>, Chat 10 due</td>
-    </tr>
-    <tr>
-      <td>Thu Jul 23</td>
-      <td>L22</td>
-      <td>Neural Networks III</td>
-      <td><a href="/slides/CS486/S26/L21/">Slides</a></td>
-    </tr>
-    <tr>
-      <td>Tue Jul 28</td>
-      <td>L22</td>
-      <td>Course Recap</td>
-      <td><a href="/slides/CS486/S26/L22/">Slides</a></td>
-    </tr>
-    <tr>
-      <td>Thu Jul 30</td>
-      <td></td>
-      <td>No class (buffer / review)</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>Tue Aug 4</td>
-      <td></td>
-      <td>No class</td>
-      <td><strong>Assignment 3 Due</strong></td>
-    </tr>
-    <!-- Final Examination -->
-    <tr>
-      <td>Aug 7&ndash;20</td>
-      <td colspan="3">Final Exam period (TBA &mdash; specific date set by Registrar). Final Project Report (CS686) due during this period (TBA).</td>
-    </tr>
-    
-  </tbody>
-</table>
+  {%- comment -%} ====================== Waitlist ====================== {%- endcomment -%}
+  <section aria-labelledby="waitlist-title">
+    <h2 class="course-section__title" id="waitlist-title">Waitlist</h2>
+    <p>If you can't register for the course, email <a href="mailto:{{ course.instructor.email }}">{{ course.instructor.email }}</a> to join the waitlist.</p>
+  </section>
 
-<h4>University of Waterloo Academic Integrity Policy</h4>
+  {%- comment -%} ====================== Academic Integrity (collapsed) ====================== {%- endcomment -%}
+  <section id="integrity" aria-labelledby="integrity-title">
+    <h2 class="course-section__title" id="integrity-title">University of Waterloo academic integrity</h2>
+    <details class="course-faq">
+      <summary>Expand the standard policy notices (grievance, discipline, appeals, accommodations)</summary>
+      <div class="faq-body">
+        <p>In order to maintain a culture of academic integrity, members of the University of Waterloo community are expected to promote honesty, trust, fairness, respect and responsibility. Check the <a href="https://uwaterloo.ca/academic-integrity/">Office of Academic Integrity's website</a> for more information.</p>
 
-<p>In order to maintain a culture of academic integrity, members of the University of Waterloo community are expected to promote honesty, trust, fairness, respect and responsibility. Check the <a href="https://uwaterloo.ca/academic-integrity/">Office of Academic Integrity's website</a> for more information.</p>
+        <h4>Grievance</h4>
+        <p>A student who believes that a decision affecting some aspect of his/her university life has been unfair or unreasonable may have grounds for initiating a grievance. Read <a href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-70">Policy 70 - Student Petitions and Grievances, Section 4</a>. When in doubt please be certain to contact the department's administrative assistant who will provide further assistance.</p>
 
-<h5>Grievance</h5>
-<p>A student who believes that a decision affecting some aspect of his/her university life has been unfair or unreasonable may have grounds for initiating a grievance. Read <a href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-70">Policy 70 - Student Petitions and Grievances, Section 4</a>. When in doubt please be certain to contact the department's administrative assistant who will provide further assistance.</p>
+        <h4>Discipline</h4>
+        <p>A student is expected to know what constitutes academic integrity, to avoid committing academic offenses, and to take responsibility for his/her actions. A student who is unsure whether an action constitutes an offense, or who needs help in learning how to avoid offenses (e.g., plagiarism, cheating) or about "rules" for group work/collaboration should seek guidance from the course professor, academic advisor, or the Undergraduate Associate Dean. For information on categories of offenses and types of penalties, students should refer to <a href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-71">Policy 71 - Student Discipline</a>. For typical penalties check <a href="https://uwaterloo.ca/secretariat/guidelines/guidelines-assessment-penalties">Guidelines for the Assessment of Penalties</a>.</p>
 
-<h5>Discipline</h5>
-<p>A student is expected to know what constitutes academic integrity, to avoid committing academic offenses, and to take responsibility for his/her actions. A student who is unsure whether an action constitutes an offense, or who needs help in learning how to avoid offenses (e.g., plagiarism, cheating) or about "rules" for group work/collaboration should seek guidance from the course professor, academic advisor, or the Undergraduate Associate Dean. For information on categories of offenses and types of penalties, students should refer to <a href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-71">Policy 71-Student Discipline</a>. For typical penalties check <a href="https://uwaterloo.ca/secretariat/guidelines/guidelines-assessment-penalties">Guidelines for the Assessment of Penalties</a>.</p>
+        <h4>Avoiding academic offenses</h4>
+        <p>Most students are unaware of the line between acceptable and unacceptable academic behaviour, especially when discussing assignments with classmates and using the work of other students. For information on commonly misunderstood academic offenses and how to avoid them, students should refer to the Faculty of Mathematics Cheating and Student Academic Discipline Policy.</p>
 
-<h5>Avoiding Academic Offenses</h5>
-<p>Most students are unaware of the line between acceptable and unacceptable academic behaviour, especially when discussing assignments with classmates and using the work of other students. For information on commonly misunderstood academic offenses and how to avoid them, students should refer to the Faculty of Mathematics Cheating and Student Academic Discipline Policy.</p>
+        <h4>Appeals</h4>
+        <p>A decision made or a penalty imposed under Policy 70 (Student Petitions and Grievances) or Policy 71 (Student Discipline) may be appealed if there is a ground. A student who believes he/she has a ground for an appeal should refer to <a href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-72">Policy 72 - Student Appeals</a>.</p>
 
-<h5>Appeals</h5>
-<p>A decision made or a penalty imposed under Policy 70, Student Petitions and Grievances (other than a petition) or Policy 71, Student Discipline may be appealed if there is a ground. A student who believes he/she has a ground for an appeal should refer to <a href="https://uwaterloo.ca/secretariat/policies-procedures-guidelines/policy-72">Policy 72 - Student Appeals</a>.</p>
+        <h4>Note for students with disabilities</h4>
+        <p>The AccessAbility Services Office (AAS), located in Needles Hall, Room 1401, collaborates with all academic departments to arrange appropriate accommodations for students with disabilities without compromising the academic integrity of the curriculum. If you require academic accommodations to lessen the impact of your disability, please register with the AAS at the beginning of each academic term.</p>
+      </div>
+    </details>
+  </section>
 
-<h5>Note for students with disabilities</h5>
-<p>The AccessAbility Services Office (AAS), located in Needles Hall, Room 1401, collaborates with all academic departments to arrange appropriate accommodations for students with disabilities without compromising the academic integrity of the curriculum. If you require academic accommodations to lessen the impact of your disability, please register with the AAS at the beginning of each academic term.</p>
+  <div class="course-page__footer-meta">
+    <span>Last updated: {{ site.time | date: "%B %-d, %Y" }}</span>
+    <span><a href="mailto:{{ course.instructor.email }}?subject=CS%20486%2F686%20course-page%20issue">Report an issue</a></span>
+  </div>
 
+</article>
+
+<script defer src="{{ '/js/course.js' | prepend: site.baseurl }}"></script>
