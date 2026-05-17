@@ -549,18 +549,20 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
      AC-3 algorithm (5 slides)
      ============================================================ -->
 
-<!-- 22. AC-3 algorithm -->
+<!-- 19. AC-3 algorithm -->
 <section>
   <h2>The AC-3 algorithm</h2>
-<pre class="algo">put every arc into the set S
-<span class="kw">while</span> S is not empty:
-    select and remove &lt;X, c(X,Y)&gt; from S
-    remove every v in D<sub>X</sub> with no w in D<sub>Y</sub> satisfying c(X,Y)
-    <span class="kw">if</span> D<sub>X</sub> was reduced:
-        <span class="kw">if</span> D<sub>X</sub> is empty: <span class="kw">return</span> false
-        <span class="kw">for each</span> Z &ne; Y: add &lt;Z, c'(Z, X)&gt; to S
-<span class="kw">return</span> true</pre>
-  <p style="font-size: 0.78em; color:#6b7280;">Each iteration enforces one arc, then re-queues neighbours whose consistency may have broken.</p>
+  <div class="algo-card">
+    <div class="algo-title">AC-3(arcs)</div>
+    <ol>
+      <li>Put every arc into the set <code>S</code>.</li>
+      <li>While <code>S</code> is not empty: pop an arc <code>&lt;X, c(X,Y)&gt;</code>.</li>
+      <li>Drop every <code>v</code> in <code>D<sub>X</sub></code> with no <code>w</code> in <code>D<sub>Y</sub></code> satisfying <code>c(X,Y)</code>.</li>
+      <li>If <code>D<sub>X</sub></code> shrank: if it's empty &rarr; <strong>return</strong> <code>false</code>; otherwise re-queue every <code>&lt;Z, c'(Z, X)&gt;</code> with <code>Z &ne; Y</code>.</li>
+      <li>If <code>S</code> empties without failure &rarr; <strong>return</strong> <code>true</code>.</li>
+    </ol>
+  </div>
+  <p style="font-size: 0.82em; color:#6b7280; text-align:center; margin-top: 0.4em;">Each iteration enforces one arc, then re-queues neighbours whose consistency may have broken.</p>
 </section>
 
 <!-- 23. Why add arcs back to S? -->

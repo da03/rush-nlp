@@ -500,33 +500,48 @@
   <p style="text-align:center; font-size: 0.78em; color:#6b7280; margin: 0;">Hot temperatures stay willing to accept bad moves; cold temperatures barely budge.</p>
 </section>
 
-<!-- 21. Quiz: probability behaviour -->
+<!-- 21a. Quiz Q1: vary T -->
 <section>
-  <h2>Q: how does the acceptance probability behave?</h2>
-  <p class="quiz-q"><strong>Q1.</strong> As \(T\) <em>decreases</em>, the probability of moving to a worse neighbour&hellip;</p>
+  <h2>Q: as \(T\) decreases&hellip;</h2>
+  <p class="quiz-q"><strong>Q.</strong> As \(T\) <em>decreases</em>, the probability of moving to a worse neighbour&hellip;</p>
+  <ol class="quiz-options">
+    <li>increases</li>
+    <li>stays the same</li>
+    <li>decreases</li>
+  </ol>
   <div class="quiz-answer fragment">
-    <strong>&hellip; decreases.</strong> Example with \(\Delta C = 10\): &nbsp;\(T = 100 \Rightarrow p = e^{-0.1} \approx 0.90\); &nbsp;\(T = 10 \Rightarrow p = e^{-1} \approx 0.37\).
-  </div>
-  <p class="quiz-q" style="margin-top: 1em;"><strong>Q2.</strong> As \(\Delta C\) <em>increases</em> (the neighbour is much worse), the probability&hellip;</p>
-  <div class="quiz-answer fragment">
-    <strong>&hellip; also decreases.</strong> Example with \(T = 10\): &nbsp;\(\Delta C = 10 \Rightarrow p \approx 0.37\); &nbsp;\(\Delta C = 100 \Rightarrow p \approx 0.000045\).
+    <strong>C &mdash; decreases.</strong> Example with \(\Delta C = 10\): &nbsp;\(T = 100 \Rightarrow p = e^{-0.1} \approx 0.90\); &nbsp;\(T = 10 \Rightarrow p = e^{-1} \approx 0.37\).
   </div>
 </section>
 
-<!-- 22. SA algorithm -->
+<!-- 21b. Quiz Q2: vary deltaC -->
+<section>
+  <h2>Q: as \(\Delta C\) increases&hellip;</h2>
+  <p class="quiz-q"><strong>Q.</strong> As \(\Delta C\) <em>increases</em> (the neighbour is much worse), the probability&hellip;</p>
+  <ol class="quiz-options">
+    <li>increases</li>
+    <li>stays the same</li>
+    <li>decreases</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>C &mdash; also decreases.</strong> Example with \(T = 10\): &nbsp;\(\Delta C = 10 \Rightarrow p \approx 0.37\); &nbsp;\(\Delta C = 100 \Rightarrow p \approx 0.000045\).
+  </div>
+</section>
+
+<!-- 23. SA algorithm -->
 <section>
   <h2>Simulated annealing algorithm</h2>
-<pre class="algo">current &larr; initial-state
-T &larr; a large positive value
-<span class="kw">while</span> T &gt; 0:
-    next &larr; a random neighbour of current
-    &Delta;C &larr; cost(next) - cost(current)
-    <span class="kw">if</span> &Delta;C &lt; 0:
-        current &larr; next                <span class="cmt"># improvement: always accept</span>
-    <span class="kw">else</span>:
-        current &larr; next with probability p = e<sup>-&Delta;C / T</sup>   <span class="cmt"># worse: accept stochastically</span>
-    decrease T
-<span class="kw">return</span> current</pre>
+  <div class="algo-card">
+    <div class="algo-title">simulated-annealing()</div>
+    <ol>
+      <li><code>current</code> &larr; initial state; <code>T</code> &larr; large positive value.</li>
+      <li>While <code>T &gt; 0</code>: pick a random neighbour <code>next</code>; let \(\Delta C = \mathrm{cost}(\text{next}) - \mathrm{cost}(\text{current})\).</li>
+      <li>If \(\Delta C &lt; 0\) &rarr; <strong>always accept</strong>: <code>current &larr; next</code>.</li>
+      <li>Else accept with probability \(p = e^{-\Delta C / T}\).</li>
+      <li>Cool \(T\) (e.g. \(T \leftarrow \alpha\, T\)).</li>
+      <li>Return <code>current</code>.</li>
+    </ol>
+  </div>
 </section>
 
 <!-- 23. Annealing schedule -->
@@ -540,14 +555,47 @@ T &larr; a large positive value
   <p class="fragment" style="font-size: 0.85em; color:#6b7280; margin-top: 0.8em;">Example: start at \(T_0 = 10\), \(\alpha = 0.99\). After 500 steps, \(T \approx 0.07\).</p>
 </section>
 
-<!-- 24. SA for TSP + life analogy -->
+<!-- 25. SA for TSP + life analogy -->
 <section>
   <h2>SA in action &mdash; and as life</h2>
   <div class="algo-compare-cards">
     <div class="ac-card" style="text-align: center;">
       <h3>Travelling salesman</h3>
-      <img class="tsp-img" src="images/annealing.png" alt="SA TSP example">
-      <p style="margin-top: 0.3em; font-size: 0.78em;">30 cities: \(30! \approx 2.6 \times 10^{32}\) tours. NP-hard, but SA finds great tours fast.</p>
+      <div class="tsp-pair">
+        <div>
+          <svg viewBox="0 0 100 100" class="tsp-svg" xmlns="http://www.w3.org/2000/svg" aria-label="Tangled TSP tour">
+            <path class="tour-tangled" d="M 15 20 L 90 78 L 60 12 L 28 78 L 52 38 L 10 60 L 88 30 L 58 85 L 35 45 L 75 55 Z"/>
+            <circle class="city" cx="15" cy="20" r="2.2"/>
+            <circle class="city" cx="60" cy="12" r="2.2"/>
+            <circle class="city" cx="88" cy="30" r="2.2"/>
+            <circle class="city" cx="75" cy="55" r="2.2"/>
+            <circle class="city" cx="90" cy="78" r="2.2"/>
+            <circle class="city" cx="58" cy="85" r="2.2"/>
+            <circle class="city" cx="28" cy="78" r="2.2"/>
+            <circle class="city" cx="10" cy="60" r="2.2"/>
+            <circle class="city" cx="35" cy="45" r="2.2"/>
+            <circle class="city" cx="52" cy="38" r="2.2"/>
+          </svg>
+          <span class="tsp-caption" style="color:#dc2626;">high \(T\): tangled</span>
+        </div>
+        <div>
+          <svg viewBox="0 0 100 100" class="tsp-svg" xmlns="http://www.w3.org/2000/svg" aria-label="Smooth TSP tour">
+            <path class="tour-smooth" d="M 15 20 L 60 12 L 88 30 L 75 55 L 90 78 L 58 85 L 28 78 L 10 60 L 35 45 L 52 38 Z"/>
+            <circle class="city" cx="15" cy="20" r="2.2"/>
+            <circle class="city" cx="60" cy="12" r="2.2"/>
+            <circle class="city" cx="88" cy="30" r="2.2"/>
+            <circle class="city" cx="75" cy="55" r="2.2"/>
+            <circle class="city" cx="90" cy="78" r="2.2"/>
+            <circle class="city" cx="58" cy="85" r="2.2"/>
+            <circle class="city" cx="28" cy="78" r="2.2"/>
+            <circle class="city" cx="10" cy="60" r="2.2"/>
+            <circle class="city" cx="35" cy="45" r="2.2"/>
+            <circle class="city" cx="52" cy="38" r="2.2"/>
+          </svg>
+          <span class="tsp-caption" style="color:#15803d;">low \(T\): smooth</span>
+        </div>
+      </div>
+      <p style="margin-top: 0.4em; font-size: 0.78em;">30 cities: \(30! \approx 2.6 \times 10^{32}\) tours. NP-hard, but SA finds great tours fast.</p>
     </div>
     <div class="ac-card fragment">
       <h3>SA as life</h3>
@@ -573,7 +621,7 @@ T &larr; a large positive value
   </ul>
 </section>
 
-<!-- 26. Beam search -->
+<!-- 27. Beam search -->
 <section>
   <h2>Beam search</h2>
   <div class="two-col vcenter">
@@ -586,7 +634,60 @@ T &larr; a large positive value
       </ul>
     </div>
     <div style="flex: 1; text-align: center;">
-      <img class="beam-img" src="images/beam_search.png" alt="Beam search tree">
+      <svg viewBox="0 0 340 240" xmlns="http://www.w3.org/2000/svg" class="beam-tree-svg" aria-label="Beam-search tree, k = 3">
+        <text class="level-label" x="335" y="32">level 0</text>
+        <text class="level-label" x="335" y="120">level 1</text>
+        <text class="level-label" x="335" y="208">level 2</text>
+
+        <g>
+          <line class="edge kept" x1="60"  y1="38" x2="22"  y2="108"/>
+          <line class="edge"      x1="60"  y1="38" x2="62"  y2="108"/>
+          <line class="edge kept" x1="60"  y1="38" x2="102" y2="108"/>
+          <line class="edge"      x1="170" y1="38" x2="130" y2="108"/>
+          <line class="edge"      x1="170" y1="38" x2="170" y2="108"/>
+          <line class="edge kept" x1="170" y1="38" x2="210" y2="108"/>
+          <line class="edge"      x1="280" y1="38" x2="238" y2="108"/>
+          <line class="edge"      x1="280" y1="38" x2="278" y2="108"/>
+          <line class="edge"      x1="280" y1="38" x2="318" y2="108"/>
+        </g>
+
+        <g>
+          <line class="edge kept" x1="22"  y1="125" x2="22"  y2="195"/>
+          <line class="edge"      x1="22"  y1="125" x2="62"  y2="195"/>
+          <line class="edge"      x1="22"  y1="125" x2="102" y2="195"/>
+          <line class="edge"      x1="102" y1="125" x2="130" y2="195"/>
+          <line class="edge kept" x1="102" y1="125" x2="170" y2="195"/>
+          <line class="edge"      x1="102" y1="125" x2="210" y2="195"/>
+          <line class="edge"      x1="210" y1="125" x2="238" y2="195"/>
+          <line class="edge"      x1="210" y1="125" x2="278" y2="195"/>
+          <line class="edge kept" x1="210" y1="125" x2="318" y2="195"/>
+        </g>
+
+        <circle class="node kept" cx="60"  cy="22" r="14"/><text x="60"  y="22">a</text>
+        <circle class="node kept" cx="170" cy="22" r="14"/><text x="170" y="22">b</text>
+        <circle class="node kept" cx="280" cy="22" r="14"/><text x="280" y="22">c</text>
+
+        <circle class="node kept" cx="22"  cy="116" r="12"/>
+        <circle class="node"      cx="62"  cy="116" r="12"/>
+        <circle class="node kept" cx="102" cy="116" r="12"/>
+        <circle class="node"      cx="130" cy="116" r="12"/>
+        <circle class="node"      cx="170" cy="116" r="12"/>
+        <circle class="node kept" cx="210" cy="116" r="12"/>
+        <circle class="node"      cx="238" cy="116" r="12"/>
+        <circle class="node"      cx="278" cy="116" r="12"/>
+        <circle class="node"      cx="318" cy="116" r="12"/>
+
+        <circle class="node kept" cx="22"  cy="204" r="12"/>
+        <circle class="node"      cx="62"  cy="204" r="12"/>
+        <circle class="node"      cx="102" cy="204" r="12"/>
+        <circle class="node"      cx="130" cy="204" r="12"/>
+        <circle class="node kept" cx="170" cy="204" r="12"/>
+        <circle class="node"      cx="210" cy="204" r="12"/>
+        <circle class="node"      cx="238" cy="204" r="12"/>
+        <circle class="node"      cx="278" cy="204" r="12"/>
+        <circle class="node kept" cx="318" cy="204" r="12"/>
+      </svg>
+      <p style="font-size: 0.75em; color: #6b7280; margin: 0.2em 0 0;">Green = the \(k\!=\!3\) kept per level.</p>
     </div>
   </div>
 </section>
@@ -613,24 +714,58 @@ T &larr; a large positive value
   <p class="fragment" style="font-size: 0.85em; margin-top: 0.8em; color:#1d4ed8;">Adding <em>sexual</em> reproduction gives the <strong>genetic algorithm</strong>.</p>
 </section>
 
-<!-- 29. Genetic algorithm -->
+<!-- 30. Genetic algorithm -->
 <section>
   <h2>Genetic algorithm</h2>
-<pre class="algo narrow">randomly initialize population P
-<span class="kw">while not</span> converged:
-    select parents from P, weighted by fitness
-    crossover parents to produce offspring
-    mutate offspring with small probability
-    P &larr; new population of offspring
-    re-compute fitness</pre>
+  <div class="algo-card" style="max-width: 80%;">
+    <div class="algo-title">genetic-algorithm()</div>
+    <ol>
+      <li>Initialize a population \(P\) of random individuals.</li>
+      <li>Until converged: select parents from \(P\) weighted by fitness.</li>
+      <li>&nbsp;&nbsp;Crossover parents &rarr; offspring.</li>
+      <li>&nbsp;&nbsp;Mutate offspring with small probability.</li>
+      <li>&nbsp;&nbsp;Replace \(P\) with the offspring.</li>
+      <li>Return the best individual in \(P\).</li>
+    </ol>
+  </div>
   <div class="two-col" style="margin-top: 0.4em;">
     <div style="flex: 1; text-align: center;">
-      <img class="ga-img" src="images/genetic-algorithm1.png" alt="Crossover">
-      <p style="font-size: 0.75em; color: #6b7280; margin: 0.2em 0 0;">Crossover: parents' genes combine.</p>
+      <div class="ga-diagram" aria-label="Crossover">
+        <div class="ga-row">
+          <span class="label">parent A</span>
+          <span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">1</span><span class="crossover-mark"></span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span>
+        </div>
+        <div class="ga-row">
+          <span class="label">parent B</span>
+          <span class="bit parent-b">0</span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span class="crossover-mark"></span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span class="bit parent-b">0</span>
+        </div>
+        <div class="ga-row" style="margin-top: 4px;">
+          <span class="label">child 1</span>
+          <span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">1</span><span style="width: 10px;"></span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span class="bit parent-b">0</span>
+        </div>
+        <div class="ga-row">
+          <span class="label">child 2</span>
+          <span class="bit parent-b">0</span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span style="width: 10px;"></span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span>
+        </div>
+        <p class="ga-caption">Crossover: split parents at a point, swap tails.</p>
+      </div>
     </div>
     <div style="flex: 1; text-align: center;">
-      <img class="ga-img" src="images/genetic-algorithm2.png" alt="Mutation">
-      <p style="font-size: 0.75em; color: #6b7280; margin: 0.2em 0 0;">Mutation: occasional random tweaks.</p>
+      <div class="ga-diagram" aria-label="Mutation">
+        <div class="ga-row">
+          <span class="label">before</span>
+          <span class="bit">1</span><span class="bit">0</span><span class="bit">1</span><span class="bit">1</span><span class="bit">0</span><span class="bit">1</span><span class="bit">0</span><span class="bit">1</span>
+        </div>
+        <div class="ga-row">
+          <span class="label" style="visibility:hidden;">x</span>
+          <span style="width: 20px;"></span><span style="width: 20px;"></span><span style="width: 20px;"></span><span style="width: 20px;"></span><span class="arrow">&darr;</span><span style="width: 20px;"></span><span style="width: 20px;"></span><span style="width: 20px;"></span>
+        </div>
+        <div class="ga-row">
+          <span class="label">after</span>
+          <span class="bit">1</span><span class="bit">0</span><span class="bit">1</span><span class="bit">1</span><span class="bit flipped">1</span><span class="bit">1</span><span class="bit">0</span><span class="bit">1</span>
+        </div>
+        <p class="ga-caption">Mutation: flip a random bit with small probability.</p>
+      </div>
     </div>
   </div>
 </section>

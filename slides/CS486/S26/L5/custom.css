@@ -46,13 +46,130 @@
 }
 .reveal .algo-compare-cards .ac-card ul { padding-left: 1.2em; margin-top: 0.3em; }
 
-/* Beam search image sizing. */
-.reveal img.beam-img { max-height: 280px; width: auto; border: 1px solid #e5e7eb; border-radius: 4px; }
-.reveal img.ga-img   { max-height: 180px; width: auto; }
-.reveal img.tsp-img  { max-height: 260px; width: auto; border: 1px solid #e5e7eb; border-radius: 4px; }
-
-/* Pseudocode block tweak when we need it narrower. */
-.reveal pre.algo.narrow { max-width: 70%; }
-
 /* Two-column simple layout (re-uses .two-col but with vertical alignment center). */
 .reveal .two-col.vcenter { align-items: center; }
+
+/* ============================================================
+   Polish pass: algo-card (slides 22, 29), inline-SVG replacements
+   for TSP (slide 24), beam tree (slide 26), GA crossover+mutation (slide 29).
+   ============================================================ */
+
+/* Algorithm pseudocode card -- same shape as L21/L3/L4. */
+.reveal .algo-card {
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 6px;
+  padding: 0.6em 0.9em;
+  font-size: 0.82em;
+  margin: 0.3em auto;
+  max-width: 95%;
+}
+.reveal .algo-card .algo-title {
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 0.3em;
+  font-size: 0.95em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal .algo-card ol {
+  margin: 0.2em 0 0.2em 1.5em;
+  padding: 0;
+}
+.reveal .algo-card ol li { margin: 0.15em 0; }
+.reveal .algo-card code {
+  background: #eef2ff;
+  color: #1e3a8a;
+  padding: 0 0.3em;
+  border-radius: 3px;
+  font-size: 0.95em;
+}
+
+/* Slide 24: small TSP route panels (tangled high-T vs smooth low-T). */
+.reveal .tsp-pair {
+  display: flex;
+  gap: 0.6em;
+  justify-content: center;
+  margin: 0.3em 0;
+}
+.reveal .tsp-svg {
+  display: block;
+  max-width: 140px;
+  max-height: 140px;
+}
+.reveal .tsp-svg .city { fill: #1d4ed8; }
+.reveal .tsp-svg .tour-tangled { stroke: #dc2626; stroke-width: 1.8; fill: none; }
+.reveal .tsp-svg .tour-smooth  { stroke: #15803d; stroke-width: 1.8; fill: none; }
+.reveal .tsp-caption {
+  display: block;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 0.2em;
+  color: #6b7280;
+}
+
+/* Slide 26: beam-search tree SVG. */
+.reveal .beam-tree-svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 300px;
+}
+.reveal .beam-tree-svg .edge        { stroke: #9ca3af; stroke-width: 1.2; fill: none; }
+.reveal .beam-tree-svg .edge.kept   { stroke: #15803d; stroke-width: 2; }
+.reveal .beam-tree-svg .node        { fill: #f3f4f6; stroke: #6b7280; stroke-width: 1.2; opacity: 0.55; }
+.reveal .beam-tree-svg .node.kept   { fill: #dcfce7; stroke: #15803d; stroke-width: 2; opacity: 1; }
+.reveal .beam-tree-svg text         { font-size: 10px; text-anchor: middle; dominant-baseline: middle; fill: #111827; }
+.reveal .beam-tree-svg .level-label { font-size: 11px; fill: #6b7280; font-style: italic; text-anchor: end; }
+
+/* Slide 29: GA crossover + mutation bit-string diagrams. */
+.reveal .ga-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.85em;
+}
+.reveal .ga-row { display: flex; gap: 2px; align-items: center; }
+.reveal .ga-row .label {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.7em;
+  font-weight: 600;
+  color: #6b7280;
+  margin-right: 0.4em;
+  min-width: 50px;
+  text-align: right;
+}
+.reveal .ga-row .bit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #9ca3af;
+  background: #f9fafb;
+  font-weight: 700;
+}
+.reveal .ga-row .bit.parent-a    { background: #dbeafe; border-color: #1d4ed8; color: #1e3a8a; }
+.reveal .ga-row .bit.parent-b    { background: #fef3c7; border-color: #d97706; color: #92400e; }
+.reveal .ga-row .bit.flipped     { background: #fecaca; border-color: #b91c1c; color: #991b1b; }
+.reveal .ga-row .crossover-mark {
+  display: inline-block;
+  width: 2px;
+  height: 30px;
+  background: repeating-linear-gradient(to bottom, #dc2626 0 4px, transparent 4px 7px);
+  margin: 0 4px;
+}
+.reveal .ga-row .arrow {
+  font-size: 0.9em;
+  color: #6b7280;
+  margin: 0 0.3em;
+}
+.reveal .ga-caption {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.72em;
+  color: #6b7280;
+  margin-top: 0.1em;
+}
