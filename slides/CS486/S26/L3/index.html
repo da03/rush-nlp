@@ -133,12 +133,48 @@
 <!-- 5. What makes a good heuristic? -->
 <section class="center-slide">
   <h2>What makes a good heuristic?</h2>
-  <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Problem-specific</li>
-    <li class="fragment">Non-negative</li>
-    <li class="fragment">\(h(\text{goal}) = 0\)</li>
-    <li class="fragment">Easy to compute (no search)</li>
-  </ul>
+  <div class="heuristic-icons">
+    <div class="heuristic-icon-card fragment">
+      <svg class="icon" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+        <path class="accent" d="M8 8 H22 V14 a3 3 0 0 0 3 3 a3 3 0 0 0 3 -3 V8 H36 V22 h-6 a3 3 0 0 0 -3 3 a3 3 0 0 0 3 3 H36 V36 H22 V30 a3 3 0 0 0 -3 -3 a3 3 0 0 0 -3 3 V36 H8 V8 z"/>
+      </svg>
+      <div class="label">Problem-specific</div>
+    </div>
+    <div class="heuristic-icon-card fragment">
+      <svg class="icon" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+        <line class="stroke" x1="6" y1="28" x2="38" y2="28"/>
+        <g class="stroke">
+          <line x1="10" y1="24" x2="10" y2="32"/>
+          <line x1="18" y1="24" x2="18" y2="32"/>
+          <line x1="26" y1="22" x2="26" y2="34"/>
+          <line x1="34" y1="24" x2="34" y2="32"/>
+        </g>
+        <text x="26" y="14" text-anchor="middle" font-size="10" fill="#1d4ed8" font-weight="700">0</text>
+        <text x="10" y="40" text-anchor="middle" font-size="8" fill="#6b7280">&minus;</text>
+        <text x="34" y="40" text-anchor="middle" font-size="8" fill="#6b7280">+</text>
+      </svg>
+      <div class="label">Non-negative</div>
+    </div>
+    <div class="heuristic-icon-card fragment">
+      <svg class="icon" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+        <line class="stroke" x1="10" y1="38" x2="10" y2="8" stroke-width="2.5"/>
+        <path d="M10 8 L32 13 L10 18 z" fill="#dc2626" stroke="#991b1b" stroke-width="1"/>
+        <circle class="pop" cx="32" cy="36" r="6"/>
+        <text x="32" y="36" text-anchor="middle" dominant-baseline="middle" font-size="9" font-weight="700" fill="#fff">0</text>
+      </svg>
+      <div class="label">\(h(\text{goal}) = 0\)</div>
+    </div>
+    <div class="heuristic-icon-card fragment">
+      <svg class="icon" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+        <circle class="accent" cx="22" cy="26" r="14"/>
+        <line class="stroke" x1="22" y1="26" x2="22" y2="18"/>
+        <line class="stroke" x1="22" y1="26" x2="28" y2="28"/>
+        <line class="stroke" x1="22" y1="6" x2="22" y2="12" stroke-width="2"/>
+        <line class="stroke" x1="18" y1="6" x2="26" y2="6" stroke-width="2"/>
+      </svg>
+      <div class="label">Cheap to compute</div>
+    </div>
+  </div>
 </section>
 
 <!-- 6. Three algorithms, one knob -->
@@ -412,21 +448,83 @@
   </table>
 </section>
 
-<!-- 14. GBFS failures -->
+<!-- 14a. GBFS - not complete -->
 <section>
-  <h2>GBFS &mdash; failure modes</h2>
-  <div class="failure-pair">
-    <div>
-      <img src="images/greedy_depth_first_search_not_complete.png" alt="GBFS gets stuck">
-      <div class="failure-label">Not complete &mdash; gets stuck</div>
-      <p class="footnote" style="margin-top: 0.2em;">Arc cost = length, \(h\) = straight-line distance.</p>
-    </div>
-    <div>
-      <img src="images/greedy_best_first_search_not_optimal.png" alt="GBFS picks suboptimal path">
-      <div class="failure-label">Not optimal &mdash; greedy &ne; best</div>
-      <p class="footnote" style="margin-top: 0.2em;">GBFS finds <em>S&rarr;A&rarr;G</em> (21); optimal is <em>S&rarr;B&rarr;C&rarr;G</em> (11).</p>
-    </div>
-  </div>
+  <h2>GBFS &mdash; not complete</h2>
+  <p style="font-size: 0.85em; text-align:center; color:#6b7280; margin: 0;">A misleading heuristic can send GBFS into a dead-end.</p>
+  <svg viewBox="0 0 540 280" xmlns="http://www.w3.org/2000/svg" class="gbfs-fail-svg">
+    <defs>
+      <marker id="arrow-f14a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+      <marker id="arrow-f14a-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
+    </defs>
+    <line class="edge" x1="80" y1="135" x2="218" y2="80"  marker-end="url(#arrow-f14a)"/>
+    <line class="edge" x1="80" y1="155" x2="218" y2="210" marker-end="url(#arrow-f14a)"/>
+    <line class="edge" x1="262" y1="210" x2="398" y2="210" marker-end="url(#arrow-f14a)"/>
+    <text class="cost-label" x="140" y="100">1</text>
+    <text class="cost-label" x="140" y="195">1</text>
+    <text class="cost-label" x="330" y="200">1</text>
+    <g class="node start"><circle cx="60"  cy="145" r="20"/><text x="60"  y="145" fill="#1e3a8a">S</text></g>
+    <g class="node">      <circle cx="240" cy="70"  r="20"/><text x="240" y="70">A</text></g>
+    <g class="node">      <circle cx="240" cy="220" r="20"/><text x="240" y="220">B</text></g>
+    <g class="node goal"> <circle cx="420" cy="220" r="20"/><text x="420" y="220" fill="#991b1b">G</text></g>
+    <text class="h-label" x="60"  y="180" text-anchor="middle">h=12</text>
+    <text class="h-label" x="240" y="40"  text-anchor="middle">h=2  (looks close!)</text>
+    <text class="h-label" x="240" y="252" text-anchor="middle">h=10</text>
+    <text class="h-label" x="420" y="252" text-anchor="middle">h=0</text>
+    <g class="fragment">
+      <line class="edge-greedy" x1="80" y1="135" x2="218" y2="80" marker-end="url(#arrow-f14a-red)"/>
+      <g class="stuck-x" transform="translate(266, 50)">
+        <line x1="0" y1="0" x2="22" y2="22"/>
+        <line x1="22" y1="0" x2="0" y2="22"/>
+      </g>
+      <text class="stuck-badge" x="320" y="65">dead end &mdash; stuck</text>
+    </g>
+  </svg>
+  <p class="footnote fragment" style="margin-top: 0.2em;">GBFS picks A first (lowest \(h\)), but A has no outgoing edges. It never reaches G.</p>
+</section>
+
+<!-- 14b. GBFS - not optimal -->
+<section>
+  <h2>GBFS &mdash; not optimal</h2>
+  <p style="font-size: 0.85em; text-align:center; color:#6b7280; margin: 0;">Even when GBFS finds the goal, the path can be far from cheapest.</p>
+  <svg viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg" class="gbfs-fail-svg">
+    <defs>
+      <marker id="arrow-f14b" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+      <marker id="arrow-f14b-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
+      <marker id="arrow-f14b-green" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#16a34a"/></marker>
+    </defs>
+    <line class="edge" x1="80" y1="125" x2="258" y2="80"  marker-end="url(#arrow-f14b)"/>
+    <line class="edge" x1="80" y1="155" x2="198" y2="210" marker-end="url(#arrow-f14b)"/>
+    <line class="edge" x1="298" y1="80" x2="478" y2="125" marker-end="url(#arrow-f14b)"/>
+    <line class="edge" x1="238" y1="220" x2="338" y2="220" marker-end="url(#arrow-f14b)"/>
+    <line class="edge" x1="378" y1="210" x2="478" y2="155" marker-end="url(#arrow-f14b)"/>
+    <text class="cost-label" x="160" y="95">1</text>
+    <text class="cost-label" x="295" y="125">20</text>
+    <text class="cost-label" x="140" y="195">3</text>
+    <text class="cost-label" x="288" y="245">4</text>
+    <text class="cost-label" x="438" y="200">4</text>
+    <g class="node start"><circle cx="60"  cy="140" r="20"/><text x="60"  y="140" fill="#1e3a8a">S</text></g>
+    <g class="node">      <circle cx="280" cy="70"  r="20"/><text x="280" y="70">A</text></g>
+    <g class="node">      <circle cx="220" cy="220" r="20"/><text x="220" y="220">B</text></g>
+    <g class="node">      <circle cx="360" cy="220" r="20"/><text x="360" y="220">C</text></g>
+    <g class="node goal"> <circle cx="500" cy="140" r="20"/><text x="500" y="140" fill="#991b1b">G</text></g>
+    <text class="h-label" x="60"  y="175" text-anchor="middle">h=15</text>
+    <text class="h-label" x="280" y="40"  text-anchor="middle">h=2</text>
+    <text class="h-label" x="220" y="252" text-anchor="middle">h=10</text>
+    <text class="h-label" x="360" y="252" text-anchor="middle">h=4</text>
+    <text class="h-label" x="500" y="175" text-anchor="middle">h=0</text>
+    <g class="fragment">
+      <line class="edge-greedy" x1="80" y1="125" x2="258" y2="80"  marker-end="url(#arrow-f14b-red)"/>
+      <line class="edge-greedy" x1="298" y1="80" x2="478" y2="125" marker-end="url(#arrow-f14b-red)"/>
+      <text x="280" y="115" text-anchor="middle" font-size="13" font-weight="700" fill="#991b1b">GBFS path: S&rarr;A&rarr;G  cost = 21</text>
+    </g>
+    <g class="fragment">
+      <line class="edge-best" x1="80" y1="155" x2="198" y2="210" marker-end="url(#arrow-f14b-green)"/>
+      <line class="edge-best" x1="238" y1="220" x2="338" y2="220" marker-end="url(#arrow-f14b-green)"/>
+      <line class="edge-best" x1="378" y1="210" x2="478" y2="155" marker-end="url(#arrow-f14b-green)"/>
+      <text x="280" y="275" text-anchor="middle" font-size="13" font-weight="700" fill="#15803d">Optimal: S&rarr;B&rarr;C&rarr;G  cost = 11</text>
+    </g>
+  </svg>
 </section>
 
 <!-- ============================================================
@@ -652,21 +750,31 @@
   </div>
   <p style="text-align: center; font-size: 0.85em; margin-top: 0.6em;">Red = misplaced. Green = already at goal.</p>
   <p class="heuristic-total fragment">Misplaced(start) = <span style="color:#dc2626;">7</span></p>
-  <p style="text-align: center; font-size: 0.78em; color: #6b7280;">Both heuristics are <strong>admissible</strong>. We'll compare them on slide 23b.</p>
+  <p style="text-align: center; font-size: 0.78em; color: #6b7280;">Both heuristics are <strong>admissible</strong>.</p>
 </section>
 
 <!-- 21. Constructing admissible heuristics -->
 <section>
   <h2>Recipe: relax the problem</h2>
-  <ol style="font-size: 0.9em;">
+  <svg viewBox="0 0 360 100" xmlns="http://www.w3.org/2000/svg" class="relax-mini">
+    <defs>
+      <marker id="relax-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
+    </defs>
+    <rect class="box-fill" x="40"  y="30" width="60" height="60" rx="6"/>
+    <text x="70" y="65" dominant-baseline="middle">A: tile</text>
+    <line class="arrow" x1="105" y1="60" x2="155" y2="60" marker-end="url(#relax-arrow)"/>
+    <rect class="box-fill" x="160" y="30" width="100" height="60" rx="6"/>
+    <text x="210" y="55" dominant-baseline="middle">B: adjacent</text>
+    <text x="210" y="75" dominant-baseline="middle" font-style="italic" fill="#6b7280">+ empty</text>
+    <line class="strike" x1="172" y1="80" x2="252" y2="70"/>
+    <text class="relax-label" x="310" y="68" text-anchor="middle">drop me!</text>
+  </svg>
+  <ol style="font-size: 0.9em; margin-top: 0.2em;">
     <li class="fragment"><span class="g-color">Relax</span> the problem by dropping constraints.</li>
     <li class="fragment"><span class="g-color">Solve</span> the relaxed problem (without search).</li>
-    <li class="fragment">The cost of that solution is an <strong>admissible heuristic</strong> for the original.</li>
+    <li class="fragment">That cost is an <strong>admissible heuristic</strong> for the original.</li>
   </ol>
-  <div class="theorem fragment" style="margin-top:1em;">
-    <strong>8-puzzle constraints:</strong> a tile moves from A to B if (a) A and B are <em>adjacent</em> and (b) B is <em>empty</em>.
-  </div>
-  <p class="fragment" style="font-size: 0.82em; margin-top: 0.5em;">Dropping a constraint gives an easier problem, and its optimal cost lower-bounds the original.</p>
+  <p class="fragment" style="font-size: 0.82em; margin-top: 0.3em; color: #6b7280; text-align: center;">An easier problem gives a lower bound &mdash; safe to use as an estimate.</p>
 </section>
 
 <!-- 22. Quiz: which relaxation? -->
@@ -717,26 +825,30 @@
   <h2>Cycle pruning</h2>
   <p style="font-size: 0.9em;">Don't follow a path that revisits a node already on the current path.</p>
   <div class="with-mini-diagram">
-<pre class="algo"><span class="cmt">// when expanding path &lt;n0, ..., nk&gt;:</span>
-<span class="kw">for each</span> neighbour n of n<sub>k</sub>:
-    <span class="kw">if</span> n &notin; &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt;:
-        add &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>, n&gt; to frontier</pre>
-    <svg class="cycle-mini" viewBox="0 0 150 130" xmlns="http://www.w3.org/2000/svg">
+    <div class="algo-card">
+      <div class="algo-title">When expanding path \(\langle n_0, \ldots, n_k \rangle\):</div>
+      <ol>
+        <li>For each neighbour <code>n</code> of <code>n<sub>k</sub></code>:</li>
+        <li>If <code>n</code> already appears in <code>&lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt;</code> &rarr; <strong>skip</strong>.</li>
+        <li>Else add <code>&lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>, n&gt;</code> to the frontier.</li>
+      </ol>
+    </div>
+    <svg class="cycle-mini-lg" viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="cyc-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#4b5563"/></marker>
       </defs>
-      <g stroke="#4b5563" stroke-width="1.5" fill="none">
-        <line x1="75" y1="33" x2="35" y2="83" marker-end="url(#cyc-arrow)"/>
-        <line x1="45" y1="93" x2="105" y2="93" marker-end="url(#cyc-arrow)"/>
-        <line x1="115" y1="83" x2="80" y2="40" marker-end="url(#cyc-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
+      <g stroke="#4b5563" stroke-width="1.8" fill="none">
+        <line x1="118" y1="48" x2="55" y2="120" marker-end="url(#cyc-arrow)"/>
+        <line x1="70" y1="135" x2="165" y2="135" marker-end="url(#cyc-arrow)"/>
+        <line x1="180" y1="120" x2="125" y2="55" marker-end="url(#cyc-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
       </g>
-      <line class="strike" x1="80" y1="40" x2="115" y2="85"/>
-      <g font-size="13" font-weight="600" text-anchor="middle" dominant-baseline="middle">
-        <circle cx="75" cy="25" r="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="75" y="28" fill="#1e3a8a">A</text>
-        <circle cx="30" cy="95" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="30" y="98">B</text>
-        <circle cx="120" cy="95" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="120" y="98">C</text>
+      <line class="strike" x1="125" y1="55" x2="180" y2="125"/>
+      <g font-size="16" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+        <circle cx="120" cy="36" r="20" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="120" y="40" fill="#1e3a8a">A</text>
+        <circle cx="45"  cy="135" r="20" fill="#fff" stroke="#111827" stroke-width="2"/><text x="45"  y="139">B</text>
+        <circle cx="195" cy="135" r="20" fill="#fff" stroke="#111827" stroke-width="2"/><text x="195" y="139">C</text>
       </g>
-      <text x="125" y="50" font-size="10" font-style="italic" fill="#dc2626">skip</text>
+      <text x="195" y="68" font-size="13" font-style="italic" fill="#dc2626" font-weight="700">skip</text>
     </svg>
   </div>
   <p style="font-size: 0.78em; color: #6b7280; margin-top: 0.4em;">Check is linear in path length. Saves DFS from infinite loops.</p>
@@ -746,33 +858,35 @@
 <section>
   <h2>Multi-path pruning</h2>
   <p style="font-size: 0.9em;">Don't expand a node we've already expanded (across <em>different</em> paths). Cycle pruning is a special case.</p>
+  <p style="font-size: 0.8em; color:#6b7280; margin: 0;">Maintain an <code>explored</code> set, initialized to <code>{ }</code>.</p>
   <div class="with-mini-diagram">
-<pre class="algo">explored &larr; { }
-<span class="kw">while</span> frontier is not empty:
-    pop path &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>&gt;
-    <span class="kw">if</span> n<sub>k</sub> &notin; explored:
-        add n<sub>k</sub> to explored
-        <span class="kw">if</span> goal(n<sub>k</sub>): <span class="kw">return</span> path
-        <span class="kw">for each</span> neighbour n of n<sub>k</sub>:
-            add &lt;n<sub>0</sub>, &hellip;, n<sub>k</sub>, n&gt; to frontier</pre>
-    <svg class="diamond-mini" viewBox="0 0 170 130" xmlns="http://www.w3.org/2000/svg">
+    <div class="algo-card">
+      <div class="algo-title">Pop path \(\langle n_0, \ldots, n_k \rangle\). Then:</div>
+      <ol>
+        <li>If <code>n<sub>k</sub></code> &in; <code>explored</code> &rarr; <strong>skip</strong>.</li>
+        <li>Add <code>n<sub>k</sub></code> to <code>explored</code>.</li>
+        <li>If <code>n<sub>k</sub></code> is the goal &rarr; return the path.</li>
+        <li>Else push each neighbour-extension to the frontier.</li>
+      </ol>
+    </div>
+    <svg class="diamond-mini-lg" viewBox="0 0 280 170" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <marker id="mp-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#4b5563"/></marker>
       </defs>
-      <g stroke="#4b5563" stroke-width="1.5" fill="none">
-        <line x1="35" y1="35" x2="80" y2="20" marker-end="url(#mp-arrow)"/>
-        <line x1="35" y1="55" x2="80" y2="70" marker-end="url(#mp-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
-        <line x1="100" y1="20" x2="125" y2="40" marker-end="url(#mp-arrow)"/>
-        <line x1="100" y1="70" x2="125" y2="50" marker-end="url(#mp-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
+      <g stroke="#4b5563" stroke-width="1.8" fill="none">
+        <line x1="58" y1="58" x2="135" y2="32" marker-end="url(#mp-arrow)"/>
+        <line x1="58" y1="92" x2="135" y2="118" marker-end="url(#mp-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
+        <line x1="165" y1="32" x2="215" y2="68" marker-end="url(#mp-arrow)"/>
+        <line x1="165" y1="118" x2="215" y2="82" marker-end="url(#mp-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
       </g>
-      <line class="strike" x1="35" y1="60" x2="105" y2="75"/>
-      <g font-size="13" font-weight="600" text-anchor="middle" dominant-baseline="middle">
-        <circle cx="20" cy="45" r="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="20" y="48" fill="#1e3a8a">S</text>
-        <circle cx="90" cy="15" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="90" y="18">p</text>
-        <circle cx="90" cy="75" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="90" y="78">p'</text>
-        <circle cx="140" cy="45" r="14" fill="#fff" stroke="#111827" stroke-width="2"/><text x="140" y="48">n</text>
+      <line class="strike" x1="50" y1="100" x2="175" y2="130"/>
+      <g font-size="16" font-weight="600" text-anchor="middle" dominant-baseline="middle">
+        <circle cx="35"  cy="75"  r="18" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="35"  y="79" fill="#1e3a8a">S</text>
+        <circle cx="150" cy="25"  r="18" fill="#fff" stroke="#111827" stroke-width="2"/><text x="150" y="29">p</text>
+        <circle cx="150" cy="125" r="18" fill="#fff" stroke="#111827" stroke-width="2"/><text x="150" y="129">p'</text>
+        <circle cx="235" cy="75"  r="18" fill="#fff" stroke="#111827" stroke-width="2"/><text x="235" y="79">n</text>
       </g>
-      <text x="85" y="120" font-size="10" font-style="italic" fill="#dc2626" text-anchor="middle">second path to n: skip</text>
+      <text x="140" y="158" font-size="12" font-style="italic" fill="#dc2626" text-anchor="middle" font-weight="700">second path to n: skip</text>
     </svg>
   </div>
 </section>
@@ -787,16 +901,29 @@
   </ul>
 </section>
 
-<!-- 27. Quizzes: pruning + optimality -->
+<!-- 27a. Quiz Q1: LCFS + multi-path -->
 <section>
-  <h2>Does multi-path pruning preserve optimality?</h2>
-  <p class="quiz-q"><strong>Q1.</strong> LCFS with multi-path pruning &mdash; can it discard the optimal solution?</p>
+  <h2>LCFS + multi-path pruning</h2>
+  <p class="quiz-q"><strong>Q.</strong> LCFS with multi-path pruning &mdash; can it discard the optimal solution?</p>
+  <ol class="quiz-options">
+    <li>Yes, it can</li>
+    <li>No, never</li>
+  </ol>
   <div class="quiz-answer fragment">
-    <strong>No.</strong> LCFS always pops the cheapest path first &mdash; so the first time a node is popped, the path through it is optimal. Pruning later paths to the same node is safe.
+    <strong>B &mdash; No.</strong> LCFS always pops the cheapest path first &mdash; so the first time a node is popped, the path through it is optimal. Pruning later paths to the same node is safe.
   </div>
-  <p class="quiz-q" style="margin-top: 1em;"><strong>Q2.</strong> A* with admissible heuristic + multi-path pruning &mdash; can it discard the optimal?</p>
+</section>
+
+<!-- 27b. Quiz Q2: A* + multi-path -->
+<section>
+  <h2>A* + multi-path pruning</h2>
+  <p class="quiz-q"><strong>Q.</strong> A* with admissible \(h\) + multi-path pruning &mdash; can it discard the optimal?</p>
+  <ol class="quiz-options">
+    <li>Yes, it can</li>
+    <li>No, never</li>
+  </ol>
   <div class="quiz-answer fragment">
-    <strong>Yes &mdash; it can.</strong> A* pops by \(f = g + h\), not by \(g\) alone. Once \(n\) is marked explored, a cheaper \(g(n)\) discovered later is discarded. Next slide: explicit counterexample.
+    <strong>A &mdash; Yes, it can.</strong> A* pops by \(f = g + h\), not by \(g\) alone. Once \(n\) is marked explored, a cheaper \(g(n)\) discovered later is discarded. Next slide: explicit counterexample.
   </div>
 </section>
 
@@ -926,20 +1053,29 @@
   <p style="font-size: 0.85em;">A* pops the path through <span class="g-color">p</span> first (lower \(f\)) and marks \(n\) explored. The path through <span style="color:#dc2626; font-weight:600;">p'</span> with cheaper actual cost \(g\) gets discarded by multi-path pruning. When can this make A* sub-optimal?</p>
 </section>
 
-<!-- 29b. Derivation -->
+<!-- 29b. Build the inequality from pop order -->
 <section>
-  <h2>When can pruning lose the optimal?</h2>
+  <h2>Step 1: what the pop order gives us</h2>
+  <p style="font-size: 0.85em;">A* popped \(\langle\ldots, p, n\rangle\) <em>before</em> \(\langle\ldots, p', n\rangle\), so it has lower \(f\):</p>
   <div class="proof">
-    <p>Order of pops gives:</p>
     <ol>
-      <li class="fragment">\(f(\langle\ldots,p,n\rangle) \le f(\langle\ldots,p',n\rangle)\).</li>
-      <li class="fragment">Expand: \(g(p) + c(p,n) + h(n) \le g(p') + c(p',n) + h(n)\).</li>
-      <li class="fragment">Cancel \(h(n)\): &nbsp;\(g(p) + c(p,n) \le g(p') + c(p',n)\). &nbsp; <span class="meta">(*)</span></li>
+      <li class="fragment">\(f(\langle\ldots,p,n\rangle) \le f(\langle\ldots,p',n\rangle)\)</li>
+      <li class="fragment">Expand: \(g(p) + c(p,n) + h(n) \le g(p') + c(p',n) + h(n)\)</li>
+      <li class="fragment">Cancel \(h(n)\): \(g(p) + c(p,n) \le g(p') + c(p',n)\) &nbsp; <span class="meta">(*)</span></li>
     </ol>
-    <p class="fragment">For p' to actually be better, we'd need: &nbsp;\(g(p') + c(p',n) &lt; g(p) + c(p,n)\). &nbsp; <span class="meta">(**)</span></p>
-    <p class="fragment">(*) and (**) can both hold only when the heuristic violates &mdash; for some edge \(p \to n\):</p>
-    <p class="fragment" style="text-align:center; font-size: 1.1em; padding: 0.4em; background:#fef2f2; border-left:4px solid #dc2626;">\(h(p) - h(n) &gt; c(p,n)\)</p>
-    <p class="fragment">i.e., the heuristic drops too fast across an edge. <span class="qed">Fix that constraint, and pruning is safe.</span></p>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; text-align:center; color: #6b7280;">In words: the path through \(p\) reaches \(n\) at least as cheaply &mdash; according to the \(f\)-ranking.</p>
+</section>
+
+<!-- 29c. Where the heuristic must violate -->
+<section>
+  <h2>Step 2: where the heuristic violates</h2>
+  <p style="font-size: 0.85em;">For pruning to actually lose the optimal, the path through \(p'\) would need a cheaper actual cost:</p>
+  <div class="proof">
+    <p class="fragment">\(g(p') + c(p',n) &lt; g(p) + c(p,n)\) &nbsp; <span class="meta">(**)</span></p>
+    <p class="fragment">(*) and (**) together imply \(g(p) &lt; g(p')\), yet \(p\) gave a smaller \(f\). The only way: \(h(p) &gt; h(p')\) by more than the edge difference. For some edge \(p \to n\):</p>
+    <p class="fragment" style="text-align:center; font-size: 1.15em; padding: 0.4em; background:#fef2f2; border-left:4px solid #dc2626; font-weight: 600;">\(h(p) - h(n) &gt; c(p, n)\)</p>
+    <p class="fragment">i.e. the heuristic <em>drops too fast</em> across an edge. <span class="qed">Forbid that and pruning is safe.</span></p>
   </div>
 </section>
 
