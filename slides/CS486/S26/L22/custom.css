@@ -1,0 +1,138 @@
+/* L22 (Course Recap) specific styles. Reuses shared/, L2/, L4/, L8/, L10/, L13/, L18/, L19/, L20/ via <link> tags. */
+
+/* The 4-module "course in one picture" map. */
+.reveal .course-map {
+  display: block;
+  margin: 0.2em auto;
+  max-height: 360px;
+}
+.reveal .course-map .module-box {
+  fill: #f9fafb;
+  stroke: #1d4ed8;
+  stroke-width: 1.6;
+  rx: 8;
+}
+.reveal .course-map .module-box.search   { stroke: #1d4ed8; fill: #eff6ff; }
+.reveal .course-map .module-box.uncert   { stroke: #a855f7; fill: #faf5ff; }
+.reveal .course-map .module-box.decision { stroke: #ea580c; fill: #fff7ed; }
+.reveal .course-map .module-box.learn    { stroke: #16a34a; fill: #f0fdf4; }
+.reveal .course-map .module-title {
+  font-size: 13px;
+  font-weight: 800;
+  fill: #111827;
+  text-anchor: middle;
+}
+.reveal .course-map .module-title.search   { fill: #1d4ed8; }
+.reveal .course-map .module-title.uncert   { fill: #a855f7; }
+.reveal .course-map .module-title.decision { fill: #ea580c; }
+.reveal .course-map .module-title.learn    { fill: #16a34a; }
+.reveal .course-map .topic {
+  font-size: 10px;
+  fill: #374151;
+  text-anchor: middle;
+}
+.reveal .course-map .flow-arrow {
+  stroke: #6b7280;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+/* Recap study-card pattern. */
+.reveal .recap-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7em;
+  margin: 0.3em 0;
+}
+.reveal .recall-card {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+  padding: 0.5em 0.8em;
+  font-size: 0.82em;
+  text-align: left;
+}
+.reveal .recall-card.search   { border-top-color: #1d4ed8; }
+.reveal .recall-card.uncert   { border-top-color: #a855f7; }
+.reveal .recall-card.decision { border-top-color: #ea580c; }
+.reveal .recall-card.learn    { border-top-color: #16a34a; }
+.reveal .recall-card h3 {
+  font-size: 0.95em;
+  margin: 0 0 0.2em 0;
+  color: #1d4ed8;
+}
+.reveal .recall-card.uncert   h3 { color: #a855f7; }
+.reveal .recall-card.decision h3 { color: #ea580c; }
+.reveal .recall-card.learn    h3 { color: #16a34a; }
+.reveal .recall-card ul {
+  margin: 0.2em 0 0.2em 1.1em;
+  padding: 0;
+}
+.reveal .recall-card ul li { margin: 0.1em 0; }
+.reveal .recall-card .answer {
+  display: block;
+  margin-top: 0.3em;
+  color: #15803d;
+  font-style: italic;
+}
+
+/* Mini Viterbi trellis SVG for the smoothing/Viterbi recap slide. */
+.reveal .mini-trellis {
+  display: block;
+  margin: 0.3em auto;
+  max-height: 200px;
+}
+.reveal .mini-trellis .node {
+  fill: #eef2ff;
+  stroke: #1d4ed8;
+  stroke-width: 1.2;
+}
+.reveal .mini-trellis .node.best {
+  fill: #dcfce7;
+  stroke: #16a34a;
+  stroke-width: 2;
+}
+.reveal .mini-trellis .edge {
+  stroke: #d1d5db;
+  stroke-width: 1;
+  fill: none;
+}
+.reveal .mini-trellis .edge.best {
+  stroke: #16a34a;
+  stroke-width: 2.2;
+  fill: none;
+}
+.reveal .mini-trellis text {
+  font-size: 10px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+
+/* "Exam logistics" panel. */
+.reveal .exam-panel {
+  background: #fef9c3;
+  border: 1px solid #facc15;
+  border-radius: 8px;
+  padding: 0.8em 1.1em;
+  margin: 0.4em auto;
+  max-width: 80%;
+  text-align: left;
+}
+.reveal .exam-panel h3 {
+  margin: 0 0 0.3em 0;
+  color: #854d0e;
+  font-size: 1em;
+}
+.reveal .exam-panel ul {
+  margin: 0.2em 0 0.2em 1.3em;
+  font-size: 0.85em;
+}
+.reveal .exam-panel ul li { margin: 0.15em 0; }
+.reveal .exam-panel .note {
+  color: #92400e;
+  font-style: italic;
+  font-size: 0.78em;
+  margin-top: 0.4em;
+}

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 22 — Course Recap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 22: Course Recap — a tour of search, reasoning under uncertainty, decision-making, and learning. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L2/custom.css">
+  <link rel="stylesheet" href="../L4/custom.css">
+  <link rel="stylesheet" href="../L8/custom.css">
+  <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="../L13/custom.css">
+  <link rel="stylesheet" href="../L18/custom.css">
+  <link rel="stylesheet" href="../L19/custom.css">
+  <link rel="stylesheet" href="../L20/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <marker id="arrow-l22" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Course Recap</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 22</p>
+  <p class="credit">Putting the term together: search, uncertainty, decisions, learning</p>
+</section>
+
+<!-- 2. The course in one picture -->
+<section>
+  <h2>The course in one picture</h2>
+  <svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" class="course-map">
+    <rect class="module-box search" x="20" y="40" width="170" height="260"/>
+    <text class="module-title search" x="105" y="65">1. Search</text>
+    <text class="topic" x="105" y="95">Problem formulation</text>
+    <text class="topic" x="105" y="115">DFS / BFS / IDS</text>
+    <text class="topic" x="105" y="135">LCFS, GBFS, A*</text>
+    <text class="topic" x="105" y="155">Admissibility, consistency</text>
+    <text class="topic" x="105" y="180">CSPs</text>
+    <text class="topic" x="105" y="200">Backtracking, AC-3</text>
+    <text class="topic" x="105" y="225">Local search</text>
+    <text class="topic" x="105" y="245">Hill-climbing, SA</text>
+
+    <rect class="module-box uncert" x="210" y="40" width="170" height="260"/>
+    <text class="module-title uncert" x="295" y="65">2. Uncertainty</text>
+    <text class="topic" x="295" y="95">Probability rules</text>
+    <text class="topic" x="295" y="115">Independence</text>
+    <text class="topic" x="295" y="135">Bayesian networks</text>
+    <text class="topic" x="295" y="155">D-separation</text>
+    <text class="topic" x="295" y="180">Variable Elimination</text>
+    <text class="topic" x="295" y="200">HMMs</text>
+    <text class="topic" x="295" y="225">Filtering / smoothing</text>
+    <text class="topic" x="295" y="245">Viterbi</text>
+
+    <rect class="module-box decision" x="400" y="40" width="170" height="260"/>
+    <text class="module-title decision" x="485" y="65">3. Decisions</text>
+    <text class="topic" x="485" y="95">Utility, MEU</text>
+    <text class="topic" x="485" y="115">Decision networks</text>
+    <text class="topic" x="485" y="135">VOI</text>
+    <text class="topic" x="485" y="160">MDPs</text>
+    <text class="topic" x="485" y="180">Bellman equation</text>
+    <text class="topic" x="485" y="200">Value / Policy iteration</text>
+    <text class="topic" x="485" y="225">Reinforcement learning</text>
+    <text class="topic" x="485" y="245">Q-learning, SARSA</text>
+
+    <rect class="module-box learn" x="590" y="40" width="160" height="260"/>
+    <text class="module-title learn" x="670" y="65">4. Learning</text>
+    <text class="topic" x="670" y="95">Supervised learning</text>
+    <text class="topic" x="670" y="115">Bias / variance</text>
+    <text class="topic" x="670" y="135">Cross-validation</text>
+    <text class="topic" x="670" y="160">Decision trees, ID3</text>
+    <text class="topic" x="670" y="180">Unsupervised: PCA, k-means</text>
+    <text class="topic" x="670" y="205">Neural networks</text>
+    <text class="topic" x="670" y="225">Backprop</text>
+    <text class="topic" x="670" y="245">SGD, momentum, Adam</text>
+
+    <line class="flow-arrow" x1="190" y1="170" x2="208" y2="170" marker-end="url(#arrow-l22)"/>
+    <line class="flow-arrow" x1="380" y1="170" x2="398" y2="170" marker-end="url(#arrow-l22)"/>
+    <line class="flow-arrow" x1="570" y1="170" x2="588" y2="170" marker-end="url(#arrow-l22)"/>
+
+    <text x="380" y="325" text-anchor="middle" font-size="11" fill="#6b7280" font-style="italic">deterministic world &rarr; uncertainty &rarr; decisions under uncertainty &rarr; learning from data</text>
+  </svg>
+</section>
+
+<!-- 3. Search I: uninformed -->
+<section>
+  <h2>Search I &mdash; uninformed</h2>
+  <div class="recap-grid">
+    <div class="recall-card search">
+      <h3>Problem formulation</h3>
+      <ul>
+        <li>States, actions, transition model, initial &amp; goal states, path cost.</li>
+        <li>Search tree explores states by expanding the <strong>frontier</strong>.</li>
+      </ul>
+      <span class="answer fragment">Pick the data structure for the frontier &rarr; pick the algorithm.</span>
+    </div>
+    <div class="recall-card search">
+      <h3>DFS vs BFS vs IDS</h3>
+      <ul>
+        <li><strong>DFS:</strong> stack &rarr; \(O(bm)\) space, not complete.</li>
+        <li><strong>BFS:</strong> queue &rarr; complete, \(O(b^d)\) time and space.</li>
+        <li><strong>IDS:</strong> DFS in increasing depth &rarr; BFS-completeness, DFS-space.</li>
+      </ul>
+      <span class="answer fragment">IDS combines the best of both.</span>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Search II: heuristic + A* -->
+<section>
+  <h2>Search II &mdash; heuristic + A*</h2>
+  <div class="recap-grid">
+    <div class="recall-card search">
+      <h3>The three frontier rules</h3>
+      <ul>
+        <li><strong>LCFS:</strong> min \(\text{cost}(n)\).</li>
+        <li><strong>GBFS:</strong> min \(h(n)\).</li>
+        <li><strong>A*:</strong> min \(f(n) = \text{cost}(n) + h(n)\).</li>
+      </ul>
+    </div>
+    <div class="recall-card search">
+      <h3>Heuristic properties</h3>
+      <ul class="fragment">
+        <li><strong>Admissible</strong> (\(h \le h^*\)) &rArr; A* is optimal with multi-path pruning off.</li>
+        <li><strong>Consistent</strong> (\(h(n) \le c(n,n') + h(n')\)) &rArr; safe to use multi-path pruning.</li>
+        <li>Consistent &rArr; admissible (not the other way around).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Search strategy summary table -->
+<section>
+  <h2>Search strategy summary</h2>
+  <table class="compare" style="font-size: 0.82em;">
+    <thead>
+      <tr>
+        <th>Strategy</th>
+        <th>Frontier choice</th>
+        <th>Halts?</th>
+        <th>Space</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Depth-first</td><td>Last added</td><td class="no">No</td><td class="ok">Linear</td><td>Exp</td></tr>
+      <tr><td>Breadth-first</td><td>First added</td><td class="ok">Yes</td><td>Exp</td><td>Exp</td></tr>
+      <tr><td>Lowest-cost first</td><td>min \(\text{cost}(n)\)</td><td class="ok">Yes</td><td>Exp</td><td>Exp</td></tr>
+      <tr><td>Greedy best-first</td><td>min \(h(n)\)</td><td class="no">No</td><td>Exp</td><td>Exp</td></tr>
+      <tr><td>A*</td><td>min \(\text{cost}(n) + h(n)\)</td><td class="ok">Yes</td><td>Exp</td><td>Exp</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em; text-align:center;">
+    A* dominates when the heuristic is informative enough to prune most of the tree.
+  </p>
+</section>
+
+<!-- 6. CSPs + local search -->
+<section>
+  <h2>CSPs + local search</h2>
+  <div class="recap-grid">
+    <div class="recall-card search">
+      <h3>Constraint satisfaction</h3>
+      <ul>
+        <li>Generate-and-test is exponential &mdash; exploit problem structure.</li>
+        <li><strong>Backtracking:</strong> incremental, prune as soon as a constraint fails.</li>
+        <li><strong>Arc consistency / AC-3:</strong> shrink domains before/during search; complexity \(O(cd^3)\).</li>
+      </ul>
+    </div>
+    <div class="recall-card search">
+      <h3>Local search</h3>
+      <ul>
+        <li>Trade completeness for very large state spaces.</li>
+        <li><strong>Greedy descent / hill-climbing:</strong> always move to best neighbour.</li>
+        <li>Beats local minima with <strong>random restarts</strong> + <strong>simulated annealing</strong> (accept worse moves with prob \(e^{-\Delta/T}\)).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Probability + independence -->
+<section>
+  <h2>Probability + independence</h2>
+  <div class="recap-grid">
+    <div class="recall-card uncert">
+      <h3>The four rules</h3>
+      <ul>
+        <li><strong>Product:</strong> \(P(A,B) = P(A\mid B)\,P(B)\)</li>
+        <li><strong>Sum:</strong> \(P(A) = \sum_b P(A, B{=}b)\)</li>
+        <li><strong>Chain:</strong> \(P(X_1,\ldots,X_n) = \prod_i P(X_i \mid X_{&lt;i})\)</li>
+        <li><strong>Bayes:</strong> \(P(H\mid e) \propto P(e\mid H)\,P(H)\)</li>
+      </ul>
+    </div>
+    <div class="recall-card uncert">
+      <h3>Independence</h3>
+      <ul>
+        <li><strong>Unconditional:</strong> \(P(A,B) = P(A)\,P(B)\).</li>
+        <li><strong>Conditional:</strong> \(P(A,B\mid C) = P(A\mid C)\,P(B\mid C)\).</li>
+        <li>Tells us which terms drop out of the chain rule &mdash; the key to scaling up inference.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Bayesian networks + d-separation -->
+<section>
+  <h2>Bayesian networks + d-separation</h2>
+  <div class="recap-grid">
+    <div class="recall-card uncert">
+      <h3>Construction recipe</h3>
+      <ul>
+        <li>Pick a variable order (causal often works best).</li>
+        <li>Add each node; choose the smallest set of parents that makes it conditionally independent of the rest.</li>
+        <li>Joint factorizes as \(P(X_1,\ldots,X_n) = \prod_i P(X_i \mid \mathrm{pa}(X_i))\).</li>
+      </ul>
+    </div>
+    <div class="recall-card uncert">
+      <h3>3 d-separation patterns</h3>
+      <ul>
+        <li><strong>Chain</strong> \(A \to B \to C\): blocked by observing \(B\).</li>
+        <li><strong>Common cause</strong> \(A \leftarrow B \to C\): blocked by observing \(B\).</li>
+        <li><strong>Common effect</strong> \(A \to B \leftarrow C\): blocked by <em>not</em> observing \(B\) or descendants.</li>
+      </ul>
+      <span class="answer fragment">A path is blocked &rArr; the endpoints are conditionally independent.</span>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Inference: VE + HMM filtering -->
+<section>
+  <h2>Inference &mdash; VE &amp; HMM filtering</h2>
+  <div class="recap-grid">
+    <div class="recall-card uncert">
+      <h3>Variable elimination</h3>
+      <ul>
+        <li><strong>Define</strong> a factor for each CPT.</li>
+        <li><strong>Restrict</strong> factors to evidence.</li>
+        <li><strong>Multiply</strong> factors sharing a variable; <strong>sum out</strong> the hidden one.</li>
+        <li><strong>Normalize</strong> to get a posterior.</li>
+      </ul>
+    </div>
+    <div class="recall-card uncert">
+      <h3>HMM filtering</h3>
+      <ul>
+        <li>Recursion: \(P(S_t \mid o_{0:t}) \propto P(o_t \mid S_t)\, \sum_{s_{t-1}} P(S_t \mid s_{t-1})\, P(s_{t-1} \mid o_{0:t-1})\)</li>
+        <li>One forward pass: \(O(t \cdot |S|^2)\) time.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 10. HMM decoding: smoothing + Viterbi -->
+<section>
+  <h2>HMM decoding &mdash; smoothing &amp; Viterbi</h2>
+  <div class="two-col" style="margin-top: 0.2em;">
+    <div style="flex: 1;">
+      <div class="recall-card uncert" style="height: auto;">
+        <h3>Forward&times;backward smoothing</h3>
+        <ul>
+          <li>Forward: \(\alpha_k = P(S_k \mid o_{0:k})\).</li>
+          <li>Backward: \(\beta_k = P(o_{k+1:t-1} \mid S_k)\).</li>
+          <li>Posterior: \(P(S_k \mid o_{0:t-1}) \propto \alpha_k\, \beta_k\).</li>
+        </ul>
+      </div>
+      <div class="recall-card uncert" style="margin-top: 0.5em;">
+        <h3>Viterbi</h3>
+        <ul>
+          <li>DP over the trellis, max instead of sum.</li>
+          <li>Backtrack the argmax pointers to recover the MAP sequence.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="flex: 0.9;">
+      <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" class="mini-trellis">
+        <line class="edge" x1="40" y1="50"  x2="140" y2="50"/>
+        <line class="edge" x1="40" y1="50"  x2="140" y2="150"/>
+        <line class="edge" x1="40" y1="150" x2="140" y2="50"/>
+        <line class="edge" x1="40" y1="150" x2="140" y2="150"/>
+        <line class="edge" x1="140" y1="50"  x2="240" y2="50"/>
+        <line class="edge" x1="140" y1="50"  x2="240" y2="150"/>
+        <line class="edge" x1="140" y1="150" x2="240" y2="50"/>
+        <line class="edge" x1="140" y1="150" x2="240" y2="150"/>
+        <line class="edge" x1="240" y1="50"  x2="320" y2="50"/>
+        <line class="edge" x1="240" y1="50"  x2="320" y2="150"/>
+        <line class="edge" x1="240" y1="150" x2="320" y2="50"/>
+        <line class="edge" x1="240" y1="150" x2="320" y2="150"/>
+
+        <line class="edge best" x1="40" y1="150" x2="140" y2="50"/>
+        <line class="edge best" x1="140" y1="50"  x2="240" y2="50"/>
+        <line class="edge best" x1="240" y1="50"  x2="320" y2="150"/>
+
+        <circle class="node" cx="40" cy="50" r="16"/>
+        <circle class="node best" cx="40" cy="150" r="16"/>
+        <circle class="node best" cx="140" cy="50" r="16"/>
+        <circle class="node" cx="140" cy="150" r="16"/>
+        <circle class="node best" cx="240" cy="50" r="16"/>
+        <circle class="node" cx="240" cy="150" r="16"/>
+        <circle class="node" cx="320" cy="50" r="16"/>
+        <circle class="node best" cx="320" cy="150" r="16"/>
+        <text x="40" y="50">s\(_1\)</text>
+        <text x="40" y="150">s\(_2\)</text>
+        <text x="140" y="50">s\(_1\)</text>
+        <text x="140" y="150">s\(_2\)</text>
+        <text x="240" y="50">s\(_1\)</text>
+        <text x="240" y="150">s\(_2\)</text>
+        <text x="320" y="50">s\(_1\)</text>
+        <text x="320" y="150">s\(_2\)</text>
+        <text x="40" y="190" font-size="10" fill="#6b7280">t=1</text>
+        <text x="140" y="190" font-size="10" fill="#6b7280">t=2</text>
+        <text x="240" y="190" font-size="10" fill="#6b7280">t=3</text>
+        <text x="320" y="190" font-size="10" fill="#6b7280">t=4</text>
+        <text x="180" y="20" font-size="11" fill="#15803d" font-weight="700">MAP path through the trellis</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>
