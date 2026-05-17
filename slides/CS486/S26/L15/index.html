@@ -60,19 +60,22 @@
   <h2>The RL setting: no \(P\), no \(R\) up front</h2>
   <div class="two-col vcenter">
     <div style="flex: 1; text-align: center;">
-      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg" class="rl-loop">
-        <g class="agent-box"><rect x="40" y="80" width="120" height="60"/></g>
-        <text x="100" y="110" class="role-label agent">Agent</text>
-        <g class="env-box"><rect x="200" y="80" width="120" height="60"/></g>
-        <text x="260" y="110" class="role-label env">Environment</text>
-        <path class="edge" d="M 160 95 L 200 95" marker-end="url(#arrow-rl)"/>
-        <text class="edge-label" x="180" y="80" text-anchor="middle">action a</text>
-        <path class="edge" d="M 200 125 L 160 125" marker-end="url(#arrow-rl)"/>
-        <text class="edge-label" x="180" y="155" text-anchor="middle">state s', reward r</text>
-        <text x="100" y="170" font-size="11" fill="#1d4ed8" text-anchor="middle">picks actions</text>
-        <text x="100" y="185" font-size="11" fill="#1d4ed8" text-anchor="middle">to max return</text>
-        <text x="260" y="170" font-size="11" fill="#166534" text-anchor="middle">opaque P, R</text>
-        <text x="260" y="185" font-size="11" fill="#166534" text-anchor="middle">(unknown!)</text>
+      <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg" class="rl-loop">
+        <g class="agent-box"><rect x="30" y="70" width="120" height="60"/></g>
+        <text x="90" y="100" class="role-label agent">Agent</text>
+        <g class="env-box"><rect x="210" y="70" width="130" height="60"/></g>
+        <text x="275" y="100" class="role-label env">Environment</text>
+        <!-- top arrow: agent -> environment (action) -->
+        <path class="edge" d="M 150 90 L 210 90" marker-end="url(#arrow-rl)"/>
+        <text class="edge-label" x="180" y="80" text-anchor="middle">action a&#8202;<tspan baseline-shift="sub" font-size="9">t</tspan></text>
+        <!-- bottom curved arrow: environment -> agent (s', r) -->
+        <path class="edge" d="M 275 130 C 275 200, 90 200, 90 130" marker-end="url(#arrow-rl)"/>
+        <text class="edge-label" x="180" y="195" text-anchor="middle">next state s&#8202;<tspan baseline-shift="sub" font-size="9">t+1</tspan>, reward r&#8202;<tspan baseline-shift="sub" font-size="9">t+1</tspan></text>
+        <text x="90" y="150" font-size="11" fill="#1d4ed8" text-anchor="middle">picks actions to</text>
+        <text x="90" y="163" font-size="11" fill="#1d4ed8" text-anchor="middle">maximize return</text>
+        <text x="275" y="150" font-size="11" fill="#166534" text-anchor="middle">opaque P, R</text>
+        <text x="275" y="163" font-size="11" fill="#166534" text-anchor="middle">(unknown to agent)</text>
+        <text x="180" y="225" font-size="11" fill="#6b7280" text-anchor="middle">loop repeats at t = 0, 1, 2, ...</text>
       </svg>
     </div>
     <div style="flex: 1.1;">
@@ -108,21 +111,24 @@
 </section>
 
 <!-- 5. The passive ADP algorithm -->
-<section class="center-slide">
+<section>
   <h2>The passive ADP algorithm</h2>
-<pre class="algo"><span class="cmt"># Init R(s), N(s,a), N(s,a,s'), V<sup>&pi;</sup>(s).</span>
-<span class="kw">repeat</span>:
-  <span class="kw">1.</span> Follow &pi; and observe an experience &lang;s, a, s', r&rang;.
-  <span class="kw">2.</span> Update reward: R(s) &larr; r.
-  <span class="kw">3.</span> Update counts:
-       N(s, a)    &larr; N(s, a) + 1
-       N(s, a, s') &larr; N(s, a, s') + 1
-       P(s'|s, a) = N(s, a, s') / N(s, a).
-  <span class="kw">4.</span> Re-solve Bellman to get V<sup>&pi;</sup>(s) (exactly or iteratively).</pre>
-  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">Each new experience refines the model; each Bellman solve costs \(O(n^3)\) or a few iterations.</p>
+  <div class="algo-card">
+    <div class="algo-title">passive-ADP(\(\pi\))</div>
+    <ol>
+      <li>Initialize \(R(s),\ N(s,a),\ N(s,a,s'),\ V^\pi(s)\).</li>
+      <li>Follow \(\pi\) and observe an experience \(\langle s, a, s', r \rangle\).</li>
+      <li>Update reward: \(R(s) \leftarrow r\).</li>
+      <li>Update counts and transition probability:
+        \[ N(s,a) \mathrel{+}= 1,\quad N(s,a,s') \mathrel{+}= 1,\quad P(s'\mid s,a) = \tfrac{N(s,a,s')}{N(s,a)}. \]
+      </li>
+      <li>Re-solve Bellman to get \(V^\pi(s)\) (exactly or iteratively).</li>
+    </ol>
+  </div>
+  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.4em;">Each new experience refines the model; each Bellman solve costs \(O(n^3)\) or a few iterations.</p>
 </section>
 
-<!-- 6. Passive ADP example + Q1 -->
+<!-- 6. Passive ADP example -->
 <section>
   <h2>Passive ADP: a worked example</h2>
   <div class="two-col vcenter">
@@ -135,17 +141,28 @@
       </div>
       <p style="font-size: 0.7em; color: #6b7280; margin: 0.2em;">\(\pi(s_{11}) = \text{down}\), \(\pi(s_{21}) = \text{right}\), \(\gamma = 0.9\).</p>
     </div>
-    <div style="flex: 1.1; font-size: 0.8em;">
+    <div style="flex: 1.1; font-size: 0.82em;">
       <p style="margin: 0;"><strong>Before:</strong> \(N(s, a) = 5\) for all \(s, a\); \(N(s, a, s') = 3\) for intended direction, \(1\) for each side.</p>
       <p style="margin: 0.3em 0 0 0;"><strong>New experience:</strong> \(\langle s_{11}, \text{down}, s_{21}, -0.04 \rangle\).</p>
       <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Update counts:</strong> \(N(s_{11}, \text{down}) = 6\), \(N(s_{11}, \text{down}, s_{21}) = 4\).</p>
       <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Solve Bellman</strong> with the refreshed model:</p>
-      <p class="fragment" style="font-size: 0.85em; text-align: center; margin: 0.2em 0; color: #166534;">\(V(s_{11}) = -0.4378, \quad V(s_{21}) = -0.8034\)</p>
+      <p class="fragment" style="font-size: 0.9em; text-align: center; margin: 0.2em 0; color: #166534;">\(V(s_{11}) = -0.4378,\quad V(s_{21}) = -0.8034.\)</p>
     </div>
   </div>
-  <p class="quiz-q" style="margin-top: 0.5em;"><strong>Q1.</strong> Now suppose \(N(s_{23}, \text{down}) = 23\) and \(N(s_{23}, \text{down}, s_{24}) = 2\) in the 3x4 grid. The agent tries to move down but accidentally moves right &mdash; landing in \(s_{24}\). What is the updated \(P(s_{24} \mid s_{23}, \text{down})\)?</p>
+</section>
+
+<!-- 6b. Q1 quick check -->
+<section>
+  <h2>Quick check: probability update</h2>
+  <p class="quiz-q"><strong>Q1.</strong> In a 3x4 grid, suppose \(N(s_{23}, \text{down}) = 23\) and \(N(s_{23}, \text{down}, s_{24}) = 2\). The agent tries to move <em>down</em> but slips and lands in \(s_{24}\). What is the updated \(P(s_{24} \mid s_{23}, \text{down})\)?</p>
+  <ol class="quiz-options">
+    <li>\(2/23 \approx 0.087\)</li>
+    <li>\(3/23 \approx 0.130\)</li>
+    <li><strong>\(3/24 = 0.125\)</strong></li>
+    <li>\(2/24 \approx 0.083\)</li>
+  </ol>
   <div class="quiz-answer fragment">
-    <strong>C &mdash; 0.125.</strong> &nbsp;\(N(s_{23}, \text{down}) \to 24\); \(N(s_{23}, \text{down}, s_{24}) \to 3\); \(P = 3/24 = 0.125\).
+    <strong>C &mdash; 0.125.</strong> First increment the counts: \(N(s_{23}, \text{down}) \to 24\) and \(N(s_{23}, \text{down}, s_{24}) \to 3\). Then \(P = 3/24 = 0.125\).
   </div>
 </section>
 
@@ -196,16 +213,22 @@
 </section>
 
 <!-- 9. Active ADP algorithm -->
-<section class="center-slide">
+<section>
   <h2>The active ADP algorithm</h2>
-<pre class="algo"><span class="cmt"># Init R(s), V<sup>+</sup>(s), N(s,a), N(s,a,s').</span>
-<span class="kw">repeat until</span> every (s,a) visited &geq; N<sub>e</sub> times and V<sup>+</sup> converged:
-  <span class="kw">1.</span> Pick action: a = argmax<sub>a</sub> f( &sum;<sub>s'</sub> P(s'|s,a) V<sup>+</sup>(s'), &nbsp;N(s,a) ).
-  <span class="kw">2.</span> Execute a; observe &lang;s, a, s', r&rang;.
-  <span class="kw">3.</span> Update R(s) &larr; r.
-  <span class="kw">4.</span> Update counts and P(s'|s, a).
-  <span class="kw">5.</span> Update V<sup>+</sup>(s) &larr; R(s) + &gamma; max<sub>a</sub> f( &sum; P V<sup>+</sup>, &nbsp;N(s,a) ).</pre>
-  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Same model-based loop as passive ADP, plus the exploration bonus baked into action selection.</p>
+  <div class="algo-card">
+    <div class="algo-title">active-ADP(\(N_e,\ R^+\))</div>
+    <ol>
+      <li>Initialize \(R(s),\ V^+(s),\ N(s,a),\ N(s,a,s')\).</li>
+      <li>Repeat until every \((s,a)\) is visited \(\ge N_e\) times and \(V^+\) converged:
+        <ul style="margin:0.2em 0 0.2em 1em;">
+          <li>Pick action \(a = \arg\max_{a} f\!\left(\sum_{s'} P(s'\mid s,a)\, V^+(s'),\ N(s,a)\right)\).</li>
+          <li>Execute \(a\); observe \(\langle s, a, s', r \rangle\); update \(R(s)\leftarrow r\), counts, and \(P(s'\mid s,a)\).</li>
+          <li>Update \(V^+(s) \leftarrow R(s) + \gamma\, \max_{a} f\!\left(\sum_{s'} P(s'\mid s,a)\, V^+(s'),\ N(s,a)\right)\).</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Same model-based loop as passive ADP, plus the exploration bonus \(f\) baked into action selection.</p>
 </section>
 
 <!-- ============================================================
@@ -248,18 +271,24 @@
 <!-- 12. The Q-learning algorithm -->
 <section>
   <h2>The Q-learning algorithm</h2>
-<pre class="algo"><span class="cmt"># Init Q(s, a) arbitrarily, R(s), N(s, a).</span>
-<span class="kw">repeat until</span> Q converges:
-  <span class="kw">1.</span> Pick a from s using <em>any</em> exploration strategy
-       (&epsilon;-greedy, softmax, optimistic).
-  <span class="kw">2.</span> Execute a; observe &lang;s, a, s', r&rang;.
-  <span class="kw">3.</span> Update R(s) &larr; r.
-  <span class="kw">4.</span> Q(s, a) &larr; Q(s, a) + &alpha; &middot; (r + &gamma; max<sub>a'</sub> Q(s', a') &minus; Q(s, a)).
-  <span class="kw">5.</span> s &larr; s'.</pre>
-  <ul style="font-size: 0.82em; margin-top: 0.4em;">
+  <div class="algo-card">
+    <div class="algo-title">Q-learning(\(\alpha,\ \gamma\))</div>
+    <ol>
+      <li>Initialize \(Q(s,a)\) arbitrarily, \(R(s)\), \(N(s,a)\).</li>
+      <li>Repeat until \(Q\) converges:
+        <ul style="margin:0.2em 0 0.2em 1em;">
+          <li>Pick \(a\) from \(s\) using <em>any</em> exploration strategy (\(\varepsilon\)-greedy, softmax, optimistic).</li>
+          <li>Execute \(a\); observe \(\langle s,a,s',r \rangle\); update \(R(s) \leftarrow r\).</li>
+          <li>\(Q(s,a) \leftarrow Q(s,a) + \alpha\bigl(r + \gamma\, \max_{a'} Q(s',a') - Q(s,a)\bigr)\).</li>
+          <li>\(s \leftarrow s'\).</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <ul style="font-size: 0.8em; margin-top: 0.3em;">
     <li><strong>Model-free</strong>: never estimates \(P\) explicitly.</li>
-    <li><strong>Learning rate \(\alpha\)</strong>: small \(\alpha\) = slower but more accurate; common schedule \(\alpha(N(s, a)) = 10 / (9 + N(s, a))\).</li>
-    <li>Converges to \(Q^\star\) if every \((s, a)\) is visited infinitely often.</li>
+    <li><strong>Learning rate</strong>: smaller \(\alpha\) = slower but more accurate; e.g. \(\alpha(N) = 10/(9+N(s,a))\).</li>
+    <li>Converges to \(Q^\star\) if every \((s,a)\) is visited infinitely often.</li>
   </ul>
 </section>
 
@@ -381,28 +410,33 @@
   <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.4em;">ADP is sample-efficient but expensive per step; TD methods (Q, SARSA) flip that trade-off.</p>
 </section>
 
-<!-- 17. When to use what + Q2 + Q3 -->
+<!-- 17a. Q2: when is SARSA safer? -->
 <section>
-  <h2>When to use what</h2>
-  <p class="quiz-q"><strong>Q2.</strong> For a high-stakes <em>online</em> learning problem (e.g. self-driving car), which is safer?</p>
+  <h2>When to use what (Q2)</h2>
+  <p class="quiz-q"><strong>Q2.</strong> For a high-stakes <em>online</em> learning problem (for example, a self-driving car still in training), which algorithm is safer?</p>
   <ol class="quiz-options">
     <li>Q-learning</li>
     <li><strong>SARSA</strong></li>
     <li>I don't know</li>
   </ol>
-  <div class="quiz-answer fragment" data-fragment-index="0">
-    <strong>B &mdash; SARSA.</strong> SARSA accounts for the risky actions the agent will actually take while exploring, so it learns to avoid big penalties along the exploration path.
+  <div class="quiz-answer fragment">
+    <strong>B &mdash; SARSA.</strong> SARSA's target uses the action that will <em>actually</em> be taken while exploring, so it learns to avoid catastrophic outcomes along the exploration path. Q-learning's target uses the greedy action, ignoring the cost of exploration mistakes.
   </div>
-  <p class="quiz-q fragment" data-fragment-index="1" style="margin-top: 0.5em;"><strong>Q3.</strong> Which is true?</p>
-  <ol class="quiz-options fragment" data-fragment-index="1" style="font-size: 0.78em;">
+</section>
+
+<!-- 17b. Q3: model-free / on-policy taxonomy -->
+<section>
+  <h2>Putting the labels together (Q3)</h2>
+  <p class="quiz-q"><strong>Q3.</strong> Which statement is true?</p>
+  <ol class="quiz-options" style="font-size: 0.82em;">
     <li>Q-learning is model-free + off-policy; SARSA is model-based + on-policy.</li>
     <li>Q-learning is model-based + off-policy; SARSA is model-free + on-policy.</li>
     <li>Q-learning is model-free + on-policy; SARSA is model-based + off-policy.</li>
     <li>Q-learning is model-based + on-policy; SARSA is model-free + off-policy.</li>
     <li><strong>None of the above.</strong></li>
   </ol>
-  <div class="quiz-answer fragment" data-fragment-index="2">
-    <strong>E.</strong> Both are <em>model-free</em>. Q-learning is off-policy; SARSA is on-policy.
+  <div class="quiz-answer fragment">
+    <strong>E &mdash; None of the above.</strong> Both Q-learning and SARSA are <em>model-free</em>. Q-learning is off-policy (target uses \(\max_{a'} Q\)); SARSA is on-policy (target uses the action actually played).
   </div>
 </section>
 
