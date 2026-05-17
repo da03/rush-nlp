@@ -1,0 +1,239 @@
+/* L19-specific styles on top of shared/custom.css, L10/custom.css, L16/custom.css. */
+
+/* Math neuron diagram. */
+.reveal .neuron-diagram { display: block; margin: 0.3em auto; max-height: 260px; }
+.reveal .neuron-diagram .input-node {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+}
+.reveal .neuron-diagram .sum-node {
+  fill: #fff;
+  stroke: #1f2937;
+  stroke-width: 2;
+}
+.reveal .neuron-diagram .out-node {
+  fill: #dcfce7;
+  stroke: #16a34a;
+  stroke-width: 2;
+}
+.reveal .neuron-diagram .bias-node {
+  fill: #fef3c7;
+  stroke: #d97706;
+  stroke-width: 1.5;
+}
+.reveal .neuron-diagram .edge {
+  stroke: #6b7280;
+  stroke-width: 1.4;
+  fill: none;
+}
+.reveal .neuron-diagram .weight-label {
+  font-size: 11px;
+  fill: #1d4ed8;
+  font-style: italic;
+}
+.reveal .neuron-diagram text {
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .neuron-diagram .activation-box {
+  fill: #fef3c7;
+  stroke: #92400e;
+  stroke-width: 1.5;
+  rx: 6;
+}
+
+/* 2x2 activation-function plots. */
+.reveal .act-fn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin: 0.3em 0;
+}
+.reveal .act-fn-grid .act-card {
+  padding: 0.5em 0.7em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 3px solid #1d4ed8;
+  border-radius: 4px;
+}
+.reveal .act-fn-grid .act-card h3 {
+  font-size: 0.85em;
+  margin: 0 0 0.2em 0;
+  color: #1d4ed8;
+}
+.reveal .act-fn-grid .act-card .formula {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78em;
+  color: #4b5563;
+  margin: 0 0 0.2em 0;
+}
+.reveal .act-fn-grid .act-card .tradeoff {
+  font-size: 0.72em;
+  color: #6b7280;
+  margin: 0.2em 0 0 0;
+}
+.reveal .act-fn-grid .act-plot {
+  display: block;
+  margin: 0.1em auto;
+  max-height: 90px;
+}
+.reveal .act-fn-grid .act-plot .axis { stroke: #6b7280; stroke-width: 0.8; }
+.reveal .act-fn-grid .act-plot .curve {
+  stroke: #1d4ed8;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* Perceptron diagram. */
+.reveal .perceptron-diagram { display: block; margin: 0.3em auto; max-height: 220px; }
+.reveal .perceptron-diagram .input circle {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+}
+.reveal .perceptron-diagram .bias circle {
+  fill: #fef3c7;
+  stroke: #d97706;
+  stroke-width: 1.5;
+}
+.reveal .perceptron-diagram .output circle {
+  fill: #dcfce7;
+  stroke: #16a34a;
+  stroke-width: 2;
+}
+.reveal .perceptron-diagram .hidden circle {
+  fill: #fff;
+  stroke: #6b7280;
+  stroke-width: 1.5;
+}
+.reveal .perceptron-diagram text {
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .perceptron-diagram .edge {
+  stroke: #6b7280;
+  stroke-width: 1.2;
+  fill: none;
+}
+.reveal .perceptron-diagram .weight {
+  font-size: 11px;
+  fill: #1d4ed8;
+  font-style: italic;
+}
+
+/* AND/OR/XOR scatter row. */
+.reveal .lin-sep-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.4em;
+  margin: 0.3em auto;
+}
+.reveal .lin-sep-row .sep-panel {
+  text-align: center;
+  padding: 0.4em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+.reveal .lin-sep-row .sep-panel h3 {
+  font-size: 0.85em;
+  margin: 0 0 0.3em 0;
+  color: #1d4ed8;
+}
+.reveal .lin-sep-row .sep-plot {
+  display: block;
+  margin: 0 auto;
+  max-height: 140px;
+}
+.reveal .lin-sep-row .sep-plot .axis { stroke: #6b7280; stroke-width: 1; }
+.reveal .lin-sep-row .sep-plot .pos {
+  fill: #16a34a;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+.reveal .lin-sep-row .sep-plot .neg {
+  fill: #dc2626;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+.reveal .lin-sep-row .sep-plot .sep-line {
+  stroke: #1d4ed8;
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+  fill: none;
+}
+.reveal .lin-sep-row .sep-panel .caption {
+  font-size: 0.72em;
+  color: #4b5563;
+  margin-top: 0.2em;
+}
+
+/* RNN diagrams. */
+.reveal .rnn-cell { display: block; margin: 0.3em auto; max-height: 200px; }
+.reveal .rnn-cell .cell-box {
+  fill: #fef3c7;
+  stroke: #d97706;
+  stroke-width: 2;
+  rx: 6;
+}
+.reveal .rnn-cell .node circle {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+}
+.reveal .rnn-cell .out-node circle {
+  fill: #dcfce7;
+  stroke: #16a34a;
+  stroke-width: 1.5;
+}
+.reveal .rnn-cell text {
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+.reveal .rnn-cell .edge {
+  stroke: #6b7280;
+  stroke-width: 1.4;
+  fill: none;
+}
+
+/* Language-model unrolled flow. */
+.reveal .lm-flow { display: block; margin: 0.3em auto; max-height: 260px; }
+.reveal .lm-flow .char-box {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+  rx: 3;
+}
+.reveal .lm-flow .hidden-box {
+  fill: #fef3c7;
+  stroke: #d97706;
+  stroke-width: 1.5;
+  rx: 6;
+}
+.reveal .lm-flow .pred-box {
+  fill: #dcfce7;
+  stroke: #16a34a;
+  stroke-width: 1.5;
+  rx: 3;
+}
+.reveal .lm-flow text {
+  font-size: 11px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .lm-flow .edge {
+  stroke: #6b7280;
+  stroke-width: 1.2;
+  fill: none;
+}

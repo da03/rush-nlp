@@ -1,0 +1,136 @@
+/* L20-specific styles on top of shared/custom.css, L10/custom.css, L19/custom.css. */
+
+/* 2-layer neural network diagram. */
+.reveal .nn-diagram { display: block; margin: 0.3em auto; max-height: 280px; }
+.reveal .nn-diagram .input circle {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+}
+.reveal .nn-diagram .hidden circle {
+  fill: #fef3c7;
+  stroke: #d97706;
+  stroke-width: 1.5;
+}
+.reveal .nn-diagram .output circle {
+  fill: #dcfce7;
+  stroke: #16a34a;
+  stroke-width: 2;
+}
+.reveal .nn-diagram text {
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .nn-diagram .edge {
+  stroke: #9ca3af;
+  stroke-width: 1.2;
+  fill: none;
+}
+.reveal .nn-diagram .edge-fwd {
+  stroke: #1d4ed8;
+  stroke-width: 1.6;
+  fill: none;
+}
+.reveal .nn-diagram .edge-bwd {
+  stroke: #dc2626;
+  stroke-width: 1.6;
+  stroke-dasharray: 4 3;
+  fill: none;
+}
+.reveal .nn-diagram .layer-label {
+  font-size: 11px;
+  font-style: italic;
+  fill: #6b7280;
+  font-weight: 600;
+}
+
+/* Forward/backward annotation strip (for slide title bar). */
+.reveal .nn-pass-annotation {
+  display: flex;
+  justify-content: center;
+  gap: 1.4em;
+  font-size: 0.78em;
+  margin: 0.2em 0;
+}
+.reveal .nn-pass-annotation .pass-fwd {
+  color: #1d4ed8;
+  font-weight: 700;
+}
+.reveal .nn-pass-annotation .pass-fwd::before {
+  content: "\2192";
+  margin-right: 0.3em;
+}
+.reveal .nn-pass-annotation .pass-bwd {
+  color: #dc2626;
+  font-weight: 700;
+}
+.reveal .nn-pass-annotation .pass-bwd::before {
+  content: "\2190";
+  margin-right: 0.3em;
+}
+
+/* Recursive delta diagram. */
+.reveal .delta-diagram { display: block; margin: 0.3em auto; max-height: 240px; }
+.reveal .delta-diagram .neuron {
+  fill: #fef3c7;
+  stroke: #d97706;
+  stroke-width: 1.5;
+}
+.reveal .delta-diagram .neuron.focus {
+  fill: #fde68a;
+  stroke: #92400e;
+  stroke-width: 2.5;
+}
+.reveal .delta-diagram .next-neuron {
+  fill: #dcfce7;
+  stroke: #16a34a;
+  stroke-width: 1.5;
+}
+.reveal .delta-diagram text {
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #111827;
+}
+.reveal .delta-diagram .delta-edge {
+  stroke: #dc2626;
+  stroke-width: 1.5;
+  fill: none;
+  stroke-dasharray: 4 3;
+}
+.reveal .delta-diagram .weight-label {
+  font-size: 10px;
+  fill: #1d4ed8;
+  font-style: italic;
+}
+.reveal .delta-diagram .delta-label {
+  font-size: 11px;
+  fill: #991b1b;
+  font-weight: 700;
+}
+
+/* GD intuition: 2-up cards for direction + step-size. */
+.reveal .gd-intuition {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin: 0.4em 0;
+}
+.reveal .gd-intuition .ic {
+  padding: 0.6em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+  text-align: left;
+}
+.reveal .gd-intuition .ic h3 {
+  font-size: 0.95em;
+  margin: 0 0 0.3em 0;
+  color: #1d4ed8;
+}
+.reveal .gd-intuition .ic p { font-size: 0.82em; margin: 0.2em 0; }

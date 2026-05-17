@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 19 — Neural Networks I</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 19: Neural Networks I — the math neuron, activation functions, perceptrons, XOR, and recurrent networks. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="../L16/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <marker id="arrow-l19" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Neural Networks I</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 19</p>
+  <p class="credit">RN 21.1 &middot; PM 7.5</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Describe the <strong>simple mathematical model</strong> of a neuron.</li>
+    <li class="fragment">Describe desirable properties of an <strong>activation function</strong>.</li>
+    <li class="fragment">Distinguish <strong>feedforward</strong> from <strong>recurrent</strong> networks.</li>
+    <li class="fragment">Learn a <strong>perceptron</strong> for a simple logical function.</li>
+    <li class="fragment">Determine the logical function represented by a perceptron.</li>
+    <li class="fragment">Explain why a perceptron <strong>cannot represent XOR</strong>.</li>
+    <li class="fragment">Understand <strong>recurrent neural networks</strong>.</li>
+  </ul>
+</section>
+
+<!-- 3. Why neural networks? -->
+<section>
+  <h2>Learning complex non-linear relationships</h2>
+  <p style="font-size: 0.88em;">In vision, speech, translation, and beyond, the relationship between inputs and outputs is too complex to hand-program.</p>
+  <div class="defbox fragment">
+    <p style="margin: 0; font-size: 0.92em;">We need a model that can:</p>
+    <ul style="margin: 0.3em 0 0 1.2em; font-size: 0.88em;">
+      <li>Learn complex relationships.</li>
+      <li>Be trained efficiently on lots of data.</li>
+      <li>Generalize without overfitting.</li>
+    </ul>
+  </div>
+  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">Loose inspiration: the human brain &mdash; many simple components, densely connected.</p>
+</section>
+
+<!-- ============================================================
+     Neuron model (3 slides)
+     ============================================================ -->
+
+<!-- 4. From brain neurons to math neurons -->
+<section>
+  <h2>From brain neurons to math neurons</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1;">
+      <ul style="font-size: 0.85em;">
+        <li><strong>Dendrites</strong> receive input signals.</li>
+        <li><strong>Soma</strong> processes the signals.</li>
+        <li><strong>Axon</strong> sends an output signal.</li>
+        <li><strong>Synapses</strong> connect neurons together.</li>
+        <li>Neurons fire (or don't) based on the inputs.</li>
+      </ul>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 280 180" xmlns="http://www.w3.org/2000/svg">
+        <line x1="20" y1="50" x2="100" y2="90" stroke="#6b7280" stroke-width="2"/>
+        <line x1="20" y1="90" x2="100" y2="90" stroke="#6b7280" stroke-width="2"/>
+        <line x1="20" y1="130" x2="100" y2="90" stroke="#6b7280" stroke-width="2"/>
+        <text x="10" y="50" font-size="10" fill="#1d4ed8" text-anchor="end">dendrite</text>
+        <text x="10" y="93" font-size="10" fill="#1d4ed8" text-anchor="end">dendrite</text>
+        <text x="10" y="133" font-size="10" fill="#1d4ed8" text-anchor="end">dendrite</text>
+        <ellipse cx="120" cy="90" rx="25" ry="20" fill="#fde68a" stroke="#92400e" stroke-width="2"/>
+        <text x="120" y="93" font-size="11" font-weight="700" text-anchor="middle">soma</text>
+        <line x1="145" y1="90" x2="240" y2="90" stroke="#6b7280" stroke-width="2.5"/>
+        <text x="195" y="82" font-size="10" fill="#1d4ed8" text-anchor="middle">axon</text>
+        <circle cx="245" cy="80" r="3" fill="#16a34a"/>
+        <circle cx="248" cy="95" r="3" fill="#16a34a"/>
+        <circle cx="243" cy="105" r="3" fill="#16a34a"/>
+        <text x="265" y="100" font-size="10" fill="#166534">synapses</text>
+      </svg>
+    </div>
+  </div>
+  <p style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">The math model abstracts this into <strong>weighted sum + non-linear activation</strong>.</p>
+</section>
+
+<!-- 5. The math model -->
+<section>
+  <h2>The math model (McCulloch &amp; Pitts, 1943)</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1; text-align: center;">
+      <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg" class="neuron-diagram">
+        <line class="edge" x1="35" y1="40"  x2="170" y2="115" marker-end="url(#arrow-l19)"/>
+        <line class="edge" x1="35" y1="90"  x2="170" y2="120" marker-end="url(#arrow-l19)"/>
+        <line class="edge" x1="35" y1="140" x2="170" y2="125" marker-end="url(#arrow-l19)"/>
+        <line class="edge" x1="35" y1="190" x2="170" y2="130" marker-end="url(#arrow-l19)"/>
+        <text class="weight-label" x="90" y="65">w<tspan baseline-shift="sub" font-size="8">0j</tspan></text>
+        <text class="weight-label" x="90" y="100">w<tspan baseline-shift="sub" font-size="8">1j</tspan></text>
+        <text class="weight-label" x="90" y="140">w<tspan baseline-shift="sub" font-size="8">2j</tspan></text>
+        <text class="weight-label" x="90" y="180">w<tspan baseline-shift="sub" font-size="8">nj</tspan></text>
+        <g class="bias-node"><circle cx="20" cy="40" r="14"/></g>
+        <text x="20" y="40">1</text>
+        <g class="input-node">
+          <circle cx="20" cy="90" r="14"/>
+          <circle cx="20" cy="140" r="14"/>
+          <circle cx="20" cy="190" r="14"/>
+        </g>
+        <text x="20" y="90">a<tspan baseline-shift="sub" font-size="8">1</tspan></text>
+        <text x="20" y="140">a<tspan baseline-shift="sub" font-size="8">2</tspan></text>
+        <text x="20" y="190">a<tspan baseline-shift="sub" font-size="8">n</tspan></text>
+        <g class="sum-node"><circle cx="195" cy="125" r="22"/></g>
+        <text x="195" y="123" font-size="14">&Sigma;</text>
+        <text x="195" y="158" font-size="11" fill="#6b7280">in<tspan baseline-shift="sub" font-size="8">j</tspan></text>
+        <rect class="activation-box" x="240" y="106" width="50" height="38"/>
+        <text x="265" y="128" font-size="14">g(&middot;)</text>
+        <line class="edge" x1="217" y1="125" x2="240" y2="125" marker-end="url(#arrow-l19)"/>
+        <g class="out-node"><circle cx="320" cy="125" r="14"/></g>
+        <text x="320" y="125">a<tspan baseline-shift="sub" font-size="8">j</tspan></text>
+        <line class="edge" x1="290" y1="125" x2="306" y2="125" marker-end="url(#arrow-l19)"/>
+      </svg>
+    </div>
+    <div style="flex: 1;">
+      <div class="defbox">
+        <p style="margin: 0; text-align: center; font-size: 0.95em;">\(in_j = \sum_{i = 0}^{n} w_{ij}\, a_i\)</p>
+        <p style="margin: 0.4em 0 0 0; text-align: center; font-size: 0.95em;">\(a_j = g(in_j)\)</p>
+      </div>
+      <p style="font-size: 0.78em; color: #6b7280; margin-top: 0.4em;">\(a_0 = 1\) is the bias; \(w_{0j}\) acts as a threshold. \(g\) is a non-linear <strong>activation function</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Desirable properties of activation -->
+<section class="center-slide">
+  <h2>Desirable properties of the activation function</h2>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="task-card">
+      <h3>Non-linear</h3>
+      <p>Complex relationships are non-linear; stacking linear layers stays linear.</p>
+    </div>
+    <div class="task-card">
+      <h3>Mimics real neurons</h3>
+      <p>Fires (\(\approx 1\)) when input is big; quiet (\(\approx 0\)) otherwise.</p>
+    </div>
+    <div class="task-card">
+      <h3>Differentiable</h3>
+      <p>So we can train via gradient-based optimization (next lecture!).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Activation functions (1 slide)
+     ============================================================ -->
+
+<!-- 7. Four common activation functions -->
+<section>
+  <h2>Four common activation functions</h2>
+  <div class="act-fn-grid">
+    <div class="act-card">
+      <h3>Step</h3>
+      <p class="formula">\(g(x) = 1\) if \(x &gt; 0\), else \(0\).</p>
+      <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" class="act-plot">
+        <line class="axis" x1="10" y1="60" x2="130" y2="60"/>
+        <line class="axis" x1="70" y1="10" x2="70" y2="75"/>
+        <path class="curve" d="M 10 60 L 70 60 L 70 20 L 130 20"/>
+      </svg>
+      <p class="tradeoff">Simple but <em>not differentiable</em>; rarely used in practice.</p>
+    </div>
+    <div class="act-card">
+      <h3>Sigmoid</h3>
+      <p class="formula">\(g(x) = \dfrac{1}{1 + e^{-x}}\)</p>
+      <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" class="act-plot">
+        <line class="axis" x1="10" y1="60" x2="130" y2="60"/>
+        <line class="axis" x1="70" y1="10" x2="70" y2="75"/>
+        <path class="curve" d="M 10 58 C 40 57, 55 53, 70 40 C 85 27, 100 23, 130 22"/>
+      </svg>
+      <p class="tradeoff">Smooth, but <em>vanishing-gradient</em> in saturation regions.</p>
+    </div>
+    <div class="act-card">
+      <h3>ReLU</h3>
+      <p class="formula">\(g(x) = \max(0, x)\)</p>
+      <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" class="act-plot">
+        <line class="axis" x1="10" y1="60" x2="130" y2="60"/>
+        <line class="axis" x1="70" y1="10" x2="70" y2="75"/>
+        <path class="curve" d="M 10 60 L 70 60 L 130 10"/>
+      </svg>
+      <p class="tradeoff">Fast, sparse; <em>dying-ReLU</em> when input stays negative.</p>
+    </div>
+    <div class="act-card">
+      <h3>Leaky ReLU</h3>
+      <p class="formula">\(g(x) = \max(0, x) + k\cdot\min(0, x)\)</p>
+      <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" class="act-plot">
+        <line class="axis" x1="10" y1="60" x2="130" y2="60"/>
+        <line class="axis" x1="70" y1="10" x2="70" y2="75"/>
+        <path class="curve" d="M 10 67 L 70 60 L 130 10"/>
+      </svg>
+      <p class="tradeoff">Small negative slope keeps gradient alive on the left.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Perceptrons (3 slides)
+     ============================================================ -->
+
+<!-- 8. FF vs RNN + perceptron def -->
+<section>
+  <h2>Networks: feedforward vs recurrent</h2>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
+    <div class="task-card">
+      <h3>Feedforward</h3>
+      <p>Connections form a <strong>DAG</strong> (no loops). The network is just a function of its inputs.</p>
+    </div>
+    <div class="task-card">
+      <h3>Recurrent</h3>
+      <p>Outputs feed back as inputs. Supports <strong>short-term memory</strong> &mdash; behavior depends on history.</p>
+    </div>
+  </div>
+  <div class="defbox fragment" style="margin-top: 0.5em;">
+    <h3>Perceptron</h3>
+    <p style="margin: 0; font-size: 0.88em;">A <strong>single-layer feedforward</strong> network: inputs connect directly to outputs. Can represent AND, OR, NOT and many other logical functions.</p>
+  </div>
+</section>
+
+<!-- 9. Q1 + Q2 -->
+<section>
+  <h2>Identify and learn a perceptron</h2>
+  <div class="two-col">
+    <div style="flex: 1;">
+      <p class="quiz-q"><strong>Q1.</strong> The perceptron below (step activation, weights \(w_0 = 0.5, w_1 = -1, w_2 = -1\)) computes:</p>
+      <div style="text-align: center; margin: 0.2em 0;">
+        <svg viewBox="0 0 240 130" xmlns="http://www.w3.org/2000/svg" class="perceptron-diagram">
+          <line class="edge" x1="40"  y1="25" x2="160" y2="65" marker-end="url(#arrow-l19)"/>
+          <line class="edge" x1="40"  y1="65" x2="160" y2="65" marker-end="url(#arrow-l19)"/>
+          <line class="edge" x1="40"  y1="105" x2="160" y2="65" marker-end="url(#arrow-l19)"/>
+          <text class="weight" x="95"  y="38">0.5</text>
+          <text class="weight" x="95"  y="60">&minus;1</text>
+          <text class="weight" x="95"  y="92">&minus;1</text>
+          <g class="bias"><circle cx="25" cy="25" r="14"/></g>
+          <text x="25" y="25">1</text>
+          <g class="input">
+            <circle cx="25" cy="65" r="14"/>
+            <circle cx="25" cy="105" r="14"/>
+          </g>
+          <text x="25" y="65">x<tspan baseline-shift="sub" font-size="8">1</tspan></text>
+          <text x="25" y="105">x<tspan baseline-shift="sub" font-size="8">2</tspan></text>
+          <g class="output"><circle cx="175" cy="65" r="14"/></g>
+          <text x="175" y="65">o</text>
+        </svg>
+      </div>
+      <ol class="quiz-options" style="font-size: 0.78em;">
+        <li>\(x_1 \wedge x_2\)</li>
+        <li>\(\neg (x_1 \wedge x_2)\)</li>
+        <li>\(x_1 \vee x_2\)</li>
+        <li><strong>\(\neg (x_1 \vee x_2)\)</strong> (NOR)</li>
+      </ol>
+      <div class="quiz-answer fragment">
+        <strong>D &mdash; NOR.</strong> Outputs 1 only when \(0.5 - x_1 - x_2 &gt; 0\), i.e. both are 0.
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <p class="quiz-q"><strong>Q2.</strong> Find weights for AND (truth table: only \((1,1) \to 1\)).</p>
+      <ol class="quiz-options" style="font-size: 0.78em;">
+        <li>\(w_0 = -1, w_1 = 0.5, w_2 = 0.5\)</li>
+        <li>\(w_0 = 0.5, w_1 = -1, w_2 = 1\)</li>
+        <li>\(w_0 = 1.5, w_1 = -1, w_2 = -1\)</li>
+        <li><strong>\(w_0 = -1.5, w_1 = 1, w_2 = 1\)</strong></li>
+      </ol>
+      <div class="quiz-answer fragment">
+        <strong>D.</strong> Check: \(-1.5 + x_1 + x_2 &gt; 0\) iff \(x_1 + x_2 &gt; 1.5\), i.e. both equal 1.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. Q3 + Q4 -->
+<section>
+  <h2>More perceptron arithmetic</h2>
+  <p style="font-size: 0.82em;">Step activation: \(g(x) = 1\) if \(x &gt; 0\), else \(0\).</p>
+  <div class="two-col">
+    <div style="flex: 1;">
+      <p class="quiz-q"><strong>Q3.</strong> What does \(h_1 = g(x_1 + x_2 - 0.5)\) compute?</p>
+      <ol class="quiz-options" style="font-size: 0.78em;">
+        <li><strong>\(x_1 \vee x_2\)</strong> (OR)</li>
+        <li>\(x_1 \wedge x_2\)</li>
+        <li>\(\neg(x_1 \vee x_2)\)</li>
+        <li>\(\neg(x_1 \wedge x_2)\)</li>
+      </ol>
+      <div class="quiz-answer fragment">
+        <strong>A &mdash; OR.</strong> Outputs 1 if at least one input is 1.
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <p class="quiz-q"><strong>Q4.</strong> What does \(h_2 = g(-x_1 - x_2 + 1.5)\) compute?</p>
+      <ol class="quiz-options" style="font-size: 0.78em;">
+        <li>\(x_1 \vee x_2\)</li>
+        <li>\(x_1 \wedge x_2\)</li>
+        <li>\(\neg(x_1 \vee x_2)\)</li>
+        <li><strong>\(\neg(x_1 \wedge x_2)\)</strong> (NAND)</li>
+      </ol>
+      <div class="quiz-answer fragment">
+        <strong>D &mdash; NAND.</strong> Outputs 0 only when both inputs are 1.
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Remember \(h_1\) and \(h_2\) &mdash; we'll combine them to build XOR.</p>
+</section>
+
+<!-- ============================================================
+     XOR (2 slides)
+     ============================================================ -->
+
+<!-- 11. Why a perceptron can't do XOR -->
+<section>
+  <h2>Why a perceptron can't represent XOR</h2>
+  <p style="font-size: 0.85em;">A perceptron is a <strong>linear classifier</strong>. Its decision boundary is a hyperplane in the input space.</p>
+  <div class="lin-sep-row">
+    <div class="sep-panel">
+      <h3>AND</h3>
+      <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" class="sep-plot">
+        <line class="axis" x1="15" y1="115" x2="115" y2="115"/>
+        <line class="axis" x1="15" y1="115" x2="15" y2="15"/>
+        <line class="sep-line" x1="20" y1="40" x2="100" y2="115"/>
+        <circle class="neg" cx="20"  cy="115" r="5"/>
+        <circle class="neg" cx="100" cy="115" r="5"/>
+        <circle class="neg" cx="20"  cy="35"  r="5"/>
+        <circle class="pos" cx="100" cy="35"  r="5"/>
+        <text x="20" y="125" font-size="9" fill="#6b7280">0</text>
+        <text x="100" y="125" font-size="9" fill="#6b7280">1</text>
+        <text x="10" y="115" font-size="9" fill="#6b7280" text-anchor="end">0</text>
+        <text x="10" y="35"  font-size="9" fill="#6b7280" text-anchor="end">1</text>
+      </svg>
+      <div class="caption">Separable</div>
+    </div>
+    <div class="sep-panel">
+      <h3>OR</h3>
+      <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" class="sep-plot">
+        <line class="axis" x1="15" y1="115" x2="115" y2="115"/>
+        <line class="axis" x1="15" y1="115" x2="15" y2="15"/>
+        <line class="sep-line" x1="20" y1="80" x2="60" y2="115"/>
+        <circle class="neg" cx="20"  cy="115" r="5"/>
+        <circle class="pos" cx="100" cy="115" r="5"/>
+        <circle class="pos" cx="20"  cy="35"  r="5"/>
+        <circle class="pos" cx="100" cy="35"  r="5"/>
+        <text x="20" y="125" font-size="9" fill="#6b7280">0</text>
+        <text x="100" y="125" font-size="9" fill="#6b7280">1</text>
+        <text x="10" y="115" font-size="9" fill="#6b7280" text-anchor="end">0</text>
+        <text x="10" y="35"  font-size="9" fill="#6b7280" text-anchor="end">1</text>
+      </svg>
+      <div class="caption">Separable</div>
+    </div>
+    <div class="sep-panel">
+      <h3>XOR</h3>
+      <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" class="sep-plot">
+        <line class="axis" x1="15" y1="115" x2="115" y2="115"/>
+        <line class="axis" x1="15" y1="115" x2="15" y2="15"/>
+        <circle class="neg" cx="20"  cy="115" r="5"/>
+        <circle class="pos" cx="100" cy="115" r="5"/>
+        <circle class="pos" cx="20"  cy="35"  r="5"/>
+        <circle class="neg" cx="100" cy="35"  r="5"/>
+        <text x="20" y="125" font-size="9" fill="#6b7280">0</text>
+        <text x="100" y="125" font-size="9" fill="#6b7280">1</text>
+        <text x="10" y="115" font-size="9" fill="#6b7280" text-anchor="end">0</text>
+        <text x="10" y="35"  font-size="9" fill="#6b7280" text-anchor="end">1</text>
+      </svg>
+      <div class="caption" style="color:#991b1b;"><strong>Not</strong> separable</div>
+    </div>
+  </div>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.3em;">Minsky &amp; Papert (1969) showed this &mdash; and it triggered the first AI winter.</p>
+</section>
+
+<!-- 12. XOR as a 2-layer network -->
+<section>
+  <h2>XOR as a 2-layer network</h2>
+  <p style="font-size: 0.85em;">Rewrite XOR using gates a perceptron <em>can</em> handle: &nbsp;\(x_1 \oplus x_2 = (x_1 \vee x_2) \wedge \neg(x_1 \wedge x_2) = h_1 \wedge h_2\).</p>
+  <div class="two-col vcenter">
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" class="perceptron-diagram">
+        <line class="edge" x1="35"  y1="60"  x2="125" y2="60" marker-end="url(#arrow-l19)"/>
+        <line class="edge" x1="35"  y1="60"  x2="125" y2="140" marker-end="url(#arrow-l19)"/>
+        <line class="edge" x1="35"  y1="140" x2="125" y2="60" marker-end="url(#arrow-l19)"/>
+        <line class="edge" x1="35"  y1="140" x2="125" y2="140" marker-end="url(#arrow-l19)"/>
+        <line class="edge" x1="155" y1="60"  x2="245" y2="100" marker-end="url(#arrow-l19)"/>
+        <line class="edge" x1="155" y1="140" x2="245" y2="100" marker-end="url(#arrow-l19)"/>
+        <g class="input">
+          <circle cx="20" cy="60"  r="14"/>
+          <circle cx="20" cy="140" r="14"/>
+        </g>
+        <text x="20" y="60">x<tspan baseline-shift="sub" font-size="8">1</tspan></text>
+        <text x="20" y="140">x<tspan baseline-shift="sub" font-size="8">2</tspan></text>
+        <g class="hidden">
+          <circle cx="140" cy="60" r="16"/>
+          <circle cx="140" cy="140" r="16"/>
+        </g>
+        <text x="140" y="60">h<tspan baseline-shift="sub" font-size="8">1</tspan></text>
+        <text x="140" y="140">h<tspan baseline-shift="sub" font-size="8">2</tspan></text>
+        <text x="140" y="34" font-size="10" fill="#1d4ed8" font-style="italic">OR</text>
+        <text x="140" y="170" font-size="10" fill="#1d4ed8" font-style="italic">NAND</text>
+        <g class="output"><circle cx="260" cy="100" r="16"/></g>
+        <text x="260" y="100">o</text>
+        <text x="260" y="74" font-size="10" fill="#166534" font-style="italic">AND</text>
+      </svg>
+    </div>
+    <div style="flex: 0.95; font-size: 0.78em;">
+      <p style="margin: 0;"><strong>Truth-table check:</strong></p>
+      <table class="factor-table" style="font-size: 0.85em; margin: 0.2em auto;">
+        <thead><tr><th>\(x_1\)</th><th>\(x_2\)</th><th>\(h_1\)<br>(OR)</th><th>\(h_2\)<br>(NAND)</th><th>\(h_1 \wedge h_2\)</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
+          <tr><td>0</td><td>1</td><td>1</td><td>1</td><td class="val" style="color:#166534;">1</td></tr>
+          <tr><td>1</td><td>0</td><td>1</td><td>1</td><td class="val" style="color:#166534;">1</td></tr>
+          <tr><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+        </tbody>
+      </table>
+      <p style="margin: 0.3em 0 0 0; color: #166534; font-size: 0.85em;"><strong>Matches XOR exactly.</strong> One hidden layer is enough.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Recurrent networks (3 slides)
+     ============================================================ -->
+
+<!-- 13. RNN definition -->
+<section>
+  <h2>Recurrent networks: process a sequence</h2>
+  <p style="font-size: 0.88em;">When inputs come as a sequence (text, audio, sensor data), the same network reads one element at a time and carries a <strong>state</strong> across steps.</p>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1;">
+      <div class="defbox">
+        <h3>Recurrence</h3>
+        <p style="text-align: center; margin: 0.3em 0; font-size: 0.95em;">\(h_t = f_W(h_{t-1},\, x_t), \quad y_t = f_Y(h_t)\)</p>
+        <p style="font-size: 0.8em; color: #6b7280; margin: 0;">The state \(h_t\) summarizes everything seen so far.</p>
+      </div>
+      <p style="font-size: 0.82em; margin-top: 0.4em;">Same weights at every step &mdash; the model can handle <em>any-length</em> sequence with a fixed parameter count.</p>
+    </div>
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg" class="rnn-cell">
+        <rect class="cell-box" x="60" y="60" width="100" height="60"/>
+        <text x="110" y="92" font-size="14">RNN</text>
+        <g class="node"><circle cx="35" cy="90" r="14"/></g>
+        <text x="35" y="90" font-size="12" font-weight="700">x<tspan baseline-shift="sub" font-size="8">t</tspan></text>
+        <g class="out-node"><circle cx="185" cy="90" r="14"/></g>
+        <text x="185" y="90" font-size="12" font-weight="700">y<tspan baseline-shift="sub" font-size="8">t</tspan></text>
+        <line class="edge" x1="49" y1="90" x2="60" y2="90" marker-end="url(#arrow-l19)"/>
+        <line class="edge" x1="160" y1="90" x2="171" y2="90" marker-end="url(#arrow-l19)"/>
+        <path class="edge" d="M 110 60 C 110 30, 50 30, 50 50 L 50 60" fill="none" stroke-dasharray="3 2" marker-end="url(#arrow-l19)"/>
+        <text x="80" y="35" font-size="11" fill="#d97706" font-style="italic">h<tspan baseline-shift="sub" font-size="8">t-1</tspan></text>
+        <path class="edge" d="M 160 120 C 200 130, 200 150, 110 150 C 110 130, 110 130, 110 120" fill="none" stroke-dasharray="3 2"/>
+        <text x="135" y="170" font-size="11" fill="#d97706" font-style="italic">h<tspan baseline-shift="sub" font-size="8">t</tspan> (carry to next step)</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 14. Vanilla RNN -->
+<section>
+  <h2>Vanilla RNN: equations + unrolled</h2>
+  <div class="defbox">
+    <p style="text-align: center; margin: 0.2em 0; font-size: 0.95em;">\(h_t = \tanh\!\bigl(W_{hh}\, h_{t-1} + W_{xh}\, x_t\bigr), \quad y_t = W_{hy}\, h_t\)</p>
+  </div>
+  <div style="text-align: center; margin-top: 0.4em;">
+    <svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" class="rnn-cell">
+      <rect class="cell-box" x="50"  y="80" width="80" height="50"/>
+      <rect class="cell-box" x="160" y="80" width="80" height="50"/>
+      <rect class="cell-box" x="270" y="80" width="80" height="50"/>
+      <rect class="cell-box" x="380" y="80" width="80" height="50"/>
+      <text x="90"  y="108" font-size="13">h<tspan baseline-shift="sub" font-size="9">1</tspan></text>
+      <text x="200" y="108" font-size="13">h<tspan baseline-shift="sub" font-size="9">2</tspan></text>
+      <text x="310" y="108" font-size="13">h<tspan baseline-shift="sub" font-size="9">3</tspan></text>
+      <text x="420" y="108" font-size="13">h<tspan baseline-shift="sub" font-size="9">4</tspan></text>
+      <line class="edge" x1="130" y1="105" x2="160" y2="105" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="240" y1="105" x2="270" y2="105" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="350" y1="105" x2="380" y2="105" marker-end="url(#arrow-l19)"/>
+      <text x="145" y="98" font-size="9" fill="#1d4ed8">W<tspan baseline-shift="sub" font-size="7">hh</tspan></text>
+      <text x="255" y="98" font-size="9" fill="#1d4ed8">W<tspan baseline-shift="sub" font-size="7">hh</tspan></text>
+      <text x="365" y="98" font-size="9" fill="#1d4ed8">W<tspan baseline-shift="sub" font-size="7">hh</tspan></text>
+      <g class="node">
+        <circle cx="90"  cy="170" r="12"/>
+        <circle cx="200" cy="170" r="12"/>
+        <circle cx="310" cy="170" r="12"/>
+        <circle cx="420" cy="170" r="12"/>
+      </g>
+      <text x="90"  y="170" font-size="11">x<tspan baseline-shift="sub" font-size="7">1</tspan></text>
+      <text x="200" y="170" font-size="11">x<tspan baseline-shift="sub" font-size="7">2</tspan></text>
+      <text x="310" y="170" font-size="11">x<tspan baseline-shift="sub" font-size="7">3</tspan></text>
+      <text x="420" y="170" font-size="11">x<tspan baseline-shift="sub" font-size="7">4</tspan></text>
+      <line class="edge" x1="90"  y1="158" x2="90"  y2="130" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="200" y1="158" x2="200" y2="130" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="310" y1="158" x2="310" y2="130" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="420" y1="158" x2="420" y2="130" marker-end="url(#arrow-l19)"/>
+      <g class="out-node">
+        <circle cx="90"  cy="40" r="12"/>
+        <circle cx="200" cy="40" r="12"/>
+        <circle cx="310" cy="40" r="12"/>
+        <circle cx="420" cy="40" r="12"/>
+      </g>
+      <text x="90"  y="40" font-size="11">y<tspan baseline-shift="sub" font-size="7">1</tspan></text>
+      <text x="200" y="40" font-size="11">y<tspan baseline-shift="sub" font-size="7">2</tspan></text>
+      <text x="310" y="40" font-size="11">y<tspan baseline-shift="sub" font-size="7">3</tspan></text>
+      <text x="420" y="40" font-size="11">y<tspan baseline-shift="sub" font-size="7">4</tspan></text>
+      <line class="edge" x1="90"  y1="80" x2="90"  y2="52" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="200" y1="80" x2="200" y2="52" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="310" y1="80" x2="310" y2="52" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="420" y1="80" x2="420" y2="52" marker-end="url(#arrow-l19)"/>
+    </svg>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.3em;">The <strong>same</strong> \(W_{hh}, W_{xh}, W_{hy}\) are reused at every time step.</p>
+</section>
+
+<!-- 15. Language modeling -->
+<section>
+  <h2>Application: language modeling</h2>
+  <p style="font-size: 0.85em;">Feed characters one at a time; predict the next character at each step.</p>
+  <div style="text-align: center;">
+    <svg viewBox="0 0 540 220" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
+      <rect class="char-box" x="20"  y="160" width="40" height="40"/>
+      <rect class="char-box" x="140" y="160" width="40" height="40"/>
+      <rect class="char-box" x="260" y="160" width="40" height="40"/>
+      <rect class="char-box" x="380" y="160" width="40" height="40"/>
+      <text x="40"  y="180">h</text>
+      <text x="160" y="180">e</text>
+      <text x="280" y="180">l</text>
+      <text x="400" y="180">l</text>
+      <text x="40"  y="215" font-size="10" fill="#6b7280">t=1</text>
+      <text x="160" y="215" font-size="10" fill="#6b7280">t=2</text>
+      <text x="280" y="215" font-size="10" fill="#6b7280">t=3</text>
+      <text x="400" y="215" font-size="10" fill="#6b7280">t=4</text>
+      <rect class="hidden-box" x="20"  y="90" width="40" height="40"/>
+      <rect class="hidden-box" x="140" y="90" width="40" height="40"/>
+      <rect class="hidden-box" x="260" y="90" width="40" height="40"/>
+      <rect class="hidden-box" x="380" y="90" width="40" height="40"/>
+      <text x="40"  y="110">h<tspan baseline-shift="sub" font-size="8">1</tspan></text>
+      <text x="160" y="110">h<tspan baseline-shift="sub" font-size="8">2</tspan></text>
+      <text x="280" y="110">h<tspan baseline-shift="sub" font-size="8">3</tspan></text>
+      <text x="400" y="110">h<tspan baseline-shift="sub" font-size="8">4</tspan></text>
+      <line class="edge" x1="40"  y1="160" x2="40"  y2="130" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="160" y1="160" x2="160" y2="130" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="280" y1="160" x2="280" y2="130" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="400" y1="160" x2="400" y2="130" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="60"  y1="110" x2="140" y2="110" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="180" y1="110" x2="260" y2="110" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="300" y1="110" x2="380" y2="110" marker-end="url(#arrow-l19)"/>
+      <rect class="pred-box" x="20"  y="20" width="40" height="40"/>
+      <rect class="pred-box" x="140" y="20" width="40" height="40"/>
+      <rect class="pred-box" x="260" y="20" width="40" height="40"/>
+      <rect class="pred-box" x="380" y="20" width="40" height="40"/>
+      <text x="40"  y="40">"e"</text>
+      <text x="160" y="40">"l"</text>
+      <text x="280" y="40">"l"</text>
+      <text x="400" y="40">"o"</text>
+      <line class="edge" x1="40"  y1="90" x2="40"  y2="60" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="160" y1="90" x2="160" y2="60" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="280" y1="90" x2="280" y2="60" marker-end="url(#arrow-l19)"/>
+      <line class="edge" x1="400" y1="90" x2="400" y2="60" marker-end="url(#arrow-l19)"/>
+      <text x="475" y="40" font-size="11" fill="#166534" font-weight="700">predictions</text>
+      <text x="475" y="110" font-size="11" fill="#92400e" font-weight="700">hidden state</text>
+      <text x="475" y="180" font-size="11" fill="#1d4ed8" font-weight="700">input chars</text>
+    </svg>
+  </div>
+  <p style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.3em;">Trained to predict the next character; sample autoregressively to generate text.</p>
+</section>
+
+<!-- ============================================================
+     Wrap-up (1 slide)
+     ============================================================ -->
+
+<!-- 16. Learning goals (recap) + next -->
+<section class="center-slide">
+  <h2>Learning goals (recap) &mdash; Next: training</h2>
+  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0; max-width: 85%; margin-right: auto;">
+    <li>&#10003; &nbsp;Describe the <strong>math neuron</strong>.</li>
+    <li>&#10003; &nbsp;Describe desirable properties of an <strong>activation function</strong>.</li>
+    <li>&#10003; &nbsp;Distinguish <strong>feedforward</strong> from <strong>recurrent</strong> networks.</li>
+    <li>&#10003; &nbsp;Learn / identify a <strong>perceptron</strong> for a logical function.</li>
+    <li>&#10003; &nbsp;Explain why a perceptron <strong>cannot represent XOR</strong>.</li>
+    <li>&#10003; &nbsp;Understand <strong>RNNs</strong> and how they process sequences.</li>
+  </ul>
+  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L20: how do we actually <em>train</em> these networks? &mdash; gradient descent + <strong>backpropagation</strong>.</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>

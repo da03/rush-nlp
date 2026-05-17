@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 20 — Neural Networks II</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 20: Neural Networks II — gradient descent, backpropagation, and NN vs decision trees. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="../L19/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <marker id="arrow-l20" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+    </marker>
+    <marker id="arrow-l20-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Neural Networks II</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 20</p>
+  <p class="credit">RN 19.6.2, 21.1, 21.2 &middot; PM 7.5 &middot; GBC 4.3, 6.5</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Explain the steps of <strong>gradient descent</strong>.</li>
+    <li class="fragment">Modify GD to speed up learning and ensure convergence.</li>
+    <li class="fragment">Describe the <strong>back-propagation</strong> algorithm (forward + backward passes).</li>
+    <li class="fragment">Compute the gradient for a weight in a multi-layer NN.</li>
+    <li class="fragment">Decide when to use a <strong>neural network</strong> vs a <strong>decision tree</strong>.</li>
+  </ul>
+</section>
+
+<!-- 3. The training problem: 2-layer NN -->
+<section>
+  <h2>The training problem</h2>
+  <p style="font-size: 0.85em;">A 2-layer feedforward network for spam classification &mdash; predict \([a^{(2)}_1, a^{(2)}_2]\) from two features (email length, sender trust).</p>
+  <div class="two-col vcenter">
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" class="nn-diagram">
+        <line class="edge" x1="35" y1="60"  x2="155" y2="60"/>
+        <line class="edge" x1="35" y1="60"  x2="155" y2="160"/>
+        <line class="edge" x1="35" y1="160" x2="155" y2="60"/>
+        <line class="edge" x1="35" y1="160" x2="155" y2="160"/>
+        <line class="edge" x1="175" y1="60"  x2="275" y2="60"/>
+        <line class="edge" x1="175" y1="60"  x2="275" y2="160"/>
+        <line class="edge" x1="175" y1="160" x2="275" y2="60"/>
+        <line class="edge" x1="175" y1="160" x2="275" y2="160"/>
+        <g class="input">
+          <circle cx="20" cy="60" r="14"/>
+          <circle cx="20" cy="160" r="14"/>
+        </g>
+        <text x="20" y="60">x<tspan baseline-shift="sub" font-size="8">1</tspan></text>
+        <text x="20" y="160">x<tspan baseline-shift="sub" font-size="8">2</tspan></text>
+        <g class="hidden">
+          <circle cx="165" cy="60" r="16"/>
+          <circle cx="165" cy="160" r="16"/>
+        </g>
+        <text x="165" y="60">z<tspan baseline-shift="sub" font-size="8">1</tspan><tspan baseline-shift="super" font-size="8">(1)</tspan></text>
+        <text x="165" y="160">z<tspan baseline-shift="sub" font-size="8">2</tspan><tspan baseline-shift="super" font-size="8">(1)</tspan></text>
+        <g class="output">
+          <circle cx="290" cy="60" r="14"/>
+          <circle cx="290" cy="160" r="14"/>
+        </g>
+        <text x="290" y="60">z<tspan baseline-shift="sub" font-size="8">1</tspan><tspan baseline-shift="super" font-size="8">(2)</tspan></text>
+        <text x="290" y="160">z<tspan baseline-shift="sub" font-size="8">2</tspan><tspan baseline-shift="super" font-size="8">(2)</tspan></text>
+        <text class="layer-label" x="20" y="20">inputs</text>
+        <text class="layer-label" x="165" y="20">hidden</text>
+        <text class="layer-label" x="290" y="20">outputs</text>
+        <text class="weight-label" x="90" y="50" font-size="11" fill="#1d4ed8" font-style="italic">W<tspan baseline-shift="super" font-size="8">(1)</tspan></text>
+        <text class="weight-label" x="225" y="50" font-size="11" fill="#1d4ed8" font-style="italic">W<tspan baseline-shift="super" font-size="8">(2)</tspan></text>
+      </svg>
+    </div>
+    <div style="flex: 0.9; font-size: 0.82em;">
+      <p style="margin: 0;"><strong>Two outputs</strong> encode "spam" vs "ham":</p>
+      <ul style="margin: 0.3em 0;">
+        <li>Spam &rarr; target \([1, 0]\)</li>
+        <li>Ham &rarr; target \([0, 1]\)</li>
+        <li>Ambiguous &rarr; \([0.5, 0.5]\)</li>
+      </ul>
+      <p style="margin: 0.4em 0 0 0; color: #1d4ed8;">We have paired data \((x_1, x_2, y)\). <strong>How do we set the weights \(W^{(1)}, W^{(2)}\)?</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Loss function + gradient descent -->
+<section>
+  <h2>Loss function and gradient descent</h2>
+  <p style="font-size: 0.85em; margin: 0.2em 0;">Squared loss on a dataset \(D = \{(x^{(i)}, y^{(i)})\}_{i=1}^N\) with network output \(\hat{y}^{(i)} = f(x^{(i)}; W)\):</p>
+  <p style="text-align:center;">\[ L(W) = \tfrac{1}{2} \sum_{i=1}^{N} \big\| \hat{y}^{(i)} - y^{(i)} \big\|^2 \]</p>
+  <p style="font-size: 0.85em; margin: 0.6em 0 0.2em 0;" class="fragment"><strong>Gradient descent:</strong> repeat for many iterations:</p>
+  <ol style="font-size: 0.85em; margin: 0.2em 0 0.2em 1.5em;">
+    <li class="fragment">Compute the gradient \(\nabla_W L(W) = \big[ \partial L / \partial w \big]_{w \in W}\).</li>
+    <li class="fragment">Update every weight: \( w \leftarrow w - \eta\, \dfrac{\partial L}{\partial w} \).</li>
+  </ol>
+  <p style="font-size: 0.8em; margin: 0.6em 0; color: #6b7280;" class="fragment">\(\eta &gt; 0\) is the <em>learning rate</em> (step size).</p>
+</section>
+
+<!-- 5. Direction and step-size intuition -->
+<section>
+  <h2>Why this works</h2>
+  <div class="gd-intuition">
+    <div class="ic">
+      <h3>Direction: steepest descent</h3>
+      <p>\(\nabla_W L\) points in the direction of <em>fastest increase</em> of \(L\).</p>
+      <p>Moving in <strong>\(-\nabla_W L\)</strong> decreases \(L\) the fastest.</p>
+    </div>
+    <div class="ic fragment">
+      <h3>Step size: \(\eta\) trade-off</h3>
+      <p>Too small \(\Rightarrow\) very slow learning.</p>
+      <p>Too large \(\Rightarrow\) overshoots the minimum, may diverge.</p>
+    </div>
+  </div>
+  <div class="fragment" style="text-align: center; margin-top: 0.6em;">
+    <svg viewBox="0 0 460 150" xmlns="http://www.w3.org/2000/svg" style="max-height: 160px;">
+      <path d="M30,130 Q90,30 150,130 T270,130 T390,130" stroke="#6b7280" stroke-width="2" fill="none"/>
+      <circle cx="40" cy="120" r="6" fill="#1d4ed8"/>
+      <circle cx="70" cy="80" r="6" fill="#1d4ed8"/>
+      <circle cx="120" cy="120" r="6" fill="#1d4ed8"/>
+      <text x="80" y="20" font-size="12" fill="#1d4ed8" font-weight="700">good \(\eta\)</text>
+      <path d="M30,130 Q90,30 150,130 T270,130 T390,130" stroke="none" fill="none"/>
+      <circle cx="230" cy="120" r="6" fill="#dc2626"/>
+      <circle cx="310" cy="40" r="6" fill="#dc2626"/>
+      <circle cx="390" cy="135" r="6" fill="#dc2626"/>
+      <text x="290" y="20" font-size="12" fill="#dc2626" font-weight="700">\(\eta\) too large</text>
+      <line x1="230" y1="120" x2="310" y2="40" stroke="#dc2626" stroke-dasharray="3 2"/>
+      <line x1="310" y1="40" x2="390" y2="135" stroke="#dc2626" stroke-dasharray="3 2"/>
+      <text x="220" y="148" font-size="11" fill="#6b7280">loss surface</text>
+    </svg>
+  </div>
+</section>
+
+<!-- 6. Batch vs SGD vs mini-batch -->
+<section>
+  <h2>Three flavors of gradient descent</h2>
+  <div class="cv-folds" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.7em; margin-top: 0.4em;">
+    <div style="padding:0.6em; border:1px solid #c7d2fe; border-radius:6px; background:#eef2ff;">
+      <h3 style="margin:0; font-size:0.95em; color:#1d4ed8;">Batch GD</h3>
+      <p style="font-size:0.78em; margin:0.3em 0;">Gradient uses <strong>all</strong> \(N\) examples per step.</p>
+      <p style="font-size:0.78em; margin:0.3em 0; color:#16a34a;">Stable, accurate gradient.</p>
+      <p style="font-size:0.78em; margin:0.3em 0; color:#dc2626;">Slow for large \(N\).</p>
+    </div>
+    <div class="fragment" style="padding:0.6em; border:1px solid #fde68a; border-radius:6px; background:#fef9c3;">
+      <h3 style="margin:0; font-size:0.95em; color:#a16207;">Stochastic GD</h3>
+      <p style="font-size:0.78em; margin:0.3em 0;">One example per step.</p>
+      <p style="font-size:0.78em; margin:0.3em 0; color:#16a34a;">Cheap; noise helps escape local minima.</p>
+      <p style="font-size:0.78em; margin:0.3em 0; color:#dc2626;">Noisy updates.</p>
+    </div>
+    <div class="fragment" style="padding:0.6em; border:1px solid #bbf7d0; border-radius:6px; background:#dcfce7;">
+      <h3 style="margin:0; font-size:0.95em; color:#15803d;">Mini-batch GD</h3>
+      <p style="font-size:0.78em; margin:0.3em 0;">A small batch (e.g. 32, 64) per step.</p>
+      <p style="font-size:0.78em; margin:0.3em 0; color:#16a34a;">Best of both worlds; GPU-friendly.</p>
+      <p style="font-size:0.78em; margin:0.3em 0; color:#1d4ed8;">Standard choice today.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; margin: 0.8em 0 0 0; text-align:center; color:#6b7280;">
+    Plus tricks like momentum, Adam, learning-rate schedules &mdash; covered in CS480/680.
+  </p>
+</section>
+
+<!-- 7. Backprop: forward + backward overview -->
+<section>
+  <h2>Back-propagation: efficient gradients</h2>
+  <p style="font-size: 0.85em; margin: 0.2em 0;">Two passes per training example \((x, y)\):</p>
+  <div class="two-col vcenter" style="margin-top: 0.4em;">
+    <div style="flex: 1; padding:0.6em; background:#eef2ff; border-left: 4px solid #1d4ed8; border-radius: 4px;">
+      <div style="color:#1d4ed8; font-weight:700;">&rarr; Forward pass</div>
+      <p style="font-size:0.82em; margin:0.3em 0;">Push inputs through layers, compute every \(a^{(\ell)}, z^{(\ell)}\), and the loss \(E\).</p>
+    </div>
+    <div class="fragment" style="flex: 1; padding:0.6em; background:#fee2e2; border-left: 4px solid #dc2626; border-radius: 4px;">
+      <div style="color:#dc2626; font-weight:700;">&larr; Backward pass</div>
+      <p style="font-size:0.82em; margin:0.3em 0;">Propagate \(\partial E\) back through the layers, compute every \(\partial E / \partial W^{(\ell)}\).</p>
+    </div>
+  </div>
+  <div class="fragment" style="text-align:center; margin-top: 0.7em;">
+    <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" class="nn-diagram">
+      <line class="edge-fwd" x1="35" y1="60"  x2="155" y2="60"  marker-end="url(#arrow-l20)"/>
+      <line class="edge-fwd" x1="35" y1="160" x2="155" y2="60"  marker-end="url(#arrow-l20)"/>
+      <line class="edge-fwd" x1="35" y1="60"  x2="155" y2="160" marker-end="url(#arrow-l20)"/>
+      <line class="edge-fwd" x1="35" y1="160" x2="155" y2="160" marker-end="url(#arrow-l20)"/>
+      <line class="edge-fwd" x1="175" y1="60"  x2="275" y2="60"  marker-end="url(#arrow-l20)"/>
+      <line class="edge-fwd" x1="175" y1="160" x2="275" y2="60"  marker-end="url(#arrow-l20)"/>
+      <line class="edge-fwd" x1="175" y1="60"  x2="275" y2="160" marker-end="url(#arrow-l20)"/>
+      <line class="edge-fwd" x1="175" y1="160" x2="275" y2="160" marker-end="url(#arrow-l20)"/>
+      <line class="edge-bwd" x1="275" y1="70" x2="180" y2="70"/>
+      <line class="edge-bwd" x1="275" y1="150" x2="180" y2="150"/>
+      <line class="edge-bwd" x1="155" y1="70" x2="50" y2="70"/>
+      <line class="edge-bwd" x1="155" y1="150" x2="50" y2="150"/>
+      <g class="input"><circle cx="20" cy="60" r="14"/><circle cx="20" cy="160" r="14"/></g>
+      <g class="hidden"><circle cx="165" cy="60" r="16"/><circle cx="165" cy="160" r="16"/></g>
+      <g class="output"><circle cx="290" cy="60" r="14"/><circle cx="290" cy="160" r="14"/></g>
+      <text x="20" y="60">x<tspan baseline-shift="sub" font-size="8">1</tspan></text>
+      <text x="20" y="160">x<tspan baseline-shift="sub" font-size="8">2</tspan></text>
+      <text x="165" y="60">z<tspan baseline-shift="sub" font-size="8">1</tspan><tspan baseline-shift="super" font-size="8">(1)</tspan></text>
+      <text x="165" y="160">z<tspan baseline-shift="sub" font-size="8">2</tspan><tspan baseline-shift="super" font-size="8">(1)</tspan></text>
+      <text x="290" y="60">y&#770;<tspan baseline-shift="sub" font-size="8">1</tspan></text>
+      <text x="290" y="160">y&#770;<tspan baseline-shift="sub" font-size="8">2</tspan></text>
+      <text class="layer-label" x="100" y="195" fill="#1d4ed8" font-size="11" font-weight="700">forward (compute E)</text>
+      <text class="layer-label" x="220" y="20" fill="#dc2626" font-size="11" font-weight="700">backward (compute &part;E/&part;W)</text>
+    </svg>
+  </div>
+</section>
+
+<!-- 8. Forward pass equations -->
+<section>
+  <h2>Forward pass</h2>
+  <p style="font-size: 0.85em;">Compute pre-activations \(a^{(\ell)}\) and activations \(z^{(\ell)} = g(a^{(\ell)})\) layer by layer.</p>
+  <div style="font-size: 0.92em;">
+    \[
+    \begin{aligned}
+      a^{(1)}_j &= \sum_i x_i\, W^{(1)}_{i,j} && z^{(1)}_j = g(a^{(1)}_j) \\
+      a^{(2)}_k &= \sum_j z^{(1)}_j\, W^{(2)}_{j,k} && z^{(2)}_k = g(a^{(2)}_k) \\
+      E &= E(z^{(2)}, y)
+    \end{aligned}
+    \]
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">
+    <strong>Cache</strong> every \(a^{(\ell)}\) and \(z^{(\ell)}\) &mdash; we'll need them on the way back.
+  </p>
+</section>
+
+<!-- 9. Backward pass equations -->
+<section>
+  <h2>Backward pass</h2>
+  <p style="font-size: 0.85em;">Walk back through the network, computing local errors \(\delta\) via the chain rule.</p>
+  <div style="font-size: 0.88em;">
+    \[
+    \begin{aligned}
+      \frac{\partial E}{\partial W^{(2)}_{j,k}} &= \delta^{(2)}_k\, z^{(1)}_j, & \delta^{(2)}_k &= \frac{\partial E}{\partial z^{(2)}_k}\, g'(a^{(2)}_k) \\
+      \frac{\partial E}{\partial W^{(1)}_{i,j}} &= \delta^{(1)}_j\, x_i, & \delta^{(1)}_j &= \Bigg( \sum_k \delta^{(2)}_k\, W^{(2)}_{j,k} \Bigg)\, g'(a^{(1)}_j)
+    \end{aligned}
+    \]
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; margin-top: 0.6em; text-align:center;">
+    <strong>Pattern:</strong> &nbsp; gradient = local error \(\times\) input to that weight.
+  </p>
+</section>
+
+<!-- 10. Recursive delta -->
+<section>
+  <h2>The recursive structure of \(\delta\)</h2>
+  <p style="font-size: 0.82em; margin: 0.2em 0;">For unit \(j\) in layer \(\ell\), define \(\delta^{(\ell)}_j = \dfrac{\partial E}{\partial a^{(\ell)}_j}\). Then:</p>
+  <div style="font-size: 0.86em;">
+    \[
+    \delta^{(\ell)}_j =
+    \begin{cases}
+      \dfrac{\partial E}{\partial z^{(\ell)}_j}\, g'(a^{(\ell)}_j), & \text{output unit (base)} \\[0.8em]
+      \Bigg( \displaystyle \sum_k \delta^{(\ell+1)}_k\, W^{(\ell+1)}_{j,k} \Bigg)\, g'(a^{(\ell)}_j), & \text{hidden unit (recursive)}
+    \end{cases}
+    \]
+  </div>
+  <div class="fragment" style="text-align:center; margin-top: 0.5em;">
+    <svg viewBox="0 0 360 150" xmlns="http://www.w3.org/2000/svg" class="delta-diagram">
+      <circle class="neuron focus" cx="80" cy="75" r="22"/>
+      <text x="80" y="75">j (layer \(\ell\))</text>
+      <text class="delta-label" x="80" y="115">\(\delta^{(\ell)}_j\)</text>
+      <line class="delta-edge" x1="200" y1="35" x2="105" y2="65" marker-end="url(#arrow-l20-red)"/>
+      <line class="delta-edge" x1="200" y1="115" x2="105" y2="85" marker-end="url(#arrow-l20-red)"/>
+      <text class="weight-label" x="155" y="40">W<tspan baseline-shift="super" font-size="8">(\(\ell\)+1)</tspan><tspan baseline-shift="sub" font-size="8">j,1</tspan></text>
+      <text class="weight-label" x="155" y="105">W<tspan baseline-shift="super" font-size="8">(\(\ell\)+1)</tspan><tspan baseline-shift="sub" font-size="8">j,2</tspan></text>
+      <circle class="next-neuron" cx="220" cy="35" r="18"/>
+      <text x="220" y="35">k=1</text>
+      <circle class="next-neuron" cx="220" cy="115" r="18"/>
+      <text x="220" y="115">k=2</text>
+      <text class="delta-label" x="270" y="35">\(\delta^{(\ell+1)}_1\)</text>
+      <text class="delta-label" x="270" y="115">\(\delta^{(\ell+1)}_2\)</text>
+      <text x="180" y="145" font-size="10" fill="#6b7280">downstream layer \(\ell\!+\!1\)</text>
+    </svg>
+  </div>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin: 0.2em 0; text-align:center;">
+    \(\delta\) for a hidden unit = weighted sum of downstream \(\delta\)s, modulated by \(g'\).
+  </p>
+</section>
+
+<!-- 11. Matrix-form backprop -->
+<section>
+  <h2>Backprop in matrix form</h2>
+  <p style="font-size: 0.85em;">Stack layer activations into vectors. Let \(\delta_\ell = \partial E / \partial z^{(\ell)}\) and \(W_\ell\) be the weight matrix.</p>
+  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.6em 0.9em; font-size: 0.82em;">
+    <strong>Algorithm.</strong>
+    <ol style="margin: 0.2em 0 0.2em 1.5em;">
+      <li>Initialize weights \(W_\ell\) for every layer.</li>
+      <li class="fragment"><strong>Forward:</strong> push \(x\) through, cache \(z^{(1)}, z^{(2)}, \ldots\)</li>
+      <li class="fragment"><strong>Output \(\delta\):</strong> set \(\delta_n = \partial E / \partial z^{(n)}\).</li>
+      <li class="fragment"><strong>Backward sweep,</strong> for \(\ell = n, n\!-\!1, \ldots, 1\):
+        <div style="margin: 0.3em 0 0 1em; font-size: 0.95em;">
+          \(\delta_{\ell-1} = \delta_\ell \cdot \dfrac{\partial g(x^{(\ell)})}{\partial x^{(\ell)}} \cdot W_\ell\) <br>
+          \(\dfrac{\partial E}{\partial W_\ell} = \delta_\ell \cdot \dfrac{\partial g(x^{(\ell)})}{\partial x^{(\ell)}} \cdot z^{(\ell-1)}\)
+        </div>
+      </li>
+      <li class="fragment">Plug \(\partial E / \partial W_\ell\) into gradient descent.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 12. Sigmoid derivative trick -->
+<section>
+  <h2>The sigmoid derivative trick</h2>
+  <p style="font-size: 0.85em;">For \(g(x) = \dfrac{1}{1 + e^{-x}}\):</p>
+  <div style="text-align: center;">
+    \[ g'(x) = \frac{1}{1 + e^{-x}} \cdot \frac{e^{-x}}{1 + e^{-x}} = g(x)\,\big(1 - g(x)\big) \]
+  </div>
+  <div class="fragment" style="margin-top: 0.5em; padding: 0.6em 0.9em; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 4px; font-size: 0.86em;">
+    <strong>Why it matters:</strong> during the forward pass we already compute \(g(a)\). Reuse it &mdash; no need to redo the exponential during the backward pass.
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.5em;">Similar shortcuts exist for tanh (\(1 - g^2\)) and ReLU (0 or 1).</p>
+</section>
+
+<!-- 13. When to use a neural network -->
+<section>
+  <h2>When to use (or not use) a neural network</h2>
+  <div class="two-col" style="margin-top: 0.4em;">
+    <div style="flex: 1; padding:0.7em; background:#dcfce7; border-left:4px solid #16a34a; border-radius:4px;">
+      <div style="color:#15803d; font-weight:700; margin-bottom:0.3em;">Reach for an NN when</div>
+      <ul style="margin:0.2em 0 0.2em 1.2em; font-size: 0.82em;">
+        <li>High-dimensional, real-valued, or noisy inputs.</li>
+        <li>Target function form is unknown (no good hand-crafted model).</li>
+        <li>Interpretability is not a priority.</li>
+        <li>Plenty of training data is available.</li>
+      </ul>
+    </div>
+    <div class="fragment" style="flex: 1; padding:0.7em; background:#fee2e2; border-left:4px solid #dc2626; border-radius:4px;">
+      <div style="color:#b91c1c; font-weight:700; margin-bottom:0.3em;">Avoid an NN when</div>
+      <ul style="margin:0.2em 0 0.2em 1.2em; font-size: 0.82em;">
+        <li>Architecture is hard to choose (layers, units, activations).</li>
+        <li>Weights need to be inspected and explained.</li>
+        <li>Data is tabular and small &mdash; overfitting risk is high.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 14. NN vs DT comparison table -->
+<section>
+  <h2>Neural network vs decision tree</h2>
+  <table class="compare" style="font-size: 0.78em; margin: 0.3em auto;">
+    <thead>
+      <tr>
+        <th></th>
+        <th style="color:#1d4ed8;">Neural network</th>
+        <th style="color:#a16207;">Decision tree</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Data type</strong></td><td>Images, audio, text</td><td>Tabular data</td></tr>
+      <tr class="fragment"><td><strong>Data size</strong></td><td>Needs a lot; easy to overfit small data</td><td>Works with very little data</td></tr>
+      <tr class="fragment"><td><strong>Target function</strong></td><td>Arbitrary functions</td><td>Nested if/else rules</td></tr>
+      <tr class="fragment"><td><strong>Architecture</strong></td><td>Layers, units, activations, init, \(\eta\) all critical</td><td>A few hyperparameters (depth, pruning)</td></tr>
+      <tr class="fragment"><td><strong>Interpretability</strong></td><td>Black box</td><td>Easy to explain to humans</td></tr>
+      <tr class="fragment"><td><strong>Train / inference</strong></td><td>Slow to train and run</td><td>Fast</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 15. Revisiting learning goals -->
+<section class="center-slide">
+  <h2>Revisiting learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Explain the steps of <strong>gradient descent</strong>.</li>
+    <li class="fragment">Modify GD to speed up learning and ensure convergence.</li>
+    <li class="fragment">Describe the <strong>back-propagation</strong> algorithm (forward + backward passes).</li>
+    <li class="fragment">Compute the gradient for a weight in a multi-layer NN.</li>
+    <li class="fragment">Decide when to use a <strong>neural network</strong> vs a <strong>decision tree</strong>.</li>
+  </ul>
+</section>
+
+<!-- 16. Next lecture teaser -->
+<section class="center-slide">
+  <h2>Next: Neural Networks III</h2>
+  <ul style="text-align:left; margin-left:2em; font-size: 0.9em;">
+    <li class="fragment">Convolutional networks &mdash; weight sharing for images.</li>
+    <li class="fragment">Word embeddings and sequence models.</li>
+    <li class="fragment">A peek at <strong>transformers</strong> and large language models.</li>
+  </ul>
+  <p class="fragment" style="margin-top: 0.8em; color: #6b7280;">See you on Thursday!</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>
