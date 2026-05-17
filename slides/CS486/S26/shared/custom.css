@@ -360,6 +360,43 @@ body.print-pdf .course-home-link { display: none; }
 .reveal .reveal-list { text-align: left; }
 .reveal .reveal-list li { margin-bottom: 0.5em; }
 
+/* Course-wide module breadcrumb (4 pills + arrows) shown at the top of every
+   lecture's "Learning goals" slide so students always know where they are
+   in the term arc. The current module's pill is filled with its accent
+   colour; the other three are dim. */
+.reveal .course-breadcrumb {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35em;
+  flex-wrap: wrap;
+  margin: 0 auto 0.9em;
+  font-size: 0.62em;
+}
+.reveal .course-breadcrumb .bc-pill {
+  display: inline-block;
+  padding: 0.25em 0.7em;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  color: #6b7280;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.reveal .course-breadcrumb .bc-arrow {
+  color: #9ca3af;
+  font-weight: 700;
+}
+.reveal .course-breadcrumb .bc-pill.current {
+  color: #fff;
+  border-color: transparent;
+}
+.reveal .course-breadcrumb .bc-pill.search.current   { background: #1d4ed8; }
+.reveal .course-breadcrumb .bc-pill.uncert.current   { background: #a855f7; }
+.reveal .course-breadcrumb .bc-pill.decision.current { background: #ea580c; }
+.reveal .course-breadcrumb .bc-pill.learn.current    { background: #16a34a; }
+.reveal .course-breadcrumb .bc-pill.recap.current    { background: #4b5563; }
+
 /* PDF export:
    - Open ?print-pdf in Chrome and Print > Save as PDF.
    - Or use Decktape:
