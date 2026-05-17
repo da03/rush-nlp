@@ -91,3 +91,32 @@
   width: auto;
   vertical-align: middle;
 }
+
+/* do-operator graph-surgery pair (slide 19). */
+.reveal .do-surgery-pair {
+  display: flex;
+  gap: 1.4em;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5em 0;
+}
+.reveal .do-surgery-pair > div { text-align: center; }
+.reveal .do-surgery-pair svg { max-height: 130px; width: auto; }
+.reveal .do-surgery-pair .panel-label {
+  font-size: 0.8em;
+  font-weight: 700;
+  margin-bottom: 0.2em;
+}
+.reveal .do-surgery-pair .panel-label.observe { color: #1d4ed8; }
+.reveal .do-surgery-pair .panel-label.do      { color: #b91c1c; }
+.reveal .do-surgery-pair .severed-edge {
+  stroke: #dc2626;
+  stroke-width: 2;
+  stroke-dasharray: 5 3;
+  fill: none;
+}
+.reveal .do-surgery-pair .scissors {
+  fill: #dc2626;
+  font-size: 16px;
+  font-weight: 700;
+}

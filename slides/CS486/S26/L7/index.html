@@ -163,7 +163,21 @@
     </div>
     <div style="flex: 1; text-align: center;">
       <p style="font-size: 0.82em; color: #6b7280; margin: 0;">Car diagnostic network</p>
-      <img class="bn-img" src="images/cardiagnosis.png" alt="Car diagnostic Bayes net">
+      <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" class="bn-graph" style="max-height: 240px;" aria-label="Car diagnostic Bayes net">
+        <line class="bn-edge" x1="100" y1="56"  x2="60"  y2="116" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="105" y1="56"  x2="180" y2="116" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="115" y1="56"  x2="300" y2="116" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="260" y1="56"  x2="200" y2="208" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="300" y1="148" x2="200" y2="208" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <ellipse cx="100" cy="40"  rx="50" ry="18"/><text x="100" y="44">Battery</text>
+          <ellipse cx="260" cy="40"  rx="48" ry="18"/><text x="260" y="44">Fuel</text>
+          <ellipse cx="60"  cy="130" rx="45" ry="18"/><text x="60"  y="134">Lights</text>
+          <ellipse cx="180" cy="130" rx="45" ry="18"/><text x="180" y="134">Radio</text>
+          <ellipse cx="300" cy="130" rx="48" ry="18"/><text x="300" y="134">Starter</text>
+          <ellipse cx="180" cy="225" rx="48" ry="18"/><text x="180" y="229">Engine</text>
+        </g>
+      </svg>
     </div>
   </div>
 </section>

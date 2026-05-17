@@ -325,13 +325,16 @@
 <section>
   <h2>The variable elimination algorithm</h2>
   <p style="font-size: 0.9em;">To compute \(P(X_q | X_{o_1} = v_1 \wedge \cdots \wedge X_{o_j} = v_j)\):</p>
-<pre class="algo"><span class="kw">1.</span> <span class="cmt"># Construct a factor for each CPT in the BN.</span>
-<span class="kw">2.</span> <span class="cmt"># Restrict every observed variable to its value.</span>
-<span class="kw">3. for each</span> hidden variable X<sub>h</sub> (in chosen order):
-       multiply all factors containing X<sub>h</sub>
-       sum out X<sub>h</sub> from the product
-<span class="kw">4.</span> <span class="cmt"># Multiply the remaining factors.</span>
-<span class="kw">5.</span> <span class="cmt"># Normalize.</span></pre>
+  <div class="algo-card">
+    <div class="algo-title">variable-elimination(BN, query, evidence)</div>
+    <ol>
+      <li>Construct a factor for each CPT in the BN.</li>
+      <li>Restrict every observed variable to its value.</li>
+      <li>For each hidden variable <code>X<sub>h</sub></code> (in chosen order): multiply all factors that contain <code>X<sub>h</sub></code>, then sum out <code>X<sub>h</sub></code> from the product.</li>
+      <li>Multiply the remaining factors.</li>
+      <li>Normalize the result.</li>
+    </ol>
+  </div>
   <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.4em;">Each iteration removes one hidden variable while keeping all factors small.</p>
 </section>
 

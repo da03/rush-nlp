@@ -498,15 +498,16 @@
   <p style="font-size: 0.9em;">Two variables can be highly correlated without one causing the other.</p>
   <div class="two-col" style="margin-top: 0.4em;">
     <div style="flex: 1;">
-      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" class="spurious-chart">
+      <svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg" class="spurious-chart">
         <line class="axis" x1="30" y1="170" x2="300" y2="170"/>
         <line class="axis" x1="30" y1="170" x2="30"  y2="20"/>
-        <text class="axis-label" x="165" y="190" text-anchor="middle">year</text>
-        <text class="axis-label" x="15" y="95" text-anchor="middle" transform="rotate(-90 15 95)">value</text>
+        <text class="axis-label" x="165" y="190" text-anchor="middle">month</text>
+        <text class="axis-label" x="15" y="95" text-anchor="middle" transform="rotate(-90 15 95)">count</text>
         <polyline class="curve-a" points="40,140 70,110 100,80 130,60 160,75 190,95 220,55 250,40 280,30"/>
         <polyline class="curve-b" points="40,150 70,120 100,90 130,75 160,85 190,100 220,65 250,50 280,40"/>
-        <text x="282" y="32" font-size="10" fill="#1d4ed8">Curve A</text>
-        <text x="282" y="42" font-size="10" fill="#dc2626">Curve B</text>
+        <text x="282" y="32" font-size="10" fill="#1d4ed8" text-anchor="end">Ice cream sales</text>
+        <text x="282" y="44" font-size="10" fill="#dc2626" text-anchor="end">Shark attacks</text>
+        <text x="165" y="208" text-anchor="middle" font-size="10" font-style="italic" fill="#6b7280">both peak in summer (hidden cause)</text>
       </svg>
     </div>
     <div style="flex: 1.1;">
@@ -557,6 +558,34 @@
   <p class="fragment" style="font-size: 0.85em; margin-top: 0.6em;"><strong>Average Treatment Effect</strong> (adjusting for confounders):</p>
   <p class="fragment" style="text-align: center; font-size: 0.95em;">\(\mathrm{ATE} = \sum_A P(R | S{=}1, A)\, P(A) - \sum_A P(R | S{=}0, A)\, P(A) \approx 0\)</p>
   <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">\(\mathrm{ATE} \approx 0\) tells us shoe size doesn't <em>cause</em> reading skill &mdash; randomised experiments confirm this.</p>
+  <div class="do-surgery-pair fragment" aria-label="Graph surgery for do(Shoe)">
+    <div>
+      <div class="panel-label observe">condition on \(S\)</div>
+      <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <line class="bn-edge" x1="80"  y1="30" x2="40"  y2="90" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <line class="bn-edge" x1="110" y1="30" x2="155" y2="90" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <ellipse cx="95"  cy="20"  rx="28" ry="14"/><text x="95"  y="24">Age</text>
+          <ellipse cx="35"  cy="105" rx="32" ry="16"/><text x="35"  y="109">Shoe</text>
+          <ellipse cx="160" cy="105" rx="38" ry="16"/><text x="160" y="109">Reading</text>
+        </g>
+      </svg>
+    </div>
+    <div>
+      <div class="panel-label do">\(\mathrm{do}(S = 1)\)</div>
+      <svg viewBox="0 0 200 130" xmlns="http://www.w3.org/2000/svg">
+        <line class="severed-edge" x1="80" y1="30" x2="40" y2="90"/>
+        <text class="scissors" x="60" y="60" text-anchor="middle">&#x2702;</text>
+        <line class="bn-edge" x1="110" y1="30" x2="155" y2="90" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
+        <g class="bn-node">
+          <ellipse cx="95"  cy="20"  rx="28" ry="14"/><text x="95"  y="24">Age</text>
+          <ellipse cx="35"  cy="105" rx="32" ry="16" fill="#fee2e2" stroke="#b91c1c" stroke-width="2"/><text x="35" y="109" fill="#991b1b">Shoe=1</text>
+          <ellipse cx="160" cy="105" rx="38" ry="16"/><text x="160" y="109">Reading</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.3em 0 0;">Intervention <em>severs</em> the incoming edges of \(S\) &mdash; the upstream confounder can no longer reach \(S\).</p>
 </section>
 
 <!-- ============================================================

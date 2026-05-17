@@ -121,3 +121,34 @@
   margin: 0.3em auto;
   max-width: 90%;
 }
+
+/* Algorithm pseudocode card -- matches the pattern from L3/L4/L5/L6/L21. */
+.reveal .algo-card {
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 6px;
+  padding: 0.6em 0.9em;
+  font-size: 0.82em;
+  margin: 0.3em auto;
+  max-width: 95%;
+}
+.reveal .algo-card .algo-title {
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 0.3em;
+  font-size: 0.95em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal .algo-card ol {
+  margin: 0.2em 0 0.2em 1.5em;
+  padding: 0;
+}
+.reveal .algo-card ol li { margin: 0.15em 0; }
+.reveal .algo-card code {
+  background: #eef2ff;
+  color: #1e3a8a;
+  padding: 0 0.3em;
+  border-radius: 3px;
+  font-size: 0.95em;
+}
