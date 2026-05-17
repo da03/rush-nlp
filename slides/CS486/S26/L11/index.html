@@ -524,7 +524,7 @@
   </div>
 </section>
 
-<!-- 16. Viterbi recursion + algorithm -->
+<!-- 16a. Viterbi recursion -->
 <section>
   <h2>Viterbi recursion</h2>
   <div class="viterbi-step">
@@ -542,16 +542,23 @@
       \(\phi_k(j) = \displaystyle\arg\max_{z} \bigl[\pi_{k-1}(z)\, P(S_k = j | S_{k-1} = z)\bigr]\)
     </div>
   </div>
-<pre class="algo" style="margin-top: 0.5em;"><span class="cmt"># Forward sweep: fill the trellis</span>
-<span class="kw">for</span> k = 1, ..., t - 1:
-  <span class="kw">for</span> j = 0, ..., n - 1:
-    &pi;<sub>k</sub>(j) = P(o<sub>k</sub> | S<sub>k</sub>=j) &middot; max<sub>z</sub> [&pi;<sub>k-1</sub>(z) &middot; P(S<sub>k</sub>=j | S<sub>k-1</sub>=z)]
-    &phi;<sub>k</sub>(j) = argmax<sub>z</sub> [&pi;<sub>k-1</sub>(z) &middot; P(S<sub>k</sub>=j | S<sub>k-1</sub>=z)]
+  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">\(\pi_k(j)\) = best probability of any path ending at state \(j\) at time \(k\). \(\phi_k(j)\) remembers which predecessor produced it &mdash; we'll use it to trace the best sequence back.</p>
+</section>
 
-<span class="cmt"># Backward traceback: recover the best sequence</span>
-&scaron;<sub>t-1</sub> = argmax<sub>j</sub> &pi;<sub>t-1</sub>(j)
-<span class="kw">for</span> k = t - 1, ..., 1:
-  &scaron;<sub>k-1</sub> = &phi;<sub>k</sub>(&scaron;<sub>k</sub>)</pre>
+<!-- 16b. Viterbi: fill, then traceback -->
+<section>
+  <h2>Viterbi: fill the trellis, then trace back</h2>
+  <div class="algo-card">
+    <div class="algo-title">viterbi(observations, transition, emission)</div>
+    <ol>
+      <li>Initialize \(\pi_0(j) = \alpha\, P(S_0 = j)\, P(o_0 | S_0 = j)\) for each state \(j\); \(\phi_0(j) = \text{none}\).</li>
+      <li><strong>Forward sweep</strong>: for \(k = 1, \ldots, t - 1\) and each \(j\), compute \(\pi_k(j)\) and record the argmax in \(\phi_k(j)\).</li>
+      <li><strong>Best terminal</strong>: \(\hat s_{t-1} = \arg\max_j \pi_{t-1}(j)\).</li>
+      <li><strong>Traceback</strong>: for \(k = t - 1, \ldots, 1\), set \(\hat s_{k-1} = \phi_k(\hat s_k)\).</li>
+      <li>Return the sequence \((\hat s_0, \hat s_1, \ldots, \hat s_{t-1})\).</li>
+    </ol>
+  </div>
+  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.4em;">One sweep fills the trellis; one walk back along the backpointers extracts the MAP sequence.</p>
 </section>
 
 <!-- 17. Trellis visualization + complexity -->
