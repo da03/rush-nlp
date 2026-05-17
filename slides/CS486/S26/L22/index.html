@@ -126,7 +126,7 @@
       </ul>
       <span class="answer fragment">Pick the data structure for the frontier &rarr; pick the algorithm.</span>
     </div>
-    <div class="recall-card search">
+    <div class="recall-card search fragment">
       <h3>DFS vs BFS vs IDS</h3>
       <ul>
         <li><strong>DFS:</strong> stack &rarr; \(O(bm)\) space, not complete.</li>
@@ -199,7 +199,7 @@
         <li><strong>Arc consistency / AC-3:</strong> shrink domains before/during search; complexity \(O(cd^3)\).</li>
       </ul>
     </div>
-    <div class="recall-card search">
+    <div class="recall-card search fragment">
       <h3>Local search</h3>
       <ul>
         <li>Trade completeness for very large state spaces.</li>
@@ -223,7 +223,7 @@
         <li><strong>Bayes:</strong> \(P(H\mid e) \propto P(e\mid H)\,P(H)\)</li>
       </ul>
     </div>
-    <div class="recall-card uncert">
+    <div class="recall-card uncert fragment">
       <h3>Independence</h3>
       <ul>
         <li><strong>Unconditional:</strong> \(P(A,B) = P(A)\,P(B)\).</li>
@@ -271,7 +271,7 @@
         <li><strong>Normalize</strong> to get a posterior.</li>
       </ul>
     </div>
-    <div class="recall-card uncert">
+    <div class="recall-card uncert fragment">
       <h3>HMM filtering</h3>
       <ul>
         <li>Recursion: \(P(S_t \mid o_{0:t}) \propto P(o_t \mid S_t)\, \sum_{s_{t-1}} P(S_t \mid s_{t-1})\, P(s_{t-1} \mid o_{0:t-1})\)</li>
@@ -317,20 +317,26 @@
         <line class="edge" x1="240" y1="150" x2="320" y2="50"/>
         <line class="edge" x1="240" y1="150" x2="320" y2="150"/>
 
+        <!-- Bare trellis nodes (always visible) -->
+        <circle class="node" cx="40" cy="50" r="16"/>
+        <circle class="node" cx="40" cy="150" r="16"/>
+        <circle class="node" cx="140" cy="50" r="16"/>
+        <circle class="node" cx="140" cy="150" r="16"/>
+        <circle class="node" cx="240" cy="50" r="16"/>
+        <circle class="node" cx="240" cy="150" r="16"/>
+        <circle class="node" cx="320" cy="50" r="16"/>
+        <circle class="node" cx="320" cy="150" r="16"/>
+        <!-- MAP path overlay (fragment) -->
         <g class="fragment">
           <line class="edge best" x1="40" y1="150" x2="140" y2="50"/>
           <line class="edge best" x1="140" y1="50"  x2="240" y2="50"/>
           <line class="edge best" x1="240" y1="50"  x2="320" y2="150"/>
+          <circle class="node best" cx="40" cy="150" r="16"/>
+          <circle class="node best" cx="140" cy="50" r="16"/>
+          <circle class="node best" cx="240" cy="50" r="16"/>
+          <circle class="node best" cx="320" cy="150" r="16"/>
+          <text x="180" y="20" font-size="11" fill="#15803d" font-weight="700">MAP path through the trellis</text>
         </g>
-
-        <circle class="node" cx="40" cy="50" r="16"/>
-        <circle class="node fragment best-toggle" cx="40" cy="150" r="16" data-fragment-index="0"/>
-        <circle class="node fragment best-toggle" cx="140" cy="50" r="16" data-fragment-index="0"/>
-        <circle class="node" cx="140" cy="150" r="16"/>
-        <circle class="node fragment best-toggle" cx="240" cy="50" r="16" data-fragment-index="0"/>
-        <circle class="node" cx="240" cy="150" r="16"/>
-        <circle class="node" cx="320" cy="50" r="16"/>
-        <circle class="node fragment best-toggle" cx="320" cy="150" r="16" data-fragment-index="0"/>
         <text x="40" y="50">s\(_1\)</text>
         <text x="40" y="150">s\(_2\)</text>
         <text x="140" y="50">s\(_1\)</text>
@@ -343,7 +349,6 @@
         <text x="140" y="190" font-size="10" fill="#6b7280">t=2</text>
         <text x="240" y="190" font-size="10" fill="#6b7280">t=3</text>
         <text x="320" y="190" font-size="10" fill="#6b7280">t=4</text>
-        <text x="180" y="20" font-size="11" fill="#15803d" font-weight="700">MAP path through the trellis</text>
       </svg>
     </div>
   </div>
@@ -361,7 +366,7 @@
         <li><strong>Utility</strong> node &mdash; diamond, deterministic function of its parents.</li>
       </ul>
     </div>
-    <div class="recall-card decision">
+    <div class="recall-card decision fragment">
       <h3>Maximum expected utility</h3>
       <ul>
         <li>Policy \(\pi(d \mid \text{parents})\); MEU picks \(\pi^*\) maximizing \(\mathbb{E}[U]\).</li>
