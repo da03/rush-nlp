@@ -246,12 +246,39 @@
         <li>Joint factorizes as \(P(X_1,\ldots,X_n) = \prod_i P(X_i \mid \mathrm{pa}(X_i))\).</li>
       </ul>
     </div>
-    <div class="recall-card uncert">
+    <div class="recall-card uncert fragment">
       <h3>3 d-separation patterns</h3>
-      <ul>
-        <li><strong>Chain</strong> \(A \to B \to C\): blocked by observing \(B\).</li>
-        <li><strong>Common cause</strong> \(A \leftarrow B \to C\): blocked by observing \(B\).</li>
-        <li><strong>Common effect</strong> \(A \to B \leftarrow C\): blocked by <em>not</em> observing \(B\) or descendants.</li>
+      <ul class="dsep-list">
+        <li>
+          <svg viewBox="0 0 100 32" xmlns="http://www.w3.org/2000/svg" class="l22-dsep-glyph" aria-hidden="true">
+            <line x1="18" y1="16" x2="40" y2="16" marker-end="url(#arrow-l22)"/>
+            <line x1="58" y1="16" x2="80" y2="16" marker-end="url(#arrow-l22)"/>
+            <circle cx="12" cy="16" r="6"/><text x="12" y="17">A</text>
+            <circle cx="50" cy="16" r="6"/><text x="50" y="17">B</text>
+            <circle cx="86" cy="16" r="6"/><text x="86" y="17">C</text>
+          </svg>
+          <strong>Chain</strong> \(A \to B \to C\): blocked by observing \(B\).
+        </li>
+        <li>
+          <svg viewBox="0 0 100 38" xmlns="http://www.w3.org/2000/svg" class="l22-dsep-glyph" aria-hidden="true">
+            <line x1="46" y1="14" x2="22" y2="28" marker-end="url(#arrow-l22)"/>
+            <line x1="54" y1="14" x2="78" y2="28" marker-end="url(#arrow-l22)"/>
+            <circle cx="50" cy="8"  r="6"/><text x="50" y="9">B</text>
+            <circle cx="14" cy="30" r="6"/><text x="14" y="31">A</text>
+            <circle cx="86" cy="30" r="6"/><text x="86" y="31">C</text>
+          </svg>
+          <strong>Common cause</strong> \(A \leftarrow B \to C\): blocked by observing \(B\).
+        </li>
+        <li>
+          <svg viewBox="0 0 100 38" xmlns="http://www.w3.org/2000/svg" class="l22-dsep-glyph" aria-hidden="true">
+            <line x1="18" y1="14" x2="44" y2="28" marker-end="url(#arrow-l22)"/>
+            <line x1="82" y1="14" x2="56" y2="28" marker-end="url(#arrow-l22)"/>
+            <circle cx="14" cy="8"  r="6"/><text x="14" y="9">A</text>
+            <circle cx="86" cy="8"  r="6"/><text x="86" y="9">C</text>
+            <circle cx="50" cy="30" r="6"/><text x="50" y="31">B</text>
+          </svg>
+          <strong>Common effect</strong> \(A \to B \leftarrow C\): blocked by <em>not</em> observing \(B\) or descendants.
+        </li>
       </ul>
       <span class="answer fragment">A path is blocked &rArr; the endpoints are conditionally independent.</span>
     </div>
