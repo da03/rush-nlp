@@ -44,46 +44,6 @@
 </section>
 
 <!-- ============================================================
-     Recap from L3 (3 slides)
-     ============================================================ -->
-
-<!-- 3. Recap: Admissibility intuition -->
-<section>
-  <h2>Recap: admissibility intuition</h2>
-  <p style="font-size: 0.85em; color:#6b7280;">Why must \(h\) never over-estimate?</p>
-  <ul style="font-size: 0.85em;">
-    <li class="fragment">Suppose the optimal path has true cost \(C^*\); a sub-optimal goal has cost \(C' &gt; C^*\).</li>
-    <li class="fragment">By admissibility, the optimal path's intermediate node \(n\) has \(f(n) = g(n) + h(n) \le C^*\).</li>
-    <li class="fragment">So A* expands \(n\) <strong>before</strong> popping the sub-optimal goal.</li>
-    <li class="fragment"><strong>First visit to the goal = least-cost visit.</strong></li>
-  </ul>
-</section>
-
-<!-- 4. Recap: Consistency intuition -->
-<section>
-  <h2>Recap: consistency intuition</h2>
-  <p style="font-size: 0.85em; color:#6b7280;">Why must \(h\) decrease no faster than the edge cost?</p>
-  <ul style="font-size: 0.85em;">
-    <li class="fragment">For every edge \(n \to m\): &nbsp;\(h(n) - h(m) \le \text{cost}(n, m)\).</li>
-    <li class="fragment">Hence \(f(n) = g(n) + h(n) \le g(n) + \text{cost}(n, m) + h(m) = f(m)\).</li>
-    <li class="fragment">\(f\) is <strong>non-decreasing</strong> along any path A* explores.</li>
-    <li class="fragment"><strong>First visit to any node = least-cost visit.</strong></li>
-  </ul>
-</section>
-
-<!-- 5. Admissibility vs consistency -->
-<section class="center-slide">
-  <h2>Admissibility vs consistency</h2>
-  <div class="theorem">
-    <strong>Consistent:</strong> \(h(n) - h(m) \le \text{cost}(n, m)\) for every edge \(n \to m\).
-  </div>
-  <div class="theorem fragment">
-    <strong>Admissible:</strong> \(h(n) \le \text{cost}(n, \text{goal})\), i.e. with \(h(\text{goal}) = 0\) this is just \(h(n) - h(\text{goal}) \le \text{cost}(n, \text{goal})\) &mdash; the consistency inequality for the special edge to the goal.
-  </div>
-  <p class="fragment" style="font-size: 0.85em; margin-top: 1em;"><strong>Consistency \(\Rightarrow\) admissibility.</strong> Today's "consistency" means something different: <em>arc</em>-consistency for constraints.</p>
-</section>
-
-<!-- ============================================================
      CSP examples (1 slide)
      ============================================================ -->
 

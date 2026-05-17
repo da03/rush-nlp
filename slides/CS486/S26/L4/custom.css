@@ -166,3 +166,69 @@
   font-size: 0.85em;
 }
 .reveal .domain-list .strike { text-decoration: line-through; color: #dc2626; }
+
+/* ============================================================
+   Polish pass: algo-card (slides 16, 22), example SVG examples (slide 6),
+   ternary -> binary mini (slide 19).
+   ============================================================ */
+
+/* Algorithm pseudocode card -- same shape as L21/L3 polish. */
+.reveal .algo-card {
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 6px;
+  padding: 0.6em 0.9em;
+  font-size: 0.82em;
+  margin: 0.3em auto;
+  max-width: 95%;
+}
+.reveal .algo-card .algo-title {
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 0.3em;
+  font-size: 0.95em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal .algo-card ol {
+  margin: 0.2em 0 0.2em 1.5em;
+  padding: 0;
+}
+.reveal .algo-card ol li { margin: 0.15em 0; }
+.reveal .algo-card code {
+  background: #eef2ff;
+  color: #1e3a8a;
+  padding: 0 0.3em;
+  border-radius: 3px;
+  font-size: 0.95em;
+}
+
+/* Slide 6 example SVGs -- crossword / sudoku / graph colouring. */
+.reveal .example-grid .example-svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 130px;
+  max-height: 130px;
+}
+.reveal .example-svg.crossword .cell-blk { fill: #111827; }
+.reveal .example-svg.crossword .cell-wht { fill: #fff; stroke: #6b7280; stroke-width: 1; }
+.reveal .example-svg.crossword text { font-size: 12px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; fill: #111827; font-family: Georgia, serif; }
+.reveal .example-svg.sudoku .cell-thin { stroke: #9ca3af; stroke-width: 0.8; fill: #fff; }
+.reveal .example-svg.sudoku .grid-thick { stroke: #111827; stroke-width: 2; fill: none; }
+.reveal .example-svg.sudoku text { font-size: 9px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; fill: #1d4ed8; }
+.reveal .example-svg.graph-color .edge { stroke: #4b5563; stroke-width: 1.5; }
+.reveal .example-svg.graph-color .node { stroke: #111827; stroke-width: 1.5; }
+.reveal .example-svg.graph-color .col-r { fill: #fecaca; }
+.reveal .example-svg.graph-color .col-g { fill: #bbf7d0; }
+.reveal .example-svg.graph-color .col-b { fill: #bfdbfe; }
+.reveal .example-svg.graph-color .col-y { fill: #fef08a; }
+.reveal .example-svg.graph-color text { font-size: 9px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; fill: #111827; }
+
+/* Slide 19 mini-visual: k-ary -> binary reduction. */
+.reveal .binary-conv-mini { display: block; margin: 0.6em auto 0; max-height: 130px; }
+.reveal .binary-conv-mini .v   { fill: #fff; stroke: #111827; stroke-width: 1.5; }
+.reveal .binary-conv-mini .aux { fill: #fef3c7; stroke: #92400e; stroke-width: 1.5; }
+.reveal .binary-conv-mini .cn  { fill: #eff6ff; stroke: #1d4ed8; stroke-width: 1.2; }
+.reveal .binary-conv-mini .edge { stroke: #6b7280; stroke-width: 1.2; fill: none; }
+.reveal .binary-conv-mini text  { font-size: 11px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; fill: #111827; }
+.reveal .binary-conv-mini .arrow-big { stroke: #1d4ed8; stroke-width: 2; fill: none; }
