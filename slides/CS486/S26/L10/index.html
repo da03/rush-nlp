@@ -433,11 +433,16 @@
 <section>
   <h2>Filtering by forward recursion</h2>
   <p style="font-size: 0.88em;">Let \(f_{0:k} \;\overset{\Delta}{=}\; P(S_k | o_{0:k})\).</p>
-<pre class="algo"><span class="cmt"># Base case (k = 0)</span>
-f<sub>0:0</sub> = &alpha; &middot; P(o<sub>0</sub> | S<sub>0</sub>) &middot; P(S<sub>0</sub>)
-
-<span class="cmt"># Recursive case (k &ge; 1)</span>
-f<sub>0:k</sub> = &alpha; &middot; P(o<sub>k</sub> | S<sub>k</sub>) &middot; &sum;<sub>s<sub>k-1</sub></sub> P(S<sub>k</sub> | s<sub>k-1</sub>) &middot; f<sub>0:(k-1)</sub></pre>
+  <div class="recursion-formula">
+    <div class="case">
+      <span class="case-label">Base case (k = 0)</span>
+      \[ f_{0:0} = \alpha\, P(o_0 \mid S_0)\, P(S_0) \]
+    </div>
+    <div class="case">
+      <span class="case-label">Recursive case (k &ge; 1)</span>
+      \[ f_{0:k} = \alpha\, P(o_k \mid S_k) \sum_{s_{k-1}} P(S_k \mid s_{k-1})\, f_{0:(k-1)} \]
+    </div>
+  </div>
   <p style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.4em;">Total cost: <strong>\(O(k)\)</strong> ops &mdash; exponentially faster than naive enumeration.</p>
   <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center;">\(\alpha\) is a normalization constant (chosen so the two entries of \(f_{0:k}\) sum to 1).</p>
 </section>
