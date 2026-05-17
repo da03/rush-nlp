@@ -352,6 +352,19 @@
   <div style="text-align: center;">
     \[ g'(x) = \frac{1}{1 + e^{-x}} \cdot \frac{e^{-x}}{1 + e^{-x}} = g(x)\,\big(1 - g(x)\big) \]
   </div>
+  <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg" class="sigmoid-mini fragment" aria-hidden="true">
+    <line class="grid" x1="20" y1="60" x2="300" y2="60"/>
+    <line class="axis" x1="160" y1="10" x2="160" y2="115"/>
+    <line class="axis" x1="20" y1="115" x2="300" y2="115"/>
+    <text class="axis-label" x="295" y="112" text-anchor="end">x</text>
+    <text class="axis-label" x="156" y="20" text-anchor="end">1</text>
+    <text class="axis-label" x="156" y="118" text-anchor="end">0</text>
+    <text class="axis-label" x="160" y="68" text-anchor="middle">.5</text>
+    <!-- sigmoid curve from x=-6 to x=6 across [20, 300] (center at 160) -->
+    <path class="curve" d="M 20 113 C 80 112, 130 100, 150 80 S 175 30, 190 22 S 250 14, 300 13"/>
+    <circle class="peak" cx="160" cy="60" r="4"/>
+    <text class="peak-label" x="166" y="56">max g'(x) = 1/4 at x = 0</text>
+  </svg>
   <div class="fragment" style="margin-top: 0.5em; padding: 0.6em 0.9em; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 4px; font-size: 0.86em;">
     <strong>Why it matters:</strong> during the forward pass we already compute \(g(a)\). Reuse it &mdash; no need to redo the exponential during the backward pass.
   </div>

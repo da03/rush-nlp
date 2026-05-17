@@ -113,6 +113,40 @@
   font-weight: 700;
 }
 
+/* Tiny batch-size icon on slide 6. */
+.reveal .batch-icon {
+  display: block;
+  margin: 0.3em auto 0.2em;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  max-height: 36px;
+}
+
+/* Small sigmoid curve mini-plot on slide 12. */
+.reveal .sigmoid-mini {
+  display: block;
+  margin: 0.3em auto;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  max-height: 130px;
+}
+.reveal .sigmoid-mini .axis { stroke: #6b7280; stroke-width: 0.8; }
+.reveal .sigmoid-mini .grid { stroke: #e5e7eb; stroke-width: 0.6; stroke-dasharray: 3 3; }
+.reveal .sigmoid-mini .curve {
+  stroke: #1d4ed8;
+  stroke-width: 2;
+  fill: none;
+}
+.reveal .sigmoid-mini .peak {
+  fill: #dc2626;
+  stroke: #fff;
+  stroke-width: 1.2;
+}
+.reveal .sigmoid-mini .axis-label { font-size: 10px; fill: #6b7280; }
+.reveal .sigmoid-mini .peak-label { font-size: 10px; fill: #991b1b; font-weight: 700; }
+
 /* GD intuition: 2-up cards for direction + step-size. */
 .reveal .gd-intuition {
   display: grid;
