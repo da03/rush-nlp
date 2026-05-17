@@ -199,11 +199,16 @@
 <section>
   <h2>The value iteration algorithm</h2>
   <p style="font-size: 0.85em;">Treat the Bellman equation as an <em>update rule</em>. Let \(V_i(s)\) be the \(i^{\text{th}}\) estimate.</p>
-<pre class="algo"><span class="kw">1.</span> <span class="cmt"># Init V<sub>0</sub>(s) arbitrarily (e.g., 0).</span>
-<span class="kw">2.</span> <span class="kw">for</span> i = 0, 1, 2, ...:
-       <span class="kw">for each</span> state s:
-           V<sub>i+1</sub>(s) &larr; R(s) + &gamma; max<sub>a</sub> &sum;<sub>s'</sub> P(s'|s,a) V<sub>i</sub>(s')
-<span class="kw">3.</span> <span class="cmt"># Stop when max<sub>s</sub> |V<sub>i+1</sub>(s) - V<sub>i</sub>(s)| &lt; &epsilon;.</span></pre>
+  <div class="algo-card">
+    <div class="algo-title">value-iteration(MDP, \(\varepsilon\))</div>
+    <ol>
+      <li>Initialize \(V_0(s)\) arbitrarily (e.g. 0).</li>
+      <li>For \(i = 0, 1, 2, \ldots\): for each state \(s\), apply the Bellman update
+        \[ V_{i+1}(s) \leftarrow R(s) + \gamma\, \max_a \sum_{s'} P(s' \mid s, a)\, V_i(s'). \]
+      </li>
+      <li>Stop when \(\max_s |V_{i+1}(s) - V_i(s)| &lt; \varepsilon\).</li>
+    </ol>
+  </div>
   <p style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.4em;"><strong>Guarantee:</strong> \(V_i \to V^\star\) as \(i \to \infty\).</p>
   <ul class="fragment" style="font-size: 0.78em; margin-top: 0.3em;">
     <li><strong>Synchronous</strong>: keep \(V_i\) frozen while computing all of \(V_{i+1}\).</li>
@@ -308,13 +313,19 @@
 <section>
   <h2>Policy iteration</h2>
   <p style="font-size: 0.88em;"><strong>Insight:</strong> if one action is clearly better, you don't need precise utility values &mdash; just enough to rank actions.</p>
-<pre class="algo"><span class="cmt"># Start from an arbitrary policy &pi;<sub>0</sub>.</span>
-<span class="kw">repeat</span>:
-  <span class="kw">a.</span> <strong>Policy evaluation</strong>:
-       compute V<sup>&pi;<sub>i</sub></sup>(s), the utility of every state under &pi;<sub>i</sub>.
-  <span class="kw">b.</span> <strong>Policy improvement</strong>:
-       &pi;<sub>i+1</sub>(s) = argmax<sub>a</sub> &sum;<sub>s'</sub> P(s'|s,a) V<sup>&pi;<sub>i</sub></sup>(s').
-<span class="kw">until</span> &pi;<sub>i+1</sub> == &pi;<sub>i</sub>.</pre>
+  <div class="algo-card">
+    <div class="algo-title">policy-iteration(MDP)</div>
+    <ol>
+      <li>Start from an arbitrary policy \(\pi_0\).</li>
+      <li>Repeat:
+        <ul style="margin: 0.2em 0 0.2em 1em;">
+          <li><strong>Policy evaluation:</strong> compute \(V^{\pi_i}(s)\), the utility of every state under \(\pi_i\).</li>
+          <li><strong>Policy improvement:</strong> \(\pi_{i+1}(s) = \arg\max_a \sum_{s'} P(s' \mid s, a)\, V^{\pi_i}(s')\).</li>
+        </ul>
+      </li>
+      <li>Until \(\pi_{i+1} = \pi_i\).</li>
+    </ol>
+  </div>
   <p class="fragment" style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.4em;">Terminates in finitely many steps: there are finitely many policies and each iteration strictly improves.</p>
 </section>
 
