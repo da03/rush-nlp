@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 16 — Introduction to Machine Learning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 16: Introduction to Machine Learning — types of learning, supervised learning, bias-variance, cross-validation, and empirical risk minimization. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Introduction to Machine Learning</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 16</p>
+  <p class="credit">RN 19.1&ndash;19.2 &middot; PM 7.1&ndash;7.2</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Identify reasons for building an agent that can <strong>learn</strong>.</li>
+    <li class="fragment">Describe different <strong>types of learning</strong> (supervised, unsupervised, RL).</li>
+    <li class="fragment">Define <strong>supervised learning</strong>, <strong>classification</strong>, and <strong>regression</strong>.</li>
+    <li class="fragment">Define <strong>bias</strong>, <strong>variance</strong>, and describe the trade-off.</li>
+    <li class="fragment">Use <strong>cross-validation</strong> to prevent overfitting.</li>
+  </ul>
+</section>
+
+<!-- 3. Why ML? + applications -->
+<section>
+  <h2>Why an agent that learns?</h2>
+  <div class="app-icons">
+    <div class="app-card">
+      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="6" width="38" height="28" rx="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
+        <line x1="25" y1="12" x2="25" y2="28" stroke="#dc2626" stroke-width="3"/>
+        <line x1="17" y1="20" x2="33" y2="20" stroke="#dc2626" stroke-width="3"/>
+      </svg>
+      <div class="app-label">Medical diagnosis</div>
+    </div>
+    <div class="app-card">
+      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="10" width="38" height="22" rx="2" fill="#fff" stroke="#1f2937" stroke-width="1.5"/>
+        <path d="M6 12 L25 24 L44 12" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+        <circle cx="38" cy="28" r="6" fill="#dc2626"/>
+        <text x="38" y="32" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">!</text>
+      </svg>
+      <div class="app-label">Spam filtering</div>
+    </div>
+    <div class="app-card">
+      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="25" cy="20" r="13" fill="#fde68a" stroke="#92400e" stroke-width="1.5"/>
+        <circle cx="20" cy="17" r="1.6" fill="#1f2937"/>
+        <circle cx="30" cy="17" r="1.6" fill="#1f2937"/>
+        <path d="M20 25 Q 25 28 30 25" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+        <rect x="13" y="13" width="24" height="14" fill="none" stroke="#1d4ed8" stroke-width="1.5" stroke-dasharray="2 2"/>
+      </svg>
+      <div class="app-label">Face recognition</div>
+    </div>
+    <div class="app-card">
+      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
+        <line x1="4" y1="20" x2="46" y2="20" stroke="#d1d5db" stroke-width="1"/>
+        <path d="M4 20 l 2 -4 l 2 8 l 3 -10 l 3 12 l 3 -6 l 3 4 l 4 -8 l 3 10 l 3 -12 l 3 6 l 3 -4 l 3 8 l 3 -10 l 3 4" fill="none" stroke="#16a34a" stroke-width="1.5"/>
+      </svg>
+      <div class="app-label">Speech</div>
+    </div>
+    <div class="app-card">
+      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 28 q 4 -16 12 -6 q 2 4 6 -2 q 4 -8 10 -2 t 8 -4" fill="none" stroke="#1d4ed8" stroke-width="2"/>
+        <path d="M6 32 l 36 0" stroke="#9ca3af" stroke-width="0.8"/>
+      </svg>
+      <div class="app-label">Handwriting</div>
+    </div>
+  </div>
+  <p style="font-size: 0.88em; margin-top: 0.5em;"><strong>Learning</strong> = the ability to improve on future tasks based on experience.</p>
+  <ul style="font-size: 0.85em;">
+    <li class="fragment">We can't anticipate every situation.</li>
+    <li class="fragment">We can't anticipate every change over time.</li>
+    <li class="fragment">For many tasks, we have no idea how to <em>program</em> a solution &mdash; only how to <em>show examples</em>.</li>
+  </ul>
+</section>
+
+<!-- ============================================================
+     Learning architecture + types (4 slides)
+     ============================================================ -->
+
+<!-- 4. The learning architecture -->
+<section>
+  <h2>The learning architecture</h2>
+  <p style="font-size: 0.85em;">Every learning system is defined by four ingredients:</p>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
+    <div class="task-card">
+      <h3>Task</h3>
+      <p>The behaviour we want to improve (classify, predict, decide).</p>
+    </div>
+    <div class="task-card">
+      <h3>Data</h3>
+      <p>Experience used to improve (examples, demonstrations, rewards).</p>
+    </div>
+    <div class="task-card">
+      <h3>Background knowledge / bias</h3>
+      <p>What we assume up front (model class, smoothness, priors).</p>
+    </div>
+    <div class="task-card">
+      <h3>Measure of improvement</h3>
+      <p>How we score progress (accuracy, speed, new abilities).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Three kinds of learning -->
+<section>
+  <h2>Three kinds of learning</h2>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="task-card">
+      <h3>Supervised</h3>
+      <p>Given input + target features, predict targets for new inputs.</p>
+      <p style="font-size: 0.78em; color: #6b7280;">Today's focus.</p>
+    </div>
+    <div class="task-card">
+      <h3>Unsupervised</h3>
+      <p>No targets &mdash; find structure: clustering, dimensionality reduction.</p>
+      <p style="font-size: 0.78em; color: #6b7280;">L17.</p>
+    </div>
+    <div class="task-card">
+      <h3>Reinforcement</h3>
+      <p>Learn from rewards and punishments &mdash; what to <em>do</em>.</p>
+      <p style="font-size: 0.78em; color: #6b7280;">L15.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Q1 + Q2 quizzes -->
+<section>
+  <h2>Supervised or unsupervised?</h2>
+  <div class="two-col">
+    <div style="flex: 1;">
+      <p class="quiz-q"><strong>Q1.</strong> We have a user's credit-card transactions and want to flag any that look <em>different</em> from the rest. We have no fraud labels.</p>
+      <ol class="quiz-options">
+        <li>Supervised</li>
+        <li><strong>Unsupervised</strong></li>
+      </ol>
+      <div class="quiz-answer fragment">
+        <strong>B &mdash; Unsupervised.</strong> No target labels to predict.
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <p class="quiz-q"><strong>Q2.</strong> We have historical weather labels (sunny/cloudy/rain/snow) for a date, and we want to predict the same date next year.</p>
+      <ol class="quiz-options">
+        <li><strong>Supervised</strong></li>
+        <li>Unsupervised</li>
+      </ol>
+      <div class="quiz-answer fragment">
+        <strong>A &mdash; Supervised.</strong> Each example has a target (the weather label).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Classification vs regression + Q3 + Q4 -->
+<section>
+  <h2>Two flavors of supervised learning</h2>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr; margin-bottom: 0.4em;">
+    <div class="task-card">
+      <h3>Classification</h3>
+      <p>Target features are <strong>discrete</strong> &mdash; e.g. dog vs cat.</p>
+    </div>
+    <div class="task-card">
+      <h3>Regression</h3>
+      <p>Target features are <strong>continuous</strong> &mdash; e.g. tomorrow's temperature.</p>
+    </div>
+  </div>
+  <div class="two-col">
+    <div style="flex: 1;">
+      <p class="quiz-q" style="font-size: 0.8em;"><strong>Q3.</strong> Historical weather labels (sunny/cloudy/rain/snow); predict next year's label.</p>
+      <div class="quiz-answer fragment">
+        <strong>A &mdash; Classification.</strong> Discrete target.
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <p class="quiz-q" style="font-size: 0.8em;"><strong>Q4.</strong> Historical house prices over time; predict next month's price.</p>
+      <div class="quiz-answer fragment">
+        <strong>B &mdash; Regression.</strong> Continuous target.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Supervised learning + hypotheses (3 slides)
+     ============================================================ -->
+
+<!-- 8. Supervised learning = function approximation -->
+<section class="center-slide">
+  <h2>Supervised learning = function approximation</h2>
+  <div class="defbox" style="max-width: 85%; margin: 0 auto; text-align: left;">
+    <p style="margin: 0; font-size: 0.92em;">Given training examples \((x_i, f(x_i))\), find a <strong>hypothesis</strong> \(h\) that approximates the unknown true function \(f: X \to Y\).</p>
+  </div>
+  <p class="fragment" style="font-size: 0.88em; margin-top: 0.7em;">A <strong>hypothesis space</strong> is the set of functions we'll consider (e.g. all polynomials of degree \(\leq k\)).</p>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Learning = a search problem in the hypothesis space &mdash; usually some form of local search (gradient descent, etc.).</p>
+</section>
+
+<!-- 9. Polynomial fit progression -->
+<section>
+  <h2>Example: fitting a polynomial</h2>
+  <p style="font-size: 0.82em;">Same 9 data points, five candidate polynomial models. Watch how the fit changes with complexity.</p>
+  <div style="text-align: center;">
+    <svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg" class="poly-fit">
+      <line class="grid" x1="60" y1="60"  x2="440" y2="60"/>
+      <line class="grid" x1="60" y1="130" x2="440" y2="130"/>
+      <line class="grid" x1="60" y1="200" x2="440" y2="200"/>
+      <line class="axis" x1="60" y1="20" x2="60" y2="240"/>
+      <line class="axis" x1="60" y1="240" x2="440" y2="240"/>
+      <text class="axis-label" x="50" y="244" text-anchor="end">0</text>
+      <text class="axis-label" x="50" y="204" text-anchor="end">1</text>
+      <text class="axis-label" x="50" y="134" text-anchor="end">3</text>
+      <text class="axis-label" x="50" y="64"  text-anchor="end">5</text>
+      <text class="axis-label" x="60"  y="258" text-anchor="middle">1</text>
+      <text class="axis-label" x="240" y="258" text-anchor="middle">5</text>
+      <text class="axis-label" x="420" y="258" text-anchor="middle">9</text>
+      <text class="axis-label" x="250" y="275" text-anchor="middle" style="font-style: italic;">x</text>
+      <text class="axis-label" x="25"  y="125" text-anchor="middle" style="font-style: italic;">y</text>
+      <path class="curve curve-d1 fragment" data-fragment-index="0" d="M 60 159 L 420 64"/>
+      <path class="curve curve-d2 fragment" data-fragment-index="1" d="M 60 159 Q 240 275 420 64"/>
+      <path class="curve curve-d3 fragment" data-fragment-index="2" d="M 60 159 C 160 95, 280 290, 420 64"/>
+      <path class="curve curve-d5 fragment" data-fragment-index="3" d="M 60 159 C 90 110, 130 130, 170 160 S 240 230, 290 195 S 360 110, 420 64"/>
+      <path class="curve curve-d9 fragment" data-fragment-index="4" d="M 60 159 Q 80 142, 105 126 Q 130 134, 150 148 Q 173 174, 195 185 Q 218 205, 240 210 Q 263 199, 285 192 Q 308 178, 330 167 Q 352 130, 375 112 Q 398 80, 420 64"/>
+      <g>
+        <circle class="point" cx="60"  cy="159" r="4"/>
+        <circle class="point" cx="105" cy="126" r="4"/>
+        <circle class="point" cx="150" cy="148" r="4"/>
+        <circle class="point" cx="195" cy="185" r="4"/>
+        <circle class="point" cx="240" cy="210" r="4"/>
+        <circle class="point" cx="285" cy="192" r="4"/>
+        <circle class="point" cx="330" cy="167" r="4"/>
+        <circle class="point" cx="375" cy="112" r="4"/>
+        <circle class="point" cx="420" cy="64"  r="4"/>
+      </g>
+    </svg>
+  </div>
+  <div class="poly-legend">
+    <span class="legend-item fragment" data-fragment-index="0"><span class="swatch" style="background:#1d4ed8;"></span>degree 1 (line)</span>
+    <span class="legend-item fragment" data-fragment-index="1"><span class="swatch" style="background:#16a34a;"></span>degree 2</span>
+    <span class="legend-item fragment" data-fragment-index="2"><span class="swatch" style="background:#d97706;"></span>degree 3</span>
+    <span class="legend-item fragment" data-fragment-index="3"><span class="swatch" style="background:#dc2626;"></span>degree 5</span>
+    <span class="legend-item fragment" data-fragment-index="4"><span class="swatch" style="background:#7c3aed;"></span>degree 9 (overfits)</span>
+  </div>
+</section>
+
+<!-- 10. No free lunch + inductive bias -->
+<section class="center-slide">
+  <h2>Which curve is "right"?</h2>
+  <ul style="text-align: left; margin-left: 2em; font-size: 0.88em;">
+    <li class="fragment">If the data has <strong>outliers</strong> or is noisy, simpler curves are more trustworthy.</li>
+    <li class="fragment">If the data really does have wild swings (stock prices, etc.), the complex curve is closer to truth.</li>
+    <li class="fragment"><strong>There is no perfect answer</strong> &mdash; each curve is justified <em>by some assumption</em>.</li>
+  </ul>
+  <div class="defbox fragment" style="margin-top: 0.6em;">
+    <h3>No-free-lunch</h3>
+    <p style="margin: 0; font-size: 0.88em;">To learn something useful, we <em>must</em> make assumptions. Those assumptions are the <strong>inductive bias</strong> of the learner.</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     Bias-variance + cross-validation (3 slides)
+     ============================================================ -->
+
+<!-- 11. Bias and variance + dartboard -->
+<section>
+  <h2>Bias and variance</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1;">
+      <div class="defbox" style="font-size: 0.78em;">
+        <h3 style="color: #1d4ed8;">Bias</h3>
+        <p style="margin: 0;">With infinite data, how well can the family fit \(f\)? High bias = too simple, <strong>underfits</strong>.</p>
+      </div>
+      <div class="defbox" style="font-size: 0.78em; margin-top: 0.5em;">
+        <h3 style="color: #d97706;">Variance</h3>
+        <p style="margin: 0;">How much does the learned hypothesis change with different training sets? High variance = too flexible, <strong>overfits</strong>.</p>
+      </div>
+    </div>
+    <div style="flex: 1;">
+      <div class="dartboard-grid">
+        <div></div>
+        <div class="col-header">low variance</div>
+        <div class="col-header">high variance</div>
+        <div class="row-header">low bias</div>
+        <div>
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
+            <circle class="ring" cx="50" cy="50" r="45"/>
+            <circle class="ring" cx="50" cy="50" r="30"/>
+            <circle class="bullseye" cx="50" cy="50" r="15"/>
+            <circle class="dart" cx="48" cy="51" r="2"/>
+            <circle class="dart" cx="51" cy="48" r="2"/>
+            <circle class="dart" cx="49" cy="49" r="2"/>
+            <circle class="dart" cx="52" cy="52" r="2"/>
+            <circle class="dart" cx="47" cy="50" r="2"/>
+          </svg>
+        </div>
+        <div>
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
+            <circle class="ring" cx="50" cy="50" r="45"/>
+            <circle class="ring" cx="50" cy="50" r="30"/>
+            <circle class="bullseye" cx="50" cy="50" r="15"/>
+            <circle class="dart" cx="35" cy="42" r="2"/>
+            <circle class="dart" cx="62" cy="55" r="2"/>
+            <circle class="dart" cx="40" cy="65" r="2"/>
+            <circle class="dart" cx="58" cy="38" r="2"/>
+            <circle class="dart" cx="50" cy="50" r="2"/>
+          </svg>
+        </div>
+        <div class="row-header">high bias</div>
+        <div>
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
+            <circle class="ring" cx="50" cy="50" r="45"/>
+            <circle class="ring" cx="50" cy="50" r="30"/>
+            <circle class="bullseye" cx="50" cy="50" r="15"/>
+            <circle class="dart" cx="75" cy="22" r="2"/>
+            <circle class="dart" cx="78" cy="25" r="2"/>
+            <circle class="dart" cx="77" cy="20" r="2"/>
+            <circle class="dart" cx="74" cy="25" r="2"/>
+            <circle class="dart" cx="76" cy="23" r="2"/>
+          </svg>
+        </div>
+        <div>
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
+            <circle class="ring" cx="50" cy="50" r="45"/>
+            <circle class="ring" cx="50" cy="50" r="30"/>
+            <circle class="bullseye" cx="50" cy="50" r="15"/>
+            <circle class="dart" cx="20" cy="20" r="2"/>
+            <circle class="dart" cx="80" cy="25" r="2"/>
+            <circle class="dart" cx="25" cy="78" r="2"/>
+            <circle class="dart" cx="85" cy="75" r="2"/>
+            <circle class="dart" cx="55" cy="20" r="2"/>
+          </svg>
+        </div>
+      </div>
+      <p style="font-size: 0.72em; color: #6b7280; text-align: center; margin: 0.2em 0;">Dots = predictions from re-trained models. Bullseye = truth.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12. K-fold cross-validation -->
+<section>
+  <h2>K-fold cross-validation</h2>
+  <p style="font-size: 0.88em;">How to pick a hypothesis that generalizes? Use a slice of training data as a <strong>surrogate test set</strong>.</p>
+<pre class="algo"><span class="kw">1.</span> Split training data into K equally sized folds.
+<span class="kw">2.</span> <span class="kw">for</span> i = 1, ..., K:
+       train on the other K - 1 folds.
+       evaluate on fold i (the held-out validation set).
+<span class="kw">3.</span> Average error over the K runs.</pre>
+  <div class="cv-folds">
+    <div class="row">
+      <div class="row-label">i = 1</div>
+      <div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div>
+    </div>
+    <div class="row">
+      <div class="row-label">i = 2</div>
+      <div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div>
+    </div>
+    <div class="row">
+      <div class="row-label">i = 3</div>
+      <div class="fold">train</div><div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div>
+    </div>
+    <div class="row">
+      <div class="row-label">i = 4</div>
+      <div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div>
+    </div>
+    <div class="row">
+      <div class="row-label">i = 5</div>
+      <div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold valid">val</div>
+    </div>
+    <div class="legend">
+      <span><span class="swatch train"></span>training fold</span>
+      <span><span class="swatch valid"></span>validation fold</span>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.3em;">After CV: pick the best hyperparameters and (optionally) retrain on all data.</p>
+</section>
+
+<!-- 13. Overfitting chart + Q5 -->
+<section>
+  <h2>Overfitting: training vs validation error</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1; text-align: center;">
+      <svg viewBox="0 0 420 280" xmlns="http://www.w3.org/2000/svg" class="overfit-chart">
+        <line class="grid" x1="60" y1="60"  x2="380" y2="60"/>
+        <line class="grid" x1="60" y1="140" x2="380" y2="140"/>
+        <line class="grid" x1="60" y1="200" x2="380" y2="200"/>
+        <line class="axis" x1="60" y1="20" x2="60" y2="240"/>
+        <line class="axis" x1="60" y1="240" x2="380" y2="240"/>
+        <text class="axis-label" x="220" y="258" text-anchor="middle">model complexity</text>
+        <text class="axis-label" x="25" y="135" text-anchor="middle" transform="rotate(-90 25 135)">expected error</text>
+        <path class="curve-train" d="M 70 60 Q 200 165, 380 230"/>
+        <text class="axis-label" x="365" y="225" text-anchor="end" style="fill:#1d4ed8; font-weight:700;">training</text>
+        <path class="curve-valid" d="M 70 80 Q 130 200, 200 140 Q 280 95, 380 50"/>
+        <text class="axis-label" x="365" y="58" text-anchor="end" style="fill:#dc2626; font-weight:700;">validation</text>
+        <circle class="marker" cx="115" cy="180" r="4"/>
+        <text class="marker-label" x="115" y="170" text-anchor="middle">underfit</text>
+        <circle class="marker" cx="200" cy="140" r="4"/>
+        <text class="marker-label" x="200" y="130" text-anchor="middle" style="fill:#166534;">best fit</text>
+        <circle class="marker" cx="330" cy="80" r="4"/>
+        <text class="marker-label" x="330" y="70" text-anchor="middle">overfit</text>
+      </svg>
+    </div>
+    <div style="flex: 0.9;">
+      <p class="quiz-q"><strong>Q5.</strong> Which is more likely to overfit?</p>
+      <ol class="quiz-options">
+        <li>Straight line (simple)</li>
+        <li><strong>4th-degree polynomial (complex)</strong></li>
+        <li>I don't know</li>
+      </ol>
+      <div class="quiz-answer fragment">
+        <strong>B &mdash; complex.</strong> More degrees of freedom = more wiggle = it can chase the noise.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Empirical risk minimization (2 slides)
+     ============================================================ -->
+
+<!-- 14. True error vs empirical error -->
+<section>
+  <h2>True error vs empirical error</h2>
+  <p style="font-size: 0.88em;">Setup: domain \(X\), label space \(Y\), unknown true function \(f: X \to Y\). Examples drawn from distribution \(D\) over \(X\).</p>
+  <div class="defbox">
+    <h3>True error (what we want)</h3>
+    <p style="text-align: center; margin: 0.2em 0; font-size: 0.95em;">\(L_{D, f}(h) = \Pr_{x \sim D}\bigl[h(x) \neq f(x)\bigr]\)</p>
+    <p style="margin: 0; font-size: 0.82em; color: #6b7280;">The probability of being wrong on a fresh random example. We <strong>can't</strong> compute this &mdash; we don't know \(D\) or \(f\).</p>
+  </div>
+  <div class="defbox fragment" style="margin-top: 0.5em;">
+    <h3>Empirical error (what we measure)</h3>
+    <p style="text-align: center; margin: 0.2em 0; font-size: 0.95em;">\(L_S(h) = \dfrac{|\{i \in [m]: h(x_i) \neq y_i\}|}{m}\)</p>
+    <p style="margin: 0; font-size: 0.82em; color: #6b7280;">Fraction misclassified on the training set \(S\) of size \(m\).</p>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Hope: minimizing \(L_S\) will also keep \(L_{D, f}\) small &mdash; <em>generalization</em>.</p>
+</section>
+
+<!-- 15. Empirical risk minimization -->
+<section>
+  <h2>Empirical risk minimization (ERM)</h2>
+  <p style="font-size: 0.88em;">Given a hypothesis class \(\mathcal{H}\) and a loss \(\ell\), pick the hypothesis with smallest training loss:</p>
+  <div class="defbox" style="text-align: center;">
+    <p style="margin: 0; font-size: 1.05em;">\(\hat{h} = \arg\min_{h \in \mathcal{H}} \dfrac{1}{m} \sum_{i = 1}^{m} \ell\bigl(h(x_i),\, y_i\bigr)\)</p>
+  </div>
+  <p style="font-size: 0.88em; margin-top: 0.5em;"><strong>Three factors</strong> determine how well ERM generalizes:</p>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="task-card">
+      <h3>Data size \(m\)</h3>
+      <p>Larger is better: more examples \(\Rightarrow\) closer empirical \(\to\) true.</p>
+    </div>
+    <div class="task-card">
+      <h3>Hypothesis space \(\mathcal{H}\)</h3>
+      <p>Trade-off: small \(\mathcal{H}\) = high bias; large \(\mathcal{H}\) = high variance.</p>
+    </div>
+    <div class="task-card">
+      <h3>Loss function \(\ell\)</h3>
+      <p>Encodes what kind of error you care about (0/1, squared, hinge, ...).</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 16. Learning goals (recap) -->
+<section class="center-slide">
+  <h2>Learning goals (recap)</h2>
+  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0;">
+    <li>&#10003; &nbsp;Identify reasons to build a learning agent.</li>
+    <li>&#10003; &nbsp;Describe different <strong>types of learning</strong>.</li>
+    <li>&#10003; &nbsp;Define <strong>supervised learning</strong>, <strong>classification</strong>, <strong>regression</strong>.</li>
+    <li>&#10003; &nbsp;Define <strong>bias</strong>, <strong>variance</strong>, and their trade-off.</li>
+    <li>&#10003; &nbsp;Use <strong>cross-validation</strong> to prevent overfitting.</li>
+  </ul>
+</section>
+
+<!-- 17. Next: unsupervised learning -->
+<section class="center-slide">
+  <h2>Next: unsupervised learning</h2>
+  <p style="font-size: 0.92em;">Today: labels guided every hypothesis we picked. Without labels, what <em>structure</em> can we still find in data?</p>
+  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L17: clustering, k-means, autoencoders.</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>

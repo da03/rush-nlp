@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 18 — Decision Trees</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 18: Decision Trees — anatomy, construction, entropy, information gain, and the ID3 algorithm. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L9/custom.css">
+  <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Decision Trees</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 18</p>
+  <p class="credit">RN 19.3 &middot; PM 7.3.1</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Describe the <strong>components</strong> of a decision tree.</li>
+    <li class="fragment"><strong>Construct</strong> a decision tree given a feature-testing order.</li>
+    <li class="fragment">Compute a tree's <strong>prediction accuracy</strong> on a test set.</li>
+    <li class="fragment">Compute the <strong>entropy</strong> of a distribution.</li>
+    <li class="fragment">Compute the <strong>expected information gain</strong> of a feature.</li>
+    <li class="fragment">Trace + implement the <strong>DT learning algorithm</strong>.</li>
+  </ul>
+</section>
+
+<!-- 3. Decision trees in the wild -->
+<section>
+  <h2>Decision trees in the wild</h2>
+  <p style="font-size: 0.88em;">A decision tree is nothing more than a <strong>nested if-then-else</strong> &mdash; learned automatically from data.</p>
+  <div class="examples-row">
+    <div class="ex-card">
+      <h3>Should I use an emoji?</h3>
+      <div class="mini-tree">
+        <span class="q">work-related?</span><br>
+        &nbsp;&nbsp;yes &rarr; <span class="leaf-no">no</span><br>
+        &nbsp;&nbsp;no &rarr; <span class="q">friend?</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;yes &rarr; <span class="leaf-yes">yes</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;no &rarr; <span class="leaf-no">no</span>
+      </div>
+    </div>
+    <div class="ex-card">
+      <h3>What pet?</h3>
+      <div class="mini-tree">
+        <span class="q">backyard?</span><br>
+        &nbsp;&nbsp;yes &rarr; <span class="q">cuddly?</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;yes &rarr; <span style="color:#92400e;">dog</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;no &rarr; <span style="color:#1d4ed8;">cat</span><br>
+        &nbsp;&nbsp;no &rarr; <span style="color:#16a34a;">fish</span>
+      </div>
+    </div>
+    <div class="ex-card">
+      <h3>Which language?</h3>
+      <div class="mini-tree">
+        <span class="q">speed > readable?</span><br>
+        &nbsp;&nbsp;yes &rarr; <span style="color:#7c3aed;">C++</span><br>
+        &nbsp;&nbsp;no &rarr; <span class="q">web?</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;yes &rarr; <span style="color:#d97706;">JS</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;no &rarr; <span style="color:#1d4ed8;">Python</span>
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Simple to read, fast to evaluate, and surprisingly effective in practice.</p>
+</section>
+
+<!-- ============================================================
+     Jeeves setup (3 slides)
+     ============================================================ -->
+
+<!-- 4. Running example: Jeeves the valet -->
+<section>
+  <h2>Running example: Jeeves the valet</h2>
+  <p style="font-size: 0.88em;">Jeeves wants to predict whether Bertie will play tennis today. He has been recording the weather and Bertie's behavior every morning for 14 days.</p>
+  <div class="defbox">
+    <h3>Features and target</h3>
+    <ul style="margin: 0; font-size: 0.88em;">
+      <li><strong>Input features:</strong> Outlook (Sunny/Overcast/Rain), Temp (Hot/Mild/Cool), Humidity (High/Normal), Wind (Weak/Strong).</li>
+      <li><strong>Target:</strong> Tennis? (Yes / No).</li>
+    </ul>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; color: #6b7280; text-align: center; margin-top: 0.4em;">14-day training set + 14-day held-out test set. Goal: build a classifier from training, evaluate on test.</p>
+</section>
+
+<!-- 5. The Jeeves training set -->
+<section>
+  <h2>The Jeeves training set</h2>
+  <table class="factor-table" style="font-size: 0.7em;">
+    <thead>
+      <tr><th>Day</th><th>Outlook</th><th>Temp</th><th>Humidity</th><th>Wind</th><th>Tennis?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Sunny</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+      <tr><td>2</td><td>Sunny</td><td>Hot</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+      <tr><td>3</td><td>Overcast</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>4</td><td>Rain</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>5</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>6</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+      <tr><td>7</td><td>Overcast</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>8</td><td>Sunny</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+      <tr><td>9</td><td>Sunny</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>10</td><td>Rain</td><td>Mild</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>11</td><td>Sunny</td><td>Mild</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>12</td><td>Overcast</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>13</td><td>Overcast</td><td>Hot</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>14</td><td>Rain</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.3em 0;">9 Yes, 5 No. We'll learn a tree from these 14 rows.</p>
+</section>
+
+<!-- 6. Anatomy of a decision tree -->
+<section>
+  <h2>Anatomy of a decision tree</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1;">
+      <ul style="font-size: 0.85em;">
+        <li>A supervised classifier with a <strong>single discrete target</strong>.</li>
+        <li>Each <strong>internal node</strong> tests an input feature.</li>
+        <li><strong>Edges</strong> are labeled with feature values.</li>
+        <li>Each <strong>leaf</strong> predicts a target class.</li>
+        <li><strong>Classify</strong>: follow edges from the root down to a leaf.</li>
+      </ul>
+    </div>
+    <div style="flex: 0.9; text-align: center;">
+      <div class="dt-tree">
+        <div class="dt-node">Outlook</div>
+        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+          <span>Sunny</span><span>Overcast</span><span>Rain</span>
+        </div>
+        <div class="dt-level">
+          <div class="dt-branch">
+            <div class="dt-node">Humidity</div>
+            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+              <span>High</span><span>Normal</span>
+            </div>
+            <div class="dt-level">
+              <div class="dt-leaf no">No</div>
+              <div class="dt-leaf yes">Yes</div>
+            </div>
+          </div>
+          <div class="dt-branch">
+            <div class="dt-leaf yes">Yes</div>
+          </div>
+          <div class="dt-branch">
+            <div class="dt-node">Wind</div>
+            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+              <span>Weak</span><span>Strong</span>
+            </div>
+            <div class="dt-level">
+              <div class="dt-leaf yes">Yes</div>
+              <div class="dt-leaf no">No</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p style="font-size: 0.7em; color: #6b7280; margin: 0.2em;">Sketch only &mdash; we'll build the real tree shortly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Construction (3 slides)
+     ============================================================ -->
+
+<!-- 7. Classify an example -->
+<section>
+  <h2>Classify an example: walk down the tree</h2>
+  <p style="font-size: 0.88em;">Given a new example, follow the tests from the root to a leaf:</p>
+  <div class="defbox" style="margin-top: 0.4em;">
+    <p style="margin: 0; font-size: 0.92em;">Example: <strong>Outlook = Overcast, Temp = Hot, Humidity = High, Wind = Weak.</strong></p>
+    <p style="margin: 0.3em 0 0 0; font-size: 0.88em; color: #1d4ed8;">Test Outlook \(\to\) value is Overcast \(\to\) leaf <strong style="color:#166534;">Yes</strong>. Done.</p>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; margin-top: 0.5em;"><strong>Observation:</strong> the path itself is a nested if-then-else program. Converting a tree to code is straightforward.</p>
+</section>
+
+<!-- 8. Build a tree given an order -->
+<section>
+  <h2>Build a tree given an order</h2>
+  <p style="font-size: 0.85em;">Pick a feature-testing order; recursively split the training examples by that feature's value.</p>
+  <div class="defbox">
+    <h3>An order for the Jeeves data</h3>
+    <ul style="margin: 0; font-size: 0.85em;">
+      <li>First, test <strong>Outlook</strong>.</li>
+      <li>For Outlook = Sunny, test <strong>Temp</strong>.</li>
+      <li>For Outlook = Rain, test <strong>Wind</strong>.</li>
+      <li>(For other branches, test Humidity before Wind.)</li>
+    </ul>
+  </div>
+  <p style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">Each example flows down the tree according to its feature values; leaves end up with subsets of the training set.</p>
+</section>
+
+<!-- 9. The resulting Jeeves DT -->
+<section>
+  <h2>The Jeeves decision tree</h2>
+  <div class="dt-tree">
+    <div class="dt-node">Outlook</div>
+    <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+      <span style="width:120px; text-align:center;">Sunny</span>
+      <span style="width:80px; text-align:center;">Overcast</span>
+      <span style="width:140px; text-align:center;">Rain</span>
+    </div>
+    <div class="dt-level">
+      <div class="dt-branch" style="width: 200px;">
+        <div class="dt-node">Temp</div>
+        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+          <span>Hot</span><span>Mild</span><span>Cool</span>
+        </div>
+        <div class="dt-level">
+          <div class="dt-leaf no">No</div>
+          <div class="dt-branch">
+            <div class="dt-node">Humidity</div>
+            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+              <span>High</span><span>Normal</span>
+            </div>
+            <div class="dt-level">
+              <div class="dt-leaf no">No</div>
+              <div class="dt-leaf yes">Yes</div>
+            </div>
+          </div>
+          <div class="dt-leaf yes">Yes</div>
+        </div>
+      </div>
+      <div class="dt-branch">
+        <div class="dt-leaf yes">Yes</div>
+        <div style="font-size: 0.7em; color: #6b7280;">days 3, 7, 12, 13</div>
+      </div>
+      <div class="dt-branch" style="width: 180px;">
+        <div class="dt-node">Wind</div>
+        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+          <span>Weak</span><span>Strong</span>
+        </div>
+        <div class="dt-level">
+          <div class="dt-leaf yes">Yes</div>
+          <div class="dt-leaf no">No</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.3em;">Built from the 14 training rows by following the feature order above.</p>
+</section>
+
+<!-- ============================================================
+     Stopping conditions (1 slide)
+     ============================================================ -->
+
+<!-- 10. When do we stop? Three cases -->
+<section>
+  <h2>When do we stop? Three cases</h2>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="task-card highlight">
+      <h3>All same class</h3>
+      <p>Every example at this node has the same label.</p>
+      <p style="font-size: 0.78em; color: #166534;">Return that label.</p>
+    </div>
+    <div class="task-card">
+      <h3>No features left</h3>
+      <p>We've tested every feature, but examples still disagree (noisy data).</p>
+      <p style="font-size: 0.78em; color: #1d4ed8;">Return the <strong>majority class</strong> at this node.</p>
+    </div>
+    <div class="task-card">
+      <h3>No examples left</h3>
+      <p>A feature value never appeared in training data &mdash; no examples reach this leaf.</p>
+      <p style="font-size: 0.78em; color: #1d4ed8;">Return the <strong>majority class at the parent node</strong>.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">"No features left" handles noisy labels; "no examples left" handles unseen feature combinations.</p>
+</section>
+
+<!-- ============================================================
+     Algorithm + greedy choice (2 slides)
+     ============================================================ -->
+
+<!-- 11. The DT-learning algorithm -->
+<section class="center-slide">
+  <h2>The decision-tree learner</h2>
+<pre class="algo"><strong>DT-Learner</strong>(examples, features):
+  <span class="kw">if</span> all examples are in the same class:
+       <span class="kw">return</span> that class.
+  <span class="kw">elif</span> no features left:
+       <span class="kw">return</span> the majority class of examples.
+  <span class="kw">elif</span> no examples left:
+       <span class="kw">return</span> the majority class at the parent.
+  <span class="kw">else</span>:
+       <span class="kw">choose</span> a feature f.
+       <span class="kw">for each</span> value v of f:
+           build edge labeled v.
+           recurse with examples having f = v
+                   and features &minus; {f}.</pre>
+  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">The only open question: <strong>which feature do we pick to test?</strong></p>
+</section>
+
+<!-- 12. Which feature? Outlook vs Temp -->
+<section>
+  <h2>Which feature should we test?</h2>
+  <p style="font-size: 0.85em;">Pick the feature whose split makes the children most <strong>class-pure</strong>.</p>
+  <div class="split-bars">
+    <div class="split-card">
+      <h3>Split on Outlook</h3>
+      <div class="bar-row">
+        <span class="bar-label">Sunny (5)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 2;"><span class="bar-text">2 yes</span></div>
+          <div class="bar-no"  style="flex: 3;"><span class="bar-text">3 no</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Overcast (4)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 4;"><span class="bar-text">4 yes</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Rain (5)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 3;"><span class="bar-text">3 yes</span></div>
+          <div class="bar-no"  style="flex: 2;"><span class="bar-text">2 no</span></div>
+        </div>
+      </div>
+      <p style="font-size: 0.78em; color: #166534; margin-top: 0.4em;">Overcast cleanly predicts <strong>Yes</strong> &mdash; one branch is pure!</p>
+    </div>
+    <div class="split-card">
+      <h3>Split on Temp</h3>
+      <div class="bar-row">
+        <span class="bar-label">Hot (4)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 2;"><span class="bar-text">2 yes</span></div>
+          <div class="bar-no"  style="flex: 2;"><span class="bar-text">2 no</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Mild (6)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 4;"><span class="bar-text">4 yes</span></div>
+          <div class="bar-no"  style="flex: 2;"><span class="bar-text">2 no</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Cool (4)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 3;"><span class="bar-text">3 yes</span></div>
+          <div class="bar-no"  style="flex: 1;"><span class="bar-text">1 no</span></div>
+        </div>
+      </div>
+      <p style="font-size: 0.78em; color: #991b1b; margin-top: 0.4em;">Every Temp value still mixes Yes/No &mdash; messier.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.3em;">We need a metric to score "purity". Enter <strong>entropy</strong>.</p>
+</section>
+
+<!-- ============================================================
+     Entropy + information gain (3 slides)
+     ============================================================ -->
+
+<!-- 13. Entropy -->
+<section>
+  <h2>Entropy: measuring uncertainty</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1;">
+      <div class="defbox">
+        <h3>Entropy</h3>
+        <p style="text-align: center; margin: 0;">\(I\bigl(P(c_1), \ldots, P(c_k)\bigr) = -\sum_{i=1}^{k} P(c_i)\, \log_2 P(c_i)\)</p>
+        <p style="font-size: 0.78em; color: #6b7280; margin: 0.3em 0 0 0;">Bits of uncertainty. Bigger = less certain.</p>
+      </div>
+      <ul style="font-size: 0.82em; margin-top: 0.5em;">
+        <li><strong>\(I(0.5, 0.5) = 1\)</strong>: maximally uncertain.</li>
+        <li><strong>\(I(0.01, 0.99) \approx 0.08\)</strong>: nearly certain the second outcome.</li>
+        <li>\(I(1, 0) = I(0, 1) = 0\): no uncertainty at all.</li>
+      </ul>
+    </div>
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg" class="entropy-plot">
+        <line class="grid" x1="40" y1="170" x2="300" y2="170"/>
+        <line class="grid" x1="40" y1="120" x2="300" y2="120"/>
+        <line class="grid" x1="40" y1="70"  x2="300" y2="70"/>
+        <line class="axis" x1="40" y1="20"  x2="40" y2="180"/>
+        <line class="axis" x1="40" y1="180" x2="300" y2="180"/>
+        <text class="axis-label" x="35" y="175" text-anchor="end">0</text>
+        <text class="axis-label" x="35" y="125" text-anchor="end">0.5</text>
+        <text class="axis-label" x="35" y="25"  text-anchor="end">1</text>
+        <text class="axis-label" x="40"  y="195" text-anchor="middle">0</text>
+        <text class="axis-label" x="170" y="195" text-anchor="middle">0.5</text>
+        <text class="axis-label" x="300" y="195" text-anchor="middle">1</text>
+        <text class="axis-label" x="170" y="212" text-anchor="middle" style="font-style: italic;">p</text>
+        <text class="axis-label" x="18" y="95"  text-anchor="middle" transform="rotate(-90 18 95)" style="font-style: italic;">H(p)</text>
+        <path class="curve" d="M 40 170 C 60 130, 90 80, 118 38 S 144 20, 170 20 S 222 38, 250 80 C 280 130, 295 160, 300 170"/>
+        <circle class="marker" cx="170" cy="20" r="4"/>
+        <text class="marker-label" x="178" y="18">max = 1</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 14. Expected information gain -->
+<section>
+  <h2>Expected information gain</h2>
+  <p style="font-size: 0.85em;">If we split on a feature with \(k\) values, weighted-average the children's entropies:</p>
+  <div class="defbox">
+    <h3>The three formulas</h3>
+    <p style="text-align: center; margin: 0.3em 0; font-size: 0.92em;">\(H_{\text{before}} = I\!\left(\tfrac{p}{p+n},\, \tfrac{n}{p+n}\right)\)</p>
+    <p style="text-align: center; margin: 0.3em 0; font-size: 0.92em;">\(H_{\text{after}} = \sum_{i=1}^{k} \dfrac{p_i + n_i}{p + n}\; I\!\left(\tfrac{p_i}{p_i+n_i},\, \tfrac{n_i}{p_i+n_i}\right)\)</p>
+    <p style="text-align: center; margin: 0.3em 0; font-size: 1em; color: #166534;">\(IG = H_{\text{before}} - H_{\text{after}}\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Pick the feature with the <strong>largest</strong> information gain at every node.</p>
+</section>
+
+<!-- 15. Jeeves walkthrough -->
+<section>
+  <h2>Jeeves: compute the gain at the root</h2>
+  <p style="font-size: 0.82em;">Training set has 9 Yes, 5 No (\(p = 9, n = 5\)).</p>
+  <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.82em; background: #f9fafb; padding: 0.6em 0.9em; border-radius: 4px; border-left: 4px solid #1d4ed8;">
+    <p style="margin: 0 0 0.3em 0;"><strong>Q3.</strong> &nbsp;\(H_{\text{before}} = I(9/14, 5/14) = ?\)</p>
+    <p class="fragment" style="margin: 0 0 0.6em 0; color: #166534;">\(\Rightarrow\) <strong>0.940</strong> bits.</p>
+    <p style="margin: 0 0 0.3em 0;"><strong>Q4.</strong> &nbsp;Split on Outlook: Sunny (2+/3-), Overcast (4+/0-), Rain (3+/2-).</p>
+    <p class="fragment" style="margin: 0 0 0.6em 0; color: #166534;">\(H_{\text{after}} = \tfrac{5}{14}(0.971) + \tfrac{4}{14}(0) + \tfrac{5}{14}(0.971) = 0.694\). &nbsp;\(\Rightarrow IG(\text{Outlook}) = \mathbf{0.247}\).</p>
+    <p style="margin: 0 0 0.3em 0;"><strong>Q5.</strong> &nbsp;Split on Humidity: High (3+/4-), Normal (6+/1-).</p>
+    <p class="fragment" style="margin: 0 0 0.6em 0; color: #166534;">\(H_{\text{after}} = \tfrac{7}{14}(0.985) + \tfrac{7}{14}(0.591) = 0.788\). &nbsp;\(\Rightarrow IG(\text{Humidity}) = \mathbf{0.151}\).</p>
+    <p style="margin: 0;"><strong>Q6.</strong> &nbsp;Which feature do we pick as the root?</p>
+    <p class="fragment" style="margin: 0.3em 0 0 0; color: #1d4ed8;"><strong>Outlook</strong> (higher IG: 0.247 &gt; 0.151).</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     ID3 + Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 16. ID3 -->
+<section class="center-slide">
+  <h2>ID3: the canonical algorithm</h2>
+<pre class="algo"><strong>ID3</strong>(examples, features):
+  <span class="cmt"># Base cases: see slide 10.</span>
+  <span class="kw">1.</span> <span class="kw">for each</span> feature f in features:
+       compute IG(f) on the current examples.
+  <span class="kw">2.</span> <span class="kw">choose</span> f* = argmax<sub>f</sub> IG(f).
+  <span class="kw">3.</span> make an internal node testing f*.
+  <span class="kw">4.</span> <span class="kw">for each</span> value v of f*:
+       recurse on examples with f* = v,
+       and features &minus; {f*}.</pre>
+  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Greedy: pick the locally best feature at each step. Not always globally optimal &mdash; but fast and effective.</p>
+</section>
+
+<!-- 17. Learning goals (recap) + next -->
+<section class="center-slide">
+  <h2>Learning goals (recap) &mdash; Next: neural networks</h2>
+  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0; max-width: 80%; margin-right: auto;">
+    <li>&#10003; &nbsp;Describe the <strong>components</strong> of a decision tree.</li>
+    <li>&#10003; &nbsp;<strong>Construct</strong> a tree given a feature-testing order.</li>
+    <li>&#10003; &nbsp;Compute <strong>test-set accuracy</strong>.</li>
+    <li>&#10003; &nbsp;Compute the <strong>entropy</strong> of a distribution.</li>
+    <li>&#10003; &nbsp;Compute the <strong>expected information gain</strong>.</li>
+    <li>&#10003; &nbsp;Trace + implement the <strong>DT learning algorithm</strong>.</li>
+  </ul>
+  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L19: from hand-engineered trees to <strong>neural networks</strong> &mdash; the building block of deep learning.</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+/* L18-specific styles on top of shared/custom.css, L9/custom.css, L10/custom.css. */
+
+/* Decision-tree rendering (slides 6, 7, 9). */
+.reveal .dt-tree {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 0.78em;
+  margin: 0.3em auto;
+}
+.reveal .dt-tree .dt-level {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.9em;
+  flex-wrap: wrap;
+}
+.reveal .dt-node {
+  display: inline-block;
+  padding: 0.25em 0.7em;
+  background: #dbeafe;
+  border: 2px solid #1d4ed8;
+  border-radius: 6px;
+  color: #1e3a8a;
+  font-weight: 700;
+  font-size: 0.95em;
+}
+.reveal .dt-leaf {
+  display: inline-block;
+  padding: 0.25em 0.7em;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.9em;
+}
+.reveal .dt-leaf.yes {
+  background: #dcfce7;
+  border: 2px solid #16a34a;
+  color: #166534;
+}
+.reveal .dt-leaf.no {
+  background: #fee2e2;
+  border: 2px solid #dc2626;
+  color: #991b1b;
+}
+.reveal .dt-branch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+}
+.reveal .dt-branch .dt-edge-label {
+  font-size: 0.72em;
+  color: #6b7280;
+  font-style: italic;
+}
+.reveal .dt-line {
+  width: 2px;
+  background: #6b7280;
+  height: 14px;
+}
+
+/* Split-bar chart (slide 12). */
+.reveal .split-bars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin: 0.4em auto;
+}
+.reveal .split-bars .split-card {
+  padding: 0.6em 0.8em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+.reveal .split-bars .split-card h3 {
+  font-size: 0.95em;
+  margin: 0 0 0.4em 0;
+  text-align: center;
+  color: #1d4ed8;
+}
+.reveal .split-bars .bar-row {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  align-items: center;
+  gap: 0.4em;
+  margin-bottom: 0.25em;
+}
+.reveal .split-bars .bar-label {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78em;
+  color: #4b5563;
+  text-align: right;
+}
+.reveal .split-bars .bar-container {
+  display: flex;
+  height: 18px;
+  background: #f3f4f6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.reveal .split-bars .bar-yes {
+  background: #16a34a;
+}
+.reveal .split-bars .bar-no {
+  background: #dc2626;
+}
+.reveal .split-bars .bar-text {
+  font-size: 0.72em;
+  color: #fff;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Entropy plot H(p) (slide 13). */
+.reveal .entropy-plot { display: block; margin: 0.3em auto; max-height: 220px; }
+.reveal .entropy-plot .axis { stroke: #6b7280; stroke-width: 1; }
+.reveal .entropy-plot .grid { stroke: #e5e7eb; stroke-width: 0.6; stroke-dasharray: 3 3; }
+.reveal .entropy-plot .axis-label { font-size: 11px; fill: #6b7280; }
+.reveal .entropy-plot .curve {
+  stroke: #1d4ed8;
+  stroke-width: 2.5;
+  fill: none;
+}
+.reveal .entropy-plot .marker { fill: #dc2626; }
+.reveal .entropy-plot .marker-label { font-size: 11px; font-weight: 700; fill: #991b1b; }
+
+/* 3-up example DT row (slide 3). */
+.reveal .examples-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6em;
+  margin: 0.4em 0;
+}
+.reveal .examples-row .ex-card {
+  padding: 0.7em 0.8em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  text-align: center;
+}
+.reveal .examples-row .ex-card h3 {
+  font-size: 0.85em;
+  margin: 0 0 0.4em 0;
+  color: #1d4ed8;
+}
+.reveal .examples-row .ex-card .mini-tree {
+  font-size: 0.7em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  color: #4b5563;
+  line-height: 1.5;
+}
+.reveal .examples-row .ex-card .mini-tree .q {
+  color: #1d4ed8;
+  font-weight: 700;
+}
+.reveal .examples-row .ex-card .mini-tree .leaf-yes { color: #166534; font-weight: 700; }
+.reveal .examples-row .ex-card .mini-tree .leaf-no  { color: #991b1b; font-weight: 700; }

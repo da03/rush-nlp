@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CS 486/686 Lecture 15 — Reinforcement Learning</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 15: Reinforcement Learning — adaptive dynamic programming, exploration vs exploitation, Q-learning, and SARSA. Yuntian Deng, University of Waterloo.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="../L12/custom.css">
+  <link rel="stylesheet" href="../L13/custom.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+<a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
+  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 12 L12 3 L21 12"></path>
+    <path d="M5 10 V21 H19 V10"></path>
+  </svg>
+  <span class="course-home-label">Course&nbsp;page</span>
+</a>
+<div class="reveal">
+<div class="slides">
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <marker id="arrow-rl" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- 1. Title -->
+<section class="title-slide center-slide">
+  <div class="course-title">CS 486/686<br>Reinforcement Learning</div>
+  <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
+  <p>Lecture 15</p>
+  <p class="credit">RN 22.1&ndash;22.3 &middot; PM 12.1, 12.5, 12.8</p>
+</section>
+
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Trace + implement <strong>passive adaptive dynamic programming</strong> (passive ADP).</li>
+    <li class="fragment">Explain the <strong>exploration vs exploitation</strong> trade-off.</li>
+    <li class="fragment">Trace + implement <strong>active ADP</strong>.</li>
+    <li class="fragment">Trace + implement <strong>Q-learning</strong>.</li>
+    <li class="fragment">Trace + implement <strong>SARSA</strong>.</li>
+    <li class="fragment">Tell <strong>on-policy</strong> from <strong>off-policy</strong> learning.</li>
+  </ul>
+</section>
+
+<!-- 3. RL setting -->
+<section>
+  <h2>The RL setting: no \(P\), no \(R\) up front</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg" class="rl-loop">
+        <g class="agent-box"><rect x="40" y="80" width="120" height="60"/></g>
+        <text x="100" y="110" class="role-label agent">Agent</text>
+        <g class="env-box"><rect x="200" y="80" width="120" height="60"/></g>
+        <text x="260" y="110" class="role-label env">Environment</text>
+        <path class="edge" d="M 160 95 L 200 95" marker-end="url(#arrow-rl)"/>
+        <text class="edge-label" x="180" y="80" text-anchor="middle">action a</text>
+        <path class="edge" d="M 200 125 L 160 125" marker-end="url(#arrow-rl)"/>
+        <text class="edge-label" x="180" y="155" text-anchor="middle">state s', reward r</text>
+        <text x="100" y="170" font-size="11" fill="#1d4ed8" text-anchor="middle">picks actions</text>
+        <text x="100" y="185" font-size="11" fill="#1d4ed8" text-anchor="middle">to max return</text>
+        <text x="260" y="170" font-size="11" fill="#166534" text-anchor="middle">opaque P, R</text>
+        <text x="260" y="185" font-size="11" fill="#166534" text-anchor="middle">(unknown!)</text>
+      </svg>
+    </div>
+    <div style="flex: 1.1;">
+      <p style="font-size: 0.85em;">An MDP whose <strong>transition \(P\)</strong> and <strong>reward \(R\)</strong> are unknown. The agent sees state \(s\) and reward \(r\), picks an action \(a\), and observes \(s'\). Goal: maximize discounted return.</p>
+      <p class="fragment" style="font-size: 0.85em;"><strong>Three new challenges:</strong></p>
+      <ul class="fragment" style="font-size: 0.82em;">
+        <li><strong>Credit assignment:</strong> which past action caused this reward?</li>
+        <li><strong>Long-term impact:</strong> how will this action affect future returns?</li>
+        <li><strong>Explore vs exploit:</strong> try new actions or stick with the best known?</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     Passive ADP (3 slides)
+     ============================================================ -->
+
+<!-- 4. Passive learning + ADP idea -->
+<section>
+  <h2>Passive learning: just evaluate a fixed policy</h2>
+  <p style="font-size: 0.88em;">Fix a policy \(\pi\). Goal: learn \(V^\pi(s)\) for every state \(s\).</p>
+  <div class="defbox fragment">
+    <h3>Adaptive Dynamic Programming (ADP)</h3>
+    <ol style="margin: 0;">
+      <li><strong>Learn</strong> the transition \(P(s' \mid s, a)\) and reward \(R(s)\) from observed experience.</li>
+      <li><strong>Solve</strong> the Bellman policy-evaluation equations:
+        <p style="text-align: center; margin: 0.3em 0;">\(V^\pi(s) = R(s) + \gamma \sum_{s'} P(s' \mid s, \pi(s))\, V^\pi(s').\)</p>
+      </li>
+    </ol>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">A <strong>model-based</strong> approach &mdash; it builds an explicit model of the world.</p>
+</section>
+
+<!-- 5. The passive ADP algorithm -->
+<section class="center-slide">
+  <h2>The passive ADP algorithm</h2>
+<pre class="algo"><span class="cmt"># Init R(s), N(s,a), N(s,a,s'), V<sup>&pi;</sup>(s).</span>
+<span class="kw">repeat</span>:
+  <span class="kw">1.</span> Follow &pi; and observe an experience &lang;s, a, s', r&rang;.
+  <span class="kw">2.</span> Update reward: R(s) &larr; r.
+  <span class="kw">3.</span> Update counts:
+       N(s, a)    &larr; N(s, a) + 1
+       N(s, a, s') &larr; N(s, a, s') + 1
+       P(s'|s, a) = N(s, a, s') / N(s, a).
+  <span class="kw">4.</span> Re-solve Bellman to get V<sup>&pi;</sup>(s) (exactly or iteratively).</pre>
+  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">Each new experience refines the model; each Bellman solve costs \(O(n^3)\) or a few iterations.</p>
+</section>
+
+<!-- 6. Passive ADP example + Q1 -->
+<section>
+  <h2>Passive ADP: a worked example</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 0.55; text-align: center;">
+      <div class="gridworld" style="grid-template-columns: repeat(2, 56px); grid-template-rows: repeat(2, 48px);">
+        <div class="gw-cell gw-start">\(s_{11}\)</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+        <div class="gw-cell">\(s_{21}\)</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+      </div>
+      <p style="font-size: 0.7em; color: #6b7280; margin: 0.2em;">\(\pi(s_{11}) = \text{down}\), \(\pi(s_{21}) = \text{right}\), \(\gamma = 0.9\).</p>
+    </div>
+    <div style="flex: 1.1; font-size: 0.8em;">
+      <p style="margin: 0;"><strong>Before:</strong> \(N(s, a) = 5\) for all \(s, a\); \(N(s, a, s') = 3\) for intended direction, \(1\) for each side.</p>
+      <p style="margin: 0.3em 0 0 0;"><strong>New experience:</strong> \(\langle s_{11}, \text{down}, s_{21}, -0.04 \rangle\).</p>
+      <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Update counts:</strong> \(N(s_{11}, \text{down}) = 6\), \(N(s_{11}, \text{down}, s_{21}) = 4\).</p>
+      <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Solve Bellman</strong> with the refreshed model:</p>
+      <p class="fragment" style="font-size: 0.85em; text-align: center; margin: 0.2em 0; color: #166534;">\(V(s_{11}) = -0.4378, \quad V(s_{21}) = -0.8034\)</p>
+    </div>
+  </div>
+  <p class="quiz-q" style="margin-top: 0.5em;"><strong>Q1.</strong> Now suppose \(N(s_{23}, \text{down}) = 23\) and \(N(s_{23}, \text{down}, s_{24}) = 2\) in the 3x4 grid. The agent tries to move down but accidentally moves right &mdash; landing in \(s_{24}\). What is the updated \(P(s_{24} \mid s_{23}, \text{down})\)?</p>
+  <div class="quiz-answer fragment">
+    <strong>C &mdash; 0.125.</strong> &nbsp;\(N(s_{23}, \text{down}) \to 24\); \(N(s_{23}, \text{down}, s_{24}) \to 3\); \(P = 3/24 = 0.125\).
+  </div>
+</section>
+
+<!-- ============================================================
+     Active learning + exploration (3 slides)
+     ============================================================ -->
+
+<!-- 7. Explore vs exploit -->
+<section>
+  <h2>Active learning: explore vs exploit</h2>
+  <p style="font-size: 0.88em;">Now the agent <em>chooses</em> its actions. Two competing pressures:</p>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
+    <div class="task-card highlight">
+      <h3>Exploit</h3>
+      <p>Take the action that maximizes the current \(V(s)\) (or \(Q(s, a)\)). Reap known rewards.</p>
+    </div>
+    <div class="task-card">
+      <h3>Explore</h3>
+      <p>Try a different action. Gather data to learn a better model / better Q-values.</p>
+    </div>
+  </div>
+  <div class="defbox fragment" style="margin-top: 0.5em;">
+    <p style="margin: 0; font-size: 0.85em;">A purely greedy agent <em>seldom</em> converges to the optimal policy &mdash; the learned model is biased toward states the agent has already preferred.</p>
+  </div>
+</section>
+
+<!-- 8. Three exploration strategies -->
+<section>
+  <h2>Three exploration strategies</h2>
+  <div class="exploration-cards">
+    <div class="ecard">
+      <h3>\(\varepsilon\)-greedy</h3>
+      <p>Random action with prob \(\varepsilon\); best with prob \(1 - \varepsilon\).</p>
+      <p>Decrease \(\varepsilon\) over time.</p>
+      <p style="font-size: 0.85em; color: #6b7280;">Simple, but treats all sub-optimal actions equally.</p>
+    </div>
+    <div class="ecard">
+      <h3>Softmax / Boltzmann</h3>
+      <p style="text-align: center; font-size: 0.95em;">\(P(a) = \dfrac{e^{Q(s, a) / T}}{\sum_{a'} e^{Q(s, a') / T}}\)</p>
+      <p style="font-size: 0.85em; color: #6b7280;">High temperature \(T\) = uniform; low \(T\) = greedy.</p>
+    </div>
+    <div class="ecard">
+      <h3>Optimistic init</h3>
+      <p style="font-size: 0.85em;">"Shiny new toy" bonus: pretend untried actions have a high reward.</p>
+      <p style="text-align: center; font-size: 0.85em;">\(f(u, n) = \begin{cases} R^+ &amp; n &lt; N_e \\ u &amp; \text{else}\end{cases}\)</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Active ADP algorithm -->
+<section class="center-slide">
+  <h2>The active ADP algorithm</h2>
+<pre class="algo"><span class="cmt"># Init R(s), V<sup>+</sup>(s), N(s,a), N(s,a,s').</span>
+<span class="kw">repeat until</span> every (s,a) visited &geq; N<sub>e</sub> times and V<sup>+</sup> converged:
+  <span class="kw">1.</span> Pick action: a = argmax<sub>a</sub> f( &sum;<sub>s'</sub> P(s'|s,a) V<sup>+</sup>(s'), &nbsp;N(s,a) ).
+  <span class="kw">2.</span> Execute a; observe &lang;s, a, s', r&rang;.
+  <span class="kw">3.</span> Update R(s) &larr; r.
+  <span class="kw">4.</span> Update counts and P(s'|s, a).
+  <span class="kw">5.</span> Update V<sup>+</sup>(s) &larr; R(s) + &gamma; max<sub>a</sub> f( &sum; P V<sup>+</sup>, &nbsp;N(s,a) ).</pre>
+  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Same model-based loop as passive ADP, plus the exploration bonus baked into action selection.</p>
+</section>
+
+<!-- ============================================================
+     Q-learning (4 slides)
+     ============================================================ -->
+
+<!-- 10. From V to Q: model-free! -->
+<section>
+  <h2>From V to Q: learn without a model</h2>
+  <p style="font-size: 0.85em;">Bellman for \(V\) and \(Q\) are both fixed-point equations:</p>
+  <div class="bellman-compare">
+    <div class="bcard">
+      <h3>Bellman for \(V^\star\)</h3>
+      <p class="formula">\(V^\star(s) = R(s) + \gamma\, \max_a \sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
+      <p style="font-size: 0.8em; margin: 0.3em 0 0 0;">To pick \(\pi^\star\) you still need to know \(P\) and combine it with \(V^\star\).</p>
+    </div>
+    <div class="bcard linear">
+      <h3>Bellman for \(Q^\star\)</h3>
+      <p class="formula">\(Q^\star(s, a) = R(s) + \gamma \sum_{s'} P(s' \mid s, a)\, \max_{a'} Q^\star(s', a')\)</p>
+      <p style="font-size: 0.8em; margin: 0.3em 0 0 0;">If we know \(Q^\star\), then \(\pi^\star(s) = \arg\max_a Q^\star(s, a)\) &mdash; <strong>no \(P\) needed.</strong></p>
+      <span class="tag linear-tag">model-free!</span>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Learning \(Q\) directly is the trick that makes RL practical at scale.</p>
+</section>
+
+<!-- 11. Temporal difference error -->
+<section>
+  <h2>Temporal difference (TD) error</h2>
+  <p style="font-size: 0.88em;">After one transition \(\langle s, a, r, s' \rangle\), pretend that transition was certain (\(P(s' \mid s, a) = 1\)). Then by Bellman:</p>
+  <p style="text-align: center; font-size: 0.95em;">\(Q(s, a) \;\stackrel{?}{=}\; \underbrace{R(s) + \gamma\, \max_{a'} Q(s', a')}_{\text{target}}\)</p>
+  <div class="defbox fragment" style="margin-top: 0.4em;">
+    <h3>TD error</h3>
+    <p style="text-align: center; margin: 0.2em 0; font-size: 1em;">\(\delta \;=\; \bigl(R(s) + \gamma\, \max_{a'} Q(s', a')\bigr) - Q(s, a)\)</p>
+    <p style="margin: 0.3em 0 0 0; font-size: 0.85em;">If \(\delta &gt; 0\), our \(Q(s, a)\) was too pessimistic; if \(\delta &lt; 0\), too optimistic.</p>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Idea: nudge \(Q(s, a)\) toward the target by an amount proportional to \(\delta\).</p>
+</section>
+
+<!-- 12. The Q-learning algorithm -->
+<section>
+  <h2>The Q-learning algorithm</h2>
+<pre class="algo"><span class="cmt"># Init Q(s, a) arbitrarily, R(s), N(s, a).</span>
+<span class="kw">repeat until</span> Q converges:
+  <span class="kw">1.</span> Pick a from s using <em>any</em> exploration strategy
+       (&epsilon;-greedy, softmax, optimistic).
+  <span class="kw">2.</span> Execute a; observe &lang;s, a, s', r&rang;.
+  <span class="kw">3.</span> Update R(s) &larr; r.
+  <span class="kw">4.</span> Q(s, a) &larr; Q(s, a) + &alpha; &middot; (r + &gamma; max<sub>a'</sub> Q(s', a') &minus; Q(s, a)).
+  <span class="kw">5.</span> s &larr; s'.</pre>
+  <ul style="font-size: 0.82em; margin-top: 0.4em;">
+    <li><strong>Model-free</strong>: never estimates \(P\) explicitly.</li>
+    <li><strong>Learning rate \(\alpha\)</strong>: small \(\alpha\) = slower but more accurate; common schedule \(\alpha(N(s, a)) = 10 / (9 + N(s, a))\).</li>
+    <li>Converges to \(Q^\star\) if every \((s, a)\) is visited infinitely often.</li>
+  </ul>
+</section>
+
+<!-- 13. Q-learning worked example -->
+<section>
+  <h2>Q-learning: a single update</h2>
+  <p style="font-size: 0.82em;">3x4 grid. Experience: \(\langle s_{32}, \text{right}, s_{33}, -0.04 \rangle\). Take \(\gamma = 1, \alpha = 0.1\).</p>
+  <table class="q-table" style="margin-bottom: 0.3em;">
+    <thead><tr><th></th><th>\(s_{32}\)</th><th>\(s_{33}\)</th></tr></thead>
+    <tbody>
+      <tr><th>up</th>    <td>0.55</td><td>0.4</td></tr>
+      <tr><th>right</th> <td class="cell-update">0.7</td> <td class="cell-max">0.9</td></tr>
+      <tr><th>down</th>  <td>0.5</td> <td>0.8</td></tr>
+      <tr><th>left</th>  <td>0.4</td> <td>0.5</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center;">Yellow cell = the one we update; green = the max-value action in \(s_{33}\).</p>
+  <div class="update-derivation">
+    <span class="step"><strong>target</strong> = r + &gamma; &middot; max<sub>a'</sub> Q(s<sub>33</sub>, a') = &minus;0.04 + 1.0 &middot; <span style="color: #166534;">0.9</span> = 0.86</span>
+    <span class="step"><strong>&delta;</strong>      = target &minus; Q(s<sub>32</sub>, right) = 0.86 &minus; 0.7 = 0.16</span>
+    <span class="step final">Q(s<sub>32</sub>, right) &larr; 0.7 + 0.1 &middot; 0.16 = <strong>0.716</strong></span>
+  </div>
+</section>
+
+<!-- ============================================================
+     SARSA (2 slides)
+     ============================================================ -->
+
+<!-- 14. SARSA: on-policy TD -->
+<section>
+  <h2>SARSA: on-policy temporal difference</h2>
+  <p style="font-size: 0.85em;">Observe a 5-tuple \(\langle s, a, r, s', a' \rangle\) where \(a'\) is the action <strong>actually taken</strong> in \(s'\) (per the current policy):</p>
+  <div class="compare-row">
+    <div class="ccard qlearn">
+      <h3>Q-learning (off-policy)</h3>
+      <p class="formula" style="text-align: center;">\(Q(s, a) \leftarrow Q(s, a) + \alpha \bigl(r + \gamma\, \max_{a'} Q(s', a') - Q(s, a)\bigr)\)</p>
+      <p style="font-size: 0.78em; margin: 0.3em 0 0 0;">Target uses the <em>greedy</em> next action. Learns about the optimal policy regardless of what's actually played.</p>
+    </div>
+    <div class="ccard sarsa">
+      <h3>SARSA (on-policy)</h3>
+      <p class="formula" style="text-align: center;">\(Q(s, a) \leftarrow Q(s, a) + \alpha \bigl(r + \gamma\, Q(s', a') - Q(s, a)\bigr)\)</p>
+      <p style="font-size: 0.78em; margin: 0.3em 0 0 0;">Target uses the <em>actually-played</em> next action \(a'\). Learns about the policy the agent is following (exploration and all).</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">SARSA = State, Action, Reward, State, Action.</p>
+</section>
+
+<!-- 15. SARSA vs Q-learning worked example -->
+<section>
+  <h2>SARSA vs Q-learning: a side-by-side update</h2>
+  <p style="font-size: 0.8em;">Suppose we're at \(s_{13}\); we'll update \(Q(s_{13}, \text{down}) = 0.4\). The next state is \(s_{23}\), with \(Q(s_{23}, \cdot) = (\text{left}:0.3,\; \text{right}:-0.4,\; \text{down}:0.7,\; \text{up}:0.3)\). Reward \(r = -0.04\), \(\gamma = 0.9, \alpha = 0.4\).</p>
+  <p style="font-size: 0.8em; color: #6b7280;">Now suppose \(\varepsilon\)-greedy samples \(a' = \text{right}\) at \(s_{23}\) (an exploration step into the bad cell).</p>
+  <div class="compare-row">
+    <div class="ccard sarsa">
+      <h3>SARSA: uses \(a' = \text{right}\)</h3>
+      <div class="update-derivation" style="background:#fffbeb; border-color:#d97706; border-left-color:#d97706;">
+        <span class="step">target = &minus;0.04 + 0.9 &middot; <span style="color:#991b1b;">Q(s<sub>23</sub>, right)</span> = &minus;0.04 + 0.9 &middot; (&minus;0.4) = &minus;0.4</span>
+        <span class="step">&delta; = &minus;0.4 &minus; 0.4 = &minus;0.8</span>
+        <span class="step">Q(s<sub>13</sub>, down) &larr; 0.4 + 0.4 &middot; (&minus;0.8)</span>
+      </div>
+      <div class="result fragment" style="color: #92400e;">= <strong>0.08</strong> &nbsp;<span style="font-family: -apple-system, sans-serif; font-weight: 600;">(punished for the actual bad step)</span></div>
+    </div>
+    <div class="ccard qlearn">
+      <h3>Q-learning: uses \(\max_{a'} = 0.7\)</h3>
+      <div class="update-derivation" style="background:#f0fdf4; border-color:#16a34a; border-left-color:#16a34a;">
+        <span class="step">target = &minus;0.04 + 0.9 &middot; <span style="color:#166534;">max Q(s<sub>23</sub>, &middot;)</span> = &minus;0.04 + 0.9 &middot; 0.7 = 0.59</span>
+        <span class="step">&delta; = 0.59 &minus; 0.4 = 0.19</span>
+        <span class="step">Q(s<sub>13</sub>, down) &larr; 0.4 + 0.4 &middot; 0.19</span>
+      </div>
+      <div class="result fragment" style="color: #166534;">= <strong>0.476</strong> &nbsp;<span style="font-family: -apple-system, sans-serif; font-weight: 600;">(rewarded for the optimistic best)</span></div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; text-align: center; margin-top: 0.4em; color: #1d4ed8;">SARSA is <strong>conservative</strong> (learns what really happens); Q-learning is <strong>aggressive</strong> (learns the optimal policy).</p>
+</section>
+
+<!-- ============================================================
+     Comparison + properties (2 slides)
+     ============================================================ -->
+
+<!-- 16. ADP vs Q-learning vs SARSA -->
+<section>
+  <h2>ADP vs Q-learning vs SARSA</h2>
+  <table class="props" style="width: 92%;">
+    <thead>
+      <tr>
+        <th></th>
+        <th>ADP</th>
+        <th>Q-learning</th>
+        <th>SARSA</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Learns transition \(P\)?</td>
+        <td class="no">yes (model-based)</td>
+        <td class="ok">no (model-free)</td>
+        <td class="ok">no (model-free)</td>
+      </tr>
+      <tr>
+        <td>On / off policy</td>
+        <td><em>n/a</em> (eval-only)</td>
+        <td>off-policy</td>
+        <td>on-policy</td>
+      </tr>
+      <tr>
+        <td>Computation per experience</td>
+        <td class="no">heavy (solve Bellman)</td>
+        <td class="ok">cheap (one TD update)</td>
+        <td class="ok">cheap (one TD update)</td>
+      </tr>
+      <tr>
+        <td>Convergence speed</td>
+        <td class="ok">fast (few experiences)</td>
+        <td class="no">slower, higher variance</td>
+        <td class="no">slower, higher variance</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.4em;">ADP is sample-efficient but expensive per step; TD methods (Q, SARSA) flip that trade-off.</p>
+</section>
+
+<!-- 17. When to use what + Q2 + Q3 -->
+<section>
+  <h2>When to use what</h2>
+  <p class="quiz-q"><strong>Q2.</strong> For a high-stakes <em>online</em> learning problem (e.g. self-driving car), which is safer?</p>
+  <ol class="quiz-options">
+    <li>Q-learning</li>
+    <li><strong>SARSA</strong></li>
+    <li>I don't know</li>
+  </ol>
+  <div class="quiz-answer fragment" data-fragment-index="0">
+    <strong>B &mdash; SARSA.</strong> SARSA accounts for the risky actions the agent will actually take while exploring, so it learns to avoid big penalties along the exploration path.
+  </div>
+  <p class="quiz-q fragment" data-fragment-index="1" style="margin-top: 0.5em;"><strong>Q3.</strong> Which is true?</p>
+  <ol class="quiz-options fragment" data-fragment-index="1" style="font-size: 0.78em;">
+    <li>Q-learning is model-free + off-policy; SARSA is model-based + on-policy.</li>
+    <li>Q-learning is model-based + off-policy; SARSA is model-free + on-policy.</li>
+    <li>Q-learning is model-free + on-policy; SARSA is model-based + off-policy.</li>
+    <li>Q-learning is model-based + on-policy; SARSA is model-free + off-policy.</li>
+    <li><strong>None of the above.</strong></li>
+  </ol>
+  <div class="quiz-answer fragment" data-fragment-index="2">
+    <strong>E.</strong> Both are <em>model-free</em>. Q-learning is off-policy; SARSA is on-policy.
+  </div>
+</section>
+
+<!-- ============================================================
+     Wrap-up (1 slide)
+     ============================================================ -->
+
+<!-- 18. Learning goals (recap) + next -->
+<section class="center-slide">
+  <h2>Learning goals (recap) &mdash; Next: machine learning</h2>
+  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0; max-width: 80%; margin-right: auto;">
+    <li>&#10003; &nbsp;Trace + implement <strong>passive ADP</strong>.</li>
+    <li>&#10003; &nbsp;Explain the <strong>exploration vs exploitation</strong> trade-off.</li>
+    <li>&#10003; &nbsp;Trace + implement <strong>active ADP</strong>.</li>
+    <li>&#10003; &nbsp;Trace + implement <strong>Q-learning</strong>.</li>
+    <li>&#10003; &nbsp;Trace + implement <strong>SARSA</strong>.</li>
+    <li>&#10003; &nbsp;Tell <strong>on-policy</strong> from <strong>off-policy</strong>.</li>
+  </ul>
+  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L16: <strong>introduction to machine learning</strong> &mdash; how do we learn from labeled data?</p>
+</section>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script>
+  Reveal.initialize({
+    controls: true,
+    progress: true,
+    slideNumber: 'c/t',
+    hash: true,
+    transition: 'none',
+    center: false,
+    width: 1280,
+    height: 720,
+    margin: 0.06,
+    katex: {
+      delimiters: [
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true }
+      ]
+    },
+    plugins: [ RevealMath.KaTeX ]
+  });
+
+  ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+      document.body.classList.toggle('is-fullscreen', isFs);
+    });
+  });
+</script>
+</body>
+</html>

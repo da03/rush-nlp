@@ -1,0 +1,179 @@
+/* L17-specific styles on top of shared/custom.css, L10/custom.css, L16/custom.css. */
+
+/* Cluster scatter SVG. */
+.reveal .cluster-scatter { display: block; margin: 0.3em auto; max-height: 280px; }
+.reveal .cluster-scatter .axis { stroke: #6b7280; stroke-width: 1; }
+.reveal .cluster-scatter .point { stroke: #fff; stroke-width: 1.2; }
+.reveal .cluster-scatter .point.c1 { fill: #1d4ed8; }
+.reveal .cluster-scatter .point.c2 { fill: #16a34a; }
+.reveal .cluster-scatter .point.c3 { fill: #dc2626; }
+.reveal .cluster-scatter .centroid { stroke: #fff; stroke-width: 2; }
+.reveal .cluster-scatter .centroid.c1 { fill: #1d4ed8; }
+.reveal .cluster-scatter .centroid.c2 { fill: #16a34a; }
+.reveal .cluster-scatter .centroid.c3 { fill: #dc2626; }
+
+/* K-means iteration panels (slide 7). */
+.reveal .kmeans-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.6em;
+  margin: 0.4em 0;
+}
+.reveal .kmeans-panels .panel {
+  text-align: center;
+}
+.reveal .kmeans-panels .panel-label {
+  font-size: 0.78em;
+  font-weight: 600;
+  color: #1d4ed8;
+  margin-bottom: 0.2em;
+}
+
+/* Mini line chart for elbow & silhouette. */
+.reveal .elbow-chart, .reveal .silhouette-chart {
+  display: block;
+  margin: 0.2em auto;
+  max-height: 200px;
+}
+.reveal .elbow-chart .axis,
+.reveal .silhouette-chart .axis { stroke: #6b7280; stroke-width: 1; }
+.reveal .elbow-chart .grid,
+.reveal .silhouette-chart .grid {
+  stroke: #e5e7eb;
+  stroke-width: 0.6;
+  stroke-dasharray: 3 3;
+}
+.reveal .elbow-chart .axis-label,
+.reveal .silhouette-chart .axis-label {
+  font-size: 10px;
+  fill: #6b7280;
+}
+.reveal .elbow-chart .curve {
+  stroke: #1d4ed8;
+  stroke-width: 2.5;
+  fill: none;
+}
+.reveal .elbow-chart .knee {
+  fill: #dc2626;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+.reveal .elbow-chart .knee-label {
+  font-size: 10px;
+  fill: #991b1b;
+  font-weight: 700;
+}
+.reveal .silhouette-chart .curve {
+  stroke: #16a34a;
+  stroke-width: 2.5;
+  fill: none;
+}
+.reveal .silhouette-chart .max-dot {
+  fill: #166534;
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+
+/* Manifold visualization. */
+.reveal .manifold-viz { display: block; margin: 0.3em auto; max-height: 240px; }
+.reveal .manifold-viz .ribbon {
+  fill: none;
+  stroke: #1d4ed8;
+  stroke-width: 4;
+  opacity: 0.85;
+}
+.reveal .manifold-viz .axis {
+  stroke: #9ca3af;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.reveal .manifold-viz .axis-label {
+  font-size: 11px;
+  fill: #6b7280;
+  font-style: italic;
+}
+.reveal .manifold-viz .point {
+  fill: #1f2937;
+  stroke: #fff;
+  stroke-width: 1;
+}
+
+/* PCA scatter + axes (slide 11). */
+.reveal .pca-viz { display: block; margin: 0.3em auto; max-height: 280px; }
+.reveal .pca-viz .point {
+  fill: #1f2937;
+  opacity: 0.7;
+}
+.reveal .pca-viz .pc-arrow {
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+}
+.reveal .pca-viz .pc1 { stroke: #1d4ed8; }
+.reveal .pca-viz .pc2 { stroke: #d97706; }
+.reveal .pca-viz .pc-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+.reveal .pca-viz .pc-label.pc1 { fill: #1d4ed8; }
+.reveal .pca-viz .pc-label.pc2 { fill: #92400e; }
+
+/* Autoencoder architecture diagram. */
+.reveal .autoenc-diagram { display: block; margin: 0.3em auto; max-height: 240px; }
+.reveal .autoenc-diagram .layer {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+  rx: 4;
+}
+.reveal .autoenc-diagram .layer.bottleneck {
+  fill: #fef3c7;
+  stroke: #d97706;
+}
+.reveal .autoenc-diagram .layer-label {
+  font-size: 11px;
+  fill: #1f2937;
+  text-anchor: middle;
+  font-weight: 600;
+}
+.reveal .autoenc-diagram .arch-arrow {
+  stroke: #6b7280;
+  stroke-width: 1.5;
+  fill: none;
+}
+.reveal .autoenc-diagram .zone-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+.reveal .autoenc-diagram .zone-label.enc { fill: #1d4ed8; }
+.reveal .autoenc-diagram .zone-label.dec { fill: #16a34a; }
+.reveal .autoenc-diagram .zone-label.code { fill: #92400e; }
+
+/* GAN architecture diagram. */
+.reveal .gan-diagram { display: block; margin: 0.3em auto; max-height: 240px; }
+.reveal .gan-diagram .box {
+  fill: #fff;
+  stroke: #1f2937;
+  stroke-width: 1.5;
+  rx: 4;
+}
+.reveal .gan-diagram .box.generator { fill: #dbeafe; stroke: #1d4ed8; }
+.reveal .gan-diagram .box.discriminator { fill: #dcfce7; stroke: #16a34a; }
+.reveal .gan-diagram .box.real { fill: #fef3c7; stroke: #92400e; }
+.reveal .gan-diagram .box.fake { fill: #fee2e2; stroke: #dc2626; }
+.reveal .gan-diagram .box-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+.reveal .gan-diagram .arch-arrow {
+  stroke: #6b7280;
+  stroke-width: 1.5;
+  fill: none;
+}
+.reveal .gan-diagram .edge-label {
+  font-size: 11px;
+  fill: #6b7280;
+  font-style: italic;
+}

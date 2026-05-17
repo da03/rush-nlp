@@ -1,0 +1,177 @@
+/* L16-specific styles on top of shared/custom.css, L10/custom.css. */
+
+/* Polynomial fit progression (slide 9). */
+.reveal .poly-fit { display: block; margin: 0.3em auto; max-height: 360px; }
+.reveal .poly-fit .axis { stroke: #6b7280; stroke-width: 1; }
+.reveal .poly-fit .grid { stroke: #e5e7eb; stroke-width: 0.6; stroke-dasharray: 3 3; }
+.reveal .poly-fit .axis-label { font-size: 11px; fill: #6b7280; }
+.reveal .poly-fit .point {
+  fill: #1f2937;
+  stroke: #fff;
+  stroke-width: 1.2;
+}
+.reveal .poly-fit .curve {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+.reveal .poly-fit .curve-d1 { stroke: #1d4ed8; }
+.reveal .poly-fit .curve-d2 { stroke: #16a34a; }
+.reveal .poly-fit .curve-d3 { stroke: #d97706; }
+.reveal .poly-fit .curve-d5 { stroke: #dc2626; }
+.reveal .poly-fit .curve-d9 { stroke: #7c3aed; stroke-width: 2; }
+.reveal .poly-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4em 1.2em;
+  font-size: 0.78em;
+  margin-top: 0.3em;
+}
+.reveal .poly-legend .legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+.reveal .poly-legend .swatch {
+  display: inline-block;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+/* Bias-variance dartboard 2x2 grid (slide 11). */
+.reveal .dartboard-grid {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 0.4em;
+  align-items: center;
+  margin: 0.3em auto;
+  max-width: 480px;
+}
+.reveal .dartboard-grid .col-header,
+.reveal .dartboard-grid .row-header {
+  font-size: 0.78em;
+  font-weight: 700;
+  color: #1d4ed8;
+  text-align: center;
+}
+.reveal .dartboard-grid .row-header { text-align: right; padding-right: 0.4em; }
+.reveal .dartboard {
+  display: block;
+  margin: 0 auto;
+  width: 110px;
+  height: 110px;
+}
+.reveal .dartboard .ring {
+  fill: none;
+  stroke: #9ca3af;
+  stroke-width: 1;
+}
+.reveal .dartboard .bullseye {
+  fill: #fee2e2;
+  stroke: #dc2626;
+  stroke-width: 1;
+}
+.reveal .dartboard .dart {
+  fill: #1f2937;
+}
+
+/* Cross-validation strip (slide 12). */
+.reveal .cv-folds { display: block; margin: 0.3em auto; max-width: 460px; }
+.reveal .cv-folds .row {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 4px;
+}
+.reveal .cv-folds .row .fold {
+  flex: 1;
+  height: 26px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  font-weight: 600;
+  color: #1d4ed8;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+}
+.reveal .cv-folds .row .fold.valid {
+  background: #fde68a;
+  color: #92400e;
+  border-color: #f59e0b;
+}
+.reveal .cv-folds .row-label {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.7em;
+  color: #4b5563;
+  width: 38px;
+}
+.reveal .cv-folds .legend {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  font-size: 0.72em;
+  margin-top: 0.3em;
+  color: #4b5563;
+}
+.reveal .cv-folds .legend .swatch {
+  display: inline-block;
+  width: 14px;
+  height: 12px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 0.3em;
+}
+.reveal .cv-folds .legend .swatch.train { background: #dbeafe; border: 1px solid #93c5fd; }
+.reveal .cv-folds .legend .swatch.valid { background: #fde68a; border: 1px solid #f59e0b; }
+
+/* Overfitting curve chart (slide 13). */
+.reveal .overfit-chart { display: block; margin: 0.3em auto; max-height: 320px; }
+.reveal .overfit-chart .axis { stroke: #6b7280; stroke-width: 1; }
+.reveal .overfit-chart .grid { stroke: #e5e7eb; stroke-width: 0.6; stroke-dasharray: 3 3; }
+.reveal .overfit-chart .axis-label { font-size: 11px; fill: #6b7280; }
+.reveal .overfit-chart .curve-train {
+  stroke: #1d4ed8;
+  stroke-width: 2.5;
+  fill: none;
+}
+.reveal .overfit-chart .curve-valid {
+  stroke: #dc2626;
+  stroke-width: 2.5;
+  fill: none;
+}
+.reveal .overfit-chart .marker {
+  fill: #1f2937;
+}
+.reveal .overfit-chart .marker-label {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Mini app icons row (slide 3). */
+.reveal .app-icons {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5em;
+  margin: 0.5em 0;
+}
+.reveal .app-icons .app-card {
+  padding: 0.6em 0.3em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  text-align: center;
+}
+.reveal .app-icons .app-card svg {
+  display: block;
+  margin: 0 auto 0.3em;
+  height: 40px;
+}
+.reveal .app-icons .app-card .app-label {
+  font-size: 0.78em;
+  font-weight: 600;
+  color: #1f2937;
+}
