@@ -236,11 +236,14 @@
 <section class="center-slide">
   <h2>Evaluating a decision network</h2>
   <p style="font-size: 0.9em;">How do we choose the optimal action?</p>
-<pre class="algo"><span class="kw">1.</span> <span class="cmt"># Set evidence variables to their observed values.</span>
-<span class="kw">2.</span> <span class="kw">for each</span> assignment to the decision variables:
-       <span class="cmt"># Compute posterior of the utility node's parents.</span>
-       <span class="cmt"># Compute the expected utility of this assignment.</span>
-<span class="kw">3.</span> <span class="kw">return</span> the assignment with the maximum expected utility.</pre>
+  <div class="algo-card">
+    <div class="algo-title">evaluate-decision-network(DN, evidence)</div>
+    <ol>
+      <li>Fix every evidence variable to its observed value.</li>
+      <li>For each assignment to the decision variables: compute the posterior of the utility node's parents, then compute the expected utility.</li>
+      <li>Return the assignment with the maximum expected utility.</li>
+    </ol>
+  </div>
   <p style="font-size: 0.85em; text-align: center; margin-top: 0.4em;">For the robot: enumerate the 4 combinations of \((P, S)\).</p>
 </section>
 
@@ -333,10 +336,14 @@
 <section class="center-slide">
   <h2>Variable elimination for a single-stage DN</h2>
   <p style="font-size: 0.88em;">Same factor algebra as L9, with a <strong>max</strong> instead of normalization at the end.</p>
-<pre class="algo"><span class="kw">1.</span> <span class="cmt"># Prune nodes that are not ancestors of the utility.</span>
-<span class="kw">2.</span> <span class="cmt"># Sum out every chance (random) variable.</span>
-<span class="kw">3.</span> <span class="cmt"># For the remaining factor over decisions:</span>
-       <span class="kw">return</span> the assignment with the maximum value.</pre>
+  <div class="algo-card">
+    <div class="algo-title">VEA-single-stage(DN, evidence)</div>
+    <ol>
+      <li>Prune nodes that are not ancestors of the utility.</li>
+      <li>Sum out every chance (random) variable.</li>
+      <li>For the remaining factor over decisions, return the assignment with the maximum value.</li>
+    </ol>
+  </div>
   <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">If multiple decisions can be made <em>simultaneously</em>, merge them into one composite node.</p>
 </section>
 
@@ -518,12 +525,15 @@
   <h2>Method 2: VEA on the weather DN</h2>
   <div class="two-col vcenter">
     <div style="flex: 1.2;">
-<pre class="algo"><span class="kw">1.</span> Prune non-ancestors of Utility. <span class="cmt"># nothing to prune</span>
-<span class="kw">2.</span> Define f<sub>1</sub>(W), f<sub>2</sub>(W,F), f<sub>3</sub>(W,U).
-<span class="kw">3.</span> <span class="kw">while</span> decisions remain:
-       <span class="kw">a.</span> Eliminate chance vars not parents of any decision.
-       <span class="kw">b.</span> Max over the next decision (in info order).
-<span class="kw">4.</span> Sum out remaining chance vars for EU.</pre>
+      <div class="algo-card">
+        <div class="algo-title">VEA-multi-stage(DN, evidence)</div>
+        <ol>
+          <li>Prune non-ancestors of Utility. <em>(Nothing to prune here.)</em></li>
+          <li>Define factors: \(f_1(W), f_2(W, F), f_3(W, U)\).</li>
+          <li>While decisions remain: eliminate chance vars not parents of any decision, then max over the next decision (in info order).</li>
+          <li>Sum out the remaining chance vars to get the EU.</li>
+        </ol>
+      </div>
     </div>
     <div style="flex: 1; font-size: 0.78em;">
       <div class="vea-flow" style="flex-direction: column; align-items: stretch; gap: 0.2em;">
