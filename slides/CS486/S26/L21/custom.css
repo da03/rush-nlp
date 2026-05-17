@@ -71,6 +71,40 @@
   font-weight: 600;
 }
 
+/* Loss-curve visual on slide 7 (worked example). */
+.reveal .l21-worked-curve {
+  display: block;
+  margin: 0.4em auto 0.3em;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  max-height: 170px;
+}
+.reveal .l21-worked-curve .axis { stroke: #6b7280; stroke-width: 1; }
+.reveal .l21-worked-curve .grid { stroke: #e5e7eb; stroke-width: 0.6; stroke-dasharray: 3 3; }
+.reveal .l21-worked-curve .axis-label { font-size: 10px; fill: #6b7280; }
+.reveal .l21-worked-curve .curve {
+  stroke: #1d4ed8;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  fill: none;
+}
+.reveal .l21-worked-curve .start-dot { fill: #4b5563; stroke: #fff; stroke-width: 1; }
+.reveal .l21-worked-curve .local-dot { fill: #dc2626; stroke: #fff; stroke-width: 1.5; }
+.reveal .l21-worked-curve .global-dot { fill: #16a34a; stroke: #fff; stroke-width: 1.5; }
+.reveal .l21-worked-curve .sgd-arrow { stroke: #dc2626; stroke-width: 1.8; fill: none; stroke-dasharray: 3 2; }
+.reveal .l21-worked-curve .momentum-arrow { stroke: #15803d; stroke-width: 2.2; fill: none; }
+
+/* Step-size comparison bar on slide 8. */
+.reveal .l21-step-bar {
+  display: block;
+  margin: 0.5em auto 0.2em;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  max-height: 100px;
+}
+
 /* Side-by-side momentum tables. */
 .reveal .momentum-tables {
   display: grid;
