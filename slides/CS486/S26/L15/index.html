@@ -288,14 +288,27 @@
 <!-- 11. Temporal difference error -->
 <section>
   <h2>Temporal difference (TD) error</h2>
-  <p style="font-size: 0.88em;">After one transition \(\langle s, a, r, s' \rangle\), pretend that transition was certain (\(P(s' \mid s, a) = 1\)). Then by Bellman:</p>
-  <p style="text-align: center; font-size: 0.95em;">\(Q(s, a) \;\stackrel{?}{=}\; \underbrace{R(s) + \gamma\, \max_{a'} Q(s', a')}_{\text{target}}\)</p>
-  <div class="defbox fragment" style="margin-top: 0.4em;">
+  <p style="font-size: 0.86em;">After one transition \(\langle s, a, r, s' \rangle\), pretend that transition was certain (\(P(s' \mid s, a) = 1\)). Then by Bellman:</p>
+  <p style="text-align: center; font-size: 0.95em; margin: 0.2em 0;">\(Q(s, a) \;\stackrel{?}{=}\; \underbrace{R(s) + \gamma\, \max_{a'} Q(s', a')}_{\text{target}}\)</p>
+  <div class="defbox fragment" style="margin: 0.3em 0;">
     <h3>TD error</h3>
     <p style="text-align: center; margin: 0.2em 0; font-size: 1em;">\(\delta \;=\; \bigl(R(s) + \gamma\, \max_{a'} Q(s', a')\bigr) - Q(s, a)\)</p>
-    <p style="margin: 0.3em 0 0 0; font-size: 0.85em;">If \(\delta &gt; 0\), our \(Q(s, a)\) was too pessimistic; if \(\delta &lt; 0\), too optimistic.</p>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Idea: nudge \(Q(s, a)\) toward the target by an amount proportional to \(\delta\).</p>
+  <svg viewBox="0 0 520 80" xmlns="http://www.w3.org/2000/svg" class="td-gap fragment" aria-hidden="true">
+    <line x1="20" y1="46" x2="500" y2="46" stroke="#9ca3af" stroke-width="1.5"/>
+    <!-- current Q tick -->
+    <line x1="140" y1="38" x2="140" y2="54" stroke="#1d4ed8" stroke-width="2.5"/>
+    <text x="140" y="30" font-size="11" fill="#1d4ed8" text-anchor="middle" font-weight="700">Q(s,a)</text>
+    <text x="140" y="70" font-size="10" fill="#1d4ed8" text-anchor="middle">current estimate</text>
+    <!-- target tick -->
+    <line x1="380" y1="38" x2="380" y2="54" stroke="#166534" stroke-width="2.5"/>
+    <text x="380" y="30" font-size="11" fill="#166534" text-anchor="middle" font-weight="700">R(s) + &#947; max Q(s',&middot;)</text>
+    <text x="380" y="70" font-size="10" fill="#166534" text-anchor="middle">target</text>
+    <!-- gap arrow labeled delta -->
+    <path d="M 142 46 L 378 46" stroke="#d97706" stroke-width="2" marker-end="url(#arrow-rl)" fill="none"/>
+    <text x="260" y="42" font-size="12" fill="#92400e" text-anchor="middle" font-weight="700">&#948;</text>
+  </svg>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin: 0.2em 0;">Idea: nudge \(Q(s, a)\) toward the target by an amount proportional to \(\delta\).</p>
 </section>
 
 <!-- 12. The Q-learning algorithm -->
@@ -337,9 +350,9 @@
   </table>
   <p style="font-size: 0.78em; color: #6b7280; text-align: center;">Yellow cell = the one we update; green = the max-value action in \(s_{33}\).</p>
   <div class="update-derivation">
-    <span class="step"><strong>target</strong> = r + &gamma; &middot; max<sub>a'</sub> Q(s<sub>33</sub>, a') = &minus;0.04 + 1.0 &middot; <span style="color: #166534;">0.9</span> = 0.86</span>
-    <span class="step"><strong>&delta;</strong>      = target &minus; Q(s<sub>32</sub>, right) = 0.86 &minus; 0.7 = 0.16</span>
-    <span class="step final">Q(s<sub>32</sub>, right) &larr; 0.7 + 0.1 &middot; 0.16 = <strong>0.716</strong></span>
+    <span class="step fragment"><strong>target</strong> = r + &gamma; &middot; max<sub>a'</sub> Q(s<sub>33</sub>, a') = &minus;0.04 + 1.0 &middot; <span style="color: #166534;">0.9</span> = 0.86</span>
+    <span class="step fragment"><strong>&delta;</strong>      = target &minus; Q(s<sub>32</sub>, right) = 0.86 &minus; 0.7 = 0.16</span>
+    <span class="step final fragment">Q(s<sub>32</sub>, right) &larr; 0.7 + 0.1 &middot; 0.16 = <strong>0.716</strong></span>
   </div>
 </section>
 

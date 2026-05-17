@@ -69,6 +69,16 @@
   border-radius: 2px;
 }
 
+/* TD-error gap number line (slide 11). */
+.reveal .td-gap {
+  display: block;
+  margin: 0.3em auto 0.2em;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  max-height: 88px;
+}
+
 /* Q-table for RL worked examples (slides 13, 15). */
 .reveal table.q-table {
   width: auto;
