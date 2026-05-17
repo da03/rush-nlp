@@ -164,6 +164,22 @@
     </div>
   </div>
   <p class="fragment" style="text-align:center; font-size: 0.85em; margin-top: 0.6em;">6 Boolean variables &rArr; \(2^6 = 64\) joint probabilities.</p>
+  <svg viewBox="0 0 380 130" xmlns="http://www.w3.org/2000/svg" class="holmes-mini fragment" aria-label="Holmes causal structure">
+    <defs>
+      <marker id="holmes-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#6b7280"/></marker>
+    </defs>
+    <line class="edge" x1="95" y1="35" x2="135" y2="65" marker-end="url(#holmes-arrow)"/>
+    <line class="edge" x1="185" y1="35" x2="155" y2="65" marker-end="url(#holmes-arrow)"/>
+    <line class="edge" x1="195" y1="30" x2="305" y2="30" marker-end="url(#holmes-arrow)"/>
+    <line class="edge" x1="130" y1="90" x2="95" y2="110" marker-end="url(#holmes-arrow)"/>
+    <line class="edge" x1="160" y1="90" x2="195" y2="110" marker-end="url(#holmes-arrow)"/>
+    <circle class="var cause" cx="85" cy="30" r="14"/><text x="85" y="30">B</text>
+    <circle class="var cause" cx="195" cy="30" r="14"/><text x="195" y="30">E</text>
+    <circle class="var observ" cx="320" cy="30" r="14"/><text x="320" y="30">R</text>
+    <circle class="var effect" cx="145" cy="75" r="14"/><text x="145" y="75">A</text>
+    <circle class="var observ" cx="85" cy="115" r="13"/><text x="85" y="115">W</text>
+    <circle class="var observ" cx="205" cy="115" r="13"/><text x="205" y="115">G</text>
+  </svg>
 </section>
 
 <!-- ============================================================
@@ -261,21 +277,35 @@
   </svg>
 </section>
 
-<!-- 13. Product rule quiz pack -->
+<!-- 13a. Q: Watson | not alarm -->
 <section>
-  <h2>Quiz pack: conditional probability</h2>
-  <p style="text-align:center; font-size: 0.8em; color: #6b7280; margin: 0;">From the previous slide: \(P(\neg A \wedge W) = 0.36\), \(P(A \wedge \neg G) = 0.06\), \(P(\neg A) = 0.9\).</p>
-  <div style="margin-top: 0.5em;">
-    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q1.</strong> \(P(W | \neg A)\) &mdash; the probability that Watson calls, given that the alarm is NOT going?</p>
-    <div class="quiz-answer fragment" style="font-size: 0.85em;">
-      \(P(W | \neg A) = \dfrac{P(\neg A \wedge W)}{P(\neg A)} = \dfrac{0.36}{0.9} = \mathbf{0.4}\). &nbsp;<strong>(B)</strong>
-    </div>
+  <h2>Q: \(P(W \mid \neg A)\)?</h2>
+  <p style="text-align:center; font-size: 0.8em; color: #6b7280; margin: 0;">From the previous slides: \(P(\neg A \wedge W) = 0.36\), \(P(\neg A) = 0.9\).</p>
+  <p class="quiz-q" style="margin-top: 0.6em;"><strong>Q.</strong> Watson calls, given the alarm is NOT going.</p>
+  <ol class="quiz-options">
+    <li>\(0.2\)</li>
+    <li>\(0.4\)</li>
+    <li>\(0.6\)</li>
+    <li>\(0.8\)</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>B.</strong> \(P(W | \neg A) = \dfrac{P(\neg A \wedge W)}{P(\neg A)} = \dfrac{0.36}{0.9} = \mathbf{0.4}\).
   </div>
-  <div style="margin-top: 0.8em;">
-    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q2.</strong> \(P(\neg G | A)\) &mdash; the probability that Gibbon does NOT call, given the alarm is going?</p>
-    <div class="quiz-answer fragment" style="font-size: 0.85em;">
-      \(P(A) = 1 - 0.9 = 0.1\), so &nbsp;\(P(\neg G | A) = \dfrac{P(A \wedge \neg G)}{P(A)} = \dfrac{0.06}{0.1} = \mathbf{0.6}\). &nbsp;<strong>(C)</strong>
-    </div>
+</section>
+
+<!-- 13b. Q: not Gibbon | alarm -->
+<section>
+  <h2>Q: \(P(\neg G \mid A)\)?</h2>
+  <p style="text-align:center; font-size: 0.8em; color: #6b7280; margin: 0;">From the previous slides: \(P(A \wedge \neg G) = 0.06\), \(P(\neg A) = 0.9\) (so \(P(A) = 0.1\)).</p>
+  <p class="quiz-q" style="margin-top: 0.6em;"><strong>Q.</strong> Gibbon does NOT call, given the alarm is going.</p>
+  <ol class="quiz-options">
+    <li>\(0.2\)</li>
+    <li>\(0.4\)</li>
+    <li>\(0.6\)</li>
+    <li>\(0.8\)</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>C.</strong> \(P(\neg G | A) = \dfrac{P(A \wedge \neg G)}{P(A)} = \dfrac{0.06}{0.1} = \mathbf{0.6}\).
   </div>
 </section>
 
@@ -296,21 +326,35 @@
   <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center;">Pick any ordering of variables; condition each on its predecessors.</p>
 </section>
 
-<!-- 15. Chain rule quiz pack -->
+<!-- 16a. Q: chain rule for P(A & W & ~G) -->
 <section>
-  <h2>Quiz pack: chain rule</h2>
-  <p style="text-align:center; font-size: 0.8em; color: #6b7280; margin: 0;">Given: \(P(A) = 0.1\), \(P(W|A) = 0.9\), \(P(W|\neg A) = 0.4\), \(P(G|A \wedge W) = 0.3\), \(P(G|\neg A \wedge \neg W) = 0.1\).</p>
-  <div style="margin-top: 0.5em;">
-    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q1.</strong> \(P(A \wedge W \wedge \neg G)\)?</p>
-    <div class="quiz-answer fragment" style="font-size: 0.85em;">
-      \(P(A \wedge W \wedge \neg G) = P(A) \cdot P(W | A) \cdot P(\neg G | A \wedge W) = 0.1 \times 0.9 \times 0.7 = \mathbf{0.063}\). &nbsp;<strong>(D)</strong>
-    </div>
+  <h2>Q: \(P(A \wedge W \wedge \neg G)\)?</h2>
+  <p style="text-align:center; font-size: 0.78em; color: #6b7280; margin: 0;">Given: \(P(A) = 0.1\), \(P(W|A) = 0.9\), \(P(G|A \wedge W) = 0.3\).</p>
+  <p class="quiz-q" style="margin-top: 0.6em;"><strong>Q.</strong> Apply the chain rule to the conjunction.</p>
+  <ol class="quiz-options">
+    <li>\(0.027\)</li>
+    <li>\(0.037\)</li>
+    <li>\(0.054\)</li>
+    <li>\(0.063\)</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>D.</strong> \(P(A) \cdot P(W | A) \cdot P(\neg G | A \wedge W) = 0.1 \times 0.9 \times 0.7 = \mathbf{0.063}\).
   </div>
-  <div style="margin-top: 0.7em;">
-    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q2.</strong> \(P(\neg A \wedge \neg W \wedge \neg G)\)?</p>
-    <div class="quiz-answer fragment" style="font-size: 0.85em;">
-      \(= P(\neg A) \cdot P(\neg W | \neg A) \cdot P(\neg G | \neg A \wedge \neg W) = 0.9 \times 0.6 \times 0.9 = \mathbf{0.486}\). &nbsp;<strong>(A)</strong>
-    </div>
+</section>
+
+<!-- 16b. Q: chain rule for P(~A & ~W & ~G) -->
+<section>
+  <h2>Q: \(P(\neg A \wedge \neg W \wedge \neg G)\)?</h2>
+  <p style="text-align:center; font-size: 0.78em; color: #6b7280; margin: 0;">Given: \(P(A) = 0.1\), \(P(W|\neg A) = 0.4\), \(P(G|\neg A \wedge \neg W) = 0.1\).</p>
+  <p class="quiz-q" style="margin-top: 0.6em;"><strong>Q.</strong> Apply the chain rule, this time to the all-negated conjunction.</p>
+  <ol class="quiz-options">
+    <li>\(0.486\)</li>
+    <li>\(0.324\)</li>
+    <li>\(0.216\)</li>
+    <li>\(0.054\)</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>A.</strong> \(P(\neg A) \cdot P(\neg W | \neg A) \cdot P(\neg G | \neg A \wedge \neg W) = 0.9 \times 0.6 \times 0.9 = \mathbf{0.486}\).
   </div>
 </section>
 
@@ -355,23 +399,37 @@
   <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.6em;">The denominator \(P(Y)\) is just a normalization constant &mdash; compute \(P(X | Y)\) and \(P(\neg X | Y)\), then normalize.</p>
 </section>
 
-<!-- 18. Bayes' rule quiz pack -->
+<!-- 20a. Q: Bayes for P(~A | W) -->
 <section>
-  <h2>Quiz pack: Bayes' rule</h2>
-  <p style="text-align:center; font-size: 0.8em; color: #6b7280; margin: 0;">Given: \(P(A) = 0.1\), \(P(W|A) = 0.9\), \(P(W|\neg A) = 0.4\), \(P(G|A) = 0.3\), \(P(G|\neg A) = 0.1\).</p>
-  <div style="margin-top: 0.5em;">
-    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q1.</strong> \(P(\neg A | W)\) &mdash; alarm NOT going, given Watson calls?</p>
-    <div class="quiz-answer fragment" style="font-size: 0.85em;">
-      Marginalize \(W\): \(P(W) = P(A) P(W|A) + P(\neg A) P(W|\neg A) = 0.09 + 0.36 = 0.45\). <br>
-      Bayes: \(P(\neg A | W) = \dfrac{P(\neg A) P(W|\neg A)}{P(W)} = \dfrac{0.36}{0.45} = \mathbf{0.8}\). &nbsp;<strong>(C)</strong>
-    </div>
+  <h2>Q: \(P(\neg A \mid W)\)?</h2>
+  <p style="text-align:center; font-size: 0.78em; color: #6b7280; margin: 0;">Given: \(P(A) = 0.1\), \(P(W|A) = 0.9\), \(P(W|\neg A) = 0.4\).</p>
+  <p class="quiz-q" style="margin-top: 0.6em;"><strong>Q.</strong> Alarm NOT going, given Watson calls.</p>
+  <ol class="quiz-options">
+    <li>\(0.2\)</li>
+    <li>\(0.45\)</li>
+    <li>\(0.8\)</li>
+    <li>\(0.9\)</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>C.</strong> Marginalize: \(P(W) = P(A) P(W|A) + P(\neg A) P(W|\neg A) = 0.09 + 0.36 = 0.45\). <br>
+    Bayes: \(P(\neg A | W) = \dfrac{P(\neg A) P(W|\neg A)}{P(W)} = \dfrac{0.36}{0.45} = \mathbf{0.8}\).
   </div>
-  <div style="margin-top: 0.7em;">
-    <p class="quiz-q" style="font-size: 0.88em; margin: 0;"><strong>Q2.</strong> \(P(A | \neg G)\) &mdash; alarm going, given Gibbon does NOT call?</p>
-    <div class="quiz-answer fragment" style="font-size: 0.85em;">
-      \(P(\neg G) = P(A) P(\neg G|A) + P(\neg A) P(\neg G|\neg A) = 0.07 + 0.81 = 0.88\). <br>
-      Bayes: \(P(A | \neg G) = \dfrac{P(A) P(\neg G|A)}{P(\neg G)} = \dfrac{0.07}{0.88} \approx \mathbf{0.08}\). &nbsp;<strong>(E)</strong>
-    </div>
+</section>
+
+<!-- 20b. Q: Bayes for P(A | ~G) -->
+<section>
+  <h2>Q: \(P(A \mid \neg G)\)?</h2>
+  <p style="text-align:center; font-size: 0.78em; color: #6b7280; margin: 0;">Given: \(P(A) = 0.1\), \(P(G|A) = 0.3\), \(P(G|\neg A) = 0.1\).</p>
+  <p class="quiz-q" style="margin-top: 0.6em;"><strong>Q.</strong> Alarm going, given Gibbon does NOT call.</p>
+  <ol class="quiz-options">
+    <li>\(0.03\)</li>
+    <li>\(0.08\)</li>
+    <li>\(0.30\)</li>
+    <li>\(0.70\)</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>B.</strong> Marginalize: \(P(\neg G) = P(A) P(\neg G|A) + P(\neg A) P(\neg G|\neg A) = 0.07 + 0.81 = 0.88\). <br>
+    Bayes: \(P(A | \neg G) = \dfrac{P(A) P(\neg G|A)}{P(\neg G)} = \dfrac{0.07}{0.88} \approx \mathbf{0.08}\).
   </div>
 </section>
 
@@ -400,18 +458,28 @@
   </div>
 </section>
 
-<!-- 21. Worked example: steps 2-3 -->
+<!-- 23. Worked example: step 2 (marginalize) -->
 <section>
-  <h2>Worked example, continued</h2>
+  <h2>Worked example: step 2 (marginalize)</h2>
+  <p style="font-size: 0.78em; color:#6b7280; margin: 0;">From step 1: \(P(A | C) = \dfrac{P(A \wedge C)}{P(A \wedge C) + P(\neg A \wedge C)}\). The numerator and denominator are partial joints &mdash; sum out the missing variable \(B\).</p>
   <div class="worked">
-    <p><span class="label-step">Step 2.</span> Sum out \(B\) to get full-joint probabilities:</p>
-    <p class="fragment" style="font-size: 0.85em; text-align: center;">\(P(A \wedge C) = P(A \wedge B \wedge C) + P(A \wedge \neg B \wedge C)\)</p>
-    <p class="fragment" style="font-size: 0.85em; text-align: center;">\(P(\neg A \wedge C) = P(\neg A \wedge B \wedge C) + P(\neg A \wedge \neg B \wedge C)\)</p>
-    <p class="fragment"><span class="label-step">Step 3.</span> Apply the chain rule to each:</p>
-    <p class="fragment" style="font-size: 0.78em; text-align: center;">\(P(A \wedge B \wedge C) = P(C | A \wedge B)\, P(B | A)\, P(A) = 0.1 \times 0.4 \times 0.6 = 0.024\)</p>
-    <p class="fragment" style="font-size: 0.78em; text-align: center;">\(P(A \wedge \neg B \wedge C) = 0.5 \times 0.6 \times 0.6 = 0.180\)</p>
-    <p class="fragment" style="font-size: 0.78em; text-align: center;">\(P(\neg A \wedge B \wedge C) = 0.2 \times 0.8 \times 0.4 = 0.064, \quad P(\neg A \wedge \neg B \wedge C) = 0.8 \times 0.2 \times 0.4 = 0.064\)</p>
-    <p class="fragment" style="text-align: center; color: #166534; font-size: 0.92em;">\(P(A | C) = \dfrac{0.024 + 0.180}{0.024 + 0.180 + 0.064 + 0.064} = \dfrac{0.204}{0.332} \approx \mathbf{0.614}\)</p>
+    <p><span class="label-step">Step 2.</span> Sum out \(B\):</p>
+    <p class="fragment" style="text-align: center;">\(P(A \wedge C) = P(A \wedge B \wedge C) + P(A \wedge \neg B \wedge C)\)</p>
+    <p class="fragment" style="text-align: center;">\(P(\neg A \wedge C) = P(\neg A \wedge B \wedge C) + P(\neg A \wedge \neg B \wedge C)\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center;">Now every term on the right is a full-joint probability, ready for the chain rule.</p>
+</section>
+
+<!-- 24. Worked example: step 3 (chain rule) + final answer -->
+<section>
+  <h2>Worked example: step 3 + answer</h2>
+  <p style="font-size: 0.78em; color:#6b7280; margin: 0;">Apply the chain rule \(P(A \wedge B \wedge C) = P(C | A \wedge B)\, P(B | A)\, P(A)\) to each full joint.</p>
+  <div class="worked">
+    <p class="fragment" style="font-size: 0.85em; text-align: center;">\(P(A \wedge B \wedge C) = 0.1 \times 0.4 \times 0.6 = 0.024\)</p>
+    <p class="fragment" style="font-size: 0.85em; text-align: center;">\(P(A \wedge \neg B \wedge C) = 0.5 \times 0.6 \times 0.6 = 0.180\)</p>
+    <p class="fragment" style="font-size: 0.85em; text-align: center;">\(P(\neg A \wedge B \wedge C) = 0.2 \times 0.8 \times 0.4 = 0.064\)</p>
+    <p class="fragment" style="font-size: 0.85em; text-align: center;">\(P(\neg A \wedge \neg B \wedge C) = 0.8 \times 0.2 \times 0.4 = 0.064\)</p>
+    <p class="fragment" style="text-align: center; color: #166534; font-size: 1em; margin-top: 0.6em;">\(P(A | C) = \dfrac{0.024 + 0.180}{0.024 + 0.180 + 0.064 + 0.064} = \dfrac{0.204}{0.332} \approx \mathbf{0.614}\)</p>
   </div>
 </section>
 
