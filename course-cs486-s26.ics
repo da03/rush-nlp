@@ -1,0 +1,100 @@
+---
+permalink: /course-cs486-s26.ics
+layout: null
+sitemap: false
+---
+{%- assign cs = site.data.cs486_s26 -%}
+{%- assign course = cs.course -%}
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//yuntiandeng.com//CS486 S26//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:{{ course.code }} {{ course.term }}
+X-WR-TIMEZONE:America/Toronto
+BEGIN:VTIMEZONE
+TZID:America/Toronto
+BEGIN:DAYLIGHT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+TZNAME:EDT
+DTSTART:19700308T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+TZNAME:EST
+DTSTART:19701101T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+END:STANDARD
+END:VTIMEZONE
+{%- assign stamp = site.time | date: "%Y%m%dT%H%M%SZ" -%}
+{%- for e in cs.schedule -%}
+{%- if e.type == 'lecture' -%}
+{%- assign datestr = e.date | date: "%Y%m%d" -%}
+BEGIN:VEVENT
+UID:cs486-s26-l{{ e.lecture_num }}@yuntiandeng.com
+DTSTAMP:{{ stamp }}
+DTSTART;TZID=America/Toronto:{{ datestr }}T130000
+DTEND;TZID=America/Toronto:{{ datestr }}T142000
+SUMMARY:{{ course.code }} L{{ e.lecture_num }} - {{ e.topic }}
+LOCATION:{{ course.sections[0].room }}
+{%- if e.slides %}
+URL:https://yuntiandeng.com{{ e.slides }}
+DESCRIPTION:Slides: https://yuntiandeng.com{{ e.slides }}
+{%- endif %}
+END:VEVENT
+BEGIN:VEVENT
+UID:cs486-s26-l{{ e.lecture_num }}-s002@yuntiandeng.com
+DTSTAMP:{{ stamp }}
+DTSTART;TZID=America/Toronto:{{ datestr }}T143000
+DTEND;TZID=America/Toronto:{{ datestr }}T155000
+SUMMARY:{{ course.code }} L{{ e.lecture_num }} (Section 002) - {{ e.topic }}
+LOCATION:{{ course.sections[1].room }}
+{%- if e.slides %}
+URL:https://yuntiandeng.com{{ e.slides }}
+{%- endif %}
+END:VEVENT
+{%- elsif e.type == 'special_event' -%}
+{%- assign datestr = e.date | date: "%Y%m%d" -%}
+BEGIN:VEVENT
+UID:cs486-s26-event-{{ datestr }}@yuntiandeng.com
+DTSTAMP:{{ stamp }}
+{%- if e.time %}
+DTSTART;TZID=America/Toronto:{{ datestr }}T100000
+DTEND;TZID=America/Toronto:{{ datestr }}T113000
+{%- else %}
+DTSTART;VALUE=DATE:{{ datestr }}
+{%- endif %}
+SUMMARY:{{ e.title }}
+{%- if e.location %}
+LOCATION:{{ e.location }}
+{%- endif %}
+{%- if e.note %}
+DESCRIPTION:{{ e.note | strip_html }}
+{%- endif %}
+END:VEVENT
+{%- elsif e.type == 'final_exam' -%}
+BEGIN:VEVENT
+UID:cs486-s26-final-exam@yuntiandeng.com
+DTSTAMP:{{ stamp }}
+DTSTART;VALUE=DATE:20260807
+DTEND;VALUE=DATE:20260821
+SUMMARY:{{ course.code }} Final Exam Period
+DESCRIPTION:{{ e.note }}
+END:VEVENT
+{%- endif -%}
+{%- endfor -%}
+{%- for c in cs.chats -%}
+{%- assign duestr = c.due | date: "%Y%m%d" -%}
+BEGIN:VEVENT
+UID:cs486-s26-chat{{ c.num }}-due@yuntiandeng.com
+DTSTAMP:{{ stamp }}
+DTSTART;TZID=America/Toronto:{{ duestr }}T235900
+DTEND;TZID=America/Toronto:{{ duestr }}T235900
+SUMMARY:Chat {{ c.num }} due ({{ course.code }})
+DESCRIPTION:Chrysalis chat assignment {{ c.num }}.
+END:VEVENT
+{%- endfor -%}
+END:VCALENDAR
