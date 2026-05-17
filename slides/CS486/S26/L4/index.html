@@ -460,7 +460,7 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
   <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center;">If we'd known this <em>before</em> trying \(x_2\) at all, we could've pruned the branch immediately. That's <strong>arc consistency</strong>.</p>
 </section>
 
-<!-- 19. Binary constraints only -->
+<!-- 16. Binary constraints only -->
 <section class="center-slide">
   <h2>Binary constraints only</h2>
   <p style="font-size: 0.9em;">Arc consistency is defined on <em>binary</em> constraints \(c(X, Y)\). For the others:</p>
@@ -468,6 +468,35 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
     <li class="fragment"><strong>Unary</strong> \(c(X)\): drop disallowed values directly from \(D_X\).</li>
     <li class="fragment"><strong>k-ary</strong> \((k \ge 3)\): convert to an equivalent set of binary constraints.</li>
   </ul>
+  <svg class="binary-conv-mini fragment" viewBox="0 0 380 130" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <marker id="b2b-arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1d4ed8"/></marker>
+    </defs>
+    <g class="edge">
+      <line x1="48" y1="22" x2="95" y2="60"/>
+      <line x1="48" y1="60" x2="95" y2="60"/>
+      <line x1="48" y1="98" x2="95" y2="60"/>
+    </g>
+    <rect class="cn" x="95" y="50" width="38" height="20" rx="3"/>
+    <text x="114" y="60">c</text>
+    <circle class="v" cx="38" cy="22" r="11"/><text x="38" y="22">X</text>
+    <circle class="v" cx="38" cy="60" r="11"/><text x="38" y="60">Y</text>
+    <circle class="v" cx="38" cy="98" r="11"/><text x="38" y="98">Z</text>
+    <text x="114" y="92" font-size="9" fill="#6b7280" font-style="italic">ternary c(X,Y,Z)</text>
+
+    <line class="arrow-big" x1="160" y1="60" x2="210" y2="60" marker-end="url(#b2b-arrow)"/>
+
+    <g class="edge">
+      <line x1="252" y1="22" x2="338" y2="60"/>
+      <line x1="252" y1="60" x2="338" y2="60"/>
+      <line x1="252" y1="98" x2="338" y2="60"/>
+    </g>
+    <circle class="v" cx="242" cy="22" r="11"/><text x="242" y="22">X</text>
+    <circle class="v" cx="242" cy="60" r="11"/><text x="242" y="60">Y</text>
+    <circle class="v" cx="242" cy="98" r="11"/><text x="242" y="98">Z</text>
+    <circle class="aux" cx="338" cy="60" r="13"/><text x="338" y="60">W</text>
+    <text x="290" y="118" font-size="9" fill="#6b7280" font-style="italic">3 binary constraints via aux W</text>
+  </svg>
 </section>
 
 <!-- 20. Notation: arcs -->
@@ -491,15 +520,28 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
   </ul>
 </section>
 
-<!-- 21. Arc-consistency definition + Q -->
+<!-- 18a. Arc-consistency definition -->
 <section>
   <h2>Arc-consistency definition</h2>
   <div class="theorem">
     <strong>Arc consistency.</strong> The arc \(\langle X, c(X,Y) \rangle\) is <em>arc-consistent</em> iff for every \(v \in D_X\) there exists a \(w \in D_Y\) such that \((v, w)\) satisfies \(c(X, Y)\).
   </div>
-  <p class="quiz-q fragment" style="margin-top: 1em;"><strong>Q.</strong> Constraint \(X &lt; Y\), with \(D_X = D_Y = \{1, 2\}\). Is \(\langle X, X &lt; Y \rangle\) arc-consistent?</p>
+  <p class="fragment" style="font-size: 0.85em; margin-top: 0.8em; text-align: center; color:#1d4ed8;">
+    <strong>Intuition:</strong> every value in the primary domain has a partner in the secondary domain.
+  </p>
+  <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center; margin-top: 0.4em;">If some \(v \in D_X\) has no partner, remove \(v\) from \(D_X\) to make the arc consistent.</p>
+</section>
+
+<!-- 18b. Quiz: is this arc consistent? -->
+<section>
+  <h2>Q: is this arc consistent?</h2>
+  <p class="quiz-q"><strong>Q.</strong> Constraint \(X &lt; Y\), with \(D_X = D_Y = \{1, 2\}\). Is \(\langle X, X &lt; Y \rangle\) arc-consistent?</p>
+  <ol class="quiz-options">
+    <li>Yes</li>
+    <li>No</li>
+  </ol>
   <div class="quiz-answer fragment">
-    <strong>No.</strong> For \(v = 2 \in D_X\), there is no \(w \in D_Y\) with \(2 &lt; w\). We can <strong>remove \(2\) from \(D_X\)</strong> to make the arc consistent.
+    <strong>B &mdash; No.</strong> For \(v = 2 \in D_X\), there is no \(w \in D_Y\) with \(2 &lt; w\). We can <strong>remove \(2\) from \(D_X\)</strong> to make the arc consistent.
   </div>
 </section>
 
