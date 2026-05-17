@@ -336,6 +336,144 @@
   </div>
 </section>
 
+<!-- 11. Decision networks -->
+<section>
+  <h2>Decision networks</h2>
+  <div class="recap-grid">
+    <div class="recall-card decision">
+      <h3>Three node types</h3>
+      <ul>
+        <li><strong>Chance</strong> nodes &mdash; like a Bayes net (CPTs).</li>
+        <li><strong>Decision</strong> nodes &mdash; rectangles, no CPT, chosen by us.</li>
+        <li><strong>Utility</strong> node &mdash; diamond, deterministic function of its parents.</li>
+      </ul>
+    </div>
+    <div class="recall-card decision">
+      <h3>Maximum expected utility</h3>
+      <ul>
+        <li>Policy \(\pi(d \mid \text{parents})\); MEU picks \(\pi^*\) maximizing \(\mathbb{E}[U]\).</li>
+        <li>Evaluate by enumeration or by running VE on the DN.</li>
+        <li><strong>Value of information:</strong> EU gain from observing a variable before deciding.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 12. MDPs -->
+<section>
+  <h2>Markov decision processes</h2>
+  <div class="recap-grid">
+    <div class="recall-card decision">
+      <h3>Setup</h3>
+      <ul>
+        <li>States, actions, transition \(P(s' \mid s, a)\), reward \(R(s)\), discount \(\gamma\).</li>
+        <li>Policy \(\pi : S \to A\); value \(V^\pi(s) = \mathbb{E}[\sum_t \gamma^t R(s_t) \mid \pi]\).</li>
+      </ul>
+    </div>
+    <div class="recall-card decision">
+      <h3>Bellman + the two algorithms</h3>
+      <ul>
+        <li><strong>Bellman optimality:</strong> \(V^*(s) = R(s) + \gamma \max_a \sum_{s'} P(s' \mid s, a)\, V^*(s')\).</li>
+        <li><strong>Value iteration:</strong> apply the Bellman update until convergence.</li>
+        <li><strong>Policy iteration:</strong> evaluate (linear system) &harr; improve (greedy) &mdash; converges fast.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 13. RL -->
+<section>
+  <h2>Reinforcement learning</h2>
+  <div class="recap-grid">
+    <div class="recall-card decision">
+      <h3>Two learning regimes</h3>
+      <ul>
+        <li><strong>Passive ADP:</strong> follow a fixed policy, estimate \(\hat P, \hat R\), solve via PE.</li>
+        <li><strong>Active ADP:</strong> also pick actions &mdash; balance exploration vs exploitation (\(\varepsilon\)-greedy, softmax, optimistic init).</li>
+      </ul>
+    </div>
+    <div class="recall-card decision">
+      <h3>Model-free updates</h3>
+      <ul>
+        <li><strong>Q-learning</strong> (off-policy): \(Q(s,a) \leftarrow Q(s,a) + \alpha\big[R + \gamma \max_{a'} Q(s', a') - Q(s,a)\big]\).</li>
+        <li><strong>SARSA</strong> (on-policy): use the action actually taken instead of \(\max_{a'}\).</li>
+        <li>ADP converges fast but needs a model; Q-learning is slower but model-free.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 14. Supervised + unsupervised -->
+<section>
+  <h2>Supervised + unsupervised learning</h2>
+  <div class="recap-grid">
+    <div class="recall-card learn">
+      <h3>Supervised</h3>
+      <ul>
+        <li><strong>Classification</strong> (discrete \(y\)) vs <strong>regression</strong> (continuous \(y\)).</li>
+        <li><strong>Bias-variance:</strong> underfit (high bias) &harr; overfit (high variance).</li>
+        <li><strong>Cross-validation:</strong> \(K\)-fold to pick the model complexity that minimizes held-out error.</li>
+        <li><strong>ERM:</strong> minimize empirical loss \(\frac{1}{N}\sum_i \ell(\hat y^{(i)}, y^{(i)})\).</li>
+      </ul>
+    </div>
+    <div class="recall-card learn">
+      <h3>Unsupervised</h3>
+      <ul>
+        <li><strong>k-means:</strong> alternate assign &harr; recompute centroids; pick \(k\) via elbow / silhouette.</li>
+        <li><strong>PCA:</strong> project onto top eigenvectors of the covariance matrix; maximize variance.</li>
+        <li><strong>Autoencoders &amp; GANs:</strong> learn representations / generators with neural nets.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 15. Decision trees + neural networks -->
+<section>
+  <h2>Decision trees + neural networks</h2>
+  <div class="recap-grid">
+    <div class="recall-card learn">
+      <h3>Decision trees</h3>
+      <ul>
+        <li>Greedy top-down split with <strong>ID3</strong>.</li>
+        <li>Choose split that maximizes <strong>information gain</strong> \(I = H(Y) - H(Y\mid X)\).</li>
+        <li>Stop when pure / no features / no examples.</li>
+        <li>Interpretable, great for small tabular data.</li>
+      </ul>
+    </div>
+    <div class="recall-card learn">
+      <h3>Neural networks</h3>
+      <ul>
+        <li>Weighted sums + non-linear activations (sigmoid, ReLU).</li>
+        <li><strong>Forward pass</strong> computes loss; <strong>backprop</strong> computes gradients via chain rule (\(\delta\) recursion).</li>
+        <li>Train with <strong>SGD</strong> + momentum / Adam.</li>
+        <li>Black box but unmatched for images, audio, text.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 16. Final exam + thanks -->
+<section class="center-slide">
+  <h2>Final exam &mdash; logistics</h2>
+  <div class="exam-panel">
+    <h3>What to bring</h3>
+    <ul>
+      <li>Non-programmable calculator.</li>
+      <li>One two-sided A4 study sheet (handwritten or typed).</li>
+    </ul>
+    <h3 style="margin-top: 0.4em;">Format (tentative)</h3>
+    <ul>
+      <li>Around 8 problems spanning all four modules.</li>
+      <li>~84 marks total; 76+ marks count as 100%.</li>
+      <li>Pass threshold: 42 marks.</li>
+    </ul>
+    <div class="note">Exact details will be confirmed on the course page before exam day.</div>
+  </div>
+  <p class="fragment" style="margin-top: 0.6em; font-size: 0.95em; color: #1d4ed8;">
+    Thanks for a great term &mdash; good luck on the final!
+  </p>
+</section>
+
 </div>
 </div>
 
