@@ -23,11 +23,11 @@ show: 1
   <div class="paper-card-body">
     <a class="paper" href="{{demo.link}}">{{demo.title}}</a><br>
     {{demo.abstract}}<br>
-    {% if demo.demo %}<a class="badge bg-info text-decoration-none" href="{{demo.demo}}">demo</a> {% endif %}
-    {% if demo.code %} <a class="badge bg-warning text-decoration-none" href="{{demo.code}}">code</a>{% endif %}
-    {% if demo.paper %}<a class="badge bg-info text-decoration-none" href="{{demo.paper}}">paper</a> {% endif %}
-    {% if demo.data %}<a class="badge bg-success text-decoration-none" href="{{demo.data}}">data</a> {% endif %}
-    {% if demo.models %}<a class="badge bg-warning text-decoration-none" href="{{demo.models}}">models</a>{% endif %}
+    {% if demo.demo %}<a class="tag tag-demo" href="{{demo.demo}}">demo</a> {% endif %}
+    {% if demo.code %} <a class="tag tag-code" href="{{demo.code}}">code</a>{% endif %}
+    {% if demo.paper %}<a class="tag tag-paper" href="{{demo.paper}}">paper</a> {% endif %}
+    {% if demo.data %}<a class="tag tag-data" href="{{demo.data}}">data</a> {% endif %}
+    {% if demo.models %}<a class="tag tag-models" href="{{demo.models}}">models</a>{% endif %}
   </div>
 </div>
 {% endfor %}

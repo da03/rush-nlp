@@ -29,8 +29,8 @@ My full list of papers can be found at my <a href="https://scholar.google.com/ci
     <a class="paper" href="{{paper.pdf}}">{{paper.title}}</a><br>
     {{paper.authors}}.<br>
     {{paper.conference}}
-    {% if paper.code %} <a class="badge bg-secondary text-decoration-none" href="{{paper.code}}">code</a>{% endif %}
-    {% if paper.slides %} <a class="badge bg-info text-decoration-none" href="{{paper.slides}}">slides</a>{% endif %}
+    {% if paper.code %} <a class="tag tag-code" href="{{paper.code}}">code</a>{% endif %}
+    {% if paper.slides %} <a class="tag tag-slides" href="{{paper.slides}}">slides</a>{% endif %}
     <br>
     {% if paper.notes %}{{paper.notes}}{% endif %}
   </div>
