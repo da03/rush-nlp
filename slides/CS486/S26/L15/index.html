@@ -370,7 +370,7 @@
       <p class="formula" style="text-align: center;">\(Q(s, a) \leftarrow Q(s, a) + \alpha \bigl(r + \gamma\, \max_{a'} Q(s', a') - Q(s, a)\bigr)\)</p>
       <p style="font-size: 0.78em; margin: 0.3em 0 0 0;">Target uses the <em>greedy</em> next action. Learns about the optimal policy regardless of what's actually played.</p>
     </div>
-    <div class="ccard sarsa">
+    <div class="ccard sarsa fragment">
       <h3>SARSA (on-policy)</h3>
       <p class="formula" style="text-align: center;">\(Q(s, a) \leftarrow Q(s, a) + \alpha \bigl(r + \gamma\, Q(s', a') - Q(s, a)\bigr)\)</p>
       <p style="font-size: 0.78em; margin: 0.3em 0 0 0;">Target uses the <em>actually-played</em> next action \(a'\). Learns about the policy the agent is following (exploration and all).</p>
@@ -388,18 +388,18 @@
     <div class="ccard sarsa">
       <h3>SARSA: uses \(a' = \text{right}\)</h3>
       <div class="update-derivation" style="background:#fffbeb; border-color:#d97706; border-left-color:#d97706;">
-        <span class="step">target = &minus;0.04 + 0.9 &middot; <span style="color:#991b1b;">Q(s<sub>23</sub>, right)</span> = &minus;0.04 + 0.9 &middot; (&minus;0.4) = &minus;0.4</span>
-        <span class="step">&delta; = &minus;0.4 &minus; 0.4 = &minus;0.8</span>
-        <span class="step">Q(s<sub>13</sub>, down) &larr; 0.4 + 0.4 &middot; (&minus;0.8)</span>
+        <span class="step fragment">target = &minus;0.04 + 0.9 &middot; <span style="color:#991b1b;">Q(s<sub>23</sub>, right)</span> = &minus;0.04 + 0.9 &middot; (&minus;0.4) = &minus;0.4</span>
+        <span class="step fragment">&delta; = &minus;0.4 &minus; 0.4 = &minus;0.8</span>
+        <span class="step fragment">Q(s<sub>13</sub>, down) &larr; 0.4 + 0.4 &middot; (&minus;0.8)</span>
       </div>
       <div class="result fragment" style="color: #92400e;">= <strong>0.08</strong> &nbsp;<span style="font-family: -apple-system, sans-serif; font-weight: 600;">(punished for the actual bad step)</span></div>
     </div>
     <div class="ccard qlearn">
       <h3>Q-learning: uses \(\max_{a'} = 0.7\)</h3>
       <div class="update-derivation" style="background:#f0fdf4; border-color:#16a34a; border-left-color:#16a34a;">
-        <span class="step">target = &minus;0.04 + 0.9 &middot; <span style="color:#166534;">max Q(s<sub>23</sub>, &middot;)</span> = &minus;0.04 + 0.9 &middot; 0.7 = 0.59</span>
-        <span class="step">&delta; = 0.59 &minus; 0.4 = 0.19</span>
-        <span class="step">Q(s<sub>13</sub>, down) &larr; 0.4 + 0.4 &middot; 0.19</span>
+        <span class="step fragment">target = &minus;0.04 + 0.9 &middot; <span style="color:#166534;">max Q(s<sub>23</sub>, &middot;)</span> = &minus;0.04 + 0.9 &middot; 0.7 = 0.59</span>
+        <span class="step fragment">&delta; = 0.59 &minus; 0.4 = 0.19</span>
+        <span class="step fragment">Q(s<sub>13</sub>, down) &larr; 0.4 + 0.4 &middot; 0.19</span>
       </div>
       <div class="result fragment" style="color: #166534;">= <strong>0.476</strong> &nbsp;<span style="font-family: -apple-system, sans-serif; font-weight: 600;">(rewarded for the optimistic best)</span></div>
     </div>
@@ -424,25 +424,25 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
+      <tr class="fragment">
         <td>Learns transition \(P\)?</td>
         <td class="no">yes (model-based)</td>
         <td class="ok">no (model-free)</td>
         <td class="ok">no (model-free)</td>
       </tr>
-      <tr>
+      <tr class="fragment">
         <td>On / off policy</td>
         <td><em>n/a</em> (eval-only)</td>
         <td>off-policy</td>
         <td>on-policy</td>
       </tr>
-      <tr>
+      <tr class="fragment">
         <td>Computation per experience</td>
         <td class="no">heavy (solve Bellman)</td>
         <td class="ok">cheap (one TD update)</td>
         <td class="ok">cheap (one TD update)</td>
       </tr>
-      <tr>
+      <tr class="fragment">
         <td>Convergence speed</td>
         <td class="ok">fast (few experiences)</td>
         <td class="no">slower, higher variance</td>

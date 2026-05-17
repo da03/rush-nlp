@@ -59,16 +59,39 @@
   <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
     <div class="task-card">
       <h3>Representation learning</h3>
+      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" class="l17-icon" aria-hidden="true">
+        <circle cx="22" cy="20" r="3" fill="#1d4ed8"/>
+        <circle cx="32" cy="14" r="3" fill="#1d4ed8"/>
+        <circle cx="28" cy="28" r="3" fill="#1d4ed8"/>
+        <circle cx="60" cy="36" r="3" fill="#16a34a"/>
+        <circle cx="70" cy="30" r="3" fill="#16a34a"/>
+        <circle cx="66" cy="44" r="3" fill="#16a34a"/>
+        <circle cx="98" cy="22" r="3" fill="#dc2626"/>
+        <circle cx="108" cy="16" r="3" fill="#dc2626"/>
+        <circle cx="104" cy="30" r="3" fill="#dc2626"/>
+        <path d="M 120 32 L 142 32" stroke="#1f2937" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
+        <text x="151" y="35" font-size="10" fill="#1f2937" font-weight="700">z</text>
+        <text x="80" y="58" font-size="9" fill="#6b7280" text-anchor="middle">compress</text>
+      </svg>
       <p>Find a low-dimensional summary of each example.</p>
       <p style="font-size: 0.78em; color: #6b7280;">Clustering, PCA, autoencoders.</p>
     </div>
     <div class="task-card">
       <h3>Generative modelling</h3>
+      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" class="l17-icon" aria-hidden="true">
+        <rect x="14" y="14" width="22" height="32" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4" rx="2"/>
+        <text x="25" y="34" font-size="9" fill="#1d4ed8" text-anchor="middle">p(x)</text>
+        <path d="M 42 30 L 64 30" stroke="#1f2937" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
+        <rect x="70"  y="18" width="20" height="24" fill="#fde68a" stroke="#92400e" stroke-width="1"/>
+        <rect x="96"  y="18" width="20" height="24" fill="#fee2e2" stroke="#dc2626" stroke-width="1"/>
+        <rect x="122" y="18" width="20" height="24" fill="#dcfce7" stroke="#166534" stroke-width="1"/>
+        <text x="106" y="58" font-size="9" fill="#6b7280" text-anchor="middle">new samples</text>
+      </svg>
       <p>Learn the data distribution so we can <em>sample new examples</em>.</p>
       <p style="font-size: 0.78em; color: #6b7280;">GANs, VAEs, diffusion.</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.6em;">Today: one task from each, plus two neural variants.</p>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Today: one task from each, plus two neural variants.</p>
 </section>
 
 <!-- ============================================================
@@ -159,20 +182,25 @@
 </section>
 
 <!-- 6. k-Means: the alternating algorithm -->
-<section class="center-slide">
+<section>
   <h2>The k-means algorithm</h2>
-  <p style="font-size: 0.88em;">Alternate two steps until convergence:</p>
-<pre class="algo"><span class="cmt"># Initialize: pick k centroids C[0..k-1] randomly.</span>
-<span class="kw">repeat</span>:
-  <span class="kw">1.</span> <strong>Assign step</strong>: for each example i,
-       y[i] &larr; argmin<sub>c</sub> d(C[c], X[i]).
-  <span class="kw">2.</span> <strong>Update step</strong>: for each cluster c,
-       C[c] &larr; mean of all X[i] with y[i] == c.
-<span class="kw">until</span> assignments stop changing.</pre>
-  <ul style="font-size: 0.82em; margin-top: 0.5em;">
+  <p style="font-size: 0.85em;">Alternate two steps until convergence:</p>
+  <div class="algo-card">
+    <div class="algo-title">k-means(\(X,\ k\))</div>
+    <ol>
+      <li>Initialize \(k\) centroids \(C[0\ldots k-1]\) randomly.</li>
+      <li>Repeat until assignments stop changing:
+        <ul style="margin: 0.2em 0 0.2em 1em;">
+          <li><strong>Assign step:</strong> for each example \(i\), \(\ y[i] \leftarrow \arg\min_{c}\, d\!\bigl(C[c],\, X[i]\bigr)\).</li>
+          <li><strong>Update step:</strong> for each cluster \(c\), \(\ C[c] \leftarrow\) mean of all \(X[i]\) with \(y[i] = c\).</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+  <ul style="font-size: 0.8em; margin-top: 0.3em;">
     <li>Guaranteed to converge with L2 distance.</li>
     <li>Not guaranteed to find the global optimum.</li>
-    <li><strong>Mitigate</strong>: random restarts, feature scaling.</li>
+    <li><strong>Mitigate:</strong> random restarts, feature scaling.</li>
   </ul>
 </section>
 
@@ -181,7 +209,7 @@
   <h2>k-Means in action</h2>
   <p style="font-size: 0.85em;">Same 12 points, three snapshots: random init &rarr; mid-iteration &rarr; converged.</p>
   <div class="kmeans-panels">
-    <div class="panel">
+    <div class="panel fragment">
       <div class="panel-label">Iteration 0 (random init)</div>
       <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
         <circle class="point c2" cx="40"  cy="50"  r="5"/>
@@ -201,7 +229,7 @@
         <polygon class="centroid c3" points="100,40 105,50 95,50"/>
       </svg>
     </div>
-    <div class="panel">
+    <div class="panel fragment">
       <div class="panel-label">Iteration 2 (mid)</div>
       <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
         <circle class="point c1" cx="40"  cy="50"  r="5"/>
@@ -221,7 +249,7 @@
         <polygon class="centroid c3" points="97,148 102,158 92,158"/>
       </svg>
     </div>
-    <div class="panel">
+    <div class="panel fragment">
       <div class="panel-label">Converged</div>
       <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
         <circle class="point c1" cx="40"  cy="50"  r="5"/>
@@ -265,10 +293,10 @@
     <div style="flex: 1.1; font-size: 0.72em;">
       <p style="margin: 0;"><strong>Assign step</strong> (squared distance to each centroid):</p>
       <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.92em; background: #f9fafb; padding: 0.4em; border-radius: 3px; margin: 0.2em 0;">
-        ex 1: d&sup2;(c<sub>1</sub>) = 0.35, d&sup2;(c<sub>2</sub>) = 2.09 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span><br>
-        ex 2: d&sup2;(c<sub>1</sub>) = 5.39, d&sup2;(c<sub>2</sub>) = 7.05 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span><br>
-        ex 3: d&sup2;(c<sub>1</sub>) = 5.09, d&sup2;(c<sub>2</sub>) = 6.01 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span><br>
-        ex 4: d&sup2;(c<sub>1</sub>) = 0.17, d&sup2;(c<sub>2</sub>) = 2.73 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span>
+        <span class="fragment">ex 1: d&sup2;(c<sub>1</sub>) = 0.35, d&sup2;(c<sub>2</sub>) = 2.09 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
+        <span class="fragment">ex 2: d&sup2;(c<sub>1</sub>) = 5.39, d&sup2;(c<sub>2</sub>) = 7.05 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
+        <span class="fragment">ex 3: d&sup2;(c<sub>1</sub>) = 5.09, d&sup2;(c<sub>2</sub>) = 6.01 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
+        <span class="fragment">ex 4: d&sup2;(c<sub>1</sub>) = 0.17, d&sup2;(c<sub>2</sub>) = 2.73 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span>
       </div>
       <p style="margin: 0;"><strong class="fragment">Update step</strong>:</p>
       <p class="fragment" style="text-align: center; font-family: ui-monospace, Menlo, monospace; color: #166534; font-weight: 600;">\(c_1' = (-0.2, 1.25, 0.55), \;\; c_2' = \varnothing\)</p>
@@ -392,25 +420,31 @@
         <circle class="point" cx="130" cy="118" r="3"/>
         <circle class="point" cx="150" cy="100" r="3"/>
         <circle class="point" cx="170" cy="80"  r="3"/>
-        <line class="pc-arrow pc1" x1="50" y1="160" x2="200" y2="50" marker-end="url(#arrow-l17)"/>
-        <line class="pc-arrow pc2" x1="135" y1="80" x2="95" y2="125" marker-end="url(#arrow-l17)"/>
-        <text class="pc-label pc1" x="205" y="45">PC1</text>
-        <text class="pc-label pc2" x="55" y="135">PC2</text>
+        <g class="fragment">
+          <line class="pc-arrow pc1" x1="50" y1="160" x2="200" y2="50" marker-end="url(#arrow-l17)"/>
+          <text class="pc-label pc1" x="205" y="45">PC1</text>
+        </g>
+        <g class="fragment">
+          <line class="pc-arrow pc2" x1="135" y1="80" x2="95" y2="125" marker-end="url(#arrow-l17)"/>
+          <text class="pc-label pc2" x="55" y="135">PC2</text>
+        </g>
       </svg>
     </div>
   </div>
 </section>
 
 <!-- 12. PCA algorithm -->
-<section class="center-slide">
+<section>
   <h2>How to compute PCA</h2>
-<pre class="algo"><span class="kw">1.</span> Mean-center the data: x &larr; x &minus; mean(x).
-<span class="kw">2.</span> Compute the covariance matrix &Sigma; = (1/m) X<sup>T</sup>X.
-<span class="kw">3.</span> Eigendecompose &Sigma;:
-       &Sigma; v<sub>k</sub> = &lambda;<sub>k</sub> v<sub>k</sub>.
-       Eigenvectors v<sub>k</sub> = principal components,
-       sorted by eigenvalue &lambda;<sub>1</sub> &geq; &lambda;<sub>2</sub> &geq; ...
-<span class="kw">4.</span> Project: z = V<sub>top-k</sub><sup>T</sup> x.</pre>
+  <div class="algo-card">
+    <div class="algo-title">PCA(\(X,\ k\))</div>
+    <ol>
+      <li>Mean-center the data: \(x \leftarrow x - \text{mean}(x)\).</li>
+      <li>Compute the covariance matrix \(\Sigma = \tfrac{1}{m}\, X^\top X\).</li>
+      <li>Eigendecompose \(\Sigma\): \(\Sigma\, v_k = \lambda_k\, v_k\). Eigenvectors \(v_k\) are the principal components, sorted by \(\lambda_1 \ge \lambda_2 \ge \ldots\)</li>
+      <li>Project onto the top \(k\) PCs: \(z = V_{\text{top-}k}^\top\, x\).</li>
+    </ol>
+  </div>
   <p class="fragment" style="font-size: 0.85em; color: #166534; text-align: center; margin-top: 0.4em;">Fraction of variance kept by the \(k\)-th PC: &nbsp;\(\dfrac{\lambda_k}{\sum_j \lambda_j}\). Cumulative across top \(k\) PCs guides how many to keep.</p>
 </section>
 
@@ -424,23 +458,34 @@
   <p style="font-size: 0.88em;">A neural net learns to <strong>squeeze and reconstruct</strong> its input.</p>
   <div style="text-align: center;">
     <svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg" class="autoenc-diagram">
+      <!-- Always-visible input -->
       <rect class="layer" x="40"  y="30"  width="40" height="140"/>
-      <rect class="layer" x="100" y="55"  width="36" height="90"/>
-      <rect class="layer bottleneck" x="156" y="80"  width="32" height="40"/>
-      <rect class="layer" x="208" y="55"  width="36" height="90"/>
-      <rect class="layer" x="264" y="30"  width="40" height="140"/>
-      <line class="arch-arrow" x1="80"  y1="100" x2="100" y2="100"/>
-      <line class="arch-arrow" x1="136" y1="100" x2="156" y2="100"/>
-      <line class="arch-arrow" x1="188" y1="100" x2="208" y2="100"/>
-      <line class="arch-arrow" x1="244" y1="100" x2="264" y2="100"/>
       <text class="layer-label" x="60"  y="190">x</text>
-      <text class="layer-label" x="118" y="190">e(x)</text>
-      <text class="layer-label" x="172" y="190">z = e(x)</text>
-      <text class="layer-label" x="226" y="190">d(z)</text>
-      <text class="layer-label" x="284" y="190">x&#770; = d(e(x))</text>
-      <text class="zone-label enc" x="100" y="20">encoder</text>
-      <text class="zone-label code" x="172" y="20">code</text>
-      <text class="zone-label dec" x="244" y="20">decoder</text>
+      <!-- Encoder zone -->
+      <g class="fragment">
+        <line class="arch-arrow" x1="80"  y1="100" x2="100" y2="100"/>
+        <rect class="layer" x="100" y="55"  width="36" height="90"/>
+        <text class="layer-label" x="118" y="190">e(x)</text>
+        <text class="zone-label enc" x="100" y="20">encoder</text>
+      </g>
+      <!-- Bottleneck code -->
+      <g class="fragment">
+        <line class="arch-arrow" x1="136" y1="100" x2="156" y2="100"/>
+        <rect class="layer bottleneck" x="156" y="80"  width="32" height="40"/>
+        <text class="layer-label" x="172" y="190">z = e(x)</text>
+        <text class="zone-label code" x="172" y="20">code</text>
+      </g>
+      <!-- Decoder + reconstruction -->
+      <g class="fragment">
+        <line class="arch-arrow" x1="188" y1="100" x2="208" y2="100"/>
+        <rect class="layer" x="208" y="55"  width="36" height="90"/>
+        <text class="layer-label" x="226" y="190">d(z)</text>
+        <line class="arch-arrow" x1="244" y1="100" x2="264" y2="100"/>
+        <rect class="layer" x="264" y="30"  width="40" height="140"/>
+        <text class="layer-label" x="284" y="190">x&#770; = d(e(x))</text>
+        <text class="zone-label dec" x="244" y="20">decoder</text>
+      </g>
+      <!-- Loss + caption (always visible) -->
       <text x="350" y="80" font-size="13" fill="#1f2937" font-weight="600">Loss:</text>
       <text x="350" y="100" font-size="12" fill="#1d4ed8">E = &sum;<tspan baseline-shift="sub" font-size="9">i</tspan> (x<tspan baseline-shift="sub" font-size="9">i</tspan> &minus; d(e(x<tspan baseline-shift="sub" font-size="9">i</tspan>)))&sup2;</text>
       <text x="350" y="130" font-size="11" fill="#6b7280">Encoder + decoder are</text>
@@ -479,22 +524,31 @@
   <p style="font-size: 0.85em;">Two networks play a game: a <strong>generator</strong> tries to fool a <strong>discriminator</strong>.</p>
   <div style="text-align: center;">
     <svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg" class="gan-diagram">
-      <rect class="box" x="20"  y="80" width="76" height="36"/>
-      <text class="box-label" x="58" y="103">noise z</text>
-      <rect class="box generator" x="130" y="80" width="100" height="36"/>
-      <text class="box-label" x="180" y="103">generator g</text>
-      <rect class="box fake" x="265" y="50" width="80" height="36"/>
-      <text class="box-label" x="305" y="73">fake x</text>
-      <rect class="box real" x="265" y="110" width="80" height="36"/>
-      <text class="box-label" x="305" y="133">real x</text>
-      <rect class="box discriminator" x="380" y="80" width="116" height="36"/>
-      <text class="box-label" x="438" y="103">discriminator d</text>
-      <line class="arch-arrow" x1="96"  y1="98" x2="130" y2="98" marker-end="url(#arrow-l17)"/>
-      <text class="edge-label" x="113" y="92" text-anchor="middle">~ \(\mathcal{N}(0, I)\)</text>
-      <path class="arch-arrow" d="M 230 95 Q 250 95, 265 68" marker-end="url(#arrow-l17)"/>
-      <line class="arch-arrow" x1="345" y1="68"  x2="380" y2="92" marker-end="url(#arrow-l17)"/>
-      <line class="arch-arrow" x1="345" y1="128" x2="380" y2="104" marker-end="url(#arrow-l17)"/>
-      <text class="edge-label" x="438" y="138" text-anchor="middle">real or fake?</text>
+      <!-- Generator path: noise -> generator -> fake -->
+      <g class="fragment">
+        <rect class="box" x="20"  y="80" width="76" height="36"/>
+        <text class="box-label" x="58" y="103">noise z</text>
+        <line class="arch-arrow" x1="96"  y1="98" x2="130" y2="98" marker-end="url(#arrow-l17)"/>
+        <text class="edge-label" x="113" y="92" text-anchor="middle">z &#126; N(0, I)</text>
+        <rect class="box generator" x="130" y="80" width="100" height="36"/>
+        <text class="box-label" x="180" y="103">generator g</text>
+        <path class="arch-arrow" d="M 230 95 Q 250 95, 265 68" marker-end="url(#arrow-l17)" fill="none"/>
+        <rect class="box fake" x="265" y="50" width="80" height="36"/>
+        <text class="box-label" x="305" y="73">fake x</text>
+      </g>
+      <!-- Real path: real x box -->
+      <g class="fragment">
+        <rect class="box real" x="265" y="110" width="80" height="36"/>
+        <text class="box-label" x="305" y="133">real x</text>
+      </g>
+      <!-- Verdict: discriminator -->
+      <g class="fragment">
+        <line class="arch-arrow" x1="345" y1="68"  x2="380" y2="92" marker-end="url(#arrow-l17)"/>
+        <line class="arch-arrow" x1="345" y1="128" x2="380" y2="104" marker-end="url(#arrow-l17)"/>
+        <rect class="box discriminator" x="380" y="80" width="116" height="36"/>
+        <text class="box-label" x="438" y="103">discriminator d</text>
+        <text class="edge-label" x="438" y="138" text-anchor="middle">real or fake?</text>
+      </g>
     </svg>
   </div>
   <ul style="font-size: 0.82em; margin-top: 0.4em;">

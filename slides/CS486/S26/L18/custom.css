@@ -158,3 +158,61 @@
 }
 .reveal .examples-row .ex-card .mini-tree .leaf-yes { color: #166534; font-weight: 700; }
 .reveal .examples-row .ex-card .mini-tree .leaf-no  { color: #991b1b; font-weight: 700; }
+
+/* SVG mini-trees on slide 3. */
+.reveal .examples-row .ex-card .mini-svg {
+  display: block;
+  margin: 0.3em auto 0;
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  max-height: 160px;
+}
+.reveal .examples-row .mini-svg .q {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.5;
+}
+.reveal .examples-row .mini-svg .q-text {
+  font-size: 10px;
+  fill: #1e3a8a;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal .examples-row .mini-svg .edge {
+  stroke: #9ca3af;
+  stroke-width: 1.2;
+}
+.reveal .examples-row .mini-svg .edge-text {
+  font-size: 8px;
+  fill: #6b7280;
+  font-style: italic;
+}
+.reveal .examples-row .mini-svg .leaf {
+  stroke-width: 1.4;
+}
+.reveal .examples-row .mini-svg .leaf.yes  { fill: #dcfce7; stroke: #16a34a; }
+.reveal .examples-row .mini-svg .leaf.no   { fill: #fee2e2; stroke: #dc2626; }
+.reveal .examples-row .mini-svg .leaf.dog  { fill: #fef3c7; stroke: #92400e; }
+.reveal .examples-row .mini-svg .leaf.cat  { fill: #dbeafe; stroke: #1d4ed8; }
+.reveal .examples-row .mini-svg .leaf.fish { fill: #dcfce7; stroke: #16a34a; }
+.reveal .examples-row .mini-svg .leaf.cpp  { fill: #ede9fe; stroke: #7c3aed; }
+.reveal .examples-row .mini-svg .leaf.js   { fill: #fef3c7; stroke: #d97706; }
+.reveal .examples-row .mini-svg .leaf.py   { fill: #dbeafe; stroke: #1d4ed8; }
+.reveal .examples-row .mini-svg .leaf-text {
+  font-size: 10px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal .examples-row .mini-svg .leaf-text.yes  { fill: #166534; }
+.reveal .examples-row .mini-svg .leaf-text.no   { fill: #991b1b; }
+.reveal .examples-row .mini-svg .leaf-text.dog  { fill: #92400e; }
+.reveal .examples-row .mini-svg .leaf-text.cat  { fill: #1d4ed8; }
+.reveal .examples-row .mini-svg .leaf-text.fish { fill: #166534; }
+.reveal .examples-row .mini-svg .leaf-text.cpp  { fill: #5b21b6; }
+.reveal .examples-row .mini-svg .leaf-text.js   { fill: #92400e; }
+.reveal .examples-row .mini-svg .leaf-text.py   { fill: #1d4ed8; }

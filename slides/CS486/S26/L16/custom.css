@@ -1,5 +1,25 @@
 /* L16-specific styles on top of shared/custom.css, L10/custom.css. */
 
+/* Classification vs regression mini-visual (slide 7a). */
+.reveal .cr-svg {
+  display: block;
+  margin: 0.2em auto 0.3em;
+  width: 100%;
+  max-width: 240px;
+  height: auto;
+  max-height: 72px;
+}
+
+/* Tiny icon in task cards (slide 5). */
+.reveal .task-card .card-icon {
+  display: block;
+  margin: 0.2em auto 0.3em;
+  width: 100%;
+  max-width: 110px;
+  height: auto;
+  max-height: 56px;
+}
+
 /* Polynomial fit progression (slide 9). */
 .reveal .poly-fit { display: block; margin: 0.3em auto; max-height: 360px; }
 .reveal .poly-fit .axis { stroke: #6b7280; stroke-width: 1; }

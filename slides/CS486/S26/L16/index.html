@@ -24,6 +24,14 @@
 <div class="reveal">
 <div class="slides">
 
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <marker id="arrow-rl-l16" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#1f2937"/>
+    </marker>
+  </defs>
+</svg>
+
 <!-- 1. Title -->
 <section class="title-slide center-slide">
   <div class="course-title">CS 486/686<br>Introduction to Machine Learning</div>
@@ -132,16 +140,47 @@
   <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
     <div class="task-card">
       <h3>Supervised</h3>
+      <svg viewBox="0 0 110 56" xmlns="http://www.w3.org/2000/svg" class="card-icon" aria-hidden="true">
+        <text x="14" y="22" font-size="11" fill="#1d4ed8" font-weight="700">x&#8321;</text>
+        <text x="14" y="42" font-size="11" fill="#1d4ed8" font-weight="700">x&#8322;</text>
+        <text x="36" y="22" font-size="11" fill="#dc2626" font-weight="700">y&#8321;</text>
+        <text x="36" y="42" font-size="11" fill="#dc2626" font-weight="700">y&#8322;</text>
+        <path d="M 55 30 L 75 30" stroke="#1f2937" stroke-width="1.6" marker-end="url(#arrow-rl-l16)" fill="none"/>
+        <rect x="78" y="20" width="28" height="20" rx="3" fill="#dcfce7" stroke="#166534" stroke-width="1.4"/>
+        <text x="92" y="34" font-size="11" fill="#166534" text-anchor="middle" font-weight="700">h(x)</text>
+      </svg>
       <p>Given input + target features, predict targets for new inputs.</p>
       <p style="font-size: 0.78em; color: #6b7280;">Today's focus.</p>
     </div>
     <div class="task-card">
       <h3>Unsupervised</h3>
+      <svg viewBox="0 0 110 56" xmlns="http://www.w3.org/2000/svg" class="card-icon" aria-hidden="true">
+        <ellipse cx="32" cy="30" rx="22" ry="16" fill="none" stroke="#1d4ed8" stroke-width="1.2" stroke-dasharray="3 2"/>
+        <ellipse cx="80" cy="30" rx="20" ry="14" fill="none" stroke="#d97706" stroke-width="1.2" stroke-dasharray="3 2"/>
+        <circle cx="24" cy="24" r="2.2" fill="#1f2937"/>
+        <circle cx="34" cy="22" r="2.2" fill="#1f2937"/>
+        <circle cx="40" cy="34" r="2.2" fill="#1f2937"/>
+        <circle cx="28" cy="38" r="2.2" fill="#1f2937"/>
+        <circle cx="72" cy="26" r="2.2" fill="#1f2937"/>
+        <circle cx="84" cy="22" r="2.2" fill="#1f2937"/>
+        <circle cx="88" cy="36" r="2.2" fill="#1f2937"/>
+        <circle cx="76" cy="38" r="2.2" fill="#1f2937"/>
+      </svg>
       <p>No targets &mdash; find structure: clustering, dimensionality reduction.</p>
       <p style="font-size: 0.78em; color: #6b7280;">L17.</p>
     </div>
     <div class="task-card">
       <h3>Reinforcement</h3>
+      <svg viewBox="0 0 110 56" xmlns="http://www.w3.org/2000/svg" class="card-icon" aria-hidden="true">
+        <rect x="8"  y="18" width="34" height="22" rx="3" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
+        <text x="25" y="33" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">agent</text>
+        <rect x="68" y="18" width="34" height="22" rx="3" fill="#dcfce7" stroke="#166534" stroke-width="1.4"/>
+        <text x="85" y="33" font-size="10" fill="#166534" text-anchor="middle" font-weight="700">env</text>
+        <path d="M 42 24 L 68 24" stroke="#1f2937" stroke-width="1.4" marker-end="url(#arrow-rl-l16)" fill="none"/>
+        <text x="55" y="20" font-size="8" fill="#6b7280" text-anchor="middle">a</text>
+        <path d="M 68 36 C 60 50, 50 50, 42 36" stroke="#d97706" stroke-width="1.4" marker-end="url(#arrow-rl-l16)" fill="none"/>
+        <text x="55" y="52" font-size="8" fill="#92400e" text-anchor="middle" font-weight="700">r</text>
+      </svg>
       <p>Learn from rewards and punishments &mdash; what to <em>do</em>.</p>
       <p style="font-size: 0.78em; color: #6b7280;">L15.</p>
     </div>
@@ -175,30 +214,63 @@
   </div>
 </section>
 
-<!-- 7. Classification vs regression + Q3 + Q4 -->
+<!-- 7a. Classification vs regression (definitions) -->
 <section>
   <h2>Two flavors of supervised learning</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr; margin-bottom: 0.4em;">
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
     <div class="task-card">
       <h3>Classification</h3>
+      <svg viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" class="cr-svg" aria-hidden="true">
+        <line x1="20" y1="40" x2="200" y2="40" stroke="#9ca3af" stroke-width="1"/>
+        <circle cx="40"  cy="40" r="11" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="40"  y="44" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">dog</text>
+        <circle cx="110" cy="40" r="11" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="110" y="44" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">cat</text>
+        <circle cx="180" cy="40" r="11" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="180" y="44" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">bird</text>
+        <text x="110" y="64" font-size="10" fill="#6b7280" text-anchor="middle">discrete labels</text>
+      </svg>
       <p>Target features are <strong>discrete</strong> &mdash; e.g. dog vs cat.</p>
     </div>
     <div class="task-card">
       <h3>Regression</h3>
+      <svg viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" class="cr-svg" aria-hidden="true">
+        <line x1="20" y1="40" x2="200" y2="40" stroke="#16a34a" stroke-width="2.5"/>
+        <line x1="20" y1="34" x2="20" y2="46" stroke="#16a34a" stroke-width="1.5"/>
+        <line x1="200" y1="34" x2="200" y2="46" stroke="#16a34a" stroke-width="1.5"/>
+        <circle cx="135" cy="40" r="6" fill="#16a34a"/>
+        <text x="20"  y="26" font-size="10" fill="#166534" text-anchor="middle">-10&#176;C</text>
+        <text x="200" y="26" font-size="10" fill="#166534" text-anchor="middle">35&#176;C</text>
+        <text x="135" y="22" font-size="10" fill="#166534" text-anchor="middle" font-weight="700">17.3&#176;C</text>
+        <text x="110" y="64" font-size="10" fill="#6b7280" text-anchor="middle">continuous value</text>
+      </svg>
       <p>Target features are <strong>continuous</strong> &mdash; e.g. tomorrow's temperature.</p>
     </div>
   </div>
+</section>
+
+<!-- 7b. Q3 + Q4 quick check -->
+<section>
+  <h2>Quick check: classification or regression?</h2>
   <div class="two-col">
     <div style="flex: 1;">
-      <p class="quiz-q" style="font-size: 0.8em;"><strong>Q3.</strong> Historical weather labels (sunny/cloudy/rain/snow); predict next year's label.</p>
+      <p class="quiz-q"><strong>Q3.</strong> Historical weather labels (sunny / cloudy / rain / snow); predict next year's label for a given date.</p>
+      <ol class="quiz-options">
+        <li><strong>Classification</strong></li>
+        <li>Regression</li>
+      </ol>
       <div class="quiz-answer fragment">
-        <strong>A &mdash; Classification.</strong> Discrete target.
+        <strong>A &mdash; Classification.</strong> The target takes a discrete value from a fixed set.
       </div>
     </div>
     <div style="flex: 1;">
-      <p class="quiz-q" style="font-size: 0.8em;"><strong>Q4.</strong> Historical house prices over time; predict next month's price.</p>
+      <p class="quiz-q"><strong>Q4.</strong> Historical house prices over time; predict next month's price for a particular house.</p>
+      <ol class="quiz-options">
+        <li>Classification</li>
+        <li><strong>Regression</strong></li>
+      </ol>
       <div class="quiz-answer fragment">
-        <strong>B &mdash; Regression.</strong> Continuous target.
+        <strong>B &mdash; Regression.</strong> The target is a continuous real number.
       </div>
     </div>
   </div>
@@ -303,7 +375,7 @@
         <div class="col-header">low variance</div>
         <div class="col-header">high variance</div>
         <div class="row-header">low bias</div>
-        <div>
+        <div class="fragment">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
             <circle class="ring" cx="50" cy="50" r="45"/>
             <circle class="ring" cx="50" cy="50" r="30"/>
@@ -315,7 +387,7 @@
             <circle class="dart" cx="47" cy="50" r="2"/>
           </svg>
         </div>
-        <div>
+        <div class="fragment">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
             <circle class="ring" cx="50" cy="50" r="45"/>
             <circle class="ring" cx="50" cy="50" r="30"/>
@@ -328,7 +400,7 @@
           </svg>
         </div>
         <div class="row-header">high bias</div>
-        <div>
+        <div class="fragment">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
             <circle class="ring" cx="50" cy="50" r="45"/>
             <circle class="ring" cx="50" cy="50" r="30"/>
@@ -340,7 +412,7 @@
             <circle class="dart" cx="76" cy="23" r="2"/>
           </svg>
         </div>
-        <div>
+        <div class="fragment">
           <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
             <circle class="ring" cx="50" cy="50" r="45"/>
             <circle class="ring" cx="50" cy="50" r="30"/>
@@ -361,30 +433,33 @@
 <!-- 12. K-fold cross-validation -->
 <section>
   <h2>K-fold cross-validation</h2>
-  <p style="font-size: 0.88em;">How to pick a hypothesis that generalizes? Use a slice of training data as a <strong>surrogate test set</strong>.</p>
-<pre class="algo"><span class="kw">1.</span> Split training data into K equally sized folds.
-<span class="kw">2.</span> <span class="kw">for</span> i = 1, ..., K:
-       train on the other K - 1 folds.
-       evaluate on fold i (the held-out validation set).
-<span class="kw">3.</span> Average error over the K runs.</pre>
+  <p style="font-size: 0.84em; margin: 0.2em 0;">How to pick a hypothesis that generalizes? Use a slice of training data as a <strong>surrogate test set</strong>.</p>
+  <div class="algo-card" style="font-size: 0.9em;">
+    <div class="algo-title">k-fold-CV(model, dataset, \(K\))</div>
+    <ol>
+      <li>Split training data into \(K\) equally sized folds.</li>
+      <li>For \(i = 1, \ldots, K\): train on the other \(K - 1\) folds; evaluate on fold \(i\) (held-out validation).</li>
+      <li>Average error over the \(K\) runs.</li>
+    </ol>
+  </div>
   <div class="cv-folds">
-    <div class="row">
+    <div class="row fragment">
       <div class="row-label">i = 1</div>
       <div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div>
     </div>
-    <div class="row">
+    <div class="row fragment">
       <div class="row-label">i = 2</div>
       <div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div>
     </div>
-    <div class="row">
+    <div class="row fragment">
       <div class="row-label">i = 3</div>
       <div class="fold">train</div><div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div>
     </div>
-    <div class="row">
+    <div class="row fragment">
       <div class="row-label">i = 4</div>
       <div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div>
     </div>
-    <div class="row">
+    <div class="row fragment">
       <div class="row-label">i = 5</div>
       <div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold valid">val</div>
     </div>
@@ -393,7 +468,7 @@
       <span><span class="swatch valid"></span>validation fold</span>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.3em;">After CV: pick the best hyperparameters and (optionally) retrain on all data.</p>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.2em;">After CV: pick the best hyperparameters and (optionally) retrain on all data.</p>
 </section>
 
 <!-- 13. Overfitting chart + Q5 -->
@@ -413,12 +488,18 @@
         <text class="axis-label" x="365" y="225" text-anchor="end" style="fill:#1d4ed8; font-weight:700;">training</text>
         <path class="curve-valid" d="M 70 80 Q 130 200, 200 140 Q 280 95, 380 50"/>
         <text class="axis-label" x="365" y="58" text-anchor="end" style="fill:#dc2626; font-weight:700;">validation</text>
-        <circle class="marker" cx="115" cy="180" r="4"/>
-        <text class="marker-label" x="115" y="170" text-anchor="middle">underfit</text>
-        <circle class="marker" cx="200" cy="140" r="4"/>
-        <text class="marker-label" x="200" y="130" text-anchor="middle" style="fill:#166534;">best fit</text>
-        <circle class="marker" cx="330" cy="80" r="4"/>
-        <text class="marker-label" x="330" y="70" text-anchor="middle">overfit</text>
+        <g class="fragment">
+          <circle class="marker" cx="115" cy="180" r="4"/>
+          <text class="marker-label" x="115" y="170" text-anchor="middle">underfit</text>
+        </g>
+        <g class="fragment">
+          <circle class="marker" cx="200" cy="140" r="4"/>
+          <text class="marker-label" x="200" y="130" text-anchor="middle" style="fill:#166534;">best fit</text>
+        </g>
+        <g class="fragment">
+          <circle class="marker" cx="330" cy="80" r="4"/>
+          <text class="marker-label" x="330" y="70" text-anchor="middle">overfit</text>
+        </g>
       </svg>
     </div>
     <div style="flex: 0.9;">
