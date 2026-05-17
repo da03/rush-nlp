@@ -72,10 +72,11 @@
     <span class="step">GD</span><span class="arrow">&rarr;</span>
     <span class="step">SGD</span><span class="arrow">&rarr;</span>
     <span class="step">+ Momentum</span><span class="arrow">&rarr;</span>
-    <span class="step">+ Nesterov</span><span class="arrow">&rarr;</span>
-    <span class="step adv">AdaGrad</span><span class="arrow">&rarr;</span>
-    <span class="step adv">RMSProp</span><span class="arrow">&rarr;</span>
-    <span class="step adv">Adam</span>
+    <span class="step">+ Nesterov</span>
+    <span class="arrow fragment">&rarr;</span>
+    <span class="step adv fragment">AdaGrad</span><span class="arrow fragment">&rarr;</span>
+    <span class="step adv fragment">RMSProp</span><span class="arrow fragment">&rarr;</span>
+    <span class="step adv fragment">Adam</span>
   </div>
   <ul style="font-size: 0.82em; margin-top: 0.5em;">
     <li class="fragment"><strong>SGD:</strong> trade accuracy of gradient for speed of updates.</li>
@@ -124,8 +125,10 @@
         <circle class="marker-local" cx="260" cy="90" r="5"/>
         <circle class="marker-global" cx="190" cy="140" r="6"/>
         <text x="190" y="158" text-anchor="middle" fill="#15803d" font-size="10">global min</text>
-        <path class="path-no" d="M70,140 L80,135 L72,128 L82,122 L75,116 L84,110 L78,103 L88,98 L82,93 L102,92"/>
-        <text x="55" y="200" font-size="10" fill="#dc2626">oscillating + stuck</text>
+        <g class="fragment">
+          <path class="path-no" d="M70,140 L80,135 L72,128 L82,122 L75,116 L84,110 L78,103 L88,98 L82,93 L102,92"/>
+          <text x="55" y="200" font-size="10" fill="#dc2626">oscillating + stuck</text>
+        </g>
       </svg>
     </div>
     <div style="flex: 1; font-size: 0.85em;">
@@ -253,7 +256,7 @@
         <text x="110" y="170">isotropic (easy)</text>
       </svg>
     </div>
-    <div style="flex: 1; text-align: center;">
+    <div style="flex: 1; text-align: center;" class="fragment">
       <svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" class="contour-plot">
         <ellipse class="contour" cx="110" cy="90" rx="90" ry="14"/>
         <ellipse class="contour" cx="110" cy="90" rx="65" ry="10"/>
