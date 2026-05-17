@@ -388,7 +388,7 @@
         <li>Policy \(\pi : S \to A\); value \(V^\pi(s) = \mathbb{E}[\sum_t \gamma^t R(s_t) \mid \pi]\).</li>
       </ul>
     </div>
-    <div class="recall-card decision">
+    <div class="recall-card decision fragment">
       <h3>Bellman + the two algorithms</h3>
       <ul>
         <li><strong>Bellman optimality:</strong> \(V^*(s) = R(s) + \gamma \max_a \sum_{s'} P(s' \mid s, a)\, V^*(s')\).</li>
@@ -410,7 +410,7 @@
         <li><strong>Active ADP:</strong> also pick actions &mdash; balance exploration vs exploitation (\(\varepsilon\)-greedy, softmax, optimistic init).</li>
       </ul>
     </div>
-    <div class="recall-card decision">
+    <div class="recall-card decision fragment">
       <h3>Model-free updates</h3>
       <ul>
         <li><strong>Q-learning</strong> (off-policy): \(Q(s,a) \leftarrow Q(s,a) + \alpha\big[R + \gamma \max_{a'} Q(s', a') - Q(s,a)\big]\).</li>
@@ -434,7 +434,7 @@
         <li><strong>ERM:</strong> minimize empirical loss \(\frac{1}{N}\sum_i \ell(\hat y^{(i)}, y^{(i)})\).</li>
       </ul>
     </div>
-    <div class="recall-card learn">
+    <div class="recall-card learn fragment">
       <h3>Unsupervised</h3>
       <ul>
         <li><strong>k-means:</strong> alternate assign &harr; recompute centroids; pick \(k\) via elbow / silhouette.</li>
