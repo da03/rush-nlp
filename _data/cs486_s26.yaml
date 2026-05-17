@@ -1,0 +1,398 @@
+# Canonical source of truth for the CS 486/686 (Spring 2026) course page.
+# The Liquid template in cs486-introduction-to-artificial-intelligence-spring2026.html
+# and the calendar export at course-cs486-s26.ics both render from this file.
+#
+# Conventions:
+#   - module entries split the schedule into themed bands (rendered as section banner rows).
+#   - lecture entries map 1:1 to a deck under /slides/CS486/S26/L<num>/.
+#   - special_event entries are non-lecture in-class items rendered with a distinct row style.
+#   - no_class entries hold dates that are reserved on the calendar but have no instruction.
+#   - final_exam holds the registrar-set exam window.
+#   - deadlines is an inline list of badges shown in the Notes column.
+
+course:
+  code: "CS 486/686"
+  title: "Introduction to Artificial Intelligence"
+  term: "Spring 2026"
+  dates: "May 11, 2026 - Aug 5, 2026"
+  instructor:
+    name: "Yuntian Deng"
+    email: "yuntian@uwaterloo.ca"
+    url: "https://yuntiandeng.com/"
+  links:
+    piazza: "https://piazza.com/uwaterloo.ca/spring2026/cs486686"
+    chrysalis: "https://andromeda-208.cs.uwaterloo.ca"
+    learn: "https://learn.uwaterloo.ca/"
+  sections:
+    - id: "001"
+      label: "CS 486-001 / CS 686-001"
+      time: "TTh 1:00 PM - 2:20 PM"
+      room: "MC 4021"
+    - id: "002"
+      label: "CS 486-002 / CS 686-002"
+      time: "TTh 2:30 PM - 3:50 PM"
+      room: "MC 4021"
+  final_exam:
+    window: "Aug 7 - 20, 2026"
+    note: "Exact date set by Registrar (TBA)"
+
+# 7 TAs - rendered as a grid of staff cards.
+tas:
+  - name: "Liliana Hotsko"
+    email: "lhotsko@uwaterloo.ca"
+    role: "Piazza Management"
+  - name: "Bihui Jin"
+    email: "b27jin@uwaterloo.ca"
+  - name: "Larry Yinxi Li"
+    email: "y3395li@uwaterloo.ca"
+  - name: "Yuxuan Li"
+    email: "y624li@uwaterloo.ca"
+  - name: "Henry Lin"
+    email: "h293lin@uwaterloo.ca"
+  - name: "Hala Sheta"
+    email: "hsheta@uwaterloo.ca"
+  - name: "Dake Zhang"
+    email: "d346zhan@uwaterloo.ca"
+
+# Office hours - rendered as a 6-row <table>. Office hours start the week of May 18.
+office_hours_start: "Week of May 18"
+office_hours:
+  - day: "Monday"
+    time: "1:00 - 2:00 PM"
+    ta: "Larry Yinxi Li"
+    mode: "Zoom"
+    link: "https://uwaterloo.zoom.us/j/93611814134?pwd=WnHccgVF97b7e02XYvhpyQHlaimoZu.1"
+  - day: "Monday"
+    time: "2:00 - 3:00 PM"
+    ta: "Dake Zhang"
+    mode: "Zoom"
+    link: "https://uwaterloo.zoom.us/j/6586436343?pwd=cmV6NHhhSGx4L054R2QzVkIzUU5UZz09"
+  - day: "Monday"
+    time: "3:00 - 4:00 PM"
+    ta: "Yuxuan Li"
+    mode: "Zoom"
+    link: "https://uwaterloo.zoom.us/j/2376368802?pwd=LpG4bU4YHqaaOjk9v9FdbmD7BQaOTw.1"
+  - day: "Wednesday"
+    time: "1:00 - 2:00 PM"
+    ta: "Hala Sheta"
+    mode: "Zoom"
+    link: "https://uwaterloo.zoom.us/j/96262579733?pwd=miRk3XhmDayBDtfzndKOsSrOchieVA.1"
+  - day: "Thursday"
+    time: "10:00 - 11:00 AM"
+    ta: "Henry Lin"
+    mode: "Zoom"
+    link: "https://us04web.zoom.us/j/7934782144?pwd=9cOQxecD8bQDNkFpTVf6PG5Dy0aABo.1"
+  - day: "Friday"
+    time: "3:00 - 4:00 PM"
+    ta: "Bihui Jin"
+    mode: "In person"
+    location: "DC 2555"
+
+# 10 chat assignments with Chrysalis (2% each).
+chats:
+  - num: 1
+    out: 2026-05-14
+    due: 2026-05-26
+    note: "Deadline extended one-time (originally Tue May 19) so students still finalizing enrollment can participate."
+  - num: 2
+    out: 2026-05-21
+    due: 2026-05-26
+  - num: 3
+    out: 2026-05-28
+    due: 2026-06-02
+  - num: 4
+    out: 2026-06-04
+    due: 2026-06-09
+  - num: 5
+    out: 2026-06-11
+    due: 2026-06-16
+  - num: 6
+    out: 2026-06-18
+    due: 2026-06-23
+  - num: 7
+    out: 2026-06-25
+    due: 2026-06-30
+  - num: 8
+    out: 2026-07-02
+    due: 2026-07-07
+  - num: 9
+    out: 2026-07-09
+    due: 2026-07-14
+  - num: 10
+    out: 2026-07-16
+    due: 2026-07-21
+
+# Schedule entries are rendered in array order. Mix any number of types.
+#   type: module        - banner row spanning all columns, opens a new themed block.
+#   type: lecture       - lecture row; requires lecture_num + topic + slides.
+#   type: special_event - non-lecture in-class event; uses title + location.
+#   type: no_class      - reserved date with no instruction.
+#   type: final_exam    - exam window.
+schedule:
+  - type: module
+    label: "Search"
+
+  - type: lecture
+    date: 2026-05-12
+    lecture_num: 1
+    topic: "Introduction to Artificial Intelligence"
+    slides: /slides/CS486/S26/L1/
+
+  - type: lecture
+    date: 2026-05-14
+    lecture_num: 2
+    topic: "Uninformed Search"
+    slides: /slides/CS486/S26/L2/
+    deadlines:
+      - { kind: out,     chat: 1, label: "Chat 1 out" }
+
+  - type: lecture
+    date: 2026-05-19
+    lecture_num: 3
+    topic: "Heuristic Search"
+    slides: /slides/CS486/S26/L3/
+
+  - type: lecture
+    date: 2026-05-21
+    lecture_num: 4
+    topic: "Constraint Satisfaction Problems"
+    slides: /slides/CS486/S26/L4/
+    deadlines:
+      - { kind: out,     chat: 2, label: "Chat 2 out" }
+
+  - type: special_event
+    date: 2026-05-26
+    time: "10:00 - 11:30 AM"
+    location: "DC 1302"
+    title: "Distinguished Lecture by Prof. Kyunghyun Cho (NYU)"
+    url: "https://kyunghyuncho.me/"
+    note: "Highly recommended - co-inventor of attention (Bahdanau, Cho, Bengio, ICLR 2015) and the GRU."
+
+  - type: lecture
+    date: 2026-05-26
+    lecture_num: 5
+    topic: "Local Search"
+    slides: /slides/CS486/S26/L5/
+    deadlines:
+      - { kind: due,     chat: 1, label: "Chat 1 due (extended)" }
+      - { kind: due,     chat: 2, label: "Chat 2 due" }
+
+  - type: module
+    label: "Reasoning under Uncertainty"
+
+  - type: lecture
+    date: 2026-05-28
+    lecture_num: 6
+    topic: "Probabilities"
+    slides: /slides/CS486/S26/L6/
+    deadlines:
+      - { kind: out,     chat: 3, label: "Chat 3 out" }
+
+  - type: lecture
+    date: 2026-06-02
+    lecture_num: 7
+    topic: "Independence and Bayesian Networks I"
+    slides: /slides/CS486/S26/L7/
+    deadlines:
+      - { kind: due,     chat: 3, label: "Chat 3 due" }
+
+  - type: lecture
+    date: 2026-06-04
+    lecture_num: 8
+    topic: "Independence and Bayesian Networks II"
+    slides: /slides/CS486/S26/L8/
+    deadlines:
+      - { kind: out,     chat: 4, label: "Chat 4 out" }
+      - { kind: release, label: "Assignment 1 release" }
+
+  - type: lecture
+    date: 2026-06-09
+    lecture_num: 9
+    topic: "Variable Elimination Algorithm"
+    slides: /slides/CS486/S26/L9/
+    deadlines:
+      - { kind: due,     chat: 4, label: "Chat 4 due" }
+
+  - type: lecture
+    date: 2026-06-11
+    lecture_num: 10
+    topic: "Hidden Markov Models I"
+    slides: /slides/CS486/S26/L10/
+    deadlines:
+      - { kind: out,     chat: 5, label: "Chat 5 out" }
+
+  - type: lecture
+    date: 2026-06-16
+    lecture_num: 11
+    topic: "Hidden Markov Models II"
+    slides: /slides/CS486/S26/L11/
+    deadlines:
+      - { kind: due,     chat: 5, label: "Chat 5 due" }
+
+  - type: module
+    label: "Decision Making"
+
+  - type: lecture
+    date: 2026-06-18
+    lecture_num: 12
+    topic: "Decision Theory"
+    slides: /slides/CS486/S26/L12/
+    deadlines:
+      - { kind: out,     chat: 6, label: "Chat 6 out" }
+      - { kind: due,     label: "Assignment 1 due" }
+
+  - type: lecture
+    date: 2026-06-23
+    lecture_num: 13
+    topic: "Markov Decision Processes I"
+    slides: /slides/CS486/S26/L13/
+    deadlines:
+      - { kind: due,     chat: 6, label: "Chat 6 due" }
+
+  - type: lecture
+    date: 2026-06-25
+    lecture_num: 14
+    topic: "Value Iteration and Policy Iteration"
+    slides: /slides/CS486/S26/L14/
+    deadlines:
+      - { kind: out,     chat: 7, label: "Chat 7 out" }
+      - { kind: release, label: "Assignment 2 release" }
+
+  - type: lecture
+    date: 2026-06-30
+    lecture_num: 15
+    topic: "Reinforcement Learning"
+    slides: /slides/CS486/S26/L15/
+    deadlines:
+      - { kind: due,     chat: 7, label: "Chat 7 due" }
+
+  - type: module
+    label: "Machine Learning and Deep Learning"
+
+  - type: lecture
+    date: 2026-07-02
+    lecture_num: 16
+    topic: "Introduction to Machine Learning"
+    slides: /slides/CS486/S26/L16/
+    deadlines:
+      - { kind: out,     chat: 8, label: "Chat 8 out" }
+
+  - type: lecture
+    date: 2026-07-07
+    lecture_num: 17
+    topic: "Unsupervised Learning"
+    slides: /slides/CS486/S26/L17/
+    deadlines:
+      - { kind: due,     chat: 8, label: "Chat 8 due" }
+      - { kind: due,     label: "Project proposal due (CS686)" }
+
+  - type: lecture
+    date: 2026-07-09
+    lecture_num: 18
+    topic: "Decision Trees"
+    slides: /slides/CS486/S26/L18/
+    deadlines:
+      - { kind: out,     chat: 9, label: "Chat 9 out" }
+      - { kind: due,     label: "Assignment 2 due" }
+      - { kind: release, label: "Assignment 3 release" }
+
+  - type: lecture
+    date: 2026-07-14
+    lecture_num: 19
+    topic: "Neural Networks I"
+    slides: /slides/CS486/S26/L19/
+    deadlines:
+      - { kind: due,     chat: 9, label: "Chat 9 due" }
+
+  - type: lecture
+    date: 2026-07-16
+    lecture_num: 20
+    topic: "Neural Networks II"
+    slides: /slides/CS486/S26/L20/
+    deadlines:
+      - { kind: out,     chat: 10, label: "Chat 10 out" }
+
+  - type: lecture
+    date: 2026-07-21
+    lecture_num: 21
+    topic: "Neural Networks III"
+    slides: /slides/CS486/S26/L21/
+    deadlines:
+      - { kind: due,     chat: 10, label: "Chat 10 due" }
+
+  - type: lecture
+    date: 2026-07-23
+    lecture_num: 22
+    topic: "Course Recap"
+    slides: /slides/CS486/S26/L22/
+
+  - type: no_class
+    date: 2026-07-28
+    label: "No class (buffer / review)"
+
+  - type: no_class
+    date: 2026-07-30
+    label: "No class"
+
+  - type: no_class
+    date: 2026-08-04
+    label: "No class"
+    deadlines:
+      - { kind: due, label: "Assignment 3 due" }
+
+  - type: final_exam
+    window: "Aug 7 - 20"
+    note: "Final exam period (specific date set by Registrar). Final project report (CS686) due during this period (TBA)."
+
+# Announcements at the top of the page. Each gets a severity (info / warning / event).
+# Order matters: top to bottom. Mark with show:false to hide without deleting.
+announcements:
+  - severity: warning
+    show: true
+    title: "Chrysalis chat assignments - when do I stop?"
+    body: >-
+      Chrysalis may circle back and re-ask questions after you've gone through them all -
+      that's normal, and there is <strong>no fixed stopping point</strong>. Once you've
+      covered every question at least once, you can simply stop and close the tab.
+      Your chat is auto-saved, and the evaluator (which runs after the deadline)
+      checks coverage separately - so you do not need to keep chatting indefinitely.
+  - severity: warning
+    show: true
+    title: "Waitlisted students - permission numbers"
+    body: >-
+      I have forwarded all permission-number requests I've received to the CS Graduate
+      Office. You should hear back from them with a permission number during the
+      <strong>week of May 18</strong>. If you have not received one by
+      <strong>Friday, May 22</strong>, please email me at
+      <a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a>. In the meantime,
+      you're welcome to attend lectures and access course materials.
+
+# Assessment lines for the CS486 vs CS686 comparison cards.
+assessment:
+  cs486:
+    - { label: "Assignments (3, individually)",                   weight: "30%" }
+    - { label: "Chat assignments with Chrysalis (10, 2% each)",   weight: "20%" }
+    - { label: "Written final exam (must pass to pass the course)", weight: "50%" }
+    - { label: "Optional project",                                weight: "+10% bonus" }
+  cs686:
+    - { label: "Assignments (3, individually)",                   weight: "30%" }
+    - { label: "Project (individually or in groups of up to 3)",  weight: "30%" }
+    - { label: "Written final exam",                              weight: "40%" }
+
+# Reading list rendered as cards in the Readings section.
+readings:
+  primary:
+    title: "Artificial Intelligence: Foundations of Computational Agents"
+    authors: "David Poole and Alan Mackworth"
+    edition: "2nd edition, Cambridge University Press, 2017"
+    url: "https://artint.info/3e/html/ArtInt3e.html"
+    note: "Available online. The online resources and Python programs are recommended."
+  secondary:
+    - title: "Artificial Intelligence: A Modern Approach"
+      authors: "Russell and Norvig"
+    - title: "Deep Learning"
+      authors: "Ian Goodfellow, Yoshua Bengio, and Aaron Courville"
+      url: "https://www.deeplearningbook.org/"
+    - title: "Reinforcement Learning: An Introduction"
+      authors: "Richard Sutton and Andrew Barto"
+      url: "http://incompleteideas.net/book/the-book-2nd.html"
