@@ -77,6 +77,37 @@
   font-style: italic;
 }
 
+/* Mini d-separation pattern glyphs on the d-separation recap card (slide 8). */
+.reveal .recall-card .dsep-list li {
+  margin: 0.35em 0;
+  list-style: none;
+}
+.reveal .l22-dsep-glyph {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.5em;
+  width: 96px;
+  height: auto;
+  max-height: 38px;
+}
+.reveal .l22-dsep-glyph circle {
+  fill: #faf5ff;
+  stroke: #a855f7;
+  stroke-width: 1.2;
+}
+.reveal .l22-dsep-glyph text {
+  font-size: 9px;
+  fill: #6b21a8;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+.reveal .l22-dsep-glyph line {
+  stroke: #6b7280;
+  stroke-width: 1.2;
+  fill: none;
+}
+
 /* Mini Viterbi trellis SVG for the smoothing/Viterbi recap slide. */
 .reveal .mini-trellis {
   display: block;
