@@ -12,6 +12,8 @@
     --course-accent: #6d28d9;
     --course-warning: #d4a017;
     --course-warning-bg: #fff4d6;
+    --course-warning-text: #92400e;          // AA on --course-warning-bg
+    --course-on-brand: #ffffff;              // foreground that sits on --course-brand
     --course-event-bg: #eef2ff;
     --course-success: #15803d;
     --course-danger: #b91c1c;
@@ -25,24 +27,30 @@
     --course-radius: 8px;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --course-brand: #93c5fd;
-        --course-accent: #c4b5fd;
-        --course-warning: #fbbf24;
-        --course-warning-bg: rgba(212, 160, 23, 0.18);
-        --course-event-bg: rgba(99, 102, 241, 0.18);
-        --course-success: #86efac;
-        --course-danger: #fca5a5;
-        --course-surface-1: #0f172a;
-        --course-surface-2: #1e293b;
-        --course-border: #334155;
-        --course-text-strong: #f8fafc;
-        --course-text: #e2e8f0;
-        --course-text-muted: #94a3b8;
-        --course-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
-    }
+@mixin course-theme-dark {
+    --course-brand: #93c5fd;
+    --course-accent: #c4b5fd;
+    --course-warning: #fbbf24;
+    --course-warning-bg: rgba(212, 160, 23, 0.18);
+    --course-warning-text: #fde68a;          // AA on the dark warning bg
+    --course-on-brand: #0f172a;              // dark text on pastel-blue brand chip (AA)
+    --course-event-bg: rgba(99, 102, 241, 0.18);
+    --course-success: #86efac;
+    --course-danger: #fca5a5;
+    --course-surface-1: #0f172a;
+    --course-surface-2: #1e293b;
+    --course-border: #334155;
+    --course-text-strong: #f8fafc;
+    --course-text: #e2e8f0;
+    --course-text-muted: #94a3b8;
+    --course-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
+
+@media (prefers-color-scheme: dark) {
+    :root { @include course-theme-dark; }
+}
+
+:root[data-theme="dark"] { @include course-theme-dark; }
 
 /* Skip-link now lives globally in _layout.scss. */
 
