@@ -720,7 +720,7 @@
   <p style="font-size: 0.85em;">Suppose, for contradiction, A* returns a path of cost \(C^*\) but the true optimum is \(C' &lt; C^*\).</p>
   <div class="proof">
     <ol>
-      <li class="fragment">The optimal path must pass through some node \(N\) still on the frontier when A* halted (otherwise A* would have returned through \(N\)).</li>
+      <li class="fragment">The optimal path must pass through some node \(N\) still on the frontier when A* terminated (otherwise A* would have returned through \(N\)).</li>
       <li class="fragment">By admissibility, \(h(N) \le\) true cost from \(N\) to goal, so \(f(N) = g(N) + h(N) \le C'\).</li>
       <li class="fragment">Hence \(f(N) \le C' &lt; C^*\). A* would have popped \(N\) before the returned path. <span class="qed">Contradiction. \(\blacksquare\)</span></li>
     </ol>
@@ -1086,7 +1086,7 @@
         <th>Frontier key</th>
         <th>Space</th>
         <th>Time</th>
-        <th>Halts?</th>
+        <th>Complete?</th>
         <th>Optimal?</th>
       </tr>
     </thead>
