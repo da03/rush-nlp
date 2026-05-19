@@ -138,17 +138,13 @@
     gap: 6px;
     padding: 6px 12px;
     background: var(--course-warning-bg);
-    color: #854d0e;
+    color: var(--course-warning-text);
     border-radius: 999px;
     font-size: 13px;
     font-weight: 600;
     margin-top: 6px;
 
-    .label { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; opacity: 0.75; }
-}
-
-@media (prefers-color-scheme: dark) {
-    .course-hero__deadline { color: var(--course-warning); }
+    .label { text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; opacity: 0.85; }
 }
 
 /* ---------- Quick-link pill row ---------- */
@@ -183,12 +179,12 @@
 
         &--primary {
             background: var(--course-brand);
-            color: #fff;
+            color: var(--course-on-brand);
             border-color: var(--course-brand);
 
             &:hover {
                 background: var(--course-brand);
-                color: #fff;
+                color: var(--course-on-brand);
                 filter: brightness(1.05);
             }
         }
@@ -394,10 +390,10 @@
 
         td:first-child {
             font-weight: 600;
-            color: #854d0e;
+            color: var(--course-warning-text);
         }
 
-        a { color: #854d0e; text-decoration: underline; }
+        a { color: var(--course-warning-text); text-decoration: underline; }
     }
 
     .row--no-class {
@@ -600,7 +596,7 @@
             width: 30px;
             height: 30px;
             background: var(--course-brand);
-            color: #fff;
+            color: var(--course-on-brand);
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
