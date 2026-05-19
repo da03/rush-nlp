@@ -548,7 +548,7 @@
       <text class="stuck-badge" x="150" y="18" text-anchor="middle">S &harr; A &harr; S &harr; A &hellip;</text>
     </g>
   </svg>
-  <p class="footnote fragment" style="margin-top: 0.2em;">GBFS pops SA (h=1) before SB (h=10), then SAS (h=5), then SASA (h=1), &hellip; SB is always beaten by something with h=1 and never gets a chance to reach G.</p>
+  <p class="footnote fragment" style="margin-top: 0.2em;">Pop order: SA (h=1), SAS (h=5), SASA (h=1), &hellip; SB (h=10) is always outranked &mdash; G never reached.</p>
 </section>
 
 <!-- 14b. GBFS - not optimal -->
@@ -732,12 +732,12 @@
 <!-- 18b. Proof sketch -->
 <section>
   <h2>A* optimality &mdash; proof sketch</h2>
-  <p style="font-size: 0.85em;">Suppose, for contradiction, A* returns a path of cost \(C^*\) but the true optimum is \(C' &lt; C^*\).</p>
+  <p style="font-size: 0.85em; margin: 0;">Assume A* returns cost \(C^*\), but the true optimum is \(C' &lt; C^*\).</p>
   <div class="proof">
     <ol>
-      <li class="fragment">The optimal path must pass through some node \(N\) still on the frontier when A* terminated (otherwise A* would have returned through \(N\)).</li>
-      <li class="fragment">By admissibility, \(h(N) \le\) true cost from \(N\) to goal, so \(f(N) = g(N) + h(N) \le C'\).</li>
-      <li class="fragment">Hence \(f(N) \le C' &lt; C^*\). A* would have popped \(N\) before the returned path. <span class="qed">Contradiction. \(\blacksquare\)</span></li>
+      <li class="fragment">Some node \(N\) on the optimal path is still on the frontier at termination.</li>
+      <li class="fragment">Admissibility \(\Rightarrow f(N) = g(N) + h(N) \le C'\).</li>
+      <li class="fragment">So \(f(N) \le C' &lt; C^*\) &mdash; A* would have popped \(N\) first. <span class="qed">Contradiction. \(\blacksquare\)</span></li>
     </ol>
   </div>
 </section>
@@ -954,9 +954,9 @@
 <section class="center-slide">
   <h2>Caveats of multi-path pruning</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Paths to already-explored nodes still get pushed &mdash; just skipped when popped</li>
-    <li class="fragment">Saves time, spends memory (we keep the <code>explored</code> set)</li>
-    <li class="fragment">And&hellip; may sacrifice optimality (see next slides)</li>
+    <li class="fragment">Repeats still pushed &mdash; skipped on pop</li>
+    <li class="fragment">Trades memory (<code>explored</code> set) for time</li>
+    <li class="fragment">May sacrifice optimality (see next slides)</li>
   </ul>
 </section>
 
@@ -969,7 +969,7 @@
     <li>No, never</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>B &mdash; No.</strong> LCFS always pops the cheapest path first &mdash; so the first time a node is popped, the path through it is optimal. Pruning later paths to the same node is safe.
+    <strong>B &mdash; No.</strong> First pop of any node already has the smallest \(g\); later paths to it can only be costlier. Safe to prune.
   </div>
 </section>
 
@@ -982,7 +982,7 @@
     <li>No, never</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>A &mdash; Yes, it can.</strong> A* pops by \(f = g + h\), not by \(g\) alone. Once \(n\) is marked explored, a cheaper \(g(n)\) discovered later is discarded. Next slide: explicit counterexample.
+    <strong>A &mdash; Yes, it can.</strong> A* orders by \(f = g + h\), so the first pop of \(n\) need not have the smallest \(g\). A cheaper \(g(n)\) found later is then discarded. <em>Counterexample next.</em>
   </div>
 </section>
 
@@ -1080,23 +1080,33 @@
 <!-- 30a. Intuition (1/2): where A* can mis-prune -->
 <section>
   <h2>Where A* can mis-prune</h2>
-  <p style="font-size: 0.9em; margin: 0;">Why does <strong>LCFS</strong> need no extra condition for multi-path pruning, but <strong>A*</strong> does?</p>
-  <div class="proof" style="font-size: 0.88em;">
-    <p class="fragment" style="margin: 0.45em 0;"><strong>LCFS</strong> orders by \(g(n)\). The first time \(n\) is popped, no path on the frontier has a smaller \(g(n)\) &mdash; so marking \(n\) explored is automatically safe.</p>
-    <p class="fragment" style="margin: 0.45em 0;"><strong>A*</strong> orders by \(f(n) = g(n) + h(n)\). At node \(n\) itself, \(h(n)\) cancels across all paths ending at \(n\). The trouble is <em>before</em> we reach \(n\): comparing prefixes \(p\) and \(p'\) uses \(f(p) = g(p) + h(p)\) vs \(f(p') = g(p') + h(p')\) &mdash; <em>different</em> \(h\)-terms.</p>
-    <p class="fragment" style="margin: 0.45em 0;">If \(h(p) - h(p')\) is large enough to outweigh \(g(p') - g(p)\), A* pops the path with the <em>larger</em> \(g\) first &mdash; and commits \(n\) to that suboptimal prefix.</p>
+  <p style="font-size: 0.9em; margin: 0;">Why does <strong>LCFS</strong> need no extra condition, but <strong>A*</strong> does?</p>
+  <div class="proof" style="font-size: 0.9em;">
+    <p class="fragment" style="margin: 0.5em 0;"><strong>LCFS</strong> &mdash; sorts by \(g(n)\):</p>
+    <ul class="fragment" style="margin: 0 0 0.6em 1.5em;">
+      <li>first pop of \(n\) already has the smallest \(g(n)\) &mdash; safe.</li>
+    </ul>
+    <p class="fragment" style="margin: 0.5em 0;"><strong>A*</strong> &mdash; sorts by \(f = g + h\):</p>
+    <ul class="fragment" style="margin: 0 0 0.6em 1.5em;">
+      <li>\(h(n)\) cancels at \(n\), but differs across prefixes \(p, p'\);</li>
+      <li>a big \(h\)-gap can pop the larger-\(g\) path first &rarr; \(n\) committed to a worse prefix.</li>
+    </ul>
   </div>
 </section>
 
 <!-- 30b. Intuition (2/2): how consistency restores the guarantee -->
 <section>
   <h2>How consistency restores the guarantee</h2>
-  <p style="font-size: 0.9em; margin: 0;">Idea: stop the \(h\)-difference from flipping the \(g\)-comparison by bounding how fast \(h\) can change.</p>
-  <div class="proof" style="font-size: 0.88em;">
-    <p class="fragment" style="margin: 0.45em 0;">Require, along every edge \(p \to n\):</p>
-    <p class="fragment" style="text-align:center; font-size: 1.05em; padding: 0.4em; background:#eef2ff; border-left:4px solid #1d4ed8; font-weight: 600; margin: 0.4em 0;">\(h(p) - h(n) \le c(p, n)\) &nbsp;&hArr;&nbsp; \(h(p) \le c(p, n) + h(n)\)</p>
-    <p class="fragment" style="margin: 0.45em 0;">That's exactly <strong>consistency</strong>.</p>
-    <p class="fragment" style="margin: 0.45em 0;">Consequence: \(f\) is non-decreasing along every path. So the first pop of \(n\) carries the cheapest \(g\) &mdash; the LCFS guarantee, restored. <strong>Multi-path pruning is safe.</strong></p>
+  <p style="font-size: 0.9em; margin: 0;">Bound \(h\)-change along every edge \(p \to n\):</p>
+  <p class="fragment" style="text-align:center; font-size: 1.1em; padding: 0.45em; background:#eef2ff; border-left:4px solid #1d4ed8; font-weight: 600; margin: 0.5em auto; max-width: 70%;">\(h(p) - h(n) \le c(p, n)\) &nbsp;&hArr;&nbsp; \(h(p) \le c(p, n) + h(n)\)</p>
+  <p class="fragment" style="text-align:center; font-size: 0.95em; margin: 0.3em 0;">&mdash; that's exactly <strong>consistency</strong>.</p>
+  <div class="proof fragment" style="font-size: 0.9em; margin-top: 0.7em;">
+    <p style="margin: 0;"><strong>Chain of consequences:</strong></p>
+    <ul style="margin: 0.3em 0 0 1.5em;">
+      <li>\(f\) is non-decreasing along every path</li>
+      <li>first pop of \(n\) has the smallest \(g\) &mdash; LCFS guarantee, restored</li>
+      <li>&therefore;&nbsp;multi-path pruning is safe</li>
+    </ul>
   </div>
 </section>
 
