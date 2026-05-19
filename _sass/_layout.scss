@@ -36,6 +36,12 @@
     border-radius: 4px;
 }
 
+/* Skip-link target gets focus programmatically; don't outline the whole page. */
+main:focus,
+main:focus-visible {
+    outline: none;
+}
+
 /* Honour user motion preference - kill all transitions and translation hovers. */
 @media (prefers-reduced-motion: reduce) {
     *,
