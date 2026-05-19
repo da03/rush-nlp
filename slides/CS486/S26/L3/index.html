@@ -490,31 +490,24 @@
 <!-- 13c. Intuition (2/2): what guarantees follow -->
 <section>
   <h2>Intuition: what guarantees follow</h2>
-  <table class="props" style="font-size: 0.88em;">
+  <table class="props" style="font-size: 0.85em;">
     <thead>
       <tr><th style="width: 28%;"></th><th>LCFS</th><th>GBFS</th></tr>
     </thead>
     <tbody>
       <tr>
         <th>Complete?</th>
-        <td><span class="ok">Yes</span> &mdash; wavefront eventually reaches every state with finite cost.</td>
-        <td><span class="no">No</span> &mdash; low-\(h\) cycles can trap it forever.</td>
+        <td><span class="ok">Yes</span> &mdash; wavefront eventually reaches every reachable state.</td>
+        <td><span class="no">No</span> &mdash; low-\(h\) cycles can trap it.</td>
       </tr>
       <tr class="fragment">
         <th>Optimal?</th>
-        <td><span class="ok">Yes</span> &mdash; when the goal pops, every other path has \(g \ge\) this one.</td>
-        <td><span class="no">No</span> &mdash; \(h\) alone ignores cost-so-far, so a &ldquo;looks-close&rdquo; detour can win.</td>
-      </tr>
-      <tr class="fragment">
-        <th>Worst-case time / space</th>
-        <td>\(O(b^d)\) &mdash; expand everything cheaper than the goal.</td>
-        <td>\(O(b^m)\) &mdash; could chase the wrong direction to maximum depth.</td>
+        <td><span class="ok">Yes</span> &mdash; first pop of \(G\) has the smallest \(g\).</td>
+        <td><span class="no">No</span> &mdash; \(h\) alone can prefer a costly &ldquo;looks-close&rdquo; detour.</td>
       </tr>
     </tbody>
   </table>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.6em;">
-    <strong>Cost-so-far</strong> buys guarantees at the price of breadth; <strong>heuristic-only</strong> is fast when lucky and offers nothing in the worst case.
-  </p>
+  <p class="fragment footnote" style="margin-top: 0.6em;">Worst-case time / space: LCFS is \(O(b^d)\); GBFS is \(O(b^m)\).</p>
 </section>
 
 <!-- 14a. GBFS - not complete -->
