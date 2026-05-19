@@ -830,8 +830,12 @@
     <rect class="box-fill" x="160" y="30" width="100" height="60" rx="6"/>
     <text x="210" y="55" dominant-baseline="middle">B: adjacent</text>
     <text x="210" y="75" dominant-baseline="middle" font-style="italic" fill="#6b7280">+ empty</text>
-    <line class="strike" x1="172" y1="80" x2="252" y2="70"/>
-    <text class="relax-label" x="310" y="68" text-anchor="middle">drop me!</text>
+    <!-- First show the full constraint "adjacent + empty"; on click reveal
+         the strike + "drop me!" callout to motivate the relaxation. -->
+    <g class="fragment">
+      <line class="strike" x1="172" y1="80" x2="252" y2="70"/>
+      <text class="relax-label" x="310" y="68" text-anchor="middle">drop me!</text>
+    </g>
   </svg>
   <ol style="font-size: 0.9em; margin-top: 0.2em;">
     <li class="fragment"><span class="g-color">Relax</span> the problem by dropping constraints.</li>
@@ -1080,17 +1084,26 @@
   <p class="fragment" style="font-size: 0.78em; margin-top: 0.8em; color: #6b7280;">Most natural heuristics (Manhattan, straight-line distance, &hellip;) are consistent.</p>
 </section>
 
-<!-- 30. Intuition: why consistency makes pruning safe -->
+<!-- 30a. Intuition (1/2): where A* can mis-prune -->
 <section>
-  <h2>Intuition: why this condition?</h2>
-  <p style="font-size: 0.85em; margin: 0;">Why does <strong>LCFS</strong> never need extra conditions for multi-path pruning, but <strong>A*</strong> does?</p>
-  <div class="proof" style="font-size: 0.85em;">
-    <p class="fragment" style="margin: 0.3em 0;"><strong>LCFS</strong> orders by \(g(n)\) alone. The first time \(n\) is popped, no path in the frontier has smaller \(g(n)\). Marking \(n\) explored is automatically safe.</p>
-    <p class="fragment" style="margin: 0.3em 0;"><strong>A*</strong> orders by \(f(n) = g(n) + h(n)\). The \(h(n)\) term is the same for every path that ends at the same node \(n\), so once we are <em>at</em> \(n\) it cancels. The danger is along the way: comparing two prefixes \(\langle \ldots, p\rangle\) and \(\langle \ldots, p'\rangle\) before they reach \(n\), we use \(f(p) = g(p) + h(p)\) vs \(f(p') = g(p') + h(p')\) &mdash; <em>different</em> \(h\)-terms.</p>
-    <p class="fragment" style="margin: 0.3em 0;">If \(h(p) - h(p')\) is large enough, A* can pop the path with the <em>higher</em> \(g(p)\) first, then commit \(n\) to that suboptimal prefix.</p>
-    <p class="fragment" style="margin: 0.3em 0;">To stop the \(h\)-difference from flipping the \(g\)-comparison, restrict how fast \(h\) can change between neighbours. Along any single edge \(p \to n\), require:</p>
-    <p class="fragment" style="text-align:center; font-size: 1.05em; padding: 0.35em; background:#eef2ff; border-left:4px solid #1d4ed8; font-weight: 600;">\(h(p) - h(n) \le c(p, n)\) &nbsp;&nbsp;&hArr;&nbsp;&nbsp; \(h(p) \le c(p, n) + h(n)\)</p>
-    <p class="fragment" style="margin: 0.3em 0;">This is exactly <strong>consistency</strong>. It makes \(f\) non-decreasing along every path, so the first pop of \(n\) carries the cheapest \(g\) &mdash; the LCFS guarantee, restored. Multi-path pruning is then safe.</p>
+  <h2>Where A* can mis-prune</h2>
+  <p style="font-size: 0.9em; margin: 0;">Why does <strong>LCFS</strong> need no extra condition for multi-path pruning, but <strong>A*</strong> does?</p>
+  <div class="proof" style="font-size: 0.88em;">
+    <p class="fragment" style="margin: 0.45em 0;"><strong>LCFS</strong> orders by \(g(n)\). The first time \(n\) is popped, no path on the frontier has a smaller \(g(n)\) &mdash; so marking \(n\) explored is automatically safe.</p>
+    <p class="fragment" style="margin: 0.45em 0;"><strong>A*</strong> orders by \(f(n) = g(n) + h(n)\). At node \(n\) itself, \(h(n)\) cancels across all paths ending at \(n\). The trouble is <em>before</em> we reach \(n\): comparing prefixes \(p\) and \(p'\) uses \(f(p) = g(p) + h(p)\) vs \(f(p') = g(p') + h(p')\) &mdash; <em>different</em> \(h\)-terms.</p>
+    <p class="fragment" style="margin: 0.45em 0;">If \(h(p) - h(p')\) is large enough to outweigh \(g(p') - g(p)\), A* pops the path with the <em>larger</em> \(g\) first &mdash; and commits \(n\) to that suboptimal prefix.</p>
+  </div>
+</section>
+
+<!-- 30b. Intuition (2/2): how consistency restores the guarantee -->
+<section>
+  <h2>How consistency restores the guarantee</h2>
+  <p style="font-size: 0.9em; margin: 0;">Idea: stop the \(h\)-difference from flipping the \(g\)-comparison by bounding how fast \(h\) can change.</p>
+  <div class="proof" style="font-size: 0.88em;">
+    <p class="fragment" style="margin: 0.45em 0;">Require, along every edge \(p \to n\):</p>
+    <p class="fragment" style="text-align:center; font-size: 1.05em; padding: 0.4em; background:#eef2ff; border-left:4px solid #1d4ed8; font-weight: 600; margin: 0.4em 0;">\(h(p) - h(n) \le c(p, n)\) &nbsp;&hArr;&nbsp; \(h(p) \le c(p, n) + h(n)\)</p>
+    <p class="fragment" style="margin: 0.45em 0;">That's exactly <strong>consistency</strong>.</p>
+    <p class="fragment" style="margin: 0.45em 0;">Consequence: \(f\) is non-decreasing along every path. So the first pop of \(n\) carries the cheapest \(g\) &mdash; the LCFS guarantee, restored. <strong>Multi-path pruning is safe.</strong></p>
   </div>
 </section>
 
