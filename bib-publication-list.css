@@ -1,32 +1,178 @@
-span.undefined { color:red; }
-.bibtable {width:100%; margin: 0 auto; clear: both;}
-.bibchart { width: 100%; height: 100px; margin-bottom: 20px;}
-.clear {clear:both;}
-.year { position: relative; height: 100%; border-bottom: 1px solid black; display: inline-block;}
-.yearlabel { position: absolute; bottom: -20px; text-align: center; width: 100%; font-size: smaller;}
-.pub { border: 1px solid white; background-color: #eee; }
-.inproceedings { background-color: #ccf; }
-.article { background-color: #beb; }
-.inbook { background-color: #eaa; }
-.phdthesis { background-color: #999; }
-.unpublished { background-color: #eae; }
-.mastersthesis { background-color: #eea; }
-.techreport { background-color: #b77; }
-.legend .pub { width: 10px; height: 10px; display: inline-block; margin: 0 5px 0 15px;}
-.legend { margin-bottom: 20px; text-align: center; width: 100%;}
-table.display thead th { padding: 3px 18px 3px 10px; border-bottom: 1px solid black; border-top: 1px solid black; font-weight: bold; cursor: pointer; cursor: hand; }
-table.display tfoot th { padding: 3px 10px; border-top: 1px solid black; font-weight: bold; }
-table.display td { padding: 3px 10px; }
+/*
+ * Bib publication list - flows through CSS custom properties so the entries,
+ * legend, and modal flip with the global light/dark theme.
+ *
+ * Token expectations (declared in css/main.scss):
+ *   --bg / --bg-elevated / --bg-subtle
+ *   --fg / --fg-muted
+ *   --border / --border-strong
+ *   --shadow-md
+ *
+ * Local bib-specific tokens (overridden in dark below).
+ */
+
+:root {
+    --bib-pub-bg:           #e5e7eb;
+    --bib-inproceedings:    #c7d2fe;
+    --bib-article:          #bbf7d0;
+    --bib-inbook:           #fecaca;
+    --bib-phdthesis:        #d1d5db;
+    --bib-unpublished:      #f5d0fe;
+    --bib-mastersthesis:    #fef08a;
+    --bib-techreport:       #fca5a5;
+    --bib-row-odd:          #f3f4f6;
+    --bib-row-even:         #ffffff;
+    --bib-modal-bg:         #f9fafb;
+    --bib-shutter:          rgba(15, 23, 42, 0.65);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bib-pub-bg:        #374151;
+        --bib-inproceedings: #1e40af;
+        --bib-article:       #166534;
+        --bib-inbook:        #7f1d1d;
+        --bib-phdthesis:     #475569;
+        --bib-unpublished:   #6b21a8;
+        --bib-mastersthesis: #854d0e;
+        --bib-techreport:    #991b1b;
+        --bib-row-odd:       #1e293b;
+        --bib-row-even:      #0f172a;
+        --bib-modal-bg:      #1e293b;
+        --bib-shutter:       rgba(0, 0, 0, 0.75);
+    }
+}
+
+:root[data-theme="dark"] {
+    --bib-pub-bg:        #374151;
+    --bib-inproceedings: #1e40af;
+    --bib-article:       #166534;
+    --bib-inbook:        #7f1d1d;
+    --bib-phdthesis:     #475569;
+    --bib-unpublished:   #6b21a8;
+    --bib-mastersthesis: #854d0e;
+    --bib-techreport:    #991b1b;
+    --bib-row-odd:       #1e293b;
+    --bib-row-even:      #0f172a;
+    --bib-modal-bg:      #1e293b;
+    --bib-shutter:       rgba(0, 0, 0, 0.75);
+}
+
+span.undefined { color: var(--accent, #c2410c); }
+
+.bibtable { width: 100%; margin: 0 auto; clear: both; color: var(--fg); }
+.bibchart { width: 100%; height: 100px; margin-bottom: 20px; }
+.clear { clear: both; }
+
+.year {
+    position: relative;
+    height: 100%;
+    border-bottom: 1px solid var(--border);
+    display: inline-block;
+}
+.yearlabel {
+    position: absolute;
+    bottom: -20px;
+    text-align: center;
+    width: 100%;
+    font-size: smaller;
+    color: var(--fg-muted);
+}
+
+/* Publication-type swatches (legend) */
+.pub           { border: 1px solid var(--border); background-color: var(--bib-pub-bg); }
+.inproceedings { background-color: var(--bib-inproceedings); }
+.article       { background-color: var(--bib-article); }
+.inbook        { background-color: var(--bib-inbook); }
+.phdthesis     { background-color: var(--bib-phdthesis); }
+.unpublished   { background-color: var(--bib-unpublished); }
+.mastersthesis { background-color: var(--bib-mastersthesis); }
+.techreport    { background-color: var(--bib-techreport); }
+
+.legend .pub {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    margin: 0 5px 0 15px;
+}
+.legend {
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+    color: var(--fg);
+}
+
+table.display thead th {
+    padding: 3px 18px 3px 10px;
+    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--fg);
+}
+table.display tfoot th {
+    padding: 3px 10px;
+    border-top: 1px solid var(--border);
+    font-weight: bold;
+    color: var(--fg);
+}
+table.display td {
+    padding: 3px 10px;
+    color: var(--fg);
+}
 table.display td.center { text-align: center; }
-.sorting_asc { background: url('lib/images/sort_asc.png') no-repeat center right; }
-.sorting_desc { background: url('lib/images/sort_desc.png') no-repeat center right; }
-.sorting { background: url('lib/images/sort_both.png') no-repeat center right; }
-.sorting_asc_disabled { background: url('lib/images/sort_asc_disabled.png') no-repeat center right; }
+
+.sorting_asc           { background: url('lib/images/sort_asc.png') no-repeat center right; }
+.sorting_desc          { background: url('lib/images/sort_desc.png') no-repeat center right; }
+.sorting               { background: url('lib/images/sort_both.png') no-repeat center right; }
+.sorting_asc_disabled  { background: url('lib/images/sort_asc_disabled.png') no-repeat center right; }
 .sorting_desc_disabled { background: url('lib/images/sort_desc_disabled.png') no-repeat center right; }
-tr.odd { background-color: #eee; }
-tr.even { background-color: white; }
-div.hidden { display: none;}
-div.bibinfo { width: 80%; position: fixed; top: 100px; left: 10%; background-color: #bbb; border: 3px solid #fff; padding: 10px; -moz-border-radius:10px; -webkit-border-radius:10px; -o-border-radius:10px; border-radius:10px; z-index: 50;}
-#shutter { background-color: #555; opacity: 0.7; width:100%; height: 100%; position: fixed; top: 0; left:0; z-index: 20;}
-a.bibclose { background-color: #BBBBBB; border: 3px solid #FFFFFF; color: black; float: left; font-size: 20px; height: 20px; left: -25px; line-height: 20px; padding: 3px; position: relative; text-align: center; text-decoration: none; top: -25px; width: 20px; -moz-border-radius:15px; -webkit-border-radius:15px; -o-border-radius:15px; border-radius:15px; }
-div.bibinfo pre { clear:both; }
+
+tr.odd  { background-color: var(--bib-row-odd); }
+tr.even { background-color: var(--bib-row-even); }
+
+div.hidden { display: none; }
+
+div.bibinfo {
+    width: 80%;
+    position: fixed;
+    top: 100px;
+    left: 10%;
+    background-color: var(--bib-modal-bg);
+    color: var(--fg);
+    border: 3px solid var(--border);
+    padding: 14px;
+    border-radius: 10px;
+    z-index: 50;
+    box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.2));
+}
+
+#shutter {
+    background-color: var(--bib-shutter);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+}
+
+a.bibclose {
+    background-color: var(--bib-modal-bg);
+    border: 3px solid var(--border);
+    color: var(--fg);
+    float: left;
+    font-size: 20px;
+    height: 22px;
+    left: -25px;
+    line-height: 22px;
+    padding: 3px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    top: -25px;
+    width: 22px;
+    border-radius: 15px;
+}
+
+div.bibinfo pre { clear: both; }
