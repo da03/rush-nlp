@@ -457,39 +457,83 @@
   </table>
 </section>
 
+<!-- 13b. Intuition: why these properties? -->
+<section>
+  <h2>Why those properties? An intuition</h2>
+  <table class="props" style="font-size: 0.85em;">
+    <thead>
+      <tr><th style="width: 28%;"></th><th>LCFS</th><th>GBFS</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Frontier sorted by</th>
+        <td><span class="g-color">g(n)</span> &mdash; cost so far</td>
+        <td><span class="h-color">h(n)</span> &mdash; estimated cost to goal</td>
+      </tr>
+      <tr class="fragment">
+        <th>Like which uninformed search?</th>
+        <td><strong>BFS with weights.</strong> When every edge costs 1, LCFS = BFS exactly.</td>
+        <td><strong>DFS guided by h.</strong> Chases one direction aggressively.</td>
+      </tr>
+      <tr class="fragment">
+        <th>Complete?</th>
+        <td><span class="ok">Yes</span> &mdash; cheapest paths form a wavefront that grows outward by cost. Every reachable state eventually pops.</td>
+        <td><span class="no">No</span> &mdash; low-h cycles can trap it. The heuristic gives no penalty for "going in circles."</td>
+      </tr>
+      <tr class="fragment">
+        <th>Optimal?</th>
+        <td><span class="ok">Yes</span> &mdash; when the goal is popped, every other path has \(g \ge\) this one. So this path is cheapest.</td>
+        <td><span class="no">No</span> &mdash; \(h\) alone ignores cost-so-far, so a "looks-close" detour can beat the cheapest path.</td>
+      </tr>
+      <tr class="fragment">
+        <th>Worst-case time / space</th>
+        <td>\(O(b^d)\) &mdash; in the worst case every path with cost \(<\) goal's cost must be expanded.</td>
+        <td>\(O(b^m)\) &mdash; could chase the wrong direction all the way to maximum depth.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">
+    Bottom line: <strong>cost-so-far</strong> gives guarantees but searches broadly; <strong>heuristic-only</strong> is faster when lucky but offers nothing in the worst case.
+  </p>
+</section>
+
 <!-- 14a. GBFS - not complete -->
 <section>
   <h2>GBFS &mdash; not complete</h2>
-  <p style="font-size: 0.85em; text-align:center; color:#6b7280; margin: 0;">A misleading heuristic can send GBFS into a dead-end.</p>
+  <p style="font-size: 0.85em; text-align:center; color:#6b7280; margin: 0;">A low-\(h\) cycle can trap GBFS forever &mdash; it never explores the path that actually reaches G.</p>
   <svg viewBox="0 0 540 280" xmlns="http://www.w3.org/2000/svg" class="gbfs-fail-svg">
     <defs>
       <marker id="arrow-f14a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4b5563"/></marker>
       <marker id="arrow-f14a-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
     </defs>
-    <line class="edge" x1="80" y1="135" x2="218" y2="80"  marker-end="url(#arrow-f14a)"/>
-    <line class="edge" x1="80" y1="155" x2="218" y2="210" marker-end="url(#arrow-f14a)"/>
+    <!-- S -> A (forward edge) -->
+    <path class="edge" d="M 78 138 Q 150 105 218 76" fill="none" marker-end="url(#arrow-f14a)"/>
+    <!-- A -> S (back edge, curved under) -->
+    <path class="edge" d="M 220 86 Q 150 145 78 152" fill="none" marker-end="url(#arrow-f14a)"/>
+    <!-- S -> B -->
+    <line class="edge" x1="80" y1="160" x2="218" y2="210" marker-end="url(#arrow-f14a)"/>
+    <!-- B -> G -->
     <line class="edge" x1="262" y1="210" x2="398" y2="210" marker-end="url(#arrow-f14a)"/>
-    <text class="cost-label" x="140" y="100">1</text>
-    <text class="cost-label" x="140" y="195">1</text>
+    <text class="cost-label" x="125" y="105">1</text>
+    <text class="cost-label" x="170" y="143">1</text>
+    <text class="cost-label" x="140" y="200">1</text>
     <text class="cost-label" x="330" y="200">1</text>
     <g class="node start"><circle cx="60"  cy="145" r="20"/><text x="60"  y="145" fill="#1e3a8a">S</text></g>
     <g class="node">      <circle cx="240" cy="70"  r="20"/><text x="240" y="70">A</text></g>
     <g class="node">      <circle cx="240" cy="220" r="20"/><text x="240" y="220">B</text></g>
     <g class="node goal"> <circle cx="420" cy="220" r="20"/><text x="420" y="220" fill="#991b1b">G</text></g>
-    <text class="h-label" x="60"  y="180" text-anchor="middle">h=12</text>
-    <text class="h-label" x="240" y="40"  text-anchor="middle">h=2  (looks close!)</text>
+    <text class="h-label" x="60"  y="180" text-anchor="middle">h=5</text>
+    <text class="h-label" x="240" y="40"  text-anchor="middle">h=1  (looks close!)</text>
     <text class="h-label" x="240" y="252" text-anchor="middle">h=10</text>
     <text class="h-label" x="420" y="252" text-anchor="middle">h=0</text>
     <g class="fragment">
-      <line class="edge-greedy" x1="80" y1="135" x2="218" y2="80" marker-end="url(#arrow-f14a-red)"/>
-      <g class="stuck-x" transform="translate(266, 50)">
-        <line x1="0" y1="0" x2="22" y2="22"/>
-        <line x1="22" y1="0" x2="0" y2="22"/>
-      </g>
-      <text class="stuck-badge" x="320" y="65">dead end &mdash; stuck</text>
+      <!-- Highlight the S<->A cycle in red -->
+      <path class="edge-greedy" d="M 78 138 Q 150 105 218 76" fill="none" marker-end="url(#arrow-f14a-red)"/>
+      <path class="edge-greedy" d="M 220 86 Q 150 145 78 152" fill="none" marker-end="url(#arrow-f14a-red)"/>
+      <text class="stuck-badge" x="148" y="40">S &harr; A &harr; S &harr; A &hellip;</text>
     </g>
   </svg>
-  <p class="footnote fragment" style="margin-top: 0.2em;">GBFS picks A first (lowest \(h\)), but A has no outgoing edges. It never reaches G.</p>
+  <p class="footnote fragment" style="margin-top: 0.2em;">GBFS pops SA (h=1) before SB (h=10), then SAS (h=5), then SASA (h=1), &hellip; SB is always beaten by something with h=1 and never gets a chance to reach G.</p>
 </section>
 
 <!-- 14b. GBFS - not optimal -->
@@ -508,7 +552,7 @@
     <line class="edge" x1="238" y1="220" x2="338" y2="220" marker-end="url(#arrow-f14b)"/>
     <line class="edge" x1="378" y1="210" x2="478" y2="155" marker-end="url(#arrow-f14b)"/>
     <text class="cost-label" x="160" y="95">1</text>
-    <text class="cost-label" x="295" y="125">20</text>
+    <text class="cost-label" x="388" y="93">20</text>
     <text class="cost-label" x="140" y="195">3</text>
     <text class="cost-label" x="288" y="245">4</text>
     <text class="cost-label" x="438" y="200">4</text>
@@ -687,17 +731,6 @@
 <section class="center-slide">
   <h2>A* is optimally efficient</h2>
   <p style="font-size: 1em; margin: 0.4em 0;">No other optimal algorithm using the same \(h\) expands fewer nodes.</p>
-  <svg class="f-contour" viewBox="0 0 360 220" xmlns="http://www.w3.org/2000/svg">
-    <ellipse class="ring-outer" cx="180" cy="110" rx="170" ry="100"/>
-    <ellipse class="ring-mid"   cx="180" cy="110" rx="115" ry="68"/>
-    <ellipse class="ring-inner" cx="180" cy="110" rx="55"  ry="34"/>
-    <circle cx="180" cy="110" r="9" fill="#dc2626"/>
-    <text x="180" y="113" text-anchor="middle" font-size="9" font-weight="bold" fill="#fff">G</text>
-    <text x="180" y="148" text-anchor="middle" font-size="11" font-weight="600" fill="#991b1b">f &lt; C*  (must expand)</text>
-    <text x="180" y="183" text-anchor="middle" font-size="11" font-weight="600" fill="#92400e">f = C*  (some expanded)</text>
-    <text x="180" y="208" text-anchor="middle" font-size="11" font-weight="600" fill="#374151">f &gt; C*  (skipped)</text>
-  </svg>
-  <p class="footnote">A* expands exactly the inner two regions &mdash; the minimum any optimal algorithm with this \(h\) must touch.</p>
 </section>
 
 <!-- ============================================================
@@ -851,7 +884,6 @@
         <line x1="70" y1="135" x2="165" y2="135" marker-end="url(#cyc-arrow)"/>
         <line x1="180" y1="120" x2="125" y2="55" marker-end="url(#cyc-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
       </g>
-      <line class="strike" x1="125" y1="55" x2="180" y2="125"/>
       <g font-size="16" font-weight="600" text-anchor="middle" dominant-baseline="middle">
         <circle cx="120" cy="36" r="20" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="120" y="40" fill="#1e3a8a">A</text>
         <circle cx="45"  cy="135" r="20" fill="#fff" stroke="#111827" stroke-width="2"/><text x="45"  y="139">B</text>
@@ -888,7 +920,6 @@
         <line x1="165" y1="32" x2="215" y2="68" marker-end="url(#mp-arrow)"/>
         <line x1="165" y1="118" x2="215" y2="82" marker-end="url(#mp-arrow)" stroke="#dc2626" stroke-dasharray="5 3"/>
       </g>
-      <line class="strike" x1="50" y1="100" x2="175" y2="130"/>
       <g font-size="16" font-weight="600" text-anchor="middle" dominant-baseline="middle">
         <circle cx="35"  cy="75"  r="18" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="35"  y="79" fill="#1e3a8a">S</text>
         <circle cx="150" cy="25"  r="18" fill="#fff" stroke="#111827" stroke-width="2"/><text x="150" y="29">p</text>
@@ -954,9 +985,6 @@
       <span class="frontier-step fragment current-visible" data-fragment-index="3">pop SBE &rarr; Frontier: (SC:21, SD:22, SBEG:25) &nbsp; Explored: {S, B, E}</span>
       <span class="frontier-step fragment current-visible" data-fragment-index="4">pop SC &rarr; Frontier: (SCE:7, SD:22, SBEG:25) &nbsp; Explored: {S, B, E, C}</span>
       <span class="frontier-step fragment current-visible" data-fragment-index="5"><span style="color:#dc2626;">pop SCE &rarr; E already explored &rarr; SKIP (the optimal path is lost here!)</span></span>
-      <span class="frontier-step fragment current-visible" data-fragment-index="6">pop SD &rarr; Frontier: (SDE:8, SBEG:25) &nbsp; Explored: {S, B, E, C, D}</span>
-      <span class="frontier-step fragment current-visible" data-fragment-index="7">pop SDE &rarr; E already explored &rarr; SKIP</span>
-      <span class="frontier-step fragment current-visible" data-fragment-index="8"><strong>pop SBEG &mdash; goal returned with cost 25 (suboptimal!)</strong></span>
     </div>
     <svg viewBox="0 0 650 400" xmlns="http://www.w3.org/2000/svg" class="heuristic-graph" style="max-height: 380px;">
       <defs>
@@ -1006,25 +1034,7 @@
       <g class="fragment" data-fragment-index="5">
         <line x1="238" y1="92" x2="382" y2="190" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/>
         <line x1="302" y1="153" x2="318" y2="129" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/>
-        <text x="350" y="118" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">SKIP</text>
-      </g>
-      <!-- F6: pop SD, push SDE -->
-      <g class="fragment" data-fragment-index="6">
-        <text class="step-number" x="242" y="310">5</text>
-        <line class="edge" x1="238" y1="308" x2="382" y2="210" marker-end="url(#arrow-mp)"/>
-        <text class="cost-label" x="290" y="280" text-anchor="middle">4</text>
-      </g>
-      <!-- F7: pop SDE = skip. Red strike across D-E edge. -->
-      <g class="fragment" data-fragment-index="7">
-        <line x1="238" y1="308" x2="382" y2="210" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/>
-        <line x1="302" y1="247" x2="318" y2="271" stroke="#dc2626" stroke-width="3.5" stroke-linecap="round"/>
-        <text x="350" y="280" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">SKIP</text>
-      </g>
-      <!-- F8: pop SBEG, goal (but suboptimal) -->
-      <g class="fragment" data-fragment-index="8">
-        <text class="step-number" x="592" y="190" fill="#dc2626">6</text>
-        <circle cx="570" cy="200" r="18" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
-        <text x="570" y="200" font-size="15" font-weight="600" text-anchor="middle" dominant-baseline="middle" fill="#991b1b">G</text>
+        <text x="350" y="118" font-size="12" font-weight="bold" fill="#dc2626" text-anchor="middle">SKIP &mdash; optimal lost</text>
       </g>
     </svg>
   </div>
@@ -1034,61 +1044,7 @@
      Consistency (2 slides)
      ============================================================ -->
 
-<!-- 29a. Setup: two parents reach n -->
-<section>
-  <h2>Setup: two paths reach \(n\)</h2>
-  <svg class="two-parent-viz" viewBox="0 0 500 240" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <marker id="par-tip" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1d4ed8"/></marker>
-      <marker id="par-tip-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
-    </defs>
-    <!-- preferred path: S -> p -> n (popped first because lower f) -->
-    <line class="preferred" x1="78" y1="60" x2="178" y2="60" marker-end="url(#par-tip)"/>
-    <line class="preferred" x1="222" y1="60" x2="322" y2="118" marker-end="url(#par-tip)"/>
-    <!-- discarded path: S -> p' -> n (popped second, then pruned) -->
-    <line class="discarded" x1="78" y1="180" x2="178" y2="180" marker-end="url(#par-tip-red)"/>
-    <line class="discarded" x1="222" y1="180" x2="322" y2="122" marker-end="url(#par-tip-red)"/>
-    <!-- nodes -->
-    <g font-size="16" font-weight="600" text-anchor="middle" dominant-baseline="middle">
-      <circle cx="50"  cy="120" r="22" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="50" y="125" fill="#1e3a8a">S</text>
-      <circle cx="200" cy="60"  r="22" fill="#fff" stroke="#1d4ed8" stroke-width="2"/><text x="200" y="65" fill="#1e3a8a">p</text>
-      <circle cx="200" cy="180" r="22" fill="#fff" stroke="#dc2626" stroke-width="2"/><text x="200" y="185" fill="#991b1b">p'</text>
-      <circle cx="350" cy="120" r="22" fill="#fff" stroke="#111827" stroke-width="2"/><text x="350" y="125">n</text>
-    </g>
-    <text x="130" y="50" font-size="12" font-weight="600" fill="#1d4ed8">lower f &mdash; popped first</text>
-    <text x="130" y="208" font-size="12" font-weight="600" fill="#dc2626">cheaper g &mdash; but popped later</text>
-    <text x="430" y="125" font-size="11" fill="#6b7280" font-style="italic">explored</text>
-  </svg>
-  <p style="font-size: 0.85em;">A* pops the path through <span class="g-color">p</span> first (lower \(f\)) and marks \(n\) explored. The path through <span style="color:#dc2626; font-weight:600;">p'</span> with cheaper actual cost \(g\) gets discarded by multi-path pruning. When can this make A* sub-optimal?</p>
-</section>
-
-<!-- 29b. Build the inequality from pop order -->
-<section>
-  <h2>Step 1: what the pop order gives us</h2>
-  <p style="font-size: 0.85em;">A* popped \(\langle\ldots, p, n\rangle\) <em>before</em> \(\langle\ldots, p', n\rangle\), so it has lower \(f\):</p>
-  <div class="proof">
-    <ol>
-      <li class="fragment">\(f(\langle\ldots,p,n\rangle) \le f(\langle\ldots,p',n\rangle)\)</li>
-      <li class="fragment">Expand: \(g(p) + c(p,n) + h(n) \le g(p') + c(p',n) + h(n)\)</li>
-      <li class="fragment">Cancel \(h(n)\): \(g(p) + c(p,n) \le g(p') + c(p',n)\) &nbsp; <span class="meta">(*)</span></li>
-    </ol>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; text-align:center; color: #6b7280;">In words: the path through \(p\) reaches \(n\) at least as cheaply &mdash; according to the \(f\)-ranking.</p>
-</section>
-
-<!-- 29c. Where the heuristic must violate -->
-<section>
-  <h2>Step 2: where the heuristic violates</h2>
-  <p style="font-size: 0.85em;">For pruning to actually lose the optimal, the path through \(p'\) would need a cheaper actual cost:</p>
-  <div class="proof">
-    <p class="fragment">\(g(p') + c(p',n) &lt; g(p) + c(p,n)\) &nbsp; <span class="meta">(**)</span></p>
-    <p class="fragment">(*) and (**) together imply \(g(p) &lt; g(p')\), yet \(p\) gave a smaller \(f\). The only way: \(h(p) &gt; h(p')\) by more than the edge difference. For some edge \(p \to n\):</p>
-    <p class="fragment" style="text-align:center; font-size: 1.15em; padding: 0.4em; background:#fef2f2; border-left:4px solid #dc2626; font-weight: 600;">\(h(p) - h(n) &gt; c(p, n)\)</p>
-    <p class="fragment">i.e. the heuristic <em>drops too fast</em> across an edge. <span class="qed">Forbid that and pruning is safe.</span></p>
-  </div>
-</section>
-
-<!-- 30. Consistent heuristic -->
+<!-- 29. Consistent heuristic -->
 <section class="center-slide">
   <h2>Consistent (monotone) heuristic</h2>
   <div class="theorem">
@@ -1100,6 +1056,20 @@
     <strong>Theorem.</strong> If \(h\) is consistent, A* with multi-path pruning is <strong>optimal</strong>.
   </div>
   <p class="fragment" style="font-size: 0.78em; margin-top: 0.8em; color: #6b7280;">Most natural heuristics (Manhattan, straight-line distance, &hellip;) are consistent.</p>
+</section>
+
+<!-- 30. Intuition: why consistency makes pruning safe -->
+<section>
+  <h2>Intuition: why this condition?</h2>
+  <p style="font-size: 0.85em; margin: 0;">Why does <strong>LCFS</strong> never need extra conditions for multi-path pruning, but <strong>A*</strong> does?</p>
+  <div class="proof" style="font-size: 0.85em;">
+    <p class="fragment" style="margin: 0.3em 0;"><strong>LCFS</strong> orders by \(g(n)\) alone. The first time \(n\) is popped, no path in the frontier has smaller \(g(n)\). Marking \(n\) explored is automatically safe.</p>
+    <p class="fragment" style="margin: 0.3em 0;"><strong>A*</strong> orders by \(f(n) = g(n) + h(n)\). The \(h(n)\) term is the same for every path that ends at the same node \(n\), so once we are <em>at</em> \(n\) it cancels. The danger is along the way: comparing two prefixes \(\langle \ldots, p\rangle\) and \(\langle \ldots, p'\rangle\) before they reach \(n\), we use \(f(p) = g(p) + h(p)\) vs \(f(p') = g(p') + h(p')\) &mdash; <em>different</em> \(h\)-terms.</p>
+    <p class="fragment" style="margin: 0.3em 0;">If \(h(p) - h(p')\) is large enough, A* can pop the path with the <em>higher</em> \(g(p)\) first, then commit \(n\) to that suboptimal prefix.</p>
+    <p class="fragment" style="margin: 0.3em 0;">To stop the \(h\)-difference from flipping the \(g\)-comparison, restrict how fast \(h\) can change between neighbours. Along any single edge \(p \to n\), require:</p>
+    <p class="fragment" style="text-align:center; font-size: 1.05em; padding: 0.35em; background:#eef2ff; border-left:4px solid #1d4ed8; font-weight: 600;">\(h(p) - h(n) \le c(p, n)\) &nbsp;&nbsp;&hArr;&nbsp;&nbsp; \(h(p) \le c(p, n) + h(n)\)</p>
+    <p class="fragment" style="margin: 0.3em 0;">This is exactly <strong>consistency</strong>. It makes \(f\) non-decreasing along every path, so the first pop of \(n\) carries the cheapest \(g\) &mdash; the LCFS guarantee, restored. Multi-path pruning is then safe.</p>
+  </div>
 </section>
 
 <!-- ============================================================

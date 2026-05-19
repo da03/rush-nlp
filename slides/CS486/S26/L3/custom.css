@@ -1,5 +1,26 @@
 /* L3-specific styles on top of shared/custom.css. */
 
+/* "Five search algorithms" summary table (slide 31): widen the
+   Frontier-key and Optimal? columns so "LIFO (stack)", "g(n)+h(n)" and
+   "Yes  unit cost", "Yes  admissible h" don't wrap to a second line. */
+.reveal table.compare {
+  width: 92%;
+  table-layout: fixed;
+}
+.reveal table.compare th:nth-child(1),
+.reveal table.compare td:nth-child(1) { width: 11%; }
+.reveal table.compare th:nth-child(2),
+.reveal table.compare td:nth-child(2) { width: 22%; }
+.reveal table.compare th:nth-child(3),
+.reveal table.compare td:nth-child(3) { width: 12%; }
+.reveal table.compare th:nth-child(4),
+.reveal table.compare td:nth-child(4) { width: 12%; }
+.reveal table.compare th:nth-child(5),
+.reveal table.compare td:nth-child(5) { width: 18%; }
+.reveal table.compare th:nth-child(6),
+.reveal table.compare td:nth-child(6) { width: 25%; }
+
+
 /* Heuristic-search graph: SVG with edge costs (blue) and h(n) labels (green). */
 /* Default fill/stroke for any node circle/text that doesn't override inline.
    S (light blue) and G (light red) set fill explicitly and are excluded by
@@ -17,14 +38,15 @@
   font-weight: 600;
   fill: #1d4ed8;
 }
-/* Visit-order labels next to each node (1, 2, 3 ...). Amber/italic to
-   visually separate from the blue edge-cost numerals. The final "popped
-   goal" step gets fill="#dc2626" inline, which overrides this. */
+/* Visit-order labels next to each node (1, 2, 3 ...). Black + italic
+   keeps them visually distinct from the blue edge-cost numerals.
+   The final "popped goal" step gets fill="#dc2626" inline (red), which
+   overrides this. */
 .reveal .heuristic-graph .step-number {
   font-size: 11px;
   font-weight: 700;
   font-style: italic;
-  fill: #b45309;
+  fill: #111827;
 }
 .reveal .heuristic-graph .h-label {
   font-size: 11px;
