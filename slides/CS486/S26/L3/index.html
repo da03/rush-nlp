@@ -457,10 +457,10 @@
   </table>
 </section>
 
-<!-- 13b. Intuition: why these properties? -->
+<!-- 13b. Intuition (1/2): what each algorithm prioritises -->
 <section>
-  <h2>Why those properties? An intuition</h2>
-  <table class="props" style="font-size: 0.85em;">
+  <h2>Intuition: what each algorithm prioritises</h2>
+  <table class="props" style="font-size: 0.88em;">
     <thead>
       <tr><th style="width: 28%;"></th><th>LCFS</th><th>GBFS</th></tr>
     </thead>
@@ -471,29 +471,49 @@
         <td><span class="h-color">h(n)</span> &mdash; estimated cost to goal</td>
       </tr>
       <tr class="fragment">
-        <th>Like which uninformed search?</th>
+        <th>Closest uninformed cousin</th>
         <td><strong>BFS with weights.</strong> When every edge costs 1, LCFS = BFS exactly.</td>
         <td><strong>DFS guided by h.</strong> Chases one direction aggressively.</td>
       </tr>
       <tr class="fragment">
-        <th>Complete?</th>
-        <td><span class="ok">Yes</span> &mdash; cheapest paths form a wavefront that grows outward by cost. Every reachable state eventually pops.</td>
-        <td><span class="no">No</span> &mdash; low-h cycles can trap it. The heuristic gives no penalty for "going in circles."</td>
-      </tr>
-      <tr class="fragment">
-        <th>Optimal?</th>
-        <td><span class="ok">Yes</span> &mdash; when the goal is popped, every other path has \(g \ge\) this one. So this path is cheapest.</td>
-        <td><span class="no">No</span> &mdash; \(h\) alone ignores cost-so-far, so a "looks-close" detour can beat the cheapest path.</td>
-      </tr>
-      <tr class="fragment">
-        <th>Worst-case time / space</th>
-        <td>\(O(b^d)\) &mdash; in the worst case every path with cost \(<\) goal's cost must be expanded.</td>
-        <td>\(O(b^m)\) &mdash; could chase the wrong direction all the way to maximum depth.</td>
+        <th>Search shape</th>
+        <td>A cost-wavefront that grows <em>outward</em> from the start.</td>
+        <td>A narrow probe that dives toward whatever <em>looks</em> closest.</td>
       </tr>
     </tbody>
   </table>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">
-    Bottom line: <strong>cost-so-far</strong> gives guarantees but searches broadly; <strong>heuristic-only</strong> is faster when lucky but offers nothing in the worst case.
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.6em;">
+    Keep these two pictures in mind &mdash; the guarantees on the next slide follow directly from them.
+  </p>
+</section>
+
+<!-- 13c. Intuition (2/2): what guarantees follow -->
+<section>
+  <h2>Intuition: what guarantees follow</h2>
+  <table class="props" style="font-size: 0.88em;">
+    <thead>
+      <tr><th style="width: 28%;"></th><th>LCFS</th><th>GBFS</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Complete?</th>
+        <td><span class="ok">Yes</span> &mdash; wavefront eventually reaches every state with finite cost.</td>
+        <td><span class="no">No</span> &mdash; low-\(h\) cycles can trap it forever.</td>
+      </tr>
+      <tr class="fragment">
+        <th>Optimal?</th>
+        <td><span class="ok">Yes</span> &mdash; when the goal pops, every other path has \(g \ge\) this one.</td>
+        <td><span class="no">No</span> &mdash; \(h\) alone ignores cost-so-far, so a &ldquo;looks-close&rdquo; detour can win.</td>
+      </tr>
+      <tr class="fragment">
+        <th>Worst-case time / space</th>
+        <td>\(O(b^d)\) &mdash; expand everything cheaper than the goal.</td>
+        <td>\(O(b^m)\) &mdash; could chase the wrong direction to maximum depth.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.6em;">
+    <strong>Cost-so-far</strong> buys guarantees at the price of breadth; <strong>heuristic-only</strong> is fast when lucky and offers nothing in the worst case.
   </p>
 </section>
 
