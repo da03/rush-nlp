@@ -3,10 +3,9 @@
 ---
 @charset "utf-8";
 
-
-
-
-// Our variables
+// ===========================================================================
+// Typography & layout
+// ===========================================================================
 $base-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $base-font-size:   16px;
 $base-font-weight: 400;
@@ -15,38 +14,118 @@ $base-line-height: 1.5;
 
 $spacing-unit:     30px;
 
-$text-color:       #111;
-$background-color: #fdfdfd;
-$brand-color:      #00008b;
+// ===========================================================================
+// SCSS color "variables" point at CSS custom properties below.
+// This way the cascade is the single source of truth: light + dark + an
+// explicit [data-theme] override all flow through the same selectors, and the
+// existing _base.scss / _layout.scss references continue to work unchanged.
+// Do NOT call lighten()/darken() on these - use dedicated tokens instead.
+// ===========================================================================
+$text-color:       var(--fg);
+$background-color: var(--bg);
+$brand-color:      var(--brand);
 
-$grey-color:       #828282;
-$grey-color-light: lighten($grey-color, 40%);
-$grey-color-dark:  darken($grey-color, 25%);
+$grey-color:       var(--fg-muted);
+$grey-color-light: var(--border);
+$grey-color-dark:  var(--fg-muted);
 
-// Width of the content area
+// Content + breakpoints
 $content-width:    900px;
 
-$on-palm:          700px;
-$on-laptop:        900px;
+// Unified breakpoint system (Phase 3 also exposes these on :root as --bp-*).
+$bp-sm:            600px;
+$bp-md:            900px;
+$bp-lg:            1200px;
 
+// Backwards-compat aliases so existing media-query() includes keep working.
+$on-palm:          $bp-sm;
+$on-laptop:        $bp-md;
 
-
-// Use media queries like this:
-// @include media-query($on-palm) {
-//     .wrapper {
-//         padding-right: $spacing-unit / 2;
-//         padding-left: $spacing-unit / 2;
-//     }
-// }
 @mixin media-query($device) {
     @media screen and (max-width: $device) {
         @content;
     }
 }
 
+// ===========================================================================
+// Color tokens - LIGHT (default)
+// ===========================================================================
+:root {
+    color-scheme: light dark;
 
+    // Surfaces
+    --bg:                #fdfdfd;
+    --bg-elevated:       #ffffff;
+    --bg-subtle:         #f9fafb;
+    --bg-code:           #f3f4f6;
+    --bg-code-inline:    #eef2ff;
 
+    // Foregrounds (AA-compliant against --bg)
+    --fg:                #111111;
+    --fg-strong:         #000000;
+    --fg-muted:          #4b5563; // 7.3:1 on #fdfdfd (was #828282 / 2.8:1, failed AA)
+    --fg-on-brand:       #ffffff;
+
+    // Accents
+    --brand:             #00008b;
+    --brand-hover:       #1e3a8a;
+    --accent:            #c2410c; // accessible replacement for literal `darkorange`
+
+    // Borders & shadows
+    --border:            #e5e7eb;
+    --border-strong:     #9ca3af;
+    --shadow-sm:         0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+    --shadow-md:         0 2px 8px rgba(15, 23, 42, 0.12);
+
+    // Focus ring (global, used by :focus-visible in Phase 2)
+    --focus-ring:        #1d4ed8;
+    --focus-ring-offset: var(--bg);
+}
+
+// ===========================================================================
+// Color tokens - DARK (system preference)
+// Mirrored to [data-theme="dark"] so the explicit toggle (Phase 2) wins.
+// ===========================================================================
+@mixin theme-dark {
+    --bg:                #0f172a;
+    --bg-elevated:       #1e293b;
+    --bg-subtle:         #1e293b;
+    --bg-code:           #1e293b;
+    --bg-code-inline:    #1e293b;
+
+    --fg:                #e2e8f0;
+    --fg-strong:         #f8fafc;
+    --fg-muted:          #94a3b8;
+    --fg-on-brand:       #0f172a;
+
+    --brand:             #93c5fd;
+    --brand-hover:       #bfdbfe;
+    --accent:            #fb923c;
+
+    --border:            #334155;
+    --border-strong:     #475569;
+    --shadow-sm:         0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md:         0 4px 12px rgba(0, 0, 0, 0.5);
+
+    --focus-ring:        #93c5fd;
+    --focus-ring-offset: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root { @include theme-dark; }
+}
+
+// Explicit toggle - wins over system preference (Phase 2 sets data-theme).
+:root[data-theme="dark"] { @include theme-dark; }
+
+// Allow users to force light even on a dark OS.
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+// ===========================================================================
 // Import partials from `sass_dir` (defaults to `_sass`)
+// ===========================================================================
 @import
         "base",
         "layout",
