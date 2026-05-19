@@ -154,12 +154,13 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 7px 14px;
+        min-height: 44px;            // WCAG 2.5.5 tap target
+        padding: 0 18px;
         border: 1px solid var(--course-border);
         background: var(--course-surface-1);
         color: var(--course-text-strong);
         border-radius: 999px;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
         text-decoration: none;
         transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
@@ -252,10 +253,12 @@
     li { margin: 0; }
 
     a {
-        display: inline-block;
-        padding: 6px 12px;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;            // close to WCAG 2.5.5 (compact ToC chip)
+        padding: 0 14px;
         border-radius: 999px;
-        font-size: 13px;
+        font-size: 14px;
         color: var(--course-text);
         text-decoration: none;
 
@@ -311,9 +314,13 @@
     }
 
     a {
-        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        min-height: 40px;            // close to WCAG 2.5.5 for inline mailto
+        font-size: 14px;
         color: var(--course-brand);
         text-decoration: none;
+        word-break: break-word;      // long email addresses on narrow viewports
 
         &:hover { text-decoration: underline; }
     }
@@ -423,9 +430,12 @@
     }
 }
 
-/* Mobile: collapse the schedule table into card rows. */
+/* Mobile: collapse any .course-table into per-row card stacks.
+   Each <td> must carry a data-label="..." attribute; the schedule, office-hours,
+   and chat tables all already do. .schedule-table inherits via @extend, then
+   adds its own row-class tweaks below. */
 @media (max-width: #{$bp-sm}) {
-    .schedule-table {
+    .course-table {
         thead { display: none; }
 
         tbody, tr, td, th { display: block; }
@@ -435,7 +445,10 @@
             border-radius: 6px;
             margin-bottom: 8px;
             padding: 8px 10px;
+            background: var(--course-surface-1);
         }
+
+        tbody tr:hover { background: var(--course-surface-1); }
 
         td {
             border-bottom: none;
@@ -444,7 +457,7 @@
             &::before {
                 content: attr(data-label);
                 display: inline-block;
-                width: 64px;
+                width: 88px;
                 font-weight: 600;
                 color: var(--course-text-muted);
                 font-size: 12px;
@@ -452,7 +465,9 @@
                 letter-spacing: 0.04em;
             }
         }
+    }
 
+    .schedule-table {
         .row--module th, .row--final-exam td { padding: 8px 10px; }
         .row--module th::before, .row--final-exam td::before { content: none; }
     }
@@ -479,6 +494,10 @@
     white-space: nowrap;
 
     &--slides {
+        // Clickable badge: bump padding so the touch target is comfortable
+        // while still reading visually as a chip inside a table cell.
+        padding: 6px 12px;
+        font-size: 12px;
         background: var(--course-event-bg);
         color: var(--course-brand);
         border-color: var(--course-brand);

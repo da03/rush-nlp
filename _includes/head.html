@@ -62,20 +62,34 @@
   {% endif %}
 
   <style>
+        /* News-list inline icon: keep visual at ~15px but expand the tap area
+           via padding so it satisfies WCAG 2.5.5 (44x44) on touch. */
         .twitter-link {
-            display: inline;
-            height: 15px;
-            width: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: -3px;
         }
 
         .twitter-link a {
-            height: 15px;
-            width: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            margin: -10px -10px -10px -4px;
+            padding: 0;
+            border-radius: 6px;
         }
+
+        .twitter-link a:hover {
+            background: var(--bg-subtle, #f3f4f6);
+        }
+
         .twitter-link img {
-            display: inline;
-            height: 15px;
-            width: 15px;
+            display: block;
+            height: 16px;
+            width: 16px;
         }
     </style>
     <script type="application/ld+json">

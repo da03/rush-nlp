@@ -80,6 +80,12 @@ $on-laptop:        $bp-md;
     // Focus ring (global, used by :focus-visible in Phase 2)
     --focus-ring:        #1d4ed8;
     --focus-ring-offset: var(--bg);
+
+    // Fluid type scale (rem-based so it respects user browser font-size).
+    --step-0:            clamp(0.9375rem, 0.88rem + 0.18vw, 1rem);       // body
+    --step-1:            clamp(1rem,      0.94rem + 0.22vw, 1.125rem);   // h3 / post-content h4
+    --step-2:            clamp(1.25rem,   1.13rem + 0.4vw,  1.5rem);     // h2
+    --step-3:            clamp(1.5rem,    1.25rem + 1vw,    2rem);       // post-title / h1
 }
 
 // ===========================================================================
