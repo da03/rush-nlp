@@ -550,7 +550,9 @@
       <!-- Highlight the S<->A cycle in red -->
       <path class="edge-greedy" d="M 78 138 Q 150 105 218 76" fill="none" marker-end="url(#arrow-f14a-red)"/>
       <path class="edge-greedy" d="M 220 86 Q 150 145 78 152" fill="none" marker-end="url(#arrow-f14a-red)"/>
-      <text class="stuck-badge" x="148" y="40">S &harr; A &harr; S &harr; A &hellip;</text>
+      <!-- Place badge at top-center, above the h-label band so it doesn't
+           collide with "h=1 (looks close!)" at y=40. -->
+      <text class="stuck-badge" x="150" y="18" text-anchor="middle">S &harr; A &harr; S &harr; A &hellip;</text>
     </g>
   </svg>
   <p class="footnote fragment" style="margin-top: 0.2em;">GBFS pops SA (h=1) before SB (h=10), then SAS (h=5), then SASA (h=1), &hellip; SB is always beaten by something with h=1 and never gets a chance to reach G.</p>
