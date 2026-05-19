@@ -1,10 +1,30 @@
 /* L3-specific styles on top of shared/custom.css. */
 
 /* Heuristic-search graph: SVG with edge costs (blue) and h(n) labels (green). */
+/* Default fill/stroke for any node circle/text that doesn't override inline.
+   S (light blue) and G (light red) set fill explicitly and are excluded by
+   :not([fill]); everything else gets a white-filled circle with dark text. */
+.reveal .heuristic-graph .node circle:not([fill]) {
+  fill: #ffffff;
+  stroke: #111827;
+  stroke-width: 2;
+}
+.reveal .heuristic-graph .node text:not([fill]) {
+  fill: #111827;
+}
 .reveal .heuristic-graph .cost-label {
   font-size: 12px;
   font-weight: 600;
   fill: #1d4ed8;
+}
+/* Visit-order labels next to each node (1, 2, 3 ...). Amber/italic to
+   visually separate from the blue edge-cost numerals. The final "popped
+   goal" step gets fill="#dc2626" inline, which overrides this. */
+.reveal .heuristic-graph .step-number {
+  font-size: 11px;
+  font-weight: 700;
+  font-style: italic;
+  fill: #b45309;
 }
 .reveal .heuristic-graph .h-label {
   font-size: 11px;
@@ -122,7 +142,7 @@
 /* g/h/f path visual on slide 4 - thick colored segments. */
 .reveal .gh-path { display: block; margin: 0 auto 0.4em auto; max-height: 120px; }
 .reveal .gh-path .g-arc  { stroke: #1d4ed8; stroke-width: 7; fill: none; stroke-linecap: round; }
-.reveal .gh-path .h-arc  { stroke: #16a34a; stroke-width: 7; fill: none; stroke-linecap: round; }
+.reveal .gh-path .h-arc  { stroke: #16a34a; stroke-width: 7; fill: none; stroke-linecap: butt; stroke-dasharray: 14 10; }
 .reveal .gh-path .brace  { stroke: #dc2626; stroke-width: 1.5; fill: none; }
 .reveal .gh-path text    { font-size: 13px; font-weight: 600; }
 
