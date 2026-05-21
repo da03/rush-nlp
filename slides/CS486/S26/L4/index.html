@@ -392,19 +392,13 @@ A=1, B=1, C=1, D=1, E=2   <span class="cmt"># fail</span>
   </p>
   <div class="algo-card">
     <div class="algo-title">backtrack(assignment, csp)</div>
-    <ol class="algo-steps">
-      <li>If <code>assignment</code> is complete &rarr; <strong>return</strong> <code>assignment</code>. <span class="step-note">base case</span></li>
-      <li><code>var</code> &larr; an unassigned variable. <span class="step-note">choose next variable</span></li>
-      <li>For each <code>value</code> in <code>domain(var)</code>:
-        <ol type="a">
-          <li>If <code>{var = value}</code> violates some constraint &rarr; skip this value.</li>
-          <li>Add <code>{var = value}</code> to <code>assignment</code>.</li>
-          <li><code>result</code> &larr; <strong>backtrack(<code>assignment</code>, csp)</strong> <span class="step-note recursive">&larr; recursive call: solve the smaller subproblem</span></li>
-          <li>If <code>result</code> &ne; <code>failure</code> &rarr; <strong>return</strong> <code>result</code>.</li>
-          <li>Remove <code>{var = value}</code> from <code>assignment</code>. <span class="step-note">undo &mdash; the choice didn't pan out</span></li>
-        </ol>
-      </li>
-      <li><strong>Return</strong> <code>failure</code>. <span class="step-note">no value for <code>var</code> works in this branch</span></li>
+    <ol>
+      <li>If <code>assignment</code> is complete &rarr; <strong>return</strong> it.</li>
+      <li>Pick an unassigned variable <code>var</code>.</li>
+      <li>For each <code>value</code> in <code>domain(var)</code> that satisfies every constraint:</li>
+      <li>&nbsp;&nbsp;&nbsp;Add <code>{var = value}</code> and go deeper; if a solution is found, return it.</li>
+      <li>&nbsp;&nbsp;&nbsp;Otherwise undo and try the next value.</li>
+      <li>If no value worked &rarr; <strong>return</strong> <code>failure</code>.</li>
     </ol>
   </div>
 </section>
