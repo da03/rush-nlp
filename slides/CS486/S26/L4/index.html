@@ -176,7 +176,6 @@
   <p style="font-size: 0.9em;">Enumerate every assignment, test if it satisfies the constraints.</p>
   <pre class="algo" style="margin: 0.6em auto;">A=1, B=1, C=1, D=1, E=1   <span class="cmt"># fail</span>
 A=1, B=1, C=1, D=1, E=2   <span class="cmt"># fail</span>
-A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
 &hellip;</pre>
   <p class="fragment" style="text-align: center; font-size: 1.05em; margin-top: 0.8em;">5 variables, domain size 4: &nbsp; \(4^5 = 1024\) assignments. Doesn't scale.</p>
   <p class="fragment" style="text-align:center; font-size: 0.85em; color:#6b7280;">And it's wasteful: many constraints can be checked on <em>partial</em> assignments.</p>
@@ -260,8 +259,12 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
   <p style="text-align: center; font-size: 0.95em; margin-top: 0.6em;">
     \(\forall i \ne j: \quad (x_i \ne x_j) \;\land\; (|x_i - x_j| \ne |i - j|)\)
   </p>
-  <p class="fragment" style="font-size: 0.85em; color:#6b7280; margin-top: 1em;">Example for columns 0 and 1: &nbsp;\((x_0 \ne x_1) \;\land\; (|x_0 - x_1| \ne 1)\).</p>
-  <p class="fragment" style="font-size: 0.85em; color:#6b7280;">No <em>column</em> constraint needed &mdash; our variables already encode "one queen per column".</p>
+  <p class="fragment" style="text-align: center; font-size: 0.85em; color:#6b7280; margin-top: 0.6em;">
+    Columns 0, 1: &nbsp;\((x_0 \ne x_1) \;\land\; (|x_0 - x_1| \ne 1)\).
+  </p>
+  <p class="fragment" style="font-size: 0.85em; margin-top: 1em; padding: 0.5em 0.8em; background:#f9fafb; border-left: 3px solid #6b7280;">
+    No <em>column</em> constraint needed &mdash; our variables already encode &ldquo;one queen per column&rdquo;.
+  </p>
 </section>
 
 <!-- 12. Quiz: which constraints do we need? -->
@@ -340,25 +343,40 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
     <li class="fragment"><strong>State:</strong> one queen per column in the leftmost \(k\) columns, no pair attacking each other.</li>
     <li class="fragment"><strong>Initial state:</strong> empty board <code>_ _ _ _</code>.</li>
     <li class="fragment"><strong>Goal state:</strong> 4 queens placed, no pair attacking. e.g. <code>1 3 0 2</code>.</li>
-    <li class="fragment"><strong>Successor:</strong> place a queen in the leftmost empty column that no current queen attacks. e.g. <code>0 _ _ _</code> &rarr; <code>0 2 _ _</code>, <code>0 3 _ _</code>.</li>
+    <li class="fragment"><strong>Successor:</strong> place a queen in the leftmost empty column that no current queen attacks.</li>
+    <li class="fragment" style="list-style: none; font-size: 0.9em; color:#6b7280; margin-left: 0.4em;">
+      e.g. <code>0 _ _ _</code> &rarr; <code>0 2 _ _</code>, <code>0 3 _ _</code>.
+    </li>
+    <li class="fragment csp-bridge" style="list-style: none;">
+      Any search algorithm works on this state space. <strong>Backtracking = DFS</strong> + one rule: skip any partial assignment that already violates a constraint.
+    </li>
   </ul>
 </section>
 
 <!-- 13. Backtracking algorithm -->
 <section>
   <h2>Backtracking search</h2>
+  <p class="bt-banner">
+    <strong>Backtracking = DFS</strong> through partial assignments &nbsp;+&nbsp;
+    prune any partial that already violates a constraint.
+  </p>
   <div class="algo-card">
     <div class="algo-title">backtrack(assignment, csp)</div>
-    <ol>
-      <li>If <code>assignment</code> is complete &rarr; <strong>return</strong> it.</li>
-      <li>Pick an unassigned variable <code>var</code>.</li>
-      <li>For each <code>value</code> in <code>domain(var)</code> that satisfies every constraint:</li>
-      <li>&nbsp;&nbsp;&nbsp;Add <code>{var = value}</code>, recurse; if the result is not failure, return it.</li>
-      <li>&nbsp;&nbsp;&nbsp;Otherwise undo and try the next value.</li>
-      <li>If no value worked &rarr; <strong>return</strong> <code>failure</code>.</li>
+    <ol class="algo-steps">
+      <li>If <code>assignment</code> is complete &rarr; <strong>return</strong> <code>assignment</code>. <span class="step-note">base case</span></li>
+      <li><code>var</code> &larr; an unassigned variable. <span class="step-note">choose next variable</span></li>
+      <li>For each <code>value</code> in <code>domain(var)</code>:
+        <ol type="a">
+          <li>If <code>{var = value}</code> violates some constraint &rarr; skip this value.</li>
+          <li>Add <code>{var = value}</code> to <code>assignment</code>.</li>
+          <li><code>result</code> &larr; <strong>backtrack(<code>assignment</code>, csp)</strong> <span class="step-note recursive">&larr; recursive call: solve the smaller subproblem</span></li>
+          <li>If <code>result</code> &ne; <code>failure</code> &rarr; <strong>return</strong> <code>result</code>.</li>
+          <li>Remove <code>{var = value}</code> from <code>assignment</code>. <span class="step-note">undo &mdash; the choice didn't pan out</span></li>
+        </ol>
+      </li>
+      <li><strong>Return</strong> <code>failure</code>. <span class="step-note">no value for <code>var</code> works in this branch</span></li>
     </ol>
   </div>
-  <p style="font-size: 0.82em; color:#6b7280; text-align:center; margin-top: 0.4em;">DFS through assignment space, pruning whenever a constraint is violated.</p>
 </section>
 
 <!-- 17. Trace: backtracking on 4-queens -->
@@ -366,7 +384,7 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
   <h2>Trace: backtracking on 4-queens</h2>
   <p style="font-size: 0.7em; text-align: left; margin: 0; color: #6b7280;">Each node = partial assignment. Yellow = dead end. Green = solution.</p>
   <div class="bt-tree-wrap">
-    <p style="font-size: 0.75em; text-align: left; margin: 0.2em 0; font-family: ui-monospace, Menlo, monospace;">
+    <div class="frontier-bar">
       <strong>Step:</strong>
       <span class="fragment current-visible frontier-step" data-fragment-index="0">0 &mdash; start with root</span>
       <span class="fragment current-visible frontier-step" data-fragment-index="1">1 &mdash; expand root: try \(x_0 \in \{0,1,2,3\}\)</span>
@@ -378,7 +396,7 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
       <span class="fragment current-visible frontier-step" data-fragment-index="7">7 &mdash; <code>1 3 _ _</code>: \(x_2 = 0\) works</span>
       <span class="fragment current-visible frontier-step" data-fragment-index="8">8 &mdash; <code>1 3 0 _</code>: \(x_3 = 2\) works</span>
       <span class="fragment current-visible frontier-step" data-fragment-index="9"><strong>9 &mdash; <code>1 3 0 2</code> is the solution!</strong></span>
-    </p>
+    </div>
     <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" class="bt-tree">
       <!-- Root always visible -->
       <g class="bt-node"><rect x="270" y="14" width="80" height="22"/><text x="310" y="25">_ _ _ _</text></g>
@@ -466,46 +484,19 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
     </div>
   </div>
   <p class="fragment" style="font-size: 0.85em; text-align:center;">Every cell of column \(x_3\) is attacked &rarr; <strong>no future</strong> for the remaining queens.</p>
-  <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center;">If we'd known this <em>before</em> trying \(x_2\) at all, we could've pruned the branch immediately. That's <strong>arc consistency</strong>.</p>
+  <p class="fragment" style="font-size: 0.88em; text-align:center; color:#1d4ed8;">Knowing this <em>before</em> trying \(x_2\) = <strong>arc consistency</strong>.</p>
 </section>
 
 <!-- 16. Binary constraints only -->
 <section class="center-slide">
   <h2>Binary constraints only</h2>
-  <p style="font-size: 0.9em;">Arc consistency is defined on <em>binary</em> constraints \(c(X, Y)\). For the others:</p>
-  <ul style="text-align: left; margin-left: 2em; font-size: 0.9em;">
-    <li class="fragment"><strong>Unary</strong> \(c(X)\): drop disallowed values directly from \(D_X\).</li>
-    <li class="fragment"><strong>k-ary</strong> \((k \ge 3)\): convert to an equivalent set of binary constraints.</li>
-  </ul>
-  <svg class="binary-conv-mini fragment" viewBox="0 0 380 130" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <marker id="b2b-arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1d4ed8"/></marker>
-    </defs>
-    <g class="edge">
-      <line x1="48" y1="22" x2="95" y2="60"/>
-      <line x1="48" y1="60" x2="95" y2="60"/>
-      <line x1="48" y1="98" x2="95" y2="60"/>
-    </g>
-    <rect class="cn" x="95" y="50" width="38" height="20" rx="3"/>
-    <text x="114" y="60">c</text>
-    <circle class="v" cx="38" cy="22" r="11"/><text x="38" y="22">X</text>
-    <circle class="v" cx="38" cy="60" r="11"/><text x="38" y="60">Y</text>
-    <circle class="v" cx="38" cy="98" r="11"/><text x="38" y="98">Z</text>
-    <text x="114" y="92" font-size="9" fill="#6b7280" font-style="italic">ternary c(X,Y,Z)</text>
-
-    <line class="arrow-big" x1="160" y1="60" x2="210" y2="60" marker-end="url(#b2b-arrow)"/>
-
-    <g class="edge">
-      <line x1="252" y1="22" x2="338" y2="60"/>
-      <line x1="252" y1="60" x2="338" y2="60"/>
-      <line x1="252" y1="98" x2="338" y2="60"/>
-    </g>
-    <circle class="v" cx="242" cy="22" r="11"/><text x="242" y="22">X</text>
-    <circle class="v" cx="242" cy="60" r="11"/><text x="242" y="60">Y</text>
-    <circle class="v" cx="242" cy="98" r="11"/><text x="242" y="98">Z</text>
-    <circle class="aux" cx="338" cy="60" r="13"/><text x="338" y="60">W</text>
-    <text x="290" y="118" font-size="9" fill="#6b7280" font-style="italic">3 binary constraints via aux W</text>
-  </svg>
+  <p style="font-size: 0.95em;">Arc consistency is defined on <em>binary</em> constraints \(c(X, Y)\).</p>
+  <p class="fragment" style="font-size: 0.9em; margin-top: 0.6em;">
+    <strong>Unary</strong> constraints \(c(X)\): drop disallowed values directly from \(D_X\).
+  </p>
+  <p class="fragment" style="font-size: 0.85em; color:#6b7280; margin-top: 0.8em;">
+    The CSPs in this course (4-queens, the homework problems) are all binary.
+  </p>
 </section>
 
 <!-- 20. Notation: arcs -->
@@ -515,12 +506,12 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
     <line class="cn-arc primary" x1="60" y1="70" x2="230" y2="70"/>
     <line class="cn-arc" x1="370" y1="70" x2="540" y2="70"/>
     <g class="cn-var"><circle cx="40" cy="70" r="22"/><text x="40" y="74">X</text></g>
-    <text x="40" y="118" text-anchor="middle" font-size="12" fill="#6b7280">\(D_X\)</text>
+    <text x="40" y="118" text-anchor="middle" font-size="12" fill="#6b7280">D<tspan baseline-shift="sub" font-size="0.7em">X</tspan></text>
     <g class="cn-cons"><rect x="230" y="50" width="140" height="40" rx="4" ry="4"/><text x="300" y="74">c(X, Y)</text></g>
     <g class="cn-var"><circle cx="560" cy="70" r="22"/><text x="560" y="74">Y</text></g>
-    <text x="560" y="118" text-anchor="middle" font-size="12" fill="#6b7280">\(D_Y\)</text>
-    <text x="145" y="56" class="label-primary" text-anchor="middle">\(\langle X, c(X,Y) \rangle\)</text>
-    <text x="455" y="56" font-size="12" fill="#4b5563" font-style="italic" text-anchor="middle">\(\langle Y, c(X,Y) \rangle\)</text>
+    <text x="560" y="118" text-anchor="middle" font-size="12" fill="#6b7280">D<tspan baseline-shift="sub" font-size="0.7em">Y</tspan></text>
+    <text x="145" y="56" class="label-primary" text-anchor="middle">&#10216;X, c(X, Y)&#10217;</text>
+    <text x="455" y="56" font-size="12" fill="#4b5563" font-style="italic" text-anchor="middle">&#10216;Y, c(X, Y)&#10217;</text>
   </svg>
   <ul style="font-size: 0.85em;">
     <li class="fragment">An <strong>arc</strong> \(\langle X, c(X,Y) \rangle\) pairs a constraint with one of its variables.</li>
@@ -561,17 +552,24 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
 <!-- 19. AC-3 algorithm -->
 <section>
   <h2>The AC-3 algorithm</h2>
+  <p style="font-size: 0.8em; color:#6b7280; text-align:center; margin: 0 0 0.4em;">
+    Process arcs one at a time. After each shrink, re-queue neighbours whose consistency may have broken.
+  </p>
   <div class="algo-card">
     <div class="algo-title">AC-3(arcs)</div>
-    <ol>
-      <li>Put every arc into the set <code>S</code>.</li>
-      <li>While <code>S</code> is not empty: pop an arc <code>&lt;X, c(X,Y)&gt;</code>.</li>
-      <li>Drop every <code>v</code> in <code>D<sub>X</sub></code> with no <code>w</code> in <code>D<sub>Y</sub></code> satisfying <code>c(X,Y)</code>.</li>
-      <li>If <code>D<sub>X</sub></code> shrank: if it's empty &rarr; <strong>return</strong> <code>false</code>; otherwise re-queue every <code>&lt;Z, c'(Z, X)&gt;</code> with <code>Z &ne; Y</code>.</li>
-      <li>If <code>S</code> empties without failure &rarr; <strong>return</strong> <code>true</code>.</li>
+    <ol class="algo-steps">
+      <li><code>S</code> &larr; set of all arcs. <span class="step-note">initialise the queue</span></li>
+      <li>While <code>S</code> is not empty:
+        <ol type="a">
+          <li>Pop an arc <code>&lt;X, c(X, Y)&gt;</code> from <code>S</code>.</li>
+          <li>For each <code>v</code> &isin; <code>D<sub>X</sub></code> with no <code>w</code> &isin; <code>D<sub>Y</sub></code> satisfying <code>c(X, Y)</code> &rarr; remove <code>v</code> from <code>D<sub>X</sub></code>.</li>
+          <li>If <code>D<sub>X</sub></code> is now empty &rarr; <strong>return</strong> <code>false</code>. <span class="step-note">infeasible &mdash; no value works</span></li>
+          <li>If <code>D<sub>X</sub></code> shrank &rarr; for every neighbour <code>Z &ne; Y</code>, add <code>&lt;Z, c'(Z, X)&gt;</code> back into <code>S</code>. <span class="step-note">re-queue &mdash; its consistency may have broken</span></li>
+        </ol>
+      </li>
+      <li><strong>Return</strong> <code>true</code>. <span class="step-note">every arc is consistent</span></li>
     </ol>
   </div>
-  <p style="font-size: 0.82em; color:#6b7280; text-align:center; margin-top: 0.4em;">Each iteration enforces one arc, then re-queues neighbours whose consistency may have broken.</p>
 </section>
 
 <!-- 23. Why add arcs back to S? -->
@@ -579,9 +577,10 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
   <h2>Why re-queue arcs?</h2>
   <p style="font-size: 0.9em;">Shrinking one domain can break a previously-consistent neighbouring arc.</p>
   <svg viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg" class="arc-notation" style="max-height: 160px;">
-    <line class="cn-arc" x1="60" y1="80" x2="170" y2="80"/>
+    <line class="cn-arc" x1="60"  y1="80" x2="170" y2="80"/>
     <line class="cn-arc" x1="270" y1="80" x2="330" y2="80"/>
-    <line class="cn-arc" x1="430" y1="80" x2="540" y2="80"/>
+    <line class="cn-arc" x1="370" y1="80" x2="430" y2="80"/>
+    <line class="cn-arc" x1="530" y1="80" x2="540" y2="80"/>
     <g class="cn-var"><circle cx="40" cy="80" r="22"/><text x="40" y="84">Y</text></g>
     <text x="40" y="130" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="ui-monospace, Menlo, monospace">{2}</text>
     <g class="cn-cons"><rect x="170" y="60" width="100" height="40" rx="4" ry="4"/><text x="220" y="84">Y = X</text></g>
@@ -591,14 +590,21 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
     <g class="cn-var"><circle cx="560" cy="80" r="22"/><text x="560" y="84">Z</text></g>
     <text x="560" y="130" text-anchor="middle" font-size="12" fill="#1d4ed8" font-family="ui-monospace, Menlo, monospace">{2, 3}</text>
   </svg>
-  <p style="font-size: 0.83em;"><span class="g-color">Initially</span>: arc \(\langle X, X{&lt;}Z \rangle\) is consistent (1&lt;2, 1&lt;3, 2&lt;3 all work).</p>
-  <p class="fragment" style="font-size: 0.83em;"><span style="color:#dc2626; font-weight:600;">Then</span> arc \(\langle X, Y{=}X \rangle\) forces \(D_X \to \{2\}\). Now \(\langle Z, X{&lt;}Z \rangle\) breaks: for \(w = 2 \in D_Z\) we'd need \(v \in D_X\) with \(v &lt; 2\), but only \(v = 2\) remains. Must re-check.</p>
+  <p class="fragment" style="font-size: 0.88em; margin: 0.3em 0;">
+    <span class="g-color">Initially:</span> arc \(\langle X, X{&lt;}Z \rangle\) is consistent (1&lt;2, 1&lt;3, 2&lt;3 all work).
+  </p>
+  <p class="fragment" style="font-size: 0.88em; margin: 0.3em 0;">
+    <span style="color:#a16207; font-weight:600;">Then:</span> arc \(\langle X, Y{=}X \rangle\) forces \(D_X \to \{2\}\).
+  </p>
+  <p class="fragment" style="font-size: 0.88em; margin: 0.3em 0;">
+    <span style="color:#dc2626; font-weight:600;">Now:</span> \(\langle Z, X{&lt;}Z \rangle\) is broken &mdash; for \(w = 2 \in D_Z\), no \(v &lt; 2\) remains in \(D_X\). <strong>Must re-queue.</strong>
+  </p>
 </section>
 
 <!-- 24. Trace: AC-3 on 4-queens -->
 <section>
   <h2>Trace: AC-3 on 4-queens with \(x_0 = 0\)</h2>
-  <p style="font-size: 0.7em; text-align: left; margin: 0; color: #6b7280;">
+  <div class="frontier-bar">
     <span class="fragment current-visible frontier-step" data-fragment-index="0">Initial domains: \(D_{x_0} = \{0\}\), others \(= \{0, 1, 2, 3\}\).</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="1"><strong>Step 1.</strong> Process \(\langle x_1, c_{01} \rangle\): drop 0, 1 from \(D_{x_1}\). \(D_{x_1} = \{2, 3\}\).</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="2"><strong>Step 2.</strong> Process \(\langle x_2, c_{02} \rangle\): drop 0, 2. \(D_{x_2} = \{1, 3\}\).</span>
@@ -607,7 +613,7 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="5"><strong>Step 5.</strong> Re-process \(\langle x_3, c_{23} \rangle\): now drops 2. \(D_{x_3} = \{1\}\).</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="6"><strong>Step 6.</strong> Re-process \(\langle x_1, c_{13} \rangle\): drops 3. \(D_{x_1} = \{2\}\).</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="7"><strong>Step 7.</strong> Re-process \(\langle x_1, c_{12} \rangle\): drops 2. \(D_{x_1} = \emptyset\). <span style="color:#dc2626;">Return false &mdash; no solution with \(x_0 = 0\).</span></span>
-  </p>
+  </div>
   <svg viewBox="0 0 720 400" xmlns="http://www.w3.org/2000/svg" class="constraint-network">
     <!-- Edges between vars and constraints (always visible). Each var has 3 edges (to its 3 constraint partners). -->
     <g class="cn-edge">
@@ -635,10 +641,10 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
     </g>
     <!-- Variables -->
     <g class="cn-var">
-      <circle cx="80" cy="200" r="20"/><text x="80" y="204">\(x_0\)</text>
-      <circle cx="350" cy="55" r="20"/><text x="350" y="59">\(x_1\)</text>
-      <circle cx="620" cy="200" r="20"/><text x="620" y="204">\(x_2\)</text>
-      <circle cx="350" cy="345" r="20"/><text x="350" y="349">\(x_3\)</text>
+      <circle cx="80" cy="200" r="20"/><text x="80" y="204">x<tspan baseline-shift="sub" font-size="0.65em">0</tspan></text>
+      <circle cx="350" cy="55" r="20"/><text x="350" y="59">x<tspan baseline-shift="sub" font-size="0.65em">1</tspan></text>
+      <circle cx="620" cy="200" r="20"/><text x="620" y="204">x<tspan baseline-shift="sub" font-size="0.65em">2</tspan></text>
+      <circle cx="350" cy="345" r="20"/><text x="350" y="349">x<tspan baseline-shift="sub" font-size="0.65em">3</tspan></text>
     </g>
     <!-- Domain labels -->
     <text class="cn-domain" x="80" y="252" text-anchor="middle">D = {0}</text>
@@ -696,7 +702,7 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
   <table class="props">
     <tr><th style="width: 28%;">Terminates?</th><td><span class="ok">Yes</span> <span class="meta">each arc enqueued at most \(d\) times</span></td></tr>
     <tr><th>Order of arcs?</th><td>Doesn't matter <span class="meta">same final domains</span></td></tr>
-    <tr><th>Time complexity</th><td>\(O(c\,d^3)\) <span class="meta">\(c\) constraints, max domain size \(d\); each arc check \(O(d^2)\)</span></td></tr>
+    <tr><th>Time complexity</th><td>\(O(c\,d^3)\) <span class="meta">\(c\) constraints &times; \(d\) re-queues per arc &times; \(O(d^2)\) per check</span></td></tr>
   </table>
 </section>
 
@@ -719,14 +725,14 @@ A=1, B=1, C=1, D=1, E=3   <span class="cmt"># fail</span>
 <!-- 28. Trace: BT + AC-3 on 4-queens -->
 <section>
   <h2>Trace: backtracking + AC-3 on 4-queens</h2>
-  <p style="font-size: 0.7em; text-align: left; margin: 0; color: #6b7280;">
+  <div class="frontier-bar">
     <span class="fragment current-visible frontier-step" data-fragment-index="0">BT starts at the root with 4 candidate values for \(x_0\).</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="1">Try \(x_0 = 0\). Run AC-3 on the propagated domains.</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="2">AC-3 empties \(D_{x_1}\) (slide 24) &rarr; <strong>this branch is dead</strong>. Backtrack.</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="3">Try \(x_0 = 1\). Run AC-3.</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="4">AC-3 reduces every domain to a single value: \(x_1 = 3, x_2 = 0, x_3 = 2\).</span>
     <span class="fragment current-visible frontier-step" data-fragment-index="5"><strong>Solution found without any further search!</strong></span>
-  </p>
+  </div>
   <div class="bt-layout" style="margin-top: 0.4em;">
     <div class="bt-tree-col">
       <svg viewBox="0 0 480 220" xmlns="http://www.w3.org/2000/svg" class="bt-tree">

@@ -172,6 +172,29 @@
    ternary -> binary mini (slide 19).
    ============================================================ */
 
+/* Slide 15 closing fragment + slide 16 banner: anchor the
+   "Backtracking = DFS + skip-on-violation" connection so students
+   carry the framing from L2/L3 forward. */
+.reveal .csp-bridge {
+  padding: 0.55em 0.8em;
+  background: #eff6ff;
+  border-left: 4px solid #1d4ed8;
+  margin-top: 0.8em;
+  font-size: 0.9em;
+}
+.reveal .bt-banner {
+  text-align: center;
+  padding: 0.5em 0.9em;
+  margin: 0 auto 0.6em;
+  max-width: 92%;
+  background: #eff6ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 6px;
+  font-size: 0.95em;
+  color: #1e3a8a;
+}
+.reveal .bt-banner strong { color: #1d4ed8; }
+
 /* Algorithm pseudocode card -- same shape as L21/L3 polish. */
 .reveal .algo-card {
   background: #f9fafb;
@@ -203,6 +226,25 @@
   font-size: 0.95em;
 }
 
+/* Backtracking-slide step annotations: italic right-side notes that say what
+   each line is doing, so beginners don't have to decode "recurse" cold. */
+.reveal .algo-card .algo-steps ol[type="a"] {
+  margin-top: 0.15em;
+  margin-bottom: 0.25em;
+  margin-left: 1.6em;
+}
+.reveal .algo-card .step-note {
+  color: #6b7280;
+  font-style: italic;
+  font-size: 0.86em;
+  margin-left: 0.4em;
+}
+.reveal .algo-card .step-note.recursive {
+  color: #1d4ed8;
+  font-weight: 600;
+  font-style: normal;
+}
+
 /* Slide 6 example SVGs -- crossword / sudoku / graph colouring. */
 .reveal .example-grid .example-svg {
   display: block;
@@ -224,11 +266,4 @@
 .reveal .example-svg.graph-color .col-y { fill: #fef08a; }
 .reveal .example-svg.graph-color text { font-size: 9px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; fill: #111827; }
 
-/* Slide 19 mini-visual: k-ary -> binary reduction. */
-.reveal .binary-conv-mini { display: block; margin: 0.6em auto 0; max-height: 130px; }
-.reveal .binary-conv-mini .v   { fill: #fff; stroke: #111827; stroke-width: 1.5; }
-.reveal .binary-conv-mini .aux { fill: #fef3c7; stroke: #92400e; stroke-width: 1.5; }
-.reveal .binary-conv-mini .cn  { fill: #eff6ff; stroke: #1d4ed8; stroke-width: 1.2; }
-.reveal .binary-conv-mini .edge { stroke: #6b7280; stroke-width: 1.2; fill: none; }
-.reveal .binary-conv-mini text  { font-size: 11px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; fill: #111827; }
-.reveal .binary-conv-mini .arrow-big { stroke: #1d4ed8; stroke-width: 2; fill: none; }
+/* (Slide 19's k-ary-to-binary mini SVG was removed during the L4 comprehension pass.) */
