@@ -172,6 +172,49 @@
    ternary -> binary mini (slide 19).
    ============================================================ */
 
+/* Slide 1b -- Reminders callouts: due dates + distinguished lecture.
+   Three colour-tinted variants share the same shape. */
+.reveal .reminder {
+  display: block;
+  margin: 0.6em auto;
+  padding: 0.7em 1em;
+  border-radius: 6px;
+  border-left: 5px solid var(--reminder-accent, #6b7280);
+  background: var(--reminder-bg, #f9fafb);
+  text-align: left;
+}
+.reveal .reminder--due   { --reminder-accent: #b91c1c; --reminder-bg: #fef2f2; }
+.reveal .reminder--out   { --reminder-accent: #1d4ed8; --reminder-bg: #eff6ff; }
+.reveal .reminder--event { --reminder-accent: #d4a017; --reminder-bg: #fff4d6; }
+
+.reveal .reminder__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5em;
+  margin-bottom: 0.35em;
+  font-size: 0.78em;
+}
+.reveal .reminder__tag {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--reminder-accent, #6b7280);
+}
+.reveal .reminder__when {
+  font-weight: 600;
+  color: #1f2937;
+}
+.reveal .reminder__body {
+  margin: 0;
+  font-size: 0.88em;
+  line-height: 1.45;
+  color: #1f2937;
+}
+.reveal .reminder__body a { color: var(--reminder-accent, #1d4ed8); }
+
+
 /* Slide 15 closing fragment + slide 16 banner: anchor the
    "Backtracking = DFS + skip-on-violation" connection so students
    carry the framing from L2/L3 forward. */

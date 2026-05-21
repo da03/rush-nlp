@@ -96,7 +96,8 @@ chats:
     note: "Deadline extended one-time (originally Tue May 19) so students still finalizing enrollment can participate."
   - num: 2
     out: 2026-05-21
-    due: 2026-05-26
+    due: 2026-05-28
+    note: "Deadline extended two days (originally Tue May 26) to give students more time on the heavier L3 + L4 material."
   - num: 3
     out: 2026-05-28
     due: 2026-06-02
@@ -175,7 +176,6 @@ schedule:
     slides: /slides/CS486/S26/L5/
     deadlines:
       - { kind: due,     chat: 1, label: "Chat 1 due (extended)" }
-      - { kind: due,     chat: 2, label: "Chat 2 due" }
 
   - type: module
     label: "Reasoning under Uncertainty"
@@ -186,6 +186,7 @@ schedule:
     topic: "Probabilities"
     slides: /slides/CS486/S26/L6/
     deadlines:
+      - { kind: due,     chat: 2, label: "Chat 2 due (extended)" }
       - { kind: out,     chat: 3, label: "Chat 3 out" }
 
   - type: lecture
@@ -347,6 +348,14 @@ schedule:
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
+  - severity: info
+    show: true
+    title: "Chat 2 deadline extended to Thursday, May 28"
+    body: >-
+      Chat 2 (Heuristic Search &amp; CSPs) was released today and is now due
+      <strong>Thursday, May 28 at 11:59 PM</strong> instead of Tuesday May 26 -
+      a two-day extension to give you more time on the heavier L3 + L4
+      material. <em>Chat 1 still due Tue May 26.</em>
   - severity: warning
     show: true
     title: "Chrysalis chat assignments - when do I stop?"
