@@ -150,6 +150,14 @@
 .reveal .bt-layout .bt-tree-col { flex: 1.6; }
 .reveal .bt-layout .bt-board-col { flex: 1; text-align: center; }
 
+/* The board column stacks one fragment per step. Reveal's default for
+   `current-visible` keeps non-active fragments occupying space (visibility:
+   hidden), which would stack ~6 boards vertically and shove the tree well
+   below the slide viewport. Swap to display: none/block so only the active
+   board reserves layout space - same trick the .frontier-bar uses. */
+.reveal .bt-board-col > .fragment.current-visible { display: none; }
+.reveal .bt-board-col > .fragment.current-visible.current-fragment { display: block; }
+
 /* Notation diagram (slide 20): X - c(X,Y) - Y. */
 .reveal .arc-notation { display: block; margin: 0.5em auto; max-height: 180px; }
 .reveal .arc-notation .cn-var circle  { fill: #fff; stroke: #111827; stroke-width: 2; }
