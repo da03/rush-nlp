@@ -202,14 +202,14 @@
     <text class="label-opt" x="520" y="285" text-anchor="middle" fill="#166534">global opt</text>
     <!-- Initial ball -->
     <circle class="ball" cx="120" cy="60" r="8"/>
-    <!-- F1: ball at (180, 140) with trail -->
+    <!-- F1: ball at (180, 105) - midpoint of the Bezier curve, t=0.5 -->
     <g class="fragment" data-fragment-index="1">
-      <path class="ball-trail" d="M 120 60 Q 150 90 180 140"/>
-      <circle class="ball" cx="180" cy="140" r="8"/>
+      <path class="ball-trail" d="M 120 60 Q 150 76 180 105"/>
+      <circle class="ball" cx="180" cy="105" r="8"/>
     </g>
-    <!-- F2: ball at (240, 200) with extended trail -->
+    <!-- F2: ball at (240, 200) - bottom of the local-opt valley -->
     <g class="fragment" data-fragment-index="2">
-      <path class="ball-trail" d="M 180 140 Q 210 175 240 200"/>
+      <path class="ball-trail" d="M 180 105 Q 210 150 240 200"/>
       <circle class="ball" cx="240" cy="200" r="8"/>
     </g>
     <!-- F3: STUCK label -->
@@ -330,7 +330,7 @@
     <li>Neither a local nor a global optimum.</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>B &mdash; local optimum, but not global.</strong> Moving any single queen to a different row of its column either keeps the same cost or makes it worse. But the global optimum has cost 0, not 2.
+    <strong>B &mdash; local optimum, but not global.</strong> Every single-queen move keeps or worsens the cost (try a few). But cost is 2, not 0.
   </div>
 </section>
 
