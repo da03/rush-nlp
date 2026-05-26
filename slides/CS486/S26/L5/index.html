@@ -69,16 +69,23 @@
      Setup (3 slides)
      ============================================================ -->
 
-<!-- 4. Properties of local search -->
-<section>
-  <h2>Properties of local search</h2>
-  <ul style="font-size: 0.92em;">
-    <li class="fragment">Does not explore the search space systematically.</li>
-    <li class="fragment">Finds reasonably good states quickly on average.</li>
-    <li class="fragment">Not guaranteed to find a solution &mdash; cannot prove none exists.</li>
-    <li class="fragment">Does not remember a path to the current state.</li>
-    <li class="fragment">Requires very little memory.</li>
-    <li class="fragment">Can solve pure <em>optimization</em> problems (no goal test).</li>
+<!-- 4a. What it gives up -->
+<section class="center-slide">
+  <h2>Local search: what it gives up</h2>
+  <ul style="text-align:left; margin-left: 2em; font-size: 1em;">
+    <li class="fragment">No systematic exploration of the space</li>
+    <li class="fragment">No path back to the start</li>
+    <li class="fragment">No proof when no solution exists</li>
+  </ul>
+</section>
+
+<!-- 4b. What it buys you -->
+<section class="center-slide">
+  <h2>Local search: what it buys you</h2>
+  <ul style="text-align:left; margin-left: 2em; font-size: 1em;">
+    <li class="fragment">Fast, good-enough states on average</li>
+    <li class="fragment">Very small memory footprint</li>
+    <li class="fragment">Handles pure optimization (no goal test needed)</li>
   </ul>
 </section>
 
@@ -107,11 +114,11 @@
   <h2>4-queens as local search</h2>
   <div class="two-col vcenter">
     <div style="flex: 1.1;">
-      <ul style="font-size: 0.85em;">
-        <li class="fragment"><strong>State:</strong> a queen in every column (any row); e.g. <code>(3, 2, 1, 1)</code>.</li>
-        <li class="fragment"><strong>Initial state:</strong> a random state.</li>
-        <li class="fragment"><strong>Goal:</strong> no pair of queens attacking.</li>
-        <li class="fragment"><strong>Neighbours:</strong> <em>(A)</em> move one queen within its column. <em>(B)</em> swap rows of two queens.</li>
+      <ul style="font-size: 0.9em;">
+        <li class="fragment"><strong>State:</strong> one queen per column, any row &mdash; e.g. <code>(3, 2, 1, 1)</code>.</li>
+        <li class="fragment"><strong>Initial:</strong> random state.</li>
+        <li class="fragment"><strong>Goal:</strong> no attacking pair.</li>
+        <li class="fragment"><strong>Neighbours:</strong> <em>(A)</em> move one queen in its column; <em>(B)</em> swap two queens' rows.</li>
         <li class="fragment"><strong>Cost:</strong> number of attacking pairs.</li>
       </ul>
     </div>
@@ -315,11 +322,11 @@
   <div class="csp-defboxes">
     <div class="defcard fragment">
       <h3>Sideway moves</h3>
-      <p>Allow moves to a neighbour with the <em>same</em> cost. Limit the number of consecutive sideways to avoid infinite loops.</p>
+      <p>Accept neighbours of <em>equal</em> cost. Cap consecutive sideways to avoid loops.</p>
     </div>
     <div class="defcard fragment">
       <h3>Tabu list</h3>
-      <p>Keep a small list of recently visited states; forbid returning to them. A bit of short-term memory.</p>
+      <p>Forbid recently-visited states &mdash; short-term memory.</p>
     </div>
   </div>
 </section>
@@ -394,13 +401,13 @@
   <div class="algo-compare-cards" style="margin-top: 0.6em;">
     <div class="ac-card fragment">
       <h3>Random restarts</h3>
-      <p>Restart the search from a fresh random state in a different part of the space.</p>
-      <p style="margin-top: 0.4em; color:#6b7280;"><em>Example: greedy descent with random restarts.</em></p>
+      <p>Jump to a fresh random state.</p>
+      <p style="margin-top: 0.4em; color:#6b7280;"><em>e.g. greedy descent with restarts.</em></p>
     </div>
     <div class="ac-card fragment">
       <h3>Random walks</h3>
-      <p>Take steps to <em>random</em> neighbours, not just better ones.</p>
-      <p style="margin-top: 0.4em; color:#6b7280;"><em>Example: simulated annealing.</em></p>
+      <p>Sometimes step to a <em>random</em> neighbour, not just a better one.</p>
+      <p style="margin-top: 0.4em; color:#6b7280;"><em>e.g. simulated annealing.</em></p>
     </div>
   </div>
 </section>
@@ -457,13 +464,13 @@
 <section>
   <h2>Simulated annealing</h2>
   <p style="font-size: 0.85em; color:#6b7280;"><em>Annealing</em>: cool a molten metal slowly to make it strong.</p>
-  <ul style="font-size: 0.9em;">
-    <li class="fragment">Start with a <strong>high temperature</strong> \(T\), then reduce it.</li>
-    <li class="fragment">At each step, try a <em>random</em> neighbour.</li>
-    <li class="fragment">If the neighbour is an improvement, take it.</li>
-    <li class="fragment">If it's worse, take it <strong>probabilistically</strong>, based on \(T\) and how much worse.</li>
+  <ul style="font-size: 0.95em;">
+    <li class="fragment">Start hot &mdash; high temperature \(T\); cool over time.</li>
+    <li class="fragment">Each step: try a <em>random</em> neighbour.</li>
+    <li class="fragment">Better? Always accept.</li>
+    <li class="fragment">Worse? Accept with probability based on \(T\) and how much worse.</li>
   </ul>
-  <p class="fragment" style="text-align:center; font-size: 0.88em; margin-top: 0.8em; color:#1d4ed8;">High \(T\): exploration. Low \(T\): exploitation.</p>
+  <p class="fragment" style="text-align:center; font-size: 0.95em; margin-top: 0.8em; color:#1d4ed8;">High \(T\): exploration. &nbsp;Low \(T\): exploitation.</p>
 </section>
 
 <!-- 20. Worse-neighbour probability -->
@@ -544,10 +551,11 @@
     <div class="algo-title">simulated-annealing()</div>
     <ol>
       <li><code>current</code> &larr; initial state; <code>T</code> &larr; large positive value.</li>
-      <li>While <code>T &gt; 0</code>: pick a random neighbour <code>next</code>; let \(\Delta C = \mathrm{cost}(\text{next}) - \mathrm{cost}(\text{current})\).</li>
-      <li>If \(\Delta C &lt; 0\) &rarr; <strong>always accept</strong>: <code>current &larr; next</code>.</li>
-      <li>Else accept with probability \(p = e^{-\Delta C / T}\).</li>
-      <li>Cool \(T\) (e.g. \(T \leftarrow \alpha\, T\)).</li>
+      <li>While <code>T &gt; 0</code>:</li>
+      <li>&nbsp;&nbsp;&nbsp;Sample a random neighbour <code>next</code>.</li>
+      <li>&nbsp;&nbsp;&nbsp;Let \(\Delta C = \mathrm{cost}(\text{next}) - \mathrm{cost}(\text{current})\).</li>
+      <li>&nbsp;&nbsp;&nbsp;If \(\Delta C &lt; 0\) &rarr; accept (<code>current &larr; next</code>); else accept with probability \(p = e^{-\Delta C / T}\).</li>
+      <li>&nbsp;&nbsp;&nbsp;Cool \(T\) (e.g. \(T \leftarrow \alpha\, T\)).</li>
       <li>Return <code>current</code>.</li>
     </ol>
   </div>
@@ -564,57 +572,54 @@
   <p class="fragment" style="font-size: 0.85em; color:#6b7280; margin-top: 0.8em;">Example: start at \(T_0 = 10\), \(\alpha = 0.99\). After 500 steps, \(T \approx 0.07\).</p>
 </section>
 
-<!-- 25. SA for TSP + life analogy -->
+<!-- 25a. SA in action: TSP -->
 <section>
-  <h2>SA in action &mdash; and as life</h2>
-  <div class="algo-compare-cards">
-    <div class="ac-card" style="text-align: center;">
-      <h3>Travelling salesman</h3>
-      <div class="tsp-pair">
-        <div>
-          <svg viewBox="0 0 100 100" class="tsp-svg" xmlns="http://www.w3.org/2000/svg" aria-label="Tangled TSP tour">
-            <path class="tour-tangled" d="M 15 20 L 90 78 L 60 12 L 28 78 L 52 38 L 10 60 L 88 30 L 58 85 L 35 45 L 75 55 Z"/>
-            <circle class="city" cx="15" cy="20" r="2.2"/>
-            <circle class="city" cx="60" cy="12" r="2.2"/>
-            <circle class="city" cx="88" cy="30" r="2.2"/>
-            <circle class="city" cx="75" cy="55" r="2.2"/>
-            <circle class="city" cx="90" cy="78" r="2.2"/>
-            <circle class="city" cx="58" cy="85" r="2.2"/>
-            <circle class="city" cx="28" cy="78" r="2.2"/>
-            <circle class="city" cx="10" cy="60" r="2.2"/>
-            <circle class="city" cx="35" cy="45" r="2.2"/>
-            <circle class="city" cx="52" cy="38" r="2.2"/>
-          </svg>
-          <span class="tsp-caption" style="color:#dc2626;">high \(T\): tangled</span>
-        </div>
-        <div>
-          <svg viewBox="0 0 100 100" class="tsp-svg" xmlns="http://www.w3.org/2000/svg" aria-label="Smooth TSP tour">
-            <path class="tour-smooth" d="M 15 20 L 60 12 L 88 30 L 75 55 L 90 78 L 58 85 L 28 78 L 10 60 L 35 45 L 52 38 Z"/>
-            <circle class="city" cx="15" cy="20" r="2.2"/>
-            <circle class="city" cx="60" cy="12" r="2.2"/>
-            <circle class="city" cx="88" cy="30" r="2.2"/>
-            <circle class="city" cx="75" cy="55" r="2.2"/>
-            <circle class="city" cx="90" cy="78" r="2.2"/>
-            <circle class="city" cx="58" cy="85" r="2.2"/>
-            <circle class="city" cx="28" cy="78" r="2.2"/>
-            <circle class="city" cx="10" cy="60" r="2.2"/>
-            <circle class="city" cx="35" cy="45" r="2.2"/>
-            <circle class="city" cx="52" cy="38" r="2.2"/>
-          </svg>
-          <span class="tsp-caption" style="color:#15803d;">low \(T\): smooth</span>
-        </div>
-      </div>
-      <p style="margin-top: 0.4em; font-size: 0.78em;">30 cities: \(30! \approx 2.6 \times 10^{32}\) tours. NP-hard, but SA finds great tours fast.</p>
+  <h2>SA in action: travelling salesman</h2>
+  <div class="tsp-pair" style="margin: 0.8em auto; justify-content: center; gap: 2em;">
+    <div>
+      <svg viewBox="0 0 100 100" class="tsp-svg" xmlns="http://www.w3.org/2000/svg" aria-label="Tangled TSP tour" style="max-width: 220px; max-height: 220px;">
+        <path class="tour-tangled" d="M 15 20 L 90 78 L 60 12 L 28 78 L 52 38 L 10 60 L 88 30 L 58 85 L 35 45 L 75 55 Z"/>
+        <circle class="city" cx="15" cy="20" r="2.2"/>
+        <circle class="city" cx="60" cy="12" r="2.2"/>
+        <circle class="city" cx="88" cy="30" r="2.2"/>
+        <circle class="city" cx="75" cy="55" r="2.2"/>
+        <circle class="city" cx="90" cy="78" r="2.2"/>
+        <circle class="city" cx="58" cy="85" r="2.2"/>
+        <circle class="city" cx="28" cy="78" r="2.2"/>
+        <circle class="city" cx="10" cy="60" r="2.2"/>
+        <circle class="city" cx="35" cy="45" r="2.2"/>
+        <circle class="city" cx="52" cy="38" r="2.2"/>
+      </svg>
+      <span class="tsp-caption" style="color:#dc2626; font-size: 14px;">high \(T\): tangled</span>
     </div>
-    <div class="ac-card fragment">
-      <h3>SA as life</h3>
-      <ul>
-        <li>High \(T\): young, exploring &mdash; many sub-optimal moves.</li>
-        <li>Low \(T\): older, settled &mdash; refining what works.</li>
-        <li>An exploration-vs-exploitation trade-off.</li>
-      </ul>
+    <div>
+      <svg viewBox="0 0 100 100" class="tsp-svg" xmlns="http://www.w3.org/2000/svg" aria-label="Smooth TSP tour" style="max-width: 220px; max-height: 220px;">
+        <path class="tour-smooth" d="M 15 20 L 60 12 L 88 30 L 75 55 L 90 78 L 58 85 L 28 78 L 10 60 L 35 45 L 52 38 Z"/>
+        <circle class="city" cx="15" cy="20" r="2.2"/>
+        <circle class="city" cx="60" cy="12" r="2.2"/>
+        <circle class="city" cx="88" cy="30" r="2.2"/>
+        <circle class="city" cx="75" cy="55" r="2.2"/>
+        <circle class="city" cx="90" cy="78" r="2.2"/>
+        <circle class="city" cx="58" cy="85" r="2.2"/>
+        <circle class="city" cx="28" cy="78" r="2.2"/>
+        <circle class="city" cx="10" cy="60" r="2.2"/>
+        <circle class="city" cx="35" cy="45" r="2.2"/>
+        <circle class="city" cx="52" cy="38" r="2.2"/>
+      </svg>
+      <span class="tsp-caption" style="color:#15803d; font-size: 14px;">low \(T\): smooth</span>
     </div>
   </div>
+  <p style="text-align:center; font-size: 0.88em; margin-top: 0.6em;">30 cities &rarr; \(30! \approx 2.6 \times 10^{32}\) tours. NP-hard &mdash; yet SA finds great tours fast.</p>
+</section>
+
+<!-- 25b. SA as life -->
+<section class="center-slide">
+  <h2>SA as life</h2>
+  <ul style="text-align:left; margin-left: 2em; font-size: 1em; max-width: 70%;">
+    <li class="fragment">High \(T\) &mdash; young, exploring.</li>
+    <li class="fragment">Low \(T\) &mdash; older, refining.</li>
+    <li class="fragment">Exploration vs. exploitation, all over again.</li>
+  </ul>
 </section>
 
 <!-- ============================================================
@@ -635,11 +640,11 @@
   <h2>Beam search</h2>
   <div class="two-col vcenter">
     <div style="flex: 1;">
-      <ul style="font-size: 0.9em;">
-        <li class="fragment">Remember the \(k\) best states.</li>
-        <li class="fragment">At each step, generate <em>all</em> neighbours of those \(k\) states.</li>
-        <li class="fragment">Keep the \(k\) best out of the entire neighbour pool.</li>
-        <li class="fragment">\(k\) controls space and parallelism.</li>
+      <ul style="font-size: 0.95em;">
+        <li class="fragment">Keep the \(k\) best states in parallel.</li>
+        <li class="fragment">Expand all their neighbours.</li>
+        <li class="fragment">Keep the new \(k\) best from the pool.</li>
+        <li class="fragment">\(k\) controls memory + parallelism.</li>
       </ul>
     </div>
     <div style="flex: 1; text-align: center;">
@@ -704,12 +709,14 @@
 <!-- 27. Beam search corner cases -->
 <section>
   <h2>Beam search &mdash; corner cases</h2>
-  <ul style="font-size: 0.85em;">
-    <li class="fragment"><strong>\(k = 1\)?</strong> &mdash; <span class="quiz-answer" style="display: inline-block; padding: 0.1em 0.5em; margin: 0;"><span class="fragment">greedy descent.</span></span></li>
-    <li class="fragment"><strong>\(k = \infty\)?</strong> &mdash; <span class="quiz-answer" style="display: inline-block; padding: 0.1em 0.5em; margin: 0;"><span class="fragment">breadth-first search.</span></span></li>
-    <li class="fragment"><strong>Beam vs running \(k\) random restarts in parallel?</strong> &mdash; <span class="quiz-answer" style="display: inline-block; padding: 0.1em 0.5em; margin: 0;"><span class="fragment">beam <em>shares information</em> across the \(k\) threads; restarts are independent.</span></span></li>
-    <li class="fragment"><strong>Problem?</strong> &mdash; <span class="quiz-answer" style="display: inline-block; padding: 0.1em 0.5em; margin: 0;"><span class="fragment">lack of diversity &mdash; \(k\) states can clump into one region.</span></span></li>
-  </ul>
+  <table class="beam-corners">
+    <tbody>
+      <tr class="fragment"><th>\(k = 1\)</th><td>greedy descent</td></tr>
+      <tr class="fragment"><th>\(k = \infty\)</th><td>breadth-first search</td></tr>
+      <tr class="fragment"><th>vs. \(k\) parallel restarts</th><td>beam <em>shares</em> across threads; restarts are independent</td></tr>
+      <tr class="fragment"><th>Watch out</th><td>states can clump &mdash; lack of diversity</td></tr>
+    </tbody>
+  </table>
 </section>
 
 <!-- 28. Stochastic beam search + genetic bridge -->
@@ -723,60 +730,68 @@
   <p class="fragment" style="font-size: 0.85em; margin-top: 0.8em; color:#1d4ed8;">Adding <em>sexual</em> reproduction gives the <strong>genetic algorithm</strong>.</p>
 </section>
 
-<!-- 30. Genetic algorithm -->
+<!-- 30a. Genetic algorithm pseudocode -->
 <section>
   <h2>Genetic algorithm</h2>
+  <p style="font-size: 0.85em; color:#6b7280; text-align:center; margin: 0 0 0.4em;">
+    Population evolves; fittest survive; offspring combine and mutate.
+  </p>
   <div class="algo-card" style="max-width: 80%;">
     <div class="algo-title">genetic-algorithm()</div>
     <ol>
-      <li>Initialize a population \(P\) of random individuals.</li>
-      <li>Until converged: select parents from \(P\) weighted by fitness.</li>
-      <li>&nbsp;&nbsp;Crossover parents &rarr; offspring.</li>
-      <li>&nbsp;&nbsp;Mutate offspring with small probability.</li>
-      <li>&nbsp;&nbsp;Replace \(P\) with the offspring.</li>
+      <li>Initialise a population \(P\) of random individuals.</li>
+      <li>Until converged:</li>
+      <li>&nbsp;&nbsp;&nbsp;Select parents from \(P\) weighted by fitness.</li>
+      <li>&nbsp;&nbsp;&nbsp;Crossover parents &rarr; offspring.</li>
+      <li>&nbsp;&nbsp;&nbsp;Mutate offspring with small probability.</li>
+      <li>&nbsp;&nbsp;&nbsp;Replace \(P\) with the offspring.</li>
       <li>Return the best individual in \(P\).</li>
     </ol>
   </div>
-  <div class="two-col" style="margin-top: 0.4em;">
-    <div style="flex: 1; text-align: center;">
-      <div class="ga-diagram" aria-label="Crossover">
-        <div class="ga-row">
-          <span class="label">parent A</span>
-          <span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">1</span><span class="crossover-mark"></span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span>
-        </div>
-        <div class="ga-row">
-          <span class="label">parent B</span>
-          <span class="bit parent-b">0</span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span class="crossover-mark"></span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span class="bit parent-b">0</span>
-        </div>
-        <div class="ga-row" style="margin-top: 4px;">
-          <span class="label">child 1</span>
-          <span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">1</span><span style="width: 10px;"></span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span class="bit parent-b">0</span>
-        </div>
-        <div class="ga-row">
-          <span class="label">child 2</span>
-          <span class="bit parent-b">0</span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span style="width: 10px;"></span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span>
-        </div>
-        <p class="ga-caption">Crossover: split parents at a point, swap tails.</p>
-      </div>
+</section>
+
+<!-- 30b. Crossover -->
+<section class="center-slide">
+  <h2>Crossover</h2>
+  <div class="ga-diagram ga-big" aria-label="Crossover">
+    <div class="ga-row">
+      <span class="label">parent A</span>
+      <span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">1</span><span class="crossover-mark"></span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span>
     </div>
-    <div style="flex: 1; text-align: center;">
-      <div class="ga-diagram" aria-label="Mutation">
-        <div class="ga-row">
-          <span class="label">before</span>
-          <span class="bit">1</span><span class="bit">0</span><span class="bit">1</span><span class="bit">1</span><span class="bit">0</span><span class="bit">1</span><span class="bit">0</span><span class="bit">1</span>
-        </div>
-        <div class="ga-row">
-          <span class="label" style="visibility:hidden;">x</span>
-          <span style="width: 20px;"></span><span style="width: 20px;"></span><span style="width: 20px;"></span><span style="width: 20px;"></span><span class="arrow">&darr;</span><span style="width: 20px;"></span><span style="width: 20px;"></span><span style="width: 20px;"></span>
-        </div>
-        <div class="ga-row">
-          <span class="label">after</span>
-          <span class="bit">1</span><span class="bit">0</span><span class="bit">1</span><span class="bit">1</span><span class="bit flipped">1</span><span class="bit">1</span><span class="bit">0</span><span class="bit">1</span>
-        </div>
-        <p class="ga-caption">Mutation: flip a random bit with small probability.</p>
-      </div>
+    <div class="ga-row">
+      <span class="label">parent B</span>
+      <span class="bit parent-b">0</span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span class="crossover-mark"></span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span class="bit parent-b">0</span>
+    </div>
+    <div class="ga-row" style="margin-top: 6px;">
+      <span class="label">child 1</span>
+      <span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">1</span><span style="width: 10px;"></span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span class="bit parent-b">0</span>
+    </div>
+    <div class="ga-row">
+      <span class="label">child 2</span>
+      <span class="bit parent-b">0</span><span class="bit parent-b">1</span><span class="bit parent-b">1</span><span class="bit parent-b">0</span><span style="width: 10px;"></span><span class="bit parent-a">0</span><span class="bit parent-a">1</span><span class="bit parent-a">0</span><span class="bit parent-a">1</span>
     </div>
   </div>
+  <p style="text-align: center; font-size: 0.9em; margin-top: 0.8em;">Split parents at a point; swap tails.</p>
+</section>
+
+<!-- 30c. Mutation -->
+<section class="center-slide">
+  <h2>Mutation</h2>
+  <div class="ga-diagram ga-big" aria-label="Mutation">
+    <div class="ga-row">
+      <span class="label">before</span>
+      <span class="bit">1</span><span class="bit">0</span><span class="bit">1</span><span class="bit">1</span><span class="bit">0</span><span class="bit">1</span><span class="bit">0</span><span class="bit">1</span>
+    </div>
+    <div class="ga-row">
+      <span class="label" style="visibility:hidden;">x</span>
+      <span style="width: 20px;"></span><span style="width: 20px;"></span><span style="width: 20px;"></span><span style="width: 20px;"></span><span class="arrow">&darr;</span><span style="width: 20px;"></span><span style="width: 20px;"></span><span style="width: 20px;"></span>
+    </div>
+    <div class="ga-row">
+      <span class="label">after</span>
+      <span class="bit">1</span><span class="bit">0</span><span class="bit">1</span><span class="bit">1</span><span class="bit flipped">1</span><span class="bit">1</span><span class="bit">0</span><span class="bit">1</span>
+    </div>
+  </div>
+  <p style="text-align: center; font-size: 0.9em; margin-top: 0.8em;">Flip a random bit with small probability.</p>
 </section>
 
 <!-- ============================================================

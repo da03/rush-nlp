@@ -109,6 +109,29 @@
   color: #6b7280;
 }
 
+/* Slide 28: beam-search corner-cases table. */
+.reveal table.beam-corners {
+  width: 78%;
+  margin: 0.8em auto 0;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+.reveal table.beam-corners th,
+.reveal table.beam-corners td {
+  padding: 0.55em 0.9em;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: top;
+}
+.reveal table.beam-corners th {
+  width: 32%;
+  color: #1d4ed8;
+  font-weight: 700;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal table.beam-corners tr:last-child th,
+.reveal table.beam-corners tr:last-child td { border-bottom: none; }
+
 /* Slide 26: beam-search tree SVG. */
 .reveal .beam-tree-svg {
   display: block;
@@ -123,7 +146,7 @@
 .reveal .beam-tree-svg text         { font-size: 10px; text-anchor: middle; dominant-baseline: middle; fill: #111827; }
 .reveal .beam-tree-svg .level-label { font-size: 11px; fill: #6b7280; font-style: italic; text-anchor: end; }
 
-/* Slide 29: GA crossover + mutation bit-string diagrams. */
+/* Slide 30 (split): GA crossover + mutation bit-string diagrams. */
 .reveal .ga-diagram {
   display: flex;
   flex-direction: column;
@@ -132,6 +155,15 @@
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   font-size: 0.85em;
 }
+/* Larger variant for the dedicated crossover / mutation slides. */
+.reveal .ga-diagram.ga-big {
+  font-size: 1.4em;
+  margin: 0.6em auto;
+  gap: 0.5em;
+}
+.reveal .ga-diagram.ga-big .bit { width: 32px; height: 32px; font-size: 1em; }
+.reveal .ga-diagram.ga-big .label { min-width: 90px; font-size: 0.55em; }
+.reveal .ga-diagram.ga-big .crossover-mark { height: 46px; }
 .reveal .ga-row { display: flex; gap: 2px; align-items: center; }
 .reveal .ga-row .label {
   font-family: "Helvetica Neue", Arial, sans-serif;
