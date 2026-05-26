@@ -32,6 +32,25 @@
   <p class="credit">RN 4.1 &middot; PM 4.7&ndash;4.8</p>
 </section>
 
+<!-- 1b. Reminders -->
+<section>
+  <h2>Reminders</h2>
+  <div class="reminder reminder--due">
+    <div class="reminder__head">
+      <span class="reminder__tag">Due tonight</span>
+      <span class="reminder__when">Tue May 26, 11:59 PM</span>
+    </div>
+    <p class="reminder__body"><strong>Chat 1</strong> (Intro &amp; uninformed search) on <a href="https://andromeda-208.cs.uwaterloo.ca" target="_blank" rel="noopener">Chrysalis</a>.</p>
+  </div>
+  <div class="reminder reminder--out">
+    <div class="reminder__head">
+      <span class="reminder__tag">Due Thu</span>
+      <span class="reminder__when">Thu May 28, 11:59 PM</span>
+    </div>
+    <p class="reminder__body"><strong>Chat 2</strong> (Heuristic search &amp; CSPs) &mdash; extended from Tue May 26.</p>
+  </div>
+</section>
+
 <!-- 2. Learning goals -->
 <section class="center-slide">
   <div class="course-breadcrumb">
@@ -216,12 +235,11 @@
 <section class="center-slide">
   <h2>Greedy descent: in a sentence</h2>
   <blockquote style="font-style: italic; font-size: 1em; color:#1d4ed8; border-left: 4px solid #1d4ed8; padding: 0.4em 1em; margin: 0.6em 2em; background:#f8fafc;">
-    Descend into a canyon in a thick fog, with amnesia.
+    Descend into a canyon in a thick fog.
   </blockquote>
-  <ul style="text-align:left; margin-left:2em; font-size: 0.85em;">
-    <li class="fragment"><strong>Descend:</strong> move to the best neighbour.</li>
+  <ul style="text-align:left; margin-left:2em; font-size: 0.95em;">
+    <li class="fragment"><strong>Descend:</strong> always move to the best neighbour.</li>
     <li class="fragment"><strong>Thick fog:</strong> only see immediate neighbours.</li>
-    <li class="fragment"><strong>Amnesia:</strong> may revisit the same state.</li>
   </ul>
   <p class="fragment" style="text-align:center; font-size: 0.9em; margin-top: 0.8em;">Fast in practice &mdash; but only finds <strong>local</strong> optima.</p>
 </section>
@@ -388,7 +406,6 @@
       </ul>
     </div>
   </div>
-  <p class="fragment" style="text-align:center; font-size: 0.85em; margin-top: 0.7em;">Usually we prefer <strong>small</strong> neighbourhoods.</p>
 </section>
 
 <!-- ============================================================

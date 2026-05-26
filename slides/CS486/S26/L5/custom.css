@@ -1,5 +1,31 @@
 /* L5-specific styles on top of shared/custom.css. */
 
+/* Slide 30 (summary): four-algorithm comparison table.
+   5 columns, 4 data rows -- without explicit column widths the SA row's
+   formula forces wrap and pushes the GA row off the bottom of the slide. */
+.reveal table.compare {
+  table-layout: fixed;
+  width: 96%;
+  font-size: 0.7em;
+}
+.reveal table.compare th,
+.reveal table.compare td {
+  padding: 0.35em 0.55em;
+  vertical-align: top;
+}
+.reveal table.compare th:nth-child(1),
+.reveal table.compare td:nth-child(1) { width: 18%; }
+.reveal table.compare th:nth-child(2),
+.reveal table.compare td:nth-child(2) { width: 28%; }
+.reveal table.compare th:nth-child(3),
+.reveal table.compare td:nth-child(3) { width: 15%; }
+.reveal table.compare th:nth-child(4),
+.reveal table.compare td:nth-child(4) { width: 17%; }
+.reveal table.compare th:nth-child(5),
+.reveal table.compare td:nth-child(5) { width: 22%; }
+.reveal table.compare .meta { display: block; margin-left: 0; font-size: 0.85em; line-height: 1.25; }
+
+
 /* 1-D landscape SVG used on slides 8, 10, 17. */
 .reveal .landscape-svg { display: block; margin: 0.3em auto; max-width: 100%; max-height: 360px; }
 .reveal .landscape-svg .axis        { stroke: #9ca3af; stroke-width: 1; }
