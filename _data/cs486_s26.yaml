@@ -352,29 +352,9 @@ announcements:
     show: true
     title: "Chat 2 deadline extended to Thursday, May 28"
     body: >-
-      Chat 2 (Heuristic Search &amp; CSPs) was released today and is now due
-      <strong>Thursday, May 28 at 11:59 PM</strong> instead of Tuesday May 26 -
-      a two-day extension to give you more time on the heavier L3 + L4
-      material. <em>Chat 1 still due Tue May 26.</em>
-  - severity: warning
-    show: true
-    title: "Chrysalis chat assignments - when do I stop?"
-    body: >-
-      Chrysalis may circle back and re-ask questions after you've gone through them all -
-      that's normal, and there is <strong>no fixed stopping point</strong>. Once you've
-      covered every question at least once, you can simply stop and close the tab.
-      Your chat is auto-saved, and the evaluator (which runs after the deadline)
-      checks coverage separately - so you do not need to keep chatting indefinitely.
-  - severity: warning
-    show: true
-    title: "Waitlisted students - permission numbers"
-    body: >-
-      I have forwarded all permission-number requests I've received to the CS Graduate
-      Office. You should hear back from them with a permission number during the
-      <strong>week of May 18</strong>. If you have not received one by
-      <strong>Friday, May 22</strong>, please email me at
-      <a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a>. In the meantime,
-      you're welcome to attend lectures and access course materials.
+      Chat 2 (Heuristic Search &amp; CSPs) is due
+      <strong>Thursday, May 28 at 11:59 PM</strong> instead of the original Tuesday May 26 -
+      a two-day extension to give you more time on the heavier L3 + L4 material.
 
 # Assessment lines for the CS486 vs CS686 comparison cards.
 assessment:
