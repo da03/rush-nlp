@@ -669,47 +669,28 @@
 <!-- 19. The 3-step recipe -->
 <section>
   <h2>A universal approach</h2>
-  <p style="font-size: 0.9em; color:#6b7280; text-align:center; margin: 0;">Any conditional probability &mdash; three rules, three steps.</p>
-  <svg viewBox="0 0 760 260" xmlns="http://www.w3.org/2000/svg" class="recipe-flow" style="display:block; margin: 0.8em auto 0; max-height: 440px; width: 96%;">
-    <defs>
-      <marker id="recipe-tip" markerWidth="11" markerHeight="11" refX="10" refY="5.5" orient="auto"><path d="M0,0 L11,5.5 L0,11 z" fill="#1d4ed8"/></marker>
-    </defs>
-    <!-- Step 1 box -->
-    <g class="fragment" data-fragment-index="1">
-      <rect x="20"  y="80" width="200" height="92" rx="10" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.4"/>
-      <text x="120" y="116" text-anchor="middle" font-size="22" font-weight="700" fill="#1e3a8a">P(X | Y)</text>
-      <text x="120" y="146" text-anchor="middle" font-size="15" font-style="italic" fill="#1d4ed8">conditional</text>
-      <text x="120" y="210" text-anchor="middle" font-size="16" font-weight="700" fill="#374151">Step 1</text>
-      <text x="120" y="230" text-anchor="middle" font-size="15" fill="#6b7280">product rule</text>
-      <text x="120" y="248" text-anchor="middle" font-size="15" fill="#6b7280">(reversed)</text>
-    </g>
-    <!-- Arrow 1 -->
-    <g class="fragment" data-fragment-index="2">
-      <line x1="226" y1="126" x2="294" y2="126" stroke="#1d4ed8" stroke-width="3" marker-end="url(#recipe-tip)"/>
-    </g>
-    <!-- Step 2 box -->
-    <g class="fragment" data-fragment-index="2">
-      <rect x="300" y="80" width="200" height="92" rx="10" fill="#fef3c7" stroke="#d97706" stroke-width="2.4"/>
-      <text x="400" y="116" text-anchor="middle" font-size="18" font-weight="700" fill="#7c2d12">partial joints</text>
-      <text x="400" y="146" text-anchor="middle" font-size="16" font-style="italic" fill="#92400e">P(subset)</text>
-      <text x="400" y="210" text-anchor="middle" font-size="16" font-weight="700" fill="#374151">Step 2</text>
-      <text x="400" y="230" text-anchor="middle" font-size="15" fill="#6b7280">sum out</text>
-      <text x="400" y="248" text-anchor="middle" font-size="15" fill="#6b7280">hidden vars</text>
-    </g>
-    <!-- Arrow 2 -->
-    <g class="fragment" data-fragment-index="3">
-      <line x1="506" y1="126" x2="574" y2="126" stroke="#1d4ed8" stroke-width="3" marker-end="url(#recipe-tip)"/>
-    </g>
-    <!-- Step 3 box -->
-    <g class="fragment" data-fragment-index="3">
-      <rect x="580" y="80" width="200" height="92" rx="10" fill="#dcfce7" stroke="#166534" stroke-width="2.4"/>
-      <text x="680" y="116" text-anchor="middle" font-size="18" font-weight="700" fill="#14532d">full joints</text>
-      <text x="680" y="146" text-anchor="middle" font-size="16" font-style="italic" fill="#166534">P(X₁, …, Xₙ)</text>
-      <text x="680" y="210" text-anchor="middle" font-size="16" font-weight="700" fill="#374151">Step 3</text>
-      <text x="680" y="230" text-anchor="middle" font-size="15" fill="#6b7280">chain rule</text>
-      <text x="680" y="248" text-anchor="middle" font-size="15" fill="#6b7280">(numbers)</text>
-    </g>
-  </svg>
+  <p style="font-size: 0.9em; color:#6b7280; text-align:center; margin: 0;">Any conditional probability &mdash; three steps.</p>
+
+  <!-- Glance-level summary: the chain of states -->
+  <p style="text-align:center; font-size: 1.05em; margin: 0.8em 0 0.4em;">
+    \(P(X|Y)\) &nbsp;<span style="color:#9ca3af;">&rarr;</span>&nbsp; partial joints &nbsp;<span style="color:#9ca3af;">&rarr;</span>&nbsp; full joints &nbsp;<span style="color:#9ca3af;">&rarr;</span>&nbsp; numbers
+  </p>
+
+  <!-- Step-by-step: each step is a transition with a named rule -->
+  <ol class="universal-recipe">
+    <li class="fragment">
+      <strong>Conditional &rarr; partial joints</strong> &mdash;
+      write \(P(X|Y) = \dfrac{P(X \wedge Y)}{P(Y)}\) &nbsp;<em>(product rule, reversed)</em>.
+    </li>
+    <li class="fragment">
+      <strong>Partial joints &rarr; full joints</strong> &mdash;
+      sum out any missing variables &nbsp;<em>(sum rule)</em>.
+    </li>
+    <li class="fragment">
+      <strong>Full joints &rarr; numbers</strong> &mdash;
+      factor each as a product of conditionals &nbsp;<em>(chain rule)</em>.
+    </li>
+  </ol>
 </section>
 
 <!-- 20. Worked example: setup + step 1 -->
