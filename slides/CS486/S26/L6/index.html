@@ -666,29 +666,24 @@
      Universal approach (3 slides)
      ============================================================ -->
 
-<!-- 19. The 3-step recipe -->
+<!-- 19. The 3-rule recipe -->
 <section>
   <h2>A universal approach</h2>
-  <p style="font-size: 0.9em; color:#6b7280; text-align:center; margin: 0;">Any conditional probability &mdash; three steps.</p>
+  <p style="font-size: 0.9em; color:#6b7280; text-align:center; margin: 0;">Three rules &mdash; one per kind of probability you need.</p>
 
-  <!-- Glance-level summary: the chain of states -->
-  <p style="text-align:center; font-size: 1.05em; margin: 0.8em 0 0.4em;">
-    \(P(X|Y)\) &nbsp;<span style="color:#9ca3af;">&rarr;</span>&nbsp; partial joints &nbsp;<span style="color:#9ca3af;">&rarr;</span>&nbsp; full joints &nbsp;<span style="color:#9ca3af;">&rarr;</span>&nbsp; numbers
-  </p>
-
-  <!-- Step-by-step: each step is a transition with a named rule -->
   <ol class="universal-recipe">
     <li class="fragment">
-      <strong>Conditional &rarr; partial joints</strong> &mdash;
-      write \(P(X|Y) = \dfrac{P(X \wedge Y)}{P(Y)}\) &nbsp;<em>(product rule, reversed)</em>.
+      <strong>To calculate a conditional probability</strong> &mdash;
+      write it as a ratio of two joint probabilities &nbsp;<em>(product rule, reversed)</em>:
+      &nbsp;\(P(X|Y) = \dfrac{P(X \wedge Y)}{P(Y)}\).
     </li>
     <li class="fragment">
-      <strong>Partial joints &rarr; full joints</strong> &mdash;
-      sum out any missing variables &nbsp;<em>(sum rule)</em>.
+      <strong>To calculate a partial joint</strong> (some variables missing) &mdash;
+      sum over the missing variables to get full joints &nbsp;<em>(sum rule, reversed)</em>.
     </li>
     <li class="fragment">
-      <strong>Full joints &rarr; numbers</strong> &mdash;
-      factor each as a product of conditionals &nbsp;<em>(chain rule)</em>.
+      <strong>To calculate a full joint</strong> (all variables) &mdash;
+      factor as a product of conditionals &nbsp;<em>(chain rule)</em>.
     </li>
   </ol>
 </section>
