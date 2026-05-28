@@ -408,11 +408,11 @@
   <div class="two-col" style="margin-top: 0.3em;">
     <div style="flex: 1.05;">
       <p class="quiz-q" style="font-size: 0.8em; margin: 0;"><strong>Q1.</strong> \(P(\neg A \wedge W)\)?</p>
-      <div class="quiz-answer fragment" style="font-size: 0.78em;">\(= 0.036 + 0.324 = 0.36\). &nbsp;<strong>(A)</strong></div>
+      <div class="quiz-answer fragment" style="font-size: 0.78em;">\(= 0.036 + 0.324 = \mathbf{0.36}\).</div>
       <p class="quiz-q" style="font-size: 0.8em; margin-top: 0.5em; margin-bottom: 0;"><strong>Q2.</strong> \(P(A \wedge \neg G)\)?</p>
-      <div class="quiz-answer fragment" style="font-size: 0.78em;">\(= 0.048 + 0.012 = 0.06\). &nbsp;<strong>(B)</strong></div>
+      <div class="quiz-answer fragment" style="font-size: 0.78em;">\(= 0.048 + 0.012 = \mathbf{0.06}\).</div>
       <p class="quiz-q" style="font-size: 0.8em; margin-top: 0.5em; margin-bottom: 0;"><strong>Q3.</strong> \(P(\neg A)\)?</p>
-      <div class="quiz-answer fragment" style="font-size: 0.78em;">\(= 0.036 + 0.324 + 0.054 + 0.486 = 0.9\). &nbsp;<strong>(E)</strong></div>
+      <div class="quiz-answer fragment" style="font-size: 0.78em;">\(= 0.036 + 0.324 + 0.054 + 0.486 = \mathbf{0.9}\).</div>
     </div>
     <div style="flex: 1; text-align: center;">
       <table class="joint-table" style="font-size: 0.7em;">
@@ -430,12 +430,12 @@
 </section>
 
 <!-- ============================================================
-     Product rule (2 slides)
+     Conditional probability + product rule (3 slides)
      ============================================================ -->
 
-<!-- 12. Product rule + conditional probability -->
+<!-- 12. Conditional probability + product rule -->
 <section>
-  <h2>The product rule (conditioning)</h2>
+  <h2>Conditional probability and the product rule</h2>
   <p style="font-size: 0.92em;">\(P(A | B)\) = fraction of the \(B\)-world where \(A\) also holds.</p>
   <p class="fragment" style="text-align: center; font-size: 1.1em; margin: 0.5em 0;">\(P(A | B) = \dfrac{P(A \wedge B)}{P(B)}\)</p>
   <svg viewBox="0 0 480 180" xmlns="http://www.w3.org/2000/svg" class="ratio-viz fragment">
@@ -450,6 +450,11 @@
     <line x1="350" y1="124" x2="420" y2="124" stroke="#374151" stroke-width="1.4"/>
     <text class="ratio-label" x="385" y="146" text-anchor="middle" fill="#991b1b">B</text>
   </svg>
+  <p class="fragment" style="text-align: center; font-size: 0.82em; color:#6b7280; margin: 0.4em 0 0.1em;">Multiply both sides by \(P(B)\):</p>
+  <p class="fragment" style="text-align: center; font-size: 1.05em; margin: 0.1em 0 0;">
+    \(P(A \wedge B) = P(A | B)\, P(B)\)
+    &nbsp;<span style="color:#1d4ed8; font-style:italic; font-size:0.85em;">&larr; the product rule</span>
+  </p>
 </section>
 
 <!-- 13a. Q: Watson | not alarm -->
