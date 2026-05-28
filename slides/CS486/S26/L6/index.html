@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L4/custom.css">
   <link rel="stylesheet" href="../L5/custom.css">
   <link rel="stylesheet" href="custom.css">
 </head>
@@ -30,6 +31,25 @@
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 6</p>
   <p class="credit">RN 12.2&ndash;12.3 &middot; PM 8.1</p>
+</section>
+
+<!-- 1b. Reminders -->
+<section>
+  <h2>Reminders</h2>
+  <div class="reminder reminder--due">
+    <div class="reminder__head">
+      <span class="reminder__tag">Due tonight</span>
+      <span class="reminder__when">Thu May 28, 11:59 PM</span>
+    </div>
+    <p class="reminder__body"><strong>Chat 2</strong> (Heuristic search &amp; CSPs) on <a href="https://andromeda-208.cs.uwaterloo.ca" target="_blank" rel="noopener">Chrysalis</a>.</p>
+  </div>
+  <div class="reminder reminder--out">
+    <div class="reminder__head">
+      <span class="reminder__tag">Out today</span>
+      <span class="reminder__when">Due Tue Jun 2</span>
+    </div>
+    <p class="reminder__body"><strong>Chat 3</strong> (Probabilities) &mdash; released today.</p>
+  </div>
 </section>
 
 <!-- 2. Learning goals -->
@@ -57,12 +77,64 @@
 <!-- 3. Why uncertainty? -->
 <section>
   <h2>Why handle uncertainty?</h2>
-  <ul style="font-size: 0.92em;">
-    <li class="fragment">An agent may not <strong>observe</strong> everything &mdash; it doesn't know exactly what state it is in.</li>
-    <li class="fragment">An action may not have its intended <strong>consequence</strong> &mdash; it doesn't know exactly where it will end up.</li>
-  </ul>
-  <p class="fragment" style="text-align:center; font-size: 0.95em; margin-top: 1.2em;">An agent must <strong>reason</strong> about uncertainty and <strong>decide anyway</strong>.</p>
-  <p class="fragment" style="text-align:center; font-size: 0.85em; color: #6b7280;">The best it can do is know <em>how</em> uncertain it is and act accordingly.</p>
+  <div class="two-col vcenter" style="margin-top: 0.6em;">
+    <div style="flex: 1.1;">
+      <ul style="font-size: 0.95em;">
+        <li class="fragment">Can't see the whole state &mdash; partial observation.</li>
+        <li class="fragment">Actions may not produce their intended outcome.</li>
+        <li class="fragment"><strong>Reason about uncertainty</strong> and decide anyway.</li>
+      </ul>
+    </div>
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 280 200" xmlns="http://www.w3.org/2000/svg" class="uncertainty-sketch" aria-label="Agent in a partially-observed grid world">
+        <defs>
+          <marker id="unc-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1d4ed8"/></marker>
+          <marker id="unc-arrow-actual" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
+        </defs>
+        <!-- 3x3 grid -->
+        <g stroke="#9ca3af" stroke-width="1" fill="none">
+          <rect x="40"  y="30"  width="50" height="50"/>
+          <rect x="90"  y="30"  width="50" height="50"/>
+          <rect x="140" y="30"  width="50" height="50"/>
+          <rect x="40"  y="80"  width="50" height="50"/>
+          <rect x="90"  y="80"  width="50" height="50"/>
+          <rect x="140" y="80"  width="50" height="50"/>
+          <rect x="40"  y="130" width="50" height="50"/>
+          <rect x="90"  y="130" width="50" height="50"/>
+          <rect x="140" y="130" width="50" height="50"/>
+        </g>
+        <!-- Visible cells: the agent's and its immediate neighbours -->
+        <rect x="90" y="80" width="50" height="50" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <rect x="40" y="80" width="50" height="50" fill="#eff6ff"/>
+        <rect x="140" y="80" width="50" height="50" fill="#eff6ff"/>
+        <!-- Agent in the centre cell -->
+        <circle cx="115" cy="105" r="11" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1.5"/>
+        <text x="115" y="109" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">A</text>
+        <!-- Fog over the 6 unobserved cells -->
+        <g fill="#9ca3af" opacity="0.55">
+          <rect x="40"  y="30"  width="50" height="50"/>
+          <rect x="90"  y="30"  width="50" height="50"/>
+          <rect x="140" y="30"  width="50" height="50"/>
+          <rect x="40"  y="130" width="50" height="50"/>
+          <rect x="90"  y="130" width="50" height="50"/>
+          <rect x="140" y="130" width="50" height="50"/>
+        </g>
+        <text x="65"  y="60"  text-anchor="middle" font-size="16" font-weight="700" fill="#fff">?</text>
+        <text x="115" y="60"  text-anchor="middle" font-size="16" font-weight="700" fill="#fff">?</text>
+        <text x="165" y="60"  text-anchor="middle" font-size="16" font-weight="700" fill="#fff">?</text>
+        <text x="65"  y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">?</text>
+        <text x="115" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">?</text>
+        <text x="165" y="160" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">?</text>
+        <!-- Intended action: rightward -->
+        <line x1="126" y1="105" x2="155" y2="105" stroke="#1d4ed8" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#unc-arrow)"/>
+        <text x="155" y="97" text-anchor="middle" font-size="9" font-style="italic" fill="#1d4ed8">intended</text>
+        <!-- Actual action: drifts to upper-right (non-deterministic) -->
+        <path d="M 124 96 Q 145 80 158 70" stroke="#dc2626" stroke-width="2" fill="none" marker-end="url(#unc-arrow-actual)"/>
+        <text x="170" y="78" text-anchor="middle" font-size="9" font-style="italic" fill="#dc2626">actual</text>
+      </svg>
+      <p style="font-size: 0.72em; color:#6b7280; margin-top: 0.2em;">Visible cells are clear; the rest are hidden. Actions drift.</p>
+    </div>
+  </div>
 </section>
 
 <!-- ============================================================
@@ -72,31 +144,63 @@
 <!-- 4. Frequentists vs Bayesians -->
 <section>
   <h2>Frequentists vs Bayesians</h2>
-  <p style="font-size: 0.85em; color:#6b7280;">Probability is the formal measure of uncertainty &mdash; but there are two camps.</p>
+  <p style="font-size: 0.85em; color:#6b7280; margin: 0;">Two camps for the formal measure of uncertainty.</p>
   <div class="algo-compare-cards">
-    <div class="ac-card">
+    <div class="ac-card fragment" data-fragment-index="1">
       <h3>Frequentist</h3>
-      <p>Probability is <em>objective</em> &mdash; the long-run frequency of an event.</p>
-      <p style="font-size: 0.85em; color:#374151; margin-top: 0.4em;">After \(n\) heads and \(m\) tails: \(\;P(\text{H}) = \frac{n}{n + m}\).</p>
-      <p style="font-size: 0.78em; color:#991b1b; margin-top: 0.3em;">Can't decide without data.</p>
+      <p>Long-run frequency. <em>Objective.</em></p>
+      <p style="font-size: 0.85em; color:#374151; margin-top: 0.4em;">After \(n\) H, \(m\) T:&nbsp; \(P(\text{H}) = \dfrac{n}{n + m}\)</p>
+      <p style="font-size: 0.78em; color:#991b1b; margin-top: 0.3em;">Needs data.</p>
     </div>
-    <div class="ac-card">
+    <div class="ac-card fragment" data-fragment-index="2">
       <h3>Bayesian</h3>
-      <p>Probability is a <em>degree of belief</em>: start with a prior, update on evidence.</p>
-      <p style="font-size: 0.85em; color:#374151; margin-top: 0.4em;">Laplace prior of 1H/1T: \(\;P(\text{H}) = \frac{1 + n}{2 + n + m}\).</p>
-      <p style="font-size: 0.78em; color:#166534; margin-top: 0.3em;">Can decide with no data using an uninformed prior.</p>
+      <p>Degree of belief: prior + evidence.</p>
+      <p style="font-size: 0.85em; color:#374151; margin-top: 0.4em;">Laplace prior 1H/1T:&nbsp; \(P(\text{H}) = \dfrac{1 + n}{2 + n + m}\)</p>
+      <p style="font-size: 0.78em; color:#166534; margin-top: 0.3em;">Works with no data.</p>
     </div>
   </div>
-  <p class="fragment" style="text-align: center; font-size: 0.85em; margin-top: 0.5em;">After 2 heads and 4 tails: &nbsp;Bayesian \(= \tfrac{3}{8}\). &nbsp; Frequentist \(= \tfrac{2}{6}\).</p>
+  <svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg" class="freq-bayes-conv fragment" data-fragment-index="3" style="display:block; margin: 0.5em auto 0; max-height: 200px;">
+    <!-- Axes -->
+    <line x1="50" y1="170" x2="540" y2="170" stroke="#9ca3af" stroke-width="1"/>
+    <line x1="50" y1="170" x2="50"  y2="20"  stroke="#9ca3af" stroke-width="1"/>
+    <!-- Y ticks -->
+    <text x="42" y="174" text-anchor="end" font-size="10" fill="#6b7280">0</text>
+    <text x="42" y="100" text-anchor="end" font-size="10" fill="#6b7280">0.5</text>
+    <text x="42" y="28"  text-anchor="end" font-size="10" fill="#6b7280">1.0</text>
+    <line x1="48" y1="98"  x2="540" y2="98"  stroke="#e5e7eb" stroke-width="1"/>
+    <!-- X ticks -->
+    <text x="50"  y="186" text-anchor="middle" font-size="10" fill="#6b7280">0</text>
+    <text x="295" y="186" text-anchor="middle" font-size="10" fill="#6b7280">50</text>
+    <text x="540" y="186" text-anchor="middle" font-size="10" fill="#6b7280">100</text>
+    <!-- True P(H) = 0.4 reference -->
+    <line x1="50" y1="116" x2="540" y2="116" stroke="#166534" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
+    <text x="540" y="113" text-anchor="end" font-size="10" font-style="italic" fill="#166534">true \(P(H) = 0.4\)</text>
+    <!-- Frequentist line: jagged, undefined at 0 -->
+    <polyline points="60,20 70,170 85,98 110,57 140,140 175,80 215,135 260,107 305,108 355,123 410,116 460,118 510,117 540,116"
+              fill="none" stroke="#dc2626" stroke-width="2"/>
+    <!-- Bayesian line: smooth from 0.5 to 0.4 -->
+    <polyline points="60,98 90,103 130,108 180,110 240,112 320,114 420,115 540,116"
+              fill="none" stroke="#1d4ed8" stroke-width="2"/>
+    <!-- Axis labels -->
+    <text x="295" y="200" text-anchor="middle" font-size="11" fill="#6b7280" font-style="italic">number of flips</text>
+    <text x="14" y="98" text-anchor="middle" font-size="11" fill="#6b7280" font-style="italic" transform="rotate(-90 14 98)">estimate of \(P(H)\)</text>
+    <!-- Legend -->
+    <g font-size="11">
+      <line x1="400" y1="30" x2="430" y2="30" stroke="#dc2626" stroke-width="2"/>
+      <text x="436" y="34" fill="#dc2626" font-weight="600">Frequentist</text>
+      <line x1="400" y1="48" x2="430" y2="48" stroke="#1d4ed8" stroke-width="2"/>
+      <text x="436" y="52" fill="#1d4ed8" font-weight="600">Bayesian</text>
+    </g>
+  </svg>
 </section>
 
 <!-- 5. Random variable + Boolean shorthand -->
 <section>
   <h2>Random variables</h2>
-  <ul style="font-size: 0.92em;">
-    <li class="fragment">A <strong>random variable</strong> has a <em>domain</em> of possible values and a <em>probability distribution</em>.</li>
-    <li class="fragment"><strong>Example:</strong> &nbsp;\(A = \) "the alarm is sounding". &nbsp;Domain \(\{\text{true}, \text{false}\}\), with \(P(A = \text{true}) = 0.1\), \(P(A = \text{false}) = 0.9\).</li>
-    <li class="fragment"><strong>Boolean shorthand:</strong> &nbsp;\(P(A)\) means \(P(A = \text{true})\); &nbsp;\(P(\neg A)\) means \(P(A = \text{false})\).</li>
+  <ul style="font-size: 0.95em;">
+    <li class="fragment">A <em>domain</em> of values + a <em>distribution</em> over them.</li>
+    <li class="fragment"><strong>e.g.</strong> &nbsp;\(A = \) &ldquo;alarm sounding&rdquo;: &nbsp;domain \(\{T, F\}\), &nbsp;\(P(A{=}T) = 0.1\), \(P(A{=}F) = 0.9\).</li>
+    <li class="fragment"><strong>Boolean shorthand:</strong> &nbsp;\(P(A) \equiv P(A{=}T)\); &nbsp;\(P(\neg A) \equiv P(A{=}F)\).</li>
   </ul>
 </section>
 
@@ -105,14 +209,14 @@
   <h2>Axioms of probability</h2>
   <div class="two-col vcenter">
     <div style="flex: 1.4;">
-      <ul style="font-size: 0.88em;">
-        <li class="fragment">Every probability is in \([0, 1]\): &nbsp;\(0 \le P(A) \le 1\).</li>
-        <li class="fragment">Tautologies have probability 1; contradictions have probability 0: &nbsp;\(P(\text{true}) = 1,\; P(\text{false}) = 0\).</li>
-        <li class="fragment"><strong>Inclusion-exclusion:</strong> &nbsp;\(P(A \vee B) = P(A) + P(B) - P(A \wedge B)\).</li>
+      <ul style="font-size: 0.95em;">
+        <li class="fragment">\(0 \le P(A) \le 1\)</li>
+        <li class="fragment">\(P(\text{true}) = 1\);&nbsp; \(P(\text{false}) = 0\)</li>
+        <li class="fragment"><strong>Inclusion-exclusion:</strong> &nbsp;\(P(A \vee B) = P(A) + P(B) - P(A \wedge B)\)</li>
       </ul>
     </div>
     <div style="flex: 1; text-align: center;">
-      <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" class="venn-axiom">
+      <svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" class="venn-axiom fragment" data-fragment-index="3">
         <circle class="venn-A" cx="75" cy="70" r="48"/>
         <circle class="venn-B" cx="125" cy="70" r="48"/>
         <text class="venn-label" x="42" y="74" text-anchor="middle" fill="#1e3a8a">A</text>
@@ -121,19 +225,18 @@
       </svg>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.78em; color:#6b7280; text-align:center; margin-top: 0.6em;">\(0 &lt; P(A) &lt; 1\) doesn't mean \(A\) is "partly true" &mdash; it means we're <em>uncertain</em>. Probability is a measure of ignorance.</p>
+  <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center; margin-top: 0.6em;">\(0 &lt; P(A) &lt; 1\) means we're <em>uncertain</em>, not that \(A\) is partly true.</p>
 </section>
 
 <!-- 7. Joint probability distribution -->
 <section>
   <h2>Joint probability distribution</h2>
-  <ul style="font-size: 0.88em;">
-    <li class="fragment">A <strong>probabilistic model</strong> contains a set of random variables.</li>
-    <li class="fragment">An <strong>atomic event</strong> assigns a value to every variable.</li>
-    <li class="fragment">A <strong>joint probability distribution</strong> gives a probability to every atomic event.</li>
+  <ul style="font-size: 0.92em;">
+    <li class="fragment"><strong>Atomic event:</strong> &nbsp;an assignment to every variable.</li>
+    <li class="fragment"><strong>Joint distribution:</strong> &nbsp;a probability for every atomic event.</li>
   </ul>
-  <p style="text-align:center; font-size: 0.85em; margin-top: 0.7em;">Example: \(P(\text{weather}, \text{temperature})\)</p>
-  <table class="joint-table">
+  <p class="fragment" data-fragment-index="3" style="text-align:center; font-size: 0.85em; margin-top: 0.7em;">e.g. \(P(\text{weather}, \text{temperature})\)</p>
+  <table class="joint-table fragment" data-fragment-index="3">
     <thead>
       <tr><th></th><th>Hot</th><th>Mild</th><th>Cold</th></tr>
     </thead>
@@ -142,53 +245,79 @@
       <tr><th>Cloudy</th><td>0.05</td><td>0.35</td><td>0.20</td></tr>
     </tbody>
   </table>
-  <p style="text-align:center; font-size: 0.78em; color: #6b7280;">Probabilities sum to 1 across the whole table.</p>
+  <p class="fragment" data-fragment-index="3" style="text-align:center; font-size: 0.78em; color: #6b7280;">Probabilities sum to 1 across the table.</p>
 </section>
 
 <!-- ============================================================
      The Holmes running example (1 slide)
      ============================================================ -->
 
-<!-- 8. The Holmes scenario -->
+<!-- 8a. Prior vs posterior (split) -->
 <section>
-  <h2>Prior vs posterior &mdash; and our running example</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1;">
-      <ul style="font-size: 0.82em;">
-        <li class="fragment"><strong>Prior</strong> \(P(X)\): likelihood of \(X\) with no other info.</li>
-        <li class="fragment"><strong>Posterior</strong> \(P(X | Y)\): likelihood of \(X\) given evidence \(Y\).</li>
-      </ul>
-      <p class="fragment" style="font-size: 0.82em; margin-top: 0.7em;">Mr. Holmes has a burglar alarm and two flaky neighbours (Watson, Gibbon) who call him when they hear it. The alarm also misfires on earthquakes; earthquakes are reported on the radio.</p>
-    </div>
-    <div style="flex: 0.9; font-size: 0.82em;">
+  <h2>Prior vs posterior</h2>
+  <ul style="font-size: 0.95em; max-width: 80%; margin: 0.5em auto;">
+    <li class="fragment"><strong>Prior</strong> \(P(X)\) &mdash; belief in \(X\) with no other info.</li>
+    <li class="fragment"><strong>Posterior</strong> \(P(X \mid Y)\) &mdash; belief in \(X\) given evidence \(Y\).</li>
+  </ul>
+  <svg viewBox="0 0 540 200" xmlns="http://www.w3.org/2000/svg" class="belief-bars fragment" style="display:block; margin: 0.8em auto 0; max-height: 200px;">
+    <defs>
+      <marker id="belief-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#1d4ed8"/></marker>
+    </defs>
+    <!-- Prior bar -->
+    <text x="100" y="40" text-anchor="end" font-size="13" font-weight="600" fill="#374151">Prior \(P(X)\)</text>
+    <rect x="110" y="25" width="320" height="28" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1"/>
+    <rect x="110" y="25" width="96" height="28" fill="#93c5fd" stroke="#1d4ed8" stroke-width="1.5"/>
+    <text x="206" y="43" text-anchor="end" font-size="11" font-weight="700" fill="#1e3a8a"> 0.30</text>
+    <!-- 0/1 ticks on prior -->
+    <text x="110" y="73" text-anchor="middle" font-size="10" fill="#6b7280">0</text>
+    <text x="430" y="73" text-anchor="middle" font-size="10" fill="#6b7280">1</text>
+    <!-- Update arrow -->
+    <path d="M 270 75 Q 295 110 270 145" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#belief-arrow)"/>
+    <text x="318" y="115" font-size="12" font-style="italic" fill="#1d4ed8" font-weight="600">update on evidence \(Y\)</text>
+    <!-- Posterior bar -->
+    <text x="100" y="170" text-anchor="end" font-size="13" font-weight="600" fill="#374151">Posterior \(P(X|Y)\)</text>
+    <rect x="110" y="155" width="320" height="28" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1"/>
+    <rect x="110" y="155" width="240" height="28" fill="#1d4ed8" stroke="#1e3a8a" stroke-width="1.5"/>
+    <text x="350" y="173" text-anchor="end" font-size="11" font-weight="700" fill="#fff"> 0.75</text>
+  </svg>
+</section>
+
+<!-- 8b. Running example: Holmes -->
+<section>
+  <h2>Running example: Holmes' burglar alarm</h2>
+  <p style="font-size: 0.88em;">Mr. Holmes has a burglar alarm and two flaky neighbours (Watson, Gibbon) who call when they hear it. The alarm also misfires on earthquakes; earthquakes are reported on the radio.</p>
+  <div class="two-col vcenter fragment" data-fragment-index="1">
+    <div style="flex: 1; font-size: 0.85em;">
       <p style="margin-bottom: 0.3em; color:#1d4ed8; font-weight:600;">Random variables</p>
-      <ul style="font-size: 0.85em; margin: 0;">
-        <li class="fragment">\(B\): a burglary is happening</li>
-        <li class="fragment">\(E\): an earthquake is happening</li>
-        <li class="fragment">\(A\): the alarm is going</li>
-        <li class="fragment">\(W\): Watson is calling</li>
-        <li class="fragment">\(G\): Gibbon is calling</li>
-        <li class="fragment">\(R\): radio reports an earthquake</li>
+      <ul style="margin: 0;">
+        <li>\(B\): burglary</li>
+        <li>\(E\): earthquake</li>
+        <li>\(A\): alarm sounding</li>
+        <li>\(W\): Watson calling</li>
+        <li>\(G\): Gibbon calling</li>
+        <li>\(R\): radio reports earthquake</li>
       </ul>
+    </div>
+    <div style="flex: 1.1; text-align: center;">
+      <svg viewBox="0 0 380 150" xmlns="http://www.w3.org/2000/svg" class="holmes-mini" aria-label="Holmes causal structure">
+        <defs>
+          <marker id="holmes-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#6b7280"/></marker>
+        </defs>
+        <line class="edge" x1="95"  y1="35"  x2="135" y2="65"  marker-end="url(#holmes-arrow)"/>
+        <line class="edge" x1="185" y1="35"  x2="155" y2="65"  marker-end="url(#holmes-arrow)"/>
+        <line class="edge" x1="210" y1="30"  x2="305" y2="30"  marker-end="url(#holmes-arrow)"/>
+        <line class="edge" x1="130" y1="90"  x2="95"  y2="110" marker-end="url(#holmes-arrow)"/>
+        <line class="edge" x1="160" y1="90"  x2="195" y2="110" marker-end="url(#holmes-arrow)"/>
+        <circle class="var cause"  cx="85"  cy="30"  r="14"/><text x="85"  y="30">B</text>
+        <circle class="var cause"  cx="195" cy="30"  r="14"/><text x="195" y="30">E</text>
+        <circle class="var observ" cx="320" cy="30"  r="14"/><text x="320" y="30">R</text>
+        <circle class="var effect" cx="145" cy="75"  r="14"/><text x="145" y="75">A</text>
+        <circle class="var observ" cx="85"  cy="115" r="13"/><text x="85"  y="115">W</text>
+        <circle class="var observ" cx="205" cy="115" r="13"/><text x="205" y="115">G</text>
+      </svg>
     </div>
   </div>
-  <p class="fragment" style="text-align:center; font-size: 0.85em; margin-top: 0.6em;">6 Boolean variables &rArr; \(2^6 = 64\) joint probabilities.</p>
-  <svg viewBox="0 0 380 130" xmlns="http://www.w3.org/2000/svg" class="holmes-mini fragment" aria-label="Holmes causal structure">
-    <defs>
-      <marker id="holmes-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#6b7280"/></marker>
-    </defs>
-    <line class="edge" x1="95" y1="35" x2="135" y2="65" marker-end="url(#holmes-arrow)"/>
-    <line class="edge" x1="185" y1="35" x2="155" y2="65" marker-end="url(#holmes-arrow)"/>
-    <line class="edge" x1="195" y1="30" x2="305" y2="30" marker-end="url(#holmes-arrow)"/>
-    <line class="edge" x1="130" y1="90" x2="95" y2="110" marker-end="url(#holmes-arrow)"/>
-    <line class="edge" x1="160" y1="90" x2="195" y2="110" marker-end="url(#holmes-arrow)"/>
-    <circle class="var cause" cx="85" cy="30" r="14"/><text x="85" y="30">B</text>
-    <circle class="var cause" cx="195" cy="30" r="14"/><text x="195" y="30">E</text>
-    <circle class="var observ" cx="320" cy="30" r="14"/><text x="320" y="30">R</text>
-    <circle class="var effect" cx="145" cy="75" r="14"/><text x="145" y="75">A</text>
-    <circle class="var observ" cx="85" cy="115" r="13"/><text x="85" y="115">W</text>
-    <circle class="var observ" cx="205" cy="115" r="13"/><text x="205" y="115">G</text>
-  </svg>
+  <p class="fragment" data-fragment-index="2" style="text-align:center; font-size: 0.9em; margin-top: 0.6em; color:#dc2626;">6 Boolean variables &rArr; \(2^6 = 64\) joint probabilities.</p>
 </section>
 
 <!-- ============================================================
@@ -198,14 +327,54 @@
 <!-- 9. Sum rule -->
 <section>
   <h2>The sum rule (marginalization)</h2>
-  <p style="font-size: 0.9em;">Given a joint distribution, we can compute the probability over a <em>subset</em> of variables by summing out the rest.</p>
-  <div class="worked">
-    <p class="fragment"><span class="label-step">From \(P(A, B, C)\) to \(P(A, B)\):</span> sum out \(C\):</p>
-    <p class="fragment" style="text-align:center;">\(P(A \wedge B) = P(A \wedge B \wedge C) + P(A \wedge B \wedge \neg C)\)</p>
-    <p class="fragment"><span class="label-step">From \(P(A, B)\) to \(P(A)\):</span> sum out \(B\):</p>
-    <p class="fragment" style="text-align:center;">\(P(A) = P(A \wedge B) + P(A \wedge \neg B)\)</p>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; color:#6b7280; text-align:center;">Add up all probabilities while varying the variables we don't care about.</p>
+  <p style="font-size: 0.9em;">From a joint, get a probability over a <em>subset</em> by summing out the rest.</p>
+  <svg viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" class="sum-out-viz fragment" style="display:block; margin: 0.4em auto; max-height: 180px;">
+    <defs>
+      <marker id="sum-arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#1d4ed8"/></marker>
+    </defs>
+    <!-- Source: 2x2 joint P(A,B) -->
+    <text x="140" y="20" text-anchor="middle" font-size="13" font-weight="600" fill="#1e3a8a">\(P(A, B)\)</text>
+    <g font-size="13" font-weight="600" fill="#374151">
+      <text x="100" y="48" text-anchor="middle">A</text>
+      <text x="180" y="48" text-anchor="middle">&not;A</text>
+      <text x="50"  y="92" text-anchor="middle">B</text>
+      <text x="50"  y="144" text-anchor="middle">&not;B</text>
+    </g>
+    <g stroke="#374151" stroke-width="1.2" fill="#dbeafe">
+      <rect x="70"  y="70"  width="60" height="40"/>
+      <rect x="150" y="70"  width="60" height="40"/>
+      <rect x="70"  y="118" width="60" height="40"/>
+      <rect x="150" y="118" width="60" height="40"/>
+    </g>
+    <g font-size="13" text-anchor="middle" fill="#1e3a8a" font-weight="600">
+      <text x="100" y="95">0.10</text>
+      <text x="180" y="95">0.20</text>
+      <text x="100" y="143">0.30</text>
+      <text x="180" y="143">0.40</text>
+    </g>
+    <!-- Arrow + label -->
+    <line x1="240" y1="118" x2="350" y2="118" stroke="#1d4ed8" stroke-width="2" marker-end="url(#sum-arrow)"/>
+    <text x="295" y="106" text-anchor="middle" font-size="13" font-weight="600" fill="#1d4ed8">sum out \(B\)</text>
+    <!-- Bracket pairs: showing which row pairs sum into which marginal cell -->
+    <path d="M 230 80  Q 250 100 230 125" stroke="#15803d" stroke-width="1.2" fill="none"/>
+    <path d="M 230 130 Q 250 145 230 158" stroke="#15803d" stroke-width="1.2" fill="none" opacity="0.5"/>
+    <!-- Marginal -->
+    <text x="475" y="20" text-anchor="middle" font-size="13" font-weight="600" fill="#1e3a8a">\(P(A)\)</text>
+    <g font-size="13" font-weight="600" fill="#374151">
+      <text x="435" y="48" text-anchor="middle">A</text>
+      <text x="515" y="48" text-anchor="middle">&not;A</text>
+    </g>
+    <g stroke="#374151" stroke-width="1.2" fill="#bbf7d0">
+      <rect x="405" y="70" width="60" height="60"/>
+      <rect x="485" y="70" width="60" height="60"/>
+    </g>
+    <g font-size="14" text-anchor="middle" fill="#166534" font-weight="700">
+      <text x="435" y="106">0.40</text>
+      <text x="515" y="106">0.60</text>
+    </g>
+    <text x="475" y="170" text-anchor="middle" font-size="11" font-style="italic" fill="#166534">0.10 + 0.30 = 0.40 &nbsp; 0.20 + 0.40 = 0.60</text>
+  </svg>
+  <p class="fragment" style="text-align: center; font-size: 0.9em; margin-top: 0.4em;">In general: &nbsp;\(P(A) = \sum_b P(A \wedge B{=}b)\)</p>
 </section>
 
 <!-- 10. Visual: marginalizing the Holmes joint -->
@@ -270,9 +439,9 @@
 <!-- 12. Product rule + conditional probability -->
 <section>
   <h2>The product rule (conditioning)</h2>
-  <p style="font-size: 0.9em;">The <strong>conditional probability</strong> of \(A\) given \(B\) is the fraction of the \(B\)-world in which \(A\) also holds:</p>
-  <p style="text-align: center; font-size: 1.05em; margin: 0.4em 0;">\(P(A | B) = \dfrac{P(A \wedge B)}{P(B)}\)</p>
-  <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" class="ratio-viz">
+  <p style="font-size: 0.92em;">\(P(A | B)\) = fraction of the \(B\)-world where \(A\) also holds.</p>
+  <p class="fragment" style="text-align: center; font-size: 1.1em; margin: 0.5em 0;">\(P(A | B) = \dfrac{P(A \wedge B)}{P(B)}\)</p>
+  <svg viewBox="0 0 480 160" xmlns="http://www.w3.org/2000/svg" class="ratio-viz fragment">
     <rect class="universe" x="10" y="20" width="460" height="120"/>
     <text x="20" y="40" font-size="11" fill="#6b7280">all worlds &nbsp;(total prob = 1)</text>
     <rect class="region-B" x="40" y="50" width="280" height="80"/>
@@ -325,14 +494,42 @@
 <!-- 14. Chain rule -->
 <section>
   <h2>The chain rule (joint factorization)</h2>
-  <p style="font-size: 0.9em;">The product rule, repeated:</p>
-  <div class="worked">
-    <p class="fragment"><span class="label-step">Two variables:</span> &nbsp;\(P(A \wedge B) = P(A | B)\, P(B)\)</p>
-    <p class="fragment"><span class="label-step">Three variables:</span> &nbsp;\(P(A \wedge B \wedge C) = P(A | B \wedge C)\, P(B | C)\, P(C)\)</p>
-    <p class="fragment"><span class="label-step">In general:</span></p>
-    <p class="fragment" style="text-align:center; font-size: 0.9em;">\[ P(X_1 \wedge X_2 \wedge \cdots \wedge X_n) = \prod_{i=1}^{n} P(X_i \,|\, X_1 \wedge \cdots \wedge X_{i-1}) \]</p>
+  <p style="font-size: 0.9em;">The product rule, repeated.</p>
+  <div class="two-col vcenter" style="margin-top: 0.4em;">
+    <div style="flex: 1;">
+      <div class="worked" style="font-size: 0.92em;">
+        <p class="fragment"><span class="label-step">2 vars:</span> &nbsp;\(P(A, B) = P(A | B)\, P(B)\)</p>
+        <p class="fragment"><span class="label-step">3 vars:</span></p>
+        <p class="fragment" style="text-align:center; font-size: 0.95em;">\(P(A, B, C) = P(A | B, C)\, P(B | C)\, P(C)\)</p>
+        <p class="fragment"><span class="label-step">In general:</span></p>
+        <p class="fragment" style="text-align:center; font-size: 0.88em;">\(P(X_1, \ldots, X_n) = \displaystyle\prod_{i=1}^{n} P(X_i \mid X_1, \ldots, X_{i-1})\)</p>
+      </div>
+    </div>
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 320 230" xmlns="http://www.w3.org/2000/svg" class="chain-tree fragment" data-fragment-index="2" style="max-height: 220px;">
+        <defs>
+          <marker id="chain-tip" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#6b7280"/></marker>
+        </defs>
+        <!-- Root joint -->
+        <rect x="100" y="10" width="120" height="38" rx="4" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="160" y="34" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">\(P(A, B, C)\)</text>
+        <!-- "=" -->
+        <text x="160" y="68" text-anchor="middle" font-size="20" font-weight="700" fill="#374151">=</text>
+        <!-- Three factors -->
+        <rect x="10"  y="90" width="100" height="44" rx="4" fill="#eff6ff" stroke="#6b7280"/>
+        <text x="60"  y="118" text-anchor="middle" font-size="12" font-weight="600" fill="#1e3a8a">\(P(A | B, C)\)</text>
+        <text x="125" y="118" text-anchor="middle" font-size="18" font-weight="700" fill="#374151">·</text>
+        <rect x="135" y="90" width="80" height="44" rx="4" fill="#eff6ff" stroke="#6b7280"/>
+        <text x="175" y="118" text-anchor="middle" font-size="12" font-weight="600" fill="#1e3a8a">\(P(B | C)\)</text>
+        <text x="232" y="118" text-anchor="middle" font-size="18" font-weight="700" fill="#374151">·</text>
+        <rect x="242" y="90" width="70" height="44" rx="4" fill="#eff6ff" stroke="#6b7280"/>
+        <text x="277" y="118" text-anchor="middle" font-size="12" font-weight="600" fill="#1e3a8a">\(P(C)\)</text>
+        <!-- Caption -->
+        <text x="160" y="170" text-anchor="middle" font-size="11" font-style="italic" fill="#6b7280">condition each on its predecessors</text>
+        <text x="160" y="190" text-anchor="middle" font-size="11" font-style="italic" fill="#6b7280">(any ordering works)</text>
+      </svg>
+    </div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center;">Pick any ordering of variables; condition each on its predecessors.</p>
 </section>
 
 <!-- 16a. Q: chain rule for P(A & W & ~G) -->
@@ -376,20 +573,24 @@
   <h2>Why flip conditionals?</h2>
   <p style="font-size: 0.9em; text-align: center; margin: 0;">Models give us <strong>causal</strong> knowledge. Diagnosis needs <strong>evidential</strong> reasoning.</p>
   <svg viewBox="0 0 600 180" xmlns="http://www.w3.org/2000/svg" class="bayes-flip">
+    <defs>
+      <marker id="flip-tip" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
+    </defs>
+    <!-- Left column: causal (always visible) -->
     <rect class="node-rect" x="40"  y="40" width="170" height="40"/>
     <text x="125" y="65" text-anchor="middle" font-size="14">disease &rarr; symptom</text>
     <rect class="node-rect" x="40"  y="110" width="170" height="40"/>
     <text x="125" y="135" text-anchor="middle" font-size="14">fire &rarr; alarm</text>
-    <rect class="node-rect" x="390" y="40" width="170" height="40"/>
-    <text x="475" y="65" text-anchor="middle" font-size="14">symptom &rarr; disease</text>
-    <rect class="node-rect" x="390" y="110" width="170" height="40"/>
-    <text x="475" y="135" text-anchor="middle" font-size="14">alarm &rarr; fire</text>
-    <defs>
-      <marker id="flip-tip" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/></marker>
-    </defs>
-    <path class="arrow-evidential" d="M 215 60 Q 300 0 385 60" marker-end="url(#flip-tip)"/>
-    <path class="arrow-evidential" d="M 215 130 Q 300 180 385 130" marker-end="url(#flip-tip)"/>
-    <text class="arrow-label" x="300" y="22" text-anchor="middle" fill="#dc2626">Bayes' rule flips the conditional</text>
+    <!-- Right column: evidential (revealed on click) -->
+    <g class="fragment">
+      <path class="arrow-evidential" d="M 215 60 Q 300 0 385 60" marker-end="url(#flip-tip)"/>
+      <path class="arrow-evidential" d="M 215 130 Q 300 180 385 130" marker-end="url(#flip-tip)"/>
+      <text class="arrow-label" x="300" y="22" text-anchor="middle" fill="#dc2626">Bayes' rule flips the conditional</text>
+      <rect class="node-rect" x="390" y="40" width="170" height="40"/>
+      <text x="475" y="65" text-anchor="middle" font-size="14">symptom &rarr; disease</text>
+      <rect class="node-rect" x="390" y="110" width="170" height="40"/>
+      <text x="475" y="135" text-anchor="middle" font-size="14">alarm &rarr; fire</text>
+    </g>
   </svg>
   <p style="font-size: 0.82em; margin-top: 0.3em;">We know \(P(\text{symptom} | \text{disease})\) and want \(P(\text{disease} | \text{symptom})\).</p>
 </section>
@@ -400,12 +601,32 @@
   <div class="theorem">
     <strong>Bayes' rule.</strong> &nbsp;\(P(X | Y) = \dfrac{P(Y | X)\, P(X)}{P(Y)}\)
   </div>
-  <p class="fragment" style="font-size: 0.85em; margin-top: 0.6em;">You don't memorize it &mdash; you derive it from the product rule:</p>
-  <div class="worked">
-    <p class="fragment">By the product rule (both directions): &nbsp;\(P(X \wedge Y) = P(X | Y)\, P(Y) = P(Y | X)\, P(X)\).</p>
-    <p class="fragment">Divide both sides by \(P(Y)\): &nbsp;\(P(X | Y) = \dfrac{P(Y | X)\, P(X)}{P(Y)}\).</p>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.6em;">The denominator \(P(Y)\) is just a normalization constant &mdash; compute \(P(X | Y)\) and \(P(\neg X | Y)\), then normalize.</p>
+  <svg viewBox="0 0 620 130" xmlns="http://www.w3.org/2000/svg" class="bayes-anatomy fragment" style="display:block; margin: 0.6em auto 0.3em; max-height: 130px;">
+    <!-- Posterior box -->
+    <rect x="10"  y="30" width="120" height="60" rx="6" fill="#dcfce7" stroke="#166534" stroke-width="2"/>
+    <text x="70"  y="50" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">Posterior</text>
+    <text x="70"  y="72" text-anchor="middle" font-size="14" font-weight="700" fill="#14532d">\(P(X | Y)\)</text>
+    <!-- = sign -->
+    <text x="148" y="68" text-anchor="middle" font-size="22" font-weight="700" fill="#374151">=</text>
+    <!-- Numerator container -->
+    <line x1="170" y1="68" x2="500" y2="68" stroke="#374151" stroke-width="1.5"/>
+    <!-- Likelihood box -->
+    <rect x="170" y="20" width="120" height="40" rx="5" fill="#fef3c7" stroke="#92400e" stroke-width="1.5"/>
+    <text x="230" y="33" text-anchor="middle" font-size="11" font-weight="600" fill="#92400e">Likelihood</text>
+    <text x="230" y="51" text-anchor="middle" font-size="13" font-weight="700" fill="#7c2d12">\(P(Y | X)\)</text>
+    <!-- × -->
+    <text x="312" y="46" text-anchor="middle" font-size="20" font-weight="700" fill="#374151">×</text>
+    <!-- Prior box -->
+    <rect x="330" y="20" width="120" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+    <text x="390" y="33" text-anchor="middle" font-size="11" font-weight="600" fill="#1e3a8a">Prior</text>
+    <text x="390" y="51" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">\(P(X)\)</text>
+    <!-- Evidence box (denominator) -->
+    <rect x="270" y="78" width="120" height="40" rx="5" fill="#fee2e2" stroke="#991b1b" stroke-width="1.5"/>
+    <text x="330" y="91" text-anchor="middle" font-size="11" font-weight="600" fill="#991b1b">Evidence</text>
+    <text x="330" y="109" text-anchor="middle" font-size="13" font-weight="700" fill="#7f1d1d">\(P(Y)\)</text>
+    <text x="540" y="105" text-anchor="middle" font-size="10" font-style="italic" fill="#991b1b">normaliser</text>
+  </svg>
+  <p class="fragment" style="font-size: 0.85em; margin-top: 0.3em; text-align: center;">Derive it from the product rule: &nbsp;\(P(X, Y) = P(X|Y)\,P(Y) = P(Y|X)\,P(X)\) &rarr; divide by \(P(Y)\).</p>
 </section>
 
 <!-- 20a. Q: Bayes for P(~A | W) -->
@@ -447,20 +668,60 @@
      ============================================================ -->
 
 <!-- 19. The 3-step recipe -->
-<section class="center-slide">
+<section>
   <h2>A universal approach</h2>
-  <p style="font-size: 0.85em; color:#6b7280;">Any conditional probability can be calculated by combining three rules.</p>
-  <ol style="text-align: left; margin-left: 2em; font-size: 0.92em;">
-    <li class="fragment"><strong>Conditional &rarr; joint:</strong> &nbsp;rewrite \(P(X | Y)\) as a ratio of joint probabilities (the product rule, reversed).</li>
-    <li class="fragment"><strong>Partial joint &rarr; full joint:</strong> &nbsp;introduce any missing variables by summing over them (the sum rule, reversed).</li>
-    <li class="fragment"><strong>Full joint &rarr; chain:</strong> &nbsp;factor each full-joint probability using the chain rule.</li>
-  </ol>
+  <p style="font-size: 0.9em; color:#6b7280; text-align:center; margin: 0;">Any conditional probability &mdash; three rules, three steps.</p>
+  <svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg" class="recipe-flow" style="display:block; margin: 0.8em auto 0; max-height: 240px;">
+    <defs>
+      <marker id="recipe-tip" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/></marker>
+    </defs>
+    <!-- Step 1 box -->
+    <g class="fragment" data-fragment-index="1">
+      <rect x="20"  y="80" width="180" height="80" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+      <text x="110" y="108" text-anchor="middle" font-size="16" font-weight="700" fill="#1e3a8a">\(P(X | Y)\)</text>
+      <text x="110" y="130" text-anchor="middle" font-size="11" font-style="italic" fill="#1d4ed8">conditional</text>
+      <text x="110" y="200" text-anchor="middle" font-size="12" font-weight="700" fill="#374151">Step 1</text>
+      <text x="110" y="216" text-anchor="middle" font-size="11" fill="#6b7280">product rule</text>
+      <text x="110" y="230" text-anchor="middle" font-size="11" fill="#6b7280">(reversed)</text>
+    </g>
+    <!-- Arrow 1 -->
+    <g class="fragment" data-fragment-index="2">
+      <line x1="210" y1="120" x2="290" y2="120" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#recipe-tip)"/>
+    </g>
+    <!-- Step 2 box -->
+    <g class="fragment" data-fragment-index="2">
+      <rect x="290" y="80" width="180" height="80" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+      <text x="380" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#7c2d12">partial joints</text>
+      <text x="380" y="128" text-anchor="middle" font-size="11" font-style="italic" fill="#92400e">\(P(\text{subset})\)</text>
+      <text x="380" y="200" text-anchor="middle" font-size="12" font-weight="700" fill="#374151">Step 2</text>
+      <text x="380" y="216" text-anchor="middle" font-size="11" fill="#6b7280">sum out</text>
+      <text x="380" y="230" text-anchor="middle" font-size="11" fill="#6b7280">hidden vars</text>
+    </g>
+    <!-- Arrow 2 -->
+    <g class="fragment" data-fragment-index="3">
+      <line x1="480" y1="120" x2="560" y2="120" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#recipe-tip)"/>
+    </g>
+    <!-- Step 3 box -->
+    <g class="fragment" data-fragment-index="3">
+      <rect x="560" y="80" width="180" height="80" rx="8" fill="#dcfce7" stroke="#166534" stroke-width="2"/>
+      <text x="650" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#14532d">full joints</text>
+      <text x="650" y="128" text-anchor="middle" font-size="11" font-style="italic" fill="#166534">\(P(X_1, \ldots, X_n)\)</text>
+      <text x="650" y="200" text-anchor="middle" font-size="12" font-weight="700" fill="#374151">Step 3</text>
+      <text x="650" y="216" text-anchor="middle" font-size="11" fill="#6b7280">chain rule</text>
+      <text x="650" y="230" text-anchor="middle" font-size="11" fill="#6b7280">(numbers)</text>
+    </g>
+  </svg>
 </section>
 
 <!-- 20. Worked example: setup + step 1 -->
 <section>
   <h2>Worked example: \(P(A | C)\)</h2>
-  <p style="font-size: 0.85em;"><strong>Given:</strong> &nbsp;\(P(A) = 0.6\); &nbsp;\(P(B | A) = 0.4\), \(P(\neg B | \neg A) = 0.2\); &nbsp;\(P(C | A \wedge B) = 0.1\), \(P(C | \neg A \wedge B) = 0.2\), \(P(C | A \wedge \neg B) = 0.5\), \(P(C | \neg A \wedge \neg B) = 0.8\).</p>
+  <div class="givens">
+    <p><strong>Given:</strong></p>
+    <p>\(P(A) = 0.6\)</p>
+    <p>\(P(B | A) = 0.4\), &nbsp;\(P(\neg B | \neg A) = 0.2\)</p>
+    <p>\(P(C | A, B) = 0.1\), &nbsp;\(P(C | \neg A, B) = 0.2\), &nbsp;\(P(C | A, \neg B) = 0.5\), &nbsp;\(P(C | \neg A, \neg B) = 0.8\)</p>
+  </div>
   <div class="worked">
     <p><span class="label-step">Step 1.</span> Convert the conditional into a ratio of joints:</p>
     <p class="fragment" style="text-align: center;">\(P(A | C) = \dfrac{P(A \wedge C)}{P(C)} = \dfrac{P(A \wedge C)}{P(A \wedge C) + P(\neg A \wedge C)}\)</p>
@@ -546,9 +807,42 @@
 </section>
 
 <!-- 24. Next: independence + Bayes nets -->
-<section class="center-slide">
+<section>
   <h2>Next: independence and Bayes nets</h2>
-  <p style="font-size: 0.95em; margin-top: 1em;">The chain rule gives a full joint &mdash; but \(2^n\) probabilities for \(n\) variables is too many. <strong>Conditional independence</strong> and <strong>Bayesian networks</strong> let us write huge joints with far fewer numbers.</p>
+  <p style="font-size: 0.92em; text-align: center; margin: 0.4em 0;">Chain rule gives full joints &mdash; but \(2^n\) numbers is too many.</p>
+  <p class="fragment" style="font-size: 0.92em; text-align: center; color:#1d4ed8;">
+    <strong>Conditional independence</strong> + <strong>Bayesian networks</strong> &rarr; far fewer numbers.
+  </p>
+  <svg viewBox="0 0 600 240" xmlns="http://www.w3.org/2000/svg" class="teaser-bn fragment" style="display:block; margin: 0.6em auto 0; max-height: 220px;">
+    <defs>
+      <marker id="bn-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="#6b7280"/></marker>
+    </defs>
+    <!-- DAG: B -> A, E -> A, A -> W, A -> G -->
+    <line x1="170" y1="55" x2="270" y2="100" stroke="#6b7280" stroke-width="1.6" marker-end="url(#bn-arrow)"/>
+    <line x1="390" y1="55" x2="290" y2="100" stroke="#6b7280" stroke-width="1.6" marker-end="url(#bn-arrow)"/>
+    <line x1="270" y1="135" x2="180" y2="180" stroke="#6b7280" stroke-width="1.6" marker-end="url(#bn-arrow)"/>
+    <line x1="290" y1="135" x2="380" y2="180" stroke="#6b7280" stroke-width="1.6" marker-end="url(#bn-arrow)"/>
+    <!-- Nodes -->
+    <circle cx="160" cy="50" r="20" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.8"/>
+    <text x="160" y="55" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">B</text>
+    <circle cx="400" cy="50" r="20" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.8"/>
+    <text x="400" y="55" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">E</text>
+    <circle cx="280" cy="118" r="22" fill="#fef3c7" stroke="#d97706" stroke-width="1.8"/>
+    <text x="280" y="123" text-anchor="middle" font-size="15" font-weight="700" fill="#7c2d12">A</text>
+    <circle cx="170" cy="190" r="20" fill="#dcfce7" stroke="#166534" stroke-width="1.8"/>
+    <text x="170" y="195" text-anchor="middle" font-size="15" font-weight="700" fill="#14532d">W</text>
+    <circle cx="390" cy="190" r="20" fill="#dcfce7" stroke="#166534" stroke-width="1.8"/>
+    <text x="390" y="195" text-anchor="middle" font-size="15" font-weight="700" fill="#14532d">G</text>
+    <!-- CPT annotations -->
+    <text x="100" y="28"  text-anchor="middle" font-size="11" font-style="italic" fill="#6b7280">\(P(B)\)</text>
+    <text x="460" y="28"  text-anchor="middle" font-size="11" font-style="italic" fill="#6b7280">\(P(E)\)</text>
+    <text x="280" y="160" text-anchor="middle" font-size="11" font-style="italic" fill="#92400e">\(P(A | B, E)\) — 4 entries</text>
+    <text x="170" y="223" text-anchor="middle" font-size="11" font-style="italic" fill="#166534">\(P(W | A)\)</text>
+    <text x="390" y="223" text-anchor="middle" font-size="11" font-style="italic" fill="#166534">\(P(G | A)\)</text>
+  </svg>
+  <p class="fragment" style="text-align:center; font-size: 0.88em; color:#166534; margin-top: 0.3em;">
+    <em>5 variables: 32 joint numbers &rarr; ~10 CPT entries.</em>
+  </p>
 </section>
 
 </div>
