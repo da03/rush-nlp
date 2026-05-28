@@ -39,17 +39,17 @@
 }
 
 /* Venn diagram for inclusion-exclusion (slide 6). */
-.reveal .venn-axiom { display: block; margin: 0.3em auto; max-width: 100%; max-height: 160px; }
+.reveal .venn-axiom { display: block; margin: 0.3em auto; max-width: 100%; max-height: 280px; width: 90%; }
 .reveal .venn-axiom .venn-A { fill: #dbeafe; fill-opacity: 0.75; stroke: #1d4ed8; stroke-width: 2; }
 .reveal .venn-axiom .venn-B { fill: #fee2e2; fill-opacity: 0.75; stroke: #dc2626; stroke-width: 2; }
-.reveal .venn-axiom .venn-label { font-size: 16px; font-weight: 600; }
+.reveal .venn-axiom .venn-label { font-size: 22px; font-weight: 600; }
 
 /* Conditional-probability ratio visual (slide 12). */
-.reveal .ratio-viz { display: block; margin: 0.3em auto; max-width: 100%; max-height: 180px; }
+.reveal .ratio-viz { display: block; margin: 0.3em auto; max-width: 100%; max-height: 320px; width: 92%; }
 .reveal .ratio-viz .universe { fill: #f3f4f6; stroke: #9ca3af; stroke-width: 1.5; }
 .reveal .ratio-viz .region-B  { fill: #fee2e2; fill-opacity: 0.85; stroke: #dc2626; stroke-width: 1.5; }
 .reveal .ratio-viz .region-AB { fill: #fde68a; fill-opacity: 0.9;  stroke: #b45309; stroke-width: 1.5; }
-.reveal .ratio-viz .ratio-label { font-size: 13px; font-weight: 600; }
+.reveal .ratio-viz .ratio-label { font-size: 17px; font-weight: 600; }
 
 /* Bayes-rule causal vs evidential flip (slide 16). */
 .reveal .bayes-flip { display: block; margin: 0.3em auto; max-width: 100%; max-height: 160px; }
@@ -108,10 +108,10 @@
 }
 
 /* Holmes causal-structure preview (slide 8). */
-.reveal .holmes-mini { display: block; margin: 0.4em auto 0; max-width: 100%; max-height: 130px; }
-.reveal .holmes-mini .var { fill: #fff; stroke: #111827; stroke-width: 1.4; }
+.reveal .holmes-mini { display: block; margin: 0.4em auto 0; max-width: 100%; max-height: 280px; }
+.reveal .holmes-mini .var { fill: #fff; stroke: #111827; stroke-width: 1.6; }
 .reveal .holmes-mini .var.cause   { fill: #dbeafe; stroke: #1d4ed8; }
 .reveal .holmes-mini .var.effect  { fill: #fef3c7; stroke: #d97706; }
 .reveal .holmes-mini .var.observ  { fill: #dcfce7; stroke: #166534; }
-.reveal .holmes-mini text { font-size: 11px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; fill: #111827; }
-.reveal .holmes-mini .edge { stroke: #6b7280; stroke-width: 1.3; fill: none; }
+.reveal .holmes-mini text { font-weight: 700; text-anchor: middle; dominant-baseline: middle; fill: #111827; }
+.reveal .holmes-mini .edge { stroke: #6b7280; stroke-width: 1.6; fill: none; }
