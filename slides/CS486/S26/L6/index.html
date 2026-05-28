@@ -144,22 +144,18 @@
 <!-- 4. Frequentists vs Bayesians -->
 <section>
   <h2>Frequentists vs Bayesians</h2>
-  <p style="font-size: 0.85em; color:#6b7280; margin: 0;">Two camps for the formal measure of uncertainty.</p>
-  <div class="algo-compare-cards">
+  <p style="font-size: 0.82em; color:#6b7280; margin: 0;">Two camps for the formal measure of uncertainty.</p>
+  <div class="algo-compare-cards" style="margin: 0.35em 0;">
     <div class="ac-card fragment" data-fragment-index="1">
       <h3>Frequentist</h3>
-      <p>Long-run frequency. <em>Objective.</em></p>
-      <p style="font-size: 0.85em; color:#374151; margin-top: 0.4em;">After \(n\) H, \(m\) T:&nbsp; \(P(\text{H}) = \dfrac{n}{n + m}\)</p>
-      <p style="font-size: 0.78em; color:#991b1b; margin-top: 0.3em;">Needs data.</p>
+      <p>Long-run frequency. <em>Objective.</em> &nbsp;After \(n\) H, \(m\) T:&nbsp; \(P(\text{H}) = \tfrac{n}{n + m}\). <span style="color:#991b1b;">Needs data.</span></p>
     </div>
     <div class="ac-card fragment" data-fragment-index="2">
       <h3>Bayesian</h3>
-      <p>Degree of belief: prior + evidence.</p>
-      <p style="font-size: 0.85em; color:#374151; margin-top: 0.4em;">Laplace prior 1H/1T:&nbsp; \(P(\text{H}) = \dfrac{1 + n}{2 + n + m}\)</p>
-      <p style="font-size: 0.78em; color:#166534; margin-top: 0.3em;">Works with no data.</p>
+      <p>Degree of belief: prior + evidence. &nbsp;Laplace 1H/1T:&nbsp; \(P(\text{H}) = \tfrac{1 + n}{2 + n + m}\). <span style="color:#166534;">Works with no data.</span></p>
     </div>
   </div>
-  <svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" class="freq-bayes-conv fragment" data-fragment-index="3" style="display:block; margin: 0.5em auto 0; max-height: 280px; width: 90%;">
+  <svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" class="freq-bayes-conv fragment" data-fragment-index="3" style="display:block; margin: 0.25em auto 0; max-height: 230px; width: 92%;">
     <!-- Axes -->
     <line x1="50" y1="180" x2="540" y2="180" stroke="#9ca3af" stroke-width="1.2"/>
     <line x1="50" y1="180" x2="50"  y2="20"  stroke="#9ca3af" stroke-width="1.2"/>
