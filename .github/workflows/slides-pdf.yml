@@ -57,6 +57,14 @@ jobs:
           for dir in slides/CS486/S26/L*/; do
             name="$(basename "${dir}")"      # e.g. L6
             [ -f "${dir}index.html" ] || continue
+            # DeckTape captures *screen* media, so the on-screen overlay buttons
+            # (Course page / Download) and reveal's own UI chrome (controls,
+            # progress bar, slide number) would otherwise be baked into the PDF.
+            # Inject a hide-only style into the runner's copy of the deck before
+            # rendering. This edit is ephemeral: only the *.pdf is committed below,
+            # and the index.html files are restored afterwards, so the source HTML
+            # served to students stays untouched.
+            perl -0pi -e 's#</head>#<style>.course-home-link,.slide-download-link,.reveal .controls,.reveal .progress,.reveal .slide-number{display:none !important}</style>\n</head>#' "${dir}index.html"
             echo "Rendering ${name} ..."
             npx --yes decktape@3 reveal \
               --chrome-arg=--no-sandbox \
@@ -64,6 +72,8 @@ jobs:
               "http://localhost:8000/${dir}index.html" \
               "${dir}${name}.pdf"
           done
+          # Restore the source HTML so only PDFs are committed.
+          git checkout -- 'slides/CS486/S26/*/index.html'
 
       - name: Commit regenerated PDFs
         run: |
