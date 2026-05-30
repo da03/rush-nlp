@@ -305,6 +305,7 @@ excerpt: "CS 486/686: Introduction to Artificial Intelligence (Spring 2026) at t
                 <span class="badges">
                   {%- if e.slides -%}
                     <a class="badge badge--slides" href="{{ e.slides }}" aria-label="L{{ e.lecture_num }} slides: {{ e.topic }}">Slides</a>
+                    <a class="badge badge--pdf" href="{{ e.slides }}L{{ e.lecture_num }}.pdf" aria-label="L{{ e.lecture_num }} slides as PDF: {{ e.topic }}">PDF</a>
                   {%- endif -%}
                   {%- for d in e.deadlines -%}
                     <span class="badge badge--{{ d.kind }}"{% if d.chat %} data-deadline="chat-{{ d.chat }}-{{ d.kind }}"{% endif %}>{{ d.label }}</span>

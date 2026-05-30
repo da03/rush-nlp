@@ -189,6 +189,55 @@
 body.is-fullscreen .course-home-link { display: none; }
 body.print-pdf .course-home-link { display: none; }
 
+/* Download-this-deck-as-PDF button. Mirrors `.course-home-link` but anchored to the
+   top-right so the two overlays don't collide. The PDF it links to is generated from
+   this same HTML by the `slides-pdf` GitHub Action, so it always matches the deck.
+   Hidden in fullscreen and in the `?print-pdf` export (and any print medium) so the
+   button never gets baked into the generated handout. */
+.slide-download-link {
+  position: fixed;
+  top: 10px;
+  right: 14px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  line-height: 1;
+  color: #4b5563;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  opacity: 0.75;
+  transition: opacity 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+}
+.slide-download-link svg {
+  display: block;
+  stroke-width: 1.8;
+}
+.slide-download-link .slide-download-label {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.slide-download-link:hover {
+  opacity: 1;
+  color: #1d4ed8;
+  background-color: rgba(29, 78, 216, 0.07);
+}
+body.is-fullscreen .slide-download-link { display: none; }
+body.print-pdf .slide-download-link { display: none; }
+html.print-pdf .slide-download-link,
+html.print-pdf .course-home-link { display: none; }
+@media print {
+  .slide-download-link,
+  .course-home-link { display: none !important; }
+}
+
 /* ============================================================
    Shared patterns for search lectures (originally lived in L2,
    promoted here so L3+ can reuse without duplication).
