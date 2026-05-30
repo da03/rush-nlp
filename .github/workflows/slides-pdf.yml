@@ -1,0 +1,79 @@
+name: Render slide PDFs
+
+# Renders every CS 486/686 (Spring 2026) reveal.js deck to a static, downloadable
+# PDF and commits the PDFs back into the repo. Classic GitHub Pages then serves them
+# as ordinary static files, so the in-deck "Download PDF" button and the schedule
+# "PDF" badge always point at a fresh artifact that matches the live HTML slides.
+#
+# Generator: DeckTape (https://github.com/astefanutti/decktape). DeckTape is the
+# de-facto tool for exporting reveal.js decks; it drives a headless browser, walks
+# the deck slide-by-slide, and captures each step with the browser's print pipeline.
+# It is used here instead of `chrome --print-to-pdf ?print-pdf` because reveal.js 5's
+# print view renders blank under Chrome's paged-media export. Because DeckTape
+# captures with print media, the on-screen overlay buttons (Course page / Download),
+# which are hidden via `@media print`, do not appear in the generated handout.
+
+on:
+  push:
+    branches: [master]
+    # Only deck *source* changes trigger a re-render. The generated `*.pdf` files are
+    # deliberately NOT in this list, so the bot's PDF commit below cannot retrigger
+    # this workflow (that, plus the `[skip ci]` tag, prevents an infinite loop).
+    paths:
+      - 'slides/CS486/S26/**/index.html'
+      - 'slides/CS486/S26/**/*.css'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: slides-pdf
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Serve the repo over HTTP
+        # DeckTape loads the deck over http:// so reveal's relative assets and the
+        # CDN scripts resolve exactly as they do on the live site.
+        run: |
+          python3 -m http.server 8000 --directory "${PWD}" >/tmp/httpd.log 2>&1 &
+          for i in $(seq 1 20); do
+            curl -sf http://localhost:8000/ >/dev/null && break
+            sleep 0.5
+          done
+
+      - name: Render each deck to PDF with DeckTape
+        run: |
+          set -euo pipefail
+          for dir in slides/CS486/S26/L*/; do
+            name="$(basename "${dir}")"      # e.g. L6
+            [ -f "${dir}index.html" ] || continue
+            echo "Rendering ${name} ..."
+            npx --yes decktape@3 reveal \
+              --chrome-arg=--no-sandbox \
+              --size 1280x720 \
+              "http://localhost:8000/${dir}index.html" \
+              "${dir}${name}.pdf"
+          done
+
+      - name: Commit regenerated PDFs
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add slides/CS486/S26/L*/*.pdf
+          if git diff --cached --quiet; then
+            echo "No PDF changes to commit."
+          else
+            git commit -m "Auto-render slide PDFs [skip ci]"
+            git push
+          fi
