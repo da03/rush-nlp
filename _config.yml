@@ -17,3 +17,9 @@ github_username: da03
 # Build settings
 markdown: kramdown
 highlighter: rouge
+
+# Server-side helper backend and the (reference-only) PAW website clone are not
+# part of the static site; keep them out of the Jekyll build / GitHub Pages output.
+exclude:
+  - helper/
+  - programasweights_website/

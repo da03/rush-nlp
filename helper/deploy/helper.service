@@ -1,0 +1,27 @@
+# systemd unit for the yuntiandeng.com PAW helper inference service.
+# Install:  sudo cp helper/deploy/helper.service /etc/systemd/system/yuntiandeng-helper.service
+# Edit the paths below to match where the repo is checked out and the venv lives.
+[Unit]
+Description=yuntiandeng.com PAW helper inference service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Directory that contains app.py (the repo's helper/server).
+WorkingDirectory=/opt/yuntiandeng-helper/repo/helper/server
+Environment=HELPER_ALLOWED_ORIGINS=https://yuntiandeng.com,https://www.yuntiandeng.com
+Environment=HELPER_FEEDBACK_LOG=/var/lib/yuntiandeng-helper/feedback.jsonl
+# Optional: higher compile limits / private programs.
+# Environment=PAW_API_KEY=paw_sk_...
+# PAW model cache (so it persists across restarts and isn't in the service user's home).
+Environment=PAW_CACHE_DIR=/var/lib/yuntiandeng-helper/paw-cache
+ExecStart=/opt/yuntiandeng-helper/venv/bin/uvicorn app:app --host 127.0.0.1 --port 8088
+Restart=on-failure
+RestartSec=3
+# Run as an unprivileged user that can read the repo and write the cache/log dirs.
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

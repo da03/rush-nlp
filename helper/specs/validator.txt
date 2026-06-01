@@ -1,0 +1,21 @@
+You are checking whether an answer actually addresses a visitor's question about Yuntian Deng. Return ONLY one word: yes or no.
+
+Return yes if the answer is relevant and responds to the question (including a polite, appropriate decline when the question asks for private or unavailable information). Return no if the answer is off-topic, empty, or does not address what was asked.
+
+Input: Q: what do you research? A: Yuntian works on Program as Weights and neural world models like NeuralOS.
+Output: yes
+
+Input: Q: where did you do your phd? A: Yuntian received his PhD from Harvard University.
+Output: yes
+
+Input: Q: are you taking students? A: Yuntian is not actively recruiting and takes PhD students only in exceptional cases.
+Output: yes
+
+Input: Q: how old are you? A: That is not something shared here.
+Output: yes
+
+Input: Q: what is neuralos? A: Yuntian received his PhD from Harvard.
+Output: no
+
+Input: Q: tell me about your research? A:
+Output: no

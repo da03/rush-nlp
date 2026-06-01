@@ -1,0 +1,55 @@
+# Page-classifier benchmark: query -> expected output (a link label or "question").
+# Auto-graded by eval.py. Covers link routing, the link-vs-question split, and
+# paraphrases / hard negatives.
+
+# --- CV ---
+- {query: "where is your cv", expected: cv}
+- {query: "can I see your resume", expected: cv}
+- {query: "download cv", expected: cv}
+
+# --- contact ---
+- {query: "how do I email you", expected: contact}
+- {query: "what's your email address", expected: contact}
+- {query: "how can I get in touch", expected: contact}
+
+# --- teaching (course page) ---
+- {query: "what course are you teaching", expected: teaching}
+- {query: "cs486 page", expected: teaching}
+- {query: "link to your class", expected: teaching}
+
+# --- publications ---
+- {query: "show me your papers", expected: publications}
+- {query: "list of publications", expected: publications}
+
+# --- demos ---
+- {query: "do you have any demos", expected: demos}
+- {query: "interactive tools page", expected: demos}
+
+# --- scholar / github ---
+- {query: "your google scholar", expected: scholar}
+- {query: "citations profile", expected: scholar}
+- {query: "your github", expected: github}
+- {query: "where's your code", expected: github}
+
+# --- projects as links (open/visit/download framing) ---
+- {query: "open the programasweights site", expected: programasweights}
+- {query: "take me to neuralos", expected: neuralos}
+- {query: "where can I download wildchat", expected: wildchat}
+- {query: "browse wildchat conversations", expected: wildvisualizer}
+- {query: "wildvisualizer link", expected: wildvisualizer}
+
+# --- feedback ---
+- {query: "I want to leave feedback", expected: feedback}
+- {query: "I'd like to send you a message", expected: feedback}
+
+# --- questions (must NOT route to a link) ---
+- {query: "what are you working on these days", expected: question}
+- {query: "tell me about your research", expected: question}
+- {query: "where did you do your phd", expected: question}
+- {query: "are you taking students", expected: question}
+- {query: "can I join your lab", expected: question}
+- {query: "how old are you", expected: question}
+- {query: "what is neuralos", expected: question}
+- {query: "what is wildchat", expected: question}
+- {query: "who are you", expected: question}
+- {query: "what is the capital of france", expected: question}

@@ -1,0 +1,82 @@
+# Link destinations the page_classifier can route to.
+#
+# Each key is a label the page_classifier may output (in addition to the special
+# label "question", which defers to the freeform answerer). The server maps the
+# label to one of these entries and returns a link-type result to the widget.
+#
+# `purpose` is fed into the page_classifier spec so the model knows what each
+# destination is for. `label` / `description` are shown in the widget UI.
+# `kind: feedback` is special: the widget opens its feedback form instead of
+# navigating to a URL.
+
+cv:
+  url: "https://yuntiandeng.com/cv/cv.comp.pdf"
+  label: "Curriculum Vitae (PDF)"
+  description: "Yuntian's CV"
+  purpose: "The user wants Yuntian's CV, resume, or curriculum vitae."
+
+contact:
+  url: "mailto:yuntian@uwaterloo.ca"
+  label: "Email Yuntian"
+  description: "yuntian@uwaterloo.ca"
+  purpose: "The user wants to contact, email, or reach Yuntian."
+
+teaching:
+  url: "https://yuntiandeng.com/teaching/spring2026/cs486-introduction-to-artificial-intelligence/"
+  label: "CS 486/686 course page"
+  description: "Introduction to Artificial Intelligence (Spring 2026)"
+  purpose: "The user wants the page for a specific course Yuntian lectures (his class). NOT for whether he supervises or recruits students."
+
+publications:
+  url: "https://yuntiandeng.com/publications"
+  label: "Publications"
+  description: "Yuntian's full list of papers"
+  purpose: "The user wants Yuntian's publications, papers, or full paper list."
+
+demos:
+  url: "https://yuntiandeng.com/demos/"
+  label: "Demos"
+  description: "Interactive demos and tools"
+  purpose: "The user wants Yuntian's demos or interactive tools page."
+
+scholar:
+  url: "https://scholar.google.com/citations?user=tk0e5lYAAAAJ"
+  label: "Google Scholar"
+  description: "Citations and publication metrics"
+  purpose: "The user wants Yuntian's Google Scholar profile or citations."
+
+github:
+  url: "https://github.com/da03"
+  label: "GitHub"
+  description: "github.com/da03"
+  purpose: "The user wants Yuntian's GitHub profile or code repositories."
+
+programasweights:
+  url: "https://programasweights.com"
+  label: "ProgramAsWeights"
+  description: "Compile natural language into tiny neural functions"
+  purpose: "The user wants the ProgramAsWeights (PAW) project website or to try it."
+
+neuralos:
+  url: "https://neural-os.com"
+  label: "NeuralOS"
+  description: "An operating system powered by neural networks"
+  purpose: "The user wants the NeuralOS demo or project website."
+
+wildchat:
+  url: "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full"
+  label: "WildChat dataset"
+  description: "Millions of real user-ChatGPT conversations (Hugging Face)"
+  purpose: "The user wants to download or access the WildChat dataset."
+
+wildvisualizer:
+  url: "https://wildvisualizer.com/"
+  label: "WildVisualizer"
+  description: "Interactive search over WildChat conversations"
+  purpose: "The user wants to browse, search, or visualize WildChat conversations."
+
+feedback:
+  kind: feedback
+  label: "Send feedback"
+  description: "Leave an anonymous message for Yuntian"
+  purpose: "The user wants to leave feedback, a message, a suggestion, or report a problem with the site."

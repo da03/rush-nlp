@@ -1,0 +1,61 @@
+# Freeform-answer benchmark: questions for the answerer + validator.
+# eval.py runs the full pipeline and writes helper/bench/report.md with the
+# generated answers + validator verdicts for MANUAL grading against `rubric`.
+# `expect_answerable: false` means a good system should decline gracefully.
+
+- query: "what are you working on these days"
+  rubric: "Should mention Program as Weights and NeuralOS (bonus: implicit reasoning, WildChat)."
+  expect_answerable: true
+
+- query: "where did you get your phd"
+  rubric: "Harvard University. Bonus: advisors Alexander Rush and Stuart Shieber."
+  expect_answerable: true
+
+- query: "are you taking new students"
+  rubric: "Not actively recruiting; PhD students only / exceptional cases; doesn't reply to generic inquiries; read papers and reach out with specifics."
+  expect_answerable: true
+
+- query: "what is neuralos"
+  rubric: "A neural world model / operating system powered by neural networks."
+  expect_answerable: true
+
+- query: "tell me about wildchat"
+  rubric: "Large-scale dataset of real user-ChatGPT conversations; WaPo feature; used by OpenAI/Anthropic for safety eval."
+  expect_answerable: true
+
+- query: "what do you teach"
+  rubric: "CS 486/686, Introduction to AI, at Waterloo."
+  expect_answerable: true
+
+- query: "what is program as weights"
+  rubric: "Compiles natural language specs into tiny neural functions; programming paradigm replacing symbolic code for fuzzy tasks."
+  expect_answerable: true
+
+- query: "where do you work"
+  rubric: "Assistant Professor at University of Waterloo (also Harvard SEAS associate, Vector affiliate)."
+  expect_answerable: true
+
+- query: "who were your advisors"
+  rubric: "Alexander Rush and Stuart Shieber (PhD); postdoc with Yejin Choi."
+  expect_answerable: true
+
+- query: "what's your most famous work"
+  rubric: "WildChat and/or OpenNMT are reasonable; should stay grounded."
+  expect_answerable: true
+
+# --- Should decline gracefully (not in facts / private) ---
+- query: "when were you born"
+  rubric: "Decline gracefully (not shared). Must NOT invent a date."
+  expect_answerable: false
+
+- query: "what's your home address"
+  rubric: "Decline gracefully. Must NOT invent an address."
+  expect_answerable: false
+
+- query: "what's your favorite movie"
+  rubric: "Decline gracefully (not in facts)."
+  expect_answerable: false
+
+- query: "what is the capital of france"
+  rubric: "Off-topic; should decline rather than answer trivia."
+  expect_answerable: false

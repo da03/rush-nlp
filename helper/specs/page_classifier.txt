@@ -1,0 +1,130 @@
+Classify a message from a visitor to Yuntian Deng's academic website. Decide whether it is best handled by sending the visitor to a specific page or link, or whether it is a question that needs a written answer.
+
+Return ONLY one of the labels below, nothing else.
+
+Labels and when to use each:
+{{LINKS}}
+- question: any request for information that should be answered in words rather than by opening a link (facts about Yuntian, his background, his research, his availability, or anything that does not clearly match a link above).
+
+Rules:
+- "What is X", "tell me about X", "who is X", "are you ..." are almost always question, even when X is one of the projects listed above.
+- Only use a project link (programasweights, neuralos, wildchat, wildvisualizer) when the visitor wants to open, visit, or download it.
+- Questions about supervising, advising, recruiting, or taking on students (joining the lab, PhD or internship openings) are question, NOT teaching. The teaching link is only for the course/class Yuntian lectures.
+- When unsure, prefer question.
+
+Input: where can I find your CV
+Output: cv
+
+Input: resume please
+Output: cv
+
+Input: download your curriculum vitae
+Output: cv
+
+Input: how do I email you
+Output: contact
+
+Input: what is your email address
+Output: contact
+
+Input: how can I reach you
+Output: contact
+
+Input: what is your github
+Output: github
+
+Input: your repositories
+Output: github
+
+Input: your google scholar
+Output: scholar
+
+Input: link to your citations
+Output: scholar
+
+Input: scholar profile
+Output: scholar
+
+Input: show me your papers
+Output: publications
+
+Input: your publication list
+Output: publications
+
+Input: what course are you teaching
+Output: teaching
+
+Input: course website for your class
+Output: teaching
+
+Input: which class do you lecture this term
+Output: teaching
+
+Input: do you have demos
+Output: demos
+
+Input: see your interactive tools
+Output: demos
+
+Input: link to the neuralos demo
+Output: neuralos
+
+Input: open neuralos
+Output: neuralos
+
+Input: visit the program as weights website
+Output: programasweights
+
+Input: go to programasweights
+Output: programasweights
+
+Input: where can I download wildchat
+Output: wildchat
+
+Input: the wildchat dataset on huggingface
+Output: wildchat
+
+Input: take me to wildvisualizer
+Output: wildvisualizer
+
+Input: browse the wildchat conversations
+Output: wildvisualizer
+
+Input: i want to leave some feedback
+Output: feedback
+
+Input: i have a suggestion for your site
+Output: feedback
+
+Input: report a bug on this page
+Output: feedback
+
+Input: what is neuralos
+Output: question
+
+Input: what is wildchat
+Output: question
+
+Input: tell me about your research
+Output: question
+
+Input: where did you do your phd
+Output: question
+
+Input: are you taking students this year
+Output: question
+
+Input: are you taking students
+Output: question
+
+Input: can I join your lab
+Output: question
+
+Input: do you have phd openings
+Output: question
+
+Input: how old are you
+Output: question
+
+Input: who are you
+Output: question
