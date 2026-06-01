@@ -187,4 +187,22 @@
       if (dialog.hidden) openDialog(); else closeDialog();
     }
   });
+
+  // Deep link: open the helper automatically when the page is loaded with
+  //   ?ask=1            -> just open the helper
+  //   ?ask=<question>   -> open, prefill the question, and run it
+  //   #ask              -> same as ?ask=1
+  // Lets a shared/tweeted link land visitors straight in the helper.
+  (function autoOpenFromUrl() {
+    var raw = null;
+    try { raw = new URLSearchParams(location.search).get('ask'); } catch (e) {}
+    var hashAsk = location.hash.replace(/^#/, '').toLowerCase() === 'ask';
+    if (raw === null && !hashAsk) return;
+    openDialog();
+    var q = (raw && raw !== '1' && raw.toLowerCase() !== 'true') ? raw : '';
+    if (q) {
+      input.value = q;
+      runQuery(q);
+    }
+  })();
 })();
