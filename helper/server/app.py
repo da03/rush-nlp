@@ -39,7 +39,7 @@ import common  # noqa: E402
 
 # --- Token budgets per stage ---
 PC_MAX_TOKENS = 8       # one label
-ANS_MAX_TOKENS = 96     # 1-2 sentences
+ANS_MAX_TOKENS = 200    # 1-2 sentences; headroom for multi-link list answers
 VAL_MAX_TOKENS = 4      # yes / no
 
 LINKS = common.load_links()

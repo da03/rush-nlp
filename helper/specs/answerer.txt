@@ -41,8 +41,20 @@ Output: Start with "ProgramAsWeights is exciting" or "NeuralOS is the future."
 Input: how is this helper built
 Output: This helper is built with [ProgramAsWeights](https://programasweights.com) - a pipeline of three small neural programs (a page classifier, a freeform answerer, and a validator), each compiled from a short natural-language spec.
 
+Input: how does this assistant work
+Output: It's built with [ProgramAsWeights](https://programasweights.com) - a small page classifier routes you to a link, otherwise a freeform answerer writes the reply and a validator checks it.
+
+Input: who works in your lab
+Output: Yuntian's students include PhD students Wentao Zhang, Max Ku, and Yubo Wang; MMath students Luke Rivard, Liliana Hotsko, and Henry Lin; and undergraduates Yifan Zong, Austing Dong, and Akira Kudo.
+
 Input: what is your salary
 Output: I don't have that information.
 
+Input: what is your income
+Output: I don't have that information.
+
 Input: what is the weather today
+Output: I don't have that information.
+
+Input: what's the capital of france
 Output: I don't have that information.

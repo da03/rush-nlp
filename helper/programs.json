@@ -1,9 +1,9 @@
 {
-  "compiler": "default",
-  "compiled_at": "2026-06-02T01:15:24.179019+00:00",
+  "compiler": "paw-ft-bs48",
+  "compiled_at": "2026-06-02T16:04:21.960513+00:00",
   "programs": {
-    "page_classifier": "0897635b3d497e87ea50",
-    "answerer": "5a37bc5bd51bc16682b6",
-    "validator": "708ce0c34cf5a7e099b5"
+    "page_classifier": "1beb17150b12a6165540",
+    "answerer": "bf9e8a9af4478d4dc772",
+    "validator": "ae1d51dd17d296dc747f"
   }
 }

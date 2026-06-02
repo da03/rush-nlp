@@ -23,7 +23,7 @@ import common
 BENCH = common.HELPER_DIR / "bench"
 REPORT = BENCH / "report.md"
 
-PC_MAX, ANS_MAX, VAL_MAX = 8, 96, 4
+PC_MAX, ANS_MAX, VAL_MAX = 8, 200, 4
 
 
 def main() -> None:
