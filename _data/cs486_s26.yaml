@@ -348,8 +348,15 @@ schedule:
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
-  - severity: info
+  - severity: event
     show: true
+    title: "Hala's office hours moved to Tuesday this week (Jun 2, 3 PM)"
+    body: >-
+      This week only, Hala Sheta's Wednesday 1 PM office hours move to
+      <strong>Tuesday, June 2 at 3 PM</strong>. Join at the usual
+      <a href="https://uwaterloo.zoom.us/j/96262579733?pwd=miRk3XhmDayBDtfzndKOsSrOchieVA.1">Zoom link</a>.
+  - severity: info
+    show: false
     title: "Chat 2 deadline extended to Thursday, May 28"
     body: >-
       Chat 2 (Heuristic Search &amp; CSPs) is due
