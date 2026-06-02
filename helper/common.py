@@ -55,12 +55,14 @@ def build_link_registry(links: dict) -> str:
     """name -> url list the answerer may hyperlink, derived from links.yaml.
 
     This is the single source of truth (links.yaml) reused in the answerer spec,
-    not a hand-copied duplicate. Entries without a URL (e.g. feedback) are skipped.
+    not a hand-copied duplicate. Entries without a URL (e.g. feedback) are skipped,
+    as are routing-only links flagged `registry: false` (e.g. social/profile pages
+    the answerer should never inline in prose - those stay classifier-only).
     """
     return "\n".join(
         f"- {info.get('name') or info.get('label', label)}: {info['url']}"
         for label, info in links.items()
-        if info.get("url")
+        if info.get("url") and info.get("registry", True)
     )
 
 

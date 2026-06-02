@@ -37,6 +37,21 @@ Output: github
 Input: your repositories
 Output: github
 
+Input: your twitter
+Output: x
+
+Input: follow you on x
+Output: x
+
+Input: your linkedin
+Output: linkedin
+
+Input: connect with you on linkedin
+Output: linkedin
+
+Input: your semantic scholar profile
+Output: semantic_scholar
+
 Input: your google scholar
 Output: scholar
 

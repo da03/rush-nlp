@@ -29,11 +29,15 @@
 - {query: "any live demos to try", expected: demos}
 - {query: "your demo gallery", expected: demos}
 
-# --- scholar / github ---
+# --- scholar / github / socials ---
 - {query: "find you on google scholar", expected: scholar}
 - {query: "your citation metrics", expected: scholar}
 - {query: "your code repositories", expected: github}
 - {query: "do you have a github account", expected: github}
+- {query: "do you have twitter", expected: x}
+- {query: "your x handle", expected: x}
+- {query: "where can I find your linkedin", expected: linkedin}
+- {query: "your semantic scholar author page", expected: semantic_scholar}
 
 # --- projects as links (open/visit/download framing) ---
 - {query: "i want to try program as weights", expected: programasweights}
