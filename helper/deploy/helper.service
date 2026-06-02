@@ -12,6 +12,7 @@ Type=simple
 WorkingDirectory=/opt/yuntiandeng-helper/repo/helper/server
 Environment=HELPER_ALLOWED_ORIGINS=https://yuntiandeng.com,https://www.yuntiandeng.com
 Environment=HELPER_FEEDBACK_LOG=/var/lib/yuntiandeng-helper/feedback.jsonl
+Environment=HELPER_QUERY_LOG=/var/lib/yuntiandeng-helper/queries.jsonl
 # Optional: higher compile limits / private programs.
 # Environment=PAW_API_KEY=paw_sk_...
 # PAW model cache (so it persists across restarts and isn't in the service user's home).

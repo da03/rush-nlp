@@ -17,6 +17,8 @@ Env:
                           (default: https://yuntiandeng.com,https://www.yuntiandeng.com)
   HELPER_FEEDBACK_LOG     path to append feedback JSONL
                           (default: <helper>/feedback.jsonl)
+  HELPER_QUERY_LOG        path to append per-question JSONL for review
+                          (default: <helper>/queries.jsonl)
 """
 
 import datetime
@@ -79,6 +81,33 @@ app.add_middleware(
 )
 
 
+QUERY_LOG = os.environ.get("HELPER_QUERY_LOG", str(common.HELPER_DIR / "queries.jsonl"))
+
+
+def _log_query(query: str, route: str, result: dict, verdict: str | None = None) -> None:
+    """Append one JSONL line per question so we can review and polish on real usage.
+
+    Deliberately stores no IP/identifier (public site, minimize PII). The query
+    text is logged because that is the whole point of the review loop; keep the
+    file private on the server. Never raises.
+    """
+    rtype = result.get("type")
+    record = {
+        "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "query": query,
+        "route": route,                                  # classifier label or "question"
+        "result_type": rtype,                            # link / answer / feedback / none
+        "answer": result.get("text") or result.get("label"),
+        "validator": verdict,                            # yes/no for the freeform path
+        "fallback": rtype == "none",                     # the polish targets
+    }
+    try:
+        with open(QUERY_LOG, "a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+
+
 class AskRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=500)
 
@@ -89,28 +118,31 @@ def ask(req: AskRequest) -> dict:
     if len(query) < 3:
         return {"type": "none"}
 
-    label = common.normalize_label(_infer("page_classifier", query, PC_MAX_TOKENS), LINKS)
+    route = common.normalize_label(_infer("page_classifier", query, PC_MAX_TOKENS), LINKS)
+    verdict = None
 
-    if label != "question" and label in LINKS:
-        info = LINKS[label]
+    if route != "question" and route in LINKS:
+        info = LINKS[route]
         if info.get("kind") == "feedback":
-            return {"type": "feedback", "label": info["label"], "description": info.get("description", "")}
-        return {
-            "type": "link",
-            "label": info["label"],
-            "url": info["url"],
-            "description": info.get("description", ""),
-        }
+            result = {"type": "feedback", "label": info["label"], "description": info.get("description", "")}
+        else:
+            result = {
+                "type": "link",
+                "label": info["label"],
+                "url": info["url"],
+                "description": info.get("description", ""),
+            }
+    else:
+        # Freeform question path.
+        answer = _infer("answerer", query, ANS_MAX_TOKENS)
+        if len(answer) < 2:
+            result = {"type": "none"}
+        else:
+            verdict = _infer("validator", f"Q: {query} A: {answer}", VAL_MAX_TOKENS).lower()
+            result = {"type": "answer", "text": answer} if verdict.startswith("yes") else {"type": "none"}
 
-    # Freeform question path.
-    answer = _infer("answerer", query, ANS_MAX_TOKENS)
-    if len(answer) < 2:
-        return {"type": "none"}
-
-    verdict = _infer("validator", f"Q: {query} A: {answer}", VAL_MAX_TOKENS).lower()
-    if verdict.startswith("yes"):
-        return {"type": "answer", "text": answer}
-    return {"type": "none"}
+    _log_query(query, route, result, verdict)
+    return result
 
 
 class FeedbackRequest(BaseModel):

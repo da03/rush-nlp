@@ -62,6 +62,19 @@ you compiled and tested. No compilation happens on the server.
   seconds); subsequent calls are fast. `PAW_CACHE_DIR` keeps the model across restarts.
 - Feedback is appended as JSON lines to `HELPER_FEEDBACK_LOG`. Read it with
   `cat /var/lib/yuntiandeng-helper/feedback.jsonl`.
+- Every question is appended to `HELPER_QUERY_LOG` (`/var/lib/yuntiandeng-helper/queries.jsonl`):
+  one JSON line per `/ask` with the query, route, result type, answer, validator
+  verdict, and a `fallback` flag (no IP is stored). Use this to polish the helper
+  on real usage. Review it with:
+  ```bash
+  # on the server
+  /opt/yuntiandeng-helper/venv/bin/python /opt/yuntiandeng-helper/repo/helper/review.py
+  # or pull the logs locally
+  scp root@programasweights.com:/var/lib/yuntiandeng-helper/queries.jsonl /tmp/
+  python helper/review.py /tmp/queries.jsonl
+  ```
+  `review.py` highlights the fallback/unanswered queries - those are the gaps to
+  fix in `facts.md` / `links.yaml` / the specs, then recompile.
 - CORS origins are set via `HELPER_ALLOWED_ORIGINS` in the systemd unit.
 - To upgrade to the highest-accuracy compiler later:
   `python helper/compile.py --compiler paw-ft-bs48`, commit, pull, restart.

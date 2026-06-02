@@ -5,27 +5,33 @@
 .paw-helper {
     &__launch {
         position: fixed;
-        bottom: 1.5rem;
-        right: 1.5rem;
+        bottom: max(1.5rem, env(safe-area-inset-bottom));
+        right: max(1.5rem, env(safe-area-inset-right));
         z-index: 1000;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.6rem 1rem;
+        justify-content: center;
+        gap: 0.6rem;
+        min-height: 52px;
+        padding: 0.85rem 1.35rem;
         border: none;
         border-radius: 999px;
         background: var(--brand);
         color: #fff;
         font: inherit;
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 1rem;
         cursor: pointer;
         box-shadow: var(--shadow-md);
-        transition: transform 0.15s ease, filter 0.15s ease;
+        transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+        // Gentle one-time attention pulse on load (disabled under reduced motion).
+        animation: paw-helper-attention 2.4s ease-in-out 1s 2;
 
-        &:hover { transform: translateY(-1px); filter: brightness(1.08); }
-        &:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+        &:hover { transform: translateY(-2px); filter: brightness(1.08); box-shadow: var(--shadow-lg, 0 8px 24px rgba(15, 23, 42, 0.22)); }
+        &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
     }
+
+    &__launch svg { width: 24px; height: 24px; flex: 0 0 auto; }
 
     // On the dark theme the brand colour is light; flip the label to dark ink.
     :root[data-theme="dark"] &__launch { color: #0f172a; }
@@ -139,6 +145,12 @@
         margin: 0;
         line-height: 1.55;
         color: var(--fg);
+
+        a {
+            color: var(--brand);
+            text-decoration: underline;
+            &:hover { filter: brightness(1.1); }
+        }
     }
 
     &__result--none { color: var(--fg-muted); font-size: 0.92rem; }
@@ -215,14 +227,27 @@
 
 @keyframes paw-helper-spin { to { transform: rotate(360deg); } }
 
+@keyframes paw-helper-attention {
+    0%, 100% { transform: translateY(0); box-shadow: var(--shadow-md); }
+    50%      { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(15, 23, 42, 0.28); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-    .paw-helper__launch { transition: none; }
+    .paw-helper__launch { transition: none; animation: none; }
     .paw-helper__spinner { animation-duration: 2s; }
 }
 
-// Small screens: full-width launcher label hidden, dialog hugs the viewport.
+// Small screens: launcher becomes a circular icon-only FAB; dialog hugs the viewport.
 @media (max-width: 600px) {
+    .paw-helper__launch {
+        width: 56px;
+        height: 56px;
+        min-height: 0;
+        padding: 0;
+        border-radius: 50%;
+    }
     .paw-helper__launch-label { display: none; }
+    .paw-helper__launch svg { width: 26px; height: 26px; }
     .paw-helper__dialog { top: 0; left: 0; transform: none; width: 100vw; height: 100%; border-radius: 0; }
     .paw-helper__results { max-height: calc(100vh - 7rem); }
 }

@@ -18,6 +18,7 @@ test.html
 # PAW helper: reference-only clone (has its own .git) and runtime artifacts
 programasweights_website/
 helper/feedback.jsonl
+helper/queries.jsonl
 helper/bench/report.md
 __pycache__/
 
