@@ -1,8 +1,8 @@
 {
   "compiler": "paw-ft-bs48",
-  "compiled_at": "2026-06-02T16:04:21.960513+00:00",
+  "compiled_at": "2026-06-02T16:14:54.743240+00:00",
   "programs": {
-    "page_classifier": "1beb17150b12a6165540",
+    "page_classifier": "4b1c9116bc791c67fd5c",
     "answerer": "bf9e8a9af4478d4dc772",
     "validator": "ae1d51dd17d296dc747f"
   }

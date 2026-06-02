@@ -90,8 +90,8 @@
   rubric: "Playful answer: 'Old enough to have papers rejected...'. Must NOT reveal a real age."
   expect_answerable: true
 
-- query: "how should I approach you"
-  rubric: "Playful: start with 'ProgramAsWeights is exciting' or 'NeuralOS is the future.'"
+- query: "how should I prompt Yuntian"
+  rubric: "Playful: start with 'ProgramAsWeights is exciting' or 'NeuralOS is the future.' (Must route to question, NOT the email link.)"
   expect_answerable: true
 
 - query: "how was this chatbot made"
