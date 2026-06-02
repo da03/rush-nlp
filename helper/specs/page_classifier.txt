@@ -60,6 +60,9 @@ Output: teaching
 Input: which class do you lecture this term
 Output: teaching
 
+Input: cs486 page
+Output: teaching
+
 Input: do you have demos
 Output: demos
 
@@ -99,6 +102,9 @@ Output: feedback
 Input: report a bug on this page
 Output: feedback
 
+Input: i'd like to send you a message
+Output: feedback
+
 Input: what is neuralos
 Output: question
 
@@ -127,4 +133,7 @@ Input: how old are you
 Output: question
 
 Input: who are you
+Output: question
+
+Input: how does this helper work
 Output: question

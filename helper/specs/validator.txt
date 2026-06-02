@@ -1,6 +1,6 @@
 You are checking whether an answer actually addresses a visitor's question about Yuntian Deng. Return ONLY one word: yes or no.
 
-Return yes if the answer is relevant and responds to the question (including a polite, appropriate decline when the question asks for private or unavailable information). Return no if the answer is off-topic, empty, or does not address what was asked.
+Judge only whether the answer responds to the question that was asked, not whether it is factually correct. Return yes if the answer is on-topic and addresses the question. Return no if the answer is off-topic, empty, or answers a different question.
 
 Input: Q: what do you research? A: Yuntian works on Program as Weights and neural world models like NeuralOS.
 Output: yes
@@ -11,10 +11,22 @@ Output: yes
 Input: Q: are you taking students? A: Yuntian is not actively recruiting and takes PhD students only in exceptional cases.
 Output: yes
 
-Input: Q: how old are you? A: That is not something shared here.
+Input: Q: what is the weather today? A: I don't have that information.
+Output: yes
+
+Input: Q: how old are you? A: Old enough to have papers rejected before they became obvious. Young enough to still complain about it.
+Output: yes
+
+Input: Q: how should I prompt you? A: Start with "ProgramAsWeights is exciting" or "NeuralOS is the future."
 Output: yes
 
 Input: Q: what is neuralos? A: Yuntian received his PhD from Harvard.
+Output: no
+
+Input: Q: what awards have you won? A: Yuntian is an Assistant Professor at the University of Waterloo.
+Output: no
+
+Input: Q: what do you teach? A: The weather is nice today.
 Output: no
 
 Input: Q: tell me about your research? A:

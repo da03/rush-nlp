@@ -72,10 +72,31 @@
     results.appendChild(a);
   }
 
+  // Render text that may contain markdown links [label](url). Builds DOM nodes
+  // directly (no innerHTML) so there is no XSS surface; only http(s)/mailto URLs
+  // become links, and anything that doesn't match is shown as plain text.
+  function appendMarkdown(parent, text) {
+    var re = /\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\)/g;
+    var last = 0;
+    var m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) parent.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var a = document.createElement('a');
+      a.href = m[2];
+      a.textContent = m[1];
+      if (m[2].indexOf('mailto:') !== 0) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+      parent.appendChild(a);
+      last = re.lastIndex;
+    }
+    if (last < text.length) parent.appendChild(document.createTextNode(text.slice(last)));
+  }
+
   function renderAnswer(r) {
     clearResults();
     var d = el('div', 'paw-helper__result paw-helper__result--answer');
-    d.appendChild(el('p', 'paw-helper__answer-text', r.text));
+    var p = el('p', 'paw-helper__answer-text');
+    appendMarkdown(p, r.text || '');
+    d.appendChild(p);
     results.appendChild(d);
   }
 
