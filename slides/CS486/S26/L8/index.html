@@ -136,7 +136,8 @@
   <p style="text-align:center; font-size: 0.82em; color:#6b7280; margin: 0;">A path through middle node \(B\) is <strong>blocked</strong> iff:</p>
   <div class="dsep-rules">
     <div class="dsep-card">
-      <h3>Chain &nbsp;\(X \to B \to Y\)</h3>
+      <h3>Chain</h3>
+      <div class="dsep-formula">\(X \to B \to Y\)</div>
       <svg viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
         <line stroke="#4b5563" stroke-width="2" x1="32" y1="40" x2="84" y2="40" marker-end="url(#arrow-bn)"/>
         <line stroke="#4b5563" stroke-width="2" x1="118" y1="40" x2="168" y2="40" marker-end="url(#arrow-bn)"/>
@@ -147,7 +148,8 @@
       <p class="blocking"><span class="green">Blocked</span> when \(B \in E\)<br>(middle is observed)</p>
     </div>
     <div class="dsep-card">
-      <h3>Common cause &nbsp;\(X \leftarrow B \to Y\)</h3>
+      <h3>Common cause</h3>
+      <div class="dsep-formula">\(X \leftarrow B \to Y\)</div>
       <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
         <line stroke="#4b5563" stroke-width="2" x1="92" y1="32" x2="32" y2="78" marker-end="url(#arrow-bn)"/>
         <line stroke="#4b5563" stroke-width="2" x1="108" y1="32" x2="168" y2="78" marker-end="url(#arrow-bn)"/>
@@ -158,7 +160,8 @@
       <p class="blocking"><span class="green">Blocked</span> when \(B \in E\)<br>(middle is observed)</p>
     </div>
     <div class="dsep-card">
-      <h3>V-structure &nbsp;\(X \to B \leftarrow Y\)</h3>
+      <h3>V-structure</h3>
+      <div class="dsep-formula">\(X \to B \leftarrow Y\)</div>
       <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
         <line stroke="#4b5563" stroke-width="2" x1="32" y1="32" x2="92" y2="78" marker-end="url(#arrow-bn)"/>
         <line stroke="#4b5563" stroke-width="2" x1="168" y1="32" x2="108" y2="78" marker-end="url(#arrow-bn)"/>
@@ -175,7 +178,7 @@
 <section>
   <h2>Quiz pack 1: chain blocking</h2>
   <div style="text-align: center; margin: 0.2em 0;" class="dsep-graph">
-    <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" style="max-height: 230px;">
+    <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" style="max-height: 320px;">
       <line class="edge-path" x1="115" y1="55" x2="155" y2="85" marker-end="url(#arrow-red)"/>
       <line x1="180" y1="120" x2="135" y2="170" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
       <line class="edge-path" x1="195" y1="120" x2="235" y2="170" marker-end="url(#arrow-red)"/>
@@ -184,14 +187,14 @@
       <line class="edge-path" x1="270" y1="200" x2="345" y2="225" marker-end="url(#arrow-red)"/>
       <line x1="510" y1="55"  x2="465" y2="85"  stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
       <g>
-        <rect x="40"  y="30" width="150" height="30"/><text x="115" y="50" text-anchor="middle" font-size="12">TravelSubway</text>
-        <rect x="155" y="90" width="60"  height="30"/><text x="185" y="110" text-anchor="middle" font-size="12">Flu</text>
-        <rect x="60"  y="170" width="80" height="30"/><text x="100" y="190" text-anchor="middle" font-size="12">Aches</text>
-        <rect x="230" y="170" width="80" height="30"/><text x="270" y="190" text-anchor="middle" font-size="12">Fever</text>
-        <rect x="345" y="225" width="100" height="30"/><text x="395" y="245" text-anchor="middle" font-size="12">HighTemp</text>
-        <rect x="415" y="90" width="80"  height="30"/><text x="455" y="110" text-anchor="middle" font-size="12">Malaria</text>
-        <rect x="510" y="170" width="80" height="30"/><text x="550" y="190" text-anchor="middle" font-size="12">Jaundice</text>
-        <rect x="450" y="30" width="100" height="30"/><text x="500" y="50" text-anchor="middle" font-size="12">ExoticTrip</text>
+        <rect x="40"  y="30" width="150" height="30"/><text x="115" y="50" text-anchor="middle" font-size="15">TravelSubway</text>
+        <rect x="155" y="90" width="60"  height="30"/><text x="185" y="110" text-anchor="middle" font-size="15">Flu</text>
+        <rect x="60"  y="170" width="80" height="30"/><text x="100" y="190" text-anchor="middle" font-size="15">Aches</text>
+        <rect x="230" y="170" width="80" height="30"/><text x="270" y="190" text-anchor="middle" font-size="15">Fever</text>
+        <rect x="345" y="225" width="100" height="30"/><text x="395" y="245" text-anchor="middle" font-size="15">HighTemp</text>
+        <rect x="415" y="90" width="80"  height="30"/><text x="455" y="110" text-anchor="middle" font-size="15">Malaria</text>
+        <rect x="510" y="170" width="80" height="30"/><text x="550" y="190" text-anchor="middle" font-size="15">Jaundice</text>
+        <rect x="450" y="30" width="100" height="30"/><text x="500" y="50" text-anchor="middle" font-size="15">ExoticTrip</text>
       </g>
     </svg>
   </div>
@@ -209,7 +212,7 @@
 <section>
   <h2>Quiz pack 2: another chain test</h2>
   <div style="text-align: center; margin: 0.2em 0;" class="dsep-graph">
-    <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" style="max-height: 230px;">
+    <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" style="max-height: 320px;">
       <line x1="115" y1="55" x2="155" y2="85" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
       <line class="edge-path" x1="180" y1="120" x2="135" y2="170" marker-end="url(#arrow-red)"/>
       <line class="edge-path" x1="195" y1="120" x2="235" y2="170" marker-end="url(#arrow-red)"/>
@@ -218,14 +221,14 @@
       <line class="edge-path" x1="270" y1="200" x2="345" y2="225" marker-end="url(#arrow-red)"/>
       <line x1="510" y1="55"  x2="465" y2="85"  stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
       <g>
-        <rect x="40"  y="30" width="150" height="30"/><text x="115" y="50" text-anchor="middle" font-size="12">TravelSubway</text>
-        <rect x="155" y="90" width="60"  height="30"/><text x="185" y="110" text-anchor="middle" font-size="12">Flu</text>
-        <rect x="60"  y="170" width="80" height="30"/><text x="100" y="190" text-anchor="middle" font-size="12">Aches</text>
-        <rect x="230" y="170" width="80" height="30"/><text x="270" y="190" text-anchor="middle" font-size="12">Fever</text>
-        <rect x="345" y="225" width="100" height="30"/><text x="395" y="245" text-anchor="middle" font-size="12">HighTemp</text>
-        <rect x="415" y="90" width="80"  height="30"/><text x="455" y="110" text-anchor="middle" font-size="12">Malaria</text>
-        <rect x="510" y="170" width="80" height="30"/><text x="550" y="190" text-anchor="middle" font-size="12">Jaundice</text>
-        <rect x="450" y="30" width="100" height="30"/><text x="500" y="50" text-anchor="middle" font-size="12">ExoticTrip</text>
+        <rect x="40"  y="30" width="150" height="30"/><text x="115" y="50" text-anchor="middle" font-size="15">TravelSubway</text>
+        <rect x="155" y="90" width="60"  height="30"/><text x="185" y="110" text-anchor="middle" font-size="15">Flu</text>
+        <rect x="60"  y="170" width="80" height="30"/><text x="100" y="190" text-anchor="middle" font-size="15">Aches</text>
+        <rect x="230" y="170" width="80" height="30"/><text x="270" y="190" text-anchor="middle" font-size="15">Fever</text>
+        <rect x="345" y="225" width="100" height="30"/><text x="395" y="245" text-anchor="middle" font-size="15">HighTemp</text>
+        <rect x="415" y="90" width="80"  height="30"/><text x="455" y="110" text-anchor="middle" font-size="15">Malaria</text>
+        <rect x="510" y="170" width="80" height="30"/><text x="550" y="190" text-anchor="middle" font-size="15">Jaundice</text>
+        <rect x="450" y="30" width="100" height="30"/><text x="500" y="50" text-anchor="middle" font-size="15">ExoticTrip</text>
       </g>
     </svg>
   </div>
@@ -243,7 +246,7 @@
 <section>
   <h2>Quiz pack 3: v-structure with a descendant</h2>
   <div style="text-align: center; margin: 0.2em 0;" class="dsep-graph">
-    <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" style="max-height: 230px;">
+    <svg viewBox="0 0 620 280" xmlns="http://www.w3.org/2000/svg" style="max-height: 320px;">
       <line x1="115" y1="55" x2="155" y2="85" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
       <line x1="180" y1="120" x2="135" y2="170" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
       <line class="edge-path" x1="195" y1="120" x2="235" y2="170" marker-end="url(#arrow-red)"/>
@@ -252,14 +255,14 @@
       <line x1="270" y1="200" x2="345" y2="225" stroke="#4b5563" stroke-width="2" marker-end="url(#arrow-bn)"/>
       <line class="edge-path" x1="510" y1="55"  x2="465" y2="85"  marker-end="url(#arrow-red)"/>
       <g>
-        <rect x="40"  y="30" width="150" height="30"/><text x="115" y="50" text-anchor="middle" font-size="12">TravelSubway</text>
-        <rect x="155" y="90" width="60"  height="30"/><text x="185" y="110" text-anchor="middle" font-size="12">Flu</text>
-        <rect x="60"  y="170" width="80" height="30"/><text x="100" y="190" text-anchor="middle" font-size="12">Aches</text>
-        <rect x="230" y="170" width="80" height="30"/><text x="270" y="190" text-anchor="middle" font-size="12">Fever</text>
-        <rect x="345" y="225" width="100" height="30"/><text x="395" y="245" text-anchor="middle" font-size="12">HighTemp</text>
-        <rect x="415" y="90" width="80"  height="30"/><text x="455" y="110" text-anchor="middle" font-size="12">Malaria</text>
-        <rect x="510" y="170" width="80" height="30"/><text x="550" y="190" text-anchor="middle" font-size="12">Jaundice</text>
-        <rect x="450" y="30" width="100" height="30"/><text x="500" y="50" text-anchor="middle" font-size="12">ExoticTrip</text>
+        <rect x="40"  y="30" width="150" height="30"/><text x="115" y="50" text-anchor="middle" font-size="15">TravelSubway</text>
+        <rect x="155" y="90" width="60"  height="30"/><text x="185" y="110" text-anchor="middle" font-size="15">Flu</text>
+        <rect x="60"  y="170" width="80" height="30"/><text x="100" y="190" text-anchor="middle" font-size="15">Aches</text>
+        <rect x="230" y="170" width="80" height="30"/><text x="270" y="190" text-anchor="middle" font-size="15">Fever</text>
+        <rect x="345" y="225" width="100" height="30"/><text x="395" y="245" text-anchor="middle" font-size="15">HighTemp</text>
+        <rect x="415" y="90" width="80"  height="30"/><text x="455" y="110" text-anchor="middle" font-size="15">Malaria</text>
+        <rect x="510" y="170" width="80" height="30"/><text x="550" y="190" text-anchor="middle" font-size="15">Jaundice</text>
+        <rect x="450" y="30" width="100" height="30"/><text x="500" y="50" text-anchor="middle" font-size="15">ExoticTrip</text>
       </g>
     </svg>
   </div>
@@ -278,15 +281,20 @@
      ============================================================ -->
 
 <!-- 9. Many correct Bayes nets -->
-<section>
+<section class="center-slide">
   <h2>Many correct Bayes nets exist</h2>
-  <p style="font-size: 0.92em;">For a fixed joint distribution, more than one Bayes net is "correct".</p>
-  <ul style="font-size: 0.88em;">
-    <li class="fragment"><strong>Correctness:</strong> Bayes net B is correct (w.r.t. A) iff every independence that B requires also holds in A.</li>
-    <li class="fragment"><strong>Missing independence is OK</strong> &mdash; a denser network still encodes the joint.</li>
-    <li class="fragment"><strong>Missing dependence is NOT OK</strong> &mdash; a too-sparse network forces a wrong independence.</li>
-    <li class="fragment">We prefer the BN with the <strong>fewest probabilities</strong> &mdash; usually the one with fewest edges.</li>
-  </ul>
+  <p style="font-size: 0.92em; text-align: center;">A BN is <strong>correct</strong> if every independence it claims also holds in the true distribution.</p>
+  <div class="correct-rules">
+    <div class="rule-card ok fragment">
+      <div class="rule-verdict">Missing an independence: OK</div>
+      <div class="rule-note">extra edges &mdash; still encodes the joint</div>
+    </div>
+    <div class="rule-card no fragment">
+      <div class="rule-verdict">Missing a dependence: NOT OK</div>
+      <div class="rule-note">too sparse &mdash; forces a wrong independence</div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.8em;">So prefer the BN with the <strong>fewest edges</strong> (fewest probabilities to store).</p>
 </section>
 
 <!-- 10. Construction algorithm -->
@@ -515,16 +523,19 @@
   <p style="font-size: 0.9em;">Two variables can be highly correlated without one causing the other.</p>
   <div class="two-col" style="margin-top: 0.4em;">
     <div style="flex: 1;">
-      <svg viewBox="0 0 320 210" xmlns="http://www.w3.org/2000/svg" class="spurious-chart">
+      <svg viewBox="0 0 320 214" xmlns="http://www.w3.org/2000/svg" class="spurious-chart">
         <line class="axis" x1="30" y1="170" x2="300" y2="170"/>
         <line class="axis" x1="30" y1="170" x2="30"  y2="20"/>
         <text class="axis-label" x="165" y="190" text-anchor="middle">month</text>
         <text class="axis-label" x="15" y="95" text-anchor="middle" transform="rotate(-90 15 95)">count</text>
         <polyline class="curve-a" points="40,140 70,110 100,80 130,60 160,75 190,95 220,55 250,40 280,30"/>
         <polyline class="curve-b" points="40,150 70,120 100,90 130,75 160,85 190,100 220,65 250,50 280,40"/>
-        <text x="282" y="32" font-size="10" fill="#1d4ed8" text-anchor="end">Ice cream sales</text>
-        <text x="282" y="44" font-size="10" fill="#dc2626" text-anchor="end">Shark attacks</text>
-        <text x="165" y="208" text-anchor="middle" font-size="10" font-style="italic" fill="#6b7280">both peak in summer (hidden cause)</text>
+        <!-- legend in the empty top-left so it never overlaps the curves -->
+        <line x1="44" y1="28" x2="66" y2="28" stroke="#1d4ed8" stroke-width="2.5"/>
+        <text x="70" y="31" font-size="10" fill="#1d4ed8" text-anchor="start">Ice cream sales</text>
+        <line x1="44" y1="43" x2="66" y2="43" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5 3"/>
+        <text x="70" y="46" font-size="10" fill="#dc2626" text-anchor="start">Shark attacks</text>
+        <text x="165" y="206" text-anchor="middle" font-size="10" font-style="italic" fill="#6b7280">both peak in summer (hidden cause)</text>
       </svg>
     </div>
     <div style="flex: 1.1;">
@@ -567,14 +578,10 @@
 <!-- 19. Causal intervention (do-calculus teaser) -->
 <section>
   <h2>Causal intervention: the \(\mathrm{do}\) operator</h2>
-  <p style="font-size: 0.9em;">Observing vs. <em>forcing</em>:</p>
   <ul style="font-size: 0.88em;">
-    <li class="fragment">\(P(R | \text{Shoe} = 1)\) &mdash; what we see when we <em>condition</em> (large feet correlate with reading).</li>
-    <li class="fragment">\(P(R | \mathrm{do}(\text{Shoe} = 1))\) &mdash; what would happen if we <em>intervene</em> and force big shoes onto a random child.</li>
+    <li class="fragment"><strong>Condition</strong> \(P(R \mid S{=}1)\): what we <em>see</em> &mdash; large feet correlate with reading.</li>
+    <li class="fragment"><strong>Intervene</strong> \(P(R \mid \mathrm{do}(S{=}1))\): what happens if we <em>force</em> big shoes on a random child.</li>
   </ul>
-  <p class="fragment" style="font-size: 0.85em; margin-top: 0.6em;"><strong>Average Treatment Effect</strong> (adjusting for confounders):</p>
-  <p class="fragment" style="text-align: center; font-size: 0.95em;">\(\mathrm{ATE} = \sum_A P(R | S{=}1, A)\, P(A) - \sum_A P(R | S{=}0, A)\, P(A) \approx 0\)</p>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">\(\mathrm{ATE} \approx 0\) tells us shoe size doesn't <em>cause</em> reading skill &mdash; randomised experiments confirm this.</p>
   <div class="do-surgery-pair fragment" aria-label="Graph surgery for do(Shoe)">
     <div>
       <div class="panel-label observe">condition on \(S\)</div>
@@ -602,14 +609,23 @@
       </svg>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.3em 0 0;">Intervention <em>severs</em> the incoming edges of \(S\) &mdash; the upstream confounder can no longer reach \(S\).</p>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin: 0.5em 0 0;">Intervention <em>severs</em> the incoming edges of \(S\) &mdash; the confounder can no longer reach \(S\).</p>
+</section>
+
+<!-- 20. Adjusting for confounders: ATE -->
+<section class="center-slide">
+  <h2>Adjusting for confounders</h2>
+  <p style="font-size: 0.9em;">The <strong>average treatment effect</strong> averages the effect over the confounder \(A\):</p>
+  <p style="text-align: center; font-size: 0.95em; margin: 0.6em 0;">\(\mathrm{ATE} = \sum_A P(R \mid S{=}1, A)\, P(A) - \sum_A P(R \mid S{=}0, A)\, P(A)\)</p>
+  <p class="fragment" style="text-align: center; font-size: 1.05em; color: #166534; margin-top: 0.4em;"><strong>\(\mathrm{ATE} \approx 0\)</strong></p>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.4em;">Shoe size doesn't <em>cause</em> reading skill &mdash; randomised experiments confirm it.</p>
 </section>
 
 <!-- ============================================================
      Wrap-up (2 slides)
      ============================================================ -->
 
-<!-- 20. Learning goals recap -->
+<!-- 21. Learning goals recap -->
 <section class="center-slide">
   <h2>Learning goals (recap)</h2>
   <ul style="text-align:left; margin-left:2em;">
@@ -619,7 +635,7 @@
   </ul>
 </section>
 
-<!-- 21. Next: decision theory -->
+<!-- 22. Next: decision theory -->
 <section class="center-slide">
   <h2>Next: decision theory</h2>
   <p style="font-size: 0.95em; margin-top: 1em;">We can now reason under uncertainty. Next, we combine these probabilities with <strong>utilities</strong> to <em>act</em> &mdash; choose the action that maximizes expected reward.</p>

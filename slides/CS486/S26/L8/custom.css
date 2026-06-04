@@ -1,5 +1,45 @@
 /* L8-specific styles on top of shared/custom.css and L7/custom.css. */
 
+/* Bayes-net node styling that is NOT gated on a `.bn-graph` ancestor.
+   L7 only styles `.bn-graph .bn-node ...`, but L8's recap/construction SVGs
+   live in `.structures-row`, `.original-bn-mini`, `.construction-bn`, and
+   `.do-surgery-pair`. Without this, those ellipses/circles fall back to the
+   default black fill and labels to `text-anchor: start` with no fill, so the
+   nodes render as black blobs with invisible/off-centre letters. */
+.reveal .bn-node circle,
+.reveal .bn-node ellipse { fill: #fff; stroke: #111827; stroke-width: 2; }
+.reveal .bn-node.observed circle,
+.reveal .bn-node.observed ellipse { fill: #d1d5db; stroke: #374151; }
+.reveal .bn-node text {
+  fill: #111827;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Two verdict cards for "many correct Bayes nets" (slide 9). */
+.reveal .correct-rules {
+  display: flex;
+  gap: 1.2em;
+  justify-content: center;
+  margin: 1em auto 0;
+  max-width: 90%;
+}
+.reveal .correct-rules .rule-card {
+  flex: 1;
+  padding: 0.9em 1em;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+}
+.reveal .correct-rules .rule-card.ok { background: #ecfdf5; border-left: 5px solid #059669; }
+.reveal .correct-rules .rule-card.no { background: #fef2f2; border-left: 5px solid #dc2626; }
+.reveal .correct-rules .rule-verdict { font-weight: 700; font-size: 0.92em; }
+.reveal .correct-rules .rule-card.ok .rule-verdict { color: #065f46; }
+.reveal .correct-rules .rule-card.no .rule-verdict { color: #991b1b; }
+.reveal .correct-rules .rule-note { font-size: 0.75em; color: #6b7280; margin-top: 0.4em; line-height: 1.4; }
+
 /* 3-up grid for d-separation rule cards (slide 5). */
 .reveal .dsep-rules {
   display: flex;
@@ -9,6 +49,9 @@
 }
 .reveal .dsep-rules .dsep-card {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   padding: 0.7em 0.5em;
   background: #f9fafb;
@@ -19,12 +62,19 @@
 .reveal .dsep-rules .dsep-card h3 {
   font-size: 0.85em;
   color: #1d4ed8;
-  margin: 0 0 0.3em 0;
+  margin: 0;
+}
+.reveal .dsep-rules .dsep-card .dsep-formula {
+  font-size: 0.82em;
+  margin: 0.15em 0 0.3em;
+  min-height: 1.4em;
 }
 .reveal .dsep-rules .dsep-card .blocking {
   font-size: 0.7em;
   color: #374151;
   margin: 0.3em 0 0;
+  margin-top: auto;
+  padding-top: 0.3em;
   line-height: 1.4;
 }
 .reveal .dsep-rules .dsep-card .blocking .green { color: #166534; font-weight: 600; }
@@ -37,8 +87,9 @@
 }
 
 /* Diagnostic-symptoms DAG (slides 6-8). */
+.reveal .dsep-graph { margin: 0 0 0.2em; }
 .reveal .dsep-graph svg {
-  max-height: 240px;
+  max-height: 320px;
   width: auto;
 }
 .reveal .dsep-graph .edge-path     { stroke: #dc2626; stroke-width: 2.5; }
