@@ -50,7 +50,22 @@
     input.value = '';
     results.innerHTML = '';
     if (debounceTimer) clearTimeout(debounceTimer);
+    clearAskFromUrl();
     launch.focus();
+  }
+
+  // Strip the ?ask / #ask deep-link markers from the URL via replaceState (no
+  // reload, no scroll, no history entry), so closing the helper - or a later
+  // refresh - does not keep re-opening it.
+  function clearAskFromUrl() {
+    var isAskHash = location.hash.replace(/^#/, '').toLowerCase() === 'ask';
+    var params = new URLSearchParams(location.search);
+    var hasAskParam = params.has('ask');
+    if (!isAskHash && !hasAskParam) return;
+    if (hasAskParam) params.delete('ask');
+    var search = params.toString();
+    history.replaceState(null, '',
+      location.pathname + (search ? '?' + search : '') + (isAskHash ? '' : location.hash));
   }
 
   function renderQuickLinks() {
@@ -209,21 +224,27 @@
     }
   });
 
-  // Deep link: open the helper automatically when the page is loaded with
+  // Deep link: open the helper when the URL carries an "ask" marker:
   //   ?ask=1            -> just open the helper
   //   ?ask=<question>   -> open, prefill the question, and run it
   //   #ask              -> same as ?ask=1
   // Lets a shared/tweeted link land visitors straight in the helper.
-  (function autoOpenFromUrl() {
+  function openFromUrl() {
     var raw = null;
     try { raw = new URLSearchParams(location.search).get('ask'); } catch (e) {}
     var hashAsk = location.hash.replace(/^#/, '').toLowerCase() === 'ask';
     if (raw === null && !hashAsk) return;
-    openDialog();
+    if (dialog.hidden) openDialog();
     var q = (raw && raw !== '1' && raw.toLowerCase() !== 'true') ? raw : '';
     if (q) {
       input.value = q;
       runQuery(q);
     }
-  })();
+  }
+
+  // Run once on load, and again on every hashchange - so clicking an in-page
+  // "#ask" link (which updates the hash without reloading the page) also opens
+  // the helper, not just a fresh load with that URL.
+  openFromUrl();
+  window.addEventListener('hashchange', openFromUrl);
 })();
