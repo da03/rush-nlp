@@ -547,6 +547,40 @@ pre code {
 }
 
 /**
+ * Research vision callout
+ */
+.research-vision {
+    margin: 24px 0;
+    padding: 16px 20px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--brand);
+    border-radius: 8px;
+}
+
+.research-vision__label {
+    display: inline-block;
+    margin-bottom: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--brand);
+}
+
+.research-vision__quote {
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--fg-strong);
+}
+
+.research-vision__more {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/**
  * Research themes
  */
 .research-themes {
