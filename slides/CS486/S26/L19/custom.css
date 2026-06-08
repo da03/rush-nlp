@@ -54,7 +54,7 @@
   margin: 0.3em 0;
 }
 .reveal .act-fn-grid .act-card {
-  padding: 0.5em 0.7em;
+  padding: 0.35em 0.6em;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-top: 3px solid #1d4ed8;
@@ -62,24 +62,25 @@
 }
 .reveal .act-fn-grid .act-card h3 {
   font-size: 0.85em;
-  margin: 0 0 0.2em 0;
+  margin: 0 0 0.1em 0;
   color: #1d4ed8;
 }
 .reveal .act-fn-grid .act-card .formula {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.78em;
+  font-size: 0.68em;
   color: #4b5563;
-  margin: 0 0 0.2em 0;
+  margin: 0 0 0.1em 0;
 }
 .reveal .act-fn-grid .act-card .tradeoff {
   font-size: 0.72em;
+  line-height: 1.3;
   color: #6b7280;
-  margin: 0.2em 0 0 0;
+  margin: 0.15em 0 0 0;
 }
 .reveal .act-fn-grid .act-plot {
   display: block;
-  margin: 0.1em auto;
-  max-height: 90px;
+  margin: 0.05em auto;
+  max-height: 70px;
 }
 .reveal .act-fn-grid .act-plot .axis { stroke: #6b7280; stroke-width: 0.8; }
 .reveal .act-fn-grid .act-plot .curve {
