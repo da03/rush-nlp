@@ -293,7 +293,7 @@
 <!-- 8. K-means worked example -->
 <section>
   <h2>One iteration: a numeric walk-through</h2>
-  <p style="font-size: 0.78em;">\(k = 2\), Euclidean (squared) distance. Data + initial centroids:</p>
+  <p style="font-size: 0.78em; margin: 0.2em 0;">\(k = 2\), Euclidean (squared) distance. Data + initial centroids:</p>
   <div class="two-col vcenter">
     <div style="flex: 1;">
       <table class="factor-table" style="font-size: 0.72em;">
@@ -305,19 +305,19 @@
           <tr><td>4</td><td>0.1</td><td>0.5</td><td>&minus;0.3</td></tr>
         </tbody>
       </table>
-      <p style="font-size: 0.72em; text-align: center; margin: 0.3em 0;">\(c_1 = (0.3, 0.8, -0.5), \;\; c_2 = (-0.1, -0.5, 1.0)\).</p>
+      <p style="font-size: 0.66em; text-align: center; margin: 0.3em 0;">\(c_1 = (0.3, 0.8, -0.5), \;\; c_2 = (-0.1, -0.5, 1.0)\).</p>
     </div>
     <div style="flex: 1.1; font-size: 0.72em;">
-      <p style="margin: 0;"><strong>Assign step</strong> (squared distance to each centroid):</p>
-      <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.92em; background: #f9fafb; padding: 0.4em; border-radius: 3px; margin: 0.2em 0;">
+      <p style="margin: 0 0 0.15em;"><strong>Assign step</strong> (squared distance to each centroid):</p>
+      <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.9em; line-height: 1.35; background: #f9fafb; padding: 0.35em 0.5em; border-radius: 3px; margin: 0.15em 0;">
         <span class="fragment">ex 1: d&sup2;(c<sub>1</sub>) = 0.35, d&sup2;(c<sub>2</sub>) = 2.09 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
         <span class="fragment">ex 2: d&sup2;(c<sub>1</sub>) = 5.39, d&sup2;(c<sub>2</sub>) = 7.05 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
         <span class="fragment">ex 3: d&sup2;(c<sub>1</sub>) = 5.09, d&sup2;(c<sub>2</sub>) = 6.01 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
         <span class="fragment">ex 4: d&sup2;(c<sub>1</sub>) = 0.17, d&sup2;(c<sub>2</sub>) = 2.73 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span>
       </div>
-      <p style="margin: 0;"><strong class="fragment">Update step</strong>:</p>
-      <p class="fragment" style="text-align: center; font-family: ui-monospace, Menlo, monospace; color: #166534; font-weight: 600;">\(c_1' = (-0.2, 1.25, 0.55), \;\; c_2' = \varnothing\)</p>
-      <p class="fragment" style="color: #991b1b; font-size: 0.95em;"><strong>Watch out:</strong> \(c_2\) got no examples. Re-initialize it (random restart).</p>
+      <p style="margin: 0.15em 0 0;"><strong class="fragment">Update step</strong>:</p>
+      <p class="fragment" style="text-align: center; font-family: ui-monospace, Menlo, monospace; color: #166534; font-weight: 600; margin: 0.15em 0;">\(c_1' = (-0.2, 1.25, 0.55), \;\; c_2' = \varnothing\)</p>
+      <p class="fragment" style="color: #991b1b; font-size: 0.88em; margin: 0.15em 0 0;"><strong>Watch out:</strong> \(c_2\) got no examples. Re-initialize it (random restart).</p>
     </div>
   </div>
 </section>
@@ -329,11 +329,11 @@
 <!-- 9. Elbow + silhouette -->
 <section>
   <h2>How do we choose \(k\)?</h2>
-  <p style="font-size: 0.82em;">Larger \(k\) always gives lower training error &mdash; but defeats the point of compression.</p>
+  <p style="font-size: 0.82em; margin: 0.2em 0;">Larger \(k\) always gives lower training error &mdash; but defeats the point of compression.</p>
   <div class="two-col">
     <div style="flex: 1;">
-      <h3 style="color: #1d4ed8; font-size: 1em;">Elbow method</h3>
-      <ol style="font-size: 0.78em;">
+      <h3 style="color: #1d4ed8; font-size: 1em; margin: 0.2em 0;">Elbow method</h3>
+      <ol style="font-size: 0.78em; margin: 0.3em 0 0.3em 1.2em;">
         <li>Run k-means for \(k \in \{1, \ldots, k_{\max}\}\).</li>
         <li>Plot average within-cluster distance.</li>
         <li>Pick the "elbow" where error stops dropping fast.</li>
@@ -352,9 +352,9 @@
       </svg>
     </div>
     <div style="flex: 1;">
-      <h3 style="color: #16a34a; font-size: 1em;">Silhouette score</h3>
+      <h3 style="color: #16a34a; font-size: 1em; margin: 0.2em 0;">Silhouette score</h3>
       <p style="text-align: center; font-size: 0.85em; margin: 0.2em 0;">\(s(x) = \dfrac{b(x) - a(x)}{\max(a(x),\, b(x))}\)</p>
-      <ul style="font-size: 0.78em;">
+      <ul style="font-size: 0.78em; margin: 0.3em 0 0.3em 1.2em;">
         <li>\(a(x)\) = mean distance to own cluster.</li>
         <li>\(b(x)\) = mean distance to <em>nearest other</em> cluster.</li>
         <li>Pick \(k\) maximizing average \(s\).</li>
