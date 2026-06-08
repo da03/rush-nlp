@@ -90,7 +90,7 @@
    fit the 720px canvas (the longest answers are in quiz pack 3). */
 .reveal .dsep-graph { margin: 0 0 0.2em; }
 .reveal .dsep-graph svg {
-  max-height: 210px;
+  max-height: 190px;
   width: auto;
 }
 /* Tighten the shared quiz Q/A boxes for L8 so the last answer never truncates. */
