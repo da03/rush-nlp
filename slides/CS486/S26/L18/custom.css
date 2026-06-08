@@ -1,14 +1,19 @@
 /* L18-specific styles on top of shared/custom.css, L9/custom.css, L10/custom.css. */
 
+/* Tighter rows for the 14-row Jeeves training table (slide 5). */
+.reveal table.factor-table th,
+.reveal table.factor-table td { padding: 0.08em 0.5em; }
+
 /* Decision-tree rendering (slides 6, 7, 9). */
 .reveal .dt-tree {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4em;
-  font-size: 0.78em;
+  gap: 0.3em;
+  font-size: 0.72em;
   margin: 0.3em auto;
 }
+.reveal .dt-tree .dt-level > span { white-space: nowrap; }
 .reveal .dt-tree .dt-level {
   display: flex;
   justify-content: center;
@@ -66,6 +71,7 @@
   grid-template-columns: 1fr 1fr;
   gap: 0.6em;
   margin: 0.4em auto;
+  line-height: 1.2;
 }
 .reveal .split-bars .split-card {
   padding: 0.6em 0.8em;
@@ -81,14 +87,16 @@
 }
 .reveal .split-bars .bar-row {
   display: grid;
-  grid-template-columns: 70px 1fr;
+  grid-template-columns: 78px 1fr;
   align-items: center;
   gap: 0.4em;
   margin-bottom: 0.25em;
+  line-height: 1.2;
 }
 .reveal .split-bars .bar-label {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.78em;
+  font-size: 13px;
+  white-space: nowrap;
   color: #4b5563;
   text-align: right;
 }
@@ -106,7 +114,8 @@
   background: #dc2626;
 }
 .reveal .split-bars .bar-text {
-  font-size: 0.72em;
+  font-size: 11px;
+  line-height: 1;
   color: #fff;
   font-weight: 700;
   display: flex;
