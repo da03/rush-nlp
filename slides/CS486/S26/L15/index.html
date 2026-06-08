@@ -142,7 +142,7 @@
       <li>Re-solve Bellman to get \(V^\pi(s)\) (exactly or iteratively).</li>
     </ol>
   </div>
-  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.4em;">Each new experience refines the model; each Bellman solve costs \(O(n^3)\) or a few iterations.</p>
+  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.25em;">Each new experience refines the model; each Bellman solve costs \(O(n^3)\) or a few iterations.</p>
 </section>
 
 <!-- 6. Passive ADP example -->
@@ -305,8 +305,8 @@
 <!-- 11. Temporal difference error -->
 <section>
   <h2>Temporal difference (TD) error</h2>
-  <p style="font-size: 0.86em;">After one transition \(\langle s, a, r, s' \rangle\), pretend that transition was certain (\(P(s' \mid s, a) = 1\)). Then by Bellman:</p>
-  <p style="text-align: center; font-size: 0.95em; margin: 0.2em 0;">\(Q(s, a) \;\stackrel{?}{=}\; \underbrace{R(s) + \gamma\, \max_{a'} Q(s', a')}_{\text{target}}\)</p>
+  <p style="font-size: 0.86em; margin: 0.2em 0;">After one transition \(\langle s, a, r, s' \rangle\), pretend that transition was certain (\(P(s' \mid s, a) = 1\)). Then by Bellman:</p>
+  <p style="text-align: center; font-size: 0.95em; margin: 0.15em 0;">\(Q(s, a) \;\stackrel{?}{=}\; \underbrace{R(s) + \gamma\, \max_{a'} Q(s', a')}_{\text{target}}\)</p>
   <div class="defbox fragment" style="margin: 0.3em 0;">
     <h3>TD error</h3>
     <p style="text-align: center; margin: 0.2em 0; font-size: 1em;">\(\delta \;=\; \bigl(R(s) + \gamma\, \max_{a'} Q(s', a')\bigr) - Q(s, a)\)</p>
@@ -325,7 +325,7 @@
     <path d="M 142 46 L 378 46" stroke="#d97706" stroke-width="2" marker-end="url(#arrow-rl)" fill="none"/>
     <text x="260" y="42" font-size="12" fill="#92400e" text-anchor="middle" font-weight="700">&#948;</text>
   </svg>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin: 0.2em 0;">Idea: nudge \(Q(s, a)\) toward the target by an amount proportional to \(\delta\).</p>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin: 0.1em 0;">Idea: nudge \(Q(s, a)\) toward the target by an amount proportional to \(\delta\).</p>
 </section>
 
 <!-- 12. The Q-learning algorithm -->
@@ -355,8 +355,8 @@
 <!-- 13. Q-learning worked example -->
 <section>
   <h2>Q-learning: a single update</h2>
-  <p style="font-size: 0.82em;">3x4 grid. Experience: \(\langle s_{32}, \text{right}, s_{33}, -0.04 \rangle\). Take \(\gamma = 1, \alpha = 0.1\).</p>
-  <table class="q-table" style="margin-bottom: 0.3em;">
+  <p style="font-size: 0.82em; margin: 0.2em 0;">3x4 grid. Experience: \(\langle s_{32}, \text{right}, s_{33}, -0.04 \rangle\). Take \(\gamma = 1, \alpha = 0.1\).</p>
+  <table class="q-table" style="margin: 0.2em auto;">
     <thead><tr><th></th><th>\(s_{32}\)</th><th>\(s_{33}\)</th></tr></thead>
     <tbody>
       <tr><th>up</th>    <td>0.55</td><td>0.4</td></tr>
@@ -365,7 +365,7 @@
       <tr><th>left</th>  <td>0.4</td> <td>0.5</td></tr>
     </tbody>
   </table>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center;">Yellow cell = the one we update; green = the max-value action in \(s_{33}\).</p>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.15em 0;">Yellow cell = the one we update; green = the max-value action in \(s_{33}\).</p>
   <div class="update-derivation">
     <span class="step fragment"><strong>target</strong> = r + &gamma; &middot; max<sub>a'</sub> Q(s<sub>33</sub>, a') = &minus;0.04 + 1.0 &middot; <span style="color: #166534;">0.9</span> = 0.86</span>
     <span class="step fragment"><strong>&delta;</strong>      = target &minus; Q(s<sub>32</sub>, right) = 0.86 &minus; 0.7 = 0.16</span>
@@ -399,7 +399,7 @@
 <!-- 15. SARSA vs Q-learning worked example -->
 <section>
   <h2>SARSA vs Q-learning: a side-by-side update</h2>
-  <p style="font-size: 0.8em; margin: 0.2em 0;">At \(s_{13}\), update \(Q(s_{13},\text{down}) = 0.4\). Next state \(s_{23}\): \(Q = (\text{L}{:}0.3,\ \text{R}{:}{-}0.4,\ \text{D}{:}0.7,\ \text{U}{:}0.3)\), \(r = -0.04,\ \gamma = 0.9,\ \alpha = 0.4\). The agent's \(\varepsilon\)-greedy step explores \(a' = \text{right}\) (into the bad cell).</p>
+  <p style="font-size: 0.78em; margin: 0.15em 0;">At \(s_{13}\), update \(Q(s_{13},\text{down}) = 0.4\). Next state \(s_{23}\): \(Q = (\text{L}{:}0.3,\ \text{R}{:}{-}0.4,\ \text{D}{:}0.7,\ \text{U}{:}0.3)\), \(r = -0.04,\ \gamma = 0.9,\ \alpha = 0.4\). The agent's \(\varepsilon\)-greedy step explores \(a' = \text{right}\) (into the bad cell).</p>
   <div class="compare-row">
     <div class="ccard sarsa">
       <h3>SARSA: uses \(a' = \text{right}\)</h3>
@@ -420,7 +420,7 @@
       <div class="result fragment" style="color: #166534;">= <strong>0.476</strong> &nbsp;<span style="font-family: -apple-system, sans-serif; font-weight: 600;">(rewarded for the best)</span></div>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; text-align: center; margin-top: 0.4em; color: #1d4ed8;">SARSA is <strong>conservative</strong> (learns what really happens); Q-learning is <strong>aggressive</strong> (learns the optimal policy).</p>
+  <p class="fragment" style="font-size: 0.82em; text-align: center; margin-top: 0.25em; color: #1d4ed8;">SARSA is <strong>conservative</strong> (learns what really happens); Q-learning is <strong>aggressive</strong> (learns the optimal policy).</p>
 </section>
 
 <!-- ============================================================

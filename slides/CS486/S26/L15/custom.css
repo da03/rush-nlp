@@ -1,5 +1,70 @@
 /* L15-specific styles on top of shared/custom.css, L10/custom.css, L12/custom.css, L13/custom.css. */
 
+/* Algorithm card (slides 5, 10, 13). L15 imports L10/L12/L13 CSS, none of which
+   define .algo-card, so style it here (mirrors L9, slightly tighter). */
+.reveal .algo-card {
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 6px;
+  padding: 0.5em 0.9em;
+  font-size: 0.8em;
+  margin: 0.3em auto;
+  max-width: 95%;
+}
+.reveal .algo-card .algo-title {
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 0.25em;
+  font-size: 0.95em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal .algo-card ol {
+  margin: 0.2em 0 0.2em 1.5em;
+  padding: 0;
+}
+.reveal .algo-card ol li { margin: 0.1em 0; }
+.reveal .algo-card ul { margin: 0.15em 0 0.15em 1em; }
+.reveal .algo-card ul li { margin: 0.08em 0; }
+
+/* Bellman V vs Q compare cards (slide 11). Also not defined in any imported
+   CSS, so style it here (mirrors L14). */
+.reveal .bellman-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7em;
+  margin: 0.4em 0;
+}
+.reveal .bellman-compare .bcard {
+  padding: 0.6em 0.9em;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 6px;
+  text-align: left;
+}
+.reveal .bellman-compare .bcard.linear { border-top-color: #16a34a; }
+.reveal .bellman-compare .bcard h3 {
+  font-size: 0.95em;
+  color: #1d4ed8;
+  margin: 0 0 0.3em 0;
+}
+.reveal .bellman-compare .bcard.linear h3 { color: #166534; }
+.reveal .bellman-compare .bcard .formula {
+  font-size: 0.8em;
+  margin: 0.35em 0;
+  text-align: center;
+}
+.reveal .bellman-compare .bcard .tag {
+  display: inline-block;
+  margin-top: 0.4em;
+  padding: 0.2em 0.5em;
+  border-radius: 3px;
+  font-size: 0.75em;
+  font-weight: 600;
+}
+.reveal .bellman-compare .bcard .tag.linear-tag { background: #dcfce7; color: #166534; }
+
 /* RL agent-environment loop (slide 3). */
 .reveal .rl-loop { display: block; margin: 0.3em auto; max-height: 260px; }
 .reveal .rl-loop .agent-box rect,
@@ -72,11 +137,11 @@
 /* TD-error gap number line (slide 11). */
 .reveal .td-gap {
   display: block;
-  margin: 0.3em auto 0.2em;
+  margin: 0.2em auto 0.1em;
   width: 100%;
   max-width: 640px;
   height: auto;
-  max-height: 88px;
+  max-height: 70px;
 }
 
 /* Q-table for RL worked examples (slides 13, 15). */
@@ -122,13 +187,13 @@
   margin: 0.3em 0;
 }
 .reveal .compare-row .ccard {
-  padding: 0.7em 0.9em;
+  padding: 0.55em 0.85em;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-top: 4px solid #1d4ed8;
   border-radius: 6px;
   text-align: left;
-  font-size: 0.82em;
+  font-size: 0.8em;
 }
 .reveal .compare-row .ccard.sarsa { border-top-color: #d97706; }
 .reveal .compare-row .ccard.qlearn { border-top-color: #16a34a; }
@@ -143,7 +208,7 @@
   font-size: 0.95em;
   font-weight: 700;
   text-align: center;
-  margin-top: 0.4em;
+  margin-top: 0.3em;
 }
 
 /* Update-derivation: monospace math step list. */
