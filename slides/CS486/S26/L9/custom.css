@@ -1,16 +1,27 @@
 /* L9-specific styles on top of shared/custom.css, L6/custom.css, L7/custom.css. */
 
-/* Compact factor-table styling (variant of L6's joint-table). */
+/* Tighten the shared `.theorem` box for L9 - the factor-operation slides
+   (Factors / Restrict / Sum out / Multiply) had very tall definition boxes
+   (~180px) that pushed the example tables off the bottom of the slide. */
+.reveal .theorem {
+  font-size: 0.82em;
+  line-height: 1.35;
+  padding: 0.5em 0.8em;
+  margin: 0.3em auto;
+}
+
+/* Compact factor-table styling (variant of L6's joint-table). Kept small so the
+   8-row (3-variable) tables fit alongside a definition on one 720px slide. */
 .reveal table.factor-table {
   width: auto;
-  margin: 0.3em auto;
+  margin: 0.25em auto;
   border-collapse: collapse;
-  font-size: 0.72em;
+  font-size: 0.64em;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
 }
 .reveal table.factor-table th,
 .reveal table.factor-table td {
-  padding: 0.25em 0.6em;
+  padding: 0.12em 0.45em;
   border: 1px solid #d1d5db;
   text-align: center;
 }
