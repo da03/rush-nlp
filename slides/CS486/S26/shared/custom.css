@@ -108,6 +108,16 @@
 .reveal .dense li { font-size: 0.7em; line-height: 1.3; }
 .reveal .dense h2 { font-size: 1.1em; }
 
+/* Compact micro-components: dense flex/grid layouts and data tables (fold
+   strips, split bars, comparison tables, step-by-step rows, etc.). The reveal
+   theme resolves its line-height against the large base font, so em-sized
+   children inside these layouts inherit a too-tall line-height and every row
+   balloons (the recurring "tall empty rows" bug). Add `compact` to such a
+   container to reset the line-height to a sane unitless multiplier; descendants
+   then re-resolve it against their own font and size to their content. You can
+   still set explicit font-size/padding on top for very dense content. */
+.reveal .compact { line-height: 1.25; }
+
 /* Image sizing helpers - max-height in pixels (NOT vh) so they are
    measured against the 720-px slide canvas, not the browser viewport. */
 .reveal img.wide { max-width: 90%; max-height: 280px; }
