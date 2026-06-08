@@ -267,7 +267,7 @@
 <!-- 10. Four expected utilities -->
 <section>
   <h2>Four expected utilities</h2>
-  <p style="font-size: 0.82em;">Recall \(P(A | \neg S) = 0\), \(P(A | S) = q\). For each \((P, S)\), &nbsp;\(EU(P, S) = \sum_a P(a | S)\, U(P, S, a)\).</p>
+  <p style="font-size: 0.82em; margin: 0.2em 0;">Recall \(P(A | \neg S) = 0\), \(P(A | S) = q\). For each \((P, S)\), &nbsp;\(EU(P, S) = \sum_a P(a | S)\, U(P, S, a)\).</p>
   <div class="eu-cards">
     <div class="eu-card">
       <h3>\(EU(\neg P, \neg S)\)</h3>
@@ -367,7 +367,7 @@
 <!-- 13. Combine + define factors -->
 <section>
   <h2>Combine decisions, define factors</h2>
-  <p style="font-size: 0.85em;"><strong>Step 0.</strong> Since \(P\) and \(S\) are chosen together, merge them into one 4-valued decision \(S \wedge P\). Two factors remain:</p>
+  <p style="font-size: 0.85em; margin: 0.2em 0;"><strong>Step 0.</strong> Since \(P\) and \(S\) are chosen together, merge them into one 4-valued decision \(S \wedge P\). Two factors remain:</p>
   <div class="factor-row">
     <div>
       <table class="factor-table">
@@ -407,7 +407,7 @@
 <!-- 14. Sum out then maximize -->
 <section>
   <h2>Multiply, sum out \(A\), then maximize</h2>
-  <p style="font-size: 0.82em;"><strong>Steps 2-3.</strong> Multiply: \(f_2 = f_1 \times u\). Then sum out \(A\) to get \(f_3(S \wedge P)\):</p>
+  <p style="font-size: 0.82em; margin: 0.2em 0;"><strong>Steps 2-3.</strong> Multiply: \(f_2 = f_1 \times u\). Then sum out \(A\) to get \(f_3(S \wedge P)\):</p>
   <div class="factor-row" style="margin-top: 0.3em;">
     <div>
       <table class="factor-table">
@@ -572,7 +572,7 @@
 <!-- 19. Value of information -->
 <section>
   <h2>The value of information</h2>
-  <p style="font-size: 0.88em;">What if we could observe the weather <em>directly</em>, instead of only the noisy forecast?</p>
+  <p style="font-size: 0.88em; margin: 0.2em 0;">What if we could observe the weather <em>directly</em>, instead of only the noisy forecast?</p>
   <div class="two-col vcenter">
     <div style="flex: 0.9; text-align: center;">
       <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" class="dn-graph" style="max-height: 200px;">
@@ -593,14 +593,14 @@
       </svg>
     </div>
     <div style="flex: 1.1;">
-      <p style="font-size: 0.85em;"><strong>New optimal policy</strong> (after re-running VEA):</p>
-      <ul style="font-size: 0.82em;">
+      <p style="font-size: 0.85em; margin: 0.2em 0;"><strong>New optimal policy</strong> (after re-running VEA):</p>
+      <ul style="font-size: 0.82em; margin: 0.2em 0;">
         <li>norain &rarr; leave (utility 100)</li>
         <li>rain &rarr; take (utility 70)</li>
       </ul>
-      <p style="font-size: 0.85em; margin-top: 0.3em;">\(EU = 0.7 \cdot 100 + 0.3 \cdot 70 = 91\).</p>
-      <div class="defbox fragment" style="margin-top: 0.5em;">
-        <h3>Value of information</h3>
+      <p style="font-size: 0.85em; margin: 0.2em 0;">\(EU = 0.7 \cdot 100 + 0.3 \cdot 70 = 91\).</p>
+      <div class="defbox fragment" style="margin-top: 0.4em; padding: 0.5em 0.8em;">
+        <h3 style="margin-bottom: 0.2em;">Value of information</h3>
         <p style="margin: 0; font-size: 0.85em;">\(\text{VOI}(W) = EU_{\text{with } W} - EU_{\text{without}} = 91 - 77 = \mathbf{14}\). &nbsp;That's the maximum price we'd pay for a perfect forecast.</p>
       </div>
     </div>
@@ -655,7 +655,7 @@
 <!-- 21. VEA walkthrough -->
 <section>
   <h2>VEA on the medical DN: factor flow</h2>
-  <p style="font-size: 0.82em;">Eliminate inner-most chance vars, then maximize the innermost decision, repeat:</p>
+  <p style="font-size: 0.82em; margin: 0.2em 0;">Eliminate inner-most chance vars, then maximize the innermost decision, repeat:</p>
   <div class="vea-flow">
     <div class="vea-step start">\(f_4(D,Tr,O)\)<br>\(f_5(T,O)\)<span class="op">init</span></div>
     <div class="vea-arrow">&rarr;</div>
@@ -667,7 +667,7 @@
     <div class="vea-arrow">&rarr;</div>
     <div class="vea-step">\(f_9(S,T,TR,Tr)\)</div>
   </div>
-  <div class="vea-flow" style="margin-top: 0.3em;">
+  <div class="vea-flow" style="margin-top: 0.1em;">
     <div class="vea-step">\(\max_{Tr}\)<span class="op">policy for Tr</span></div>
     <div class="vea-arrow">&rarr;</div>
     <div class="vea-step">\(f_{10}(S,T,TR)\)</div>

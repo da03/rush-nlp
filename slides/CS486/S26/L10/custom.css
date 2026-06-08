@@ -132,7 +132,7 @@
   margin: 0.3em 0;
 }
 .reveal .filtering-cards .fcard {
-  padding: 0.7em 0.9em;
+  padding: 0.5em 0.9em;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-top: 4px solid #dc2626;
@@ -232,8 +232,8 @@
 .reveal .recursion-formula {
   display: flex;
   flex-direction: column;
-  gap: 0.4em;
-  margin: 0.4em auto;
+  gap: 0.3em;
+  margin: 0.3em auto;
   max-width: 95%;
 }
 .reveal .recursion-formula .case {
@@ -241,7 +241,7 @@
   border: 1px solid #e5e7eb;
   border-left: 4px solid #1d4ed8;
   border-radius: 6px;
-  padding: 0.5em 0.9em 0.7em;
+  padding: 0.4em 0.8em 0.45em;
 }
 .reveal .recursion-formula .case-label {
   display: block;

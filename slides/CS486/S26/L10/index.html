@@ -428,11 +428,11 @@
 <!-- 13. Naive enumeration vs. ... -->
 <section>
   <h2>Naive: enumerate the joint</h2>
-  <p style="font-size: 0.88em;"><strong>Tiny case</strong> (\(k = 1\)): \(P(S_1 | o_0, \neg o_1) \propto \sum_{s_0} P(s_0)\, P(o_0 | s_0)\, P(S_1 | s_0)\, P(\neg o_1 | S_1)\)</p>
-  <p style="font-size: 0.82em; color: #6b7280; margin-left: 1em;">3 mul &times; 2 + 1 add, all times 2 \(\Rightarrow\) <strong>14 ops</strong> &mdash; manageable.</p>
-  <p style="font-size: 0.88em; margin-top: 0.5em;"><strong>General case</strong>: marginalize <em>all</em> hidden states</p>
-  <p style="text-align: center; font-size: 0.85em;">\(P(S_k | o_{0:k}) \propto \sum_{s_0} \cdots \sum_{s_{k-1}} P(s_0)\, P(o_0 | s_0) \cdots P(o_k | S_k)\)</p>
-  <div class="filtering-cards">
+  <p style="font-size: 0.88em; margin: 0.25em 0;"><strong>Tiny case</strong> (\(k = 1\)): \(P(S_1 | o_0, \neg o_1) \propto \sum_{s_0} P(s_0)\, P(o_0 | s_0)\, P(S_1 | s_0)\, P(\neg o_1 | S_1)\)</p>
+  <p style="font-size: 0.82em; color: #6b7280; margin: 0.15em 0 0.15em 1em;">3 mul &times; 2 + 1 add, all times 2 \(\Rightarrow\) <strong>14 ops</strong> &mdash; manageable.</p>
+  <p style="font-size: 0.88em; margin: 0.35em 0 0.15em;"><strong>General case</strong>: marginalize <em>all</em> hidden states</p>
+  <p style="text-align: center; font-size: 0.85em; margin: 0.15em 0;">\(P(S_k | o_{0:k}) \propto \sum_{s_0} \cdots \sum_{s_{k-1}} P(s_0)\, P(o_0 | s_0) \cdots P(o_k | S_k)\)</p>
+  <div class="filtering-cards" style="margin-top: 0.5em;">
     <div class="fcard">
       <h3>Naive enumeration</h3>
       <p>Sum over all \(2^k\) hidden state assignments.</p>
@@ -449,7 +449,7 @@
 <!-- 14. Forward recursion -->
 <section>
   <h2>Filtering by forward recursion</h2>
-  <p style="font-size: 0.88em;">Let \(f_{0:k} \;\overset{\Delta}{=}\; P(S_k | o_{0:k})\).</p>
+  <p style="font-size: 0.88em; margin: 0.2em 0;">Let \(f_{0:k} \;\overset{\Delta}{=}\; P(S_k | o_{0:k})\).</p>
   <div class="recursion-formula">
     <div class="case">
       <span class="case-label">Base case (k = 0)</span>
@@ -460,8 +460,8 @@
       \[ f_{0:k} = \alpha\, P(o_k \mid S_k) \sum_{s_{k-1}} P(S_k \mid s_{k-1})\, f_{0:(k-1)} \]
     </div>
   </div>
-  <p style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.4em;">Total cost: <strong>\(O(k)\)</strong> ops &mdash; exponentially faster than naive enumeration.</p>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center;">\(\alpha\) is a normalization constant (chosen so the two entries of \(f_{0:k}\) sum to 1).</p>
+  <p style="font-size: 0.82em; color: #166534; text-align: center; margin: 0.25em 0;">Total cost: <strong>\(O(k)\)</strong> ops &mdash; exponentially faster than naive enumeration.</p>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.15em 0;">\(\alpha\) is a normalization constant (chosen so the two entries of \(f_{0:k}\) sum to 1).</p>
 </section>
 
 <!-- 15. Predict + update intuition -->

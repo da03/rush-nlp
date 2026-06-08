@@ -1,5 +1,10 @@
 /* L12-specific styles on top of shared/custom.css, L7/custom.css, L9/custom.css, L10/custom.css. */
 
+/* L12 has the densest factor tables (two 8-row tables side by side on the
+   single-stage VEA slides), so shrink them a touch below the L9 default. */
+.reveal table.factor-table { font-size: 0.58em; }
+.reveal .factor-row { margin: 0.15em 0; }
+
 /* Decision-network SVG: chance ellipses, decision rectangles, utility diamonds. */
 .reveal .dn-graph { display: block; margin: 0.3em auto; max-height: 320px; }
 .reveal .dn-graph .chance ellipse,
@@ -79,13 +84,13 @@
 
 /* Utility table (slide 7): grey out "impossible" rows. */
 .reveal table.dn-utility-table {
-  margin: 0.3em auto;
+  margin: 0.25em auto;
   border-collapse: collapse;
-  font-size: 0.78em;
+  font-size: 0.68em;
 }
 .reveal table.dn-utility-table th,
 .reveal table.dn-utility-table td {
-  padding: 0.3em 0.7em;
+  padding: 0.18em 0.55em;
   border: 1px solid #e5e7eb;
   text-align: center;
 }
@@ -105,11 +110,11 @@
 .reveal .eu-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.6em;
-  margin: 0.4em 0;
+  gap: 0.45em;
+  margin: 0.3em 0;
 }
 .reveal .eu-cards .eu-card {
-  padding: 0.6em 0.9em;
+  padding: 0.45em 0.8em;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-top: 4px solid #1d4ed8;
@@ -167,7 +172,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.3em;
-  margin: 0.4em 0;
+  margin: 0.25em 0;
 }
 .reveal .vea-flow .vea-step {
   padding: 0.35em 0.6em;

@@ -217,7 +217,7 @@
 <!-- 6. Backward recursion -->
 <section>
   <h2>Backward recursion</h2>
-  <p style="font-size: 0.88em;">Compute \(b_{(k+1):(t-1)} \;\overset{\Delta}{=}\; P(o_{(k+1):(t-1)} | S_k)\) right-to-left.</p>
+  <p style="font-size: 0.88em; margin: 0.2em 0;">Compute \(b_{(k+1):(t-1)} \;\overset{\Delta}{=}\; P(o_{(k+1):(t-1)} | S_k)\) right-to-left.</p>
   <div class="recursion-formula">
     <div class="case">
       <span class="case-label">Base case (k = t &minus; 1, no future observations)</span>
@@ -228,8 +228,8 @@
       \[ b_{(k+1):(t-1)} = \sum_{s_{k+1}} P(o_{k+1} \mid s_{k+1}) \, b_{(k+2):(t-1)} \, P(s_{k+1} \mid S_k) \]
     </div>
   </div>
-  <p style="font-size: 0.82em; text-align: center; margin-top: 0.4em;">Same factor sizes as forward recursion &mdash; total cost <strong>\(O(t)\)</strong> for the whole backward pass.</p>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center;">No normalization here: \(b\) is a likelihood, not a probability. Normalize <em>after</em> multiplying \(f \times b\).</p>
+  <p style="font-size: 0.82em; text-align: center; margin: 0.25em 0;">Same factor sizes as forward recursion &mdash; total cost <strong>\(O(t)\)</strong> for the whole backward pass.</p>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.15em 0;">No normalization here: \(b\) is a likelihood, not a probability. Normalize <em>after</em> multiplying \(f \times b\).</p>
 </section>
 
 <!-- ============================================================
@@ -290,23 +290,23 @@
 <!-- 9. Combine forward x backward -->
 <section>
   <h2>Combine: \(P(S_k | o_{0:2}) = \alpha\, f_{0:k}\, b_{(k+1):2}\)</h2>
-  <p style="font-size: 0.85em;"><strong>\(P(S_1 | o_{0:2}) = \alpha\, f_{0:1} \cdot b_{2:2}\):</strong></p>
+  <p style="font-size: 0.85em; margin: 0.3em 0 0.1em;"><strong>\(P(S_1 | o_{0:2}) = \alpha\, f_{0:1} \cdot b_{2:2}\):</strong></p>
   <div style="font-size: 0.82em; text-align: center; margin: 0.1em 0;">
-    <p>\(= \alpha\, \langle 0.883, 0.117\rangle \cdot \langle 0.69, 0.41\rangle = \alpha\, \langle 0.6093, 0.0480\rangle = \langle \mathbf{0.927}, \mathbf{0.073}\rangle\)</p>
+    <p style="margin: 0.1em 0;">\(= \alpha\, \langle 0.883, 0.117\rangle \cdot \langle 0.69, 0.41\rangle = \alpha\, \langle 0.6093, 0.0480\rangle = \langle \mathbf{0.927}, \mathbf{0.073}\rangle\)</p>
   </div>
-  <p class="fragment" style="font-size: 0.85em; margin-top: 0.5em;"><strong>\(P(S_0 | o_{0:2}) = \alpha\, f_{0:0} \cdot b_{1:2}\):</strong></p>
+  <p class="fragment" style="font-size: 0.85em; margin: 0.3em 0 0.1em;"><strong>\(P(S_0 | o_{0:2}) = \alpha\, f_{0:0} \cdot b_{1:2}\):</strong></p>
   <div class="fragment" style="font-size: 0.82em; text-align: center; margin: 0.1em 0;">
-    <p>\(= \alpha\, \langle 0.818, 0.182\rangle \cdot \langle 0.4593, 0.2437\rangle = \alpha\, \langle 0.3757, 0.0444\rangle = \langle \mathbf{0.894}, \mathbf{0.106}\rangle\)</p>
+    <p style="margin: 0.1em 0;">\(= \alpha\, \langle 0.818, 0.182\rangle \cdot \langle 0.4593, 0.2437\rangle = \alpha\, \langle 0.3757, 0.0444\rangle = \langle \mathbf{0.894}, \mathbf{0.106}\rangle\)</p>
   </div>
-  <div class="fragment" style="margin-top: 0.5em;">
-    <table class="props" style="width: 70%; font-size: 0.8em;">
+  <div class="fragment" style="margin-top: 0.3em;">
+    <table class="props compare-props" style="width: 62%; font-size: 0.72em;">
       <thead><tr><th></th><th>\(P(S_1 = T \mid \ldots)\)</th></tr></thead>
       <tbody>
         <tr><td>Filtering with \(o_{0:1}\) only</td><td>0.883</td></tr>
         <tr><td>Smoothing with \(o_{0:2}\)</td><td class="ok">0.927</td></tr>
       </tbody>
     </table>
-    <p style="font-size: 0.78em; color: #166534; text-align: center; margin-top: 0.2em;">The extra "umbrella on day 2" makes "rain on day 1" more likely &mdash; future evidence helps.</p>
+    <p style="font-size: 0.78em; color: #166534; text-align: center; margin: 0.2em 0 0;">The extra "umbrella on day 2" makes "rain on day 1" more likely &mdash; future evidence helps.</p>
   </div>
 </section>
 
@@ -404,19 +404,11 @@
   </div>
   <div class="recursion-formula" style="margin-top: 0.4em;">
     <div class="case">
-      <span class="case-label">Forward pass (k = 0, 1, &hellip;, t &minus; 1)</span>
-      \[ f_{0:k} = \alpha \, P(o_k \mid S_k) \sum_{s_{k-1}} P(S_k \mid s_{k-1}) \, f_{0:(k-1)} \]
-    </div>
-    <div class="case">
-      <span class="case-label">Backward pass (k = t &minus; 1, &hellip;, 0)</span>
-      \[ b_{(k+1):(t-1)} = \sum_{s_{k+1}} P(o_{k+1} \mid s_{k+1}) \, b_{(k+2):(t-1)} \, P(s_{k+1} \mid S_k) \]
-    </div>
-    <div class="case">
-      <span class="case-label">Smoothed posterior at every k</span>
+      <span class="case-label">Combine the two sweeps at every k</span>
       \[ P(S_k \mid o_{0:(t-1)}) = \alpha \, f_{0:k} \cdot b_{(k+1):(t-1)} \]
     </div>
   </div>
-  <p style="font-size: 0.78em; color: #166534; text-align: center; margin-top: 0.2em;">Total cost: <strong>\(O(t)\)</strong> &mdash; one full sweep in each direction.</p>
+  <p style="font-size: 0.8em; color: #166534; text-align: center; margin-top: 0.3em;">Forward gives every \(f_{0:k}\) (recap of L10), backward gives every \(b_{(k+1):(t-1)}\) &mdash; total cost <strong>\(O(t)\)</strong>, one sweep each direction.</p>
 </section>
 
 <!-- ============================================================
@@ -564,7 +556,7 @@
 
 <!-- 16b. Viterbi: fill, then traceback -->
 <section>
-  <h2>Viterbi: fill the trellis, then trace back</h2>
+  <h2>Viterbi: the algorithm</h2>
   <div class="algo-card">
     <div class="algo-title">viterbi(observations, transition, emission)</div>
     <ol>
@@ -580,7 +572,7 @@
 
 <!-- 17. Trellis visualization + complexity -->
 <section>
-  <h2>Viterbi: fill the trellis, then traceback</h2>
+  <h2>Viterbi: trellis walk-through + complexity</h2>
   <div style="text-align: center;">
     <svg viewBox="0 0 600 280" xmlns="http://www.w3.org/2000/svg" class="trellis-viz" style="max-height: 260px;">
       <text class="trellis-axis" x="80"  y="260">k = 0</text>

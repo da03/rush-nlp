@@ -47,6 +47,11 @@
 .reveal .smoothing-recap .compare-card.now strong { color: #1d4ed8; }
 .reveal .smoothing-recap .compare-card.past strong { color: #166534; }
 
+/* Compact the filtering-vs-smoothing comparison table (slide 9). */
+.reveal table.props.compare-props { margin: 0.25em auto; }
+.reveal table.props.compare-props th,
+.reveal table.props.compare-props td { padding: 0.3em 0.6em; }
+
 /* Viterbi trellis visualization. */
 .reveal .trellis-viz { display: block; margin: 0.3em auto; max-height: 320px; }
 .reveal .trellis-viz .trellis-node circle {
