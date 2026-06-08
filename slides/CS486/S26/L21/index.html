@@ -173,7 +173,7 @@
 <!-- 7. Worked example: 0.3x^4 - 0.1x^3 - 2x^2 - 0.8x -->
 <section>
   <h2>Worked example</h2>
-  <p style="font-size: 0.82em; margin: 0.2em 0;">Minimize \( y = 0.3x^4 - 0.1x^3 - 2x^2 - 0.8x \), with gradient \( g = 1.2x^3 - 0.3x^2 - 4x - 0.8 \). Start at \(x_0 = -2\).</p>
+  <p style="font-size: 0.82em; margin: 0.15em 0;">Minimize \( y = 0.3x^4 - 0.1x^3 - 2x^2 - 0.8x \), with gradient \( g = 1.2x^3 - 0.3x^2 - 4x - 0.8 \). Start at \(x_0 = -2\).</p>
   <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg" class="l21-worked-curve" aria-hidden="true">
     <!-- axes and tick labels -->
     <line class="axis" x1="40" y1="130" x2="460" y2="130"/>
@@ -234,7 +234,7 @@
       <p style="font-size: 0.7em; color: #15803d; margin: 0.2em 0 0 0; text-align:center;">reaches global min</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align:center; margin-top: 0.4em;">
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align:center; margin-top: 0.25em;">
     Velocity carries the iterate over the local-min barrier near \(x \approx -1.6\).
   </p>
 </section>
@@ -246,7 +246,7 @@
   <div style="text-align:center; font-size: 0.92em;">
     \[ \text{step} \approx \varepsilon\lVert g_1\rVert + \alpha\,\varepsilon\lVert g_2\rVert + \alpha^2\,\varepsilon\lVert g_3\rVert + \cdots \approx \dfrac{\varepsilon\,\lVert \hat g\rVert}{1 - \alpha} \]
   </div>
-  <div class="fragment" style="margin-top: 0.6em; padding: 0.6em 0.9em; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 4px; font-size: 0.86em;">
+  <div class="fragment" style="margin-top: 0.45em; padding: 0.5em 0.9em; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 4px; font-size: 0.86em;">
     <strong>Concretely:</strong> \(\alpha = 0.9 \Rightarrow\) effective step size is up to <strong>10\(\times\)</strong> the per-step SGD step in a consistent direction.
   </div>
   <svg viewBox="0 0 480 90" xmlns="http://www.w3.org/2000/svg" class="l21-step-bar fragment" aria-hidden="true">
@@ -271,7 +271,7 @@
       <line x1="268" y1="58" x2="268" y2="74"/>
     </g>
   </svg>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.5em;">
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.35em;">
     In oscillating directions, opposite gradients cancel in \(\bm v\) &mdash; momentum naturally damps noise.
   </p>
 </section>
@@ -380,8 +380,8 @@
 <!-- 13. Adam -->
 <section>
   <h2>Adam: ADAptive Moments</h2>
-  <p style="font-size: 0.82em; margin: 0.2em 0;">Track <span style="color:#1d4ed8;">first moment (mean of \(\hat g\))</span> like momentum, and <span style="color:#a16207;">second moment (mean of \(\hat g^2\))</span> like RMSProp.</p>
-  <div class="algo-card">
+  <p style="font-size: 0.82em; margin: 0.15em 0;">Track <span style="color:#1d4ed8;">first moment (mean of \(\hat g\))</span> like momentum, and <span style="color:#a16207;">second moment (mean of \(\hat g^2\))</span> like RMSProp.</p>
+  <div class="algo-card" style="font-size: 0.66em;">
     <div class="algo-title">Adam</div>
     <div class="require">Require: LR \(\varepsilon\), decay rates \(\rho_1, \rho_2\) (typically 0.9, 0.999), small \(\delta\); init \(\bm s = 0\), \(\bm r = 0\), \(t = 0\).</div>
     <ol>
@@ -393,7 +393,7 @@
       <li class="fragment">Apply: \(\theta \leftarrow \theta + \Delta\theta\)</li>
     </ol>
   </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin-top: 0.4em; text-align:center;">
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin-top: 0.25em; text-align:center;">
     Bias correction fixes the cold-start: early \(\bm s, \bm r\) are biased toward 0 because they start at 0.
   </p>
 </section>
@@ -401,7 +401,7 @@
 <!-- 14. Optimizer cheat sheet -->
 <section>
   <h2>Optimizer cheat sheet</h2>
-  <table class="compare" style="font-size: 0.74em; width: 95%;">
+  <table class="compare" style="font-size: 0.7em; width: 95%;">
     <thead>
       <tr>
         <th>Method</th>
@@ -417,7 +417,7 @@
       <tr class="fragment"><td><strong>Adam</strong></td><td>\(-\varepsilon\, \dfrac{\hat{\bm s}}{\sqrt{\hat{\bm r}}+\delta}\)</td><td><strong>Yes</strong></td><td><span style="color:#1d4ed8;">Default choice in deep learning today.</span></td></tr>
     </tbody>
   </table>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin-top: 0.5em; text-align:center;">
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin-top: 0.35em; text-align:center;">
     Tune the learning rate first; pick the optimizer second.
   </p>
 </section>

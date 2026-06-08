@@ -308,8 +308,8 @@
 <!-- 10. Recursive delta -->
 <section>
   <h2>The recursive structure of \(\delta\)</h2>
-  <p style="font-size: 0.82em; margin: 0.2em 0;">For unit \(j\) in layer \(\ell\), define \(\delta^{(\ell)}_j = \dfrac{\partial E}{\partial a^{(\ell)}_j}\). Then:</p>
-  <div style="font-size: 0.86em;">
+  <p style="font-size: 0.82em; margin: 0.15em 0;">For unit \(j\) in layer \(\ell\), define \(\delta^{(\ell)}_j = \dfrac{\partial E}{\partial a^{(\ell)}_j}\). Then:</p>
+  <div style="font-size: 0.74em;">
     \[
     \delta^{(\ell)}_j =
     \begin{cases}
@@ -336,7 +336,7 @@
       <text x="180" y="145" font-size="10" fill="#6b7280">downstream layer \(\ell\!+\!1\)</text>
     </svg>
   </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin: 0.2em 0; text-align:center;">
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin: 0.1em 0; text-align:center;">
     \(\delta\) for a hidden unit = weighted sum of downstream \(\delta\)s, modulated by \(g'\).
   </p>
 </section>
@@ -344,15 +344,15 @@
 <!-- 11. Matrix-form backprop -->
 <section>
   <h2>Backprop in matrix form</h2>
-  <p style="font-size: 0.85em;">Stack layer activations into vectors. Let \(\delta_\ell = \partial E / \partial z^{(\ell)}\) and \(W_\ell\) be the weight matrix.</p>
-  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.6em 0.9em; font-size: 0.82em;">
+  <p style="font-size: 0.85em; margin: 0.2em 0;">Stack layer activations into vectors. Let \(\delta_\ell = \partial E / \partial z^{(\ell)}\) and \(W_\ell\) be the weight matrix.</p>
+  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.45em 0.9em; font-size: 0.8em;">
     <strong>Algorithm.</strong>
-    <ol style="margin: 0.2em 0 0.2em 1.5em;">
+    <ol style="margin: 0.15em 0 0.15em 1.5em; line-height: 1.3;">
       <li>Initialize weights \(W_\ell\) for every layer.</li>
       <li class="fragment"><strong>Forward:</strong> push \(x\) through, cache \(z^{(1)}, z^{(2)}, \ldots\)</li>
       <li class="fragment"><strong>Output \(\delta\):</strong> set \(\delta_n = \partial E / \partial z^{(n)}\).</li>
       <li class="fragment"><strong>Backward sweep,</strong> for \(\ell = n, n\!-\!1, \ldots, 1\):
-        <div style="margin: 0.3em 0 0 1em; font-size: 0.95em;">
+        <div style="margin: 0.2em 0 0 1em; font-size: 0.92em;">
           \(\delta_{\ell-1} = \delta_\ell \cdot \dfrac{\partial g(x^{(\ell)})}{\partial x^{(\ell)}} \cdot W_\ell\) <br>
           \(\dfrac{\partial E}{\partial W_\ell} = \delta_\ell \cdot \dfrac{\partial g(x^{(\ell)})}{\partial x^{(\ell)}} \cdot z^{(\ell-1)}\)
         </div>
@@ -382,10 +382,10 @@
     <circle class="peak" cx="160" cy="60" r="4"/>
     <text class="peak-label" x="166" y="56">max g'(x) = 1/4 at x = 0</text>
   </svg>
-  <div class="fragment" style="margin-top: 0.5em; padding: 0.6em 0.9em; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 4px; font-size: 0.86em;">
+  <div class="fragment" style="margin-top: 0.35em; padding: 0.5em 0.9em; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 4px; font-size: 0.86em;">
     <strong>Why it matters:</strong> during the forward pass we already compute \(g(a)\). Reuse it &mdash; no need to redo the exponential during the backward pass.
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.5em;">Similar shortcuts exist for tanh (\(1 - g^2\)) and ReLU (0 or 1).</p>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.35em;">Similar shortcuts exist for tanh (\(1 - g^2\)) and ReLU (0 or 1).</p>
 </section>
 
 <!-- 13. When to use a neural network -->
@@ -415,7 +415,7 @@
 <!-- 14. NN vs DT comparison table -->
 <section>
   <h2>Neural network vs decision tree</h2>
-  <table class="compare" style="font-size: 0.78em; margin: 0.3em auto;">
+  <table class="compare" style="font-size: 0.72em; margin: 0.3em auto;">
     <thead>
       <tr>
         <th></th>

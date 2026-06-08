@@ -1,5 +1,11 @@
 /* L22 (Course Recap) specific styles. Reuses shared/, L2/, L4/, L8/, L10/, L13/, L18/, L19/, L20/ via <link> tags. */
 
+/* Compact the recap comparison tables (slides 5, 16). The shared .compare cells
+   inherit large padding + line-height, so the many rows overflow; tighten here
+   so L22 is self-contained regardless of import order. */
+.reveal table.compare th,
+.reveal table.compare td { padding: 0.12em 0.5em; line-height: 1.2; }
+
 /* The 4-module "course in one picture" map. */
 .reveal .course-map {
   display: block;

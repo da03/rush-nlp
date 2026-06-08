@@ -74,11 +74,11 @@
 /* Loss-curve visual on slide 7 (worked example). */
 .reveal .l21-worked-curve {
   display: block;
-  margin: 0.4em auto 0.3em;
+  margin: 0.25em auto 0.2em;
   width: 100%;
   max-width: 560px;
   height: auto;
-  max-height: 170px;
+  max-height: 125px;
 }
 .reveal .l21-worked-curve .axis { stroke: #6b7280; stroke-width: 1; }
 .reveal .l21-worked-curve .grid { stroke: #e5e7eb; stroke-width: 0.6; stroke-dasharray: 3 3; }
@@ -128,12 +128,13 @@
 .reveal .momentum-tables table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.72em;
+  font-size: 13px;
+  line-height: 1.2;
   text-align: center;
 }
 .reveal .momentum-tables td,
 .reveal .momentum-tables th {
-  padding: 0.18em 0.3em;
+  padding: 0.12em 0.3em;
   border-bottom: 1px solid #f3f4f6;
 }
 .reveal .momentum-tables th {
