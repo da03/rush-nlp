@@ -110,10 +110,10 @@
 <!-- 4. Naive: brute-force sum-out -->
 <section>
   <h2>Naive: brute-force sum-out</h2>
-  <p style="font-size: 0.9em;">Marginalize the full joint using the BN factorization:</p>
-  <p style="text-align:center; font-size: 0.92em;">\(P(B | w \wedge g) \propto \sum_e \sum_a \sum_r P(B)\, P(e)\, P(a | B \wedge e)\, P(w | a)\, P(g | a)\, P(r | e)\)</p>
-  <p class="quiz-q" style="font-size: 0.88em; margin-top: 0.8em;"><strong>Q1.</strong> How many additions + multiplications does this require?</p>
-  <ol class="quiz-options" style="font-size: 0.82em;">
+  <p style="font-size: 0.9em; margin: 0.2em 0;">Marginalize the full joint using the BN factorization:</p>
+  <p style="text-align:center; font-size: 0.92em; margin: 0.2em 0;">\(P(B | w \wedge g) \propto \sum_e \sum_a \sum_r P(B)\, P(e)\, P(a | B \wedge e)\, P(w | a)\, P(g | a)\, P(r | e)\)</p>
+  <p class="quiz-q" style="font-size: 0.88em; margin-top: 0.3em;"><strong>Q1.</strong> How many additions + multiplications does this require?</p>
+  <ol class="quiz-options" style="font-size: 0.82em; margin: 0.2em 0 0.2em 2em;">
     <li>\(\le 10\)</li>
     <li>11&ndash;20</li>
     <li>21&ndash;40</li>
@@ -170,93 +170,9 @@
 <section>
   <h2>Restrict: assign a variable</h2>
   <div class="theorem">
-    Restricting \(f(X_1, X_2, \ldots, X_j)\) to \(X_1 = v_1\) gives a smaller factor \(f(X_1 = v_1, X_2, \ldots, X_j)\) on \(X_2, \ldots, X_j\).
+    Restricting \(f(X_1, \ldots, X_j)\) to \(X_1 = v_1\) fixes that variable, leaving a smaller factor on \(X_2, \ldots, X_j\).
   </div>
-  <p style="font-size: 0.85em; text-align: center; margin-top: 0.5em;">Example: \(f_1(X, Y, Z) \;\to\; f_2(Y, Z) = f_1(X = t, Y, Z)\)</p>
-  <div class="factor-row">
-    <div>
-      <table class="factor-table">
-        <caption>\(f_1(X, Y, Z)\)</caption>
-        <thead><tr><th>X</th><th>Y</th><th>Z</th><th>val</th></tr></thead>
-        <tbody>
-          <tr><td>t</td><td>t</td><td>t</td><td>0.1</td></tr>
-          <tr><td>t</td><td>t</td><td>f</td><td>0.9</td></tr>
-          <tr><td>t</td><td>f</td><td>t</td><td>0.2</td></tr>
-          <tr><td>t</td><td>f</td><td>f</td><td>0.8</td></tr>
-          <tr><td>f</td><td>t</td><td>t</td><td>0.4</td></tr>
-          <tr><td>f</td><td>t</td><td>f</td><td>0.6</td></tr>
-          <tr><td>f</td><td>f</td><td>t</td><td>0.3</td></tr>
-          <tr><td>f</td><td>f</td><td>f</td><td>0.7</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <p style="font-size: 1.5em; color: #1d4ed8; margin-top: 1.5em;">\(\xrightarrow{X = t}\)</p>
-    </div>
-    <div>
-      <table class="factor-table">
-        <caption>\(f_2(Y, Z)\)</caption>
-        <thead><tr><th>Y</th><th>Z</th><th>val</th></tr></thead>
-        <tbody>
-          <tr><td>t</td><td>t</td><td>0.1</td></tr>
-          <tr><td>t</td><td>f</td><td>0.9</td></tr>
-          <tr><td>f</td><td>t</td><td>0.2</td></tr>
-          <tr><td>f</td><td>f</td><td>0.8</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- 9. Sum out -->
-<section>
-  <h2>Sum out: marginalize a variable</h2>
-  <div class="theorem">
-    Summing out \(X_1\) from \(f(X_1, \ldots, X_j)\) gives a factor on \(X_2, \ldots, X_j\) defined by &nbsp;\(\bigl(\sum_{X_1} f\bigr)(X_2, \ldots, X_j) = \sum_{v} f(X_1 = v, X_2, \ldots, X_j)\).
-  </div>
-  <p style="font-size: 0.85em; text-align: center; margin-top: 0.5em;">Example: \(\sum_Y f_1(X, Y, Z) \;\to\; f_2(X, Z)\)</p>
-  <div class="factor-row">
-    <div>
-      <table class="factor-table">
-        <caption>\(f_1(X, Y, Z)\)</caption>
-        <thead><tr><th>X</th><th>Y</th><th>Z</th><th>val</th></tr></thead>
-        <tbody>
-          <tr><td>t</td><td>t</td><td>t</td><td>0.03</td></tr>
-          <tr><td>t</td><td>t</td><td>f</td><td>0.07</td></tr>
-          <tr><td>t</td><td>f</td><td>t</td><td>0.54</td></tr>
-          <tr><td>t</td><td>f</td><td>f</td><td>0.36</td></tr>
-          <tr><td>f</td><td>t</td><td>t</td><td>0.06</td></tr>
-          <tr><td>f</td><td>t</td><td>f</td><td>0.14</td></tr>
-          <tr><td>f</td><td>f</td><td>t</td><td>0.48</td></tr>
-          <tr><td>f</td><td>f</td><td>f</td><td>0.32</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div>
-      <p style="font-size: 1.5em; color: #1d4ed8; margin-top: 1.5em;">\(\xrightarrow{\sum_Y}\)</p>
-    </div>
-    <div>
-      <table class="factor-table">
-        <caption>\(f_2(X, Z) = \sum_Y f_1\)</caption>
-        <thead><tr><th>X</th><th>Z</th><th>val</th></tr></thead>
-        <tbody>
-          <tr><td>t</td><td>t</td><td>0.57</td></tr>
-          <tr><td>t</td><td>f</td><td>0.43</td></tr>
-          <tr><td>f</td><td>t</td><td>0.54</td></tr>
-          <tr><td>f</td><td>f</td><td>0.46</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- 10. Multiply -->
-<section>
-  <h2>Multiply two factors</h2>
-  <div class="theorem">
-    For \(f_1(X, Y)\) and \(f_2(Y, Z)\) sharing variable \(Y\): &nbsp;\((f_1 \times f_2)(X, Y, Z) = f_1(X, Y) \cdot f_2(Y, Z)\). &nbsp;The result is over the <em>union</em> of variables.
-  </div>
-  <p style="font-size: 0.85em; text-align: center; margin-top: 0.5em;">Example: \(f_1(X, Y) \times f_2(Y, Z)\) where \(Y\) is shared.</p>
+  <p style="font-size: 0.85em; text-align: center; margin-top: 0.5em;">Example: \(f_1(X, Y) \;\to\; f_2(Y) = f_1(X = t, Y)\)</p>
   <div class="factor-row">
     <div>
       <table class="factor-table">
@@ -269,6 +185,80 @@
           <tr><td>f</td><td>f</td><td>0.8</td></tr>
         </tbody>
       </table>
+    </div>
+    <div>
+      <p style="font-size: 1.5em; color: #1d4ed8; margin-top: 1em;">\(\xrightarrow{X = t}\)</p>
+    </div>
+    <div>
+      <table class="factor-table">
+        <caption>\(f_2(Y)\)</caption>
+        <thead><tr><th>Y</th><th>val</th></tr></thead>
+        <tbody>
+          <tr><td>t</td><td>0.1</td></tr>
+          <tr><td>f</td><td>0.9</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Sum out -->
+<section>
+  <h2>Sum out: marginalize a variable</h2>
+  <div class="theorem">
+    Summing out \(X_1\) from \(f(X_1, \ldots, X_j)\) gives a factor on \(X_2, \ldots, X_j\) defined by &nbsp;\(\bigl(\sum_{X_1} f\bigr)(X_2, \ldots, X_j) = \sum_{v} f(X_1 = v, X_2, \ldots, X_j)\).
+  </div>
+  <p style="font-size: 0.85em; text-align: center; margin-top: 0.5em;">Example: \(\sum_Y f_1(X, Y) \;\to\; f_2(X)\)</p>
+  <div class="factor-row">
+    <div>
+      <table class="factor-table">
+        <caption>\(f_1(X, Y)\)</caption>
+        <thead><tr><th>X</th><th>Y</th><th>val</th></tr></thead>
+        <tbody>
+          <tr><td>t</td><td>t</td><td>0.1</td></tr>
+          <tr><td>t</td><td>f</td><td>0.4</td></tr>
+          <tr><td>f</td><td>t</td><td>0.3</td></tr>
+          <tr><td>f</td><td>f</td><td>0.5</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <p style="font-size: 1.5em; color: #1d4ed8; margin-top: 1em;">\(\xrightarrow{\sum_Y}\)</p>
+    </div>
+    <div>
+      <table class="factor-table">
+        <caption>\(f_2(X) = \sum_Y f_1\)</caption>
+        <thead><tr><th>X</th><th>val</th></tr></thead>
+        <tbody>
+          <tr><td>t</td><td>0.1 + 0.4 = 0.5</td></tr>
+          <tr><td>f</td><td>0.3 + 0.5 = 0.8</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 10. Multiply -->
+<section>
+  <h2>Multiply two factors</h2>
+  <div class="theorem">
+    \((f_1 \times f_2)(X, Y, Z) = f_1(X, Y)\cdot f_2(Y, Z)\) for shared \(Y\) &mdash; the product is over the <em>union</em> of variables.
+  </div>
+  <div class="factor-row mult-row">
+    <div class="mult-cell">
+      <table class="factor-table">
+        <caption>\(f_1(X, Y)\)</caption>
+        <thead><tr><th>X</th><th>Y</th><th>val</th></tr></thead>
+        <tbody>
+          <tr><td>t</td><td>t</td><td>0.1</td></tr>
+          <tr><td>t</td><td>f</td><td>0.9</td></tr>
+          <tr><td>f</td><td>t</td><td>0.2</td></tr>
+          <tr><td>f</td><td>f</td><td>0.8</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="mult-op">\(\times\)</div>
+    <div class="mult-cell">
       <table class="factor-table">
         <caption>\(f_2(Y, Z)\)</caption>
         <thead><tr><th>Y</th><th>Z</th><th>val</th></tr></thead>
@@ -280,10 +270,8 @@
         </tbody>
       </table>
     </div>
-    <div>
-      <p style="font-size: 1.5em; color: #1d4ed8; margin-top: 4em;">\(\times\)</p>
-    </div>
-    <div>
+    <div class="mult-op">\(=\)</div>
+    <div class="mult-cell">
       <table class="factor-table">
         <caption>\(f_1 \times f_2\)</caption>
         <thead><tr><th>X</th><th>Y</th><th>Z</th><th>val</th></tr></thead>
@@ -391,10 +379,10 @@
 <section>
   <h2>Eliminate hidden variables</h2>
   <p class="factor-derive" style="font-size: 0.82em;">
-    <span class="fragment current-visible" data-fragment-index="0"><strong>Restrict \(A = \text{false}\):</strong> &nbsp;\(f_3(A, B, E) \to f_5(B, E)\) &nbsp;&nbsp;\(f_4(W, A) \to f_6(W)\)</span>
-    <span class="fragment current-visible" data-fragment-index="1"><strong>Sum out \(W\)</strong> from \(f_6\): &nbsp;\(f_7() = \sum_W f_6(W) = 0.4 + 0.6 = 1.0\)</span>
-    <span class="fragment current-visible" data-fragment-index="2"><strong>Multiply \(f_2 \times f_5\)</strong>: \(f_8(B, E)\) entries are products of marginal and conditional</span>
-    <span class="fragment current-visible" data-fragment-index="3"><strong>Sum out \(E\)</strong> from \(f_8\): &nbsp;\(f_9(B) = \sum_E f_8(B, E)\)</span>
+    <span class="fragment current-visible" data-fragment-index="0"><strong>Restrict \(A = \text{false}\):</strong> &nbsp;\(f_3 \to f_5(B, E)\), &nbsp;\(f_4 \to f_6(W)\)</span>
+    <span class="fragment current-visible" data-fragment-index="1"><strong>Sum out \(W\):</strong> &nbsp;\(f_7() = \sum_W f_6 = 1.0\)</span>
+    <span class="fragment current-visible" data-fragment-index="2"><strong>Multiply:</strong> &nbsp;\(f_2 \times f_5 = f_8(B, E)\)</span>
+    <span class="fragment current-visible" data-fragment-index="3"><strong>Sum out \(E\):</strong> &nbsp;\(f_9(B) = \sum_E f_8\)</span>
   </p>
   <div class="factor-row" style="margin-top: 0.3em;">
     <div>
@@ -533,7 +521,7 @@
       <p class="total" style="color: #991b1b;">Total: 134 ops</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.85em; text-align: center; margin-top: 0.5em;">The bad ordering builds a 4-variable intermediate factor \(f_7(E, B, W, G)\) &mdash; <strong>that's what we pay for</strong>.</p>
+  <p class="fragment" style="font-size: 0.85em; text-align: center; margin-top: 0.25em;">The bad ordering builds a 4-variable intermediate factor \(f_7(E, B, W, G)\) &mdash; <strong>that's what we pay for</strong>.</p>
 </section>
 
 <!-- 18. Elimination width + tree width -->
@@ -541,12 +529,10 @@
   <h2>Elimination width + tree width</h2>
   <div class="two-col vcenter">
     <div style="flex: 1;">
-      <ul style="font-size: 0.82em;">
-        <li><strong>Hypergraph view:</strong> each factor is a hyperedge over its variables.</li>
-        <li class="fragment"><strong>Elimination width</strong> of ordering \(\pi\): the largest hyperedge size produced during elimination.</li>
-        <li class="fragment"><strong>Tree width</strong> \(\omega\) = minimum elim width over all orderings.</li>
-        <li class="fragment">VE complexity is \(2^{O(\omega)}\) in both time and space.</li>
-        <li class="fragment">Finding an optimal ordering is <strong>NP-hard</strong>; in practice, heuristics work well (often \(\omega \approx 8\)&ndash;\(10\) even with 1000s of variables).</li>
+      <ul style="font-size: 0.85em;">
+        <li><strong>Elimination width:</strong> the largest factor (hyperedge) an ordering ever builds.</li>
+        <li class="fragment"><strong>Tree width</strong> \(\omega\) = smallest width over all orderings; VE costs \(2^{O(\omega)}\) time and space.</li>
+        <li class="fragment">Optimal ordering is <strong>NP-hard</strong>, but heuristics do well (\(\omega \approx 8\)&ndash;\(10\) even with 1000s of variables).</li>
       </ul>
     </div>
     <div style="flex: 0.8; text-align: center;">
