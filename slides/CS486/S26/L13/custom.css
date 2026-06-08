@@ -113,18 +113,21 @@
 }
 .reveal .mdp-loop .reward-label { fill: #166534; font-weight: 700; }
 
-/* Q-value list (slide 16, monospace cards). */
+/* Q-value list (slide 16, monospace cards). `white-space: pre-wrap` keeps each
+   action's computation on its own line (the source has one per line); the small
+   font keeps each line from wrapping inside the right column. */
 .reveal .q-values {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.78em;
-  line-height: 1.5;
-  margin: 0.3em auto;
+  font-size: 0.52em;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  margin: 0.25em auto;
   text-align: left;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 4px;
-  padding: 0.5em 0.8em;
-  max-width: 92%;
+  padding: 0.4em 0.7em;
+  max-width: 100%;
 }
 .reveal .q-values .best {
   color: #166534;

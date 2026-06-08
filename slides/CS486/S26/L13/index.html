@@ -290,12 +290,12 @@
   <h2>Why a fixed action sequence is not enough</h2>
   <div class="two-col">
     <div style="flex: 1;">
-      <p class="quiz-q" style="margin-top: 0;"><strong>Q2.</strong> In a <em>deterministic</em> env, the sequence <em>down, down, right, right, right</em> is optimal for the grid world.</p>
-      <p style="font-size: 0.82em; color: #166534;"><strong>True.</strong> Five steps take us from \(s_{11}\) to \(s_{34}\).</p>
-      <p class="quiz-q fragment" data-fragment-index="0"><strong>Q3.</strong> In the <em>stochastic</em> env, the same sequence may end at <em>more than one</em> square.</p>
-      <p class="fragment" data-fragment-index="0" style="font-size: 0.82em; color: #166534;"><strong>True.</strong> E.g. five right-veers in a row send us to \(s_{12}\).</p>
-      <p class="quiz-q fragment" data-fragment-index="1"><strong>Q4.</strong> So in the stochastic env, a fixed sequence is still good enough.</p>
-      <p class="fragment" data-fragment-index="1" style="font-size: 0.82em; color: #991b1b;"><strong>False.</strong> Actions misfire &mdash; we need to <em>re-plan</em> from whatever state we end up in.</p>
+      <p class="quiz-q" style="margin: 0.2em 0;"><strong>Q2.</strong> In a <em>deterministic</em> env, the sequence <em>down, down, right, right, right</em> is optimal for the grid world.</p>
+      <p style="font-size: 0.82em; color: #166534; margin: 0.15em 0;"><strong>True.</strong> Five steps take us from \(s_{11}\) to \(s_{34}\).</p>
+      <p class="quiz-q fragment" data-fragment-index="0" style="margin: 0.2em 0;"><strong>Q3.</strong> In the <em>stochastic</em> env, the same sequence may end at <em>more than one</em> square.</p>
+      <p class="fragment" data-fragment-index="0" style="font-size: 0.82em; color: #166534; margin: 0.15em 0;"><strong>True.</strong> E.g. five right-veers in a row send us to \(s_{12}\).</p>
+      <p class="quiz-q fragment" data-fragment-index="1" style="margin: 0.2em 0;"><strong>Q4.</strong> So in the stochastic env, a fixed sequence is still good enough.</p>
+      <p class="fragment" data-fragment-index="1" style="font-size: 0.82em; color: #991b1b; margin: 0.15em 0;"><strong>False.</strong> Actions misfire &mdash; we need to <em>re-plan</em> from whatever state we end up in.</p>
     </div>
     <div style="flex: 0.7; text-align: center;">
       <div class="gridworld">
@@ -508,9 +508,9 @@
 <!-- 16. Q5: optimal action at s_13 -->
 <section>
   <h2>Optimal action at \(s_{13}\)?</h2>
-  <p class="quiz-q"><strong>Q5.</strong> Using \(Q^\star(s, a) = R(s) + \sum_{s'} P(s' \mid s, a) V^\star(s')\), what is \(\pi^\star(s_{13})\)?</p>
+  <p class="quiz-q" style="margin: 0.2em 0;"><strong>Q5.</strong> Using \(Q^\star(s, a) = R(s) + \sum_{s'} P(s' \mid s, a) V^\star(s')\), what is \(\pi^\star(s_{13})\)?</p>
   <div class="two-col vcenter">
-    <div style="flex: 0.7; text-align: center;">
+    <div style="flex: 0.55; text-align: center;">
       <div class="gridworld v-values">
         <div class="gw-cell">0.705</div>
         <div class="gw-cell">0.655</div>
@@ -527,7 +527,7 @@
       </div>
       <p style="font-size: 0.7em; color: #6b7280; margin-top: 0.2em;">\(s_{13}\) is the yellow cell (\(V^\star = 0.611\)).</p>
     </div>
-    <div style="flex: 1.1;">
+    <div style="flex: 1.25;">
       <p style="font-size: 0.82em; margin: 0;"><strong>Computing each Q-value (4 actions):</strong></p>
       <div class="q-values">
 Left:  -0.04 + 0.8&middot;0.655 + 0.1&middot;0.611 + 0.1&middot;0.660 = <span class="best">0.6111</span>

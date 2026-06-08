@@ -215,7 +215,7 @@
 <!-- 9. Value iteration algorithm -->
 <section>
   <h2>The value iteration algorithm</h2>
-  <p style="font-size: 0.85em;">Treat the Bellman equation as an <em>update rule</em>. Let \(V_i(s)\) be the \(i^{\text{th}}\) estimate.</p>
+  <p style="font-size: 0.85em; margin: 0.2em 0;">Treat the Bellman equation as an <em>update rule</em>. Let \(V_i(s)\) be the \(i^{\text{th}}\) estimate.</p>
   <div class="algo-card">
     <div class="algo-title">value-iteration(MDP, \(\varepsilon\))</div>
     <ol>
@@ -226,8 +226,8 @@
       <li>Stop when \(\max_s |V_{i+1}(s) - V_i(s)| &lt; \varepsilon\).</li>
     </ol>
   </div>
-  <p style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.4em;"><strong>Guarantee:</strong> \(V_i \to V^\star\) as \(i \to \infty\).</p>
-  <ul class="fragment" style="font-size: 0.78em; margin-top: 0.3em;">
+  <p style="font-size: 0.82em; color: #166534; text-align: center; margin: 0.25em 0;"><strong>Guarantee:</strong> \(V_i \to V^\star\) as \(i \to \infty\).</p>
+  <ul class="fragment" style="font-size: 0.78em; margin: 0.15em 0;">
     <li><strong>Synchronous</strong>: keep \(V_i\) frozen while computing all of \(V_{i+1}\).</li>
     <li><strong>Asynchronous</strong>: update entries in place, in any order. Often converges faster.</li>
   </ul>
@@ -349,7 +349,7 @@
 <!-- 14. PE vs Bellman -->
 <section>
   <h2>Policy evaluation vs Bellman: the max disappears</h2>
-  <p style="font-size: 0.85em;">In PE the action is <em>fixed</em> by \(\pi\), so the system becomes <strong>linear</strong> in \(V\):</p>
+  <p style="font-size: 0.85em; margin: 0.2em 0;">In PE the action is <em>fixed</em> by \(\pi\), so the system becomes <strong>linear</strong> in \(V\):</p>
   <div class="bellman-compare">
     <div class="bcard linear">
       <h3>Policy evaluation (linear)</h3>
@@ -364,13 +364,13 @@
       <span class="tag nonlinear">nonlinear: harder</span>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; text-align: center; margin-top: 0.4em;"><strong>Policy improvement</strong> reintroduces the \(\arg\max\): &nbsp;\(\pi_{i+1}(s) = \arg\max_a \sum_{s'} P(s' \mid s, a)\, V^{\pi_i}(s')\).</p>
+  <p class="fragment" style="font-size: 0.82em; text-align: center; margin: 0.25em 0;"><strong>Policy improvement</strong> reintroduces the \(\arg\max\): &nbsp;\(\pi_{i+1}(s) = \arg\max_a \sum_{s'} P(s' \mid s, a)\, V^{\pi_i}(s')\).</p>
 </section>
 
 <!-- 15. Performing policy evaluation -->
 <section>
   <h2>How do we perform policy evaluation?</h2>
-  <p style="font-size: 0.85em;">Two ways to solve the linear system \(V^\pi(s) = R(s) + \gamma \sum_{s'} P(s' \mid s, \pi(s))\, V^\pi(s')\):</p>
+  <p style="font-size: 0.8em; margin: 0.15em 0;">Two ways to solve the linear system \(V^\pi(s) = R(s) + \gamma \sum_{s'} P(s' \mid s, \pi(s))\, V^\pi(s')\):</p>
   <div class="pe-solvers">
     <div class="pcard">
       <h3>Exactly</h3>
@@ -384,7 +384,7 @@
       <p class="cost">cost: \(O(m \cdot |S| \cdot |A_{\text{avg}}|)\)</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">In practice, a small \(m\) is usually enough &mdash; PI converges in far fewer outer iterations than VI.</p>
+  <p class="fragment" style="font-size: 0.8em; color: #1d4ed8; text-align: center; margin: 0.2em 0;">In practice, a small \(m\) is usually enough &mdash; PI converges in far fewer outer iterations than VI.</p>
 </section>
 
 <!-- ============================================================
