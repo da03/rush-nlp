@@ -124,20 +124,22 @@
 }
 
 /* Cross-validation strip (slide 12). */
-.reveal .cv-folds { display: block; margin: 0.3em auto; max-width: 460px; }
+.reveal .cv-folds { display: block; margin: 0.25em auto; max-width: 460px; line-height: 1.1; }
 .reveal .cv-folds .row {
   display: flex;
+  align-items: center;
   gap: 3px;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
+  line-height: 1.1;
 }
 .reveal .cv-folds .row .fold {
   flex: 1;
-  height: 26px;
+  height: 22px;
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7em;
+  font-size: 14px;
   font-weight: 600;
   color: #1d4ed8;
   background: #dbeafe;
@@ -150,15 +152,16 @@
 }
 .reveal .cv-folds .row-label {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.7em;
+  font-size: 14px;
+  white-space: nowrap;
   color: #4b5563;
-  width: 38px;
+  width: 42px;
 }
 .reveal .cv-folds .legend {
   display: flex;
   gap: 1em;
   justify-content: center;
-  font-size: 0.72em;
+  font-size: 14px;
   margin-top: 0.3em;
   color: #4b5563;
 }

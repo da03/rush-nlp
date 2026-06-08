@@ -450,8 +450,8 @@
 <!-- 12. K-fold cross-validation -->
 <section>
   <h2>K-fold cross-validation</h2>
-  <p style="font-size: 0.84em; margin: 0.2em 0;">How to pick a hypothesis that generalizes? Use a slice of training data as a <strong>surrogate test set</strong>.</p>
-  <div class="algo-card" style="font-size: 0.9em;">
+  <p style="font-size: 0.84em; margin: 0.15em 0;">How to pick a hypothesis that generalizes? Use a slice of training data as a <strong>surrogate test set</strong>.</p>
+  <div class="algo-card">
     <div class="algo-title">k-fold-CV(model, dataset, \(K\))</div>
     <ol>
       <li>Split training data into \(K\) equally sized folds.</li>
@@ -485,7 +485,7 @@
       <span><span class="swatch valid"></span>validation fold</span>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.2em;">After CV: pick the best hyperparameters and (optionally) retrain on all data.</p>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.15em;">After CV: pick the best hyperparameters and (optionally) retrain on all data.</p>
 </section>
 
 <!-- 13. Overfitting chart + Q5 -->
@@ -540,28 +540,30 @@
 <!-- 14. True error vs empirical error -->
 <section>
   <h2>True error vs empirical error</h2>
-  <p style="font-size: 0.88em;">Setup: domain \(X\), label space \(Y\), unknown true function \(f: X \to Y\). Examples drawn from distribution \(D\) over \(X\).</p>
-  <div class="defbox">
-    <h3>True error (what we want)</h3>
-    <p style="text-align: center; margin: 0.2em 0; font-size: 0.95em;">\(L_{D, f}(h) = \Pr_{x \sim D}\bigl[h(x) \neq f(x)\bigr]\)</p>
-    <p style="margin: 0; font-size: 0.82em; color: #6b7280;">The probability of being wrong on a fresh random example. We <strong>can't</strong> compute this &mdash; we don't know \(D\) or \(f\).</p>
+  <p style="font-size: 0.82em; margin: 0.15em 0;">Setup: domain \(X\), labels \(Y\), unknown true \(f: X \to Y\); examples drawn from distribution \(D\) over \(X\).</p>
+  <div class="two-col" style="align-items: stretch;">
+    <div class="defbox" style="flex: 1;">
+      <h3 style="margin-top: 0;">True error (what we want)</h3>
+      <p style="text-align: center; margin: 0.2em 0; font-size: 0.82em;">\(L_{D, f}(h) = \Pr_{x \sim D}\bigl[h(x) \neq f(x)\bigr]\)</p>
+      <p style="margin: 0; font-size: 0.76em; line-height: 1.3; color: #6b7280;">Chance of being wrong on a fresh example. <strong>Can't</strong> compute it &mdash; \(D, f\) unknown.</p>
+    </div>
+    <div class="defbox fragment" style="flex: 1;">
+      <h3 style="margin-top: 0;">Empirical error (what we measure)</h3>
+      <p style="text-align: center; margin: 0.2em 0; font-size: 0.82em;">\(L_S(h) = \dfrac{|\{i \in [m]: h(x_i) \neq y_i\}|}{m}\)</p>
+      <p style="margin: 0; font-size: 0.76em; line-height: 1.3; color: #6b7280;">Fraction misclassified on the training set \(S\) (size \(m\)).</p>
+    </div>
   </div>
-  <div class="defbox fragment" style="margin-top: 0.5em;">
-    <h3>Empirical error (what we measure)</h3>
-    <p style="text-align: center; margin: 0.2em 0; font-size: 0.95em;">\(L_S(h) = \dfrac{|\{i \in [m]: h(x_i) \neq y_i\}|}{m}\)</p>
-    <p style="margin: 0; font-size: 0.82em; color: #6b7280;">Fraction misclassified on the training set \(S\) of size \(m\).</p>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Hope: minimizing \(L_S\) will also keep \(L_{D, f}\) small &mdash; <em>generalization</em>.</p>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.35em;">Hope: minimizing \(L_S\) also keeps \(L_{D, f}\) small &mdash; <em>generalization</em>.</p>
 </section>
 
 <!-- 15. Empirical risk minimization -->
 <section>
   <h2>Empirical risk minimization (ERM)</h2>
-  <p style="font-size: 0.88em;">Given a hypothesis class \(\mathcal{H}\) and a loss \(\ell\), pick the hypothesis with smallest training loss:</p>
-  <div class="defbox" style="text-align: center;">
-    <p style="margin: 0; font-size: 1.05em;">\(\hat{h} = \arg\min_{h \in \mathcal{H}} \dfrac{1}{m} \sum_{i = 1}^{m} \ell\bigl(h(x_i),\, y_i\bigr)\)</p>
+  <p style="font-size: 0.86em; margin: 0.15em 0;">Given a hypothesis class \(\mathcal{H}\) and a loss \(\ell\), pick the hypothesis with smallest training loss:</p>
+  <div class="defbox" style="text-align: center; margin: 0.25em auto;">
+    <p style="margin: 0; font-size: 0.95em;">\(\hat{h} = \arg\min_{h \in \mathcal{H}} \dfrac{1}{m} \sum_{i = 1}^{m} \ell\bigl(h(x_i),\, y_i\bigr)\)</p>
   </div>
-  <p style="font-size: 0.88em; margin-top: 0.5em;"><strong>Three factors</strong> determine how well ERM generalizes:</p>
+  <p style="font-size: 0.86em; margin: 0.2em 0 0;"><strong>Three factors</strong> determine how well ERM generalizes:</p>
   <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
     <div class="task-card">
       <h3>Data size \(m\)</h3>
