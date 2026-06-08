@@ -1,5 +1,30 @@
 /* L16-specific styles on top of shared/custom.css, L10/custom.css. */
 
+/* Algorithm card (slide 13, K-fold CV). L16 imports shared + L10, neither of
+   which defines .algo-card, so style it here (mirrors L9/L15, compact). */
+.reveal .algo-card {
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 6px;
+  padding: 0.5em 0.9em;
+  font-size: 0.8em;
+  margin: 0.3em auto;
+  max-width: 95%;
+}
+.reveal .algo-card .algo-title {
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 0.25em;
+  font-size: 0.95em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal .algo-card ol {
+  margin: 0.2em 0 0.2em 1.5em;
+  padding: 0;
+}
+.reveal .algo-card ol li { margin: 0.1em 0; }
+
 /* Classification vs regression mini-visual (slide 7a). */
 .reveal .cr-svg {
   display: block;
