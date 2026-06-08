@@ -86,17 +86,29 @@
   height: auto;
 }
 
-/* Diagnostic-symptoms DAG (slides 6-8). */
+/* Diagnostic-symptoms DAG (slides 6-8). Sized so the DAG plus both Q&A boxes
+   fit the 720px canvas (the longest answers are in quiz pack 3). */
 .reveal .dsep-graph { margin: 0 0 0.2em; }
 .reveal .dsep-graph svg {
-  max-height: 320px;
+  max-height: 210px;
   width: auto;
 }
+/* Tighten the shared quiz Q/A boxes for L8 so the last answer never truncates. */
+.reveal .quiz-q { margin: 0.25em 0; }
+.reveal .quiz-answer { margin-top: 0.35em; padding: 0.4em 0.8em; }
 .reveal .dsep-graph .edge-path     { stroke: #dc2626; stroke-width: 2.5; }
 .reveal .dsep-graph .node-observed circle,
 .reveal .dsep-graph .node-observed ellipse,
 .reveal .dsep-graph .node-observed rect { fill: #d1d5db; stroke: #374151; }
 .reveal .dsep-graph rect { fill: #fff; stroke: #111827; stroke-width: 1.5; rx: 3; ry: 3; }
+
+/* "Pick a causal order" comparison table (slide 16). The shared `.compare`
+   is only 80% wide, which forced each math cell to wrap to 2-3 lines and made
+   the table overflow the slide. Widen it, shrink the font, and keep every cell
+   on a single line so all rows and the footnote fit. */
+.reveal table.compare { width: 94%; font-size: 0.7em; }
+.reveal table.compare th,
+.reveal table.compare td { padding: 0.3em 0.6em; white-space: nowrap; }
 
 /* "Set: { ... }" caption labels for construction examples. */
 .reveal .construction-step {
@@ -138,7 +150,7 @@
   max-width: 60%;
 }
 .reveal .original-bn-mini svg {
-  max-height: 60px;
+  max-height: 70px;
   width: auto;
   vertical-align: middle;
 }
