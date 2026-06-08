@@ -119,7 +119,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.6em;
-  margin: 0.4em 0;
+  margin: 0.3em 0;
 }
 .reveal .compare-row .ccard {
   padding: 0.7em 0.9em;
@@ -149,13 +149,13 @@
 /* Update-derivation: monospace math step list. */
 .reveal .update-derivation {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.78em;
-  line-height: 1.5;
+  font-size: 0.74em;
+  line-height: 1.45;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-left: 4px solid #1d4ed8;
   border-radius: 4px;
-  padding: 0.5em 0.8em;
+  padding: 0.4em 0.6em;
   margin: 0.3em auto;
   max-width: 90%;
 }

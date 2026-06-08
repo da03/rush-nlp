@@ -106,9 +106,15 @@
    is only 80% wide, which forced each math cell to wrap to 2-3 lines and made
    the table overflow the slide. Widen it, shrink the font, and keep every cell
    on a single line so all rows and the footnote fit. */
-.reveal table.compare { width: 94%; font-size: 0.7em; }
+.reveal table.compare { width: 96%; font-size: 0.64em; }
 .reveal table.compare th,
-.reveal table.compare td { padding: 0.3em 0.6em; white-space: nowrap; }
+.reveal table.compare td { padding: 0.3em 0.55em; }
+/* Give the math-heavy "Reconstructed" column the most room so its KaTeX does
+   not overflow into the next column; the rest size to content. */
+.reveal table.compare th:nth-child(4),
+.reveal table.compare td:nth-child(4) { width: 32%; }
+.reveal table.compare th:nth-child(5),
+.reveal table.compare td:nth-child(5) { width: 20%; }
 
 /* "Set: { ... }" caption labels for construction examples. */
 .reveal .construction-step {

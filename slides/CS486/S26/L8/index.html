@@ -500,14 +500,13 @@
   <p style="font-size: 0.9em; text-align: center;">Causes precede effects. Add root causes first; effects last.</p>
   <table class="compare" style="margin: 0.3em auto;">
     <thead>
-      <tr><th>Example</th><th>Original</th><th>Order</th><th>Reconstructed</th><th>#Edges</th></tr>
+      <tr><th>Example</th><th>Original</th><th>Order</th><th>Reconstructed</th><th>Result</th></tr>
     </thead>
     <tbody>
-      <tr><td>Ex 1</td>     <td>\(B \to A \to W\)</td><td>\(W, A, B\)</td><td>\(W \to A \to B\)</td><td>2 (same)</td></tr>
-      <tr><td>Ex 1 alt</td> <td>\(B \to A \to W\)</td><td>\(A, W, B\)</td><td>\(A \to W, A \to B\)</td><td>2 (different)</td></tr>
-      <tr><td>Ex 2</td>     <td>\(A \to W, A \to G\)</td><td>\(W, G, A\)</td><td>\(W \to G, W \to A, G \to A\)</td><td><span class="no">3</span></td></tr>
-      <tr><td>Ex 3</td>     <td>\(E \to A, B \to A\)</td><td>\(A, B, E\)</td><td>\(A \to B, A \to E, B \to E\)</td><td><span class="no">3</span></td></tr>
-      <tr><td>Holmes</td>   <td>12 probs</td><td>bad: \(G, W, E, B, A, R\)</td><td>10-edge mess</td><td><span class="no">33 probs</span></td></tr>
+      <tr><td>Ex 1</td>     <td>\(B \to A \to W\)</td><td>\(W, A, B\)</td><td>\(W \to A \to B\)</td><td>2 edges, same shape</td></tr>
+      <tr><td>Ex 1 alt</td> <td>\(B \to A \to W\)</td><td>\(A, W, B\)</td><td>\(A \to W, A \to B\)</td><td>2 edges, different shape</td></tr>
+      <tr><td>Ex 2</td>     <td>\(A \to W, A \to G\)</td><td>\(W, G, A\)</td><td>\(W \to G, W \to A, G \to A\)</td><td><span class="no">3 edges &mdash; worse</span></td></tr>
+      <tr><td>Ex 3</td>     <td>\(E \to A, B \to A\)</td><td>\(A, B, E\)</td><td>\(A \to B, A \to E, B \to E\)</td><td><span class="no">3 edges &mdash; worse</span></td></tr>
     </tbody>
   </table>
   <p class="footnote" style="text-align: center; margin-top: 0.3em;">Finding the most compact BN is NP-hard in general &mdash; but a causal ordering is a good heuristic.</p>
