@@ -53,8 +53,10 @@ tas:
     email: "hsheta@uwaterloo.ca"
   - name: "Dake Zhang"
     email: "d346zhan@uwaterloo.ca"
+    role: "Assignment 1"
 
-# Office hours - rendered as a 6-row <table>. Office hours start the week of May 18.
+# Office hours - rendered as a 5-row <table>. Office hours start the week of May 18.
+# (Dake Zhang's Monday 2-3 PM slot was discontinued when he took over Assignment 1.)
 office_hours_start: "Week of May 18"
 office_hours:
   - day: "Monday"
@@ -62,11 +64,6 @@ office_hours:
     ta: "Larry Yinxi Li"
     mode: "Zoom"
     link: "https://uwaterloo.zoom.us/j/93611814134?pwd=WnHccgVF97b7e02XYvhpyQHlaimoZu.1"
-  - day: "Monday"
-    time: "2:00 - 3:00 PM"
-    ta: "Dake Zhang"
-    mode: "Zoom"
-    link: "https://uwaterloo.zoom.us/j/6586436343?pwd=cmV6NHhhSGx4L054R2QzVkIzUU5UZz09"
   - day: "Monday"
     time: "3:00 - 4:00 PM"
     ta: "Yuxuan Li"
@@ -348,8 +345,17 @@ schedule:
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
-  - severity: event
+  - severity: info
     show: true
+    title: "Assignment 1: contact Dake Zhang with all A1 questions"
+    body: >-
+      <strong>Dake Zhang</strong> is now the point of contact for everything
+      <strong>Assignment 1</strong> (Piazza questions and grading). Post A1 questions on
+      <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> or email
+      <a href="mailto:d346zhan@uwaterloo.ca">d346zhan@uwaterloo.ca</a>. His weekly
+      Monday 2-3 PM office hours are discontinued for the rest of the term.
+  - severity: event
+    show: false
     title: "Hala's office hours moved to Tuesday this week (Jun 2, 3 PM)"
     body: >-
       This week only, Hala Sheta's Wednesday 1 PM office hours move to
