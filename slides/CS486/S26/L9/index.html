@@ -580,13 +580,14 @@
   <div class="two-col vcenter">
     <div style="flex: 1;">
       <div class="theorem">
-        A <strong>polytree</strong> is a singly-connected BN: at most one undirected path between any two nodes. (Nodes may still have multiple parents.)
+        A <strong>polytree</strong> = a <strong>singly-connected</strong> BN: at most one <em>undirected</em> path between any two nodes (no loops). A node may still have several parents.
       </div>
-      <ul style="font-size: 0.82em; margin-top: 0.5em;">
-        <li class="fragment">Heuristic: <strong>always eliminate a singly-connected node</strong>.</li>
-        <li class="fragment">A singly-connected node always exists \(\Rightarrow\) factor size <em>never grows</em>.</li>
-        <li class="fragment">Tree width = max # of parents of any node.</li>
-        <li class="fragment">VE runs in time <strong>linear in the size of the network</strong>.</li>
+      <p style="font-size: 0.76em; color: #6b7280; margin: 0.35em 0 0.2em;">\(A \to C \leftarrow B\) is fine (only one route between any pair). But a diamond \(A\to B\to D\), \(A\to C\to D\) has two routes \(A\)–\(D\) \(\Rightarrow\) a loop \(\Rightarrow\) <strong>not</strong> a polytree.</p>
+      <ul style="font-size: 0.82em; margin-top: 0.2em;">
+        <li class="fragment">Heuristic: eliminate a node with a <strong>single neighbor</strong> &mdash; e.g. everything but \(C\) below.</li>
+        <li class="fragment">One always exists \(\Rightarrow\) summing it out <em>never enlarges</em> a factor.</li>
+        <li class="fragment">A node with 2+ parents (like \(C\)) has \(> 1\) neighbor &mdash; <em>not</em> single-neighbor, so eliminated last.</li>
+        <li class="fragment">Tree width = max # parents; VE is <strong>linear in network size</strong>.</li>
       </ul>
     </div>
     <div style="flex: 0.8; text-align: center;">
@@ -605,7 +606,7 @@
           <circle cx="190" cy="210" r="16"/><text x="190" y="214">F</text>
         </g>
       </svg>
-      <p style="font-size: 0.7em; color: #6b7280; margin: 0;">Eliminate leaves D, E, F first &mdash; factors never grow beyond original CPTs.</p>
+      <p style="font-size: 0.7em; color: #6b7280; margin: 0;">Every node but \(C\) has a single neighbor &mdash; peel those off first, \(C\) (2 parents) last. Factors never grow beyond original CPTs.</p>
     </div>
   </div>
 </section>
