@@ -122,6 +122,14 @@ chats:
     out: 2026-07-16
     due: 2026-07-21
 
+# 3 individual programming assignments (30% total), released/submitted on LEARN.
+# Each has a TA owner who answers Piazza questions and handles grading.
+# Leave owner blank ("") to render "TBA".
+assignments:
+  - { num: 1, out: 2026-06-04, due: 2026-06-18, owner: "Dake Zhang", owner_email: "d346zhan@uwaterloo.ca" }
+  - { num: 2, out: 2026-06-25, due: 2026-07-09, owner: "" }
+  - { num: 3, out: 2026-07-09, due: 2026-08-04, owner: "" }
+
 # Schedule entries are rendered in array order. Mix any number of types.
 #   type: module        - banner row spanning all columns, opens a new themed block.
 #   type: lecture       - lecture row; requires lecture_num + topic + slides.

@@ -63,6 +63,7 @@ excerpt: "CS 486/686: Introduction to Artificial Intelligence (Spring 2026) at t
       <li><a href="#office-hours">Office hours</a></li>
       <li><a href="#communication">Communication</a></li>
       <li><a href="#assessment">Assessment</a></li>
+      <li><a href="#assignments">Assignments</a></li>
       <li><a href="#chats">Chat assignments</a></li>
       <li><a href="#project">Project</a></li>
       <li><a href="#readings">Readings</a></li>
@@ -129,6 +130,7 @@ excerpt: "CS 486/686: Introduction to Artificial Intelligence (Spring 2026) at t
       <li><strong>Public posts</strong> (can be anonymous) are the preferred way to ask questions about course material - other students can help and instructors can read/reply.</li>
       <li><strong>Private posts</strong> (to instructors only) are for anything containing solution snippets or private questions.</li>
       <li>For Chrysalis-specific issues, make a private Piazza post addressed to Prashanth Arun and Robert Cai.</li>
+      <li>For <strong>Assignment 1</strong> questions, make a Piazza post addressed to <strong>Dake Zhang</strong> (the A1 owner) - see <a href="#assignments">Assignments</a>.</li>
       <li>Course materials and assignments live on LEARN, not Piazza.</li>
       <li>Email <a href="mailto:{{ course.instructor.email }}">{{ course.instructor.email }}</a> only in exceptional cases where you need to reach the instructor directly.</li>
     </ul>
@@ -161,7 +163,43 @@ excerpt: "CS 486/686: Introduction to Artificial Intelligence (Spring 2026) at t
         </ul>
       </article>
     </div>
-    <p class="muted-note">CS486 students must pass the final exam to pass the course. Dates for the three assignments are announced as the term progresses.</p>
+    <p class="muted-note">CS486 students must pass the final exam to pass the course. Dates for the <a href="#assignments">three assignments</a> are announced as the term progresses.</p>
+  </section>
+
+  {%- comment -%} ====================== Assignments ====================== {%- endcomment -%}
+  <section id="assignments" aria-labelledby="assignments-title">
+    <h2 class="course-section__title" id="assignments-title">Assignments</h2>
+    <p>Three individual programming assignments (30% total), released and submitted on
+       <a href="{{ course.links.learn }}">LEARN</a>. Each assignment has a TA owner who
+       answers questions on Piazza and handles grading - post assignment questions on
+       Piazza addressed to that TA.</p>
+    <table class="course-table">
+      <caption>3 assignments. Released and submitted on LEARN.</caption>
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Released</th>
+          <th scope="col">Due</th>
+          <th scope="col">Questions &amp; grading</th>
+        </tr>
+      </thead>
+      <tbody>
+        {%- for a in cs.assignments -%}
+        <tr>
+          <td data-label="#">Assignment {{ a.num }}</td>
+          <td data-label="Released">{{ a.out | date: '%a %b %-d' }}</td>
+          <td data-label="Due">{{ a.due | date: '%a %b %-d' }}</td>
+          <td data-label="Questions &amp; grading">
+            {%- if a.owner != '' -%}
+              <strong>{{ a.owner }}</strong> - post on <a href="{{ course.links.piazza }}">Piazza</a>{% if a.owner_email %}, or <a href="mailto:{{ a.owner_email }}">{{ a.owner_email }}</a>{% endif %}
+            {%- else -%}
+              TBA
+            {%- endif -%}
+          </td>
+        </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
   </section>
 
   {%- comment -%} ====================== Chat assignments ====================== {%- endcomment -%}
