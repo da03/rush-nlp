@@ -100,10 +100,12 @@ chats:
     due: 2026-06-02
   - num: 4
     out: 2026-06-04
-    due: 2026-06-09
+    due: 2026-06-16
+    note: "Deadline extended one week (originally Tue Jun 9) due to the Chrysalis outage (CSCF server issue plus the scheduled Jun 11-12 power outage)."
   - num: 5
     out: 2026-06-11
-    due: 2026-06-16
+    due: 2026-06-18
+    note: "Deadline extended two days (originally Tue Jun 16) due to the scheduled Chrysalis downtime Jun 11 (9:30 AM) - Jun 12 (noon)."
   - num: 6
     out: 2026-06-18
     due: 2026-06-23
@@ -208,8 +210,6 @@ schedule:
     lecture_num: 9
     topic: "Variable Elimination Algorithm"
     slides: /slides/CS486/S26/L9/
-    deadlines:
-      - { kind: due,     chat: 4, label: "Chat 4 due" }
 
   - type: lecture
     date: 2026-06-11
@@ -225,7 +225,7 @@ schedule:
     topic: "Hidden Markov Models II"
     slides: /slides/CS486/S26/L11/
     deadlines:
-      - { kind: due,     chat: 5, label: "Chat 5 due" }
+      - { kind: due,     chat: 4, label: "Chat 4 due (extended)" }
 
   - type: module
     label: "Decision Making"
@@ -237,6 +237,7 @@ schedule:
     slides: /slides/CS486/S26/L12/
     deadlines:
       - { kind: out,     chat: 6, label: "Chat 6 out" }
+      - { kind: due,     chat: 5, label: "Chat 5 due (extended)" }
       - { kind: due,     label: "Assignment 1 due" }
 
   - type: lecture
@@ -345,6 +346,15 @@ schedule:
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
+  - severity: warning
+    show: true
+    title: "Chrysalis outage - Chat 4 & Chat 5 deadlines extended"
+    body: >-
+      Chrysalis (the chat-assignment platform) is currently down (CSCF server issue) and will also be
+      offline for a scheduled power outage from <strong>Thu Jun 11 (9:30 AM)</strong> to
+      <strong>Fri Jun 12 (12:00 noon)</strong>. To make up for the downtime:
+      <strong>Chat 4 is extended to Tue Jun 16</strong> and <strong>Chat 5 to Thu Jun 18</strong>
+      (both 11:59 PM). We'll confirm here once the service is back up.
   - severity: info
     show: true
     title: "Assignment 1: contact Dake Zhang with all A1 questions"
