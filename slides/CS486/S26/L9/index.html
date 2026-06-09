@@ -53,8 +53,8 @@
 <section class="center-slide">
   <h2>Reminders</h2>
   <div class="defbox" style="max-width: 84%; margin: 0.6em auto; text-align: left;">
-    <p style="margin: 0 0 0.45em 0; font-size: 0.96em;">&#9888;&#65039; <strong>Chrysalis is down now</strong> (server issue), and is also scheduled offline <strong>Thu Jun 11 (9:30 AM) &ndash; Fri Jun 12 (noon)</strong>.</p>
-    <p style="margin: 0 0 0.45em 0; font-size: 0.96em;">&#128226; Deadlines extended: <strong>Chat 4 &rarr; Tue Jun 16</strong>, <strong>Chat 5 &rarr; Thu Jun 18</strong>.</p>
+    <p style="margin: 0 0 0.45em 0; font-size: 0.96em;">&#9989; <strong>Chrysalis was down earlier today</strong> (server issue) but is <strong>back up now</strong>. It's still offline for the scheduled outage <strong>Thu Jun 11 (9:30 AM) &ndash; Fri Jun 12 (noon)</strong>.</p>
+    <p style="margin: 0 0 0.45em 0; font-size: 0.96em;">&#128226; Deadlines still extended: <strong>Chat 4 &rarr; Tue Jun 16</strong>, <strong>Chat 5 &rarr; Thu Jun 18</strong>.</p>
     <p style="margin: 0; font-size: 0.96em;">&#128221; <strong>Assignment 1</strong> questions &rarr; <strong>Dake Zhang</strong> on Piazza.</p>
   </div>
 </section>
@@ -114,13 +114,24 @@
 </section>
 
 <!-- ============================================================
-     Why VEA (3 slides)
+     Why VEA (4 slides)
      ============================================================ -->
 
-<!-- 4. Naive: brute-force sum-out -->
+<!-- 4a. From a conditional to a sum over hidden variables -->
+<section class="center-slide">
+  <h2>From a conditional to a sum</h2>
+  <p style="font-size: 0.88em; margin: 0.2em 0;">By the definition of conditional probability:</p>
+  <p style="text-align:center; font-size: 0.95em; margin: 0.25em 0;">\(P(B \mid w \wedge g) = \dfrac{P(B,\, W{=}w,\, G{=}g)}{P(w \wedge g)}\)</p>
+  <p class="fragment" style="font-size: 0.88em; margin: 0.35em 0 0.2em;">The denominator \(P(w \wedge g)\) doesn't depend on \(B\), so it's just a normalizing constant:</p>
+  <p class="fragment" style="text-align:center; font-size: 0.95em; margin: 0.25em 0; color:#1d4ed8;">\(P(B \mid w \wedge g) \;\propto\; P(B,\, W{=}w,\, G{=}g)\)</p>
+  <p class="fragment" style="font-size: 0.88em; margin: 0.35em 0 0.2em;">Recover that joint by summing out the hidden variables \(E, A, R\):</p>
+  <p class="fragment" style="text-align:center; font-size: 0.95em; margin: 0.25em 0;">\(P(B,\, W{=}w,\, G{=}g) = \sum_{e,\, a,\, r} P(B,\, e,\, a,\, r,\, W{=}w,\, G{=}g)\)</p>
+</section>
+
+<!-- 4b. Naive: brute-force sum-out -->
 <section>
   <h2>Naive: brute-force sum-out</h2>
-  <p style="font-size: 0.9em; margin: 0.2em 0;">Marginalize the full joint using the BN factorization:</p>
+  <p style="font-size: 0.9em; margin: 0.2em 0;">Apply the BN factorization to that joint:</p>
   <p style="text-align:center; font-size: 0.92em; margin: 0.2em 0;">\(P(B | w \wedge g) \propto \sum_e \sum_a \sum_r P(B)\, P(e)\, P(a | B \wedge e)\, P(w | a)\, P(g | a)\, P(r | e)\)</p>
   <p class="quiz-q" style="font-size: 0.88em; margin-top: 0.3em;"><strong>Q1.</strong> How many additions + multiplications does this require?</p>
   <ol class="quiz-options" style="font-size: 0.82em; margin: 0.2em 0 0.2em 2em;">
@@ -131,7 +142,7 @@
     <li>\(\ge 61\)</li>
   </ol>
   <div class="quiz-answer fragment">
-    <strong>D &mdash; 47 ops.</strong> Eight terms in the product, evaluated for every \((b, e, a, r) \in \{T, F\}^4 = 16\) combinations. Lots of redundant work.
+    <strong>D &mdash; 47 ops.</strong> Eight terms to sum, each needing 5 multiplications: \(8 \times 5 + 8 - 1 = 47\) ops. Lots of redundant work.
   </div>
 </section>
 
@@ -143,7 +154,7 @@
   <p style="text-align:center; font-size: 0.92em;">\(=\; P(B)\, \sum_e P(e)\, \sum_a P(a | B \wedge e)\, P(w | a)\, P(g | a)\)</p>
   <p class="quiz-q" style="font-size: 0.88em; margin-top: 0.5em;"><strong>Q2.</strong> Ops now?</p>
   <div class="quiz-answer fragment">
-    <strong>B &mdash; 14 ops.</strong> Inner sum: \(4 \text{ mul} + 1 \text{ add}\); times 2 for \(\sum_a\) over \(\{T, F\}\); plus \(\sum_e\) (4 ops); plus \(P(B)\) multiplication. <strong>~3x speedup just from re-ordering.</strong>
+    <strong>B &mdash; 14 ops.</strong> Inner sum over \(a\): \(4\text{ mul} + 1\text{ add} = 5\); times 2 for the two values of \(e\) \(\Rightarrow 10\); multiply each by \(P(e)\): \(+2\); sum the two \(e\)-terms: \(+1\); multiply by \(P(B)\): \(+1\). Total \(= 14\). <strong>~3x speedup just from re-ordering.</strong>
   </div>
 </section>
 

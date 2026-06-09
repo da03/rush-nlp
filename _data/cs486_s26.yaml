@@ -354,15 +354,15 @@ schedule:
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
-  - severity: warning
+  - severity: info
     show: true
-    title: "Chrysalis outage - Chat 4 & Chat 5 deadlines extended"
+    title: "Chrysalis is back up - Chat 4 & Chat 5 deadlines still extended"
     body: >-
-      Chrysalis (the chat-assignment platform) is currently down (CSCF server issue) and will also be
-      offline for a scheduled power outage from <strong>Thu Jun 11 (9:30 AM)</strong> to
-      <strong>Fri Jun 12 (12:00 noon)</strong>. To make up for the downtime:
-      <strong>Chat 4 is extended to Tue Jun 16</strong> and <strong>Chat 5 to Thu Jun 18</strong>
-      (both 11:59 PM). We'll confirm here once the service is back up.
+      Chrysalis (the chat-assignment platform) was down earlier today (CSCF server issue) but is
+      <strong>back up now</strong>. It will still be offline for the scheduled power outage from
+      <strong>Thu Jun 11 (9:30 AM)</strong> to <strong>Fri Jun 12 (12:00 noon)</strong>. The deadline
+      extensions stand: <strong>Chat 4 -> Tue Jun 16</strong> and <strong>Chat 5 -> Thu Jun 18</strong>
+      (both 11:59 PM).
   - severity: info
     show: true
     title: "Assignment 1: contact Dake Zhang with all A1 questions"
