@@ -579,15 +579,14 @@
   <h2>Polytrees: an easy case</h2>
   <div class="two-col vcenter">
     <div style="flex: 1;">
-      <div class="theorem">
-        A <strong>polytree</strong> = a <strong>singly-connected</strong> BN: at most one <em>undirected</em> path between any two nodes (no loops). A node may still have several parents.
+      <div class="theorem" style="margin-bottom: 0.2em;">
+        A <strong>polytree</strong> = a <strong>singly-connected</strong> BN: at most one <em>undirected</em> path between any two nodes &mdash; no loops.
       </div>
-      <p style="font-size: 0.76em; color: #6b7280; margin: 0.35em 0 0.2em;">\(A \to C \leftarrow B\) is fine (only one route between any pair). But a diamond \(A\to B\to D\), \(A\to C\to D\) has two routes \(A\)–\(D\) \(\Rightarrow\) a loop \(\Rightarrow\) <strong>not</strong> a polytree.</p>
-      <ul style="font-size: 0.82em; margin-top: 0.2em;">
-        <li class="fragment">Heuristic: eliminate a node with a <strong>single neighbor</strong> &mdash; e.g. everything but \(C\) below.</li>
-        <li class="fragment">One always exists \(\Rightarrow\) summing it out <em>never enlarges</em> a factor.</li>
-        <li class="fragment">A node with 2+ parents (like \(C\)) has \(> 1\) neighbor &mdash; <em>not</em> single-neighbor, so eliminated last.</li>
-        <li class="fragment">Tree width = max # parents; VE is <strong>linear in network size</strong>.</li>
+      <ul class="compact" style="font-size: 0.76em; margin-top: 0.3em;">
+        <li class="fragment"><strong>Singly-connected</strong> describes the <em>whole graph</em>, not one node. Multiple parents are OK: \(C\) below has two (\(A, B\)) &mdash; still a polytree.</li>
+        <li class="fragment">A <em>diamond</em> (\(A\!\to\!B\!\to\!D\), \(A\!\to\!C\!\to\!D\)) is <strong>not</strong> &mdash; two routes \(A\) to \(D\).</li>
+        <li class="fragment">Heuristic: eliminate a <strong>single-neighbor</strong> node (everything but \(C\)) &mdash; never enlarges a factor.</li>
+        <li class="fragment">A node with \(\ge 2\) parents (like \(C\)) waits till last. Tree width = max # parents \(\Rightarrow\) VE is <strong>linear</strong>.</li>
       </ul>
     </div>
     <div style="flex: 0.8; text-align: center;">
@@ -606,7 +605,7 @@
           <circle cx="190" cy="210" r="16"/><text x="190" y="214">F</text>
         </g>
       </svg>
-      <p style="font-size: 0.7em; color: #6b7280; margin: 0;">Every node but \(C\) has a single neighbor &mdash; peel those off first, \(C\) (2 parents) last. Factors never grow beyond original CPTs.</p>
+      <p style="font-size: 0.7em; color: #6b7280; margin: 0;">\(A, B, D, E, F\) each have one neighbor (\(C\)) &mdash; peel those off first; \(C\) (2 parents) last.</p>
     </div>
   </div>
 </section>
