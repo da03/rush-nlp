@@ -115,7 +115,7 @@
       <div class="app-label">Speech</div>
     </div>
   </div>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.6em;">Today's running example: an <strong>umbrella story</strong> &mdash; the simplest possible HMM.</p>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.6em;">Today's running example: an <strong>umbrella story</strong> &mdash; the simplest possible HMM.</p>
 </section>
 
 <!-- ============================================================
@@ -169,7 +169,7 @@
   <div class="quiz-answer fragment">
     <ul style="margin: 0; padding-left: 1.2em;">
       <li>\(S_t\) &nbsp;=&nbsp; <em>true</em> iff it rains at time \(t\) &nbsp;(<span style="background:#fef3c7; padding:0 0.3em;">hidden</span>).</li>
-      <li>\(O_t\) &nbsp;=&nbsp; <em>true</em> iff the director carries an umbrella at time \(t\) &nbsp;(<span style="background:#d1d5db; padding:0 0.3em;">observed</span>).</li>
+      <li class="fragment">\(O_t\) &nbsp;=&nbsp; <em>true</em> iff the director carries an umbrella at time \(t\) &nbsp;(<span style="background:#d1d5db; padding:0 0.3em;">observed</span>).</li>
     </ul>
   </div>
 </section>
@@ -240,12 +240,10 @@
       </div>
     </div>
   </div>
-  <div class="fragment" style="margin-top: 0.5em;">
-    <p style="font-size: 0.85em; text-align: center;"><strong>Warm-up:</strong> what is \(P(S_K)\) for large \(K\)?</p>
-    <p style="text-align: center; font-size: 0.82em; font-family: ui-monospace, Menlo, monospace;">
-      \(P(S_1 = T) = 0.5 \cdot 0.7 + 0.5 \cdot 0.3 = 0.5\)<br>
-      \(P(S_K = T) = 0.5\) &nbsp;for all \(K\) &mdash; the chain has reached its steady state immediately.
-    </p>
+  <div style="margin-top: 0.5em;">
+    <p class="fragment" style="font-size: 0.85em; text-align: center;"><strong>Warm-up:</strong> what is \(P(S_K)\) for large \(K\)?</p>
+    <p class="fragment" style="text-align: center; font-size: 0.82em; font-family: ui-monospace, Menlo, monospace; margin: 0.25em 0;">\(P(S_1 = T) = 0.5 \cdot 0.7 + 0.5 \cdot 0.3 = 0.5\)</p>
+    <p class="fragment" style="text-align: center; font-size: 0.82em; font-family: ui-monospace, Menlo, monospace; margin: 0.25em 0;">\(P(S_K = T) = 0.5\) for all \(K\) &mdash; the chain reaches its steady state immediately.</p>
   </div>
 </section>
 
@@ -364,28 +362,28 @@
 <section>
   <h2>Four common inference tasks</h2>
   <div class="task-cards">
-    <div class="task-card highlight">
+    <div class="task-card highlight fragment">
       <h3>&#9728; Filtering &mdash; <em>now</em></h3>
       <p>What state am I in <strong>right now</strong>, given all evidence to date?</p>
       <div class="query">\(P(S_k | o_{0:k})\)</div>
     </div>
-    <div class="task-card">
+    <div class="task-card fragment">
       <h3>&#10142; Prediction &mdash; <em>tomorrow</em></h3>
       <p>What state will I be in in the <strong>future</strong>?</p>
       <div class="query">\(P(S_{k+j} | o_{0:k})\), &nbsp;\(j &gt; 0\)</div>
     </div>
-    <div class="task-card">
+    <div class="task-card fragment">
       <h3>&#8634; Smoothing &mdash; <em>yesterday</em></h3>
       <p>What state was I in at some <strong>past</strong> time?</p>
       <div class="query">\(P(S_j | o_{0:k})\), &nbsp;\(j &lt; k\)</div>
     </div>
-    <div class="task-card">
+    <div class="task-card fragment">
       <h3>&#9876; Most-likely explanation</h3>
       <p>Which <strong>sequence</strong> of states is most likely?</p>
       <div class="query">\(\arg\max_{s_{0:k}} P(s_{0:k} | o_{0:k})\)</div>
     </div>
   </div>
-  <p style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.5em;">Today: <strong>filtering</strong>.</p>
+  <p class="fragment" style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.5em;">Today: <strong>filtering</strong>.</p>
 </section>
 
 <!-- ============================================================
@@ -473,12 +471,12 @@
       <span class="case-label">Base case (k = 0)</span>
       \[ f_{0:0} = \alpha\, P(o_0 \mid S_0)\, P(S_0) \]
     </div>
-    <div class="case">
+    <div class="case fragment">
       <span class="case-label">Recursive case (k &ge; 1)</span>
       \[ f_{0:k} = \alpha\, P(o_k \mid S_k) \sum_{s_{k-1}} P(S_k \mid s_{k-1})\, f_{0:(k-1)} \]
     </div>
   </div>
-  <p style="font-size: 0.82em; color: #166534; text-align: center; margin: 0.25em 0;">Total cost: <strong>\(O(k)\)</strong> ops &mdash; exponentially faster than naive enumeration.</p>
+  <p class="fragment" style="font-size: 0.82em; color: #166534; text-align: center; margin: 0.25em 0;">Total cost: <strong>\(O(k)\)</strong> ops &mdash; exponentially faster than naive enumeration.</p>
   <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.15em 0;">\(\alpha\) is a normalization constant (chosen so the two entries of \(f_{0:k}\) sum to 1).</p>
 </section>
 
@@ -613,8 +611,12 @@
       </div>
     </div>
   </div>
-  <div class="fragment" style="font-size: 0.78em; text-align: center; margin-top: 0.4em;">
-    <p style="margin: 0.1em;">\(f_{0:0} = \langle 0.75, 0.25 \rangle\) &nbsp;&rarr;&nbsp; \(f_{0:1} = \langle 0.859, 0.141 \rangle\) &nbsp;&rarr;&nbsp; \(\boxed{f_{0:2} \approx \langle 0.884, 0.116 \rangle}\)</p>
+  <div style="font-size: 0.82em; text-align: center; margin-top: 0.5em;">
+    <p style="margin: 0.1em;">
+      <span class="fragment">\(f_{0:0} = \langle 0.75, 0.25 \rangle\)</span>
+      <span class="fragment">&nbsp;&rarr;&nbsp; \(f_{0:1} = \langle 0.859, 0.141 \rangle\)</span>
+      <span class="fragment">&nbsp;&rarr;&nbsp; \(\boxed{f_{0:2} \approx \langle 0.884, 0.116 \rangle}\)</span>
+    </p>
   </div>
 </section>
 
