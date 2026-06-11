@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuralOS: When Models Simulate an Entire Operating System</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --r-background-color: #ffffff;
+  --r-main-font: 'Inter', sans-serif;
+  --r-heading-font: 'Inter', sans-serif;
+  --r-main-font-size: 28px;
+  --r-heading-color: #1a1a2e;
+  --r-main-color: #2d2d3f;
+  --r-link-color: #3a86ff;
+  --accent: #3a86ff;
+  --accent2: #8338ec;
+  --accent3: #ff006e;
+  --surface: #f8f9fc;
+}
+.reveal { font-weight: 400; }
+.reveal h1, .reveal h2, .reveal h3 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; text-transform: none !important; }
+.reveal h1 { font-size: 2.0em; }
+.reveal h2 { font-size: 1.4em; margin-bottom: 0.5em; }
+.reveal h3 { font-size: 1.0em; color: var(--accent2); margin-bottom: 0.3em; }
+.reveal .slides section { text-align: left; padding: 20px 40px; overflow: hidden; box-sizing: border-box; }
+.reveal ul, .reveal ol { margin-left: 0.5em; }
+.reveal li { margin-bottom: 0.25em; line-height: 1.45; }
+.reveal p { line-height: 1.5; }
+
+.title-slide { text-align: center !important; }
+.title-slide h1 {
+  font-size: 2.2em !important;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 0.2em;
+}
+.title-slide .subtitle { font-size: 0.65em; color: #666; margin-bottom: 0.8em; }
+.title-slide .author { font-size: 0.6em; color: var(--r-main-color); }
+.title-slide .affiliation { font-size: 0.6em; color: #888; }
+.title-slide .venue { font-size: 0.6em; color: var(--accent2); margin-top: 1em; font-weight: 500; }
+
+.accent-box {
+  background: var(--surface); border-left: 4px solid var(--accent);
+  padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 0.4em 0; font-size: 0.8em;
+  max-width: 100%; box-sizing: border-box;
+}
+.accent-box.purple { border-left-color: var(--accent2); }
+.accent-box.pink { border-left-color: var(--accent3); }
+
+.quote-block {
+  background: linear-gradient(135deg, #f0f0ff, #f8f0ff);
+  border-radius: 12px; padding: 20px 24px; margin: 0.6em 0; position: relative;
+  max-width: 100%; box-sizing: border-box;
+}
+.quote-block::before { content: '\201C'; font-size: 3em; color: var(--accent2); position: absolute; top: -5px; left: 12px; opacity: 0.3; }
+.quote-block .attribution { text-align: right; font-weight: 600; color: var(--accent2); margin-top: 0.4em; font-size: 0.8em; }
+
+.fig-grid { display: grid; gap: 8px; margin: 0.4em auto; }
+.fig-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.fig-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.fig-grid.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+.fig-grid img { width: 100%; border-radius: 4px; box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
+.fig-caption { font-size: 0.6em; color: #999; text-align: center; margin-top: 0.2em; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; max-width: 100%; }
+.two-col.wide-left { grid-template-columns: 1.4fr 0.6fr; }
+.two-col.wide-right { grid-template-columns: 0.55fr 1.45fr; }
+.two-col.balanced { grid-template-columns: 1fr 1fr; }
+
+.reveal table { font-size: 0.65em; border-collapse: collapse; margin: 0.4em auto; }
+.reveal table th { background: var(--surface); font-weight: 600; padding: 6px 12px; border-bottom: 2px solid #ddd; }
+.reveal table td { padding: 5px 12px; border-bottom: 1px solid #eee; }
+
+.section-divider, .title-slide {
+  text-align: center !important;
+}
+.section-divider h2 {
+  font-size: 1.8em !important;
+  text-transform: uppercase !important;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.section-divider h2::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  margin: 0.5em auto 0;
+  border-radius: 2px;
+}
+.section-divider .section-num { font-size: 0.6em; color: #aaa; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.2em; }
+
+.small { font-size: 0.75em; } .smaller { font-size: 0.65em; } .tiny { font-size: 0.6em; }
+.hl { color: var(--accent); font-weight: 600; }
+.hl2 { color: var(--accent2); font-weight: 600; }
+.hl3 { color: var(--accent3); font-weight: 600; }
+.text-center { text-align: center !important; }
+.mt-1 { margin-top: 0.4em !important; }
+.mb-0 { margin-bottom: 0 !important; }
+
+.reveal .progress { color: var(--accent2); }
+.reveal .slide-number { font-family: 'Inter', sans-serif; font-size: 14px; color: #aaa; }
+.reveal img { max-width: 100%; }
+
+.tag {
+  display: inline-block; padding: 2px 8px; border-radius: 20px;
+  font-size: 0.6em; font-weight: 600; margin-right: 4px; vertical-align: middle;
+}
+.tag.blue { background: #e8f0fe; color: var(--accent); }
+.tag.purple { background: #f3e8ff; color: var(--accent2); }
+.tag.pink { background: #ffe0f0; color: var(--accent3); }
+.tag.green { background: #e0f8e6; color: #2d8a4e; }
+
+.comparison-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 0.2em 0;
+}
+.comparison-row img { width: 100%; max-height: 160px; object-fit: contain; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+.two-col > * { overflow: hidden; min-width: 0; }
+.comparison-label { font-size: 0.6em; color: #888; text-align: center; font-weight: 600; margin-bottom: 2px; }
+
+.key-stat {
+  text-align: center; padding: 10px;
+}
+.key-stat .number {
+  font-size: 2em; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.key-stat .label { font-size: 0.6em; color: #888; }
+
+.stage-card {
+  background: var(--surface); border-radius: 10px; padding: 12px 10px; text-align: center;
+  border-top: 3px solid var(--accent);
+}
+.stage-card .num { font-size: 0.55em; color: #aaa; font-weight: 700; letter-spacing: 0.1em; }
+.stage-card .name { font-size: 0.72em; font-weight: 600; margin: 2px 0; }
+.stage-card .desc { font-size: 0.58em; color: #888; line-height: 1.3; }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ============== TITLE ============== -->
+<section class="title-slide" data-background-gradient="linear-gradient(135deg, #fafbff 0%, #f0f0ff 50%, #fff5f8 100%)">
+  <h1>NeuralOS</h1>
+  <div class="subtitle">When Models Simulate an Entire Operating System</div>
+  <div class="author">Luke Rivard &middot; Sun Sun &middot; Hongyu Guo &middot; Wenhu Chen &middot; <strong>Yuntian Deng</strong></div>
+  <div class="affiliation">University of Waterloo &amp; National Research Council Canada</div>
+  <div class="venue">ESS &middot; ICLR 2026 Conference Highlights &middot; June 11, 2026</div>
+  <div style="margin-top: 0.6em;">
+    <img src="figures/demo_output_poster.png" style="width: 320px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.12); opacity: 0.85;">
+  </div>
+  <div style="font-size: 0.6em; color: #aaa; margin-top: 0.6em;">
+    <a href="https://arxiv.org/abs/2507.08800" target="_blank" style="color: #888; text-decoration: none;">arXiv:2507.08800</a>
+  </div>
+</section>
+
+<!-- ============== HOOK: What we built ============== -->
+<section>
+  <h2>What if an OS was entirely neural?</h2>
+  <div class="text-center" style="max-width: 70%; margin: 0.4em auto;">
+    <video autoplay loop muted playsinline poster="figures/demo_output_poster.png" style="width: 100%; border-radius: 10px; box-shadow: 0 6px 30px rgba(0,0,0,0.25);">
+      <source src="figures/demo_output.mp4" type="video/mp4">
+    </video>
+  </div>
+  <p style="font-size: 0.72em; text-align: center; margin-top: 0.5em;">Every pixel generated by a neural network. No kernel. No applications. Just weights.</p>
+</section>
+
+<!-- Karpathy quote -->
+<section>
+  <h2>The Next Interface Paradigm</h2>
+  <div class="quote-block">
+    <p style="font-size: 0.85em; font-style: italic; padding: 14px 0 0 28px;">
+      &ldquo;Chatting&rdquo; with LLM feels like using an 80s computer terminal. The GUI hasn't been invented yet, but some properties of it can start to be predicted.
+    </p>
+    <div class="attribution">&mdash; Andrej Karpathy</div>
+  </div>
+  <p class="fragment" style="font-size: 0.78em; margin-top: 0.6em;">What if the <span class="hl2">entire interface</span> could be generated by a neural network?</p>
+</section>
+
+<!-- Game to OS -->
+<section>
+  <h2>From Game Simulation to OS Simulation</h2>
+  <div class="two-col" style="align-items: center;">
+    <div>
+      <video autoplay loop muted playsinline style="width: 100%; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);">
+        <source src="figures/gamengen_clip.mp4" type="video/mp4">
+      </video>
+      <div class="fig-caption">GameNGen (Valevski et al., 2024): Doom simulated by a neural model at 20 fps</div>
+    </div>
+    <div class="fragment" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+      <div style="background: linear-gradient(135deg, #f3e8ff, #f0f0ff); border-radius: 16px; padding: 30px 28px; text-align: center; box-shadow: 0 2px 12px rgba(131,56,236,0.1);">
+        <div style="font-size: 1.1em; font-weight: 600; color: var(--accent2); line-height: 1.4;">
+          Can we go beyond games<br>and simulate an <em>entire OS</em>?
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Why simulate: autonomous-driving analogy -->
+<section>
+  <h2>Why Simulate an OS?</h2>
+  <p style="font-size: 0.8em; text-align: center; color: #888; margin-top: -0.1em;">The same reason self-driving cars learn in <span class="hl2">simulators</span>.</p>
+  <div class="two-col" style="max-width: 92%; margin: 0.5em auto; gap: 28px; align-items: stretch;">
+    <!-- Autonomous driving -->
+    <div style="background: var(--surface); border-radius: 14px; padding: 22px 24px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="font-size: 0.58em; font-weight: 700; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase;">Autonomous Driving</div>
+        <div style="font-size: 2.4em; margin: 8px 0;">🚗💥</div>
+        <p style="font-size: 0.76em; margin: 0;">You don't stage a <span class="hl3">real crash</span> to teach a car to avoid one.</p>
+      </div>
+      <div style="margin-top: 14px;">
+        <div style="font-size: 1.1em; color: #ccc;">&darr;</div>
+        <div style="font-size: 0.82em; font-weight: 700; color: var(--accent);">Driving simulator</div>
+      </div>
+    </div>
+    <!-- Computer-use agents -->
+    <div class="fragment" style="background: linear-gradient(135deg, #f3e8ff, #f0f0ff); border-radius: 14px; padding: 22px 24px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="font-size: 0.58em; font-weight: 700; letter-spacing: 0.08em; color: var(--accent2); text-transform: uppercase;">Computer-Use Agents</div>
+        <div style="font-size: 2.4em; margin: 8px 0;">🖥️🏦</div>
+        <p style="font-size: 0.76em; margin: 0;">You don't drain a <span class="hl3">real bank account</span> to teach an agent to transfer money.</p>
+      </div>
+      <div style="margin-top: 14px;">
+        <div style="font-size: 1.1em; color: #ccc;">&darr;</div>
+        <div style="font-size: 0.82em; font-weight: 700; color: var(--accent2);">NeuralOS</div>
+      </div>
+    </div>
+  </div>
+  <div class="fragment" style="text-align: center; margin-top: 0.5em;">
+    <div style="display: inline-block; background: white; border: 2px solid #eee; border-radius: 30px; padding: 9px 24px; font-size: 0.74em; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+      <span class="hl2" style="font-weight: 700;">NeuralOS</span> is to computer-use agents what a <span class="hl" style="font-weight: 700;">driving simulator</span> is to self-driving cars.
+    </div>
+    <p style="font-size: 0.64em; color: #888; margin-top: 0.5em;">Learn interfaces from demonstrations &mdash; no real OS, accounts, or money at risk.</p>
+  </div>
+</section>
+
+<!-- Problem formulation - visual loop -->
+<section>
+  <h2>OS as Autoregressive Generation</h2>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 8px; max-width: 95%; margin: 0.4em auto;">
+    <!-- Past frames -->
+    <div class="fragment" style="text-align: center;">
+      <div style="font-size: 0.6em; color: #999; margin-bottom: 4px;">past frames</div>
+      <div style="display: flex; gap: 4px;">
+        <img src="figures/seq_frame11.png" style="width: 100px; border-radius: 4px; opacity: 0.45; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
+        <img src="figures/seq_frame13.png" style="width: 100px; border-radius: 4px; opacity: 0.65; box-shadow: 0 1px 4px rgba(0,0,0,0.1);">
+      </div>
+    </div>
+    <!-- Arrow -->
+    <div class="fragment" style="font-size: 1.5em; color: #ccc;">&rarr;</div>
+    <!-- Current frame + action -->
+    <div class="fragment" style="text-align: center;">
+      <div style="font-size: 0.6em; color: #999; margin-bottom: 4px;">current frame</div>
+      <img src="figures/spurious_frame14.png" style="width: 160px; border-radius: 5px; border: 2px solid var(--accent); box-shadow: 0 2px 10px rgba(58,134,255,0.2);">
+      <div style="margin-top: 6px; display: inline-block; background: #e8f0fe; color: var(--accent); font-weight: 600; font-size: 0.6em; padding: 3px 12px; border-radius: 20px;">🖱️ click on &times;</div>
+    </div>
+    <!-- Arrow + NeuralOS box -->
+    <div class="fragment" style="text-align: center;">
+      <div style="font-size: 1.5em; color: #ccc;">&rarr;</div>
+      <div style="background: linear-gradient(135deg, var(--accent), var(--accent2)); color: white; font-weight: 700; font-size: 0.6em; padding: 6px 14px; border-radius: 8px; margin: 4px 0;">NeuralOS</div>
+      <div style="font-size: 1.5em; color: #ccc;">&rarr;</div>
+    </div>
+    <!-- Predicted frame -->
+    <div class="fragment" style="text-align: center;">
+      <div style="font-size: 0.6em; color: var(--accent2); font-weight: 600; margin-bottom: 4px;">predicted next frame</div>
+      <img src="figures/spurious_frame16.png" style="width: 160px; border-radius: 5px; border: 2px dashed var(--accent2); box-shadow: 0 2px 10px rgba(131,56,236,0.2);">
+    </div>
+  </div>
+  <!-- Loop arrow -->
+  <div class="fragment" style="text-align: center; margin-top: 0.3em;">
+    <svg width="900" height="54" viewBox="0 0 900 54" style="display: block; margin: 0 auto; max-width: 92%;">
+      <defs><marker id="fbarrow" markerWidth="9" markerHeight="9" refX="6" refY="4.5" orient="auto"><polygon points="0 0, 9 4.5, 0 9" fill="#bbb"/></marker></defs>
+      <path d="M 824 12 C 864 12 864 44 824 44 L 76 44 C 36 44 36 16 76 13" stroke="#bbb" stroke-width="1.5" fill="none" stroke-dasharray="6,5" marker-end="url(#fbarrow)"/>
+      <text x="450" y="28" text-anchor="middle" fill="#999" font-size="12" font-family="Inter, sans-serif">feed predicted frame back as input &rarr; repeat forever</text>
+    </svg>
+    <p style="font-size: 0.62em; text-align: center; color: #888; margin-top: 0.1em;">Not a fixed clip &mdash; responds to <span class="hl2">every user action</span>, forever.</p>
+  </div>
+</section>
+
+<!-- Architecture high-level with compiled TikZ -->
+<section>
+  <h2>High-Level Architecture</h2>
+  <div class="text-center">
+    <div style="position: relative; display: inline-block;">
+      <img src="figures/arch_highlevel.png" alt="NeuralOS high-level architecture" style="max-height: 410px; display: block; margin: 0 auto;">
+      <!-- RNN row highlight -->
+      <div class="fragment" data-fragment-index="1" style="position: absolute; left: 1%; top: 58.5%; width: 98%; height: 13.5%; border: 3px solid var(--accent); background: rgba(58,134,255,0.12); border-radius: 8px; box-shadow: 0 0 16px rgba(58,134,255,0.35);"></div>
+      <!-- Renderer row highlight -->
+      <div class="fragment" data-fragment-index="2" style="position: absolute; left: 1%; top: 29%; width: 98%; height: 13.5%; border: 3px solid var(--accent2); background: rgba(131,56,236,0.12); border-radius: 8px; box-shadow: 0 0 16px rgba(131,56,236,0.35);"></div>
+    </div>
+  </div>
+  <div style="min-height: 2.4em; margin-top: 0.4em;">
+    <p class="fragment" data-fragment-index="1" style="font-size: 0.72em; text-align: center; color: var(--accent); font-weight: 600; margin: 0;">
+      <span class="hl">RNN</span> tracks the OS state &mdash; like a <strong>kernel</strong> (constant memory at any sequence length)
+    </p>
+    <p class="fragment" data-fragment-index="2" style="font-size: 0.72em; text-align: center; color: var(--accent2); font-weight: 600; margin: 0.25em 0 0;">
+      <span class="hl2">Diffusion Renderer</span> generates the screen frame &mdash; like a <strong>desktop manager</strong>
+    </p>
+  </div>
+</section>
+
+<!-- Cursor position - framed as a key challenge -->
+<section>
+  <h2>A Detail That Stalled Us for Months</h2>
+  <p style="font-size: 0.72em; text-align: center; margin-top: -0.1em;">Everything rendered well &mdash; except <span class="hl3">the cursor</span>.</p>
+  <div class="accent-box pink" style="font-size: 0.72em; max-width: 82%; margin: 0.3em auto;">
+    <strong>&lt;0.1%</strong> of pixels, but drives <strong>every</strong> click. Early models were up to <span class="hl3">130px</span> off &rarr; clicks missed everything.
+  </div>
+  <p class="fragment" data-fragment-index="1" style="font-size: 0.7em; text-align: center; color: var(--accent2); margin: 0.3em 0;">The fix: encode <code>(x, y)</code> as a <span class="hl2">Gaussian spatial map</span> &mdash; an extra input channel.</p>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 12px; max-width: 92%; margin: 0.3em auto;">
+    <div class="fragment text-center" data-fragment-index="2" style="flex: 0.5;">
+      <div style="font-size: 0.62em; font-weight: 600; color: var(--accent); margin-bottom: 6px;">Input: cursor position</div>
+      <div style="font-size: 1.5em; font-family: 'Fira Code', monospace; color: var(--r-heading-color); background: var(--surface); padding: 6px 14px; border-radius: 6px; display: inline-block;">(x, y)</div>
+    </div>
+    <div class="fragment" data-fragment-index="3" style="font-size: 1.4em; color: #ccc;">&rarr;</div>
+    <div class="fragment text-center" data-fragment-index="3" style="flex: 1;">
+      <img src="figures/gaussian_kernel_map.png" style="width: 100%; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+      <div class="fig-caption">Gaussian spatial map (extra channel)</div>
+    </div>
+    <div class="fragment" data-fragment-index="4" style="font-size: 1.4em; color: #ccc;">&rarr;</div>
+    <div class="fragment text-center" data-fragment-index="4" style="flex: 1;">
+      <img src="figures/desktop_cursor_highlight.png" style="width: 100%; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.15);">
+      <div class="fig-caption">Rendered frame with cursor at correct position</div>
+    </div>
+  </div>
+  <div class="fragment" data-fragment-index="5" style="display: flex; gap: 28px; justify-content: center; align-items: center; margin-top: 0.3em;">
+    <div class="key-stat">
+      <div class="number" style="background: linear-gradient(135deg, #ff006e, #ff006e); -webkit-background-clip: text;">130px</div>
+      <div class="label">error<br>without map</div>
+    </div>
+    <div style="font-size: 1.4em; color: #ccc;">&rarr;</div>
+    <div class="key-stat">
+      <div class="number">1.6px</div>
+      <div class="label">error<br>with Gaussian map</div>
+    </div>
+  </div>
+</section>
+
+<!-- Data collection: two sources -->
+<section>
+  <h2>Data Collection</h2>
+  <div style="display: flex; justify-content: center; align-items: stretch; gap: 36px; max-width: 80%; margin: 0.6em auto;">
+    <div class="fragment" style="flex: 1; background: var(--surface); border-radius: 14px; padding: 20px 18px; text-align: center;">
+      <div style="font-size: 1.8em;">🤖</div>
+      <div style="font-size: 2.4em; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">2K</div>
+      <div style="font-size: 0.72em; font-weight: 600;">AI-agent demos</div>
+      <div style="font-size: 0.6em; color: #888; margin-top: 2px;">Claude 3.5 Sonnet computer-use agent</div>
+    </div>
+    <div class="fragment" style="flex: 1; background: var(--surface); border-radius: 14px; padding: 20px 18px; text-align: center;">
+      <div style="font-size: 1.8em;">🎲</div>
+      <div style="font-size: 2.4em; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">120K</div>
+      <div style="font-size: 0.72em; font-weight: 600;">random-exploration demos</div>
+      <div style="font-size: 0.6em; color: #888; margin-top: 2px;">Random mouse &amp; click exploration</div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.65em; text-align: center; color: #888; margin-top: 0.3em;">64 Docker containers &middot; Ubuntu XFCE &middot; 512&times;384 &middot; 15 fps &rarr; <strong>12 TB</strong></p>
+</section>
+
+<!-- Spurious correlations -->
+<section>
+  <h2>Why Random Exploration?</h2>
+  <p style="font-size: 0.72em; text-align: center;">Agent-only data led to <span class="hl3">spurious correlations</span>:</p>
+  <div style="display: grid; grid-template-columns: 240px auto 240px; column-gap: 28px; row-gap: 4px; max-width: 80%; margin: 0.4em auto; align-items: center; justify-content: center; justify-items: center;">
+    <img src="figures/spurious_frame14.png" style="grid-column: 1; grid-row: 1; width: 240px; border-radius: 6px; box-shadow: 0 2px 12px rgba(0,0,0,0.15);">
+    <div class="fragment" data-fragment-index="0" style="grid-column: 2; grid-row: 1; font-size: 2em; color: #ccc;">&rarr;</div>
+    <img class="fragment" data-fragment-index="0" src="figures/spurious_frame16.png" style="grid-column: 3; grid-row: 1; width: 240px; border-radius: 6px; box-shadow: 0 2px 12px rgba(0,0,0,0.15);">
+    <div class="fig-caption" style="grid-column: 1; grid-row: 2;">Cursor moves near close button (NO CLICK)</div>
+    <div style="grid-column: 2; grid-row: 2;"></div>
+    <div class="fragment fig-caption" data-fragment-index="0" style="grid-column: 3; grid-row: 2; color: var(--accent3); font-weight: 600;">Window closes anyway &mdash; WRONG!</div>
+  </div>
+  <p class="fragment" style="font-size: 0.68em; text-align: center; margin-top: 0.4em;">Agent always clicks after hovering &rarr; model learns "hover = close."<br>Random exploration adds hover-without-click counterexamples.</p>
+</section>
+
+<!-- Training in a nutshell (merged stages 1-4) -->
+<section>
+  <h2>Training in a Nutshell</h2>
+  <p style="font-size: 0.78em; text-align: center; color: #888;">Naïve end-to-end training fails &mdash; a <span class="hl2">multi-stage pipeline</span> is essential.</p>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 70%; margin: 0.7em auto;">
+    <div class="fragment stage-card" style="padding: 20px 16px;">
+      <div class="num">STAGE 1</div>
+      <div class="name" style="font-size: 0.9em;">RNN Pretraining</div>
+      <div class="desc" style="font-size: 0.66em;">Otherwise the renderer ignores RNN state</div>
+    </div>
+    <div class="fragment stage-card" style="border-top-color: var(--accent2); padding: 20px 16px;">
+      <div class="num">STAGE 2</div>
+      <div class="name" style="font-size: 0.9em;">Joint Training</div>
+      <div class="desc" style="font-size: 0.66em;">RNN + diffusion end-to-end &rarr; sharp frames</div>
+    </div>
+    <div class="fragment stage-card" style="border-top-color: var(--accent3); padding: 20px 16px;">
+      <div class="num">STAGE 3</div>
+      <div class="name" style="font-size: 0.9em;">Scheduled Sampling</div>
+      <div class="desc" style="font-size: 0.66em;">Feed model's own outputs &rarr; stops error drift</div>
+    </div>
+    <div class="fragment stage-card" style="border-top-color: #2d8a4e; padding: 20px 16px;">
+      <div class="num">STAGE 4</div>
+      <div class="name" style="font-size: 0.9em;">Context Extension</div>
+      <div class="desc" style="font-size: 0.66em;">32&rarr;64 frames; generalizes to 256</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SECTION: Results ============== -->
+<section class="section-divider" data-background-gradient="linear-gradient(135deg, #f0f0ff, #fff)">
+  <div class="section-num">Results</div>
+  <h2>Does It Work?</h2>
+</section>
+
+<!-- Demo sequence -->
+<section>
+  <h2>NeuralOS in Action</h2>
+  <p style="font-size: 0.65em; color: #888;">Double-click "Home" folder &rarr; file manager opens &rarr; close it</p>
+  <div style="display: flex; gap: 14px; justify-content: center; max-width: 85%; margin: 0.5em auto;">
+    <div class="fragment text-center">
+      <img src="figures/paper_neuralos_sequence_2_s1234_3/frame_07.png" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 4px;">1. Double-click Home</div>
+    </div>
+    <div class="fragment text-center">
+      <img src="figures/paper_neuralos_sequence_2_s1234_3/frame_13.png" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 4px;">2. File manager opens</div>
+    </div>
+    <div class="fragment text-center">
+      <img src="figures/paper_neuralos_sequence_2_s1234_3/frame_17.png" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 4px;">3. Close &rarr; desktop</div>
+    </div>
+  </div>
+  <div class="fig-caption">All frames generated autoregressively &middot; cursor shown with red circles</div>
+</section>
+
+<!-- Doom: how we fabricated data -->
+<section>
+  <h2>Synthetic Demonstrations: Setup</h2>
+  <p style="font-size: 0.72em; text-align: center;">Doom was <span class="hl3">never installed</span> &mdash; we fabricated training data in two steps:</p>
+  <div style="display: grid; grid-template-columns: 210px 20px 210px 30px 210px 20px 210px; column-gap: 0; row-gap: 4px; max-width: 92%; margin: 0.5em auto; align-items: center; justify-content: center; justify-items: center;">
+    <!-- Row 1: titles -->
+    <div style="grid-column: 1/4; grid-row: 1; font-size: 0.7em; font-weight: 600; color: var(--accent);">1. Paste a Doom icon onto the desktop</div>
+    <div style="grid-column: 4; grid-row: 1;"></div>
+    <div class="fragment" data-fragment-index="0" style="grid-column: 5/8; grid-row: 1; font-size: 0.7em; font-weight: 600; color: var(--accent2);">2. Splice Doom gameplay into demo videos</div>
+    <!-- Row 2: media + arrows -->
+    <img src="figures/desktop.png" style="grid-column: 1; grid-row: 2; width: 210px; height: 158px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 6px rgba(0,0,0,0.12);">
+    <div style="grid-column: 2; grid-row: 2; font-size: 1.2em; color: #ccc;">&rarr;</div>
+    <img src="figures/desktop_with_doom_False.png" style="grid-column: 3; grid-row: 2; width: 210px; height: 158px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 6px rgba(0,0,0,0.12);">
+    <div style="grid-column: 4; grid-row: 2;"></div>
+    <div class="fragment" data-fragment-index="0" style="grid-column: 5; grid-row: 2; width: 210px; height: 158px;">
+      <video loop muted playsinline preload="auto" poster="figures/record_0_clip_poster.png" style="width: 210px; height: 158px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 6px rgba(0,0,0,0.12);">
+        <source src="figures/record_0_clip.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="fragment" data-fragment-index="0" style="grid-column: 6; grid-row: 2; font-size: 1.2em; color: #ccc;">&rarr;</div>
+    <img class="fragment" data-fragment-index="0" src="figures/paper_neuralos_sequence_2_s1234_3/frame_33.png" style="grid-column: 7; grid-row: 2; width: 210px; height: 158px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 6px rgba(0,0,0,0.12);">
+    <!-- Row 3: captions -->
+    <div class="fig-caption" style="grid-column: 1; grid-row: 3;">original</div>
+    <div style="grid-column: 2; grid-row: 3;"></div>
+    <div class="fig-caption" style="grid-column: 3; grid-row: 3;">with icon</div>
+    <div style="grid-column: 4; grid-row: 3;"></div>
+    <div class="fragment fig-caption" data-fragment-index="0" style="grid-column: 5; grid-row: 3;">original demo</div>
+    <div style="grid-column: 6; grid-row: 3;"></div>
+    <div class="fragment fig-caption" data-fragment-index="0" style="grid-column: 7; grid-row: 3;">with Doom spliced in</div>
+  </div>
+</section>
+
+<!-- Doom: what the model learned -->
+<section>
+  <h2>Synthetic Demonstrations: Result</h2>
+  <p style="font-size: 0.72em; text-align: center;">NeuralOS learns to launch and play Doom &mdash; from fabricated data alone</p>
+  <div style="display: flex; gap: 8px; justify-content: center; max-width: 92%; margin: 0.3em auto;">
+    <div class="fragment text-center">
+      <img src="figures/paper_neuralos_sequence_2_s1234_3/frame_24.png" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 3px;">1. Desktop with Doom icon</div>
+    </div>
+    <div class="fragment text-center">
+      <img src="figures/paper_neuralos_sequence_2_s1234_3/frame_33.png" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 3px;">2. Double-click &rarr; Doom launches</div>
+    </div>
+    <div class="fragment text-center">
+      <img src="figures/paper_neuralos_sequence_2_s1234_3/frame_35.png" style="width: 100%; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 3px;">3. ESC &rarr; back to desktop</div>
+    </div>
+  </div>
+  <div class="fragment">
+    <p style="font-size: 0.6em; text-align: center; color: #888; margin-top: 0.2em;">More generated gameplay frames:</p>
+    <div class="fig-grid cols-4" style="max-width: 70%; margin: 0.15em auto;">
+      <img src="figures/paper_neuralos_doom_w_sequence_2_s1234_3/frame_09.png" alt="">
+      <img src="figures/paper_neuralos_doom_w_sequence_2_s1234_3/frame_46.png" alt="">
+      <img src="figures/paper_neuralos_doom_w_sequence_2_s1234_3/frame_22.png" alt="">
+      <img src="figures/paper_neuralos_doom_w_sequence_2_s1234_3/frame_27.png" alt="">
+    </div>
+  </div>
+  <div class="fragment accent-box purple" style="font-size: 0.65em; max-width: 75%; margin: 0.3em auto;">
+    <em>Demonstrate it &mdash; even synthetically &mdash; and it becomes a usable interface.</em>
+  </div>
+</section>
+
+<!-- Demo -->
+<section class="text-center">
+  <h2>Interactive Demo</h2>
+  <p style="font-size: 1.6em; font-weight: 700; margin: 0.3em 0;">
+    <a href="https://neural-os.com" target="_blank" style="background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none;">neural-os.com</a>
+  </p>
+  <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin: 0.3em auto;">
+    <div class="fig-grid cols-3" style="max-width: 680px; margin: 0;">
+      <img src="figures/paper_neuralos_sequence_2_s1234_3/frame_07.png" alt="">
+      <img src="figures/paper_neuralos_sequence_2_s1234_3/frame_24.png" alt="">
+      <img src="figures/paper_neuralos_doom_w_sequence_2_s1234_3/frame_22.png" alt="">
+    </div>
+    <div style="flex-shrink: 0; text-align: center;">
+      <img src="figures/qr_neural_os.png" alt="QR code for neural-os.com" style="width: 140px; border-radius: 8px;">
+      <div style="font-size: 0.6em; color: #888; margin-top: 4px;">Scan to try it</div>
+    </div>
+  </div>
+</section>
+
+<!-- Key takeaways -->
+<section>
+  <h2>Key Takeaways</h2>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 78%; margin: 0.6em auto; text-align: center; font-size: 0.76em;">
+    <div class="fragment" style="background: var(--surface); border-radius: 10px; padding: 16px;">
+      <div style="font-size: 1.5em; margin-bottom: 0.2em;">🧠</div>
+      <strong>RNN + Diffusion</strong><br>Long-term state with constant memory
+    </div>
+    <div class="fragment" style="background: var(--surface); border-radius: 10px; padding: 16px;">
+      <div style="font-size: 1.5em; margin-bottom: 0.2em;">🎮</div>
+      <strong>Synthetic demos work</strong><br>Doom learned from fabricated data
+    </div>
+  </div>
+  <div class="fragment accent-box purple" style="font-size: 0.72em; max-width: 80%; margin: 0.4em auto;">
+    <em>Anything you can demonstrate &mdash; even fabricated &mdash; becomes a usable interface.</em>
+    <div style="font-size: 0.92em; color: var(--accent2); margin-top: 0.3em; font-style: normal;">&rarr; opens the door to <strong>UIs that can't be hand-coded</strong> in fixed formats like HTML.</div>
+  </div>
+</section>
+
+<!-- Progress over time -->
+<section>
+  <h2>Progress: 2024 &rarr; 2026</h2>
+  <div style="display: flex; align-items: flex-end; justify-content: center; gap: 18px; max-width: 95%; margin: 0.4em auto;">
+    <div class="text-center" style="width: 140px; max-width: 15%; flex-shrink: 0;">
+      <div style="font-size: 0.6em; font-weight: 600; color: var(--accent3); margin-bottom: 4px;">2024: 256&times;256</div>
+      <video autoplay loop muted playsinline poster="figures/neuralos_2024_poster.png" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 5px; box-shadow: 0 2px 12px rgba(0,0,0,0.15);">
+        <source src="figures/neuralos_2024_clip.mp4" type="video/mp4">
+      </video>
+      <div class="fig-caption">Couldn't overfit even simple folder creation</div>
+    </div>
+    <div class="fragment text-center" style="width: 280px; max-width: 30%; flex-shrink: 0;">
+      <div style="font-size: 0.6em; font-weight: 600; color: var(--accent); margin-bottom: 4px;">2025: 512&times;384</div>
+      <video autoplay loop muted playsinline poster="figures/demo_neuralos_poster.png" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 5px; box-shadow: 0 2px 12px rgba(0,0,0,0.15);">
+        <source src="figures/demo_neuralos.mp4" type="video/mp4">
+      </video>
+      <div class="fig-caption">Realistic OS simulation (this talk)</div>
+    </div>
+    <div class="fragment text-center" style="width: 520px; max-width: 50%; flex-shrink: 1;">
+      <div style="font-size: 0.6em; font-weight: 600; color: var(--accent2); margin-bottom: 4px;">2026: 1024&times;768</div>
+      <video autoplay loop muted playsinline poster="figures/neuralos_2026_poster.png" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 5px; box-shadow: 0 2px 12px rgba(0,0,0,0.15);">
+        <source src="figures/neuralos_2026_clip.mp4" type="video/mp4">
+      </video>
+      <div class="fig-caption">Current demo at neural-os.com</div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.65em; text-align: center; margin-top: 0.3em; color: #888;">Shown at proportional sizes. Resolution &times;4 in 18 months.</p>
+</section>
+
+<!-- Thank you -->
+<section class="text-center" data-background-gradient="linear-gradient(135deg, #fafbff 0%, #f0f0ff 50%, #fff5f8 100%)">
+  <h2 style="font-size: 1.8em; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Thank You!</h2>
+  <div style="display: flex; justify-content: center; gap: 28px; margin: 0.8em auto;">
+    <div style="text-align: center;">
+      <img src="luke_rivard.jpg" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 4px;">Luke Rivard</div>
+    </div>
+    <div style="text-align: center;">
+      <img src="sun_sun.jpg" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 4px;">Sun Sun</div>
+    </div>
+    <div style="text-align: center;">
+      <img src="hongyu_guo.jpg" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 4px;">Hongyu Guo</div>
+    </div>
+    <div style="text-align: center;">
+      <img src="wenhu_chen.jpg" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 4px;">Wenhu Chen</div>
+    </div>
+    <div style="text-align: center;">
+      <img src="yuntian_deng.jpg" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+      <div style="font-size: 0.6em; color: #888; margin-top: 4px;">Yuntian Deng</div>
+    </div>
+  </div>
+  <div style="font-size: 0.65em; color: #888;">University of Waterloo &amp; National Research Council Canada</div>
+  <div style="font-size: 0.75em; margin-top: 0.6em;">
+    <p><strong>Demo:</strong> <a href="https://neural-os.com" target="_blank">neural-os.com</a> &nbsp;&middot;&nbsp; <strong>Code:</strong> <a href="https://github.com/yuntian-group/neural-os" target="_blank">github.com/yuntian-group/neural-os</a></p>
+    <p style="font-size: 0.85em; color: #888; margin-top: 0.3em;"><strong>Paper:</strong> <a href="https://arxiv.org/abs/2507.08800" target="_blank" style="color: var(--accent2);">arXiv:2507.08800</a></p>
+  </div>
+  <div style="margin-top: 0.6em; font-size: 1.1em; font-weight: 600; color: var(--accent2);">Questions?</div>
+</section>
+
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  width: 1200,
+  height: 700,
+  margin: 0.04,
+  transition: 'slide',
+  transitionSpeed: 'default',
+  backgroundTransition: 'fade',
+  center: true,
+  plugins: [RevealNotes]
+});
+Reveal.on('fragmentshown', function(event) {
+  var el = event.fragment;
+  if (el.tagName === 'VIDEO') el.play();
+  el.querySelectorAll('video').forEach(function(v) { v.play(); });
+});
+</script>
+</body>
+</html>
