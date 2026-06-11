@@ -90,33 +90,38 @@
 /* 3-up quiz cards for justification slides. */
 .reveal .justify-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 0.6em;
-  margin: 0.3em 0;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5em;
+  margin: 0.4em 0;
 }
 .reveal .justify-cards .jcard {
-  padding: 0.6em 0.7em;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.45em 0.7em;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-left: 3px solid #1d4ed8;
   border-radius: 4px;
-  font-size: 0.72em;
+  font-size: 0.8em;
   text-align: left;
 }
 .reveal .justify-cards .jcard .step {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   display: block;
+  min-width: 0;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 3px;
-  padding: 0.3em 0.4em;
-  margin-bottom: 0.4em;
+  padding: 0.3em 0.5em;
   font-size: 0.9em;
 }
+.reveal .justify-cards .jcard .step .katex { white-space: normal; }
 .reveal .justify-cards .jcard .ans {
   display: block;
-  margin-top: 0.3em;
-  padding: 0.3em 0.4em;
+  white-space: nowrap;
+  padding: 0.3em 0.5em;
   background: #ecfdf5;
   border-left: 3px solid #059669;
   color: #065f46;
