@@ -585,8 +585,7 @@
       <ul class="compact" style="font-size: 0.76em; margin-top: 0.3em;">
         <li class="fragment"><strong>Singly-connected</strong> describes the <em>whole graph</em>, not one node. Multiple parents are OK: \(C\) below has two (\(A, B\)) &mdash; still a polytree.</li>
         <li class="fragment">A <em>diamond</em> (\(A\!\to\!B\!\to\!D\), \(A\!\to\!C\!\to\!D\)) is <strong>not</strong> &mdash; two routes \(A\) to \(D\).</li>
-        <li class="fragment">Heuristic: eliminate a <strong>single-neighbor</strong> node (everything but \(C\)) &mdash; never enlarges a factor.</li>
-        <li class="fragment">A node with \(\ge 2\) parents (like \(C\)) waits till last. Tree width = max # parents \(\Rightarrow\) VE is <strong>linear</strong>.</li>
+        <li class="fragment">Heuristic: eliminate a <strong>single-neighbor</strong> node (everything but \(C\)); factors never grow \(\Rightarrow\) VE is <strong>linear</strong>.</li>
       </ul>
     </div>
     <div style="flex: 0.8; text-align: center;">
