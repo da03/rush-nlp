@@ -288,6 +288,7 @@
       </div>
     </div>
   </div>
+  <p style="font-size: 0.72em; color: #6b7280; text-align: center; margin-top: 0.5em;"><strong>Convention:</strong> in a CPT a lowercase letter means that variable is <em>true</em> (\(\neg\) = false) &mdash; e.g. \(P(o_t \mid s_t)\) is P(umbrella | rain).</p>
 </section>
 
 <!-- 9. Complete HMM -->
@@ -420,7 +421,7 @@
       </g>
     </svg>
   </div>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center;">Yellow = query. Gray = observed.</p>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center;">Yellow = query, gray = observed. \(o_{0:k}\) denotes the <strong>observed values</strong> we condition on (the evidence).</p>
 </section>
 
 <!-- 13a. From conditional to joint -->
@@ -440,7 +441,7 @@
   <p style="font-size: 0.88em; margin: 0.25em 0;">Factor the joint with the HMM structure (\(s_k = S_k\)):</p>
   <p style="text-align: center; font-size: 0.85em; margin: 0.2em 0;">\(P(S_k | o_{0:k}) \propto \sum_{s_0} \cdots \sum_{s_{k-1}} P(s_0)\, P(o_0 | s_0) \prod_{i=1}^{k} P(s_i | s_{i-1})\, P(o_i | s_i)\)</p>
   <p class="fragment" style="font-size: 0.88em; margin: 0.5em 0 0.15em;"><strong>Tiny case</strong> (\(k = 1\)):</p>
-  <p class="fragment" style="text-align: center; font-size: 0.85em; margin: 0.15em 0;">\(P(S_1 | o_0, \neg o_1) \propto \sum_{s_0} P(s_0)\, P(o_0 | s_0)\, P(S_1 | s_0)\, P(\neg o_1 | S_1)\)</p>
+  <p class="fragment" style="text-align: center; font-size: 0.85em; margin: 0.15em 0;">\(P(S_1 | o_0, o_1) \propto \sum_{s_0} P(s_0)\, P(o_0 | s_0)\, P(S_1 | s_0)\, P(o_1 | S_1)\)</p>
   <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin: 0.15em 0;">3 mul &times; 2 + 1 add, all times 2 \(\Rightarrow\) <strong>14 ops</strong> &mdash; manageable.</p>
 </section>
 
@@ -520,15 +521,15 @@
           <circle cx="280" cy="40" r="20"/><text x="280" y="40">S<tspan dy="6" font-size="9">2</tspan></text>
         </g>
         <g class="obs-node evidence">
-          <circle cx="40"  cy="150" r="20" fill="#d1d5db"/><text x="40"  y="150">o<tspan dy="6" font-size="9">0</tspan>=t</text>
-          <circle cx="160" cy="150" r="20" fill="#d1d5db"/><text x="160" y="150">o<tspan dy="6" font-size="9">1</tspan>=t</text>
+          <circle cx="40"  cy="150" r="20" fill="#d1d5db"/><text x="40"  y="150">o<tspan dy="6" font-size="9">0</tspan>=T</text>
+          <circle cx="160" cy="150" r="20" fill="#d1d5db"/><text x="160" y="150">o<tspan dy="6" font-size="9">1</tspan>=T</text>
         </g>
         <circle cx="280" cy="150" r="20" fill="#fff" stroke="#d1d5db" stroke-width="2" stroke-dasharray="3 3"/>
         <text x="280" y="150" font-size="13" fill="#9ca3af" text-anchor="middle" dominant-baseline="middle">O<tspan dy="6" font-size="9">2</tspan></text>
       </svg>
     </div>
     <div style="flex: 0.95;">
-      <p style="font-size: 0.85em;">The umbrella story. Given <strong>\(O_0 = t,\; O_1 = t\)</strong>, compute \(f_{0:0}\) and \(f_{0:1}\) using forward recursion.</p>
+      <p style="font-size: 0.85em;">The umbrella story. Given <strong>\(O_0 = T,\; O_1 = T\)</strong> (umbrella seen on both days), compute \(f_{0:0}\) and \(f_{0:1}\) using forward recursion.</p>
       <div class="cpt-box" style="margin-top: 0.4em;">
         <span class="cpt-title">Numbers</span>
         \(P(s_0) = 0.5\)<br>
@@ -572,7 +573,7 @@
 
 <!-- 19. Practice problem -->
 <section>
-  <h2>Try it: 4-step HMM &mdash; compute \(P(S_2 | o_0 \wedge o_1 \wedge o_2)\)</h2>
+  <h2>Try it: 4-step HMM &mdash; compute \(P(S_2 | o_0, o_1, o_2)\)</h2>
   <div class="two-col vcenter">
     <div style="flex: 1.1; text-align: center;">
       <svg viewBox="0 0 420 200" xmlns="http://www.w3.org/2000/svg" class="hmm-chain" style="max-height: 180px;">
@@ -592,9 +593,9 @@
           <circle cx="280" cy="40" r="22"/><text x="280" y="40">S<tspan dy="6" font-size="9">2</tspan></text>
         </g>
         <g class="obs-node evidence">
-          <circle cx="40"  cy="150" r="20" fill="#d1d5db"/><text x="40"  y="150">o<tspan dy="6" font-size="9">0</tspan></text>
-          <circle cx="160" cy="150" r="20" fill="#d1d5db"/><text x="160" y="150">o<tspan dy="6" font-size="9">1</tspan></text>
-          <circle cx="280" cy="150" r="20" fill="#d1d5db"/><text x="280" y="150">o<tspan dy="6" font-size="9">2</tspan></text>
+          <circle cx="40"  cy="150" r="20" fill="#d1d5db"/><text x="40"  y="150">o<tspan dy="6" font-size="9">0</tspan>=T</text>
+          <circle cx="160" cy="150" r="20" fill="#d1d5db"/><text x="160" y="150">o<tspan dy="6" font-size="9">1</tspan>=T</text>
+          <circle cx="280" cy="150" r="20" fill="#d1d5db"/><text x="280" y="150">o<tspan dy="6" font-size="9">2</tspan>=T</text>
         </g>
         <circle cx="400" cy="150" r="20" fill="#fff" stroke="#d1d5db" stroke-width="2" stroke-dasharray="3 3"/>
         <text x="400" y="150" font-size="13" fill="#9ca3af" text-anchor="middle" dominant-baseline="middle">O<tspan dy="6" font-size="9">3</tspan></text>
@@ -632,19 +633,19 @@
     <div class="derive-line">\(P(S_k | o_{0:k})\)</div>
     <div class="derive-label"></div>
 
-    <div class="derive-line fragment" data-fragment-index="0">\(= P(S_k | o_k \wedge o_{0:(k-1)})\)</div>
+    <div class="derive-line fragment" data-fragment-index="0">\(= P(S_k | o_k, o_{0:(k-1)})\)</div>
     <div class="derive-label fragment" data-fragment-index="0">rewrite</div>
 
-    <div class="derive-line fragment" data-fragment-index="1">\(= \alpha\, P(o_k | S_k \wedge o_{0:(k-1)})\, P(S_k | o_{0:(k-1)})\)</div>
+    <div class="derive-line fragment" data-fragment-index="1">\(= \alpha\, P(o_k | S_k, o_{0:(k-1)})\, P(S_k | o_{0:(k-1)})\)</div>
     <div class="derive-label fragment" data-fragment-index="1">Bayes' rule</div>
 
     <div class="derive-line fragment" data-fragment-index="2">\(= \alpha\, P(o_k | S_k)\, P(S_k | o_{0:(k-1)})\)</div>
     <div class="derive-label fragment" data-fragment-index="2">Markov (sensor)</div>
 
-    <div class="derive-line fragment" data-fragment-index="3">\(= \alpha\, P(o_k | S_k) \sum_{s_{k-1}} P(S_k \wedge s_{k-1} | o_{0:(k-1)})\)</div>
+    <div class="derive-line fragment" data-fragment-index="3">\(= \alpha\, P(o_k | S_k) \sum_{s_{k-1}} P(S_k, s_{k-1} | o_{0:(k-1)})\)</div>
     <div class="derive-label fragment" data-fragment-index="3">sum rule</div>
 
-    <div class="derive-line fragment" data-fragment-index="4">\(= \alpha\, P(o_k | S_k) \sum_{s_{k-1}} P(S_k | s_{k-1} \wedge o_{0:(k-1)})\, P(s_{k-1} | o_{0:(k-1)})\)</div>
+    <div class="derive-line fragment" data-fragment-index="4">\(= \alpha\, P(o_k | S_k) \sum_{s_{k-1}} P(S_k | s_{k-1}, o_{0:(k-1)})\, P(s_{k-1} | o_{0:(k-1)})\)</div>
     <div class="derive-label fragment" data-fragment-index="4">chain rule</div>
 
     <div class="derive-line fragment" data-fragment-index="5"><span style="color:#166534; font-weight: 600;">\(= \alpha\, P(o_k | S_k) \sum_{s_{k-1}} P(S_k | s_{k-1})\, f_{0:(k-1)}\)</span></div>
@@ -659,12 +660,12 @@
   <div class="justify-cards">
     <div class="jcard">
       <strong>Q1.</strong>
-      <span class="step">\(P(S_k | o_{0:k}) = P(S_k | o_k \wedge o_{0:(k-1)})\)</span>
+      <span class="step">\(P(S_k | o_{0:k}) = P(S_k | o_k, o_{0:(k-1)})\)</span>
       <span class="ans fragment">A &mdash; rewrite</span>
     </div>
     <div class="jcard">
       <strong>Q2.</strong>
-      <span class="step">\(= \alpha\, P(o_k | S_k \wedge o_{0:(k-1)})\, P(S_k | o_{0:(k-1)})\)</span>
+      <span class="step">\(= \alpha\, P(o_k | S_k, o_{0:(k-1)})\, P(S_k | o_{0:(k-1)})\)</span>
       <span class="ans fragment">B &mdash; Bayes' rule</span>
     </div>
     <div class="jcard">
@@ -682,12 +683,12 @@
   <div class="justify-cards">
     <div class="jcard">
       <strong>Q4.</strong>
-      <span class="step">\(\ldots = \alpha\, P(o_k | S_k) \sum_{s_{k-1}} P(S_k \wedge s_{k-1} | o_{0:(k-1)})\)</span>
+      <span class="step">\(\ldots = \alpha\, P(o_k | S_k) \sum_{s_{k-1}} P(S_k, s_{k-1} | o_{0:(k-1)})\)</span>
       <span class="ans fragment">E &mdash; sum rule</span>
     </div>
     <div class="jcard">
       <strong>Q5.</strong>
-      <span class="step">\(= \alpha\, P(o_k | S_k) \sum_{s_{k-1}} P(S_k | s_{k-1} \wedge o_{0:(k-1)})\, P(s_{k-1} | o_{0:(k-1)})\)</span>
+      <span class="step">\(= \alpha\, P(o_k | S_k) \sum_{s_{k-1}} P(S_k | s_{k-1}, o_{0:(k-1)})\, P(s_{k-1} | o_{0:(k-1)})\)</span>
       <span class="ans fragment">C &mdash; chain rule</span>
     </div>
     <div class="jcard">
