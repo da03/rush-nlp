@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "question": "Two variables can be independent, or conditionally independent given a third variable. Define each in your own words, give the 'product' (factored) form of each definition, and explain with a small example why independence does NOT imply conditional independence, and why conditional independence does NOT imply independence.",
+    "key_concepts": [
+      "Unconditional independence: P(X and Y) = P(X) * P(Y), equivalently P(X | Y) = P(X). Learning Y tells you nothing about X",
+      "Conditional independence given Z: P(X and Y | Z) = P(X | Z) * P(Y | Z), equivalently P(X | Y and Z) = P(X | Z). Once Z is known, Y tells you nothing more about X",
+      "Independence does NOT imply conditional independence: v-structure / common effect (E -> A <- B). E and B are independent, but given the alarm A they become dependent (explaining away)",
+      "Conditional independence does NOT imply independence: chain or common cause (e.g. W <- A -> G). W and G are dependent, but become independent once the common cause A is known",
+      "The unifying idea: conditioning can either block information flow (chain, common cause) or open it (v-structure)"
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "id": 2,
+    "question": "A Bayesian network is a directed acyclic graph (DAG) plus a conditional probability table (CPT) at each node. (a) Explain why a full joint over n Boolean variables needs about 2^n numbers, and how a Bayes net shrinks this. (b) Write the factorization formula that recovers the full joint from the net. (c) Use it to compute one joint entry from a small network of your choice (e.g. the Holmes network).",
+    "key_concepts": [
+      "Full joint over n Boolean variables = 2^n entries (2^n - 1 free); grows exponentially and is impossible to store or elicit for large n",
+      "A Bayes net stores P(Xi | Parents(Xi)) at each node; total size = sum of 2^(#parents), roughly linear in n when each node has few parents (Holmes: 64 -> 12)",
+      "Factorization: P(X1, ..., Xn) = product over i of P(Xi | Parents(Xi)). Each variable is conditionally independent of its non-descendants given its parents",
+      "Worked example (Holmes): P(not B and not E and A and not R and G and W) = P(not B) * P(not E) * P(A | not B and not E) * P(not R | not E) * P(G | A) * P(W | A)",
+      "Only a node's parents appear in its factor; plug in the CPT numbers and multiply to get the joint entry"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 3,
+    "question": "Bayes nets are built from three length-two structures: chain (A -> B -> C), common cause (B <- A -> C), and common effect / v-structure (A -> C <- B). For each structure, say whether the two endpoints are (i) unconditionally independent and (ii) conditionally independent given the middle node. Then explain what 'explaining away' means in the v-structure.",
+    "key_concepts": [
+      "Chain A -> B -> C: endpoints NOT independent; conditionally independent given B (observing the middle blocks the path)",
+      "Common cause B <- A -> C: endpoints NOT independent; conditionally independent given A (observing the shared cause blocks the path)",
+      "Common effect / v-structure A -> C <- B: endpoints ARE (unconditionally) independent; given C they become DEPENDENT -- the opposite of the other two",
+      "Explaining away: given the common effect (e.g. the alarm), learning one cause (earthquake) lowers the probability of the other cause (burglary)",
+      "Summary: in a chain and common cause, observing the middle node BLOCKS information flow; in a v-structure, observing the middle node (or any of its descendants) OPENS it"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 4,
+    "question": "d-separation generalizes the three structures to arbitrary paths. State what it means for a set of observed variables E to d-separate X and Y, and give the rule for when a path is blocked at a middle node for each of the three structure types. Then apply it: pick a path that contains both a chain (or common-cause) middle and a v-structure middle, and explain whether the whole path is open.",
+    "key_concepts": [
+      "E d-separates X and Y iff E blocks EVERY undirected path between them; a single open path is enough to leave X and Y dependent",
+      "If E d-separates X and Y, then X and Y are conditionally independent given E",
+      "Chain (X -> B -> Y) and common cause (X <- B -> Y): the path is blocked when the middle B is observed (B in E)",
+      "V-structure (X -> B <- Y): the path is blocked when NEITHER B NOR any descendant of B is observed; observing B or a descendant OPENS it (explaining away)",
+      "A whole path is open only if every middle node on it is open at once; so chain/common-cause middles must be unobserved, while v-structure middles (and their descendants) must be unobserved to keep that segment blocked"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 5,
+    "question": "Part 1 (construction): Given a fixed joint distribution and a variable ordering, describe the algorithm for building a correct Bayes net, and explain why a CAUSAL ordering (causes before effects) tends to give the most compact network -- including what goes wrong with a bad ordering. Part 2 (causation): A Bayes-net edge is associational, not necessarily causal. Explain confounding with an example, and contrast P(R | S = 1) (conditioning) with P(R | do(S = 1)) (intervention), including what 'graph surgery' does to the network.",
+    "key_concepts": [
+      "Construction algorithm: order the variables X1..Xn; for each Xi choose the SMALLEST subset of earlier variables that makes Xi independent of the rest given those parents; add edges parent -> Xi and write down P(Xi | Parents(Xi))",
+      "Correctness: a net is correct if every independence it asserts also holds in the true distribution. Missing an independence (extra edges) is OK; missing a dependence (too sparse) is NOT. Prefer the net with the fewest edges/probabilities",
+      "Causal order adds root causes first and effects last, keeping parent sets small; a bad order (effects before causes) forces many edges and expensive reversed v-structures (Holmes bad order: 33 numbers vs 12 with the causal order)",
+      "Correlation != causation: a confounder (e.g. Age) makes Shoe size and Reading correlate with no causal link between them; controlling for the confounder erases the spurious association",
+      "Conditioning P(R | S = 1): what we observe, still contaminated by the confounder. Intervention P(R | do(S = 1)): force S, which SEVERS S's incoming edges (graph surgery) so the confounder can no longer reach S; the average treatment effect adjusts for the confounder and here is approximately 0"
+    ],
+    "difficulty": "hard"
+  }
+]

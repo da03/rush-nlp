@@ -5,9 +5,9 @@
   <title>CS 486/686 Lecture 11 — Hidden Markov Models II</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="description" content="CS 486/686 (Spring 2026) Lecture 11: Inference in Hidden Markov Models, Part 2 — smoothing, the forward-backward algorithm, and Viterbi. Yuntian Deng, University of Waterloo.">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L7/custom.css">
@@ -129,7 +129,7 @@
 </section>
 
 <!-- ============================================================
-     Smoothing setup (3 slides)
+     Smoothing setup + derivation (4 slides)
      ============================================================ -->
 
 <!-- 4. Smoothing query -->
@@ -177,6 +177,29 @@
       \(P(S_k | o_{0:(t-1)})\), &nbsp;\(k &lt; t - 1\) &mdash; a past state from all evidence (past <em>and</em> future).
     </div>
   </div>
+</section>
+
+<!-- 4b. Deriving the smoothing formula (motivates the forward x backward result) -->
+<section>
+  <h2>Deriving the smoothing formula</h2>
+  <p style="font-size: 0.85em;">Four small steps from \(P(S_k | o_{0:(t-1)})\) to the forward-backward product:</p>
+  <div class="derive-block">
+    <div class="derive-line">\(P(S_k | o_{0:(t-1)})\)</div>
+    <div class="derive-label"></div>
+
+    <div class="derive-line fragment" data-fragment-index="0">\(= P(S_k | o_{(k+1):(t-1)} \wedge o_{0:k})\)</div>
+    <div class="derive-label fragment" data-fragment-index="0">rewrite</div>
+
+    <div class="derive-line fragment" data-fragment-index="1">\(= \alpha\, P(S_k | o_{0:k})\, P(o_{(k+1):(t-1)} | S_k \wedge o_{0:k})\)</div>
+    <div class="derive-label fragment" data-fragment-index="1">Bayes' rule</div>
+
+    <div class="derive-line fragment" data-fragment-index="2">\(= \alpha\, P(S_k | o_{0:k})\, P(o_{(k+1):(t-1)} | S_k)\)</div>
+    <div class="derive-label fragment" data-fragment-index="2">Markov</div>
+
+    <div class="derive-line fragment" data-fragment-index="3"><span style="color:#166534; font-weight: 600;">\(= \alpha\, f_{0:k}\, b_{(k+1):(t-1)}\)</span></div>
+    <div class="derive-label fragment" data-fragment-index="3">definitions</div>
+  </div>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.2em;">Try to identify the rule before the label appears.</p>
 </section>
 
 <!-- 5. Smoothing = forward x backward -->
@@ -321,31 +344,8 @@
 </section>
 
 <!-- ============================================================
-     Derivations (2 slides)
+     Backward recursion derivation (1 slide)
      ============================================================ -->
-
-<!-- 10. Smoothing derivation -->
-<section>
-  <h2>Deriving the smoothing formula</h2>
-  <p style="font-size: 0.85em;">Four small steps from \(P(S_k | o_{0:(t-1)})\) to the forward-backward product:</p>
-  <div class="derive-block">
-    <div class="derive-line">\(P(S_k | o_{0:(t-1)})\)</div>
-    <div class="derive-label"></div>
-
-    <div class="derive-line fragment" data-fragment-index="0">\(= P(S_k | o_{(k+1):(t-1)} \wedge o_{0:k})\)</div>
-    <div class="derive-label fragment" data-fragment-index="0">rewrite</div>
-
-    <div class="derive-line fragment" data-fragment-index="1">\(= \alpha\, P(S_k | o_{0:k})\, P(o_{(k+1):(t-1)} | S_k \wedge o_{0:k})\)</div>
-    <div class="derive-label fragment" data-fragment-index="1">Bayes' rule</div>
-
-    <div class="derive-line fragment" data-fragment-index="2">\(= \alpha\, P(S_k | o_{0:k})\, P(o_{(k+1):(t-1)} | S_k)\)</div>
-    <div class="derive-label fragment" data-fragment-index="2">Markov</div>
-
-    <div class="derive-line fragment" data-fragment-index="3"><span style="color:#166534; font-weight: 600;">\(= \alpha\, f_{0:k}\, b_{(k+1):(t-1)}\)</span></div>
-    <div class="derive-label fragment" data-fragment-index="3">definitions</div>
-  </div>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.2em;">Try to identify the rule before the label appears.</p>
-</section>
 
 <!-- 11. Backward recursion derivation -->
 <section>
@@ -684,8 +684,8 @@
 </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/math/math.js"></script>
 <script>
   Reveal.initialize({
     controls: true,
@@ -703,7 +703,7 @@
         { left: '\\[', right: '\\]', display: true }
       ]
     },
-    plugins: [ RevealMath.KaTeX ]
+    plugins: (typeof RevealMath !== 'undefined' && RevealMath.KaTeX) ? [ RevealMath.KaTeX ] : []
   });
 
   ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {

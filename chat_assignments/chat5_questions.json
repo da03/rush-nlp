@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "question": "Variable elimination operates on FACTORS rather than full distributions. (a) Define what a factor is and explain how it differs from a probability distribution. (b) Describe each of the four factor operations -- restrict (assign a variable), sum out (marginalize a variable), multiply two factors, and normalize -- saying what each does to the set of variables. (c) Give a tiny numeric example of restrict and of sum out.",
+    "key_concepts": [
+      "A factor f(X1, ..., Xn) maps each assignment of its variables to a non-negative number; unlike a distribution it need NOT sum to 1. CPTs P(Xi | Parents) are factors, and every intermediate result of VE is also a factor",
+      "Restrict / assign: fixing X = t in f1(X, Y) gives f2(Y) = f1(X = t, Y); it DROPS the assigned variable and keeps only the matching rows",
+      "Sum out / marginalize: sum_Y f1(X, Y) gives f2(X); it removes Y by adding over its values and keeps the remaining variables",
+      "Multiply: f(A, B) times g(B, C) gives h(A, B, C) over the UNION of variables; each entry is the product of the two matching entries (aligned on the shared variable B)",
+      "Normalize: divide every entry by the total so the factor sums to 1, turning it back into a valid distribution -- done at the very end to recover P from the unnormalized answer"
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "id": 2,
+    "question": "To answer a query like P(B | w and g) we never build the full joint. (a) Show why P(B | w and g) is proportional to sum over e, a, r of P(B, e, a, r, w, g), explaining the role of the denominator and where the Bayes-net factorization enters. (b) Contrast naively enumerating that whole sum with 'pushing the sums inward' (variable elimination), and explain why pushing sums in is so much cheaper. (c) State the five steps of the VE algorithm.",
+    "key_concepts": [
+      "Conditional to joint: P(B | w and g) = P(B, w, g) / P(w, g); the denominator P(w, g) does not depend on B, so it is just a normalizing constant, giving P(B | w and g) proportional to P(B, w, g). Recover that joint by summing the full joint over the hidden variables e, a, r and factoring it with the BN CPTs",
+      "Naive enumeration evaluates the fully factored product for EVERY assignment of the hidden variables (2^(#hidden) terms), repeating identical multiplications (e.g. P(B) recomputed in every term)",
+      "Pushing sums in uses the distributive law: a summation only needs the factors that mention its variable, so move each sum as far right as possible and operate on small factors -- e.g. sum_r P(r | e) = 1 collapses, and P(B) pulls out front",
+      "This converts an exponential brute-force sum into a sequence of small multiply-then-sum-out steps that reuse intermediate factors (dynamic programming): same answer, far fewer operations",
+      "VE algorithm: (1) make one factor per CPT; (2) restrict observed variables to their values; (3) for each hidden variable in the chosen order, multiply all factors containing it then sum it out; (4) multiply the remaining factors; (5) normalize"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 3,
+    "question": "The cost of variable elimination depends heavily on the elimination ORDER. (a) Explain why two valid orderings can have very different costs, using the idea of intermediate factor size. (b) Define elimination width and tree width, and state VE's complexity in terms of tree width. (c) Explain the polytree (singly-connected) special case: which node the heuristic eliminates, why factors never grow, and the resulting complexity. (d) Briefly contrast exact VE with approximate inference by forward sampling and rejection sampling.",
+    "key_concepts": [
+      "Every ordering gives the correct answer, but each builds different intermediate factors: multiplying factors before summing out a variable creates a factor over the UNION of their variables, so a bad order builds large factors and cost is exponential in the size of the largest factor (e.g. ~36 ops for a good order vs ~134 for a bad one on the same query)",
+      "Elimination width of an ordering = the number of variables in the largest factor it ever builds; tree width (omega) = the smallest elimination width over all orderings; VE costs 2^O(omega) in time and space. Finding the optimal ordering is NP-hard, but greedy heuristics (e.g. min-degree) work well",
+      "A polytree is singly-connected (at most one undirected path between any two nodes). Heuristic: always eliminate a single-neighbor node; summing it out never enlarges any factor, so factors stay bounded by the original CPTs. Tree width = max number of parents, and VE runs in time LINEAR in the size of the network",
+      "Forward (ancestral) sampling: draw each variable from its CPT in topological (parents-first) order to sample the joint; estimate a prior query like P(G) by the fraction of samples with G true",
+      "Rejection sampling for a posterior P(G | not b): forward-sample but THROW AWAY any sample inconsistent with the evidence, then estimate from the survivors -- correct but wasteful when the evidence is rare (most samples get rejected)"
+    ],
+    "difficulty": "hard"
+  },
+  {
+    "id": 4,
+    "question": "A hidden Markov model describes a hidden state sequence S_0, S_1, ... that emits observations O_0, O_1, .... (a) State the first-order Markov assumption and the sensor (observation) Markov assumption as conditional-independence equations, and explain in words what each says. (b) What does it mean for the process to be STATIONARY, and why does that matter? (c) An HMM is just a Bayes net -- name and define the four standard inference tasks with their query expressions.",
+    "key_concepts": [
+      "Markov assumption (first-order): P(S_t | S_(t-1), ..., S_0) = P(S_t | S_(t-1)) -- the next state depends only on the current state ('the future is independent of the past given the present')",
+      "Sensor (observation) Markov assumption: P(O_t | S_t, S_(t-1), ..., O_(t-1), ...) = P(O_t | S_t) -- each observation depends only on the current hidden state",
+      "Stationary process: the SAME transition CPT P(S_t | S_(t-1)) and sensor CPT P(O_t | S_t) are reused at every time step, so a small fixed set of numbers defines an arbitrarily long chain",
+      "Filtering = P(S_k | o_(0:k)): the state NOW given all evidence to date. Prediction = P(S_(k+j) | o_(0:k)) with j > 0: a FUTURE state. Smoothing = P(S_j | o_(0:k)) with j < k: a PAST state, using later evidence",
+      "Most-likely explanation = argmax over s_(0:k) of P(s_(0:k) | o_(0:k)): the single most likely STATE SEQUENCE (Viterbi), which is not the same as picking the most likely state at each step independently"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 5,
+    "question": "Filtering computes f_(0:k) = P(S_k | o_(0:k)) recursively. (a) Write the base case and the recursive case of the forward algorithm and identify the 'predict' part and the 'update' part. (b) Walk through the derivation of the recursion starting from P(S_k | o_(0:k)), naming the rule used at each step (Bayes' rule, the sum and chain rules, the two Markov assumptions). (c) Why is forward recursion O(k) while naively enumerating the joint is O(k * 2^k)? (d) Relate the forward algorithm to variable elimination on the HMM.",
+    "key_concepts": [
+      "Base case: f_(0:0) = alpha * P(o_0 | S_0) * P(S_0). Recursive case: f_(0:k) = alpha * P(o_k | S_k) * sum over s_(k-1) of P(S_k | s_(k-1)) * f_(0:(k-1)). PREDICT = sum over s_(k-1) of P(S_k | s_(k-1)) * f_(0:(k-1)) (roll the previous belief forward through the transition model); UPDATE = multiply by the observation likelihood P(o_k | S_k) and renormalize with alpha",
+      "Derivation: split the evidence o_(0:k) = o_k and o_(0:(k-1)) (rewrite); apply Bayes' rule to get P(o_k | S_k, o_(0:(k-1))) * P(S_k | o_(0:(k-1))); sensor Markov drops the old evidence leaving P(o_k | S_k); the sum rule introduces sum over s_(k-1); the chain rule splits P(S_k, s_(k-1) | o_(0:(k-1))) = P(S_k | s_(k-1), o_(0:(k-1))) * P(s_(k-1) | o_(0:(k-1))); transition Markov drops old evidence leaving P(S_k | s_(k-1)), and P(s_(k-1) | o_(0:(k-1))) = f_(0:(k-1))",
+      "Forward recursion REUSES f_(0:(k-1)) to compute f_(0:k): each step is a constant-size predict+update on a fixed-length belief vector (independent of k), so the total work is O(k)",
+      "Naive enumeration sums the joint over all 2^k hidden-state assignments at each step, giving O(k * 2^k); it recomputes overlapping sub-sums instead of caching them, which is exactly what the recursion avoids",
+      "Connection to VE: an HMM is a Bayes net, so VE applies; eliminating the states in time order (S_0, then S_1, ...) IS the forward algorithm. Because the chain is a polytree (tree width 1), this ordering keeps every intermediate factor over a single state, giving linear-time inference"
+    ],
+    "difficulty": "hard"
+  }
+]

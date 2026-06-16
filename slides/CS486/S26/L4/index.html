@@ -5,9 +5,9 @@
   <title>CS 486/686 Lecture 4 — Constraint Satisfaction Problems</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="description" content="CS 486/686 (Spring 2026) Lecture 4: Constraint Satisfaction Problems. Yuntian Deng, University of Waterloo.">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reset.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="custom.css">
@@ -926,8 +926,8 @@ A=1, B=1, C=1, D=1, E=2   <span class="cmt"># fail</span>
 </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/dist/reveal.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5/plugin/math/math.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/math/math.js"></script>
 <script>
   Reveal.initialize({
     controls: true,
@@ -945,7 +945,7 @@ A=1, B=1, C=1, D=1, E=2   <span class="cmt"># fail</span>
         { left: '\\[', right: '\\]', display: true }
       ]
     },
-    plugins: [ RevealMath.KaTeX ]
+    plugins: (typeof RevealMath !== 'undefined' && RevealMath.KaTeX) ? [ RevealMath.KaTeX ] : []
   });
 
   // Hide the corner "Course page" link in true browser fullscreen.
