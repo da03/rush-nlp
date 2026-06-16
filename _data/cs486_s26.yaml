@@ -126,7 +126,7 @@ chats:
 # Each has a TA owner who answers Piazza questions and handles grading.
 # Leave owner blank ("") to render "TBA".
 assignments:
-  - { num: 1, out: 2026-06-04, due: 2026-06-18, owner: "Dake Zhang", owner_email: "d346zhan@uwaterloo.ca" }
+  - { num: 1, out: 2026-06-04, due: 2026-06-25, owner: "Dake Zhang", owner_email: "d346zhan@uwaterloo.ca" }
   - { num: 2, out: 2026-06-25, due: 2026-07-09, owner: "" }
   - { num: 3, out: 2026-07-09, due: 2026-08-04, owner: "" }
 
@@ -246,7 +246,6 @@ schedule:
     deadlines:
       - { kind: out,     chat: 6, label: "Chat 6 out" }
       - { kind: due,     chat: 5, label: "Chat 5 due (extended)" }
-      - { kind: due,     label: "Assignment 1 due" }
 
   - type: lecture
     date: 2026-06-23
@@ -263,6 +262,7 @@ schedule:
     slides: /slides/CS486/S26/L14/
     deadlines:
       - { kind: out,     chat: 7, label: "Chat 7 out" }
+      - { kind: due,     label: "Assignment 1 due (extended)" }
       - { kind: release, label: "Assignment 2 release" }
 
   - type: lecture
@@ -356,6 +356,19 @@ schedule:
 announcements:
   - severity: info
     show: true
+    title: "Assignment 1 deadline extended to Thursday, June 25"
+    body: >-
+      The Assignment 1 PDF, starter code, and model file have been updated on
+      <a href="https://learn.uwaterloo.ca/">LEARN</a> for clarity and consistency
+      (Python 3.12+ with NumPy required; clarified TSP wording and A* tie-breaking;
+      the EOS convention for fixed-length decoding; the Problem 3 starter API; and a
+      refreshed sanity-check model) - please <strong>re-download</strong> the files.
+      The deadline is now <strong>Thursday, June 25 at 11:59 PM</strong> (was Jun 18).
+      Post A1 questions on
+      <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> addressed to
+      <strong>Dake Zhang</strong>.
+  - severity: info
+    show: false
     title: "Chrysalis is back up - Chat 4 & Chat 5 deadlines still extended"
     body: >-
       Chrysalis (the chat-assignment platform) was down earlier today (CSCF server issue) but is
