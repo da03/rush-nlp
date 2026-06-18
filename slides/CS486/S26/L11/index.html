@@ -610,23 +610,26 @@
 <section>
   <h2>Why Viterbi returns the true argmax</h2>
   <p style="font-size: 0.78em; margin: 0.1em 0;">Recall \(\pi_k(j) = \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)}, S_k{=}j, o_{0:k})\) and \(\phi_k(j) = \arg\max_{z}\bigl[\pi_{k-1}(z)\,P(j\mid z)\bigr]\). Goal: \(\hat s_{0:t-1} = \arg\max_{s_{0:t-1}} P(s_{0:t-1}, o_{0:t-1})\).</p>
-  <div class="derive-block" style="font-size: 0.64em;">
-    <div class="derive-line">\(\displaystyle\max_{s_{0:t-1}} P(s_{0:t-1}, o_{0:t-1}) = \max_{j}\, \pi_{t-1}(j)\)</div>
-    <div class="derive-label">(1) split off last state</div>
+  <div class="derive-block" style="font-size: 0.62em;">
+    <div class="derive-line">\(\displaystyle\max_{s_{0:t-1}} P(s_{0:t-1}, o_{0:t-1}) = \max_{j}\ \max_{s_{0:(t-2)}} P(s_{0:(t-2)},\, S_{t-1}{=}j,\, o_{0:t-1})\)</div>
+    <div class="derive-label">(1) pull out the last state \(S_{t-1}{=}j\)</div>
 
-    <div class="derive-line fragment" data-fragment-index="0">\(\Rightarrow\ \hat s_{t-1} = \displaystyle\arg\max_{j}\, \pi_{t-1}(j)\)</div>
-    <div class="derive-label fragment" data-fragment-index="0">best final state</div>
+    <div class="derive-line fragment" data-fragment-index="0">\(\phantom{\displaystyle\max_{s_{0:t-1}} P(s_{0:t-1}, o_{0:t-1})} = \displaystyle\max_{j}\, \pi_{t-1}(j) \;\Rightarrow\; \hat s_{t-1} = \arg\max_{j}\, \pi_{t-1}(j)\)</div>
+    <div class="derive-label fragment" data-fragment-index="0">inner max is \(\pi_{t-1}(j)\)</div>
 
-    <div class="derive-line fragment" data-fragment-index="1">\(\pi_k(j) = P(o_k\mid j)\,\pi_{k-1}\!\bigl(\phi_k(j)\bigr)\,P\bigl(j\mid \phi_k(j)\bigr)\)</div>
-    <div class="derive-label fragment" data-fragment-index="1">(2) recursion attained at \(\phi_k(j)\)</div>
+    <div class="derive-line fragment" data-fragment-index="1">\(\pi_k(j) = P(o_k\mid j)\displaystyle\max_{z}\bigl[\pi_{k-1}(z)\,P(j\mid z)\bigr]\)</div>
+    <div class="derive-label fragment" data-fragment-index="1">(2) recursion</div>
 
-    <div class="derive-line fragment" data-fragment-index="2">\(\hat s_{k-1} = \phi_k(\hat s_k),\quad k = t{-}1,\dots,1\)</div>
-    <div class="derive-label fragment" data-fragment-index="2">(3) trace back</div>
+    <div class="derive-line fragment" data-fragment-index="2">\(\phantom{\pi_k(j)} = P(o_k\mid j)\,\pi_{k-1}\!\bigl(\phi_k(j)\bigr)\,P\bigl(j\mid \phi_k(j)\bigr)\)</div>
+    <div class="derive-label fragment" data-fragment-index="2">max attained at \(z=\phi_k(j)\)</div>
 
-    <div class="derive-line fragment" data-fragment-index="3">\(\Rightarrow\ P(\hat s_{0:t-1}, o_{0:t-1}) = \displaystyle\max_{s_{0:t-1}} P(s_{0:t-1}, o_{0:t-1})\)</div>
-    <div class="derive-label fragment" data-fragment-index="3">induction on (2) \(\ \blacksquare\)</div>
+    <div class="derive-line fragment" data-fragment-index="3">\(\hat s_{k-1} = \phi_k(\hat s_k),\quad k = t{-}1,\dots,1\)</div>
+    <div class="derive-label fragment" data-fragment-index="3">(3) trace back</div>
+
+    <div class="derive-line fragment" data-fragment-index="4">\(\Rightarrow\ P(\hat s_{0:t-1}, o_{0:t-1}) = \displaystyle\max_{s_{0:t-1}} P(s_{0:t-1}, o_{0:t-1})\)</div>
+    <div class="derive-label fragment" data-fragment-index="4">induction on (2) \(\ \blacksquare\)</div>
   </div>
-  <p class="fragment" data-fragment-index="3" style="font-size: 0.76em; color: #6b7280; text-align: center; margin-top: 0.25em;">Each \(\pi_k\) reuses one optimal sub-path (principle of optimality) &mdash; so the trace-back path is globally optimal, with no sequence enumeration.</p>
+  <p class="fragment" data-fragment-index="4" style="font-size: 0.76em; color: #6b7280; text-align: center; margin-top: 0.25em;">Each \(\pi_k\) reuses one optimal sub-path (principle of optimality) &mdash; so the trace-back path is globally optimal, with no sequence enumeration.</p>
 </section>
 
 <!-- 17. Trellis visualization + complexity -->
