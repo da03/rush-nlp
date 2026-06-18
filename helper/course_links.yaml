@@ -1,0 +1,42 @@
+# Link destinations the COURSE page_classifier (course_classifier) can route to,
+# for CS 486/686 (Spring 2026). Same shape as links.yaml (the site links).
+#
+# Each key is a label the course classifier may output (besides "question",
+# which defers to the course answerer). `purpose` is inlined into the classifier
+# spec; `label`/`description` are shown in the widget. URLs mirror the canonical
+# values in _data/cs486_s26.yaml (course.links) so they never drift.
+
+piazza:
+  url: "https://piazza.com/uwaterloo.ca/spring2026/cs486686"
+  name: "Piazza"
+  label: "Piazza (course forum)"
+  description: "Ask and answer questions; announcements"
+  purpose: "The student wants the Piazza course forum (ask questions, read announcements, discussion)."
+
+chrysalis:
+  url: "https://andromeda-208.cs.uwaterloo.ca"
+  name: "Chrysalis"
+  label: "Chrysalis"
+  description: "The chat-assignment platform"
+  purpose: "The student wants Chrysalis, the platform where the chat assignments are done."
+
+learn:
+  url: "https://learn.uwaterloo.ca/"
+  name: "LEARN"
+  label: "UW LEARN"
+  description: "Assignment release/submission and grades"
+  purpose: "The student wants UW LEARN, where programming assignments are released, submitted, and graded."
+
+calendar:
+  url: "https://yuntiandeng.com/course-cs486-s26.ics"
+  name: "course calendar (.ics)"
+  label: "Add to calendar (.ics)"
+  description: "Downloadable course calendar"
+  purpose: "The student wants to download or subscribe to the course calendar (.ics file)."
+
+slides:
+  url: "https://yuntiandeng.com/teaching/spring2026/cs486-introduction-to-artificial-intelligence/#schedule"
+  name: "lecture schedule"
+  label: "Lecture slides & schedule"
+  description: "Per-lecture slides and notes in the schedule"
+  purpose: "The student wants lecture slides, notes, or the lecture schedule/decks."

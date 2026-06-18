@@ -1,47 +1,94 @@
 # "Ask about Yuntian" helper
 
 A small Q&A helper for yuntiandeng.com, built on [ProgramAsWeights](https://programasweights.com).
-A site-wide widget sends each query to a server-side pipeline of three precompiled
-PAW programs and gets back either a **link** or a **freeform answer**.
+A site-wide widget sends each query (plus the **page** it came from) to a server-side
+pipeline of precompiled PAW programs and gets back either a **link** or a **freeform answer**.
+
+The pipeline is generic and **config-driven** ([`pipeline.yaml`](pipeline.yaml)). A top-level
+**domain router** picks which domain handles the query, using the page as a prior and a
+PAW program to catch cross-domain "escapes". Each domain then routes link-vs-question:
 
 ```
-query ──▶ page_classifier ──▶ a link label? ──▶ return link (cv, contact, neuralos, …)
-                           └─▶ "question"   ──▶ answerer ──▶ validator ──▶ answer / fallback
+/ask {query, page}
+  ──▶ domain_router (page prior + PAW) ──▶ site  ──▶ page_classifier ──▶ link? ──▶ link result
+                                       │                              └─▶ question ──▶ answerer  ─┐
+                                       └──▶ course ──▶ course_classifier ──▶ link? ──▶ link result │
+                                                                          └─▶ question ──▶ course_answerer ─┤
+                                                                                                            └─▶ validator ──▶ answer / fallback
 ```
+
+Two domains today:
+- **site** — questions about Yuntian (research, career, availability). Facts are **baked**
+  into the compiled answerer ([`facts.md`](facts.md)); stable, so a change means a recompile.
+- **course** — CS 486/686 (Spring 2026). Facts are **injected at inference time** from
+  [`_data/cs486_s26.yaml`](../_data/cs486_s26.yaml) via [`course_facts.py`](course_facts.py),
+  so a deadline/office-hour change needs only a server `git pull` — no recompile. The same
+  injection point is the seam for future RAG (e.g. retrieving Piazza posts).
 
 ## Layout
 
 | Path | What |
 |------|------|
-| `links.yaml` | Link destinations the classifier can route to (label → url + purpose). |
-| `facts.md` | Curated, hand-authored fact sheet that grounds the answerer. **Edit this to change what the helper knows.** |
-| `specs/` | The 3 PAW specs. `page_classifier.txt` has a `{{LINKS}}` placeholder; `answerer.txt` has `{{FACTS}}`. |
-| `compile.py` | Inlines `links.yaml`/`facts.md` into the specs, compiles them, writes `programs.json`. |
+| `pipeline.yaml` | The pipeline graph: domains, page→domain defaults, router, resilience flags, token budget. |
+| `pipeline.py` | The shared executor (used by both server and eval, so they never score differently). |
+| `links.yaml` / `course_links.yaml` | Link destinations each classifier can route to (label → url + purpose). |
+| `facts.md` | Hand-authored site fact sheet (baked into the site answerer). **Edit to change what the site helper knows.** |
+| `course_facts.py` | Renders sliced course facts from `_data/cs486_s26.yaml` (the RAG/context seam). |
+| `specs/` | PAW specs: `domain_router`, `page_classifier` (+`{{LINKS}}`), `answerer` (+`{{FACTS}}`/`{{LINK_REGISTRY}}`), `validator`, `course_classifier` (+`{{LINKS}}`), `course_answerer`. |
+| `compile.py` | Composes + compiles programs (incremental by default), writes `programs.json`. |
 | `programs.json` | Pinned compiled program IDs (committed; the server runs exactly these). |
-| `common.py` | Shared spec composition + label normalization (used by server and eval). |
-| `server/app.py` | FastAPI service: `POST /ask`, `POST /feedback`, `GET /health`. |
-| `bench/` + `eval.py` | Benchmark: auto-graded page routing + manually-graded freeform answers. |
+| `common.py` | Shared spec composition + link loading. |
+| `server/app.py` | FastAPI service: `POST /ask` (`{query, page}`), `POST /feedback`, `GET /health`. |
+| `bench/` + `eval.py` | Benchmark suites (auto-graded routing/factual + manually-graded freeform). |
 | `deploy/` | systemd unit, nginx vhost, and deploy steps for `helper.yuntiandeng.com`. |
 
-The browser widget is part of the static site, not this dir: `_includes/helper.html`,
-`js/helper.js`, `_sass/_helper.scss`, included in `_layouts/default.html`.
+The browser widget is part of the static site, not this dir: `_includes/helper.html`
+(sends `data-page`), `js/helper.js`, `_sass/_helper.scss`, included in `_layouts/default.html`.
+A page opts into a domain by setting `helper_page:` in its front matter (e.g. the course
+page sets `helper_page: "course:cs486_s26"`); everything else defaults to `site`.
 
 ## Workflow
 
 ```bash
 pip install -r server/requirements.txt --extra-index-url https://pypi.programasweights.com/simple/
 
-python compile.py        # compile the 3 programs -> programs.json
-python eval.py           # benchmark (writes bench/report.md for manual grading)
+python compile.py                 # compile any programs missing from programs.json
+python compile.py --all           # recompile everything
+python compile.py --only course_answerer --compiler paw-ft-bs48   # finetune one program
+python eval.py                    # all suites (writes bench/report.md for manual grading)
+python eval.py --suite domain course_pages course_questions       # a subset
 
 # run locally
 cd server && uvicorn app:app --port 8088
-curl -s localhost:8088/ask -H 'Content-Type: application/json' -d '{"query":"where is your cv"}'
+curl -s localhost:8088/ask -H 'Content-Type: application/json' \
+     -d '{"query":"when is chat 5 due","page":"course:cs486_s26"}'
 ```
 
-To change answers/links: edit `facts.md` or `links.yaml` (and `specs/` if needed),
-`python compile.py`, commit `programs.json`, then on the server `git pull` + restart
-(see `deploy/README.md`).
+To change answers/links: edit `facts.md` / `links.yaml` (site) or `_data/cs486_s26.yaml`
+(course content — no recompile needed) / `course_links.yaml` / the `specs/`, then
+`python compile.py` if a spec changed, commit `programs.json`, and on the server
+`git pull` + restart (see `deploy/README.md`).
+
+## Evaluation (dataset-first)
+
+Suites live in `bench/` and are the gate for every change:
+- `domain.yaml` — `(query, page) → domain`, incl. page-escape cases (auto-graded).
+- `pages.yaml` / `course_pages.yaml` — classifier link-vs-question routing (auto-graded).
+- `questions.yaml` — site freeform → `bench/report.md` for manual rubric grading.
+- `course_questions.yaml` — course freeform: factual cases auto-graded by `expected_any`/
+  `expected_all` (substrings cross-checked against `_data/cs486_s26.yaml`); open-ended +
+  must-decline cases → `bench/report.md` for manual rubric grading.
+
+`eval.py` also prints a token-budget check and per-node latency, and accepts
+`--reconsider` / `--no-backtrack` to ablate the resilience knobs in `pipeline.yaml`.
+
+## Adding a domain
+
+1. Add a `domains.<name>` block to `pipeline.yaml` (classifier, answerer, links, `facts_mode`).
+2. Write `specs/<classifier>.txt` and `specs/<answerer>.txt` (+ a links file if it routes).
+3. For runtime facts, add a provider to `pipeline.CONTEXT_PROVIDERS`.
+4. Map any page(s) to it in `page_defaults` and add escape cases to `bench/domain.yaml`.
+5. `python compile.py` then `python eval.py`.
 
 ## Benchmark results (default fast compiler `paw-4b-qwen3-0.6b`)
 

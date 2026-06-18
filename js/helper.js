@@ -12,6 +12,9 @@
   if (!root) return;
 
   var ENDPOINT = (root.dataset.endpoint || '').replace(/\/$/, '');
+  // Page key sent with each query so the router can apply a page prior.
+  var PAGE = root.dataset.page || 'site';
+  var IS_COURSE = /^course/.test(PAGE);
   var launch = root.querySelector('.paw-helper__launch');
   var overlay = root.querySelector('.paw-helper__overlay');
   var dialog = root.querySelector('.paw-helper__dialog');
@@ -70,8 +73,9 @@
 
   function renderQuickLinks() {
     results.innerHTML = '';
-    var hint = el('p', 'paw-helper__placeholder',
-      'Try: “where is your CV”, “what are you working on”, or “are you taking students?”');
+    var hint = el('p', 'paw-helper__placeholder', IS_COURSE
+      ? 'Try: “when is the next assignment due”, “how is the course graded”, or “where do I post questions?”'
+      : 'Try: “where is your CV”, “what are you working on”, or “are you taking students?”');
     results.appendChild(hint);
   }
 
@@ -185,7 +189,7 @@
     fetch(ENDPOINT + '/ask', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: q })
+      body: JSON.stringify({ query: q, page: PAGE })
     }).then(function (resp) {
       return resp.ok ? resp.json() : null;
     }).then(function (data) {
@@ -197,6 +201,12 @@
       setLoading(false);
       renderNone();
     });
+  }
+
+  // On the course page, frame the prompt around the course.
+  if (IS_COURSE) {
+    input.placeholder = 'Ask about CS 486/686 (deadlines, grading, slides)…';
+    launch.setAttribute('aria-label', 'Ask about CS 486/686');
   }
 
   // --- Events ---

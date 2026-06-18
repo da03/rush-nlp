@@ -1,0 +1,58 @@
+# Declarative config for the helper pipeline, shared by server/app.py and eval.py.
+# pipeline.py walks this graph; programs.json supplies the compiled IDs.
+#
+#   /ask {query, page}
+#     -> domain_router (page prior + PAW)  -> domain (site | course)
+#     -> <domain>.classifier               -> a link label or "question"
+#        - link label -> return the link (feedback label opens the form)
+#        - "question"  -> <domain>.answerer -> validator -> answer / fallback
+#
+# A domain is only "available" if its classifier + answerer IDs exist in
+# programs.json, so this file can describe the course domain before it is
+# compiled without breaking the live site (it just falls back to site).
+
+default_domain: site
+
+# Page key the widget sends -> default domain. The router only overrides this
+# when the query clearly belongs to another domain (escape cases).
+page_defaults:
+  site: site
+  "course:cs486_s26": course
+
+# Top-level redirect program (optional). Outputs: site | course | either.
+# "either" / unknown -> use the page default. Used only when >1 domain is available.
+domain_router: domain_router
+
+# Shared answer validator (checks the answer is on-topic for the question).
+validator: validator
+
+# Per-node-role generation budgets.
+max_tokens:
+  router: 4
+  classifier: 8
+  answerer: 200
+  validator: 4
+
+# Spec + input + output share this context window (PAW constraint). compile.py /
+# eval.py assert composed specs (and worst-case course context) stay under it.
+token_budget: 2048
+
+# Resilience policy (eval-driven; flip per the ablation numbers).
+resilience:
+  backtrack: true      # validator "no" or empty answer -> graceful fallback, never a wrong answer
+  reconsider: false    # if the routed domain declines, retry the page-default domain once
+  multi: false         # (Phase 3) fan out to sub-answerers and aggregate
+  aggregator: aggregator
+
+domains:
+  site:
+    classifier: page_classifier
+    links: links.yaml
+    answerer: answerer
+    facts_mode: baked        # facts compiled into the answerer spec (stable)
+  course:
+    classifier: course_classifier
+    links: course_links.yaml
+    answerer: course_answerer
+    facts_mode: runtime      # facts injected at inference from _data/cs486_s26.yaml (no recompile on edits)
+    context: course          # course_facts.retrieve(query) supplies the injected slice

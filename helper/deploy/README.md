@@ -56,6 +56,22 @@ sudo systemctl restart yuntiandeng-helper
 `programs.json` is committed, so the server always runs the exact pinned programs
 you compiled and tested. No compilation happens on the server.
 
+### Course content changes need no recompile
+
+The course assistant injects facts at inference time from `_data/cs486_s26.yaml`
+(rendered by `helper/course_facts.py`), so editing course deadlines, office hours,
+TAs, etc. is just:
+
+```bash
+# On your laptop: edit _data/cs486_s26.yaml (also updates the course web page), commit, push.
+# On the server:
+cd /opt/yuntiandeng-helper/repo && git pull
+sudo systemctl restart yuntiandeng-helper
+```
+
+Recompiling is only needed when a **spec** in `helper/specs/` changes (the model's
+behavior), not when course facts change.
+
 ## Notes
 
 - The first `/ask` after a restart downloads/loads the PAW base model (a few

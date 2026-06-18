@@ -1,0 +1,42 @@
+# Top-level domain-router benchmark: (query, page) -> expected domain.
+# Auto-graded. `page` is the page key the widget sends with each /ask:
+#   - site               -> the personal site (default everywhere except the course page)
+#   - course:cs486_s26   -> the CS 486/686 Spring 2026 course page
+# `expected` is the domain that should handle the query: site | course.
+#
+# The router starts from the page default and only overrides when the query
+# clearly belongs to another domain. The ESCAPE cases below (course page asking
+# about Yuntian personally; site page asking course logistics) are the whole
+# point of having a learned router on top of the page prior - they must override.
+#
+# IMPORTANT: queries are held out - paraphrases that should not appear verbatim
+# in specs/domain_router.txt, so the score reflects generalization.
+
+# --- Site page, site query (page default holds) ---
+- {query: "where is your cv", page: site, expected: site}
+- {query: "are you taking new students", page: site, expected: site}
+- {query: "what are you working on these days", page: site, expected: site}
+- {query: "where did you get your phd", page: site, expected: site}
+- {query: "how do I email you", page: site, expected: site}
+- {query: "what is neuralos", page: site, expected: site}
+
+# --- Course page, course query (page default holds) ---
+- {query: "when is chat 5 due", page: "course:cs486_s26", expected: course}
+- {query: "what's the piazza link", page: "course:cs486_s26", expected: course}
+- {query: "how is the course graded", page: "course:cs486_s26", expected: course}
+- {query: "who is the TA for assignment 1", page: "course:cs486_s26", expected: course}
+- {query: "where do I submit my assignment", page: "course:cs486_s26", expected: course}
+- {query: "when are office hours", page: "course:cs486_s26", expected: course}
+- {query: "what textbook do we use", page: "course:cs486_s26", expected: course}
+
+# --- ESCAPE: course page, but the query is about Yuntian personally -> site ---
+- {query: "are you taking phd students", page: "course:cs486_s26", expected: site}
+- {query: "where did you do your phd", page: "course:cs486_s26", expected: site}
+- {query: "what research do you work on", page: "course:cs486_s26", expected: site}
+- {query: "can I join your lab", page: "course:cs486_s26", expected: site}
+- {query: "where is your cv", page: "course:cs486_s26", expected: site}
+
+# --- ESCAPE: site page, but the query is about the course -> course ---
+- {query: "when is the cs486 final exam", page: site, expected: course}
+- {query: "cs486 piazza", page: site, expected: course}
+- {query: "what are the cs486 office hours", page: site, expected: course}

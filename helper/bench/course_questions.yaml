@@ -1,0 +1,114 @@
+# Course freeform-answer benchmark for the CS 486/686 (Spring 2026) answerer.
+# Mirrors bench/questions.yaml but adds AUTO-GRADED factual cases, because course
+# facts are structured (derived from _data/cs486_s26.yaml) and have objective answers.
+#
+# Grading mode per case:
+#   - AUTO  : has `expected_any` (pass if the answer contains ANY listed string)
+#             or `expected_all` (pass if it contains ALL listed strings).
+#   - MANUAL: has only `rubric`; the agent grades the generated answer in report.md
+#             as correct / acceptable / wrong against the rubric.
+#   - `expect_answerable: false` marks must-decline cases (not in the course data
+#     or personal/inappropriate); a good system declines rather than inventing.
+#
+# Every `expected_*` value below is cross-checked against _data/cs486_s26.yaml.
+# IMPORTANT: queries are held out (paraphrases not in specs/course_answerer.txt).
+
+# ============================ AUTO-GRADED (factual) ============================
+
+- query: "when is chat 5 due"
+  expected_any: ["Jun 18", "June 18"]            # chats[5]: due 2026-06-18
+
+- query: "when is the first programming assignment due"
+  expected_any: ["Jun 25", "June 25"]            # assignments[1]: due 2026-06-25 (extended)
+
+- query: "who handles assignment 1 questions"
+  expected_any: ["Dake Zhang", "Dake"]           # assignments[1].owner
+
+- query: "what room are the lectures in"
+  expected_any: ["MC 4021"]                       # sections[*].room
+
+- query: "how many chat assignments are there in total"
+  expected_any: ["10", "ten"]                     # chats: 10 entries / "10, 2% each"
+
+- query: "how many programming assignments are there"
+  expected_any: ["3", "three"]                    # assignments: 3 entries
+
+- query: "what is the main textbook"
+  expected_all: ["Poole", "Mackworth"]            # readings.primary.authors
+
+- query: "when is the final exam"
+  expected_any: ["Aug 7", "August 7"]             # final_exam.window: "Aug 7 - 20, 2026"
+
+- query: "what is the instructor's email"
+  expected_any: ["yuntian@uwaterloo.ca"]          # course.instructor.email
+
+- query: "what platform do we use for the chat assignments"
+  expected_any: ["Chrysalis"]                     # chats note / links.chrysalis
+
+- query: "what percent of the grade is the final exam for cs486"
+  expected_any: ["50%"]                           # assessment.cs486 final 50%
+
+- query: "what are the course start and end dates"
+  expected_all: ["May 11", "Aug 5"]               # course.dates
+
+- query: "which TA has in-person office hours and where"
+  expected_all: ["Bihui", "DC 2555"]              # office_hours Friday in-person
+
+- query: "what time does the first section meet"
+  expected_any: ["1:00 PM", "1:00", "1 PM"]       # sections[0].time TTh 1:00-2:20
+
+# ============================ MANUAL (rubric) =================================
+
+- query: "how is the course graded"
+  rubric: "CS486: assignments 30%, chat assignments 20%, written final 50% (must pass to pass the course), optional project +10% bonus. (CS686 differs.) Acceptable to give the CS486 breakdown."
+  expect_answerable: true
+
+- query: "what's the difference between cs486 and cs686"
+  rubric: "CS686 has a project (30%) and a 40% final; CS486 has chat assignments (20%) and a 50% final plus an optional project bonus. Both have the 3 assignments (30%)."
+  expect_answerable: true
+
+- query: "is the project mandatory"
+  rubric: "For CS486 the project is optional (+10% bonus); for CS686 it is required (30%). Either framing acceptable if grounded."
+  expect_answerable: true
+
+- query: "what topics does the course cover"
+  rubric: "Search; reasoning under uncertainty (probability, Bayesian networks, HMMs); decision making (decision theory, MDPs, reinforcement learning); machine learning and deep learning (incl. neural networks). Any reasonable subset of the modules."
+  expect_answerable: true
+
+- query: "how do office hours work"
+  rubric: "Several TAs hold weekly office hours (mostly Zoom, one in person on Friday in DC 2555), starting the week of May 18. Listing a couple of slots/TAs is fine; must stay grounded."
+  expect_answerable: true
+
+- query: "who should I ask about assignment 1"
+  rubric: "Post on Piazza addressed to Dake Zhang (or email d346zhan@uwaterloo.ca). Should point to Piazza and/or Dake Zhang."
+  expect_answerable: true
+
+- query: "can I do the project in a group"
+  rubric: "CS686 project may be done individually or in groups of up to 3. Should mention groups of up to 3."
+  expect_answerable: true
+
+- query: "what happens if I fail the final"
+  rubric: "The written final must be passed to pass the course (CS486). Should convey the must-pass condition; must not invent a numeric threshold."
+  expect_answerable: true
+
+- query: "what reading material is recommended"
+  rubric: "Primary: Poole & Mackworth, Artificial Intelligence: Foundations of Computational Agents (2nd ed, online). Secondary: Russell & Norvig (AIMA), Goodfellow/Bengio/Courville (Deep Learning), Sutton & Barto (RL). Any grounded subset."
+  expect_answerable: true
+
+# ===================== MANUAL - should decline gracefully =====================
+
+- query: "what's the late submission policy"
+  rubric: "Not stated in the course data (only one-off deadline extensions exist). Should decline / say it doesn't have that info. Must NOT invent a penalty."
+  expect_answerable: false
+
+- query: "will there be a midterm"
+  rubric: "Only a final exam is listed; no midterm in the data. Should decline or say there's no midterm in the schedule; must NOT invent a midterm date."
+  expect_answerable: false
+
+- query: "what questions will be on the final exam"
+  rubric: "Not available; should decline. Must NOT fabricate exam content."
+  expect_answerable: false
+
+- query: "what's my current grade in the course"
+  rubric: "Personal/not available to the helper; should decline gracefully."
+  expect_answerable: false

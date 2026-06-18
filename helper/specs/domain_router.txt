@@ -1,0 +1,57 @@
+Decide which assistant should handle a visitor's message on Yuntian Deng's website. Return ONLY one word: site, course, or either.
+
+- site: the message is about Yuntian Deng personally or his research/career - his CV, contact details, papers, research projects (ProgramAsWeights, NeuralOS, WildChat), education, awards, profiles, or about him supervising/advising/recruiting graduate students for his research group or lab.
+- course: the message is about the CS 486/686 course (Introduction to Artificial Intelligence) - its lectures, slides, schedule, chat assignments, programming assignments, deadlines, exams, grading, textbook, the Piazza/Chrysalis/LEARN platforms, the course TAs, or course office hours.
+- either: the message is generic and could reasonably apply to either, so the page context should decide.
+
+Rules:
+- Yuntian supervising, advising, or recruiting students for his RESEARCH GROUP or lab (PhD, postdoc, internships, joining the lab) is site, NOT course.
+- The COURSE's own students, TAs, assignments, deadlines, or staff are course.
+- If the message names the course or coursework (cs486, cs686, "the course", "this class", "lecture", "assignment", "chat", "exam", "syllabus") it is course.
+- If it names Yuntian, his research, or his career it is site.
+- Use either only when it is genuinely ambiguous without knowing which page the visitor is on.
+
+Input: do you have a resume I can download
+Output: site
+
+Input: tell me about your research direction
+Output: site
+
+Input: which school did you get your doctorate from
+Output: site
+
+Input: are you recruiting graduate students
+Output: site
+
+Input: can I do a phd with you
+Output: site
+
+Input: i'd like to join your research group
+Output: site
+
+Input: is your lab taking new members
+Output: site
+
+Input: when is the next programming assignment due
+Output: course
+
+Input: where are the lecture slides
+Output: course
+
+Input: who are the teaching assistants
+Output: course
+
+Input: how much is the final exam worth
+Output: course
+
+Input: link to the course forum
+Output: course
+
+Input: what's covered in this class
+Output: course
+
+Input: how can I get in touch
+Output: either
+
+Input: what are the hours
+Output: either

@@ -15,17 +15,35 @@ import yaml
 HELPER_DIR = pathlib.Path(__file__).resolve().parent
 SPECS_DIR = HELPER_DIR / "specs"
 LINKS_PATH = HELPER_DIR / "links.yaml"
+COURSE_LINKS_PATH = HELPER_DIR / "course_links.yaml"
 FACTS_PATH = HELPER_DIR / "facts.md"
 PROGRAMS_PATH = HELPER_DIR / "programs.json"
 
 # Spec basenames in helper/specs/, mapped to the pipeline role.
 SPEC_NAMES = ["page_classifier", "answerer", "validator"]
 
+# Which links file feeds a spec's {{LINKS}} placeholder (default: site links).
+SPEC_LINK_SOURCE = {
+    "page_classifier": "site",
+    "answerer": "site",
+    "course_classifier": "course",
+}
+
 
 def load_links() -> dict:
     """label -> {url|kind, label, description, purpose}."""
     with open(LINKS_PATH, encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def load_course_links() -> dict:
+    with open(COURSE_LINKS_PATH, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def links_for_spec(name: str) -> dict:
+    """The links dict a given spec's {{LINKS}} should be filled from."""
+    return load_course_links() if SPEC_LINK_SOURCE.get(name) == "course" else load_links()
 
 
 def load_programs() -> dict:
@@ -82,13 +100,17 @@ def normalize_label(raw: str, links: dict | None = None) -> str:
 
 
 def compose_spec(name: str, links: dict | None = None) -> str:
-    """Read a spec template and inline {{LINKS}} / {{LINK_REGISTRY}} / {{FACTS}}."""
+    """Read a spec template and inline {{LINKS}} / {{LINK_REGISTRY}} / {{FACTS}}.
+
+    The {{LINKS}} placeholder is filled from the spec's link source (site links by
+    default, course links for course_classifier); pass `links` to override.
+    """
     text = (SPECS_DIR / f"{name}.txt").read_text(encoding="utf-8")
-    links = links or load_links()
+    spec_links = links or links_for_spec(name)
     if "{{LINKS}}" in text:
-        text = text.replace("{{LINKS}}", build_links_block(links))
+        text = text.replace("{{LINKS}}", build_links_block(spec_links))
     if "{{LINK_REGISTRY}}" in text:
-        text = text.replace("{{LINK_REGISTRY}}", build_link_registry(links))
+        text = text.replace("{{LINK_REGISTRY}}", build_link_registry(spec_links))
     if "{{FACTS}}" in text:
         text = text.replace("{{FACTS}}", load_facts())
     return text

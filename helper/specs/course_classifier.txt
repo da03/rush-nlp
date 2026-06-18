@@ -1,0 +1,70 @@
+Classify a message from a student on the CS 486/686 (Introduction to Artificial Intelligence, Spring 2026) course website. Decide whether it is best handled by sending the student to a specific course link, or whether it is a question that needs a written answer from the course information.
+
+Return ONLY one of the labels below, nothing else.
+
+Labels and when to use each:
+{{LINKS}}
+- question: any request for information that should be answered in words rather than by opening a link (deadlines, dates, grading, policies, who the TAs are, what topics are covered, or anything that does not clearly match a link above).
+
+Rules:
+- "When is X due", "how is the course graded", "who is the TA", "what is on the exam", "what topics" are question, NOT a link.
+- Only use a platform link (piazza, chrysalis, learn) when the student wants to open or go to that site, not when they ask a factual question whose answer happens to involve it.
+- Use slides when the student wants lecture slides, notes, or the schedule of decks.
+- When unsure, prefer question.
+
+Input: open the course discussion board
+Output: piazza
+
+Input: i need to post a question for the class
+Output: piazza
+
+Input: send me the piazza url
+Output: piazza
+
+Input: go to the chat assignment website
+Output: chrysalis
+
+Input: where do I do the chats
+Output: chrysalis
+
+Input: open learn for me
+Output: learn
+
+Input: where do I hand in my code
+Output: learn
+
+Input: where do I get the assignment starter files
+Output: learn
+
+Input: download the calendar file
+Output: calendar
+
+Input: subscribe to the course schedule
+Output: calendar
+
+Input: i want the ics file
+Output: calendar
+
+Input: slides from the markov decision process lecture
+Output: slides
+
+Input: where are the lecture decks
+Output: slides
+
+Input: when is the next chat assignment due
+Output: question
+
+Input: how is the final grade calculated
+Output: question
+
+Input: who should I contact about the first assignment
+Output: question
+
+Input: which textbook do we use
+Output: question
+
+Input: when is the exam
+Output: question
+
+Input: what are the office hours
+Output: question

@@ -26,42 +26,19 @@ import json
 import os
 import pathlib
 import sys
-import threading
 
-import programasweights as paw
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-# Make helper/common.py importable when run from helper/server/.
+# Make helper/common.py + pipeline.py importable when run from helper/server/.
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent))
 import common  # noqa: E402
+import pipeline  # noqa: E402
 
-# --- Token budgets per stage ---
-PC_MAX_TOKENS = 8       # one label
-ANS_MAX_TOKENS = 200    # 1-2 sentences; headroom for multi-link list answers
-VAL_MAX_TOKENS = 4      # yes / no
-
-LINKS = common.load_links()
-PROGRAMS = common.load_programs()["programs"]
-
-_lock = threading.Lock()
-_fns: dict[str, object] = {}
-
-
-def _fn(name: str):
-    if name not in _fns:
-        _fns[name] = paw.function(PROGRAMS[name])
-    return _fns[name]
-
-
-def _infer(name: str, text: str, max_tokens: int) -> str:
-    """Serialized, error-swallowing inference. Returns "" on any failure."""
-    try:
-        with _lock:
-            return _fn(name)(text[:2000], max_tokens=max_tokens, temperature=0.0).strip()
-    except Exception:
-        return ""
+# Single shared executor (one model instance; inference is serialized inside it).
+PIPE = pipeline.Pipeline()
+PROGRAMS = PIPE.programs
 
 
 app = FastAPI(title="yuntiandeng.com helper", docs_url=None, redoc_url=None)
@@ -84,21 +61,24 @@ app.add_middleware(
 QUERY_LOG = os.environ.get("HELPER_QUERY_LOG", str(common.HELPER_DIR / "queries.jsonl"))
 
 
-def _log_query(query: str, route: str, result: dict, verdict: str | None = None) -> None:
+def _log_query(query: str, page: str, meta: dict) -> None:
     """Append one JSONL line per question so we can review and polish on real usage.
 
     Deliberately stores no IP/identifier (public site, minimize PII). The query
     text is logged because that is the whole point of the review loop; keep the
     file private on the server. Never raises.
     """
+    result = meta.get("result", {})
     rtype = result.get("type")
     record = {
         "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "query": query,
-        "route": route,                                  # classifier label or "question"
+        "page": page,
+        "domain": meta.get("domain"),                    # site / course (after routing)
+        "route": meta.get("route"),                      # classifier label or "question"
         "result_type": rtype,                            # link / answer / feedback / none
         "answer": result.get("text") or result.get("label"),
-        "validator": verdict,                            # yes/no for the freeform path
+        "validator": meta.get("verdict"),                # yes/no for the freeform path
         "fallback": rtype == "none",                     # the polish targets
     }
     try:
@@ -110,6 +90,9 @@ def _log_query(query: str, route: str, result: dict, verdict: str | None = None)
 
 class AskRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=500)
+    # Page key the widget sends so the router can apply a page prior. Defaults to
+    # the personal site when absent (backward compatible).
+    page: str = Field("site", max_length=100)
 
 
 @app.post("/ask")
@@ -117,32 +100,9 @@ def ask(req: AskRequest) -> dict:
     query = req.query.strip()
     if len(query) < 3:
         return {"type": "none"}
-
-    route = common.normalize_label(_infer("page_classifier", query, PC_MAX_TOKENS), LINKS)
-    verdict = None
-
-    if route != "question" and route in LINKS:
-        info = LINKS[route]
-        if info.get("kind") == "feedback":
-            result = {"type": "feedback", "label": info["label"], "description": info.get("description", "")}
-        else:
-            result = {
-                "type": "link",
-                "label": info["label"],
-                "url": info["url"],
-                "description": info.get("description", ""),
-            }
-    else:
-        # Freeform question path.
-        answer = _infer("answerer", query, ANS_MAX_TOKENS)
-        if len(answer) < 2:
-            result = {"type": "none"}
-        else:
-            verdict = _infer("validator", f"Q: {query} A: {answer}", VAL_MAX_TOKENS).lower()
-            result = {"type": "answer", "text": answer} if verdict.startswith("yes") else {"type": "none"}
-
-    _log_query(query, route, result, verdict)
-    return result
+    meta = PIPE.run(query, page=req.page or "site")
+    _log_query(query, req.page or "site", meta)
+    return meta["result"]
 
 
 class FeedbackRequest(BaseModel):

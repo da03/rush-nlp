@@ -1,0 +1,168 @@
+"""Generic, config-driven PAW pipeline executor (shared by server + eval).
+
+Reads pipeline.yaml (the graph) and programs.json (compiled IDs) and runs:
+
+    domain_router (page prior + PAW) -> <domain>.classifier
+        -> link label  -> link / feedback result
+        -> "question"  -> <domain>.answerer -> validator -> answer / fallback
+
+Course answers inject facts at inference time via course_facts.retrieve (the same
+seam a future Piazza RAG retriever plugs into). Resilience knobs (backtrack /
+reconsider / multi) live in pipeline.yaml so the eval ablation runner picks them.
+
+Keeping one executor for both the server and the benchmark means they can never
+score differently from what ships.
+"""
+
+import threading
+import time
+
+import yaml
+
+import common
+import course_facts
+
+PIPELINE_PATH = common.HELPER_DIR / "pipeline.yaml"
+
+
+def load_config(path=None) -> dict:
+    with open(path or PIPELINE_PATH, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def _load_links(filename: str) -> dict:
+    """label -> info dict, for either links.yaml or course_links.yaml."""
+    with open(common.HELPER_DIR / filename, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def normalize_label(raw: str, valid: set[str]) -> str:
+    """First token of the model output, mapped to a known label or 'question'.
+
+    Unknown/malformed output -> 'question' (safer than a wrong link). Shared by
+    every domain so the server and benchmark score identically.
+    """
+    s = raw.strip().lower().strip("\"'").strip(".")
+    parts = s.split()
+    s = parts[0] if parts else ""
+    return s if (s in valid or s == "question") else "question"
+
+
+# Course context provider registry (the RAG seam). Add retrievers here.
+CONTEXT_PROVIDERS = {
+    "course": course_facts.retrieve,
+}
+
+
+class Pipeline:
+    def __init__(self, programs: dict | None = None, config: dict | None = None):
+        self.cfg = config or load_config()
+        self.programs = programs if programs is not None else common.load_programs()["programs"]
+        self.mt = self.cfg["max_tokens"]
+        self.resilience = self.cfg.get("resilience", {})
+        self.links = {d: _load_links(spec["links"]) for d, spec in self.cfg["domains"].items()}
+        # A domain is usable only if its classifier + answerer are compiled.
+        self.available = [
+            d for d, spec in self.cfg["domains"].items()
+            if spec["classifier"] in self.programs and spec["answerer"] in self.programs
+        ]
+        self._fns: dict[str, object] = {}
+        self._lock = threading.Lock()
+        self.timings: list[tuple[str, float]] = []  # (node, seconds); eval reads/clears
+
+    # --- inference ---------------------------------------------------------
+    def _fn(self, name: str):
+        import programasweights as paw
+        if name not in self._fns:
+            self._fns[name] = paw.function(self.programs[name])
+        return self._fns[name]
+
+    def _infer(self, name: str, text: str, max_tokens: int) -> str:
+        """Serialized, error-swallowing inference. Returns "" on any failure."""
+        t = time.time()
+        try:
+            with self._lock:
+                out = self._fn(name)(text[:4000], max_tokens=max_tokens, temperature=0.0).strip()
+        except Exception:
+            out = ""
+        self.timings.append((name, time.time() - t))
+        return out
+
+    # --- routing -----------------------------------------------------------
+    def resolve_domain(self, query: str, page: str) -> str:
+        default = self.cfg["page_defaults"].get(page, self.cfg["default_domain"])
+        if default not in self.available:
+            default = self.cfg["default_domain"] if self.cfg["default_domain"] in self.available else (
+                self.available[0] if self.available else self.cfg["default_domain"])
+        router = self.cfg.get("domain_router")
+        if router and router in self.programs and len(self.available) > 1:
+            r = normalize_label(self._infer(router, query, self.mt["router"]), set(self.available))
+            # 'either'/unknown -> page default; a confident domain overrides it.
+            if r in self.available:
+                return r
+        return default
+
+    # --- node-level helpers (reused by the executor and the benchmark) -----
+    def classify(self, domain: str, query: str) -> str:
+        """Run a domain's classifier; returns a link label or 'question'."""
+        spec = self.cfg["domains"][domain]
+        raw = self._infer(spec["classifier"], query, self.mt["classifier"])
+        return normalize_label(raw, set(self.links[domain]))
+
+    def _answer_input(self, spec: dict, query: str) -> str:
+        """Answerer input: bare query (baked facts) or facts+question (runtime/RAG)."""
+        if spec.get("facts_mode") == "runtime":
+            ctx = CONTEXT_PROVIDERS[spec["context"]](query)
+            return f"Course facts:\n{ctx}\n\nQuestion: {query}"
+        return query
+
+    def freeform(self, domain: str, query: str) -> tuple[str, str]:
+        """Run a domain's answerer + validator; returns (answer, verdict)."""
+        spec = self.cfg["domains"][domain]
+        answer = self._infer(spec["answerer"], self._answer_input(spec, query), self.mt["answerer"])
+        verdict = ""
+        if len(answer) >= 2:
+            verdict = self._infer(self.cfg["validator"], f"Q: {query} A: {answer}", self.mt["validator"]).lower()
+        return answer, verdict
+
+    # --- per-domain classify -> link | answer -> validate ------------------
+    def _run_domain(self, domain: str, query: str) -> dict:
+        links = self.links[domain]
+        label = self.classify(domain, query)
+
+        if label != "question" and label in links:
+            info = links[label]
+            if info.get("kind") == "feedback":
+                res = {"type": "feedback", "label": info["label"], "description": info.get("description", "")}
+            else:
+                res = {"type": "link", "label": info["label"], "url": info["url"],
+                       "description": info.get("description", "")}
+            return {"result": res, "domain": domain, "route": label, "verdict": None}
+
+        # Freeform answer path.
+        answer, verdict = self.freeform(domain, query)
+        if len(answer) < 2:
+            res = {"type": "none"}
+        elif not self.resilience.get("backtrack", True):
+            res = {"type": "answer", "text": answer}
+        else:
+            res = {"type": "answer", "text": answer} if verdict.startswith("yes") else {"type": "none"}
+        return {"result": res, "domain": domain, "route": "question", "verdict": verdict or None}
+
+    # --- public API --------------------------------------------------------
+    def run(self, query: str, page: str = "site") -> dict:
+        """Full result with meta: {result, domain, route, verdict}."""
+        q = (query or "").strip()
+        if len(q) < 3:
+            return {"result": {"type": "none"}, "domain": None, "route": None, "verdict": None}
+        domain = self.resolve_domain(q, page)
+        out = self._run_domain(domain, q)
+        # Reconsider: if the routed domain declined, try the page-default domain once.
+        if out["result"].get("type") == "none" and self.resilience.get("reconsider"):
+            default = self.cfg["page_defaults"].get(page, self.cfg["default_domain"])
+            if default in self.available and default != domain:
+                alt = self._run_domain(default, q)
+                if alt["result"].get("type") != "none":
+                    alt["reconsidered_from"] = domain
+                    out = alt
+        return out

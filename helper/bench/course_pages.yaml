@@ -1,0 +1,46 @@
+# Course page-classifier benchmark: query -> expected output (a course link
+# label or "question"). Auto-graded by the harness, exactly like bench/pages.yaml
+# but for the CS 486/686 (Spring 2026) domain.
+#
+# Course link labels (destinations the course classifier may route to):
+#   piazza    - the course Q&A forum (ask/answer questions, announcements)
+#   chrysalis - the chat-assignment platform
+#   learn     - UW LEARN (assignment release + submission, grades)
+#   calendar  - the downloadable .ics course calendar
+#   slides    - lecture slides/notes decks
+#   question  - anything answered in words from course facts (deadlines, policy, staff, content)
+#
+# The link-vs-question split is the most important decision here: factual course
+# questions (deadlines, who-is-the-TA, grading) must NOT route to a link.
+#
+# IMPORTANT: queries are held out (paraphrases not in specs/course_classifier.txt).
+
+# --- piazza ---
+- {query: "what's the piazza link", expected: piazza}
+- {query: "where do I post questions for the class", expected: piazza}
+- {query: "course discussion forum", expected: piazza}
+
+# --- chrysalis ---
+- {query: "open chrysalis", expected: chrysalis}
+- {query: "link to the chat assignment platform", expected: chrysalis}
+- {query: "where do I do the chat assignments", expected: chrysalis}
+
+# --- learn ---
+- {query: "take me to LEARN", expected: learn}
+- {query: "where do I submit my assignment", expected: learn}
+- {query: "where can I download the assignment files", expected: learn}
+
+# --- calendar ---
+- {query: "add the course schedule to my calendar", expected: calendar}
+- {query: "ics file for the course", expected: calendar}
+
+# --- slides ---
+- {query: "slides for lecture 10", expected: slides}
+- {query: "lecture notes for hidden markov models", expected: slides}
+
+# --- questions (must NOT route to a link) ---
+- {query: "when is chat 5 due", expected: question}
+- {query: "how is the course graded", expected: question}
+- {query: "who is the TA for assignment 1", expected: question}
+- {query: "what's the textbook for the course", expected: question}
+- {query: "when is the final exam", expected: question}
