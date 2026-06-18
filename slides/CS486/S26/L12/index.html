@@ -741,12 +741,26 @@
   </div>
 </section>
 
+<!-- 20b. Diagnosis DN: the numbers -->
+<section>
+  <h2>The diagnosis network: the numbers</h2>
+  <p style="font-size: 0.7em; color: #6b7280; text-align: center; margin: 0.1em 0;">\(D\) disease &middot; \(S\) symptom &middot; \(T\) test <em>(decision)</em> &middot; \(TR\) test result &middot; \(Tr\) treatment <em>(decision)</em> &middot; \(O\) outcome. All binary; \(1=\)yes, \(0=\)no.</p>
+  <div class="cpt-grid">
+    <table class="factor-table"><caption>\(f_1(D)\)</caption><thead><tr><th>\(D\)</th><th>val</th></tr></thead><tbody><tr><td>1</td><td>0.79</td></tr><tr><td>0</td><td>0.21</td></tr></tbody></table>
+    <table class="factor-table"><caption>\(f_2(D,S)\)</caption><thead><tr><th>\(D\)</th><th>\(S\)</th><th>val</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>0.89</td></tr><tr><td>1</td><td>0</td><td>0.11</td></tr><tr><td>0</td><td>1</td><td>0.27</td></tr><tr><td>0</td><td>0</td><td>0.73</td></tr></tbody></table>
+    <table class="factor-table"><caption>\(f_5(T,O)\) &mdash; utility</caption><thead><tr><th>\(T\)</th><th>\(O\)</th><th>val</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>900</td></tr><tr><td>1</td><td>0</td><td>600</td></tr><tr><td>0</td><td>1</td><td>1000</td></tr><tr><td>0</td><td>0</td><td>700</td></tr></tbody></table>
+    <table class="factor-table"><caption>\(f_3(D,T,TR)\)</caption><thead><tr><th>\(D\)</th><th>\(T\)</th><th>\(TR\)</th><th>val</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>1</td><td>0.22</td></tr><tr><td>1</td><td>1</td><td>0</td><td>0.78</td></tr><tr><td>1</td><td>0</td><td>1</td><td>0.55</td></tr><tr><td>1</td><td>0</td><td>0</td><td>0.45</td></tr><tr><td>0</td><td>1</td><td>1</td><td>0.91</td></tr><tr><td>0</td><td>1</td><td>0</td><td>0.09</td></tr><tr><td>0</td><td>0</td><td>1</td><td>0.53</td></tr><tr><td>0</td><td>0</td><td>0</td><td>0.47</td></tr></tbody></table>
+    <table class="factor-table"><caption>\(f_4(D,Tr,O)\)</caption><thead><tr><th>\(D\)</th><th>\(Tr\)</th><th>\(O\)</th><th>val</th></tr></thead><tbody><tr><td>1</td><td>1</td><td>1</td><td>0.59</td></tr><tr><td>1</td><td>1</td><td>0</td><td>0.41</td></tr><tr><td>1</td><td>0</td><td>1</td><td>0.16</td></tr><tr><td>1</td><td>0</td><td>0</td><td>0.84</td></tr><tr><td>0</td><td>1</td><td>1</td><td>0.93</td></tr><tr><td>0</td><td>1</td><td>0</td><td>0.07</td></tr><tr><td>0</td><td>0</td><td>1</td><td>0.65</td></tr><tr><td>0</td><td>0</td><td>0</td><td>0.35</td></tr></tbody></table>
+  </div>
+  <p style="font-size: 0.68em; color: #6b7280; text-align: center; margin-top: 0.2em;">With these, every factor below is reproducible. <em>(Example 9.12, Poole &amp; Mackworth.)</em></p>
+</section>
+
 <!-- 21. VEA walkthrough -->
 <section>
   <h2>VEA on the medical DN: factor flow</h2>
   <p style="font-size: 0.82em; margin: 0.2em 0;">Eliminate inner-most chance vars, then maximize the innermost decision, repeat:</p>
-  <p style="font-size: 0.82em; color: #b45309; font-style: italic; margin: 0.1em 0 0.35em;">We won't trace every step in class &mdash; it's just a tedious application of the same eliminate-then-maximize method. Walk through the full flow on your own after class.</p>
-  <div class="vea-flow">
+  <p style="font-size: 0.8em; color: #6b7280; font-style: italic; margin: 0.1em 0 0.35em;">The arithmetic is tedious but mechanical &mdash; with the CPTs above you can reproduce every factor. The flow:</p>
+  <div class="vea-flow" style="font-size: 0.8em;">
     <div class="vea-step start">\(f_4(D,Tr,O)\)<br>\(f_5(T,O)\)<span class="op">init</span></div>
     <div class="vea-arrow">&rarr;</div>
     <div class="vea-step">\(\sum_O\)<span class="op">drop O</span></div>
@@ -757,7 +771,7 @@
     <div class="vea-arrow">&rarr;</div>
     <div class="vea-step">\(f_9(S,T,TR,Tr)\)</div>
   </div>
-  <div class="vea-flow" style="margin-top: 0.1em;">
+  <div class="vea-flow" style="margin-top: 0.1em; font-size: 0.8em;">
     <div class="vea-step">\(\max_{Tr}\)<span class="op">policy for Tr</span></div>
     <div class="vea-arrow">&rarr;</div>
     <div class="vea-step">\(f_{10}(S,T,TR)\)</div>
