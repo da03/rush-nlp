@@ -57,6 +57,15 @@
 - query: "what time does the first section meet"
   expected_any: ["1:00 PM", "1:00", "1 PM"]       # sections[0].time TTh 1:00-2:20
 
+# Date-relative: the answer key is recomputed from today's date each run (the
+# PAW function is stateless, so course_facts injects today's date + the computed
+# next item). expected_next = which list to compute the next due date from.
+- query: "when is the next programming assignment due"
+  expected_next: assignments
+
+- query: "when is the next chat assignment due"
+  expected_next: chats
+
 # ============================ MANUAL (rubric) =================================
 
 - query: "how is the course graded"

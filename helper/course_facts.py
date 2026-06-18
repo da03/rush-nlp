@@ -31,6 +31,27 @@ def _d(value) -> str:
     return str(value)
 
 
+def _as_date(value):
+    if isinstance(value, datetime.datetime):
+        return value.date()
+    return value  # YAML parses bare dates to datetime.date already
+
+
+def _today() -> datetime.date:
+    return datetime.date.today()
+
+
+def _next_due(items: list, today: datetime.date):
+    """The soonest item whose due date is today or later (None if all passed).
+
+    Computed in Python because the PAW function is stateless and never sees the
+    current date - so 'next/upcoming' must be resolved deterministically here and
+    injected, not left to the model to reason about.
+    """
+    upcoming = [it for it in items if _as_date(it["due"]) >= today]
+    return min(upcoming, key=lambda it: _as_date(it["due"])) if upcoming else None
+
+
 # --- section renderers: each returns a short markdown block -------------------
 
 def _overview(c: dict) -> str:
@@ -38,6 +59,7 @@ def _overview(c: dict) -> str:
     secs = "; ".join(f"Section {s['id']} meets {s['time']} in room {s['room']}" for s in co["sections"])
     return (
         f"## Overview\n"
+        f"- Today's date: {_d(_today())}.\n"
         f"- {co['code']} {co['title']} ({co['term']}), University of Waterloo.\n"
         f"- Instructor: {co['instructor']['name']} ({co['instructor']['email']}).\n"
         f"- Class dates: {co['dates']}.\n"
@@ -76,8 +98,12 @@ def _office_hours(c: dict) -> str:
 def _deadlines(c: dict) -> str:
     # Due date FIRST (what students ask for); release date in parentheses. Notes
     # (one-off extension reasons) live on the web page. Omitting notes keeps the
-    # injected context within the ~2048-token budget.
+    # injected context within the ~2048-token budget. The NEXT upcoming chat is
+    # precomputed (the model can't, since it has no current date).
     rows = ["## Chat assignments (10 total, 2% each, on Chrysalis)"]
+    nxt = _next_due(c["chats"], _today())
+    rows.append(f"- Next chat due: Chat {nxt['num']} on {_d(nxt['due'])}." if nxt
+                else "- All chat deadlines have passed.")
     for ch in c["chats"]:
         rows.append(f"- Chat {ch['num']}: due {_d(ch['due'])} (released {_d(ch['out'])})")
     return "\n".join(rows)
@@ -85,6 +111,9 @@ def _deadlines(c: dict) -> str:
 
 def _assignments(c: dict) -> str:
     rows = ["## Programming assignments (3 total, 30% total, on LEARN)"]
+    nxt = _next_due(c["assignments"], _today())
+    rows.append(f"- Next assignment due: Assignment {nxt['num']} on {_d(nxt['due'])}." if nxt
+                else "- All assignment deadlines have passed.")
     for a in c["assignments"]:
         owner = a.get("owner") or "TBA"
         oe = f" ({a['owner_email']})" if a.get("owner_email") else ""
@@ -156,8 +185,10 @@ _SECTION_CUES: dict[str, tuple[str, ...]] = {
     # "what is the instructor's email" (it would distract with a TA's email).
     "staff": ("ta", "tas", "teaching assistant", "who", "contact"),
     "office_hours": ("office hour", "office-hour", "oh", "zoom", "help", "in person", "in-person", "when can i meet"),
-    "deadlines": ("chat", "deadline", "due", "when is", "extend", "chrysalis"),
-    "assignments": ("assignment", "homework", "hw", "submit", "submission", "learn", "project", "starter"),
+    "deadlines": ("chat", "deadline", "due", "when is", "extend", "chrysalis",
+                  "next", "upcoming", "soon", "coming up", "this week", "today"),
+    "assignments": ("assignment", "homework", "hw", "submit", "submission", "learn", "project", "starter",
+                    "next", "upcoming", "soon", "coming up", "this week", "today"),
     "grading": ("grade", "grading", "weight", "percent", "%", "worth", "exam", "final", "pass", "mark", "marks", "project", "bonus", "cs686", "cs486", "686", "486"),
     "readings": ("textbook", "book", "read", "reading", "reference", "poole", "mackworth"),
     # Note: bare "lecture(s)" is excluded - it appears in logistics questions like

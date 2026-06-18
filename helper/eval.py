@@ -106,22 +106,30 @@ def eval_classifier(p: pipeline.Pipeline, domain: str, suite: str) -> None:
 def eval_course_factual(p: pipeline.Pipeline) -> list[str]:
     """Auto-grade the factual course cases; return report lines for the manual ones."""
     cases = _load("course_questions.yaml")
-    auto = [c for c in cases if "expected_any" in c or "expected_all" in c]
+    auto_keys = ("expected_any", "expected_all", "expected_next")
+    auto = [c for c in cases if any(k in c for k in auto_keys)]
     decline = [c for c in cases if c.get("expect_answerable") is False]
-    manual = [c for c in cases if "expected_any" not in c and "expected_all" not in c
+    manual = [c for c in cases if not any(k in c for k in auto_keys)
               and c.get("expect_answerable") is not False]
 
     a_correct = 0
     a_fail = []
     for c in auto:
         ans, _ = p.freeform("course", c["query"])
-        if "expected_all" in c:
-            ok = _contains(ans, c["expected_all"], "all")
+        if "expected_next" in c:
+            # Recompute the answer key from today's date so the test never rots.
+            data = course_facts.load_course_data()
+            item = course_facts._next_due(data[c["expected_next"]], course_facts._today())
+            due = course_facts._as_date(item["due"])
+            needle = [f"{due.strftime('%b')} {due.day}"]
+            ok, expected = _contains(ans, needle, "any"), needle
+        elif "expected_all" in c:
+            ok, expected = _contains(ans, c["expected_all"], "all"), c["expected_all"]
         else:
-            ok = _contains(ans, c["expected_any"], "any")
+            ok, expected = _contains(ans, c["expected_any"], "any"), c["expected_any"]
         a_correct += ok
         if not ok:
-            a_fail.append((c["query"], c.get("expected_all") or c.get("expected_any"), ans))
+            a_fail.append((c["query"], expected, ans))
 
     d_correct = 0
     d_fail = []
