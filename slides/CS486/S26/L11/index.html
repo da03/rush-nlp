@@ -554,7 +554,7 @@
     <div class="derive-line fragment" data-fragment-index="0">\(\propto \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)},\, S_k{=}j,\, o_{0:k})\)</div>
     <div class="derive-label fragment" data-fragment-index="0">drop \(P(o_{0:k})\)</div>
 
-    <div class="derive-line fragment" data-fragment-index="1">\(= \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)},\, o_{0:(k-1)})\, P(j \mid s_{k-1})\, P(o_k \mid j)\)</div>
+    <div class="derive-line fragment" data-fragment-index="1">\(= \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)},\, o_{0:(k-1)})\, \underbrace{P(S_k{=}j \mid s_{k-1})}_{\text{transition}}\, \underbrace{P(o_k \mid j)}_{\text{emission}}\)</div>
     <div class="derive-label fragment" data-fragment-index="1">HMM factorization</div>
 
     <div class="derive-line fragment" data-fragment-index="2">\(= P(o_k \mid j) \displaystyle\max_{s_{k-1}} \max_{s_{0:(k-2)}} P(s_{0:(k-2)},\, s_{k-1},\, o_{0:(k-1)})\, P(j \mid s_{k-1})\)</div>
@@ -608,12 +608,25 @@
 
 <!-- 16c. Why fill + traceback = the best sequence -->
 <section>
-  <h2>Why this returns the best sequence</h2>
-  <div class="defbox" style="text-align: left; font-size: 0.86em;">
-    <p style="margin: 0 0 0.5em;"><strong>1. The forward pass finds the best score.</strong> \(\displaystyle\max_j \pi_{t-1}(j) = \max_{s_{0:t-1}} P(s_{0:t-1},\, o_{0:t-1})\) (up to the constant) &mdash; so \(\hat s_{t-1} = \arg\max_j \pi_{t-1}(j)\) is the last state of the winning sequence.</p>
-    <p style="margin: 0;"><strong>2. Backpointers rebuild the winner.</strong> \(\pi\) stores only the best <em>score</em>, not the path. But the best path into \(\hat s_k\) arrives through \(\phi_k(\hat s_k)\), and that sub-path is itself optimal (<em>principle of optimality</em>) &mdash; so \(\hat s_{k-1} = \phi_k(\hat s_k)\), walked back from \(k = t-1\) down to \(0\).</p>
+  <h2>Why Viterbi returns the true argmax</h2>
+  <p style="font-size: 0.78em; margin: 0.1em 0;">Recall \(\pi_k(j) = \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)}, S_k{=}j, o_{0:k})\) and \(\phi_k(j) = \arg\max_{z}\bigl[\pi_{k-1}(z)\,P(j\mid z)\bigr]\). Goal: \(\hat s_{0:t-1} = \arg\max_{s_{0:t-1}} P(s_{0:t-1}, o_{0:t-1})\).</p>
+  <div class="derive-block" style="font-size: 0.64em;">
+    <div class="derive-line">\(\displaystyle\max_{s_{0:t-1}} P(s_{0:t-1}, o_{0:t-1}) = \max_{j}\, \pi_{t-1}(j)\)</div>
+    <div class="derive-label">(1) split off last state</div>
+
+    <div class="derive-line fragment" data-fragment-index="0">\(\Rightarrow\ \hat s_{t-1} = \displaystyle\arg\max_{j}\, \pi_{t-1}(j)\)</div>
+    <div class="derive-label fragment" data-fragment-index="0">best final state</div>
+
+    <div class="derive-line fragment" data-fragment-index="1">\(\pi_k(j) = P(o_k\mid j)\,\pi_{k-1}\!\bigl(\phi_k(j)\bigr)\,P\bigl(j\mid \phi_k(j)\bigr)\)</div>
+    <div class="derive-label fragment" data-fragment-index="1">(2) recursion attained at \(\phi_k(j)\)</div>
+
+    <div class="derive-line fragment" data-fragment-index="2">\(\hat s_{k-1} = \phi_k(\hat s_k),\quad k = t{-}1,\dots,1\)</div>
+    <div class="derive-label fragment" data-fragment-index="2">(3) trace back</div>
+
+    <div class="derive-line fragment" data-fragment-index="3">\(\Rightarrow\ P(\hat s_{0:t-1}, o_{0:t-1}) = \displaystyle\max_{s_{0:t-1}} P(s_{0:t-1}, o_{0:t-1})\)</div>
+    <div class="derive-label fragment" data-fragment-index="3">induction on (2) \(\ \blacksquare\)</div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.5em;">Forward = compute the best score; backpointers = remember each choice; traceback = replay the choices to rebuild the winner &mdash; <strong>without ever enumerating sequences</strong>.</p>
+  <p class="fragment" data-fragment-index="3" style="font-size: 0.76em; color: #6b7280; text-align: center; margin-top: 0.25em;">Each \(\pi_k\) reuses one optimal sub-path (principle of optimality) &mdash; so the trace-back path is globally optimal, with no sequence enumeration.</p>
 </section>
 
 <!-- 17. Trellis visualization + complexity -->
