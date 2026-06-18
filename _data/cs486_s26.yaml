@@ -49,14 +49,16 @@ tas:
     email: "y624li@uwaterloo.ca"
   - name: "Henry Lin"
     email: "h293lin@uwaterloo.ca"
+    role: "Assignment 2"
   - name: "Hala Sheta"
     email: "hsheta@uwaterloo.ca"
   - name: "Dake Zhang"
     email: "d346zhan@uwaterloo.ca"
     role: "Assignment 1"
 
-# Office hours - rendered as a 5-row <table>. Office hours start the week of May 18.
-# (Dake Zhang's Monday 2-3 PM slot was discontinued when he took over Assignment 1.)
+# Office hours - rendered as a <table>. Office hours start the week of May 18.
+# (Dake Zhang's Monday 2-3 PM slot was discontinued when he took over Assignment 1;
+#  Henry Lin's Thursday 10-11 AM slot was discontinued when he took over Assignment 2.)
 office_hours_start: "Week of May 18"
 office_hours:
   - day: "Monday"
@@ -74,11 +76,6 @@ office_hours:
     ta: "Hala Sheta"
     mode: "Zoom"
     link: "https://uwaterloo.zoom.us/j/96262579733?pwd=miRk3XhmDayBDtfzndKOsSrOchieVA.1"
-  - day: "Thursday"
-    time: "10:00 - 11:00 AM"
-    ta: "Henry Lin"
-    mode: "Zoom"
-    link: "https://us04web.zoom.us/j/7934782144?pwd=9cOQxecD8bQDNkFpTVf6PG5Dy0aABo.1"
   - day: "Friday"
     time: "3:00 - 4:00 PM"
     ta: "Bihui Jin"
@@ -127,7 +124,7 @@ chats:
 # Leave owner blank ("") to render "TBA".
 assignments:
   - { num: 1, out: 2026-06-04, due: 2026-06-25, owner: "Dake Zhang", owner_email: "d346zhan@uwaterloo.ca" }
-  - { num: 2, out: 2026-06-25, due: 2026-07-09, owner: "" }
+  - { num: 2, out: 2026-06-25, due: 2026-07-09, owner: "Henry Lin", owner_email: "h293lin@uwaterloo.ca" }
   - { num: 3, out: 2026-07-09, due: 2026-08-04, owner: "" }
 
 # Schedule entries are rendered in array order. Mix any number of types.
@@ -376,6 +373,15 @@ announcements:
       <strong>Thu Jun 11 (9:30 AM)</strong> to <strong>Fri Jun 12 (12:00 noon)</strong>. The deadline
       extensions stand: <strong>Chat 4 -> Tue Jun 16</strong> and <strong>Chat 5 -> Thu Jun 18</strong>
       (both 11:59 PM).
+  - severity: info
+    show: true
+    title: "Assignment 2: contact Henry Lin with all A2 questions"
+    body: >-
+      <strong>Henry Lin</strong> is now the point of contact for everything
+      <strong>Assignment 2</strong> (Piazza questions and grading). Post A2 questions on
+      <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> or email
+      <a href="mailto:h293lin@uwaterloo.ca">h293lin@uwaterloo.ca</a>. His weekly
+      Thursday 10-11 AM office hours are <strong>cancelled going forward</strong>.
   - severity: info
     show: true
     title: "Assignment 1: contact Dake Zhang with all A1 questions"
