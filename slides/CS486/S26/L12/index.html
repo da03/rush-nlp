@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../L7/custom.css">
   <link rel="stylesheet" href="../L9/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="../L11/custom.css">
   <link rel="stylesheet" href="custom.css">
 </head>
 <body>
@@ -51,6 +52,68 @@
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 12</p>
   <p class="credit">RN 16.5&ndash;16.6 &middot; PM 9.1&ndash;9.4</p>
+</section>
+
+<!-- ============================================================
+     Recap: the Viterbi proof (owed from Lecture 11)
+     ============================================================ -->
+
+<!-- 1b. Recap: Viterbi recursion -->
+<section>
+  <h2>Recap: the Viterbi recursion</h2>
+  <p style="font-size: 0.84em; margin: 0.2em 0;">Last lecture &mdash; the <strong>most-likely explanation</strong>: the single best hidden-state sequence \(\hat s_{0:t-1} = \arg\max_{s_{0:t-1}} P(s_{0:t-1} \mid o_{0:t-1})\). Let \(\pi_k(j)\) = highest probability of any path ending in state \(j\) at time \(k\).</p>
+  <div class="viterbi-step">
+    <div class="vcard">
+      <h3>Base case</h3>
+      \(\pi_0(j) = \alpha\, P(S_0 = j)\, P(o_0 | S_0 = j)\)
+    </div>
+    <div class="vcard">
+      <h3>Recursive case</h3>
+      \(\pi_k(j) = P(o_k | S_k = j) \cdot\) <br>
+      \(\displaystyle\max_{z} \bigl[\pi_{k-1}(z)\, P(S_k = j | S_{k-1} = z)\bigr]\)
+    </div>
+    <div class="vcard trace">
+      <h3>Backpointer</h3>
+      \(\phi_k(j) = \displaystyle\arg\max_{z} \bigl[\pi_{k-1}(z)\, P(S_k = j | S_{k-1} = z)\bigr]\)
+    </div>
+  </div>
+  <p style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.45em;">Two things I owe you from last time: <strong>why</strong> this recursion is correct, and <strong>why</strong> it yields the true argmax.</p>
+</section>
+
+<!-- 1c. Why the recursion holds -->
+<section>
+  <h2>Why the recursion holds</h2>
+  <p style="font-size: 0.8em; margin: 0.1em 0;">The best path to state \(j\) at time \(k\) reuses the best path to some predecessor \(z\) at \(k-1\):</p>
+  <div class="derive-block" style="font-size: 0.63em;">
+    <div class="derive-line">\(\pi_k(j) = \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)},\, S_k{=}j \mid o_{0:k})\)</div>
+    <div class="derive-label"></div>
+
+    <div class="derive-line fragment" data-fragment-index="0">\(\propto \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)},\, S_k{=}j,\, o_{0:k})\)</div>
+    <div class="derive-label fragment" data-fragment-index="0">drop \(P(o_{0:k})\)</div>
+
+    <div class="derive-line fragment" data-fragment-index="1">\(= \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)},\, o_{0:(k-1)})\, P(j \mid s_{k-1})\, P(o_k \mid j)\)</div>
+    <div class="derive-label fragment" data-fragment-index="1">HMM factorization</div>
+
+    <div class="derive-line fragment" data-fragment-index="2">\(= P(o_k \mid j) \displaystyle\max_{s_{k-1}} \max_{s_{0:(k-2)}} P(s_{0:(k-2)},\, s_{k-1},\, o_{0:(k-1)})\, P(j \mid s_{k-1})\)</div>
+    <div class="derive-label fragment" data-fragment-index="2">nest the prefix max</div>
+
+    <div class="derive-line fragment" data-fragment-index="3">\(= P(o_k \mid j) \displaystyle\max_{z} P(j \mid z) \max_{s_{0:(k-2)}} P(s_{0:(k-2)},\, S_{k-1}{=}z,\, o_{0:(k-1)})\)</div>
+    <div class="derive-label fragment" data-fragment-index="3">pull out \(P(j \mid z)\)</div>
+
+    <div class="derive-line fragment" data-fragment-index="4"><span style="color:#166534; font-weight: 600;">\(= P(o_k \mid j) \displaystyle\max_{z} \bigl[\, P(j \mid z)\, \pi_{k-1}(z)\,\bigr]\)</span></div>
+    <div class="derive-label fragment" data-fragment-index="4">inner max \(= \pi_{k-1}(z)\)</div>
+  </div>
+  <p class="fragment" data-fragment-index="4" style="font-size: 0.74em; color: #6b7280; text-align: center; margin-top: 0.2em;">The inner max has no \(j\) in it &mdash; so <strong>one best path per node</strong> serves every successor (\(\phi_k(j)\) records the winning \(z\)). Constants don't change the argmax, so we work with the joint.</p>
+</section>
+
+<!-- 1d. Why Viterbi returns the true argmax -->
+<section>
+  <h2>Why Viterbi returns the true argmax</h2>
+  <div class="defbox" style="text-align: left; font-size: 0.86em;">
+    <p style="margin: 0 0 0.5em;"><strong>1. The forward pass finds the best score.</strong> \(\displaystyle\max_j \pi_{t-1}(j) = \max_{s_{0:t-1}} P(s_{0:t-1},\, o_{0:t-1})\) (up to the constant) &mdash; so \(\hat s_{t-1} = \arg\max_j \pi_{t-1}(j)\) is the last state of the winning sequence.</p>
+    <p style="margin: 0;"><strong>2. Backpointers rebuild the winner.</strong> \(\pi\) stores only the best <em>score</em>, not the path. But the best path into \(\hat s_k\) arrives through \(\phi_k(\hat s_k)\), and that sub-path is itself optimal (<em>principle of optimality</em>) &mdash; so \(\hat s_{k-1} = \phi_k(\hat s_k)\), walked back from \(k = t-1\) down to \(0\).</p>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.5em;">Forward = compute the best score; backpointers = remember each choice; traceback = replay the choices to rebuild the winner &mdash; <strong>without ever enumerating sequences</strong>.</p>
 </section>
 
 <!-- 2. Learning goals -->
@@ -659,6 +722,7 @@
 <section>
   <h2>VEA on the medical DN: factor flow</h2>
   <p style="font-size: 0.82em; margin: 0.2em 0;">Eliminate inner-most chance vars, then maximize the innermost decision, repeat:</p>
+  <p style="font-size: 0.82em; color: #b45309; font-style: italic; margin: 0.1em 0 0.35em;">We won't trace every step in class &mdash; it's just a tedious application of the same eliminate-then-maximize method. Walk through the full flow on your own after class.</p>
   <div class="vea-flow">
     <div class="vea-step start">\(f_4(D,Tr,O)\)<br>\(f_5(T,O)\)<span class="op">init</span></div>
     <div class="vea-arrow">&rarr;</div>
