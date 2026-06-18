@@ -161,10 +161,10 @@
   <div class="two-col vcenter">
     <div style="flex: 1; text-align: center;">
       <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" class="dn-graph" style="max-height: 220px;">
-        <line class="edge" x1="55" y1="50"  x2="195" y2="80"  marker-end="url(#arrow-dn)"/>
-        <line class="edge fragment" data-fragment-index="0" x1="220" y1="100" x2="265" y2="135" marker-end="url(#arrow-dn)"/>
-        <line class="edge fragment" data-fragment-index="0" x1="55" y1="180" x2="245" y2="155" marker-end="url(#arrow-dn)"/>
-        <line class="edge fragment" data-fragment-index="0" x1="55" y1="65"  x2="245" y2="140" marker-end="url(#arrow-dn)"/>
+        <line class="edge" x1="88" y1="60" x2="178" y2="76" marker-end="url(#arrow-dn)"/>
+        <line class="edge fragment" data-fragment-index="0" x1="240" y1="97" x2="269" y2="154" marker-end="url(#arrow-dn)"/>
+        <line class="edge fragment" data-fragment-index="0" x1="88" y1="182" x2="250" y2="171" marker-end="url(#arrow-dn)"/>
+        <line class="edge fragment" data-fragment-index="0" x1="78" y1="68" x2="261" y2="160" marker-end="url(#arrow-dn)"/>
         <g class="decision">
           <rect x="10" y="40" width="80" height="30" rx="3"/>
           <rect x="10" y="170" width="80" height="30" rx="3"/>
@@ -236,7 +236,7 @@
       </div>
     </div>
     <div style="flex: 1;">
-      <p class="quiz-q"><strong>When an accident does happen?</strong></p>
+      <p class="quiz-q fragment"><strong>When an accident does happen?</strong></p>
       <ul style="font-size: 0.85em;">
         <li class="fragment">The robot must have taken the short route (long route never crashes).</li>
         <li class="fragment">Now the robot prefers <strong>wearing pads</strong>: \(U(P, S, A) = 2 &gt; 0 = U(\neg P, S, A)\). Pads cushion the fall.</li>
@@ -451,10 +451,10 @@
   <div class="two-col vcenter">
     <div style="flex: 0.9; text-align: center;">
       <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" class="dn-graph" style="max-height: 200px;">
-        <line class="edge" x1="65" y1="50"  x2="115" y2="105" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="105" y1="120" x2="55"  y2="170" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="105" y1="40"  x2="195" y2="100" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="65" y1="180" x2="200" y2="110" marker-end="url(#arrow-dn)"/>
+        <line class="edge" x1="82" y1="53" x2="105" y2="100" marker-end="url(#arrow-dn)"/>
+        <line class="edge" x1="105" y1="128" x2="69" y2="168" marker-end="url(#arrow-dn)"/>
+        <line class="edge" x1="91" y1="48" x2="224" y2="118" marker-end="url(#arrow-dn)"/>
+        <line class="edge" x1="93" y1="174" x2="220" y2="135" marker-end="url(#arrow-dn)"/>
         <g class="chance"><ellipse cx="55" cy="40" rx="40" ry="20"/></g>
         <text x="55" y="40">Weather</text>
         <g class="chance"><ellipse cx="135" cy="115" rx="40" ry="20"/></g>
@@ -542,11 +542,11 @@
   <h2>Method 2: VEA on the weather DN</h2>
   <div class="two-col vcenter">
     <div style="flex: 1.2;">
-      <div class="algo-card">
+      <div class="algo-card" style="font-size: 0.92em;">
         <div class="algo-title">VEA-multi-stage(DN, evidence)</div>
         <ol>
           <li>Prune non-ancestors of Utility. <em>(Nothing to prune here.)</em></li>
-          <li>Define factors: \(f_1(W), f_2(W, F), f_3(W, U)\).</li>
+          <li>Define factors: \(f_1(W) = P(W)\), \(f_2(W, F) = P(F \mid W)\), \(f_3(W, Um) = u(W, Um)\).</li>
           <li>While decisions remain: eliminate chance vars not parents of any decision, then max over the next decision (in info order).</li>
           <li>Sum out the remaining chance vars to get the EU.</li>
         </ol>
@@ -554,9 +554,9 @@
     </div>
     <div style="flex: 1; font-size: 0.78em;">
       <div class="vea-flow" style="flex-direction: column; align-items: stretch; gap: 0.2em;">
-        <div class="vea-step start"><strong>Eliminate \(W\):</strong> &nbsp;\(f_1 \times f_2 \times f_3 \to f_4(W, F, U) \to f_5(F, U)\)<span class="op">multiply, then \(\sum_W\)</span></div>
+        <div class="vea-step start"><strong>Eliminate \(W\):</strong> &nbsp;\(f_1 \times f_2 \times f_3 \to f_4(W, F, Um) \to f_5(F, Um)\)<span class="op">multiply, then \(\sum_W\)</span></div>
         <div class="vea-arrow">&darr;</div>
-        <div class="vea-step"><strong>Max over \(Um\):</strong> &nbsp;for each \(F\), keep best \(U\). &nbsp;\(\pi^\star\): sunny&rarr;leave (49), cloudy&rarr;leave (14), rainy&rarr;take (14). &nbsp;\(\Rightarrow f_6(F)\)</div>
+        <div class="vea-step"><strong>Max over \(Um\):</strong> &nbsp;for each \(F\), keep the best \(Um\). &nbsp;\(\pi^\star\): sunny&rarr;leave (49), cloudy&rarr;leave (14), rainy&rarr;take (14). &nbsp;\(\Rightarrow f_6(F)\)</div>
         <div class="vea-arrow">&darr;</div>
         <div class="vea-step final"><strong>Sum out \(F\)</strong>: &nbsp;\(\sum_F f_6 = 49 + 14 + 14 = 77\)</div>
       </div>
@@ -576,10 +576,10 @@
   <div class="two-col vcenter">
     <div style="flex: 0.9; text-align: center;">
       <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" class="dn-graph" style="max-height: 200px;">
-        <line class="edge" x1="65" y1="50"  x2="115" y2="105" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="105" y1="120" x2="55"  y2="170" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="105" y1="40"  x2="195" y2="100" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="65" y1="180" x2="200" y2="110" marker-end="url(#arrow-dn)"/>
+        <line class="edge" x1="82" y1="53" x2="105" y2="100" marker-end="url(#arrow-dn)"/>
+        <line class="edge" x1="105" y1="128" x2="69" y2="168" marker-end="url(#arrow-dn)"/>
+        <line class="edge" x1="91" y1="48" x2="224" y2="118" marker-end="url(#arrow-dn)"/>
+        <line class="edge" x1="93" y1="174" x2="220" y2="135" marker-end="url(#arrow-dn)"/>
         <path class="edge added" d="M 55 60 Q 5 130 35 170" fill="none" marker-end="url(#arrow-dn-green)"/>
         <g class="chance"><ellipse cx="55" cy="40" rx="40" ry="20"/></g>
         <text x="55" y="40">Weather</text>

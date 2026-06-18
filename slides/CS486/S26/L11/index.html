@@ -547,7 +547,7 @@
 <section>
   <h2>Why the recursion holds</h2>
   <p style="font-size: 0.84em; margin: 0.2em 0;">The best path to state \(j\) at time \(k\) reuses the best path to some predecessor \(z\) at \(k-1\):</p>
-  <div class="derive-block" style="font-size: 0.72em;">
+  <div class="derive-block" style="font-size: 0.68em;">
     <div class="derive-line">\(\pi_k(j) = \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)},\, S_k{=}j \mid o_{0:k})\)</div>
     <div class="derive-label"></div>
 
@@ -557,13 +557,16 @@
     <div class="derive-line fragment" data-fragment-index="1">\(= \displaystyle\max_{s_{0:(k-1)}} P(s_{0:(k-1)},\, o_{0:(k-1)})\, P(j \mid s_{k-1})\, P(o_k \mid j)\)</div>
     <div class="derive-label fragment" data-fragment-index="1">HMM factorization</div>
 
-    <div class="derive-line fragment" data-fragment-index="2">\(= P(o_k \mid j) \displaystyle\max_{z} P(j \mid z) \max_{s_{0:(k-2)}} P(s_{0:(k-2)},\, S_{k-1}{=}z,\, o_{0:(k-1)})\)</div>
-    <div class="derive-label fragment" data-fragment-index="2">split the max</div>
+    <div class="derive-line fragment" data-fragment-index="2">\(= P(o_k \mid j) \displaystyle\max_{s_{k-1}} \max_{s_{0:(k-2)}} P(s_{0:(k-2)},\, s_{k-1},\, o_{0:(k-1)})\, P(j \mid s_{k-1})\)</div>
+    <div class="derive-label fragment" data-fragment-index="2">nest the prefix max</div>
 
-    <div class="derive-line fragment" data-fragment-index="3"><span style="color:#166534; font-weight: 600;">\(= P(o_k \mid j) \displaystyle\max_{z} \bigl[\, P(j \mid z)\, \pi_{k-1}(z)\,\bigr]\)</span></div>
-    <div class="derive-label fragment" data-fragment-index="3">bracket \(= \pi_{k-1}\)</div>
+    <div class="derive-line fragment" data-fragment-index="3">\(= P(o_k \mid j) \displaystyle\max_{z} P(j \mid z) \max_{s_{0:(k-2)}} P(s_{0:(k-2)},\, S_{k-1}{=}z,\, o_{0:(k-1)})\)</div>
+    <div class="derive-label fragment" data-fragment-index="3">pull out \(P(j \mid z)\)</div>
+
+    <div class="derive-line fragment" data-fragment-index="4"><span style="color:#166534; font-weight: 600;">\(= P(o_k \mid j) \displaystyle\max_{z} \bigl[\, P(j \mid z)\, \pi_{k-1}(z)\,\bigr]\)</span></div>
+    <div class="derive-label fragment" data-fragment-index="4">inner max \(= \pi_{k-1}(z)\)</div>
   </div>
-  <p class="fragment" data-fragment-index="3" style="font-size: 0.76em; color: #6b7280; text-align: center; margin-top: 0.25em;">The prefix score has no \(j\) in it &mdash; so <strong>one best path per node</strong> serves every successor (\(\phi_k(j)\) records the winning \(z\)). Constants don't change the argmax, so we work with the joint.</p>
+  <p class="fragment" data-fragment-index="4" style="font-size: 0.74em; color: #6b7280; text-align: center; margin-top: 0.2em;">The inner max has no \(j\) in it &mdash; so <strong>one best path per node</strong> serves every successor (\(\phi_k(j)\) records the winning \(z\)). Constants don't change the argmax, so we work with the joint.</p>
 </section>
 
 <!-- 16a. Viterbi recursion -->
