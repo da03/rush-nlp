@@ -194,6 +194,10 @@
 .reveal .vea-flow .vea-step.final { border: 2px solid #16a34a; background: #f0fdf4; color: #166534; }
 .reveal .vea-flow .vea-arrow { color: #6b7280; font-size: 1.2em; }
 
+/* Cancer DN: compact grid of CPT tables */
+.reveal .cancer-cpts { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 0.35em 1em; }
+.reveal .cancer-cpts table.factor-table { font-size: 0.56em; margin: 0; }
+
 /* Method 2 (VEA on weather DN): keep the algorithm card compact so the slide fits */
 .reveal .algo-card.vea-card { font-size: 0.72em; line-height: 1.25; padding: 0.45em 0.8em; }
 .reveal .algo-card.vea-card .algo-title { margin-bottom: 0.25em; }

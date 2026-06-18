@@ -694,110 +694,138 @@
 </section>
 
 <!-- ============================================================
-     Medical diagnosis (3 slides)
+     Cancer diagnosis worked example (4 slides)
      ============================================================ -->
 
-<!-- 20. Medical-diagnosis DN -->
+<!-- 20a. Cancer-diagnosis DN: structure -->
 <section>
-  <h2>A medical diagnosis decision network</h2>
+  <h2>A diagnostic decision network: cancer</h2>
+  <div style="text-align: center;">
+    <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" class="dn-graph" style="max-height: 300px; width: 92%;">
+      <!-- generative edges -->
+      <line class="edge" x1="128" y1="58"  x2="176" y2="106" marker-end="url(#arrow-dn)"/> <!-- M->B -->
+      <line class="edge" x1="280" y1="56"  x2="226" y2="106" marker-end="url(#arrow-dn)"/> <!-- C->B -->
+      <line class="edge" x1="322" y1="52"  x2="486" y2="98"  marker-end="url(#arrow-dn)"/> <!-- C->A -->
+      <line class="edge" x1="200" y1="137" x2="200" y2="171" marker-end="url(#arrow-dn)"/> <!-- B->R -->
+      <line class="edge" x1="200" y1="203" x2="200" y2="237" marker-end="url(#arrow-dn)"/> <!-- R->D -->
+      <path  class="edge" d="M 320 40 Q 520 60 632 158" fill="none" marker-end="url(#arrow-dn)"/> <!-- C->U -->
+      <!-- decision / information arcs -->
+      <line class="edge" x1="588" y1="60"  x2="540" y2="98"  marker-end="url(#arrow-dn)"/> <!-- DoA->A -->
+      <path  class="edge" d="M 566 58 Q 450 108 414 156" fill="none" marker-end="url(#arrow-dn)"/> <!-- DoA->DoB -->
+      <line class="edge" x1="500" y1="124" x2="436" y2="162" marker-end="url(#arrow-dn)"/> <!-- A->DoB -->
+      <line class="edge" x1="352" y1="172" x2="236" y2="120" marker-end="url(#arrow-dn)"/> <!-- DoB->B -->
+      <line class="edge" x1="424" y1="190" x2="484" y2="236" marker-end="url(#arrow-dn)"/> <!-- DoB->Diag -->
+      <line class="edge" x1="458" y1="174" x2="610" y2="178" marker-end="url(#arrow-dn)"/> <!-- DoB->U -->
+      <line class="edge" x1="520" y1="128" x2="512" y2="236" marker-end="url(#arrow-dn)"/> <!-- A->Diag -->
+      <line class="edge" x1="248" y1="258" x2="436" y2="256" marker-end="url(#arrow-dn)"/> <!-- D->Diag -->
+      <path  class="edge" d="M 688 64 Q 712 210 566 256" fill="none" marker-end="url(#arrow-dn)"/> <!-- DoA->Diag -->
+      <line class="edge" x1="566" y1="252" x2="636" y2="198" marker-end="url(#arrow-dn)"/> <!-- Diag->U -->
+      <!-- nodes -->
+      <g class="chance"><ellipse cx="110" cy="45" rx="34" ry="17"/></g><text x="110" y="45">M</text>
+      <g class="chance"><ellipse cx="300" cy="42" rx="34" ry="17"/></g><text x="300" y="42">C</text>
+      <g class="chance"><ellipse cx="520" cy="110" rx="34" ry="17"/></g><text x="520" y="110">A</text>
+      <g class="chance"><ellipse cx="200" cy="120" rx="34" ry="17"/></g><text x="200" y="120">B</text>
+      <g class="chance"><ellipse cx="200" cy="187" rx="34" ry="17"/></g><text x="200" y="187">R</text>
+      <g class="chance"><ellipse cx="200" cy="254" rx="34" ry="17"/></g><text x="200" y="254">D</text>
+      <g class="decision"><rect x="558" y="28" width="120" height="34" rx="3"/></g><text x="618" y="45">Test&nbsp;A?</text>
+      <g class="decision"><rect x="345" y="158" width="118" height="34" rx="3"/></g><text x="404" y="175">Test&nbsp;B?</text>
+      <g class="decision"><rect x="440" y="238" width="126" height="34" rx="3"/></g><text x="503" y="255">Diagnose</text>
+      <g class="utility"><polygon points="650,150 688,180 650,210 612,180"/></g><text x="650" y="180">U</text>
+    </svg>
+  </div>
+  <p style="font-size: 0.74em; color: #6b7280; text-align: center; margin: 0.2em 0;"><strong>M</strong> machine malfunction &middot; <strong>C</strong> cancer &middot; <strong>A</strong> test-A result &middot; <strong>B</strong> test-B result &middot; <strong>R</strong> report &middot; <strong>D</strong> database. Three decisions, in information order: <strong>Test&nbsp;A? &rarr; Test&nbsp;B? &rarr; Diagnose</strong>.</p>
+  <p style="font-size: 0.78em; text-align: center; margin: 0.15em 0;">Cancer occurs with prob \(0.32\). Test A is free; test B costs 2 but is more precise (and needs a machine that can malfunction). B's result is only seen through a noisy <em>report &rarr; database</em> chain.</p>
+</section>
+
+<!-- 20b. Cancer DN: the numbers -->
+<section>
+  <h2>The cancer network: the CPTs</h2>
+  <div class="cancer-cpts">
+    <table class="factor-table"><caption>\(P(M)\)</caption><thead><tr><th>\(M\)</th><th>val</th></tr></thead><tbody><tr><td>t</td><td>0.08</td></tr><tr><td>f</td><td>0.92</td></tr></tbody></table>
+    <table class="factor-table"><caption>\(P(C)\)</caption><thead><tr><th>\(C\)</th><th>val</th></tr></thead><tbody><tr><td>t</td><td>0.32</td></tr><tr><td>f</td><td>0.68</td></tr></tbody></table>
+    <table class="factor-table"><caption>\(P(R{=}t \mid B)\)</caption><thead><tr><th>\(B\)</th><th>val</th></tr></thead><tbody><tr><td>t</td><td>0.98</td></tr><tr><td>f</td><td>0.01</td></tr></tbody></table>
+    <table class="factor-table"><caption>\(P(D{=}t \mid R)\)</caption><thead><tr><th>\(R\)</th><th>val</th></tr></thead><tbody><tr><td>t</td><td>0.96</td></tr><tr><td>f</td><td>0.001</td></tr></tbody></table>
+    <table class="factor-table"><caption>\(P(A{=}t \mid C, D_A)\)</caption><thead><tr><th>\(C\)</th><th>\(D_A\)</th><th>val</th></tr></thead><tbody><tr><td>t</td><td>do</td><td>0.7</td></tr><tr><td>f</td><td>do</td><td>0.35</td></tr><tr><td>&ndash;</td><td>skip</td><td>0.462</td></tr></tbody></table>
+    <table class="factor-table"><caption>\(P(B{=}t \mid M, C, D_B)\)</caption><thead><tr><th>\(M\)</th><th>\(C\)</th><th>\(D_B\)</th><th>val</th></tr></thead><tbody><tr><td>t</td><td>t</td><td>do</td><td>0.61</td></tr><tr><td>t</td><td>f</td><td>do</td><td>0.52</td></tr><tr><td>f</td><td>t</td><td>do</td><td>0.78</td></tr><tr><td>f</td><td>f</td><td>do</td><td>0.044</td></tr><tr><td>&ndash;</td><td>&ndash;</td><td>skip</td><td>0.3</td></tr></tbody></table>
+  </div>
+  <p style="font-size: 0.72em; color: #6b7280; text-align: center; margin-top: 0.3em;">A skipped test is modelled by an uninformative result (the &ldquo;skip&rdquo; rows) &mdash; same effect as a third &ldquo;not done&rdquo; value.</p>
+</section>
+
+<!-- 20c. Cancer DN: utility -->
+<section>
+  <h2>The utility function \(U(C, D_B, D_C)\)</h2>
   <div class="two-col vcenter">
-    <div style="flex: 0.9; text-align: center;">
-      <svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" class="dn-graph" style="max-height: 300px;">
-        <!-- vertical chain: Disease->Symptom->Test->TestResult->Treatment->Outcome->Utility -->
-        <line class="edge" x1="180" y1="34" x2="180" y2="60" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="180" y1="89" x2="180" y2="119" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="180" y1="142" x2="180" y2="150" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="180" y1="179" x2="180" y2="209" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="180" y1="232" x2="180" y2="240" marker-end="url(#arrow-dn)"/>
-        <line class="edge" x1="180" y1="269" x2="180" y2="294" marker-end="url(#arrow-dn)"/>
-        <!-- skip / information arcs -->
-        <path class="edge" d="M 214 30 Q 308 92 226 158" fill="none" marker-end="url(#arrow-dn)"/>
-        <path class="edge" d="M 146 30 Q 26 150 126 250" fill="none" marker-end="url(#arrow-dn)"/>
-        <path class="edge" d="M 138 80 Q 70 150 130 214" fill="none" marker-end="url(#arrow-dn)"/>
-        <path class="edge" d="M 224 130 Q 296 172 230 214" fill="none" marker-end="url(#arrow-dn)"/>
-        <path class="edge" d="M 224 138 Q 348 228 232 302" fill="none" marker-end="url(#arrow-dn)"/>
-        <g class="chance"><ellipse cx="180" cy="20"  rx="48" ry="14"/></g><text x="180" y="20">Disease</text>
-        <g class="chance"><ellipse cx="180" cy="75"  rx="48" ry="14"/></g><text x="180" y="75">Symptom</text>
-        <g class="decision"><rect x="135" y="120" width="90" height="22" rx="3"/></g><text x="180" y="131">Test</text>
-        <g class="chance"><ellipse cx="180" cy="165" rx="48" ry="14"/></g><text x="180" y="165">Test Result</text>
-        <g class="decision"><rect x="135" y="210" width="90" height="22" rx="3"/></g><text x="180" y="221">Treatment</text>
-        <g class="chance"><ellipse cx="180" cy="255" rx="48" ry="14"/></g><text x="180" y="255">Outcome</text>
-        <g class="utility"><polygon points="180,295 232,310 180,325 128,310"/></g><text x="180" y="310">Utility</text>
-      </svg>
-    </div>
     <div style="flex: 1;">
-      <p style="font-size: 0.85em;">A doctor makes two decisions:</p>
-      <ol style="font-size: 0.82em;">
-        <li>Which <strong>test</strong> (or none) to run.</li>
-        <li>Which <strong>treatment</strong> to give.</li>
-      </ol>
-      <p style="font-size: 0.82em;">The information at decision time:</p>
-      <ul style="font-size: 0.78em;">
-        <li>Test &larr; symptom only.</li>
-        <li>Treatment &larr; symptom, test, test result.</li>
+      <table class="factor-table" style="margin: 0 auto; font-size: 0.92em;">
+        <thead><tr><th>\(C\)</th><th>\(D_B\)</th><th>\(D_C\)</th><th>\(U\)</th></tr></thead>
+        <tbody>
+          <tr><td>t</td><td>do</td><td>cancer</td><td>18</td></tr>
+          <tr><td>t</td><td>skip</td><td>cancer</td><td>20</td></tr>
+          <tr><td>t</td><td>do</td><td>no cancer</td><td>0</td></tr>
+          <tr><td>t</td><td>skip</td><td>no cancer</td><td>2</td></tr>
+          <tr><td>f</td><td>do</td><td>cancer</td><td>2</td></tr>
+          <tr><td>f</td><td>skip</td><td>cancer</td><td>4</td></tr>
+          <tr><td>f</td><td>do</td><td>no cancer</td><td>18</td></tr>
+          <tr><td>f</td><td>skip</td><td>no cancer</td><td>20</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="flex: 1; font-size: 0.82em;">
+      <p style="margin: 0.2em 0;">Built from a max reward of <strong>20</strong>:</p>
+      <ul style="margin: 0.2em 0;">
+        <li>Correct diagnosis: <strong>+20</strong></li>
+        <li>False positive (say cancer when none): <strong>&minus;16</strong></li>
+        <li>False negative (miss real cancer): <strong>&minus;18</strong></li>
+        <li>Running test B: <strong>&minus;2</strong></li>
       </ul>
-      <p style="font-size: 0.78em; color: #6b7280;">Tests cost utility but yield information for the next decision.</p>
+      <p style="margin: 0.2em 0; color: #6b7280;">e.g. \(C{=}t, D_B{=}\text{do}, D_C{=}\text{cancer}\): correct (20) minus the test-B cost (2) \(= 18\).</p>
     </div>
   </div>
 </section>
 
 <!-- 21. VEA walkthrough -->
 <section>
-  <h2>VEA on the medical DN: factor flow</h2>
-  <p style="font-size: 0.82em; margin: 0.2em 0;">Eliminate inner-most chance vars, then maximize the innermost decision, repeat:</p>
-  <p style="font-size: 0.82em; color: #b45309; font-style: italic; margin: 0.1em 0 0.35em;">We won't trace every step in class &mdash; it's just a tedious application of the same eliminate-then-maximize method. Walk through the full flow on your own after class.</p>
-  <div class="vea-flow">
-    <div class="vea-step start">\(f_4(D,Tr,O)\)<br>\(f_5(T,O)\)<span class="op">init</span></div>
+  <h2>VEA on the cancer DN: factor flow</h2>
+  <p style="font-size: 0.82em; margin: 0.2em 0;">Sum out chance vars that aren't parents of a remaining decision, then maximize the innermost decision &mdash; repeat (info order: \(D_C\) last, so eliminate it first).</p>
+  <div class="vea-flow" style="font-size: 0.82em;">
+    <div class="vea-step start">\(f_0..f_6\)<span class="op">CPTs + U</span></div>
     <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(\sum_O\)<span class="op">drop O</span></div>
+    <div class="vea-step">\(\sum_M\) \(f_7(B,C,D_B)\)</div>
     <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(f_7(D,T,Tr)\)</div>
+    <div class="vea-step">\(\sum_B\) \(f_8(R,C,D_B)\)</div>
     <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(\sum_D\)<span class="op">drop D</span></div>
+    <div class="vea-step">\(\sum_R\) \(f_9(D,C,D_B)\)</div>
     <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(f_9(S,T,TR,Tr)\)</div>
+    <div class="vea-step">\(\sum_C\) \(f_{10}(D,A,D_A,D_B,D_C)\)</div>
   </div>
-  <div class="vea-flow" style="margin-top: 0.1em;">
-    <div class="vea-step">\(\max_{Tr}\)<span class="op">policy for Tr</span></div>
+  <div class="vea-flow" style="margin-top: 0.15em; font-size: 0.82em;">
+    <div class="vea-step">\(\max_{D_C}\)<span class="op">diagnose policy</span></div>
     <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(f_{10}(S,T,TR)\)</div>
+    <div class="vea-step">\(\sum_D\) \(f_{12}(A,D_A,D_B)\)</div>
     <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(\sum_{TR}\)<span class="op">drop TR</span></div>
+    <div class="vea-step">\(\max_{D_B}\)<span class="op">test-B policy</span></div>
     <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(f_{11}(S,T)\)</div>
+    <div class="vea-step">\(\sum_A\) \(f_{14}(D_A)\)</div>
     <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(\max_T\)<span class="op">policy for T</span></div>
+    <div class="vea-step">\(\max_{D_A}\)<span class="op">test-A policy</span></div>
     <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(f_{12}(S)\)</div>
-    <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step">\(\sum_S\)</div>
-    <div class="vea-arrow">&rarr;</div>
-    <div class="vea-step final">\(EU = 898.5\)</div>
+    <div class="vea-step final">\(EU = 15.9\)</div>
   </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.4em;">Eliminate chance vars not yet needed; maximize the last decision (Treatment first, then Test).</p>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.35em;">Each \(\max\) records a policy for that decision; the full arithmetic (with the CPTs above) is in the supplement &mdash; try it yourself.</p>
 </section>
 
-<!-- 22. Optimal medical policy -->
+<!-- 22. Optimal cancer policy -->
 <section class="center-slide">
-  <h2>Optimal medical policy</h2>
-  <div class="policy-cards">
-    <div class="pcard best">
-      <h3>Test policy</h3>
-      <table class="factor-table" style="margin: 0 auto;">
-        <thead><tr><th>\(S\)</th><th>\(T^\star\)</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>0 (no test)</td></tr>
-          <tr><td>0</td><td>0 (no test)</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="pcard best">
-      <h3>Treatment policy</h3>
-      <p style="font-size: 0.82em; margin: 0.2em 0;">For every \((S, T, TR)\): &nbsp;\(Tr^\star = 1\). &nbsp;<strong>Always treat.</strong></p>
-    </div>
+  <h2>Optimal policy + expected value</h2>
+  <div class="algo-card" style="max-width: 80%; margin: 0.3em auto; text-align: left; font-size: 0.9em;">
+    <ol style="margin: 0.2em 0;">
+      <li><strong>Do test A</strong> (it's free and informative).</li>
+      <li>If test A is <strong>positive</strong> &rarr; <strong>do test B</strong>, then <strong>diagnose according to the database</strong> (cancer if the database reads positive, else not).</li>
+      <li>If test A is <strong>negative</strong> &rarr; <strong>diagnose no cancer</strong> (and skip test B).</li>
+    </ol>
   </div>
-  <p style="text-align: center; font-size: 1em; margin-top: 0.5em; color: #166534;"><strong>Expected utility \(= 898.5\).</strong></p>
-  <p class="fragment" style="font-size: 0.85em; color: #6b7280; text-align: center; margin-top: 0.4em;"><em>The cost of testing exceeds its information value in this network &mdash; skip the test and treat directly.</em></p>
+  <p style="text-align: center; font-size: 1.05em; margin-top: 0.4em; color: #166534;"><strong>Expected utility \(= 15.9\).</strong></p>
+  <p class="fragment" style="font-size: 0.85em; color: #6b7280; text-align: center; margin-top: 0.4em;"><em>Test A screens cheaply; the costly test B is only worth running once test A raises suspicion. Value of information drives the whole policy.</em></p>
 </section>
 
 <!-- ============================================================
