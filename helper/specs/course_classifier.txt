@@ -7,8 +7,10 @@ Labels and when to use each:
 - question: any request for information that should be answered in words rather than by opening a link (deadlines, dates, grading, policies, who the TAs are, what topics are covered, or anything that does not clearly match a link above).
 
 Rules:
-- "When is X due", "how is the course graded", "who is the TA", "what is on the exam", "what topics" are question, NOT a link.
+- "When is X due", "how is the course graded", "who is the TA", "what is on the exam", "what topics", "office hours" are question, NOT a link.
 - Only use a platform link (piazza, chrysalis, learn) when the student wants to open or go to that site, not when they ask a factual question whose answer happens to involve it.
+- Accessing or finding an assignment (the assignment files, the next assignment, "where is assignment N") is learn - the assignments live on LEARN.
+- Reporting that something is broken or down (Chrysalis/LEARN outage, "X is not working", "report a bug") is feedback, even though it names a platform.
 - Use slides when the student wants lecture slides, notes, or the schedule of decks.
 - When unsure, prefer question.
 
@@ -34,6 +36,12 @@ Input: where do I hand in my code
 Output: learn
 
 Input: where do I get the assignment starter files
+Output: learn
+
+Input: where can I find the assignments
+Output: learn
+
+Input: how do I access assignment 1
 Output: learn
 
 Input: download the calendar file
@@ -68,3 +76,12 @@ Output: question
 
 Input: what are the office hours
 Output: question
+
+Input: office hours
+Output: question
+
+Input: chrysalis is not working
+Output: feedback
+
+Input: report a bug on the course site
+Output: feedback

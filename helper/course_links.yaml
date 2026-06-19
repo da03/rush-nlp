@@ -40,3 +40,9 @@ slides:
   label: "Lecture slides & schedule"
   description: "Per-lecture slides and notes in the schedule"
   purpose: "The student wants lecture slides, notes, or the lecture schedule/decks."
+
+feedback:
+  kind: feedback
+  label: "Report a problem / feedback"
+  description: "Report a bug, outage, or leave course feedback"
+  purpose: "The student wants to report a problem or outage (e.g. Chrysalis or LEARN is down / not working) or leave feedback about the course."
