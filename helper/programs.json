@@ -1,12 +1,13 @@
 {
   "compiler": "paw-ft-bs48",
-  "compiled_at": "2026-06-18T17:45:52.937564+00:00",
+  "compiled_at": "2026-06-19T01:20:02.992233+00:00",
   "programs": {
     "page_classifier": "eb5b6134042db08a13b4",
-    "answerer": "bf9e8a9af4478d4dc772",
+    "answerer": "8a392580747b580a684a",
     "validator": "ae1d51dd17d296dc747f",
     "domain_router": "7929e72cfd17891788e1",
     "course_classifier": "204bb662ee5552486ae9",
-    "course_answerer": "54cb232a7b2595eac4ee"
+    "course_answerer": "54cb232a7b2595eac4ee",
+    "rubric_checker": "f8bb8df849538c150e91"
   }
 }

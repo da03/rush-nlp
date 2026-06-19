@@ -1,102 +1,139 @@
-# Freeform-answer benchmark: questions for the answerer + validator.
-# eval.py runs the full pipeline and writes helper/bench/report.md with the
-# generated answers + validator verdicts for MANUAL grading against `rubric`.
-# `expect_answerable: false` means a good system should decline gracefully.
+# Freeform-answer benchmark for the SITE answerer. Open-ended cases carry
+# `rubric_points: [{text, required}]` graded by the rubric_checker (helper/grader.py);
+# pass = all REQUIRED points hit. `rubric` is kept as a human-readable summary.
+# `expect_answerable: false` marks must-decline cases (graded by declining, not by points).
 #
 # IMPORTANT: queries are HELD OUT - paraphrases that do NOT appear verbatim in
 # helper/specs/answerer.txt, so the score reflects generalization.
 
 - query: "what's your current focus"
   rubric: "Should mention ProgramAsWeights and NeuralOS (bonus: implicit reasoning, WildChat). Links expected."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Mentions ProgramAsWeights", required: true}
+    - {text: "Mentions NeuralOS", required: true}
+    - {text: "Includes markdown links to the projects", required: false}
 
 - query: "which university awarded your doctorate"
   rubric: "Harvard University. Bonus: advisors Alexander Rush and Stuart Shieber."
-  expect_answerable: true
+  rubric_points:
+    - {text: "States the PhD is from Harvard", required: true}
+    - {text: "Names advisors Alexander Rush and Stuart Shieber", required: false}
 
 - query: "what's your educational background"
-  rubric: "Harvard PhD, CMU Master's (Eric Xing), Tsinghua bachelor's."
-  expect_answerable: true
+  rubric: "Harvard PhD, CMU Master's, Tsinghua bachelor's."
+  rubric_points:
+    - {text: "Mentions the PhD from Harvard", required: true}
+    - {text: "Mentions the Master's from Carnegie Mellon", required: true}
+    - {text: "Mentions the Bachelor's from Tsinghua", required: true}
 
 - query: "can I apply to your group"
-  rubric: "Not actively recruiting; PhD students only / exceptional cases; doesn't reply to generic inquiries; read papers and reach out with specifics."
-  expect_answerable: true
+  rubric: "Not actively recruiting; PhD students only / exceptional cases; doesn't reply to generic inquiries."
+  rubric_points:
+    - {text: "Says he is not actively recruiting new students", required: true}
+    - {text: "Mentions he cannot reply to generic inquiries", required: false}
 
 - query: "give me an overview of neuralos"
-  rubric: "A neural world model / operating system simulated by neural networks; the most flexible UI. Link expected."
-  expect_answerable: true
+  rubric: "A neural world model / OS simulated by neural networks; the most flexible UI. Link expected."
+  rubric_points:
+    - {text: "Describes NeuralOS as a neural model that simulates an operating system / computing environment", required: true}
+    - {text: "Includes a markdown link to NeuralOS", required: false}
 
 - query: "what's the wildchat project about"
-  rubric: "Large-scale dataset of real user-ChatGPT conversations; WaPo feature; used by OpenAI/Anthropic for safety eval. Link expected."
-  expect_answerable: true
+  rubric: "Large-scale dataset of real user-ChatGPT conversations; WaPo feature; OpenAI/Anthropic safety eval."
+  rubric_points:
+    - {text: "Describes WildChat as a large dataset of real user-chatbot conversations", required: true}
+    - {text: "Mentions a notable use (Washington Post feature, or use by OpenAI/Anthropic)", required: false}
 
 - query: "what subject do you teach"
   rubric: "CS 486/686, Introduction to AI, at Waterloo."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Says he teaches CS 486/686, Introduction to Artificial Intelligence", required: true}
 
 - query: "explain program as weights"
-  rubric: "Compiles natural language specs into tiny neural functions; shifts LLMs from problem solvers to tool builders. Link expected."
-  expect_answerable: true
+  rubric: "Compiles natural language specs into tiny neural functions; problem solvers -> tool builders."
+  rubric_points:
+    - {text: "Says it compiles natural language specs into small neural functions", required: true}
+    - {text: "Mentions shifting LLMs from problem solvers to tool builders", required: false}
 
 - query: "what's your current position"
-  rubric: "Assistant Professor at University of Waterloo (also Harvard SEAS associate, Vector affiliate)."
-  expect_answerable: true
+  rubric: "Assistant Professor at University of Waterloo."
+  rubric_points:
+    - {text: "States he is an Assistant Professor at the University of Waterloo", required: true}
 
 - query: "who advised your phd"
-  rubric: "Alexander Rush and Stuart Shieber (PhD); postdoc with Yejin Choi."
-  expect_answerable: true
+  rubric: "Alexander Rush and Stuart Shieber (PhD)."
+  rubric_points:
+    - {text: "Names Alexander Rush and Stuart Shieber as his PhD advisors", required: true}
 
 - query: "who did you intern under"
-  rubric: "Internship mentors: Anima Anandkumar / Weili Nie / Arash Vahdat / Chaowei Xiao (NVIDIA), Marc'Aurelio Ranzato / Arthur Szlam (FAIR), David Rosenberg / Gideon Mann (Bloomberg), Charles Elkan (UCSD). Any subset."
-  expect_answerable: true
+  rubric: "Internship mentors at NVIDIA / FAIR / Bloomberg / UCSD (any subset)."
+  rubric_points:
+    - {text: "Names at least one internship mentor (e.g. Anima Anandkumar, Marc'Aurelio Ranzato, David Rosenberg, Charles Elkan)", required: true}
 
 - query: "what work are you best known for"
   rubric: "WildChat and/or OpenNMT are reasonable; should stay grounded."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Names at least one notable work (WildChat, OpenNMT, ProgramAsWeights, NeuralOS, Implicit CoT)", required: true}
 
 - query: "have you received any awards"
-  rubric: "Any of: Gordon Bell Prize, NVIDIA Fellowship, Laude Slingshots 2026, etc. Grounded only."
-  expect_answerable: true
+  rubric: "Gordon Bell Prize, NVIDIA Fellowship, Laude Slingshots 2026, etc. Grounded only."
+  rubric_points:
+    - {text: "Names at least one real award", required: true}
 
 - query: "who do you supervise"
-  rubric: "Current students: PhD (Wentao Zhang, Max Ku, Yubo Wang), MMath (Luke Rivard, Liliana Hotsko, Henry Lin), undergrad (Yifan Zong, Austing Dong, Akira Kudo). Ziwei Tang and Xin Yan were offered but couldn't join (visa) - must NOT be listed as current students."
-  expect_answerable: true
+  rubric: "Current students (PhD Wentao Zhang/Max Ku/Yubo Wang; MMath; undergrad). Not Ziwei Tang/Xin Yan."
+  rubric_points:
+    - {text: "Names at least one of his current students", required: true}
 
 - query: "which of your projects do you like most"
-  rubric: "ProgramAsWeights / NeuralOS (bonus Implicit CoT, WildChat); should include markdown links."
-  expect_answerable: true
+  rubric: "ProgramAsWeights / NeuralOS (bonus Implicit CoT, WildChat); markdown links."
+  rubric_points:
+    - {text: "Names ProgramAsWeights and/or NeuralOS as a favorite", required: true}
+    - {text: "Includes markdown links", required: false}
 
 - query: "what companies have you interned at"
   rubric: "NVIDIA, FAIR, Bloomberg, UCSD (any subset)."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Names at least one company (NVIDIA, Facebook AI Research, Bloomberg, UCSD)", required: true}
 
 - query: "has your work been covered by the media"
-  rubric: "Washington Post / TechCrunch / NZZ / CTV; should include markdown links."
-  expect_answerable: true
+  rubric: "Washington Post / TechCrunch / NZZ / CTV; markdown links."
+  rubric_points:
+    - {text: "Names at least one media outlet (Washington Post, TechCrunch, NZZ, CTV)", required: true}
+    - {text: "Includes a markdown link to the coverage", required: false}
 
 - query: "what is implicit chain of thought"
-  rubric: "Internalizing reasoning into a model's hidden computation instead of spelling out each step. Link expected."
-  expect_answerable: true
+  rubric: "Internalizing reasoning into hidden computation instead of spelling out each step. Link expected."
+  rubric_points:
+    - {text: "Describes internalizing reasoning into the model's hidden computation instead of spelling out steps", required: true}
+    - {text: "Includes a markdown link", required: false}
 
 - query: "tell me about your open-source demos"
-  rubric: "OpenNMT, Neural Linguistic Steganography (steganography.live), im2markup (image-to-LaTeX); links expected."
-  expect_answerable: true
+  rubric: "OpenNMT, Neural Linguistic Steganography, im2markup; links expected."
+  rubric_points:
+    - {text: "Names at least one open-source project (OpenNMT, Neural Linguistic Steganography, im2markup)", required: true}
+    - {text: "Includes markdown links", required: false}
 
 - query: "where do you think AI is going"
-  rubric: "Doesn't claim to know; bets on ProgramAsWeights (problem solvers -> tool builders) and NeuralOS (flexible UI). Links expected."
-  expect_answerable: true
+  rubric: "Doesn't claim to know; bets on ProgramAsWeights and NeuralOS. Links expected."
+  rubric_points:
+    - {text: "Mentions his bets on ProgramAsWeights and NeuralOS", required: true}
+    - {text: "Conveys that he doesn't claim to know where AI is headed", required: false}
 
 - query: "what's your age"
-  rubric: "Playful answer: 'Old enough to have papers rejected...'. Must NOT reveal a real age."
-  expect_answerable: true
+  rubric: "Playful answer; must NOT reveal a real age."
+  rubric_points:
+    - {text: "Gives the playful non-answer and does not state a real age", required: true}
 
 - query: "how should I prompt Yuntian"
-  rubric: "Playful: start with 'ProgramAsWeights is exciting' or 'NeuralOS is the future.' (Must route to question, NOT the email link.)"
-  expect_answerable: true
+  rubric: "Playful: start with 'ProgramAsWeights is exciting' or 'NeuralOS is the future.'"
+  rubric_points:
+    - {text: "Gives the playful prompt ('ProgramAsWeights is exciting' or 'NeuralOS is the future')", required: true}
 
 - query: "how was this chatbot made"
-  rubric: "Built with ProgramAsWeights - a pipeline of 3 small neural programs (page classifier, answerer, validator) compiled from natural-language specs. Link expected."
-  expect_answerable: true
+  rubric: "Built with ProgramAsWeights - a pipeline of small neural programs."
+  rubric_points:
+    - {text: "Says it is built with ProgramAsWeights", required: true}
 
 # --- Should decline gracefully (not in facts / private) ---
 - query: "how much do you earn"
@@ -104,7 +141,7 @@
   expect_answerable: false
 
 - query: "what's your date of birth"
-  rubric: "Decline gracefully (private). Must NOT invent a date. (Age question is playful; exact DOB is private.)"
+  rubric: "Decline gracefully (private). Must NOT invent a date."
   expect_answerable: false
 
 - query: "where do you live"

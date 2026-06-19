@@ -1,0 +1,286 @@
+# Meta-benchmark for the rubric_checker PAW grader (Step 1).
+#
+# Each case is a (question, answer, requirement) triple with a HAND-ASSIGNED gold
+# label. gold=yes means the Answer satisfies the Requirement; gold=no means it
+# omits / is too vague / declines / or contradicts it. Requirements are POSITIVE
+# (things the answer should do), including "declines X" requirements; negative
+# "must NOT say X" checks are handled separately (rule-based), not by this grader.
+#
+# These are held out from specs/rubric_checker.txt (different content) so the meta
+# score reflects generalization. `note` records why I labeled it that way - reread
+# it when eyeballing grader disagreements.
+
+# --- education: correct / omitted / contradicted ---
+- q: "where did you get your doctorate"
+  a: "Yuntian earned his PhD in Computer Science from Harvard University."
+  point: "States the PhD is from Harvard"
+  gold: yes
+- q: "where did you get your doctorate"
+  a: "Yuntian earned his PhD in Computer Science from Harvard University."
+  point: "Names his PhD advisors"
+  gold: no
+  note: omitted
+- q: "tell me about your studies"
+  a: "He did his PhD at Harvard, advised by Alexander Rush and Stuart Shieber."
+  point: "Names advisor Alexander Rush"
+  gold: yes
+- q: "where did you do your phd"
+  a: "He completed his doctorate at Princeton."
+  point: "States the PhD is from Harvard"
+  gold: no
+  note: contradiction
+- q: "what's your academic background"
+  a: "PhD from Harvard, Master's from Carnegie Mellon, Bachelor's from Tsinghua."
+  point: "Mentions the Bachelor's from Tsinghua"
+  gold: yes
+- q: "what's your academic background"
+  a: "PhD from Harvard, Master's from Carnegie Mellon, Bachelor's from Tsinghua."
+  point: "Mentions a postdoc at the Allen Institute for AI"
+  gold: no
+  note: omitted
+- q: "who advised your phd"
+  a: "He was advised by Yejin Choi during his postdoc."
+  point: "Names his PhD advisors (Rush and Shieber)"
+  gold: no
+  note: names the postdoc advisor, not PhD advisors
+
+# --- recruiting (the real hallucination case) ---
+- q: "are you accepting students"
+  a: "Yuntian is not actively recruiting and takes PhD students only in exceptional cases."
+  point: "Indicates he is not actively recruiting"
+  gold: yes
+- q: "are you accepting students"
+  a: "Yuntian is a PhD student at Harvard advised by Rush and Shieber."
+  point: "Indicates whether he is recruiting students"
+  gold: no
+  note: real hallucinated answer; says nothing about recruiting
+- q: "can I join your group"
+  a: "He is not actively recruiting and cannot reply to generic inquiries."
+  point: "Mentions he cannot reply to generic inquiries"
+  gold: yes
+- q: "may I apply for his phd"
+  a: "He is not actively recruiting and cannot reply to generic inquiries."
+  point: "Conveys the not-actively-recruiting policy"
+  gold: yes
+
+# --- research ---
+- q: "what do you work on"
+  a: "Mainly ProgramAsWeights and NeuralOS."
+  point: "Mentions ProgramAsWeights"
+  gold: yes
+- q: "what do you work on"
+  a: "Mainly ProgramAsWeights and NeuralOS."
+  point: "Mentions NeuralOS"
+  gold: yes
+- q: "what's your research"
+  a: "He works on ProgramAsWeights."
+  point: "Mentions NeuralOS"
+  gold: no
+- q: "what is wildchat"
+  a: "WildChat is a large dataset of real user-chatbot conversations."
+  point: "Describes WildChat as a dataset of real user-chatbot conversations"
+  gold: yes
+- q: "what is wildchat"
+  a: "WildChat is a chatbot that Yuntian built."
+  point: "Describes WildChat as a dataset of conversations"
+  gold: no
+  note: wrong (calls it a chatbot)
+- q: "what's program as weights"
+  a: "It compiles natural-language specs into small neural functions."
+  point: "Says it compiles natural language into neural functions"
+  gold: yes
+- q: "what is neuralos"
+  a: "I don't have that information."
+  point: "Describes NeuralOS"
+  gold: no
+  note: declined but answerable
+
+# --- playful / privacy ---
+- q: "how old are you"
+  a: "Old enough to have papers rejected before they became obvious."
+  point: "Gives a playful non-answer instead of a number"
+  gold: yes
+- q: "how old are you"
+  a: "Yuntian is 32 years old."
+  point: "Avoids giving a specific age"
+  gold: no
+  note: gives an age
+- q: "what is your salary"
+  a: "I don't have that information."
+  point: "Declines to reveal private salary information"
+  gold: yes
+- q: "where do you live"
+  a: "He lives at 12 King St, Waterloo."
+  point: "Declines to reveal a home address"
+  gold: no
+  note: reveals an address
+- q: "what's your h-index"
+  a: "I don't have that information."
+  point: "States his h-index"
+  gold: no
+
+# --- media / awards / links ---
+- q: "any press coverage"
+  a: "His WildChat work was covered by the Washington Post and TechCrunch."
+  point: "Mentions the Washington Post"
+  gold: yes
+- q: "any press coverage"
+  a: "His WildChat work was covered by the Washington Post and TechCrunch."
+  point: "Mentions NZZ coverage"
+  gold: no
+  note: omitted
+- q: "any press"
+  a: "It was featured in the [Washington Post](https://wapo.st/3A6e4me)."
+  point: "Includes a clickable link to the coverage"
+  gold: yes
+- q: "what awards have you won"
+  a: "He won the ACM Gordon Bell Special Prize and an NVIDIA Fellowship."
+  point: "Names at least one specific award"
+  gold: yes
+- q: "what awards have you won"
+  a: "He is a professor at Waterloo."
+  point: "Names at least one award"
+  gold: no
+  note: off-topic for the requirement
+- q: "favorite project"
+  a: "His favorites are [ProgramAsWeights](https://programasweights.com) and [NeuralOS](https://neural-os.com)."
+  point: "Includes markdown links to the projects"
+  gold: yes
+- q: "favorite project"
+  a: "His favorites are ProgramAsWeights and NeuralOS."
+  point: "Includes markdown links to the projects"
+  gold: no
+  note: plain text, no links
+- q: "where's your cv"
+  a: "His CV covers his research and teaching."
+  point: "Provides a link to the CV"
+  gold: no
+
+# --- course factual ---
+- q: "when is chat 5 due"
+  a: "Chat 5 is due Thursday, June 18, 2026."
+  point: "States the due date is June 18, 2026"
+  gold: yes
+- q: "when is chat 5 due"
+  a: "Chat 5 is due June 11, 2026."
+  point: "States the due date is June 18, 2026"
+  gold: no
+  note: wrong date
+- q: "who handles assignment 1"
+  a: "Post Assignment 1 questions to Dake Zhang."
+  point: "Identifies Dake Zhang as the contact"
+  gold: yes
+- q: "what room is the class in"
+  a: "Both sections meet in MC 4021."
+  point: "States the room is MC 4021"
+  gold: yes
+- q: "what room is the class in"
+  a: "Lectures are on Tuesdays and Thursdays."
+  point: "States the room (MC 4021)"
+  gold: no
+  note: answers time, not room
+- q: "grading breakdown"
+  a: "CS486: assignments 30%, chats 20%, final 50% which you must pass, optional project +10%."
+  point: "States the final is worth 50%"
+  gold: yes
+- q: "grading breakdown"
+  a: "CS486: assignments 30%, chats 20%, final 50% which you must pass, optional project +10%."
+  point: "States that the final must be passed to pass the course"
+  gold: yes
+- q: "grading breakdown"
+  a: "CS486: assignments 30%, chats 20%, final 50% which you must pass, optional project +10%."
+  point: "Mentions the optional project bonus"
+  gold: yes
+- q: "grading"
+  a: "Assignments are 30% and there's a final."
+  point: "States the final exam weight"
+  gold: no
+  note: omits the weight
+- q: "how is the course graded"
+  a: "It depends on assignments and exams."
+  point: "States a specific weight for at least one component"
+  gold: no
+  note: vague
+- q: "next assignment"
+  a: "The next assignment is Assignment 1, due June 25, 2026."
+  point: "Identifies Assignment 1 as the next one"
+  gold: yes
+- q: "next assignment"
+  a: "The next assignment is Assignment 1, due June 25, 2026."
+  point: "Gives the due date June 25, 2026"
+  gold: yes
+- q: "textbook"
+  a: "The main text is by Poole and Mackworth."
+  point: "Names Poole and Mackworth"
+  gold: yes
+- q: "textbook"
+  a: "We use Russell and Norvig."
+  point: "Names the primary text Poole and Mackworth"
+  gold: no
+- q: "final exam date"
+  a: "The final exam is during August 7-20, 2026."
+  point: "States the exam window of August 7-20"
+  gold: yes
+- q: "where do I submit code"
+  a: "Assignments are submitted on LEARN."
+  point: "Says assignments are submitted on LEARN"
+  gold: yes
+
+# --- course policy ---
+- q: "is the project required"
+  a: "Optional for CS486 (+10% bonus), required for CS686 (30%)."
+  point: "Says the CS686 project is required"
+  gold: yes
+- q: "is the project required"
+  a: "Optional for CS486 (+10% bonus), required for CS686 (30%)."
+  point: "Says the CS486 project is optional"
+  gold: yes
+- q: "is the project required"
+  a: "Yes, everyone must do the project."
+  point: "Says the CS486 project is optional"
+  gold: no
+  note: contradicts
+- q: "what if I fail the final"
+  a: "For CS486 you must pass the final to pass the course."
+  point: "States you must pass the final to pass the course"
+  gold: yes
+- q: "what if I fail the final"
+  a: "I don't have that information."
+  point: "Explains the must-pass-final rule"
+  gold: no
+
+# --- off-topic / junk / non-English ---
+- q: "do your students have partners"
+  a: "I don't have that information."
+  point: "Declines to share private info about students"
+  gold: yes
+- q: "what is 1+1"
+  a: "I don't have that information."
+  point: "Declines a nonsense/off-topic query instead of answering"
+  gold: yes
+- q: "如何成为教皇"
+  a: "I'm not sure about that."
+  point: "Declines an off-topic question"
+  gold: yes
+- q: "office hours"
+  a: "TAs hold office hours during the week."
+  point: "Gives at least one specific office-hour day or time"
+  gold: no
+  note: vague, no specific slot
+
+# --- wrong-entity / vague ---
+- q: "who do you supervise"
+  a: "His PhD advisors were Rush and Shieber."
+  point: "Lists at least one of his students"
+  gold: no
+  note: answered advisors, not students
+- q: "who do you supervise"
+  a: "His students include Wentao Zhang, Max Ku, and Yubo Wang."
+  point: "Names at least one of his students"
+  gold: yes
+  note: point must be checkable from the answer (don't require PhD-vs-MMath detail the answer omits)
+- q: "what companies did you intern at"
+  a: "He worked at several tech companies."
+  point: "Names at least one specific company"
+  gold: no
+  note: vague

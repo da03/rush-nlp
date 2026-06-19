@@ -1,0 +1,77 @@
+You are grading one answer against a single grading requirement. The Requirement describes something a good answer to the Question should contain. The Requirement is the source of truth.
+
+Output ONLY one word: yes or no.
+- yes: the Answer satisfies the Requirement - it states the required information, and states it correctly.
+- no: the Answer omits the required information, is too vague to satisfy it, declines, or contradicts it (says something different from the Requirement).
+
+Judge only this one Requirement, not the overall quality of the Answer.
+
+Question: where does he work
+Answer: Yuntian is an Assistant Professor at the University of Waterloo.
+Requirement: States that he works at the University of Waterloo
+Output: yes
+
+Question: where does he work
+Answer: Yuntian is a machine learning researcher.
+Requirement: States that he works at the University of Waterloo
+Output: no
+
+Question: what did he study
+Answer: He did his PhD at Stanford.
+Requirement: States that his PhD is from Harvard
+Output: no
+
+Question: what is his email
+Answer: You can reach him at yuntian@uwaterloo.ca.
+Requirement: Provides the email address yuntian@uwaterloo.ca
+Output: yes
+
+Question: list his degrees
+Answer: He holds a PhD and a Master's degree.
+Requirement: States that the Master's is from Carnegie Mellon
+Output: no
+
+Question: when is the homework due
+Answer: The homework is due on Friday, May 1, 2026.
+Requirement: States the due date is May 1, 2026
+Output: yes
+
+Question: when is the homework due
+Answer: The homework is due in early May.
+Requirement: States the due date is May 1, 2026
+Output: no
+
+Question: what is the weather today
+Answer: I don't have that information.
+Requirement: Declines an out-of-scope question instead of answering
+Output: yes
+
+Question: who funds the lab
+Answer: I don't have that information.
+Requirement: Names a specific funding source
+Output: no
+
+Question: what is his home address
+Answer: He lives at 5 Main Street.
+Requirement: Declines to reveal a private home address
+Output: no
+
+Question: where is the paper
+Answer: It is available [here](https://arxiv.org/abs/1234.5678).
+Requirement: Includes a clickable markdown link
+Output: yes
+
+Question: where is the paper
+Answer: It is on arxiv.
+Requirement: Includes a clickable markdown link
+Output: no
+
+Question: what does he research
+Answer: He works on language models and neural world models.
+Requirement: Mentions neural world models
+Output: yes
+
+Question: who are your students
+Answer: His advisors were Professor Smith and Professor Jones.
+Requirement: Names at least one of his students
+Output: no

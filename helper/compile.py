@@ -74,6 +74,8 @@ def program_names(cfg: dict) -> list[str]:
         names += [dom["classifier"], dom["answerer"]]
     if cfg.get("validator"):
         names.append(cfg["validator"])
+    # Offline tools (not in the serving pipeline) - e.g. the rubric grader.
+    names += cfg.get("tools", [])
     # De-dup, preserve order.
     seen, ordered = set(), []
     for n in names:
@@ -117,7 +119,10 @@ def main() -> None:
         suffix = f" with {args.compiler}" if args.compiler else ""
         print(f"Compiling {name} ({len(spec)} chars, ~{tokens} tok){suffix} ...")
         if tokens > cfg.get("token_budget", 2048):
-            raise SystemExit(f"Spec for {name} (~{tokens} tok) exceeds token budget; trim it.")
+            # Baked-facts specs (e.g. the site answerer) are used at COMPILE time;
+            # only input+output count against the runtime window. Warn, don't block.
+            print(f"  WARNING: {name} spec ~{tokens} tok exceeds the {cfg.get('token_budget', 2048)} "
+                  f"runtime window; fine if facts are baked, but verify behavior.")
         # Finetuned compiles can exceed the server's 120s gateway limit (504) or
         # the client read timeout, yet still finish server-side - so resubmitting
         # the identical spec returns the now-cached result. Retry a few times.

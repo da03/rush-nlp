@@ -66,43 +66,47 @@
 - query: "when is the next chat assignment due"
   expected_next: chats
 
-# ============================ MANUAL (rubric) =================================
+# ===================== OPEN-ENDED (rubric_points, grader-scored) ==============
 
 - query: "how is the course graded"
-  rubric: "CS486: assignments 30%, chat assignments 20%, written final 50% (must pass to pass the course), optional project +10% bonus. (CS686 differs.) Acceptable to give the CS486 breakdown."
-  expect_answerable: true
+  rubric_points:
+    - {text: "States the CS486 final exam is 50% and must be passed", required: true}
+    - {text: "States assignments are 30%", required: false}
+    - {text: "States chat assignments are 20%", required: false}
 
 - query: "what's the difference between cs486 and cs686"
-  rubric: "CS686 has a project (30%) and a 40% final; CS486 has chat assignments (20%) and a 50% final plus an optional project bonus. Both have the 3 assignments (30%)."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Says CS686 has a project (30%) and a 40% final", required: true}
+    - {text: "Says CS486 has chat assignments (20%) and a 50% final", required: true}
 
 - query: "is the project mandatory"
-  rubric: "For CS486 the project is optional (+10% bonus); for CS686 it is required (30%). Either framing acceptable if grounded."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Says the CS486 project is optional", required: true}
+    - {text: "Says the CS686 project is required", required: true}
 
 - query: "what topics does the course cover"
-  rubric: "Search; reasoning under uncertainty (probability, Bayesian networks, HMMs); decision making (decision theory, MDPs, reinforcement learning); machine learning and deep learning (incl. neural networks). Any reasonable subset of the modules."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Names at least one course topic/module (search, reasoning under uncertainty, decision making, or machine learning)", required: true}
 
 - query: "how do office hours work"
-  rubric: "Several TAs hold weekly office hours (mostly Zoom, one in person on Friday in DC 2555), starting the week of May 18. Listing a couple of slots/TAs is fine; must stay grounded."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Indicates TAs hold weekly office hours (Zoom, with one in person)", required: true}
 
 - query: "who should I ask about assignment 1"
-  rubric: "Post on Piazza addressed to Dake Zhang (or email d346zhan@uwaterloo.ca). Should point to Piazza and/or Dake Zhang."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Points to Piazza and/or Dake Zhang for Assignment 1", required: true}
 
 - query: "can I do the project in a group"
-  rubric: "CS686 project may be done individually or in groups of up to 3. Should mention groups of up to 3."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Says the CS686 project may be done in groups of up to 3", required: true}
 
 - query: "what happens if I fail the final"
-  rubric: "The written final must be passed to pass the course (CS486). Should convey the must-pass condition; must not invent a numeric threshold."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Conveys that you must pass the final to pass the course", required: true}
 
 - query: "what reading material is recommended"
-  rubric: "Primary: Poole & Mackworth, Artificial Intelligence: Foundations of Computational Agents (2nd ed, online). Secondary: Russell & Norvig (AIMA), Goodfellow/Bengio/Courville (Deep Learning), Sutton & Barto (RL). Any grounded subset."
-  expect_answerable: true
+  rubric_points:
+    - {text: "Names the primary textbook (Poole and Mackworth) or a real secondary text (Russell & Norvig, Sutton & Barto, Deep Learning)", required: true}
 
 # ===================== MANUAL - should decline gracefully =====================
 

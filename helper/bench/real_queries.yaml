@@ -1,0 +1,195 @@
+# Real visitor questions, hand-curated from the server query log (Step 2).
+#
+# Curated BY HAND from 317 log lines / 217 exact-unique queries: keystroke
+# prefixes ("where i" -> "where is y" -> "where is your phd") and near-dups were
+# collapsed to distinct INTENTS by eyeballing, then each was categorized and given
+# an expected key by hand. Every case here is `source: real`.
+#
+# `cat` (my manual category) + the grading key:
+#   route    -> expected: <label>            (auto-graded routing; "question" = answerer)
+#   factual  -> expected_any / expected_all  (auto substring, cross-checked vs data)
+#   open     -> rubric_points: [{text, required}]  (graded by the rubric_checker)
+#   decline  -> expect_answerable: false     (off-topic/junk/privacy; must not fabricate)
+#   nonenglish -> graceful (don't fabricate; answer or politely note English-only)
+# `page` defaults to site; course cases set page: course:cs486_s26.
+# `note` flags current known-wrong behavior the log revealed (fix in Step 6).
+
+# =====================================================================
+# SITE - link routing
+# =====================================================================
+- {query: "where is your cv", cat: route, expected: cv}
+- {query: "do you have twitter", cat: route, expected: x, note: "x is registry:false; recurring - should give the X link"}
+- {query: "your twitter handle", cat: route, expected: x}
+- {query: "what is your twitter link", cat: route, expected: x}
+- {query: "x.com", cat: route, expected: x}
+- {query: "your x profile", cat: route, expected: x}
+- {query: "follow you on x", cat: route, expected: x}
+- {query: "where is your x", cat: route, expected: x}
+- {query: "your linkedin", cat: route, expected: linkedin}
+- {query: "your semantic scholar profile", cat: route, expected: semantic_scholar}
+- {query: "how to contact you", cat: route, expected: contact}
+- {query: "show me your publications", cat: route, expected: publications}
+
+# =====================================================================
+# SITE - open-ended (rubric-graded)
+# =====================================================================
+# Recruiting / students (the most common real theme; site answerer has hallucinated here)
+- query: "are you hiring students"
+  cat: open
+  rubric_points:
+    - {text: "Says he is not actively recruiting new students", required: true}
+    - {text: "Notes he takes PhD students only in exceptional cases", required: false}
+- query: "are you working with undergrads"
+  cat: open
+  rubric_points:
+    - {text: "Says he is not actively recruiting new students", required: true}
+- query: "can I apply to your group"
+  cat: open
+  rubric_points:
+    - {text: "Says he is not actively recruiting / takes students only in exceptional cases", required: true}
+    - {text: "Mentions he cannot reply to generic inquiries", required: false}
+- query: "I'm Austing Dong, may I apply for his PhD program"
+  cat: open
+  rubric_points:
+    - {text: "Conveys that he is not actively recruiting and cannot reply to generic inquiries", required: true}
+- query: "who do you supervise"
+  cat: open
+  rubric_points:
+    - {text: "Names at least one of his current students", required: true}
+- query: "Who are the students under the instruction of Yuntian"
+  cat: open
+  rubric_points:
+    - {text: "Names at least one of his current students", required: true}
+- query: "Who was his PhD advisor"
+  cat: open
+  rubric_points:
+    - {text: "Names Alexander Rush and/or Stuart Shieber", required: true}
+
+# Identity / role / location
+- query: "who is yuntian"
+  cat: open
+  rubric_points:
+    - {text: "Says he is an Assistant Professor at the University of Waterloo", required: true}
+- query: "what does yuntian do"
+  cat: open
+  rubric_points:
+    - {text: "Says he is a professor / researcher in AI at the University of Waterloo", required: true}
+- query: "what is your position"
+  cat: open
+  rubric_points:
+    - {text: "States he is an Assistant Professor (University of Waterloo)", required: true}
+- query: "which city is Yuntian in"
+  cat: open
+  rubric_points:
+    - {text: "Indicates he is at the University of Waterloo (Waterloo, Ontario)", required: true}
+
+# Education
+- query: "where did you do your undergrad"
+  cat: open
+  rubric_points:
+    - {text: "Says his Bachelor's is from Tsinghua University", required: true}
+- query: "where is your master's degree from"
+  cat: open
+  rubric_points:
+    - {text: "Says his Master's is from Carnegie Mellon", required: true}
+- query: "where is your phd from"
+  cat: open
+  rubric_points:
+    - {text: "Says his PhD is from Harvard", required: true}
+
+# Research / works
+- query: "what are you working on now"
+  cat: open
+  rubric_points:
+    - {text: "Mentions ProgramAsWeights", required: true}
+    - {text: "Mentions NeuralOS", required: true}
+- query: "what are your research interests"
+  cat: open
+  rubric_points:
+    - {text: "Mentions at least one real research direction (ProgramAsWeights, NeuralOS, implicit chain-of-thought, or WildChat)", required: true}
+- query: "what is wildchat"
+  cat: open
+  rubric_points:
+    - {text: "Describes WildChat as a dataset of real user-chatbot conversations", required: true}
+- query: "what is ProgramAsWeights?"
+  cat: open
+  rubric_points:
+    - {text: "Says it compiles natural language specs into small neural functions/programs", required: true}
+- query: "which paper does yuntian like best"
+  cat: open
+  rubric_points:
+    - {text: "Names at least one specific work (e.g. ProgramAsWeights, NeuralOS, Implicit CoT, WildChat)", required: true}
+- query: "What are Yuntian's biggest hits?"
+  cat: open
+  rubric_points:
+    - {text: "Names at least one notable work (WildChat, ProgramAsWeights, NeuralOS, Implicit CoT, OpenNMT)", required: true}
+
+# Meta / playful
+- query: "how old is Yuntian?"
+  cat: open
+  rubric_points:
+    - {text: "Gives the playful non-answer and does not state a real age", required: true}
+- query: "how was this chatbot made"
+  cat: open
+  rubric_points:
+    - {text: "Says it is built with ProgramAsWeights", required: true}
+- query: "how many courses does yuntian teach"
+  cat: open
+  rubric_points:
+    - {text: "Indicates he teaches CS 486/686 (Introduction to AI)", required: true}
+
+# =====================================================================
+# SITE - decline (privacy / off-topic / junk); must not fabricate
+# =====================================================================
+- {query: "how much do you earn", cat: decline, expect_answerable: false}
+- {query: "what is your salary", cat: decline, expect_answerable: false}
+- {query: "is Yuntian married", cat: decline, expect_answerable: false}
+- {query: "do you have a family", cat: decline, expect_answerable: false}
+- {query: "does Yuntian have a kid", cat: decline, expect_answerable: false}
+- {query: "Do your students have girlfriends or boyfriends?", cat: decline, expect_answerable: false}
+- {query: "what's your favorite film", cat: decline, expect_answerable: false}
+- {query: "what's your h-index", cat: decline, expect_answerable: false, note: "not in facts; must not invent a number"}
+- {query: "meow", cat: decline, expect_answerable: false}
+- {query: "who am i", cat: decline, expect_answerable: false}
+- {query: "如何成为罗马教皇", cat: decline, expect_answerable: false, note: "off-topic (how to become the Pope)"}
+
+# =====================================================================
+# SITE - non-English (graceful: answer or politely note English-only; no fabrication)
+# =====================================================================
+- {query: "哪里读的博士", cat: nonenglish, note: "Chinese: where did you do your PhD -> Harvard, or polite English note"}
+
+# =====================================================================
+# COURSE (page: course:cs486_s26)
+# =====================================================================
+# Routing
+- {query: "office hours", page: "course:cs486_s26", cat: route, expected: question, note: "REAL BUG: currently routes to the piazza link instead of answering"}
+- {query: "slides", page: "course:cs486_s26", cat: route, expected: slides}
+- {query: "where is assignment 1 for cs 486", page: "course:cs486_s26", cat: route, expected: learn, note: "REAL BUG: routed to teaching link; assignments live on LEARN"}
+- {query: "I want to access CS486 Assignment 1", page: "course:cs486_s26", cat: route, expected: learn}
+- {query: "where can I find the assignments for CS 486", page: "course:cs486_s26", cat: route, expected: learn}
+- {query: "where is the assignment link", page: "course:cs486_s26", cat: route, expected: learn}
+- {query: "where are the non-chat assignments", page: "course:cs486_s26", cat: route, expected: learn}
+- {query: "Chrysalis is down!", page: "course:cs486_s26", cat: route, expected: feedback, note: "status report -> feedback form"}
+
+# Factual
+- query: "Who are the TAs?"
+  page: "course:cs486_s26"
+  cat: open
+  rubric_points:
+    - {text: "Names at least one of the course TAs (e.g. Dake Zhang, Henry Lin, Bihui Jin)", required: true}
+- {query: "when is the next assignment due", page: "course:cs486_s26", cat: factual, expected_next: assignments}
+- {query: "what's the next due", page: "course:cs486_s26", cat: factual, expected_next: chats}
+
+# Open-ended
+- query: "How is this course graded?"
+  page: "course:cs486_s26"
+  cat: open
+  rubric_points:
+    - {text: "States the CS486 final is 50% (and must be passed)", required: true}
+    - {text: "States assignments are 30%", required: false}
+    - {text: "States chat assignments are 20%", required: false}
+- query: "where can I find the course outline"
+  page: "course:cs486_s26"
+  cat: open
+  rubric_points:
+    - {text: "Points to the course topics/schedule (search, uncertainty, decision making, ML)", required: true}

@@ -26,6 +26,12 @@ domain_router: domain_router
 # Shared answer validator (checks the answer is on-topic for the question).
 validator: validator
 
+# Offline tools compiled by compile.py but NOT part of the serving pipeline.
+# rubric_checker is the benchmark grader (helper/grader.py); validated against
+# helper/bench/grader_meta.yaml before it is trusted to grade the suite.
+tools:
+  - rubric_checker
+
 # Per-node-role generation budgets.
 max_tokens:
   router: 4
