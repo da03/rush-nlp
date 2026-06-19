@@ -42,7 +42,7 @@
 - query: "are you working with undergrads"
   cat: open
   rubric_points:
-    - {text: "Says he is not actively recruiting new students", required: true}
+    - {text: "Either names a current undergraduate student, or says he is not actively recruiting new students", required: true}
 - query: "can I apply to your group"
   cat: open
   rubric_points:

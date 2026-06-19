@@ -53,6 +53,9 @@ Output: calendar
 Input: i want the ics file
 Output: calendar
 
+Input: export the course calendar
+Output: calendar
+
 Input: slides from the markov decision process lecture
 Output: slides
 
@@ -78,6 +81,9 @@ Input: who should I contact about the first assignment
 Output: question
 
 Input: which textbook do we use
+Output: question
+
+Input: what book is required for the class
 Output: question
 
 Input: when is the exam

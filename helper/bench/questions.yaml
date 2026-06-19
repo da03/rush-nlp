@@ -66,9 +66,9 @@
     - {text: "Names Alexander Rush and Stuart Shieber as his PhD advisors", required: true}
 
 - query: "who did you intern under"
-  rubric: "Internship mentors at NVIDIA / FAIR / Bloomberg / UCSD (any subset)."
+  rubric: "Internship mentors or companies (NVIDIA / FAIR / Bloomberg / UCSD), any subset."
   rubric_points:
-    - {text: "Names at least one internship mentor (e.g. Anima Anandkumar, Marc'Aurelio Ranzato, David Rosenberg, Charles Elkan)", required: true}
+    - {text: "Names at least one internship mentor (e.g. Anima Anandkumar, Marc'Aurelio Ranzato) or company (NVIDIA, FAIR, Bloomberg, UCSD)", required: true}
 
 - query: "what work are you best known for"
   rubric: "WildChat and/or OpenNMT are reasonable; should stay grounded."

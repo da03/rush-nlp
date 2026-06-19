@@ -90,7 +90,7 @@
 
 - query: "how do office hours work"
   rubric_points:
-    - {text: "Indicates TAs hold weekly office hours (Zoom, with one in person)", required: true}
+    - {text: "Lists at least one office-hour day/time, or indicates TAs hold weekly office hours", required: true}
 
 - query: "who should I ask about assignment 1"
   rubric_points:
