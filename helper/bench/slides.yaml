@@ -1,0 +1,29 @@
+# Slide-selector benchmark: a topic request -> acceptable lecture number(s).
+# Pass = the returned decks intersect `expected` (for multi-lecture topics, any
+# correct lecture counts). `expected` numbers are the REAL Spring-2026 schedule
+# (L15 = RL, L19-21 = Neural Networks, ...), which is injected at runtime - so this
+# also checks the selector reads the injected list rather than memorizing the
+# different sample list in specs/slide_selector.txt.
+
+- {query: "informed search slides", expected: [3]}
+- {query: "A* slides", expected: [3]}
+- {query: "heuristic search deck", expected: [3]}
+- {query: "uninformed search slides", expected: [2]}
+- {query: "slides on search", expected: [2, 3, 5]}
+- {query: "constraint satisfaction slides", expected: [4]}
+- {query: "local search slides", expected: [5]}
+- {query: "probability slides", expected: [6]}
+- {query: "bayesian network slides", expected: [7, 8]}
+- {query: "bayes net deck", expected: [7, 8]}
+- {query: "variable elimination slides", expected: [9]}
+- {query: "hidden markov model slides", expected: [10, 11]}
+- {query: "HMM slides", expected: [10, 11]}
+- {query: "decision theory slides", expected: [12]}
+- {query: "markov decision process slides", expected: [13, 14]}
+- {query: "reinforcement learning slides", expected: [15]}
+- {query: "RL lecture", expected: [15]}
+- {query: "intro to machine learning slides", expected: [16]}
+- {query: "unsupervised learning slides", expected: [17]}
+- {query: "decision tree slides", expected: [18]}
+- {query: "neural network slides", expected: [19, 20, 21]}
+- {query: "slides for the first lecture", expected: [1]}

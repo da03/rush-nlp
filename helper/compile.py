@@ -74,6 +74,8 @@ def program_names(cfg: dict) -> list[str]:
         names += [dom["classifier"], dom["answerer"]]
     if cfg.get("validator"):
         names.append(cfg["validator"])
+    # Resource-router selector programs (e.g. slide_selector).
+    names += [rr["program"] for rr in cfg.get("resource_routers", [])]
     # Offline tools (not in the serving pipeline) - e.g. the rubric grader.
     names += cfg.get("tools", [])
     # De-dup, preserve order.

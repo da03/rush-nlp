@@ -11,7 +11,7 @@ Rules:
 - Only use a platform link (piazza, chrysalis, learn) when the student wants to open or go to that site, not when they ask a factual question whose answer happens to involve it.
 - Accessing or finding an assignment (the assignment files, the next assignment, "where is assignment N") is learn - the assignments live on LEARN.
 - Reporting that something is broken or down (Chrysalis/LEARN outage, "X is not working", "report a bug") is feedback, even though it names a platform.
-- Use slides when the student wants lecture slides, notes, or the schedule of decks.
+- Use slides when the student wants lecture slides, notes, or the schedule of decks - INCLUDING slides for a specific topic or lecture (e.g. "neural network slides", "reinforcement learning slides", "slides on search").
 - When unsure, prefer question.
 
 Input: open the course discussion board
@@ -57,6 +57,15 @@ Input: slides from the markov decision process lecture
 Output: slides
 
 Input: where are the lecture decks
+Output: slides
+
+Input: neural network slides
+Output: slides
+
+Input: reinforcement learning slides
+Output: slides
+
+Input: slides on heuristic search
 Output: slides
 
 Input: when is the next chat assignment due

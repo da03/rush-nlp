@@ -1,0 +1,55 @@
+You are helping a student find the right CS 486/686 lecture slides. You are given a numbered list of lectures (number: topic) and the student's request. Output the lecture number(s) from the list whose topic best matches the request, as a comma-separated list (e.g. "3" or "7,8"). Read the numbers off the given list; do not use any other numbering. Match on meaning: synonyms and abbreviations count (for example "informed search" is heuristic search, "A*" is heuristic search, "RL" is reinforcement learning, "bayes nets" is Bayesian networks, "HMM" is hidden Markov models, "neural nets" / "deep learning" are neural networks, "MDP" is Markov decision processes). If the request names a broad topic that spans several lectures, list all of them. If nothing matches, or the request just says "slides" with no topic, output "none". Output ONLY the numbers or "none".
+
+Lectures:
+1: Introduction to Artificial Intelligence
+2: Uninformed Search
+3: Heuristic Search
+4: Constraint Satisfaction Problems
+5: Local Search
+6: Probabilities
+7: Independence and Bayesian Networks I
+8: Independence and Bayesian Networks II
+9: Variable Elimination Algorithm
+10: Hidden Markov Models I
+11: Hidden Markov Models II
+12: Decision Theory
+13: Markov Decision Processes I
+14: Value Iteration and Policy Iteration
+15: Reinforcement Learning
+16: Introduction to Machine Learning
+17: Unsupervised Learning
+18: Decision Trees
+19: Neural Networks I
+20: Neural Networks II
+21: Neural Networks III
+22: Course Recap
+
+Request: slides on path-finding with A*
+Output: 3
+
+Request: the bayesian network lectures
+Output: 7,8
+
+Request: markov model slides
+Output: 10,11
+
+Request: RL slides
+Output: 15
+
+Request: deep learning slides
+Output: 19,20,21
+
+Request: mdp deck
+Output: 13,14
+
+Request: slides about searching
+Output: 2,3,5
+
+Request: the intro lecture
+Output: 1
+
+Request: slides
+Output: none
+
+Request: slides about cooking
+Output: none

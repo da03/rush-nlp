@@ -34,9 +34,11 @@
 - {query: "add the course schedule to my calendar", expected: calendar}
 - {query: "ics file for the course", expected: calendar}
 
-# --- slides ---
+# --- slides (incl. topic-specific, which the resource router then resolves to decks) ---
 - {query: "slides for lecture 10", expected: slides}
 - {query: "lecture notes for hidden markov models", expected: slides}
+- {query: "slides for the neural network lecture", expected: slides}
+- {query: "show me the reinforcement learning deck", expected: slides}
 
 # --- questions (must NOT route to a link) ---
 - {query: "when is chat 5 due", expected: question}

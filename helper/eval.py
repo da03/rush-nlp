@@ -140,6 +140,27 @@ def sec_route_real(p, t):
     return correct, n
 
 
+def sec_slides(p, t):
+    rr = p.resource_routers.get(("course", "slides"))
+    if not rr or rr["program"] not in p.programs:
+        t.add("\n(slides: slide_selector not compiled - skipped)")
+        return None
+    cases = load("slides.yaml")
+    correct, miss = 0, []
+    for c in cases:
+        items = p.resource_items(rr, c["query"])
+        nums = [it["num"] for it in items]
+        ok = bool(set(nums) & set(c["expected"]))
+        correct += ok
+        if not ok:
+            miss.append((c["query"], c["expected"], nums))
+    n = len(cases)
+    t.add(f"\n=== Slide selector ({n}) === {correct}/{n} = {correct/n:.0%}")
+    for q, e, got in miss:
+        t.add(f"   miss: {q!r} expected one of {e}, got {got}")
+    return correct, n
+
+
 def _domain_for(p, case, default):
     page = case.get("page")
     return p.resolve_domain(case["query"], page) if page else default
@@ -248,6 +269,10 @@ def main():
         summary["course_class"] = sec_classifier(p, t, "course", "course_pages.yaml")
     if want("route"):
         summary["real_route"] = sec_route_real(p, t)
+    if want("slides"):
+        res = sec_slides(p, t)
+        if res:
+            summary["slides"] = res
     if want("factual"):
         summary["factual"] = sec_factual(p, t)
     if want("open") and gfn is not None:

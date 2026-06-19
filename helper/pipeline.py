@@ -53,6 +53,13 @@ CONTEXT_PROVIDERS = {
     "course": course_facts.retrieve,
 }
 
+# Resource-router providers: (render candidate list, map selected ids -> link items).
+# The rule side (candidate list + id->URL) is deterministic; the fuzzy side is the
+# selector PAW program. This is the generic hook for slides today, papers/demos later.
+RESOURCE_PROVIDERS = {
+    "course_lectures": (course_facts.render_lectures, course_facts.slides_for),
+}
+
 
 class Pipeline:
     def __init__(self, programs: dict | None = None, config: dict | None = None):
@@ -61,6 +68,8 @@ class Pipeline:
         self.mt = self.cfg["max_tokens"]
         self.resilience = self.cfg.get("resilience", {})
         self.links = {d: _load_links(spec["links"]) for d, spec in self.cfg["domains"].items()}
+        # (domain, classifier label) -> resource-router config (e.g. course/slides).
+        self.resource_routers = {(rr["domain"], rr["label"]): rr for rr in self.cfg.get("resource_routers", [])}
         # A domain is usable only if its classifier + answerer are compiled.
         self.available = [
             d for d, spec in self.cfg["domains"].items()
@@ -125,10 +134,30 @@ class Pipeline:
             verdict = self._infer(self.cfg["validator"], f"Q: {query} A: {answer}", self.mt["validator"]).lower()
         return answer, verdict
 
-    # --- per-domain classify -> link | answer -> validate ------------------
+    def resource_items(self, rr: dict, query: str) -> list[dict]:
+        """Rule+fuzzy resource lookup: inject candidate list, select ids, map to items."""
+        render, mapper = RESOURCE_PROVIDERS[rr["provider"]]
+        candidates = render()
+        raw = self._infer(rr["program"], f"{rr.get('candidate_label', 'Items')}:\n{candidates}\n\nRequest: {query}",
+                          self.mt.get("selector", 16))
+        ids = course_facts.parse_lecture_nums(raw)
+        return mapper(ids)[: rr.get("max_items", 4)]
+
+    # --- per-domain classify -> resource | link | answer -> validate -------
     def _run_domain(self, domain: str, query: str) -> dict:
         links = self.links[domain]
         label = self.classify(domain, query)
+
+        # Hierarchical resource router (e.g. course/slides -> specific decks).
+        rr = self.resource_routers.get((domain, label))
+        if rr and rr["program"] in self.programs:
+            items = self.resource_items(rr, query)
+            if items:
+                res = {"type": "links", "label": rr.get("result_label", "Links"),
+                       "items": [{"label": f"L{it['num']}: {it['topic']}", "url": it["url"],
+                                  "description": rr.get("item_description", "")} for it in items]}
+                return {"result": res, "domain": domain, "route": label, "verdict": None}
+            # No match -> fall through to the plain link (fallback, e.g. the schedule).
 
         if label != "question" and label in links:
             info = links[label]

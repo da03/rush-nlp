@@ -217,6 +217,47 @@ def retrieve(query: str, data: dict | None = None) -> str:
     return render_facts(data, select_sections(query))
 
 
+# --- lecture slide router support (rule side of the rule+fuzzy slide router) ---
+
+SITE_BASE = "https://yuntiandeng.com"
+
+
+def lecture_list(data: dict | None = None) -> list[tuple[int, str, str]]:
+    """(lecture_num, topic, absolute slides URL) for every lecture, from the schedule."""
+    c = data or load_course_data()
+    out = []
+    for e in c["schedule"]:
+        if e.get("type") == "lecture" and e.get("slides"):
+            url = e["slides"]
+            if url.startswith("/"):
+                url = SITE_BASE + url
+            out.append((e["lecture_num"], e["topic"], url))
+    return out
+
+
+def render_lectures(data: dict | None = None) -> str:
+    """The candidate list injected into the slide_selector (rule-supplied)."""
+    return "\n".join(f"{n}: {topic}" for n, topic, _ in lecture_list(data))
+
+
+def slides_for(nums: list[int], data: dict | None = None) -> list[dict]:
+    """Map lecture numbers -> [{num, topic, url}], preserving request order, valid only."""
+    by = {n: (topic, url) for n, topic, url in lecture_list(data)}
+    items, seen = [], set()
+    for n in nums:
+        if n in by and n not in seen:
+            seen.add(n)
+            topic, url = by[n]
+            items.append({"num": n, "topic": topic, "url": url})
+    return items
+
+
+def parse_lecture_nums(text: str) -> list[int]:
+    """Pull lecture numbers from the selector output ('3' / '2,3,5' / 'none')."""
+    import re
+    return [int(x) for x in re.findall(r"\d+", text or "")]
+
+
 if __name__ == "__main__":
     full = render_facts()
     print(full)

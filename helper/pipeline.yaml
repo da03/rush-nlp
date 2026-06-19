@@ -32,12 +32,27 @@ validator: validator
 tools:
   - rubric_checker
 
+# Hierarchical resource routers: when a domain's classifier emits <label>, a fuzzy
+# selector picks specific deep links from a rule-supplied candidate list (combine
+# rule-based Python + a fuzzy PAW function). Falls back to the plain <label> link
+# when nothing matches. Generic hook - slides today, papers/demos later.
+resource_routers:
+  - domain: course
+    label: slides
+    program: slide_selector
+    provider: course_lectures        # (render candidate list, map ids -> items) in RESOURCE_PROVIDERS
+    candidate_label: Lectures
+    result_label: "Lecture slides"
+    item_description: "Lecture slides"
+    max_items: 4
+
 # Per-node-role generation budgets.
 max_tokens:
   router: 4
   classifier: 8
   answerer: 200
   validator: 4
+  selector: 16
 
 # Spec + input + output share this context window (PAW constraint). compile.py /
 # eval.py assert composed specs (and worst-case course context) stay under it.

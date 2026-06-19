@@ -91,6 +91,21 @@
     results.appendChild(a);
   }
 
+  // Multiple links (e.g. the hierarchical slide router returning relevant decks).
+  function renderLinks(r) {
+    clearResults();
+    var items = (r && r.items) || [];
+    if (!items.length) return renderNone();
+    if (r.label) results.appendChild(el('p', 'paw-helper__placeholder', r.label + ':'));
+    items.forEach(function (it) {
+      var a = el('a', 'paw-helper__result paw-helper__result--link');
+      a.href = it.url; a.target = '_blank'; a.rel = 'noopener';
+      a.appendChild(el('span', 'paw-helper__result-title', it.label));
+      if (it.description) a.appendChild(el('span', 'paw-helper__result-desc', it.description));
+      results.appendChild(a);
+    });
+  }
+
   // Render text that may contain markdown links [label](url). Builds DOM nodes
   // directly (no innerHTML) so there is no XSS surface; only http(s)/mailto URLs
   // become links, and anything that doesn't match is shown as plain text.
@@ -176,6 +191,7 @@
   function render(r) {
     if (!r || r.type === 'none') return renderNone();
     if (r.type === 'link') return renderLink(r);
+    if (r.type === 'links') return renderLinks(r);
     if (r.type === 'answer') return renderAnswer(r);
     if (r.type === 'feedback') return renderFeedbackForm();
     return renderNone();
