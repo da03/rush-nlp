@@ -21,6 +21,7 @@ import yaml
 
 import common
 import course_facts
+import students_facts
 
 PIPELINE_PATH = common.HELPER_DIR / "pipeline.yaml"
 
@@ -53,9 +54,12 @@ CONTEXT_PROVIDERS = {
     "course": course_facts.retrieve,
     "paw": lambda q: common.load_topic_facts("paw"),
     "neuralos": lambda q: common.load_topic_facts("neuralos"),
+    "students": students_facts.render,
+    "bio": lambda q: common.load_topic_facts("bio"),
 }
 # Header label each provider's facts are injected under (must match the spec).
-CONTEXT_LABELS = {"course": "Course facts", "paw": "Facts", "neuralos": "Facts"}
+CONTEXT_LABELS = {"course": "Course facts", "paw": "Facts", "neuralos": "Facts",
+                  "students": "Facts", "bio": "Facts"}
 
 
 def _is_decline(answer: str) -> bool:

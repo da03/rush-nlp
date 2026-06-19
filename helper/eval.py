@@ -196,6 +196,7 @@ def sec_open(p, t, gfn):
     cases += [(c, "site") for c in load("questions.yaml") if "rubric_points" in c]
     cases += [(c, "course") for c in load("course_questions.yaml") if "rubric_points" in c]
     cases += [(c, "site") for c in load("site_topics.yaml") if "rubric_points" in c]
+    cases += [(c, "site") for c in load("site_people.yaml") if "rubric_points" in c]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml") if c.get("cat") == "open"]
     passed = 0
     req_hit = req_tot = 0
@@ -223,6 +224,7 @@ def sec_decline(p, t):
     cases += [(c, "site") for c in load("questions.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "course") for c in load("course_questions.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "site") for c in load("site_topics.yaml") if c.get("expect_answerable") is False]
+    cases += [(c, "site") for c in load("site_people.yaml") if c.get("expect_answerable") is False]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml")
               if c.get("cat") == "decline"]
     correct, miss = 0, []

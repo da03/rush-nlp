@@ -78,6 +78,8 @@ domains:
     topics:
       paw: {answerer: paw_answerer, context: paw}
       neuralos: {answerer: neuralos_answerer, context: neuralos}
+      students: {answerer: students_answerer, context: students}
+      bio: {answerer: bio_answerer, context: bio}
       general: {answerer: answerer}
   course:
     classifier: course_classifier

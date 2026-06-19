@@ -1,22 +1,23 @@
-A visitor to Yuntian Deng's academic website asked a question. Decide which of his projects the question is SPECIFICALLY about, so the right detailed answerer can handle it. Return ONLY one word: paw, neuralos, or general.
+A visitor to Yuntian Deng's academic website asked a question. Decide which specialized answerer should handle it. Return ONLY one word: paw, neuralos, students, bio, or general.
 
-- paw: the question is specifically about ProgramAsWeights (PAW) - what it is, how it works, its compilers, how to use it, its design or runtime.
-- neuralos: the question is specifically about NeuralOS - what it is, how it works, its architecture, training, data, or demo.
-- general: anything else - questions about Yuntian himself (background, education, students, availability, contact), his other work, or BROAD questions that merely mention these projects among others (e.g. "what are you working on", "what's your favorite project").
+- paw: specifically about ProgramAsWeights (PAW) - what it is, how it works, its compilers, how to use it, its design or runtime.
+- neuralos: specifically about NeuralOS - what it is, how it works, its architecture, training, data, or demo.
+- students: about Yuntian's STUDENTS (who he supervises, who is in his group, how many students) OR about whether he is taking/recruiting students or accepting applications (PhD or undergrad).
+- bio: about YUNTIAN HIMSELF - his role/title/position, his education (undergrad, master's, PhD), his OWN advisors/mentors, his internships, his awards, or where he is based (city/institution).
+- general: anything else - his research and other projects (Implicit Chain of Thought, WildChat, OpenNMT, demos), what he is working on, his favorite work, how to interact with or contact him, news/media, or broad questions that just mention projects in passing.
 
 Rules:
-- Use paw or neuralos only when the question is really about that ONE project's details, not when it just lists the project among others.
-- His OTHER projects and topics - Implicit Chain of Thought, WildChat, OpenNMT, im2markup, his research in general - are general (there is no dedicated answerer for them).
-- Questions about Yuntian himself (what he does, his role, bio, education, students, contact, how to interact with him) are general.
+- "Who do you supervise / your students / how many students" -> students. "Who are your advisors / mentors" -> bio (those are HIS advisors, not his students).
+- "Are you taking/recruiting students", "can I apply", "joining your lab/group" -> students.
+- Whether a specific named person is/was your student or worked with you -> students.
+- "What are you working on", "your research", "favorite project", and his other projects (ICoT, WildChat, OpenNMT, demos) -> general.
+- Social-media or contact questions (twitter/X, LinkedIn, email, how to reach him) -> general.
 - When in doubt, return general.
 
 Input: what is program as weights
 Output: paw
 
 Input: how does PAW compile a spec
-Output: paw
-
-Input: what compilers does program as weights offer
 Output: paw
 
 Input: can paw run in the browser
@@ -28,11 +29,44 @@ Output: neuralos
 Input: how does neuralos simulate an operating system
 Output: neuralos
 
-Input: what architecture does neuralos use
-Output: neuralos
-
 Input: how was neuralos trained
 Output: neuralos
+
+Input: are you taking students
+Output: students
+
+Input: can I apply to your group
+Output: students
+
+Input: are you hiring phd students
+Output: students
+
+Input: who do you supervise
+Output: students
+
+Input: how many students do you have
+Output: students
+
+Input: has Wentao Zhang worked with you
+Output: students
+
+Input: what does Yuntian do
+Output: bio
+
+Input: where did you do your phd
+Output: bio
+
+Input: where did you do your undergrad
+Output: bio
+
+Input: who are your advisors
+Output: bio
+
+Input: which city is Yuntian in
+Output: bio
+
+Input: what awards has he won
+Output: bio
 
 Input: what are you working on these days
 Output: general
@@ -40,19 +74,7 @@ Output: general
 Input: what is your favorite project
 Output: general
 
-Input: where did you do your phd
-Output: general
-
-Input: who are your students
-Output: general
-
-Input: are you taking students
-Output: general
-
 Input: tell me about your research
-Output: general
-
-Input: what does Yuntian do
 Output: general
 
 Input: what is implicit chain of thought
@@ -65,4 +87,10 @@ Input: how should I prompt you
 Output: general
 
 Input: tell me about your demos
+Output: general
+
+Input: do you have twitter
+Output: general
+
+Input: how do I contact you
 Output: general
