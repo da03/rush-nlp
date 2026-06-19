@@ -18,9 +18,20 @@
 # SITE - link routing
 # =====================================================================
 - {query: "where is your cv", cat: route, expected: cv}
-- {query: "do you have twitter", cat: route, expected: x, note: "x is registry:false; recurring - should give the X link"}
-- {query: "your twitter handle", cat: route, expected: x}
-- {query: "what is your twitter link", cat: route, expected: x}
+# These phrasings route to the answerer (not the x link); grade that it gives the
+# CORRECT X link rather than a hallucinated handle.
+- query: "do you have twitter"
+  cat: open
+  rubric_points:
+    - {text: "Provides Yuntian's X/Twitter at x.com/yuntiandeng (handle @yuntiandeng); does not invent a different handle", required: true}
+- query: "your twitter handle"
+  cat: open
+  rubric_points:
+    - {text: "Gives the X/Twitter handle @yuntiandeng (x.com/yuntiandeng)", required: true}
+- query: "what is your twitter link"
+  cat: open
+  rubric_points:
+    - {text: "Gives the X/Twitter link x.com/yuntiandeng", required: true}
 - {query: "x.com", cat: route, expected: x}
 - {query: "your x profile", cat: route, expected: x}
 - {query: "follow you on x", cat: route, expected: x}

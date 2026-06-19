@@ -56,7 +56,6 @@ x:
   label: "X (Twitter)"
   description: "@yuntiandeng"
   purpose: "The user wants Yuntian's X (formerly Twitter) profile or handle."
-  registry: false
 
 linkedin:
   url: "https://www.linkedin.com/in/yuntian-deng-536664a1/"
@@ -64,7 +63,6 @@ linkedin:
   label: "LinkedIn"
   description: "linkedin.com/in/yuntian-deng"
   purpose: "The user wants Yuntian's LinkedIn profile."
-  registry: false
 
 semantic_scholar:
   url: "https://www.semanticscholar.org/author/Yuntian-Deng/47346830"
@@ -72,7 +70,6 @@ semantic_scholar:
   label: "Semantic Scholar"
   description: "Yuntian's Semantic Scholar author page"
   purpose: "The user wants Yuntian's Semantic Scholar author profile."
-  registry: false
 
 programasweights:
   url: "https://programasweights.com"
