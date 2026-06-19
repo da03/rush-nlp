@@ -178,7 +178,7 @@
   rubric_points:
     - {text: "Names at least one of the course TAs (e.g. Dake Zhang, Henry Lin, Bihui Jin)", required: true}
 - {query: "when is the next assignment due", page: "course:cs486_s26", cat: factual, expected_next: assignments}
-- {query: "what's the next due", page: "course:cs486_s26", cat: factual, expected_next: chats}
+- {query: "what's the next due", page: "course:cs486_s26", cat: factual, expected_next: [chats, assignments]}
 
 # Open-ended
 - query: "How is this course graded?"

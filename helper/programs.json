@@ -1,6 +1,6 @@
 {
   "compiler": "paw-ft-bs48",
-  "compiled_at": "2026-06-19T03:18:18.617225+00:00",
+  "compiled_at": "2026-06-19T03:28:39.646087+00:00",
   "programs": {
     "page_classifier": "eb5b6134042db08a13b4",
     "answerer": "8a392580747b580a684a",
@@ -9,6 +9,6 @@
     "course_classifier": "1f685dec892a0ec05207",
     "course_answerer": "54cb232a7b2595eac4ee",
     "rubric_checker": "f8bb8df849538c150e91",
-    "slide_selector": "e4461bd9722fc36073e1"
+    "slide_selector": "30f5e9636253f87cc563"
   }
 }

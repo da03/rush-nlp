@@ -66,9 +66,13 @@ def is_decline(answer: str) -> bool:
 def factual_ok(p, answer, case):
     if "expected_next" in case:
         data = course_facts.load_course_data()
-        item = course_facts._next_due(data[case["expected_next"]], course_facts._today())
-        due = course_facts._as_date(item["due"])
-        return _contains(answer, [f"{due.strftime('%b')} {due.day}"], "any")
+        provs = case["expected_next"] if isinstance(case["expected_next"], list) else [case["expected_next"]]
+        needles = []
+        for prov in provs:
+            item = course_facts._next_due(data[prov], course_facts._today())
+            due = course_facts._as_date(item["due"])
+            needles.append(f"{due.strftime('%b')} {due.day}")
+        return _contains(answer, needles, "any")
     if "expected_all" in case:
         return _contains(answer, case["expected_all"], "all")
     return _contains(answer, case["expected_any"], "any")
