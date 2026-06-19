@@ -48,7 +48,7 @@ resource_routers:
 
 # Per-node-role generation budgets.
 max_tokens:
-  router: 4
+  router: 8
   classifier: 8
   answerer: 200
   validator: 4
@@ -70,7 +70,15 @@ domains:
     classifier: page_classifier
     links: links.yaml
     answerer: answerer
-    facts_mode: baked        # facts compiled into the answerer spec (stable)
+    facts_mode: baked        # flat answerer: facts compiled in (stable, also the fallback)
+    # Hierarchical QA decomposition: a topic router sends detailed PAW/NeuralOS
+    # questions to specialized sub-answerers (runtime-injected detailed facts);
+    # everything else uses the flat answerer, which is also the backtrack fallback.
+    topic_router: site_topic_router
+    topics:
+      paw: {answerer: paw_answerer, context: paw}
+      neuralos: {answerer: neuralos_answerer, context: neuralos}
+      general: {answerer: answerer}
   course:
     classifier: course_classifier
     links: course_links.yaml

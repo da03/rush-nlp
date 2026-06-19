@@ -1,0 +1,68 @@
+A visitor to Yuntian Deng's academic website asked a question. Decide which of his projects the question is SPECIFICALLY about, so the right detailed answerer can handle it. Return ONLY one word: paw, neuralos, or general.
+
+- paw: the question is specifically about ProgramAsWeights (PAW) - what it is, how it works, its compilers, how to use it, its design or runtime.
+- neuralos: the question is specifically about NeuralOS - what it is, how it works, its architecture, training, data, or demo.
+- general: anything else - questions about Yuntian himself (background, education, students, availability, contact), his other work, or BROAD questions that merely mention these projects among others (e.g. "what are you working on", "what's your favorite project").
+
+Rules:
+- Use paw or neuralos only when the question is really about that ONE project's details, not when it just lists the project among others.
+- His OTHER projects and topics - Implicit Chain of Thought, WildChat, OpenNMT, im2markup, his research in general - are general (there is no dedicated answerer for them).
+- Questions about Yuntian himself (what he does, his role, bio, education, students, contact, how to interact with him) are general.
+- When in doubt, return general.
+
+Input: what is program as weights
+Output: paw
+
+Input: how does PAW compile a spec
+Output: paw
+
+Input: what compilers does program as weights offer
+Output: paw
+
+Input: can paw run in the browser
+Output: paw
+
+Input: what is neuralos
+Output: neuralos
+
+Input: how does neuralos simulate an operating system
+Output: neuralos
+
+Input: what architecture does neuralos use
+Output: neuralos
+
+Input: how was neuralos trained
+Output: neuralos
+
+Input: what are you working on these days
+Output: general
+
+Input: what is your favorite project
+Output: general
+
+Input: where did you do your phd
+Output: general
+
+Input: who are your students
+Output: general
+
+Input: are you taking students
+Output: general
+
+Input: tell me about your research
+Output: general
+
+Input: what does Yuntian do
+Output: general
+
+Input: what is implicit chain of thought
+Output: general
+
+Input: what is wildchat
+Output: general
+
+Input: how should I prompt you
+Output: general
+
+Input: tell me about your demos
+Output: general

@@ -51,17 +51,26 @@ def load_programs() -> dict:
         return json.load(f)
 
 
+def _strip_comments(text: str) -> str:
+    text = re.sub(r"<!--.*?-->", "", text, flags=re.DOTALL)
+    return re.sub(r"\n{3,}", "\n\n", text).strip()
+
+
 def load_facts() -> str:
     """facts.md content for the answerer spec, with maintainer-only notes removed.
 
     HTML comments (<!-- ... -->) are stripped so editor guidance in facts.md never
     gets compiled into the program.
     """
-    text = FACTS_PATH.read_text(encoding="utf-8")
-    text = re.sub(r"<!--.*?-->", "", text, flags=re.DOTALL)
-    # Collapse the blank lines left behind by removed comments.
-    text = re.sub(r"\n{3,}", "\n\n", text)
-    return text.strip()
+    return _strip_comments(FACTS_PATH.read_text(encoding="utf-8"))
+
+
+FACTS_DIR = HELPER_DIR / "facts"
+
+
+def load_topic_facts(name: str) -> str:
+    """Detailed facts for a sub-answerer topic (helper/facts/<name>.md), runtime-injected."""
+    return _strip_comments((FACTS_DIR / f"{name}.md").read_text(encoding="utf-8"))
 
 
 def build_links_block(links: dict) -> str:

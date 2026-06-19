@@ -1,0 +1,56 @@
+# Detailed PAW / NeuralOS questions for the hierarchical sub-answerers (Phase 3).
+# Graded end-to-end (topic router -> sub-answerer -> validator, with backtrack) by
+# the rubric_checker. Open-ended cases carry rubric_points; decline cases set
+# expect_answerable: false. All on the site domain. Held out from the specs.
+
+# ===================== ProgramAsWeights (paw) =====================
+- query: "how does program as weights work"
+  rubric_points:
+    - {text: "Says it compiles a natural-language specification into a small/tiny neural function that runs locally", required: true}
+- query: "what compilers does program as weights offer"
+  rubric_points:
+    - {text: "Mentions more than one compiler (e.g. the Standard/fast one and the Finetuned or Compact one)", required: true}
+- query: "can program as weights run in the browser"
+  rubric_points:
+    - {text: "Says yes - the Compact compiler runs in the browser via WebAssembly", required: true}
+- query: "is a paw function stateless"
+  rubric_points:
+    - {text: "Says yes: one text input and one text output, no state", required: true}
+- query: "who created program as weights"
+  rubric_points:
+    - {text: "Names at least one author (Wentao Zhang, Liliana Hotsko, Woojeong Kim, Pengyu Nie, Stuart Shieber, or Yuntian Deng)", required: true}
+- query: "what kinds of tasks is program as weights good for"
+  rubric_points:
+    - {text: "Mentions fuzzy text tasks such as classification, extraction, format repair, search, or routing", required: true}
+- query: "what's the core idea behind program as weights"
+  rubric_points:
+    - {text: "Says it turns LLMs from problem solvers into tool builders / compiles reusable specialized local models", required: true}
+
+# ===================== NeuralOS (neuralos) =====================
+- query: "how does neuralos work"
+  rubric_points:
+    - {text: "Describes an RNN tracking OS state plus a diffusion renderer generating frames, run autoregressively", required: true}
+- query: "what architecture does neuralos use"
+  rubric_points:
+    - {text: "Names an RNN (state) and a diffusion renderer (frames)", required: true}
+- query: "how was neuralos trained"
+  rubric_points:
+    - {text: "Mentions training on agent demonstrations plus random-exploration demonstrations", required: true}
+- query: "how does neuralos deal with the mouse cursor"
+  rubric_points:
+    - {text: "Says the cursor position is encoded as a Gaussian spatial map", required: true}
+- query: "what data was neuralos trained on"
+  rubric_points:
+    - {text: "Mentions roughly 2,000 agent demos and roughly 120,000 random-exploration demos", required: true}
+- query: "can neuralos play doom"
+  rubric_points:
+    - {text: "Says yes - it learned to launch/play Doom from synthetic/fabricated data", required: true}
+- query: "where can I try neuralos"
+  rubric_points:
+    - {text: "Points to neural-os.com", required: true}
+
+# ===================== Should decline (not in the detailed facts) =====================
+- query: "what is program as weights' pricing"
+  expect_answerable: false
+- query: "how many gpus does neuralos need to run"
+  expect_answerable: false

@@ -59,8 +59,9 @@ def _contains(answer, needles, mode):
 
 def is_decline(answer: str) -> bool:
     a = answer.lower()
-    return (not answer.strip() or "don't have that information" in a
-            or "do not have that information" in a or "i'm not sure" in a or "i don't know" in a)
+    # Matches "I don't have that information." (site/course) and "...that detail." (sub-answerers).
+    return (not answer.strip() or "don't have that" in a or "do not have that" in a
+            or "i'm not sure" in a or "i don't know" in a)
 
 
 def factual_ok(p, answer, case):
@@ -194,6 +195,7 @@ def sec_open(p, t, gfn):
     cases = []
     cases += [(c, "site") for c in load("questions.yaml") if "rubric_points" in c]
     cases += [(c, "course") for c in load("course_questions.yaml") if "rubric_points" in c]
+    cases += [(c, "site") for c in load("site_topics.yaml") if "rubric_points" in c]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml") if c.get("cat") == "open"]
     passed = 0
     req_hit = req_tot = 0
@@ -220,6 +222,7 @@ def sec_decline(p, t):
     cases = []
     cases += [(c, "site") for c in load("questions.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "course") for c in load("course_questions.yaml") if c.get("expect_answerable") is False]
+    cases += [(c, "site") for c in load("site_topics.yaml") if c.get("expect_answerable") is False]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml")
               if c.get("cat") == "decline"]
     correct, miss = 0, []

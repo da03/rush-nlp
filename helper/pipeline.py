@@ -48,10 +48,20 @@ def normalize_label(raw: str, valid: set[str]) -> str:
     return s if (s in valid or s == "question") else "question"
 
 
-# Course context provider registry (the RAG seam). Add retrievers here.
+# Runtime-injected fact providers (name -> fn(query) -> facts str). The RAG seam.
 CONTEXT_PROVIDERS = {
     "course": course_facts.retrieve,
+    "paw": lambda q: common.load_topic_facts("paw"),
+    "neuralos": lambda q: common.load_topic_facts("neuralos"),
 }
+# Header label each provider's facts are injected under (must match the spec).
+CONTEXT_LABELS = {"course": "Course facts", "paw": "Facts", "neuralos": "Facts"}
+
+
+def _is_decline(answer: str) -> bool:
+    a = answer.lower()
+    return (not answer.strip() or "don't have that" in a or "do not have that" in a
+            or "i'm not sure" in a or "i don't know" in a)
 
 # Resource-router providers: (render candidate list, map selected ids -> link items).
 # The rule side (candidate list + id->URL) is deterministic; the fuzzy side is the
@@ -118,17 +128,46 @@ class Pipeline:
         raw = self._infer(spec["classifier"], query, self.mt["classifier"])
         return normalize_label(raw, set(self.links[domain]))
 
+    def _inject(self, provider: str, query: str) -> str:
+        """Build a facts-injected answerer input under the provider's header label."""
+        ctx = CONTEXT_PROVIDERS[provider](query)
+        return f"{CONTEXT_LABELS.get(provider, 'Facts')}:\n{ctx}\n\nQuestion: {query}"
+
     def _answer_input(self, spec: dict, query: str) -> str:
-        """Answerer input: bare query (baked facts) or facts+question (runtime/RAG)."""
+        """Flat-domain answerer input: bare query (baked) or facts+question (runtime)."""
         if spec.get("facts_mode") == "runtime":
-            ctx = CONTEXT_PROVIDERS[spec["context"]](query)
-            return f"Course facts:\n{ctx}\n\nQuestion: {query}"
+            return self._inject(spec["context"], query)
         return query
 
     def freeform(self, domain: str, query: str) -> tuple[str, str]:
-        """Run a domain's answerer + validator; returns (answer, verdict)."""
+        """Run a domain's answerer + validator; returns (answer, verdict).
+
+        If the domain has a topic_router, route to a specialized sub-answerer with
+        detailed injected facts (single-best). If the sub-answerer declines or is
+        empty, BACKTRACK to the flat answerer (redundancy). The validator gates.
+        """
         spec = self.cfg["domains"][domain]
-        answer = self._infer(spec["answerer"], self._answer_input(spec, query), self.mt["answerer"])
+        flat = spec["answerer"]
+        answerer_name, sub_provider = flat, None
+
+        tr = spec.get("topic_router")
+        if tr and tr in self.programs:
+            raw = self._infer(tr, query, self.mt["router"]).strip().lower().split()
+            topic = raw[0] if raw else ""
+            sub = spec.get("topics", {}).get(topic)
+            if isinstance(sub, dict) and sub.get("answerer") in self.programs:
+                answerer_name, sub_provider = sub["answerer"], sub.get("context")
+
+        inp = self._inject(sub_provider, query) if sub_provider else self._answer_input(spec, query)
+        answer = self._infer(answerer_name, inp, self.mt["answerer"])
+
+        # Backtrack to the flat answerer only if the sub-answerer produced nothing.
+        # We deliberately do NOT backtrack on a decline: the sub-answerer has the
+        # detailed facts, so its honest "I don't have that detail" is better than
+        # the flat answerer's tendency to hallucinate on out-of-facts questions.
+        if answerer_name != flat and len(answer) < 2:
+            answer = self._infer(flat, self._answer_input(spec, query), self.mt["answerer"])
+
         verdict = ""
         if len(answer) >= 2:
             verdict = self._infer(self.cfg["validator"], f"Q: {query} A: {answer}", self.mt["validator"]).lower()
