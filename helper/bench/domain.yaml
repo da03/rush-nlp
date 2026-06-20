@@ -40,3 +40,22 @@
 - {query: "when is the cs486 final exam", page: site, expected: course}
 - {query: "cs486 piazza", page: site, expected: course}
 - {query: "what are the cs486 office hours", page: site, expected: course}
+
+# --- NeuralOS demo page, NeuralOS/demo query (page default holds) ---
+- {query: "what is this", page: "site:neuralos", expected: neuralos}
+- {query: "how does it work", page: "site:neuralos", expected: neuralos}
+- {query: "how do I use this", page: "site:neuralos", expected: neuralos}
+- {query: "where is the code", page: "site:neuralos", expected: neuralos}
+- {query: "is there a paper", page: "site:neuralos", expected: neuralos}
+- {query: "can it play doom", page: "site:neuralos", expected: neuralos}
+- {query: "who made this", page: "site:neuralos", expected: neuralos}
+
+# --- ESCAPE: NeuralOS demo page, but the query is about Yuntian/personal -> site ---
+- {query: "who is yuntian deng", page: "site:neuralos", expected: site}
+- {query: "are you taking students", page: "site:neuralos", expected: site}
+- {query: "where is your cv", page: "site:neuralos", expected: site}
+- {query: "how do I contact yuntian", page: "site:neuralos", expected: site}
+- {query: "what is programasweights", page: "site:neuralos", expected: site}
+
+# --- ESCAPE: NeuralOS demo page, but the query is about the course -> course ---
+- {query: "when is the cs486 final", page: "site:neuralos", expected: course}

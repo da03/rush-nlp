@@ -1,0 +1,29 @@
+# Link destinations the NeuralOS-demo classifier (neuralos_classifier) can route
+# to, for visitors on neural-os.com. Same shape as links.yaml / course_links.yaml.
+#
+# Each key is a label the neuralos classifier may output (besides "question",
+# which defers to the neuralos answerer). `purpose` is inlined into the classifier
+# spec; `label`/`description` are shown in the widget.
+#
+# Kept deliberately small and high-precision: the demo's own page already shows
+# the controls, so most queries are "question" (answered from the NeuralOS facts).
+
+code:
+  url: "https://github.com/yuntian-group/neural-os"
+  name: "NeuralOS code"
+  label: "NeuralOS on GitHub"
+  description: "github.com/yuntian-group/neural-os"
+  purpose: "The visitor wants the NeuralOS source code, GitHub repository, or implementation."
+
+paper:
+  url: "https://arxiv.org/abs/2507.08800"
+  name: "NeuralOS paper"
+  label: "NeuralOS paper (arXiv)"
+  description: "The NeuralOS paper on arXiv (2507.08800)"
+  purpose: "The visitor wants the NeuralOS research paper, the arXiv link, or the publication."
+
+feedback:
+  kind: feedback
+  label: "Report a problem / feedback"
+  description: "Report a bug or that the demo is broken, or leave feedback"
+  purpose: "The visitor wants to report a problem or bug (the demo is broken, frozen, not loading, not updating) or leave feedback about NeuralOS."

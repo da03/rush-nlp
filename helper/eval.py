@@ -175,6 +175,8 @@ def sec_factual(p, t):
     cases = []
     cases += [(c, "course") for c in load("course_questions.yaml")
               if any(k in c for k in ("expected_any", "expected_all", "expected_next"))]
+    cases += [(c, "neuralos") for c in load("neuralos_questions.yaml")
+              if any(k in c for k in ("expected_any", "expected_all"))]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml") if c.get("cat") == "factual"]
     correct, miss = 0, []
     for c, dom in cases:
@@ -195,6 +197,7 @@ def sec_open(p, t, gfn):
     cases = []
     cases += [(c, "site") for c in load("questions.yaml") if "rubric_points" in c]
     cases += [(c, "course") for c in load("course_questions.yaml") if "rubric_points" in c]
+    cases += [(c, "neuralos") for c in load("neuralos_questions.yaml") if "rubric_points" in c]
     cases += [(c, "site") for c in load("site_topics.yaml") if "rubric_points" in c]
     cases += [(c, "site") for c in load("site_people.yaml") if "rubric_points" in c]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml") if c.get("cat") == "open"]
@@ -223,6 +226,7 @@ def sec_decline(p, t):
     cases = []
     cases += [(c, "site") for c in load("questions.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "course") for c in load("course_questions.yaml") if c.get("expect_answerable") is False]
+    cases += [(c, "neuralos") for c in load("neuralos_questions.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "site") for c in load("site_topics.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "site") for c in load("site_people.yaml") if c.get("expect_answerable") is False]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml")
@@ -276,6 +280,8 @@ def main():
         summary["site_class"] = sec_classifier(p, t, "site", "pages.yaml")
     if want("pages") and "course" in p.available:
         summary["course_class"] = sec_classifier(p, t, "course", "course_pages.yaml")
+    if want("pages") and "neuralos" in p.available:
+        summary["neuralos_class"] = sec_classifier(p, t, "neuralos", "neuralos_pages.yaml")
     if want("route"):
         summary["real_route"] = sec_route_real(p, t)
     if want("slides"):

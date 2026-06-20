@@ -16,17 +16,27 @@ HELPER_DIR = pathlib.Path(__file__).resolve().parent
 SPECS_DIR = HELPER_DIR / "specs"
 LINKS_PATH = HELPER_DIR / "links.yaml"
 COURSE_LINKS_PATH = HELPER_DIR / "course_links.yaml"
+NEURALOS_LINKS_PATH = HELPER_DIR / "neuralos_links.yaml"
 FACTS_PATH = HELPER_DIR / "facts.md"
 PROGRAMS_PATH = HELPER_DIR / "programs.json"
 
 # Spec basenames in helper/specs/, mapped to the pipeline role.
 SPEC_NAMES = ["page_classifier", "answerer", "validator"]
 
+# Per-domain link files a classifier spec's {{LINKS}} placeholder can be filled
+# from. The site links are the default.
+LINK_SOURCES = {
+    "site": LINKS_PATH,
+    "course": COURSE_LINKS_PATH,
+    "neuralos": NEURALOS_LINKS_PATH,
+}
+
 # Which links file feeds a spec's {{LINKS}} placeholder (default: site links).
 SPEC_LINK_SOURCE = {
     "page_classifier": "site",
     "answerer": "site",
     "course_classifier": "course",
+    "neuralos_classifier": "neuralos",
 }
 
 
@@ -41,9 +51,15 @@ def load_course_links() -> dict:
         return yaml.safe_load(f)
 
 
+def load_links_source(source: str) -> dict:
+    """Load a domain's links file by source key (site/course/neuralos)."""
+    with open(LINK_SOURCES.get(source, LINKS_PATH), encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
 def links_for_spec(name: str) -> dict:
     """The links dict a given spec's {{LINKS}} should be filled from."""
-    return load_course_links() if SPEC_LINK_SOURCE.get(name) == "course" else load_links()
+    return load_links_source(SPEC_LINK_SOURCE.get(name, "site"))
 
 
 def load_programs() -> dict:

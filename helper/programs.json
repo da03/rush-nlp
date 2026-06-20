@@ -1,11 +1,11 @@
 {
   "compiler": "paw-ft-bs48",
-  "compiled_at": "2026-06-19T15:47:56.150907+00:00",
+  "compiled_at": "2026-06-20T17:33:19.663452+00:00",
   "programs": {
     "page_classifier": "eb5b6134042db08a13b4",
     "answerer": "b396456b787fac0b0938",
     "validator": "ae1d51dd17d296dc747f",
-    "domain_router": "7929e72cfd17891788e1",
+    "domain_router": "e3405c8e162d106e071e",
     "course_classifier": "1f685dec892a0ec05207",
     "course_answerer": "54cb232a7b2595eac4ee",
     "rubric_checker": "f8bb8df849538c150e91",
@@ -14,6 +14,7 @@
     "paw_answerer": "9e449de55f6ac8e04eb9",
     "neuralos_answerer": "9bedd3209a1f29f60a42",
     "students_answerer": "78d35ac1c72a26b58cb0",
-    "bio_answerer": "4a7cae0f5f0e17a65d07"
+    "bio_answerer": "4a7cae0f5f0e17a65d07",
+    "neuralos_classifier": "215a7ac312c2ac5397c6"
   }
 }

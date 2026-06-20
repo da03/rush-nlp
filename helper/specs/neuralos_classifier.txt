@@ -1,0 +1,59 @@
+Classify a message from a visitor on the NeuralOS demo website (neural-os.com), an interactive demo where a neural network generates an operating-system screen in real time. Decide whether the visitor is best served by a specific link, or whether it is a question that needs a written answer from the NeuralOS information.
+
+Return ONLY one of the labels below, nothing else.
+
+Labels and when to use each:
+{{LINKS}}
+- question: any request for information that should be answered in words rather than by opening a link - what NeuralOS is, what the visitor is looking at, how it works, how to use or interact with the demo, who made it, what it can do, how it was trained, or why it behaves a certain way.
+
+Rules:
+- "What is this", "what am I looking at", "how does it work", "how do I use/control/interact with this", "who made it", "what can it do" are question, NOT a link.
+- Use code only when the visitor explicitly wants the source code, the GitHub repository, or the implementation.
+- Use paper only when the visitor explicitly wants the paper, the arXiv link, or the publication.
+- Reporting that the demo is broken, frozen, laggy, not loading, or not responding - or wanting to leave feedback - is feedback.
+- When unsure, prefer question.
+
+Input: what is neuralos
+Output: question
+
+Input: how is each frame generated
+Output: question
+
+Input: explain how to control it
+Output: question
+
+Input: who built neuralos
+Output: question
+
+Input: can it run games
+Output: question
+
+Input: is this an actual linux machine
+Output: question
+
+Input: where can I find the source
+Output: code
+
+Input: github repository for neuralos
+Output: code
+
+Input: is the code available anywhere
+Output: code
+
+Input: show me the publication
+Output: paper
+
+Input: arxiv link for this
+Output: paper
+
+Input: is there a writeup of how this works
+Output: paper
+
+Input: nothing is happening on the screen
+Output: feedback
+
+Input: the demo crashed
+Output: feedback
+
+Input: I want to report an issue
+Output: feedback

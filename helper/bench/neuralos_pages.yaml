@@ -1,0 +1,48 @@
+# NeuralOS-demo classifier benchmark: query -> expected output (a neuralos link
+# label or "question"). Auto-graded, exactly like bench/course_pages.yaml but for
+# the NeuralOS demo (neural-os.com) domain.
+#
+# NeuralOS link labels (destinations the neuralos classifier may route to):
+#   code     - the NeuralOS source code repo (github.com/yuntian-group/neural-os)
+#   paper    - the NeuralOS paper (arXiv:2507.08800)
+#   feedback - report a bug / leave feedback (the demo is broken, frozen, not loading)
+#   question - anything answered in words from the NeuralOS facts (what it is, how
+#              it works, how to use the demo, who made it, what it can do)
+#
+# The link-vs-question split is the key decision: "what is this / how does it work
+# / how do I use this / who made this" must be answered in words, NOT sent to a link.
+#
+# These are demo visitors: many are confused/curious people poking at an interactive
+# generative-OS playground (a blue interaction box, mouse/keyboard controls).
+#
+# IMPORTANT: queries are held out (paraphrases not in specs/neuralos_classifier.txt).
+
+# --- code (the source repo) ---
+- {query: "where is the code", expected: code}
+- {query: "is this open source", expected: code}
+- {query: "show me the github repo", expected: code}
+- {query: "link to the source code", expected: code}
+- {query: "can I see the implementation on github", expected: code}
+
+# --- paper (the arXiv paper) ---
+- {query: "is there a paper", expected: paper}
+- {query: "where can I read the paper", expected: paper}
+- {query: "link to the arxiv", expected: paper}
+- {query: "do you have a research paper for this", expected: paper}
+
+# --- feedback (something is broken / report a bug) ---
+- {query: "the demo is frozen", expected: feedback}
+- {query: "report a bug", expected: feedback}
+- {query: "the screen isn't updating", expected: feedback}
+- {query: "this isn't working", expected: feedback}
+
+# --- question (must NOT route to a link) ---
+- {query: "what is this", expected: question}
+- {query: "what am I looking at", expected: question}
+- {query: "how does this work", expected: question}
+- {query: "how do I use this", expected: question}
+- {query: "how do I interact with it", expected: question}
+- {query: "who made this", expected: question}
+- {query: "is this a real operating system", expected: question}
+- {query: "can it play doom", expected: question}
+- {query: "why is it so slow", expected: question}

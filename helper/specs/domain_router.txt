@@ -1,15 +1,17 @@
 Decide which assistant should handle a visitor's message on Yuntian Deng's website. Return ONLY one word: site, course, or either.
 
-- site: the message is about Yuntian Deng personally or his research/career - his CV, contact details, papers, research projects (ProgramAsWeights, NeuralOS, WildChat), education, awards, profiles, or about him supervising/advising/recruiting graduate students for his research group or lab.
+- site: the message is about Yuntian Deng personally or his research/career - his CV, contact details, papers, his other research projects (ProgramAsWeights, WildChat, Implicit Chain of Thought), education, awards, profiles, or about him supervising/advising/recruiting graduate students for his research group or lab.
 - course: the message is about the CS 486/686 course (Introduction to Artificial Intelligence) - its lectures, slides, schedule, chat assignments, programming assignments, deadlines, exams, grading, textbook, the Piazza/Chrysalis/LEARN platforms, the course TAs, or course office hours.
-- either: the message is generic and could reasonably apply to either, so the page context should decide.
+- either: the message is generic and could reasonably apply to any page, so the page context should decide. This INCLUDES messages specifically about NeuralOS (what it is, how it works, its demo, code, or paper): NeuralOS has its own demo page, so let the page context decide.
 
 Rules:
 - Yuntian supervising, advising, or recruiting students for his RESEARCH GROUP or lab (PhD, postdoc, internships, joining the lab) is site, NOT course.
 - The COURSE's own students, TAs, assignments, deadlines, or staff are course.
 - If the message names the course or coursework (cs486, cs686, "the course", "this class", "lecture", "assignment", "chat", "exam", "syllabus") it is course.
-- If it names Yuntian, his research, or his career it is site.
-- Use either only when it is genuinely ambiguous without knowing which page the visitor is on.
+- If it names Yuntian, his career, or his other projects (ProgramAsWeights, WildChat) it is site. Asking how to contact, reach, or email Yuntian is site.
+- Messages specifically about NeuralOS are either (the page decides), NOT site.
+- Generic questions about how something works, how it was trained, what data it used, its architecture, or whether it has a paper, code, or repo - WITHOUT naming Yuntian or a specific other project (ProgramAsWeights, WildChat) - are either, so the page decides. Do NOT assume "paper" or "trained" means Yuntian's own papers/research.
+- Use either when it is generic, or when it is about NeuralOS, so the page context decides.
 
 Input: do you have a resume I can download
 Output: site
@@ -21,6 +23,12 @@ Input: which school did you get your doctorate from
 Output: site
 
 Input: are you recruiting graduate students
+Output: site
+
+Input: are you accepting students
+Output: site
+
+Input: do you take on new students
 Output: site
 
 Input: can I do a phd with you
@@ -49,6 +57,33 @@ Output: course
 
 Input: what's covered in this class
 Output: course
+
+Input: how do I reach yuntian
+Output: site
+
+Input: explain program as weights
+Output: site
+
+Input: what is neuralos
+Output: either
+
+Input: how does the neural os model generate the screen
+Output: either
+
+Input: where is the neuralos github
+Output: either
+
+Input: how was this model trained
+Output: either
+
+Input: what data was used to train it
+Output: either
+
+Input: does this have a paper
+Output: either
+
+Input: where is the source code for this
+Output: either
 
 Input: how can I get in touch
 Output: either

@@ -35,6 +35,7 @@
   var ENDPOINT = (ds.endpoint || scriptOrigin() || '').replace(/\/$/, '');
   var PAGE = ds.page || 'site';
   var IS_COURSE = /^course/.test(PAGE);
+  var IS_NEURALOS = /neuralos/.test(PAGE);
 
   if (document.getElementById('paw-helper-host')) return; // never double-inject
 
@@ -254,10 +255,13 @@
 
     function renderQuickLinks() {
       results.innerHTML = '';
-      var hint = el('p', 'paw-helper__placeholder', IS_COURSE
-        ? 'Try: \u201cwhen is the next assignment due\u201d, \u201chow is the course graded\u201d, or \u201cwhere do I post questions?\u201d'
-        : 'Try: \u201cwhere is your CV\u201d, \u201cwhat are you working on\u201d, or \u201care you taking students?\u201d');
-      results.appendChild(hint);
+      var tip = 'Try: \u201cwhere is your CV\u201d, \u201cwhat are you working on\u201d, or \u201care you taking students?\u201d';
+      if (IS_COURSE) {
+        tip = 'Try: \u201cwhen is the next assignment due\u201d, \u201chow is the course graded\u201d, or \u201cwhere do I post questions?\u201d';
+      } else if (IS_NEURALOS) {
+        tip = 'Try: \u201cwhat is this\u201d, \u201chow do I use it\u201d, or \u201cwhere is the code?\u201d';
+      }
+      results.appendChild(el('p', 'paw-helper__placeholder', tip));
     }
 
     function clearResults() { results.innerHTML = ''; }
@@ -399,6 +403,9 @@
     if (IS_COURSE) {
       input.placeholder = 'Ask about CS 486/686 (deadlines, grading, slides)\u2026';
       launch.setAttribute('aria-label', 'Ask about CS 486/686');
+    } else if (IS_NEURALOS) {
+      input.placeholder = 'Ask about NeuralOS (what it is, how to use it, the code)\u2026';
+      launch.setAttribute('aria-label', 'Ask about NeuralOS');
     }
 
     launch.addEventListener('click', openDialog);

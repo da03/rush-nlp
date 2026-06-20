@@ -18,6 +18,7 @@ default_domain: site
 page_defaults:
   site: site
   "course:cs486_s26": course
+  "site:neuralos": neuralos
 
 # Top-level redirect program (optional). Outputs: site | course | either.
 # "either" / unknown -> use the page default. Used only when >1 domain is available.
@@ -87,3 +88,14 @@ domains:
     answerer: course_answerer
     facts_mode: runtime      # facts injected at inference from _data/cs486_s26.yaml (no recompile on edits)
     context: course          # course_facts.retrieve(query) supplies the injected slice
+  # NeuralOS demo (neural-os.com). Default for page "site:neuralos"; the domain
+  # router sends NeuralOS-specific questions to "either" so the page prior holds,
+  # while questions about Yuntian / his other projects escape to the site domain.
+  # Reuses the existing neuralos_answerer with facts/neuralos.md injected at runtime
+  # (incl. the demo-usage facts), so editing those facts needs no recompile.
+  neuralos:
+    classifier: neuralos_classifier
+    links: neuralos_links.yaml
+    answerer: neuralos_answerer
+    facts_mode: runtime
+    context: neuralos        # CONTEXT_PROVIDERS["neuralos"] injects helper/facts/neuralos.md
