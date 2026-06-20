@@ -10,7 +10,10 @@ Wants=network-online.target
 Type=simple
 # Directory that contains app.py (the repo's helper/server).
 WorkingDirectory=/opt/yuntiandeng-helper/repo/helper/server
-Environment=HELPER_ALLOWED_ORIGINS=https://yuntiandeng.com,https://www.yuntiandeng.com
+# CORS allow-list for the data endpoints (/ask,/feedback,/health). The shared
+# backend serves the embeddable widget to all of Yuntian's sites, so each site's
+# origin is listed here. /widget.js itself is public (not CORS-gated).
+Environment=HELPER_ALLOWED_ORIGINS=https://yuntiandeng.com,https://www.yuntiandeng.com,https://neural-os.com,https://www.neural-os.com,https://programasweights.com,https://www.programasweights.com
 Environment=HELPER_FEEDBACK_LOG=/var/lib/yuntiandeng-helper/feedback.jsonl
 Environment=HELPER_QUERY_LOG=/var/lib/yuntiandeng-helper/queries.jsonl
 # Optional: higher compile limits / private programs.

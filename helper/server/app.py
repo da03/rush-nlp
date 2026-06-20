@@ -29,6 +29,7 @@ import sys
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 # Make helper/common.py + pipeline.py importable when run from helper/server/.
@@ -58,7 +59,24 @@ app.add_middleware(
 )
 
 
+STATIC_DIR = pathlib.Path(__file__).resolve().parent / "static"
+
 QUERY_LOG = os.environ.get("HELPER_QUERY_LOG", str(common.HELPER_DIR / "queries.jsonl"))
+
+
+@app.get("/widget.js")
+def widget_js() -> FileResponse:
+    # Public, embeddable JS: a <script src> load is not CORS-gated, but we mark it
+    # Access-Control-Allow-Origin:* so any site can also fetch/inspect it. The
+    # data endpoints (/ask,/feedback,/health) stay restricted to the allow-list.
+    return FileResponse(
+        STATIC_DIR / "widget.js",
+        media_type="application/javascript",
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Cache-Control": "public, max-age=300",
+        },
+    )
 
 
 def _log_query(query: str, page: str, meta: dict) -> None:
