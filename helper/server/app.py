@@ -79,19 +79,25 @@ def widget_js() -> FileResponse:
     )
 
 
-def _log_query(query: str, page: str, meta: dict) -> None:
+def _log_query(query: str, page: str, meta: dict, origin: str | None = None) -> None:
     """Append one JSONL line per question so we can review and polish on real usage.
 
     Deliberately stores no IP/identifier (public site, minimize PII). The query
     text is logged because that is the whole point of the review loop; keep the
     file private on the server. Never raises.
+
+    `origin` is the HTTP Origin header (the embedding site, e.g. https://neural-os.com).
+    Now that one backend serves multiple sites, this is the authoritative source
+    of where a question came from - the `page` key is client-supplied - so we can
+    later improve each site's helper from its own real traffic.
     """
     result = meta.get("result", {})
     rtype = result.get("type")
     record = {
         "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "query": query,
-        "page": page,
+        "page": page,                                    # client-supplied page key (data-page)
+        "origin": origin,                                # HTTP Origin: which site embedded the widget
         "domain": meta.get("domain"),                    # site / course (after routing)
         "route": meta.get("route"),                      # classifier label or "question"
         "result_type": rtype,                            # link / answer / feedback / none
@@ -114,12 +120,12 @@ class AskRequest(BaseModel):
 
 
 @app.post("/ask")
-def ask(req: AskRequest) -> dict:
+def ask(req: AskRequest, request: Request) -> dict:
     query = req.query.strip()
     if len(query) < 3:
         return {"type": "none"}
     meta = PIPE.run(query, page=req.page or "site")
-    _log_query(query, req.page or "site", meta)
+    _log_query(query, req.page or "site", meta, origin=request.headers.get("origin"))
     return meta["result"]
 
 
@@ -140,7 +146,8 @@ def feedback(req: FeedbackRequest, request: Request) -> dict:
         "ts": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "text": req.text,
         "email": req.email,
-        "page_url": req.page_url,
+        "page_url": req.page_url,                         # full URL from the widget (location.href)
+        "origin": request.headers.get("origin"),         # which site the feedback came from
         "ip": ip,
     }
     try:

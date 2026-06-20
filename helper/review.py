@@ -53,14 +53,17 @@ def main() -> None:
     if n:
         by_type = collections.Counter(r.get("result_type") for r in rows)
         by_route = collections.Counter(r.get("route") for r in rows)
+        by_origin = collections.Counter((r.get("origin") or r.get("page") or "?") for r in rows)
         fallbacks = [r for r in rows if r.get("fallback")]
         print(f"result types: {dict(by_type)}")
         print(f"routes:       {dict(by_route)}")
+        print(f"by origin:    {dict(by_origin)}")
         print(f"fallback rate: {len(fallbacks)}/{n} = {len(fallbacks)/n:.0%}")
 
         print(f"\n--- Fallback / unanswered queries ({len(fallbacks)}) - the polish targets ---")
         for r in fallbacks:
-            print(f"  - {r.get('query')!r}  (route={r.get('route')}, validator={r.get('validator')})")
+            src = r.get("origin") or r.get("page") or "?"
+            print(f"  - {r.get('query')!r}  (origin={src}, route={r.get('route')}, validator={r.get('validator')})")
 
         print(f"\n--- Top {args.top} questions ---")
         freq = collections.Counter((r.get("query") or "").strip().lower() for r in rows)
@@ -71,7 +74,9 @@ def main() -> None:
     print(f"\n=== Feedback ({len(fb)}) from {args.feedback} ===")
     for r in fb[-args.top:]:
         email = f" <{r.get('email')}>" if r.get("email") else ""
-        print(f"  [{r.get('ts', '')[:19]}]{email} {r.get('text')!r}")
+        src = r.get("origin") or r.get("page_url") or ""
+        src = f" ({src})" if src else ""
+        print(f"  [{r.get('ts', '')[:19]}]{email}{src} {r.get('text')!r}")
 
 
 if __name__ == "__main__":

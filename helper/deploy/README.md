@@ -114,9 +114,12 @@ Verify: `curl -s -D- -o/dev/null -X POST https://helper.yuntiandeng.com/ask -H '
 - Feedback is appended as JSON lines to `HELPER_FEEDBACK_LOG`. Read it with
   `cat /var/lib/yuntiandeng-helper/feedback.jsonl`.
 - Every question is appended to `HELPER_QUERY_LOG` (`/var/lib/yuntiandeng-helper/queries.jsonl`):
-  one JSON line per `/ask` with the query, route, result type, answer, validator
-  verdict, and a `fallback` flag (no IP is stored). Use this to polish the helper
-  on real usage. Review it with:
+  one JSON line per `/ask` with the query, the client `page` key, the request
+  `origin` (which site embedded the widget, e.g. `https://neural-os.com`), route,
+  result type, answer, validator verdict, and a `fallback` flag (no IP is stored).
+  Feedback records also carry `origin`. Since one backend now serves multiple
+  sites, `origin` lets you polish each site's helper from its own real traffic.
+  Use this to polish the helper on real usage. Review it with:
   ```bash
   # on the server
   /opt/yuntiandeng-helper/venv/bin/python /opt/yuntiandeng-helper/repo/helper/review.py
