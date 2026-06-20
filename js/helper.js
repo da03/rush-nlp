@@ -38,11 +38,25 @@
     if (spinner) spinner.hidden = !on;
   }
 
+  // Fill the footer's program count from the live backend (once), so it stays
+  // accurate as the pipeline grows instead of hardcoding a number.
+  var countEl = root.querySelector('.paw-helper__count');
+  var countDone = false;
+  function updateCount() {
+    if (countDone || !countEl) return;
+    countDone = true;
+    fetch(ENDPOINT + '/health')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.n_serving) countEl.textContent = d.n_serving; })
+      .catch(function () { countDone = false; });
+  }
+
   function openDialog() {
     overlay.hidden = false;
     dialog.hidden = false;
     launch.setAttribute('aria-expanded', 'true');
     renderQuickLinks();
+    updateCount();
     setTimeout(function () { input.focus(); }, 30);
   }
 

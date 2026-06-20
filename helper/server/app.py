@@ -136,4 +136,8 @@ def feedback(req: FeedbackRequest, request: Request) -> dict:
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "programs": PROGRAMS}
+    # n_serving = programs that actually run when serving (exclude offline tools
+    # like the benchmark rubric grader); the widget shows this count.
+    tools = set(PIPE.cfg.get("tools", []))
+    n_serving = sum(1 for name in PROGRAMS if name not in tools)
+    return {"status": "ok", "programs": PROGRAMS, "n_serving": n_serving}
