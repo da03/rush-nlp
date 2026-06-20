@@ -72,6 +72,41 @@ sudo systemctl restart yuntiandeng-helper
 Recompiling is only needed when a **spec** in `helper/specs/` changes (the model's
 behavior), not when course facts change.
 
+## Embedding the widget on other sites (one shared backend)
+
+The backend serves a self-contained widget at `/widget.js`, so any of Yuntian's
+sites can embed the helper and talk to this one backend cross-origin.
+
+- Static site you control: add the script tag to the page HTML.
+  ```html
+  <script src="https://helper.yuntiandeng.com/widget.js" data-page="site:neuralos"></script>
+  ```
+- Proxied app you can't edit (e.g. neural-os.com's Gradio): inject the tag with
+  an nginx `sub_filter` on the upstream HTML. See
+  [`embed.nginx.example`](embed.nginx.example) for the full snippet (key bit:
+  `proxy_set_header Accept-Encoding "";` so sub_filter can rewrite the body).
+  Put any backups OUTSIDE `sites-enabled/` (nginx loads every file there).
+
+Each embedding origin must be in `HELPER_ALLOWED_ORIGINS` (below). `/widget.js`
+itself is public and not CORS-gated; only the data endpoints are.
+
+### Changing the CORS allow-list on a live server
+
+The base systemd unit on the server may be hand-tuned (user, cache dir), so the
+allow-list is applied as a non-destructive drop-in rather than overwriting the
+unit:
+
+```bash
+sudo install -d /etc/systemd/system/yuntiandeng-helper.service.d
+sudo tee /etc/systemd/system/yuntiandeng-helper.service.d/override.conf >/dev/null <<'EOF'
+[Service]
+Environment=HELPER_ALLOWED_ORIGINS=https://yuntiandeng.com,https://www.yuntiandeng.com,https://neural-os.com,https://www.neural-os.com,https://programasweights.com,https://www.programasweights.com
+EOF
+sudo systemctl daemon-reload && sudo systemctl restart yuntiandeng-helper
+```
+
+Verify: `curl -s -D- -o/dev/null -X POST https://helper.yuntiandeng.com/ask -H 'Origin: https://neural-os.com' -H 'Content-Type: application/json' -d '{"query":"hi"}' | grep -i access-control-allow-origin`
+
 ## Notes
 
 - The first `/ask` after a restart downloads/loads the PAW base model (a few
