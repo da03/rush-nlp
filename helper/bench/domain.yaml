@@ -49,6 +49,9 @@
 - {query: "is there a paper", page: "site:neuralos", expected: neuralos}
 - {query: "can it play doom", page: "site:neuralos", expected: neuralos}
 - {query: "who made this", page: "site:neuralos", expected: neuralos}
+- {query: "who are authors", page: "site:neuralos", expected: neuralos}
+- {query: "who wrote this", page: "site:neuralos", expected: neuralos}
+- {query: "who is behind it", page: "site:neuralos", expected: neuralos}
 
 # --- ESCAPE: NeuralOS demo page, but the query is about Yuntian/personal -> site ---
 - {query: "who is yuntian deng", page: "site:neuralos", expected: site}

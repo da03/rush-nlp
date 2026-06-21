@@ -119,8 +119,13 @@ class Pipeline:
                 self.available[0] if self.available else self.cfg["default_domain"])
         router = self.cfg.get("domain_router")
         if router and router in self.programs and len(self.available) > 1:
-            r = normalize_label(self._infer(router, query, self.mt["router"]), set(self.available))
-            # 'either'/unknown -> page default; a confident domain overrides it.
+            # Page-aware routing: the router sees WHICH page the visitor is on, so an
+            # ambiguous/unnamed-subject question ("who are the authors") stays on the
+            # current page, and the same question yields a page-appropriate answer
+            # across sites. Only a clearly-named other subject escapes the page.
+            label = self.cfg.get("router_page_labels", {}).get(default, default)
+            router_input = f"Page: {label}\nMessage: {query}"
+            r = normalize_label(self._infer(router, router_input, self.mt["router"]), set(self.available))
             if r in self.available:
                 return r
         return default

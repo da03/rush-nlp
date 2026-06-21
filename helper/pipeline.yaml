@@ -20,9 +20,20 @@ page_defaults:
   "course:cs486_s26": course
   "site:neuralos": neuralos
 
-# Top-level redirect program (optional). Outputs: site | course | either.
-# "either" / unknown -> use the page default. Used only when >1 domain is available.
+# Top-level PAGE-AWARE redirect program (optional). The router is fed
+# "Page: <label>\nMessage: <query>" and returns the handling domain, so an
+# ambiguous/unnamed-subject question stays on the current page and only a clearly
+# named other subject escapes. Used only when >1 domain is available.
 domain_router: domain_router
+
+# Human-readable page labels fed to the page-aware router, keyed by the page's
+# default domain. This is the "site as context" signal: the SAME question (e.g.
+# "who are the authors") routes to the current page's project, so it is answered
+# by NeuralOS on neural-os.com but by the site on the personal website.
+router_page_labels:
+  site: "the personal website"
+  course: "the CS 486/686 course website"
+  neuralos: "the NeuralOS demo"
 
 # Shared answer validator (checks the answer is on-topic for the question).
 validator: validator
