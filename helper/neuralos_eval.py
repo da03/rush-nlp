@@ -24,7 +24,7 @@ import eval as ev   # reuse is_decline / _contains / factual primitives
 import grader
 import pipeline
 
-BENCH = common.HELPER_DIR / "bench"
+BENCH = common.CONTENT_DIR / "bench"
 PAGE = "site:neuralos"
 
 

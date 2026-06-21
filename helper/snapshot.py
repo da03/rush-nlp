@@ -24,7 +24,7 @@ import yaml
 import common
 import pipeline
 
-BENCH = common.HELPER_DIR / "bench"
+BENCH = common.CONTENT_DIR / "bench"
 GOLDEN = BENCH / "golden.jsonl"
 
 # Which page each bench file's queries are exercised at (domain.yaml carries its

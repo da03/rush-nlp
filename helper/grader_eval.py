@@ -15,7 +15,7 @@ import yaml
 import common
 import grader
 
-META = common.HELPER_DIR / "bench" / "grader_meta.yaml"
+META = common.CONTENT_DIR / "bench" / "grader_meta.yaml"
 
 
 def _gold(v) -> str:

@@ -30,7 +30,7 @@ import course_facts
 import grader
 import pipeline
 
-BENCH = common.HELPER_DIR / "bench"
+BENCH = common.CONTENT_DIR / "bench"
 
 
 def load(name: str) -> list:

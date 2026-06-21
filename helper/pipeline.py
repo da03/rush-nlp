@@ -20,21 +20,18 @@ import time
 import yaml
 
 import common
-import course_facts
-import students_facts
-
-PIPELINE_PATH = common.HELPER_DIR / "pipeline.yaml"
 
 
 def load_config(path=None) -> dict:
-    with open(path or PIPELINE_PATH, encoding="utf-8") as f:
-        return yaml.safe_load(f)
+    if path:
+        with open(path, encoding="utf-8") as f:
+            return yaml.safe_load(f)
+    return common.load_config()
 
 
 def _load_links(filename: str) -> dict:
-    """label -> info dict, for either links.yaml or course_links.yaml."""
-    with open(common.HELPER_DIR / filename, encoding="utf-8") as f:
-        return yaml.safe_load(f)
+    """label -> info dict, for a domain's links file in the content pack."""
+    return common.load_links_file(filename)
 
 
 def normalize_label(raw: str, valid: set[str]) -> str:
@@ -49,30 +46,10 @@ def normalize_label(raw: str, valid: set[str]) -> str:
     return s if (s in valid or s == "question") else "question"
 
 
-# Runtime-injected fact providers (name -> fn(query) -> facts str). The RAG seam.
-CONTEXT_PROVIDERS = {
-    "course": course_facts.retrieve,
-    "paw": lambda q: common.load_topic_facts("paw"),
-    "neuralos": lambda q: common.load_topic_facts("neuralos"),
-    "students": students_facts.render,
-    "bio": lambda q: common.load_topic_facts("bio"),
-}
-# Header label each provider's facts are injected under (must match the spec).
-CONTEXT_LABELS = {"course": "Course facts", "paw": "Facts", "neuralos": "Facts",
-                  "students": "Facts", "bio": "Facts"}
-
-
 def _is_decline(answer: str) -> bool:
     a = answer.lower()
     return (not answer.strip() or "don't have that" in a or "do not have that" in a
             or "i'm not sure" in a or "i don't know" in a)
-
-# Resource-router providers: (render candidate list, map selected ids -> link items).
-# The rule side (candidate list + id->URL) is deterministic; the fuzzy side is the
-# selector PAW program. This is the generic hook for slides today, papers/demos later.
-RESOURCE_PROVIDERS = {
-    "course_lectures": (course_facts.render_lectures, course_facts.slides_for),
-}
 
 
 class Pipeline:
@@ -81,6 +58,12 @@ class Pipeline:
         self.programs = programs if programs is not None else common.load_programs()["programs"]
         self.mt = self.cfg["max_tokens"]
         self.resilience = self.cfg.get("resilience", {})
+        # Content-pack providers (the only content-specific Python): how to render
+        # the runtime-injected facts and resource lists this config refers to.
+        prov = common.load_providers()
+        self.context_providers = prov.CONTEXT_PROVIDERS
+        self.context_labels = getattr(prov, "CONTEXT_LABELS", {})
+        self.resource_providers = getattr(prov, "RESOURCE_PROVIDERS", {})
         self.links = {d: _load_links(spec["links"]) for d, spec in self.cfg["domains"].items()}
         # (domain, classifier label) -> resource-router config (e.g. course/slides).
         self.resource_routers = {(rr["domain"], rr["label"]): rr for rr in self.cfg.get("resource_routers", [])}
@@ -139,8 +122,8 @@ class Pipeline:
 
     def _inject(self, provider: str, query: str) -> str:
         """Build a facts-injected answerer input under the provider's header label."""
-        ctx = CONTEXT_PROVIDERS[provider](query)
-        return f"{CONTEXT_LABELS.get(provider, 'Facts')}:\n{ctx}\n\nQuestion: {query}"
+        ctx = self.context_providers[provider](query)
+        return f"{self.context_labels.get(provider, 'Facts')}:\n{ctx}\n\nQuestion: {query}"
 
     def _answer_input(self, spec: dict, query: str) -> str:
         """Flat-domain answerer input: bare query (baked) or facts+question (runtime)."""
@@ -183,13 +166,13 @@ class Pipeline:
         return answer, verdict
 
     def resource_items(self, rr: dict, query: str) -> list[dict]:
-        """Rule+fuzzy resource lookup: inject candidate list, select ids, map to items."""
-        render, mapper = RESOURCE_PROVIDERS[rr["provider"]]
+        """Rule+fuzzy resource lookup: inject candidate list, run the fuzzy selector,
+        let the provider turn its output into items."""
+        render, select = self.resource_providers[rr["provider"]]
         candidates = render()
         raw = self._infer(rr["program"], f"{rr.get('candidate_label', 'Items')}:\n{candidates}\n\nRequest: {query}",
                           self.mt.get("selector", 16))
-        ids = course_facts.parse_lecture_nums(raw)
-        return mapper(ids)[: rr.get("max_items", 4)]
+        return select(raw)[: rr.get("max_items", 4)]
 
     # --- per-domain classify -> resource | link | answer -> validate -------
     def _run_domain(self, domain: str, query: str) -> dict:

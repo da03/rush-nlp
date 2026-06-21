@@ -6,60 +6,87 @@ label list and the answerer facts are always derived from links.yaml / facts.md
 - they never drift from a hand-copied list inside a spec.
 """
 
+import importlib.util
 import json
+import os
 import pathlib
 import re
+import sys
 
 import yaml
 
 HELPER_DIR = pathlib.Path(__file__).resolve().parent
-SPECS_DIR = HELPER_DIR / "specs"
-LINKS_PATH = HELPER_DIR / "links.yaml"
-COURSE_LINKS_PATH = HELPER_DIR / "course_links.yaml"
-NEURALOS_LINKS_PATH = HELPER_DIR / "neuralos_links.yaml"
-FACTS_PATH = HELPER_DIR / "facts.md"
-PROGRAMS_PATH = HELPER_DIR / "programs.json"
 
-# Spec basenames in helper/specs/, mapped to the pipeline role.
+# The content pack directory (config/specs/facts/links/data/providers.py).
+# Defaults to this directory (the framework and content live together here today);
+# set PAW_HELPER_CONTENT to point a standalone framework at a separate pack.
+CONTENT_DIR = pathlib.Path(os.environ["PAW_HELPER_CONTENT"]).resolve() if os.environ.get(
+    "PAW_HELPER_CONTENT") else HELPER_DIR
+
+SPECS_DIR = CONTENT_DIR / "specs"
+FACTS_PATH = CONTENT_DIR / "facts.md"
+PROGRAMS_PATH = CONTENT_DIR / "programs.json"
+
+# Spec basenames mapped to the pipeline role (site domain).
 SPEC_NAMES = ["page_classifier", "answerer", "validator"]
 
-# Per-domain link files a classifier spec's {{LINKS}} placeholder can be filled
-# from. The site links are the default.
-LINK_SOURCES = {
-    "site": LINKS_PATH,
-    "course": COURSE_LINKS_PATH,
-    "neuralos": NEURALOS_LINKS_PATH,
-}
+# Config file the content pack ships (new name first, legacy fallback).
+CONFIG_NAMES = ("config.yaml", "pipeline.yaml")
 
-# Which links file feeds a spec's {{LINKS}} placeholder (default: site links).
-SPEC_LINK_SOURCE = {
-    "page_classifier": "site",
-    "answerer": "site",
-    "course_classifier": "course",
-    "neuralos_classifier": "neuralos",
-}
+
+def config_path() -> pathlib.Path:
+    for n in CONFIG_NAMES:
+        p = CONTENT_DIR / n
+        if p.exists():
+            return p
+    return CONTENT_DIR / CONFIG_NAMES[0]
+
+
+def load_config() -> dict:
+    with open(config_path(), encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def load_links_file(filename: str) -> dict:
+    """Load one links file from the content pack by filename."""
+    with open(CONTENT_DIR / filename, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+def _default_links_file(cfg: dict) -> str:
+    return cfg["domains"][cfg["default_domain"]]["links"]
 
 
 def load_links() -> dict:
-    """label -> {url|kind, label, description, purpose}."""
-    with open(LINKS_PATH, encoding="utf-8") as f:
-        return yaml.safe_load(f)
-
-
-def load_course_links() -> dict:
-    with open(COURSE_LINKS_PATH, encoding="utf-8") as f:
-        return yaml.safe_load(f)
-
-
-def load_links_source(source: str) -> dict:
-    """Load a domain's links file by source key (site/course/neuralos)."""
-    with open(LINK_SOURCES.get(source, LINKS_PATH), encoding="utf-8") as f:
-        return yaml.safe_load(f)
+    """The default domain's links: label -> {url|kind, label, description, purpose}."""
+    return load_links_file(_default_links_file(load_config()))
 
 
 def links_for_spec(name: str) -> dict:
-    """The links dict a given spec's {{LINKS}} should be filled from."""
-    return load_links_source(SPEC_LINK_SOURCE.get(name, "site"))
+    """The links dict a given spec's {{LINKS}} should be filled from.
+
+    A domain's classifier spec is filled from that domain's links file; anything
+    else (e.g. the site answerer's {{LINK_REGISTRY}}) uses the default domain's
+    links. Derived from config so the framework holds no per-content knowledge.
+    """
+    cfg = load_config()
+    classifier_links = {d["classifier"]: d["links"] for d in cfg["domains"].values()}
+    return load_links_file(classifier_links.get(name) or _default_links_file(cfg))
+
+
+def load_providers():
+    """Import the content pack's providers.py (its only required Python).
+
+    Exposes CONTEXT_PROVIDERS / CONTEXT_LABELS / RESOURCE_PROVIDERS. The content
+    dir is put on sys.path so the pack's providers can import its own helpers.
+    """
+    if str(CONTENT_DIR) not in sys.path:
+        sys.path.insert(0, str(CONTENT_DIR))
+    path = CONTENT_DIR / "providers.py"
+    spec = importlib.util.spec_from_file_location("paw_helper_providers", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
 
 
 def load_programs() -> dict:
@@ -81,7 +108,7 @@ def load_facts() -> str:
     return _strip_comments(FACTS_PATH.read_text(encoding="utf-8"))
 
 
-FACTS_DIR = HELPER_DIR / "facts"
+FACTS_DIR = CONTENT_DIR / "facts"
 
 
 def load_topic_facts(name: str) -> str:
