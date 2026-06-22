@@ -11,6 +11,8 @@ Suites:
   bench/course_pages.yaml    - course classifier label
   bench/questions.yaml       - site open-ended (rubric_points) + decline
   bench/course_questions.yaml- course factual + open-ended (rubric_points) + decline
+  bench/pawsite_pages.yaml    - ProgramAsWeights product-site classifier labels
+  bench/pawsite_questions.yaml- ProgramAsWeights factual + open-ended + decline
   bench/real_queries.yaml    - curated REAL traffic: route / factual / open / decline / nonenglish
 
 Usage:
@@ -97,14 +99,17 @@ class Tally:
 # ---- sections ----------------------------------------------------------------
 
 def sec_domain(p, t):
-    cases = load("domain.yaml")
+    all_cases = load("domain.yaml")
+    skipped = [c for c in all_cases if c.get("expected") not in p.available]
+    cases = [c for c in all_cases if c.get("expected") in p.available]
     correct, conf = 0, []
     for c in cases:
         pred = p.resolve_domain(c["query"], c["page"])
         correct += pred == c["expected"]
         if pred != c["expected"]:
             conf.append((c["query"], c["page"], c["expected"], pred))
-    t.add(f"\n=== Domain router ({len(cases)}) === {correct}/{len(cases)} = {correct/len(cases):.0%}")
+    t.add(f"\n=== Domain router ({len(cases)}) === {correct}/{len(cases)} = {correct/max(len(cases),1):.0%}"
+          + (f"  (skipped {len(skipped)} unavailable-domain cases)" if skipped else ""))
     for q, pg, e, pr in conf:
         t.add(f"   miss: {q!r} [page={pg}] {e}->{pr}")
     return correct, len(cases)
@@ -178,6 +183,9 @@ def sec_factual(p, t):
               if any(k in c for k in ("expected_any", "expected_all", "expected_next"))]
     cases += [(c, "neuralos") for c in load("neuralos_questions.yaml")
               if any(k in c for k in ("expected_any", "expected_all"))]
+    if "pawsite" in p.available:
+        cases += [(c, "pawsite") for c in load("pawsite_questions.yaml")
+                  if any(k in c for k in ("expected_any", "expected_all"))]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml") if c.get("cat") == "factual"]
     correct, miss = 0, []
     for c, dom in cases:
@@ -199,6 +207,8 @@ def sec_open(p, t, gfn):
     cases += [(c, "site") for c in load("questions.yaml") if "rubric_points" in c]
     cases += [(c, "course") for c in load("course_questions.yaml") if "rubric_points" in c]
     cases += [(c, "neuralos") for c in load("neuralos_questions.yaml") if "rubric_points" in c]
+    if "pawsite" in p.available:
+        cases += [(c, "pawsite") for c in load("pawsite_questions.yaml") if "rubric_points" in c]
     cases += [(c, "site") for c in load("site_topics.yaml") if "rubric_points" in c]
     cases += [(c, "site") for c in load("site_people.yaml") if "rubric_points" in c]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml") if c.get("cat") == "open"]
@@ -228,6 +238,8 @@ def sec_decline(p, t):
     cases += [(c, "site") for c in load("questions.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "course") for c in load("course_questions.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "neuralos") for c in load("neuralos_questions.yaml") if c.get("expect_answerable") is False]
+    if "pawsite" in p.available:
+        cases += [(c, "pawsite") for c in load("pawsite_questions.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "site") for c in load("site_topics.yaml") if c.get("expect_answerable") is False]
     cases += [(c, "site") for c in load("site_people.yaml") if c.get("expect_answerable") is False]
     cases += [(c, _domain_for(p, c, "site")) for c in load("real_queries.yaml")
@@ -283,6 +295,8 @@ def main():
         summary["course_class"] = sec_classifier(p, t, "course", "course_pages.yaml")
     if want("pages") and "neuralos" in p.available:
         summary["neuralos_class"] = sec_classifier(p, t, "neuralos", "neuralos_pages.yaml")
+    if want("pages") and "pawsite" in p.available:
+        summary["pawsite_class"] = sec_classifier(p, t, "pawsite", "pawsite_pages.yaml")
     if want("route"):
         summary["real_route"] = sec_route_real(p, t)
     if want("slides"):

@@ -1,15 +1,17 @@
-Decide which assistant should handle a visitor's message. The visitor is on a specific PAGE, given on the first line as "Page: ...". Return ONLY one word: site, course, or neuralos.
+Decide which assistant should handle a visitor's message. The visitor is on a specific PAGE, given on the first line as "Page: ...". Return ONLY one word: site, course, neuralos, or pawsite.
 
-The three assistants:
+The assistants:
 - site: Yuntian Deng's website assistant. Handles anything about Yuntian as a person (CV/resume, contact, education, career or position, awards, profiles), about him supervising or recruiting students for his lab, and about his projects in general, including ProgramAsWeights and WildChat.
 - course: the CS 486/686 (Introduction to AI) course assistant. Handles the course's lectures, slides, schedule, assignments, deadlines, exams, grading, textbook, TAs, office hours, and the Piazza/Chrysalis/LEARN platforms.
 - neuralos: the NeuralOS demo assistant. Handles the NeuralOS project: what it is, what the visitor is looking at, how it works, its architecture, training, data, demo controls, code, paper, and authors.
+- pawsite: the ProgramAsWeights product website assistant. Handles PAW product usage: install, SDKs, docs, compiler/runtime choice, Playground/Hub/Browser pages, API keys, agents, privacy boundaries, troubleshooting, and use cases.
 
 How to decide:
 - Default to the assistant for the CURRENT page. A generic message, or one whose subject is UNNAMED ("this", "it", "the model", "the demo", "the authors", "the team", "the paper", "the code"), is about the current page - return the current page's assistant. The SAME message can route differently depending on the page; that is intended.
 - Escape to a DIFFERENT assistant only when the message clearly names that assistant's subject:
-  - clearly about Yuntian personally, his career, recruiting/supervising students, or ProgramAsWeights / WildChat -> site
+  - clearly about Yuntian personally, his career, recruiting/supervising students, WildChat, or Yuntian's broad research -> site
   - clearly about the CS 486/686 course (cs486, cs686, lectures, assignments, exams, grading, TAs, the course platforms) -> course
+  - clearly about using ProgramAsWeights as a product (installing, compiling, SDKs, API keys, browser runtime, docs, agents, troubleshooting, pricing/privacy questions about PAW) -> pawsite
 - Use the neuralos assistant ONLY when the current page is the NeuralOS demo. From any other page, NeuralOS questions are handled by site.
 - Do NOT decide from topic words alone: "paper", "authors", "trained", "data", "code", or "research" with an unnamed subject stay on the current page.
 
@@ -92,3 +94,31 @@ Output: site
 Input: Page: the NeuralOS demo
 Message: what else do you research
 Output: site
+
+Input: Page: the ProgramAsWeights product website
+Message: how do I install the python package
+Output: pawsite
+
+Input: Page: the ProgramAsWeights product website
+Message: what is the browser compiler
+Output: pawsite
+
+Input: Page: the ProgramAsWeights product website
+Message: I need an api key
+Output: pawsite
+
+Input: Page: the ProgramAsWeights product website
+Message: are you taking students
+Output: site
+
+Input: Page: the ProgramAsWeights product website
+Message: where is your cv
+Output: site
+
+Input: Page: the ProgramAsWeights product website
+Message: when is the cs486 final
+Output: course
+
+Input: Page: the personal website
+Message: how do I install programasweights
+Output: pawsite

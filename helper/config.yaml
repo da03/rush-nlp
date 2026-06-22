@@ -22,6 +22,7 @@ page_defaults:
   site: site
   "course:cs486_s26": course
   "site:neuralos": neuralos
+  "site:paw": pawsite
 
 # Top-level PAGE-AWARE redirect program (optional). The router is fed
 # "Page: <label>\nMessage: <query>" and returns the handling domain, so an
@@ -37,6 +38,7 @@ router_page_labels:
   site: "the personal website"
   course: "the CS 486/686 course website"
   neuralos: "the NeuralOS demo"
+  pawsite: "the ProgramAsWeights product website"
 
 # Shared answer validator (checks the answer is on-topic for the question).
 validator: validator
@@ -60,6 +62,14 @@ resource_routers:
     result_label: "Lecture slides"
     item_description: "Lecture slides"
     max_items: 4
+  - domain: pawsite
+    label: code                      # classifier emits generic `code`; selector picks python/js/org
+    program: code_selector
+    provider: pawsite_code
+    candidate_label: Repositories
+    result_label: "Source code"
+    item_description: "Source code repository"
+    max_items: 2
 
 # Per-node-role generation budgets.
 max_tokens:
@@ -86,6 +96,15 @@ domains:
     links: links.yaml
     answerer: answerer
     facts_mode: baked        # flat answerer: facts compiled in (stable, also the fallback)
+    # Real-traffic fix (2026-06-22): "give me a bio of yuntian" was routing to the
+    # CV link (a PDF) instead of generating a bio. A bio REQUEST should be answered
+    # (bio sub-answerer), so force question; still send explicit CV/resume/PDF asks
+    # to the cv link via the unless-list.
+    classifier_redundancy:
+      - to: question
+        from: [cv]
+        any_keywords: ["bio", "biography", "about yuntian", "about him"]
+        unless_keywords: ["cv", "resume", "curriculum", "pdf", "download"]
     # Hierarchical QA decomposition: a topic router sends detailed PAW/NeuralOS
     # questions to specialized sub-answerers (runtime-injected detailed facts);
     # everything else uses the flat answerer, which is also the backtrack fallback.
@@ -113,3 +132,35 @@ domains:
     answerer: neuralos_answerer
     facts_mode: runtime
     context: neuralos        # CONTEXT_PROVIDERS["neuralos"] injects helper/facts/neuralos.md
+  # ProgramAsWeights product website (programasweights.com). Default for page
+  # "site:paw"; generic questions like "how do I install it" stay on PAW, while
+  # clearly personal/course/NeuralOS questions escape through the domain router.
+  pawsite:
+    classifier: pawsite_classifier
+    links: pawsite_links.yaml
+    answerer: pawsite_answerer
+    facts_mode: runtime
+    context: pawsite_core      # flat answerer + fallback get the compact overview
+    topic_router: pawsite_topic_router
+    # Deterministic safety net for the code cluster the small classifier is shaky
+    # on (bare "python sdk" / "javascript sdk" / "npm package"). If it emits
+    # question/browser but the query names an SDK/repo/package, prefer `code` (the
+    # 100%-accurate code_selector then picks python/js/org). Install/how-to phrasings
+    # are excluded so "how do I install the sdk" stays a question.
+    classifier_redundancy:
+      - to: code
+        from: [question, browser]
+        any_keywords: [" sdk", "repo", "repository", "github", "source code", " package"]
+        unless_keywords: ["install", "how do i", "how to", "what should"]
+    # Each sub-answerer gets ONLY its topic's facts slice (facts/pawsite_<topic>.md),
+    # so the injected context is small and on-topic - the point of the hierarchy.
+    topics:
+      install: {answerer: pawsite_install_answerer, context: pawsite_install}
+      compile: {answerer: pawsite_compile_answerer, context: pawsite_compile}
+      browser: {answerer: pawsite_browser_answerer, context: pawsite_browser}
+      accounts: {answerer: pawsite_accounts_answerer, context: pawsite_accounts}
+      agents: {answerer: pawsite_agents_answerer, context: pawsite_agents}
+      privacy: {answerer: pawsite_privacy_answerer, context: pawsite_privacy}
+      examples: {answerer: pawsite_examples_answerer, context: pawsite_examples}
+      troubleshooting: {answerer: pawsite_troubleshooting_answerer, context: pawsite_troubleshooting}
+      general: {answerer: pawsite_answerer, context: pawsite_core}

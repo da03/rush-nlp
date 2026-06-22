@@ -1,0 +1,167 @@
+# ProgramAsWeights product-site freeform benchmark (programasweights.com).
+# Grounded in helper/facts/pawsite.md. Link requests belong in pawsite_pages.yaml;
+# this file grades answers that should be returned in words.
+
+# ============================ AUTO-GRADED (factual) ============================
+
+- query: "what compiler should I use for the browser"
+  expected_all: ["paw-4b-gpt2", "browser"]
+
+- query: "what is the python install command"
+  expected_all: ["pip install programasweights", "pypi.programasweights.com"]
+
+- query: "what npm package should I install"
+  expected_any: ["@programasweights/web"]
+
+- query: "how many compile requests can I make anonymously"
+  expected_all: ["20", "hour"]
+
+- query: "how do I force CPU if GPU breaks"
+  expected_any: ["PAW_GPU_LAYERS=0", "n_gpu_layers=0"]
+
+# ===================== OPEN-ENDED (rubric_points, grader-scored) ==============
+
+- query: "what is paw"
+  rubric_points:
+    - {text: "Says ProgramAsWeights compiles natural-language specs into tiny/local neural functions", required: true}
+    - {text: "Mentions the one text input to one text output stateless function interface", required: false}
+
+- query: "when should I use it instead of regex"
+  rubric_points:
+    - {text: "Says PAW is for fuzzy text tasks where regex is too brittle but a full LLM per input is overkill", required: true}
+
+- query: "how do I write a good spec"
+  rubric_points:
+    - {text: "Says to use realistic Input/Output examples and constrain the output format", required: true}
+    - {text: "Says to iterate with test cases / inspect failures / retest", required: true}
+
+- query: "standard vs compact"
+  rubric_points:
+    - {text: "Identifies Standard as the current higher-accuracy default", required: true}
+    - {text: "Identifies Compact as smaller and browser-compatible via WebAssembly", required: true}
+
+- query: "does inference run locally"
+  rubric_points:
+    - {text: "Says compile uses the hosted PAW API but inference usually runs locally through the SDK after download", required: true}
+    - {text: "Mentions inference can work offline after first download", required: false}
+
+- query: "how can I use paw in an agent"
+  rubric_points:
+    - {text: "Mentions agent preprocessing such as parsing tool calls, validating outputs, routing tasks, classification, or structured-format repair", required: true}
+
+- query: "what can I use paw for"
+  rubric_points:
+    - {text: "Names at least two real use cases such as classification, extraction, format repair, fuzzy search, log triage, intent routing, or agent preprocessing", required: true}
+
+- query: "why am I getting http 429"
+  rubric_points:
+    - {text: "Explains HTTP 429 as hosted compile API rate limiting and suggests waiting or signing in for higher limits", required: true}
+
+# ===================== Should decline gracefully (not in facts) ===============
+
+- {query: "what is the enterprise pricing", expect_answerable: false}
+- {query: "are you SOC2 certified", expect_answerable: false}
+- {query: "what is the exact data retention policy", expect_answerable: false}
+- {query: "which AWS region stores my specs", expect_answerable: false}
+- {query: "what is your roadmap for next year", expect_answerable: false}
+- {query: "can you guarantee HIPAA compliance", expect_answerable: false}
+
+# ============================ REAL QUERY INTENTS ==============================
+# Hand-curated from current programasweights.com helper logs exported on 2026-06-22.
+
+- query: "can i do multiple turns"
+  source: real
+  rubric_points:
+    - {text: "Explains that PAW functions are stateless and each call takes one text input and returns one text output", required: true}
+
+- query: "can I run offline"
+  source: real
+  rubric_points:
+    - {text: "Says inference can work offline after the first download / after assets are cached", required: true}
+    - {text: "Distinguishes hosted compile from local inference", required: false}
+
+- query: "Is there a fully client-side WebAssembly mode that runs offline in the browser?"
+  source: real
+  rubric_points:
+    - {text: "Mentions the Compact compiler / paw-4b-gpt2 and browser WebAssembly runtime", required: true}
+    - {text: "Explains browser inference runs client-side after assets are downloaded, especially when loading by program ID", required: true}
+
+- query: "does it support gpu"
+  source: real
+  rubric_points:
+    - {text: "Mentions GPU acceleration support via Metal on Mac, CUDA on Linux, with CPU fallback", required: true}
+
+- query: "how to install"
+  source: real
+  rubric_points:
+    - {text: "Provides the Python install command including `pip install programasweights` and the PAW package index", required: true}
+
+- query: "Need the CLI install instructions for macOS"
+  source: real
+  rubric_points:
+    - {text: "Provides the Python package install command; does not invent a separate macOS-specific installer", required: true}
+
+- query: "How to evaluate compiled programs"
+  source: real
+  rubric_points:
+    - {text: "Recommends treating spec writing/evaluation like software engineering: create test cases, inspect failures, revise, and retest", required: true}
+
+- query: "what are the different compilers"
+  source: real
+  rubric_points:
+    - {text: "Names Standard and Compact, and describes Compact as browser-compatible", required: true}
+
+- query: "what are its limitations"
+  source: real
+  rubric_points:
+    - {text: "Mentions a real documented limitation such as stateless one-input/one-output functions or the ~2048-token shared context window", required: true}
+
+- query: "is it free"
+  source: real
+  rubric_points:
+    - {text: "Says PAW is free to use (anonymous use works with no payment; signing in is optional and only raises limits)", required: true}
+
+# Real high-frequency phrasings (tested through the full pipeline, not just the
+# open-bench paraphrase) so routing regressions are caught.
+- query: "what license is this under"
+  source: real
+  rubric_points:
+    - {text: "States the license is the MIT License", required: true}
+
+- query: "how does paw work"
+  source: real
+  rubric_points:
+    - {text: "Explains PAW compiles a natural-language spec into a small local neural function (one text input, one text output)", required: true}
+
+- query: "about paw"
+  source: real
+  rubric_points:
+    - {text: "Describes what ProgramAsWeights is (compiles specs into tiny local neural functions for fuzzy text tasks)", required: true}
+
+- query: "what is rate limit"
+  source: real
+  rubric_points:
+    - {text: "States anonymous and/or authenticated compile rate limits from the facts", required: true}
+
+- query: "what is the license of paw"
+  source: real
+  rubric_points:
+    - {text: "States the website repository license is MIT License", required: true}
+
+- query: "who built this"
+  source: real
+  rubric_points:
+    - {text: "Names at least one real PAW author, such as Wentao Zhang or Yuntian Deng", required: true}
+
+- query: "team"
+  source: real
+  rubric_points:
+    # NOTE: keep this clean. The compound "author/team member" phrasing makes the
+    # small rubric_checker false-negative (see grader_meta.yaml authoring note).
+    - {text: "Names at least one of the PAW authors (e.g. Wentao Zhang or Yuntian Deng)", required: true}
+
+- {query: "how to cook pasta", source: real, expect_answerable: false}
+- {query: "what is 2+2", source: real, expect_answerable: false}
+- {query: "middle finger", source: real, expect_answerable: false}
+- {query: "s reconciliacion para ti ?", source: real, expect_answerable: false}
+- {query: "is there a paper", source: real, expect_answerable: false}

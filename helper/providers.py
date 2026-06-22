@@ -18,18 +18,35 @@ import students_facts
 
 from paw_helper import common
 
+def _topic(name):
+    """Bind a runtime facts file (facts/<name>.md) as a provider fn(query)->str."""
+    return lambda q: common.load_topic_facts(name)
+
+
 # Runtime-injected fact providers (name -> fn(query) -> facts str). The RAG seam.
+# The ProgramAsWeights product helper is decomposed: each sub-answerer gets ONLY
+# its topic's facts slice (facts/pawsite_<topic>.md), not the whole sheet, so the
+# injected context stays small and on-topic.
 CONTEXT_PROVIDERS = {
     "course": course_facts.retrieve,
-    "paw": lambda q: common.load_topic_facts("paw"),
-    "neuralos": lambda q: common.load_topic_facts("neuralos"),
+    "paw": _topic("paw"),
+    "pawsite_core": _topic("pawsite_core"),
+    "pawsite_install": _topic("pawsite_install"),
+    "pawsite_compile": _topic("pawsite_compile"),
+    "pawsite_browser": _topic("pawsite_browser"),
+    "pawsite_accounts": _topic("pawsite_accounts"),
+    "pawsite_agents": _topic("pawsite_agents"),
+    "pawsite_privacy": _topic("pawsite_privacy"),
+    "pawsite_examples": _topic("pawsite_examples"),
+    "pawsite_troubleshooting": _topic("pawsite_troubleshooting"),
+    "neuralos": _topic("neuralos"),
     "students": students_facts.render,
-    "bio": lambda q: common.load_topic_facts("bio"),
+    "bio": _topic("bio"),
 }
 
 # Header label each provider's facts are injected under (must match the spec).
-CONTEXT_LABELS = {"course": "Course facts", "paw": "Facts", "neuralos": "Facts",
-                  "students": "Facts", "bio": "Facts"}
+# Only non-default labels need listing; everything else defaults to "Facts".
+CONTEXT_LABELS = {"course": "Course facts"}
 
 
 def _select_slides(raw: str) -> list[dict]:
@@ -37,9 +54,43 @@ def _select_slides(raw: str) -> list[dict]:
     return course_facts.slides_for(course_facts.parse_lecture_nums(raw))
 
 
+# --- ProgramAsWeights source-code resource router -----------------------------
+# The pawsite classifier emits a single generic `code` label; this fuzzy router
+# disambiguates Python vs JavaScript vs the org page. Generic "source code" with
+# no language named -> the org page (which lists both repos).
+PAWSITE_REPOS = {
+    "python": {"label": "Python SDK (GitHub)", "url": "https://github.com/programasweights/programasweights-python",
+               "description": "Python package - pip install"},
+    "js": {"label": "JavaScript SDK (GitHub)", "url": "https://github.com/programasweights/programasweights-js",
+           "description": "Browser/npm package - @programasweights/web"},
+    "org": {"label": "ProgramAsWeights on GitHub", "url": "https://github.com/programasweights",
+            "description": "All source repositories"},
+}
+
+
+def _render_repos() -> str:
+    return ("- python: the Python SDK / pip package\n"
+            "- js: the JavaScript / npm / browser SDK\n"
+            "- org: the GitHub organization listing all repositories")
+
+
+def _select_repos(raw: str) -> list[dict]:
+    """Map the code_selector output (python | js | both | org) to repo items."""
+    s = raw.strip().lower()
+    py, js = "python" in s, ("js" in s or "javascript" in s or "npm" in s)
+    if "both" in s or (py and js):
+        return [PAWSITE_REPOS["python"], PAWSITE_REPOS["js"]]
+    if py:
+        return [PAWSITE_REPOS["python"]]
+    if js:
+        return [PAWSITE_REPOS["js"]]
+    return [PAWSITE_REPOS["org"]]
+
+
 # Resource-router providers: (render candidate list, select items from selector
-# output). The rule side (candidate list + id->URL) is deterministic; the fuzzy
-# side is the selector PAW program. The generic hook for slides today.
+# output). The rule side is deterministic; the fuzzy side is the selector PAW
+# program. Hooks: course slides and pawsite source code.
 RESOURCE_PROVIDERS = {
     "course_lectures": (course_facts.render_lectures, _select_slides),
+    "pawsite_code": (_render_repos, _select_repos),
 }

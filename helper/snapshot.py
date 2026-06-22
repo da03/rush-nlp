@@ -50,6 +50,8 @@ FILE_PAGE = {
     "slides.yaml": "course:cs486_s26",
     "neuralos_pages.yaml": "site:neuralos",
     "neuralos_questions.yaml": "site:neuralos",
+    "pawsite_pages.yaml": "site:paw",
+    "pawsite_questions.yaml": "site:paw",
 }
 
 # Cross-page ad-hoc set: the SAME query at every page, to lock page-aware routing,
@@ -60,7 +62,7 @@ AD_HOC_QUERIES = [
     "what is neuralos", "what is programasweights", "how do I contact you",
     "where is your cv", "tell me about your research", "what are you working on",
 ]
-AD_HOC_PAGES = ["site", "site:neuralos", "course:cs486_s26"]
+AD_HOC_PAGES = ["site", "site:neuralos", "course:cs486_s26", "site:paw"]
 
 # Extra single-page adversarial probes (render-type coverage + declines).
 EXTRA = [
@@ -71,6 +73,8 @@ EXTRA = [
     ("chrysalis is down", "course:cs486_s26"), ("who are the TAs", "course:cs486_s26"),
     ("the demo is frozen", "site:neuralos"), ("can it play doom", "site:neuralos"),
     ("how do I use this", "site:neuralos"), ("how many gpus does it need", "site:neuralos"),
+    ("how do I install programasweights", "site:paw"), ("standard vs compact", "site:paw"),
+    ("is my data private", "site:paw"), ("are you SOC2 certified", "site:paw"),
 ]
 
 

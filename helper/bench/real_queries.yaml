@@ -18,6 +18,10 @@
 # SITE - link routing
 # =====================================================================
 - {query: "where is your cv", cat: route, expected: cv}
+# Real traffic (2026-06-22): a bio REQUEST must be answered (bio sub-answerer), not
+# sent to the CV PDF. Fixed via the site classifier_redundancy rule (bio -> question).
+- {query: "give me a bio of yuntian", cat: route, expected: question, note: "real: was misrouting to the cv link"}
+- {query: "can I download your resume", cat: route, expected: cv, note: "explicit resume/CV ask still goes to the link"}
 # These phrasings route to the answerer (not the x link); grade that it gives the
 # CORRECT X link rather than a hallucinated handle.
 - query: "do you have twitter"

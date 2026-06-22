@@ -1,0 +1,87 @@
+# ProgramAsWeights product-site classifier benchmark (page key `site:paw`).
+# Held-out paraphrases (NOT verbatim in specs/pawsite_classifier.txt).
+#
+# Taxonomy (14 labels): playground hub browser docs settings agents profile about
+# privacy terms code alien avatar feedback  (+ "question").
+# Policy: license/is-it-free/how-to-install -> question (answered inline);
+# source code/repos/sdk -> code (a fuzzy code_selector then picks python/js/org);
+# get-started/learn -> docs; contact/email/praise/bug -> feedback.
+
+# ---- synthetic held-out paraphrases ----
+- {query: "I want to compile a program", expected: playground}
+- {query: "make a new classifier", expected: playground}
+- {query: "show me community programs", expected: hub}
+- {query: "find a program someone already compiled", expected: hub}
+- {query: "run in the browser", expected: browser}
+- {query: "webassembly demo", expected: browser}
+- {query: "documentation", expected: docs}
+- {query: "api reference", expected: docs}
+- {query: "read the full docs", expected: docs}
+- {query: "I need an API key", expected: settings}
+- {query: "manage my account", expected: settings}
+- {query: "use with cursor", expected: agents}
+- {query: "my programs", expected: profile}
+- {query: "the about page", expected: about}
+- {query: "report a bug", expected: feedback}
+- {query: "I have a suggestion", expected: feedback}
+- {query: "what languages are supported", expected: question}
+- {query: "standard vs compact", expected: question}
+- {query: "is my data private", expected: question}
+- {query: "how do I write a good spec", expected: question}
+
+# ---- code theme (the #1 real cluster) -> all route to `code` ----
+- {query: "source code", expected: code, source: real}
+- {query: "where is github", expected: code, source: real}
+- {query: "where is code", expected: code, source: real}
+- {query: "where is the code", expected: code, source: real}
+- {query: "where can i find python sdk", expected: code, source: real}
+- {query: "where is python code", expected: code, source: real}
+- {query: "where is js code", expected: code, source: real}
+- {query: "javascript sdk", expected: code, source: real}
+- {query: "javascript sdk source", expected: code, source: real}
+- {query: "where to find code repo", expected: code, source: real}
+- {query: "where are code repos", expected: code, source: real}
+- {query: "where is github repo", expected: code, source: real}
+- {query: "python sdk source code", expected: code, source: real}
+- {query: "show me the browser sdk source repo", expected: code, source: real}
+- {query: "pip install source repo", expected: code, source: real}
+- {query: "npm package", expected: code, source: real}
+
+# ---- other real intents (policy-corrected) ----
+- {query: "browse programs", expected: hub, source: real}
+- {query: "compile a program", expected: playground, source: real}
+- {query: "create a new function", expected: playground, source: real}
+- {query: "find a sentiment analyzer", expected: hub, source: real}
+- {query: "how do i run in browser", expected: browser, source: real}
+- {query: "run this fully in the browser with no server", expected: browser, source: real}
+- {query: "show me the docs", expected: docs, source: real}
+- {query: "how do i get started", expected: docs, source: real}
+- {query: "where are the docs for python sdk", expected: docs, source: real}
+- {query: "where is the api key", expected: settings, source: real}
+- {query: "get an api key", expected: settings, source: real}
+- {query: "log in with github", expected: settings, source: real}
+- {query: "my account page", expected: settings, source: real}
+- {query: "how do i use this in cursor", expected: agents, source: real}
+- {query: "can cursor use this", expected: agents, source: real}
+- {query: "AI coding assistant integration", expected: agents, source: real}
+- {query: "play the alien game", expected: alien, source: real}
+- {query: "send feedback", expected: feedback, source: real}
+- {query: "i found a bug", expected: feedback, source: real}
+- {query: "great tool", expected: feedback, source: real}
+- {query: "do you have an email", expected: feedback, source: real}
+- {query: "this is broken and i want to report a bug", expected: feedback, source: real}
+
+# ---- info questions (answered inline, not links) ----
+- {query: "how does paw work", expected: question, source: real}
+- {query: "about paw", expected: question, source: real}
+- {query: "how does it work", expected: question, source: real}
+- {query: "what is the license", expected: question, source: real}
+- {query: "what license is this under", expected: question, source: real}
+- {query: "is it free", expected: question, source: real}
+- {query: "can i run offline", expected: question, source: real}
+- {query: "does it support gpu", expected: question, source: real}
+- {query: "can i do multiple turns", expected: question, source: real}
+- {query: "how do i install the cli", expected: question, source: real}
+- {query: "how to install", expected: question, source: real}
+- {query: "who built this", expected: question, source: real}
+- {query: "what are its limitations", expected: question, source: real}

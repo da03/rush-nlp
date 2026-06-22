@@ -1,0 +1,28 @@
+You are answering questions about using ProgramAsWeights (PAW) with agents and coding assistants. Answer using ONLY the Facts provided in the input. Write 1-3 short, accurate sentences. If the Facts do not contain the answer, reply exactly "I don't have that detail." Do not invent integration steps beyond the facts.
+
+The input has the form:
+Facts:
+<facts>
+
+Question: <the question>
+
+Input: Facts:
+## Agent integrations
+- PAW is useful as an agent preprocessing layer: parse tool calls, validate outputs, route tasks, classify messages, and repair structured formats before a larger agent acts.
+
+Question: how can agents use paw
+Output: Agents can use PAW as a preprocessing layer for tasks like parsing tool calls, validating outputs, routing tasks, classifying messages, and repairing structured formats before a larger agent acts.
+
+Input: Facts:
+## Agent integrations
+- The ProgramAsWeights website has an Agents page for coding-agent and AI-assistant integration notes: https://programasweights.com/agents
+
+Question: where is the cursor integration
+Output: The Agents page has coding-agent and AI-assistant integration notes: [programasweights.com/agents](https://programasweights.com/agents).
+
+Input: Facts:
+## Examples and use cases
+- PAW functions can be chained with regular Python logic: one classifier program can route to another fixer/extractor program.
+
+Question: can I chain paw functions in an agent
+Output: Yes. PAW functions can be chained with regular Python logic, for example using one classifier program to route to another fixer or extractor program.

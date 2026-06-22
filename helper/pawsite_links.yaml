@@ -1,0 +1,104 @@
+# Link destinations the ProgramAsWeights website helper can route to.
+#
+# Labels are emitted by pawsite_classifier. `purpose` is inlined into the
+# classifier spec; `label` and `description` are shown in the helper UI.
+
+playground:
+  url: "https://programasweights.com/playground"
+  name: "Playground"
+  label: "Compile in the Playground"
+  description: "Write a spec and compile a PAW program"
+  purpose: "The visitor wants to compile, create, test, or try a new PAW program."
+
+hub:
+  url: "https://programasweights.com/hub"
+  name: "Program Hub"
+  label: "Browse the Program Hub"
+  description: "Browse public compiled programs"
+  purpose: "The visitor wants to browse, search, discover, or reuse public/community programs."
+
+browser:
+  url: "https://programasweights.com/browser"
+  name: "Browser runtime"
+  label: "Run PAW in the browser"
+  description: "Try browser-compatible PAW programs"
+  purpose: "The visitor wants to run/execute programs in the browser or via WebAssembly, or without installing Python. (The JavaScript SDK SOURCE CODE is `code`, not here.)"
+
+docs:
+  url: "https://programasweights.com/docs"
+  name: "Documentation"
+  label: "Read the docs"
+  description: "Quickstarts, SDK reference, and guides"
+  purpose: "The visitor wants documentation, quickstarts, guides, the API reference, the full/ReadTheDocs docs, or help getting started or learning PAW."
+
+settings:
+  url: "https://programasweights.com/settings"
+  name: "Settings"
+  label: "Manage API keys"
+  description: "Sign in and manage account/API keys"
+  purpose: "The visitor wants an API key, account settings, login, authentication, or higher hosted API limits."
+
+agents:
+  url: "https://programasweights.com/agents"
+  name: "Agents"
+  label: "Use PAW with coding agents"
+  description: "Agent and coding-assistant integration notes"
+  purpose: "The visitor wants to use PAW with Cursor, coding agents, AI assistants, or agent workflows."
+
+profile:
+  url: "https://programasweights.com/profile"
+  name: "Profile"
+  label: "View your programs"
+  description: "Your compiled programs"
+  purpose: "The visitor wants their own programs, profile, versions, or compiled program history."
+
+about:
+  url: "https://programasweights.com/about"
+  name: "About"
+  label: "About ProgramAsWeights"
+  description: "High-level project overview"
+  purpose: "The visitor wants a high-level about page, project overview, or explanation of what PAW is as a product."
+
+privacy:
+  url: "https://programasweights.com/privacy"
+  name: "Privacy"
+  label: "Privacy policy"
+  description: "Privacy information"
+  purpose: "The visitor wants the privacy policy or privacy page."
+
+terms:
+  url: "https://programasweights.com/terms"
+  name: "Terms"
+  label: "Terms of service"
+  description: "Terms and legal information"
+  purpose: "The visitor wants terms of service, legal terms, or licensing/legal information."
+
+# Generic "code" label: a fuzzy code_selector resource-router (providers.py
+# RESOURCE_PROVIDERS["pawsite_code"]) disambiguates Python vs JavaScript vs the
+# org page. The url here is the org fallback used if the selector is not compiled.
+code:
+  url: "https://github.com/programasweights"
+  name: "Source code"
+  label: "Source code on GitHub"
+  description: "PAW source repositories"
+  purpose: "The visitor wants the source code, a GitHub repository, the Python package (pip), the JavaScript/npm package, or to find the code in any language."
+
+alien:
+  url: "https://programasweights.com/alien"
+  name: "Alien game"
+  label: "Alien language game"
+  description: "Play the PAW alien language demo"
+  purpose: "The visitor wants to play the alien game or alien language demo."
+
+avatar:
+  url: "https://programasweights.com/avatar"
+  name: "Avatar demo"
+  label: "Avatar demo"
+  description: "Interactive avatar demo"
+  purpose: "The visitor wants the avatar demo."
+
+feedback:
+  kind: feedback
+  label: "Send feedback"
+  description: "Report a bug or leave a suggestion"
+  purpose: "The visitor wants to report a bug, leave feedback, request help from the site owner, or suggest an improvement."

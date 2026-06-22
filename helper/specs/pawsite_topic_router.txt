@@ -1,0 +1,135 @@
+A visitor on programasweights.com asked an open-ended question about ProgramAsWeights. Decide which specialized answerer should handle it. Return ONLY one word: install, compile, browser, accounts, agents, privacy, examples, troubleshooting, or general.
+
+- install: installing packages, Python SDK, JavaScript SDK, pip, npm, imports, quickstart code.
+- compile: writing specs, compiling, running functions, compiler choice, Standard vs Compact vs Finetuned Standard, token/context limits, slugs, versions, chaining functions, and whether/how it uses the GPU (hardware acceleration).
+- browser: browser runtime, WebAssembly, @programasweights/web, JavaScript browser execution, running client-side or offline in a browser.
+- accounts: login, API keys, PAW_API_KEY, rate limits, how many requests/compiles are allowed, authenticated vs anonymous limits, settings, profile, program naming.
+- agents: Cursor, coding agents, AI assistants, agent preprocessing, tool-call validation, structured-output repair for agents.
+- privacy: data handling, whether inference runs locally vs on the hosted API, offline behavior, compliance, retention, and enterprise/detailed pricing or billing questions (which we cannot answer). Basic "is it free / does it cost anything" goes to general, not here.
+- examples: use cases, examples, case studies, whether PAW fits a task, fuzzy search, extraction, classification, log triage, format repair.
+- troubleshooting: errors and failures - 422, 429, assets not ready, GPU/Metal/CUDA crashes or errors, cache, slow first call.
+- general: what PAW is, how it works at a high level, why it matters, who built it, the team/authors, the license, its limitations, whether it is stateless or supports multiple turns, project overview, and anything not covered above.
+
+Rules:
+- "Who built it / the team / authors / what license" -> general. "Its limitations / is it stateless / can I do multiple turns" -> general.
+- "What is the rate limit / how many requests" -> accounts.
+- "Does inference run locally / does it run offline / where does my data go" -> privacy.
+- "Does it support / use the GPU" (a capability question) -> compile; but a GPU/Metal CRASH or ERROR -> troubleshooting.
+- Route "which compiler should I use" and "standard vs compact" to compile.
+- Route "can it run in browser" to browser.
+- Route "what can I use it for" to examples.
+- When unsure, return general.
+
+Input: how do I install it in python
+Output: install
+
+Input: pip install command
+Output: install
+
+Input: npm install @programasweights/web
+Output: browser
+
+Input: how do I write a good spec
+Output: compile
+
+Input: standard vs compact
+Output: compile
+
+Input: can this run in the browser
+Output: browser
+
+Input: where do I get an API key
+Output: accounts
+
+Input: what are anonymous limits
+Output: accounts
+
+Input: use paw with cursor
+Output: agents
+
+Input: is my data private
+Output: privacy
+
+Input: how much does this cost
+Output: privacy
+
+Input: what can I use it for
+Output: examples
+
+Input: give me an example
+Output: examples
+
+Input: HTTP 429 when compiling
+Output: troubleshooting
+
+Input: metal crashes when loading
+Output: troubleshooting
+
+Input: what is paw
+Output: general
+
+Input: who built this
+Output: general
+
+Input: who is on the team
+Output: general
+
+Input: what license is it under
+Output: general
+
+Input: what are its limitations
+Output: general
+
+Input: can I do multiple turns
+Output: general
+
+Input: is it stateless
+Output: general
+
+Input: what is the rate limit
+Output: accounts
+
+Input: how many requests can I make
+Output: accounts
+
+Input: does inference run locally
+Output: privacy
+
+Input: does it run offline
+Output: privacy
+
+Input: does it support the gpu
+Output: compile
+
+Input: does it use my gpu
+Output: compile
+
+Input: is it free
+Output: general
+
+Input: does it cost anything to use
+Output: general
+
+Input: do you have an email
+Output: general
+
+Input: how do I contact the team
+Output: general
+
+Input: when should I use it instead of regex
+Output: examples
+
+Input: when is it better than a regex
+Output: examples
+
+Input: can I do multiple turns
+Output: general
+
+Input: does it remember previous messages
+Output: general
+
+Input: how many compile requests can I make
+Output: accounts
+
+Input: how many compiles per hour
+Output: accounts

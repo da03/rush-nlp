@@ -120,6 +120,8 @@ sudo tee /etc/systemd/system/yuntiandeng-helper.service.d/override.conf >/dev/nu
 WorkingDirectory=/opt/yuntiandeng-helper/repo/helper
 Environment=PAW_HELPER_CONTENT=/opt/yuntiandeng-helper/repo/helper
 Environment=HELPER_ALLOWED_ORIGINS=https://yuntiandeng.com,https://www.yuntiandeng.com,https://neural-os.com,https://www.neural-os.com,https://programasweights.com,https://www.programasweights.com
+Environment=PAW_HELPER_INFERENCE_BACKEND=remote_infer
+Environment=PAW_HELPER_INFER_ENDPOINT=https://programasweights.com/api/v1/infer
 ExecStart=
 ExecStart=/opt/yuntiandeng-helper/venv/bin/paw-helper serve --host 127.0.0.1 --port 8088
 EOF
@@ -151,5 +153,8 @@ Verify: `curl -s -D- -o/dev/null -X POST https://helper.yuntiandeng.com/ask -H '
   `review.py` highlights the fallback/unanswered queries - those are the gaps to
   fix in `facts.md` / `links.yaml` / the specs, then recompile.
 - CORS origins are set via `HELPER_ALLOWED_ORIGINS` in the systemd drop-in.
+- For Yuntian's shared helper backend, `PAW_HELPER_INFERENCE_BACKEND=remote_infer`
+  sends pinned program IDs through the central PAW `/api/v1/infer` endpoint instead
+  of loading/running every helper program in this helper service process.
 - Before deploying, prove behavior is unchanged with the golden snapshot:
   `python helper/snapshot.py --check` (empty diff = no response changed).

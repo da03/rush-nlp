@@ -9,6 +9,14 @@
 # These are held out from specs/rubric_checker.txt (different content) so the meta
 # score reflects generalization. `note` records why I labeled it that way - reread
 # it when eyeballing grader disagreements.
+#
+# RUBRIC-AUTHORING GUIDELINE (lesson learned 2026-06-22): write each requirement as
+# ONE clean clause. The small rubric_checker false-negatives on compound subjects
+# joined by a slash or "or" of two NOUN categories, e.g. "Names at least one PAW
+# author/team member" or "...author or team member" both score NO even for a correct
+# naming answer, while "Names at least one of the PAW authors (e.g. X or Y)" scores
+# YES. Synonym slashes inside a noun ("tiny/local", "and/or", "X/Twitter") are fine.
+# Prefer "Names at least one of <list>" over "Names a <catA>/<catB>".
 
 # --- education: correct / omitted / contradicted ---
 - q: "where did you get your doctorate"
@@ -284,3 +292,15 @@
   point: "Names at least one specific company"
   gold: no
   note: vague
+# --- list-naming with the recommended clean phrasing (locks correct behavior;
+#     see the authoring guideline in the header about avoiding compound subjects) ---
+- q: "team"
+  a: "The team is the authors: Wentao Zhang, Liliana Hotsko, Stuart Shieber, and Yuntian Deng."
+  point: "Names at least one of the PAW authors (e.g. Wentao Zhang or Yuntian Deng)"
+  gold: yes
+  note: clean "Names at least one of <list>" phrasing grades correctly
+- q: "who is on the team"
+  a: "It is built by ProgramAsWeights."
+  point: "Names at least one of the PAW authors (e.g. Wentao Zhang or Yuntian Deng)"
+  gold: no
+  note: does not actually name a person

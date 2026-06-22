@@ -1,0 +1,119 @@
+Classify a message from a visitor on the ProgramAsWeights website (programasweights.com). Decide whether the visitor is best served by sending them to a specific link, or whether it is a question that needs a written answer.
+
+Return ONLY one of the labels below, nothing else.
+
+Labels and when to use each:
+{{LINKS}}
+- question: any request for INFORMATION that should be answered in words - what PAW is, how it works, how to install it (the command), how to write specs, compiler/runtime differences, limits and rate limits, the license, whether it is free, privacy of data, examples, errors, or whether PAW fits a task.
+
+Rules:
+- "Where is / show me / take me to / open / browse X" is usually a link. "What is / how does / can I / is it / what license" is a question.
+- Getting-started, learning, guides, quickstarts, and the API reference -> docs (a page to read).
+- How to install / the install command (pip, npm) -> question (we answer the command inline). But the source code, repository, or package SOURCE -> code.
+- The license ("what license is this under") and whether it is free -> question (we answer it). Use terms only for "terms of service" / legal terms.
+- Source code, GitHub, repositories, an SDK, or a package (the Python SDK, the JavaScript/npm SDK, "the python sdk", "npm package") -> code (a fuzzy selector then picks Python vs JavaScript vs the org page). Exception: "how do I install" or "what should I install" is a question (we answer the command).
+- API keys, sign-in, login, account -> settings. The visitor's OWN compiled programs -> profile.
+- Bug reports, problems, suggestions, praise ("great tool"), or wanting to reach the team/email -> feedback.
+- When unsure, prefer question.
+
+Input: build a program from scratch
+Output: playground
+
+Input: open the compiler
+Output: playground
+
+Input: show me what other people made
+Output: hub
+
+Input: explore shared programs
+Output: hub
+
+Input: can I run it without installing python
+Output: browser
+
+Input: getting started guide
+Output: docs
+
+Input: take me to the documentation
+Output: docs
+
+Input: where do I learn this
+Output: docs
+
+Input: sign in to my account
+Output: settings
+
+Input: where are my keys
+Output: settings
+
+Input: integrate with my coding assistant
+Output: agents
+
+Input: see my own compiled programs
+Output: profile
+
+Input: the about page
+Output: about
+
+Input: terms of service
+Output: terms
+
+Input: the privacy page
+Output: privacy
+
+Input: where is the source
+Output: code
+
+Input: the github repo
+Output: code
+
+Input: python package source code
+Output: code
+
+Input: javascript repo
+Output: code
+
+Input: the python sdk
+Output: code
+
+Input: the javascript sdk
+Output: code
+
+Input: the npm package
+Output: code
+
+Input: where is the sdk
+Output: code
+
+Input: open the alien game
+Output: alien
+
+Input: the avatar demo
+Output: avatar
+
+Input: report an issue
+Output: feedback
+
+Input: I love this tool
+Output: feedback
+
+Input: how do I reach the team
+Output: feedback
+
+Input: what is program as weights
+Output: question
+
+Input: how does compilation work
+Output: question
+
+Input: is it free to use
+Output: question
+
+Input: what license is it under
+Output: question
+
+Input: how do I install it
+Output: question
+
+Input: what are the rate limits
+Output: question

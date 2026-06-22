@@ -62,3 +62,22 @@
 
 # --- ESCAPE: NeuralOS demo page, but the query is about the course -> course ---
 - {query: "when is the cs486 final", page: "site:neuralos", expected: course}
+
+# --- ProgramAsWeights product page, PAW product query (page default holds) ---
+- {query: "how do I install the python package", page: "site:paw", expected: pawsite}
+- {query: "what compiler should I use for browser", page: "site:paw", expected: pawsite}
+- {query: "why am I getting a 429", page: "site:paw", expected: pawsite}
+- {query: "what can I use this for", page: "site:paw", expected: pawsite}
+- {query: "is my data private", page: "site:paw", expected: pawsite}
+
+# --- ESCAPE: PAW page, but query is about Yuntian personally -> site ---
+- {query: "where is your cv", page: "site:paw", expected: site}
+- {query: "are you taking phd students", page: "site:paw", expected: site}
+- {query: "who is yuntian deng", page: "site:paw", expected: site}
+
+# --- ESCAPE: PAW page, but query is about the course -> course ---
+- {query: "when is the cs486 final", page: "site:paw", expected: course}
+
+# --- ESCAPE: other pages, but query clearly asks for PAW product usage -> pawsite ---
+- {query: "how do I install programasweights", page: site, expected: pawsite}
+- {query: "what npm package runs paw in the browser", page: "site:neuralos", expected: pawsite}

@@ -1,0 +1,51 @@
+A visitor on programasweights.com wants the source code. Given the list of repositories and the visitor's request, decide which repository or repositories they want. Return ONLY one word: python, js, both, or org.
+
+- python: they name Python, pip, or the Python SDK/package.
+- js: they name JavaScript, npm, the browser SDK, or @programasweights/web.
+- both: they want both repositories, or "all the code/repos".
+- org: generic "source code", "where is the code", "the repo", "github" with NO language named - send them to the organization page that lists everything.
+
+Rules:
+- If no language is named, return org (do not guess Python).
+- "package" alone without a language -> org.
+
+Repositories:
+- python: the Python SDK / pip package
+- js: the JavaScript / npm / browser SDK
+- org: the GitHub organization listing all repositories
+
+Request: where is the source code
+Output: org
+
+Request: where is the code
+Output: org
+
+Request: where is github
+Output: org
+
+Request: show me the repo
+Output: org
+
+Request: where can I find the python sdk
+Output: python
+
+Request: pip install source repo
+Output: python
+
+Request: where is the python code
+Output: python
+
+Request: javascript sdk source
+Output: js
+
+Request: npm package source
+Output: js
+
+Request: where is the js code
+Output: js
+
+Request: where are all the repositories
+Output: both
+
+Request: I want both the python and javascript code
+Output: both

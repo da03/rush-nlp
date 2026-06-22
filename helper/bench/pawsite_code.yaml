@@ -1,0 +1,19 @@
+# Code resource-router benchmark: after the classifier emits `code`, the
+# code_selector picks python / js / org (or both). `expected` is the set of repo
+# keys the router should return. Generic (no language named) -> org.
+
+- {query: "source code", expected: [org], source: real}
+- {query: "where is the code", expected: [org], source: real}
+- {query: "where is github", expected: [org], source: real}
+- {query: "where to find code repo", expected: [org], source: real}
+- {query: "show me the repo", expected: [org]}
+- {query: "where can i find python sdk", expected: [python], source: real}
+- {query: "where is python code", expected: [python], source: real}
+- {query: "pip install source repo", expected: [python], source: real}
+- {query: "the python package on github", expected: [python]}
+- {query: "javascript sdk source", expected: [js], source: real}
+- {query: "where is js code", expected: [js], source: real}
+- {query: "npm package", expected: [js], source: real}
+- {query: "show me the browser sdk source repo", expected: [js], source: real}
+- {query: "where are all the repositories", expected: [python, js]}
+- {query: "I want both the python and js code", expected: [python, js]}
