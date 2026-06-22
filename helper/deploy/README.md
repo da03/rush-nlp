@@ -1,27 +1,33 @@
 # Deploying the helper service (helper.yuntiandeng.com)
 
 The helper backend runs on the `programasweights.com` server; `helper.yuntiandeng.com`
-already points there. The static site (yuntiandeng.com) on GitHub Pages calls it.
+already points there. The static site (yuntiandeng.com) on GitHub Pages calls it,
+and neural-os.com embeds the same backend cross-origin.
+
+This `helper/` directory is a **paw-helper content pack**: the framework
+([programasweights/paw-helper](https://github.com/programasweights/paw-helper))
+provides the server/runtime; this pack provides the config, specs, facts, links,
+`providers.py`, and the pinned `programs.json`.
 
 ## One-time setup on the server
 
 ```bash
-# 1. Check out the site repo (the server already has GitHub credentials).
+# 1. Check out the content-pack repo and the framework (server has GitHub creds).
 sudo mkdir -p /opt/yuntiandeng-helper && cd /opt/yuntiandeng-helper
 git clone git@github.com:da03/rush-nlp.git repo
-cd repo
+git clone git@github.com:programasweights/paw-helper.git
 
-# 2. Python venv + deps (PAW package index).
+# 2. Python venv + the framework (pulls fastapi/uvicorn/pydantic/pyyaml/httpx + PAW SDK).
 python3 -m venv /opt/yuntiandeng-helper/venv
-/opt/yuntiandeng-helper/venv/bin/pip install -r helper/server/requirements.txt \
+/opt/yuntiandeng-helper/venv/bin/pip install -e /opt/yuntiandeng-helper/paw-helper \
     --extra-index-url https://pypi.programasweights.com/simple/
 
-# 3. Writable dirs for the model cache and feedback log.
+# 3. Writable dirs for the model cache and logs.
 sudo mkdir -p /var/lib/yuntiandeng-helper/paw-cache
-sudo touch /var/lib/yuntiandeng-helper/feedback.jsonl
-sudo chown -R www-data:www-data /var/lib/yuntiandeng-helper
+sudo touch /var/lib/yuntiandeng-helper/feedback.jsonl /var/lib/yuntiandeng-helper/queries.jsonl
 
-# 4. Service.
+# 4. Service. The base unit runs `paw-helper serve` against this content pack
+#    (PAW_HELPER_CONTENT). The CORS allow-list lives in the unit (see below).
 sudo cp helper/deploy/helper.service /etc/systemd/system/yuntiandeng-helper.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now yuntiandeng-helper
@@ -36,6 +42,7 @@ sudo certbot --nginx -d helper.yuntiandeng.com
 Verify:
 
 ```bash
+/opt/yuntiandeng-helper/venv/bin/paw-helper validate --content /opt/yuntiandeng-helper/repo/helper
 curl https://helper.yuntiandeng.com/health
 curl -s https://helper.yuntiandeng.com/ask -H 'Content-Type: application/json' \
      -d '{"query":"where is your cv"}'
@@ -45,7 +52,7 @@ curl -s https://helper.yuntiandeng.com/ask -H 'Content-Type: application/json' \
 
 ```bash
 # On your laptop: edit specs/facts/links, recompile, commit programs.json.
-python helper/compile.py
+paw-helper compile --content helper --compiler paw-ft-bs48
 git add helper/ && git commit -m "Update helper" && git push
 
 # On the server:
@@ -54,28 +61,39 @@ sudo systemctl restart yuntiandeng-helper
 ```
 
 `programs.json` is committed, so the server always runs the exact pinned programs
-you compiled and tested. No compilation happens on the server.
+you compiled and tested. No compilation happens on the server. Recompiling is only
+needed when a **spec** in `helper/specs/` changes (the model's behavior).
+
+## Updating the framework (paw-helper)
+
+```bash
+# On the server:
+cd /opt/yuntiandeng-helper/paw-helper && git pull
+/opt/yuntiandeng-helper/venv/bin/pip install -e . --no-deps   # entry point + code
+sudo systemctl restart yuntiandeng-helper
+```
+
+## Rollback
+
+```bash
+# Content pack:
+cd /opt/yuntiandeng-helper/repo && git checkout <last-good-commit> && sudo systemctl restart yuntiandeng-helper
+# Framework:
+cd /opt/yuntiandeng-helper/paw-helper && git checkout <last-good-tag> \
+    && /opt/yuntiandeng-helper/venv/bin/pip install -e . --no-deps && sudo systemctl restart yuntiandeng-helper
+```
 
 ### Course content changes need no recompile
 
 The course assistant injects facts at inference time from `_data/cs486_s26.yaml`
 (rendered by `helper/course_facts.py`), so editing course deadlines, office hours,
-TAs, etc. is just:
-
-```bash
-# On your laptop: edit _data/cs486_s26.yaml (also updates the course web page), commit, push.
-# On the server:
-cd /opt/yuntiandeng-helper/repo && git pull
-sudo systemctl restart yuntiandeng-helper
-```
-
-Recompiling is only needed when a **spec** in `helper/specs/` changes (the model's
-behavior), not when course facts change.
+TAs, etc. is just commit + `git pull` + restart - no recompile.
 
 ## Embedding the widget on other sites (one shared backend)
 
-The backend serves a self-contained widget at `/widget.js`, so any of Yuntian's
-sites can embed the helper and talk to this one backend cross-origin.
+The backend serves a self-contained widget at `/widget.js` (this pack ships its
+own `helper/widget.js`, which the framework serves in place of its default), so any
+of Yuntian's sites can embed the helper and talk to this one backend cross-origin.
 
 - Static site you control: add the script tag to the page HTML.
   ```html
@@ -90,17 +108,20 @@ sites can embed the helper and talk to this one backend cross-origin.
 Each embedding origin must be in `HELPER_ALLOWED_ORIGINS` (below). `/widget.js`
 itself is public and not CORS-gated; only the data endpoints are.
 
-### Changing the CORS allow-list on a live server
+### The systemd drop-in (serve config + CORS allow-list)
 
-The base systemd unit on the server may be hand-tuned (user, cache dir), so the
-allow-list is applied as a non-destructive drop-in rather than overwriting the
-unit:
+The base unit is hand-tunable; the deploy applies the serve command, content path,
+and CORS allow-list via a non-destructive drop-in so the base unit stays intact:
 
 ```bash
 sudo install -d /etc/systemd/system/yuntiandeng-helper.service.d
 sudo tee /etc/systemd/system/yuntiandeng-helper.service.d/override.conf >/dev/null <<'EOF'
 [Service]
+WorkingDirectory=/opt/yuntiandeng-helper/repo/helper
+Environment=PAW_HELPER_CONTENT=/opt/yuntiandeng-helper/repo/helper
 Environment=HELPER_ALLOWED_ORIGINS=https://yuntiandeng.com,https://www.yuntiandeng.com,https://neural-os.com,https://www.neural-os.com,https://programasweights.com,https://www.programasweights.com
+ExecStart=
+ExecStart=/opt/yuntiandeng-helper/venv/bin/paw-helper serve --host 127.0.0.1 --port 8088
 EOF
 sudo systemctl daemon-reload && sudo systemctl restart yuntiandeng-helper
 ```
@@ -119,7 +140,7 @@ Verify: `curl -s -D- -o/dev/null -X POST https://helper.yuntiandeng.com/ask -H '
   result type, answer, validator verdict, and a `fallback` flag (no IP is stored).
   Feedback records also carry `origin`. Since one backend now serves multiple
   sites, `origin` lets you polish each site's helper from its own real traffic.
-  Use this to polish the helper on real usage. Review it with:
+  Review it with:
   ```bash
   # on the server
   /opt/yuntiandeng-helper/venv/bin/python /opt/yuntiandeng-helper/repo/helper/review.py
@@ -129,6 +150,6 @@ Verify: `curl -s -D- -o/dev/null -X POST https://helper.yuntiandeng.com/ask -H '
   ```
   `review.py` highlights the fallback/unanswered queries - those are the gaps to
   fix in `facts.md` / `links.yaml` / the specs, then recompile.
-- CORS origins are set via `HELPER_ALLOWED_ORIGINS` in the systemd unit.
-- To upgrade to the highest-accuracy compiler later:
-  `python helper/compile.py --compiler paw-ft-bs48`, commit, pull, restart.
+- CORS origins are set via `HELPER_ALLOWED_ORIGINS` in the systemd drop-in.
+- Before deploying, prove behavior is unchanged with the golden snapshot:
+  `python helper/snapshot.py --check` (empty diff = no response changed).
