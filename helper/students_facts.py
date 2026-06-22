@@ -15,9 +15,10 @@ import pathlib
 
 import yaml
 
-import common
+from paw_helper import common
 
-MEMBERS_PATH = common.HELPER_DIR.parent / "_data" / "members.yaml"
+# This content pack shares _data/ with the Jekyll site at the repo root.
+MEMBERS_PATH = pathlib.Path(__file__).resolve().parent.parent / "_data" / "members.yaml"
 
 # Map the members.yaml group label to a clearer, status-explicit header.
 _GROUP_HEADER = {

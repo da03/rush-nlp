@@ -16,13 +16,24 @@ question answered per page). Deterministic order so diffs are readable.
 """
 
 import argparse
+import datetime
 import json
+import pathlib
 import sys
 
 import yaml
 
-import common
-import pipeline
+from paw_helper import common, pipeline
+
+common.set_content_dir(pathlib.Path(__file__).resolve().parent)
+
+# Pin the injected "today" so the golden is date-STABLE: course facts inject the
+# current date, which otherwise shifts a couple of course answers day-to-day and
+# would make this regression gate (meant to catch CODE changes) drift on its own.
+import course_facts  # noqa: E402  (content module; on the pack's path)
+
+_PINNED_TODAY = datetime.date(2026, 6, 20)
+course_facts._today = lambda: _PINNED_TODAY
 
 BENCH = common.CONTENT_DIR / "bench"
 GOLDEN = BENCH / "golden.jsonl"

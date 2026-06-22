@@ -8,8 +8,10 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-# Directory that contains app.py (the repo's helper/server).
-WorkingDirectory=/opt/yuntiandeng-helper/repo/helper/server
+# This helper is now a paw-helper CONTENT PACK; the framework provides the server.
+# WorkingDirectory + PAW_HELPER_CONTENT point at the content pack (this dir).
+WorkingDirectory=/opt/yuntiandeng-helper/repo/helper
+Environment=PAW_HELPER_CONTENT=/opt/yuntiandeng-helper/repo/helper
 # CORS allow-list for the data endpoints (/ask,/feedback,/health). The shared
 # backend serves the embeddable widget to all of Yuntian's sites, so each site's
 # origin is listed here. /widget.js itself is public (not CORS-gated).
@@ -20,7 +22,8 @@ Environment=HELPER_QUERY_LOG=/var/lib/yuntiandeng-helper/queries.jsonl
 # Environment=PAW_API_KEY=paw_sk_...
 # PAW model cache (so it persists across restarts and isn't in the service user's home).
 Environment=PAW_CACHE_DIR=/var/lib/yuntiandeng-helper/paw-cache
-ExecStart=/opt/yuntiandeng-helper/venv/bin/uvicorn app:app --host 127.0.0.1 --port 8088
+# `paw-helper` is the framework CLI (pip install -e /opt/yuntiandeng-helper/paw-helper).
+ExecStart=/opt/yuntiandeng-helper/venv/bin/paw-helper serve --host 127.0.0.1 --port 8088
 Restart=on-failure
 RestartSec=3
 # Run as an unprivileged user that can read the repo and write the cache/log dirs.

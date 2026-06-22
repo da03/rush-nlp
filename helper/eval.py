@@ -22,13 +22,14 @@ Usage:
 import argparse
 import collections
 import datetime
+import pathlib
 
 import yaml
 
-import common
 import course_facts
-import grader
-import pipeline
+from paw_helper import common, grader, pipeline
+
+common.set_content_dir(pathlib.Path(__file__).resolve().parent)
 
 BENCH = common.CONTENT_DIR / "bench"
 

@@ -16,13 +16,14 @@ gap) and AFTER (measures the improvement). Same harness either way.
 
 import argparse
 import datetime
+import pathlib
 
 import yaml
 
-import common
 import eval as ev   # reuse is_decline / _contains / factual primitives
-import grader
-import pipeline
+from paw_helper import common, grader, pipeline
+
+common.set_content_dir(pathlib.Path(__file__).resolve().parent)
 
 BENCH = common.CONTENT_DIR / "bench"
 PAGE = "site:neuralos"

@@ -18,7 +18,7 @@ import collections
 import json
 import pathlib
 
-import common
+HELPER_DIR = pathlib.Path(__file__).resolve().parent
 
 
 def load(path: pathlib.Path) -> list[dict]:
@@ -35,7 +35,7 @@ def load(path: pathlib.Path) -> list[dict]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("path", nargs="?", default=str(common.HELPER_DIR / "queries.jsonl"))
+    ap.add_argument("path", nargs="?", default=str(HELPER_DIR / "queries.jsonl"))
     ap.add_argument("--batch", type=int, default=20)
     args = ap.parse_args()
 

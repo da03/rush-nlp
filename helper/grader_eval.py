@@ -10,10 +10,13 @@ Usage:
     python helper/grader_eval.py
 """
 
+import pathlib
+
 import yaml
 
-import common
-import grader
+from paw_helper import common, grader
+
+common.set_content_dir(pathlib.Path(__file__).resolve().parent)
 
 META = common.CONTENT_DIR / "bench" / "grader_meta.yaml"
 

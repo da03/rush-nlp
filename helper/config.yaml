@@ -1,15 +1,18 @@
-# Declarative config for the helper pipeline, shared by server/app.py and eval.py.
-# pipeline.py walks this graph; programs.json supplies the compiled IDs.
+# Content-pack config for the paw-helper framework. The framework's pipeline walks
+# this graph; programs.json supplies the compiled IDs.
 #
 #   /ask {query, page}
-#     -> domain_router (page prior + PAW)  -> domain (site | course)
+#     -> domain_router (page-aware)        -> domain (site | course | neuralos)
 #     -> <domain>.classifier               -> a link label or "question"
 #        - link label -> return the link (feedback label opens the form)
 #        - "question"  -> <domain>.answerer -> validator -> answer / fallback
 #
 # A domain is only "available" if its classifier + answerer IDs exist in
-# programs.json, so this file can describe the course domain before it is
-# compiled without breaking the live site (it just falls back to site).
+# programs.json, so this file can describe a domain before it is compiled without
+# breaking the live site (it just falls back to the default).
+
+# Content-pack contract version understood by the framework.
+schema_version: 1
 
 default_domain: site
 

@@ -13,9 +13,10 @@ runtime-injected facts and resource lists this pack's config.yaml refers to:
   select(raw_selector_output) -> [ {num,topic,url}, ... ]) for a resource router.
 """
 
-import common
 import course_facts
 import students_facts
+
+from paw_helper import common
 
 # Runtime-injected fact providers (name -> fn(query) -> facts str). The RAG seam.
 CONTEXT_PROVIDERS = {
