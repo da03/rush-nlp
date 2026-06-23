@@ -44,7 +44,8 @@
 }
 .reveal .gridworld.v-values .gw-cell {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.75em;
+  /* 5-char values like "0.705" must fit the 56px cell; 0.75em overflowed badly. */
+  font-size: 0.42em;
   font-weight: 600;
 }
 
