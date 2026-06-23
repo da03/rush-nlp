@@ -12,11 +12,18 @@ Facts are sliced into named sections so a future sub-topic router (and the
 
 import datetime
 import pathlib
+from zoneinfo import ZoneInfo
 
 import yaml
 
 HELPER_DIR = pathlib.Path(__file__).resolve().parent
 COURSE_DATA_PATH = HELPER_DIR.parent / "_data" / "cs486_s26.yaml"
+
+# The course runs at the University of Waterloo (US/Canada Eastern). Compute
+# "today" in this zone explicitly so date-relative answers ("next assignment due",
+# "today's date") are correct regardless of the SERVER's timezone - a UTC host
+# would otherwise roll over to tomorrow during the evening in Eastern.
+COURSE_TZ = ZoneInfo("America/Toronto")
 
 
 def load_course_data(path: pathlib.Path | None = None) -> dict:
@@ -38,7 +45,7 @@ def _as_date(value):
 
 
 def _today() -> datetime.date:
-    return datetime.date.today()
+    return datetime.datetime.now(COURSE_TZ).date()
 
 
 def _next_due(items: list, today: datetime.date):
