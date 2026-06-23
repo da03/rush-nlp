@@ -121,7 +121,8 @@
    font keeps each line from wrapping inside the right column. */
 .reveal .q-values {
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
-  font-size: 0.52em;
+  /* Each Q-value line (~57 chars) must stay on ONE line; 0.52em overflowed/wrapped. */
+  font-size: 0.46em;
   line-height: 1.35;
   white-space: pre-wrap;
   margin: 0.25em auto;
