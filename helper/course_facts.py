@@ -59,14 +59,28 @@ def _next_due(items: list, today: datetime.date):
     return min(upcoming, key=lambda it: _as_date(it["due"])) if upcoming else None
 
 
+def _next_deadline(c: dict, today: datetime.date):
+    """Soonest upcoming item across BOTH chats and assignments - the overall 'next
+    deadline'. Returned as (label, due date). Computed here so the model needn't
+    compare the separate per-type 'next' lines (it tended to surface the next
+    assignment even when a chat was due sooner)."""
+    items = [(f"Chat {ch['num']} (a chat assignment)", _as_date(ch["due"])) for ch in c.get("chats", [])]
+    items += [(f"Assignment {a['num']} (a programming assignment)", _as_date(a["due"])) for a in c.get("assignments", [])]
+    upcoming = [it for it in items if it[1] >= today]
+    return min(upcoming, key=lambda it: it[1]) if upcoming else None
+
+
 # --- section renderers: each returns a short markdown block -------------------
 
 def _overview(c: dict) -> str:
     co = c["course"]
     secs = "; ".join(f"Section {s['id']} meets {s['time']} in room {s['room']}" for s in co["sections"])
+    nd = _next_deadline(c, _today())
+    next_line = f"- Next deadline: {nd[0]} on {_d(nd[1])}.\n" if nd else "- No upcoming deadlines.\n"
     return (
         f"## Overview\n"
         f"- Today's date: {_d(_today())}.\n"
+        f"{next_line}"
         f"- {co['code']} {co['title']} ({co['term']}), University of Waterloo.\n"
         f"- Instructor: {co['instructor']['name']} ({co['instructor']['email']}).\n"
         f"- Class dates: {co['dates']}.\n"
