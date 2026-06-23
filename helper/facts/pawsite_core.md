@@ -29,6 +29,9 @@ Runtime-injected; edits need no recompile.
 ## Contact
 - There is no public email address. To reach the team, leave a message through the feedback form (the helper can open it).
 
-## Project
-- The website repository license is the MIT License (copyright 2026 ProgramAsWeights).
-- Authors: Wentao Zhang, Liliana Hotsko, Woojeong Kim, Pengyu Nie, Stuart Shieber, and Yuntian Deng.
+## Open source
+- Yes, PAW is open source, released under the MIT License. The source code is on GitHub at https://github.com/programasweights (the Python SDK and the JavaScript/browser SDK).
+
+## Project / team
+- ProgramAsWeights is led by Yuntian Deng, the principal investigator (PI). Yuntian is the professor leading the project; the others are collaborators and contributors.
+- Authors and contributors: Yuntian Deng (PI), Wentao Zhang, Liliana Hotsko, Woojeong Kim, Pengyu Nie, and Stuart Shieber.

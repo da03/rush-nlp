@@ -10,7 +10,9 @@ grounded in programasweights.com / its docs. HTML comments are stripped before u
 - Each compiled function is stateless: it takes one text input and returns one text output.
 - Core idea: it shifts large language models from problem solvers into tool builders. Instead of calling one giant model on every query, you compile a small, reusable, specialized local model for the task.
 - Project site: https://programasweights.com ; documentation: https://programasweights.readthedocs.io
-- Authors: Wentao Zhang, Liliana Hotsko, Woojeong Kim, Pengyu Nie, Stuart Shieber, and Yuntian Deng.
+- ProgramAsWeights is led by Yuntian Deng, the principal investigator (PI). The other authors are collaborators and contributors.
+- Authors and contributors: Yuntian Deng (PI), Wentao Zhang, Liliana Hotsko, Woojeong Kim, Pengyu Nie, and Stuart Shieber.
+- PAW is open source under the MIT License; the source code is on GitHub at https://github.com/programasweights.
 
 ## What it is good for
 - Fuzzy text tasks that regex can't handle but a full LLM is overkill for: classification, extraction, format repair, fuzzy/typo-tolerant search, log triage, and intent routing.

@@ -138,6 +138,18 @@
   rubric_points:
     - {text: "Describes what ProgramAsWeights is (compiles specs into tiny local neural functions for fuzzy text tasks)", required: true}
 
+# Real-traffic fixes (2026-06-23)
+- query: "who is the PI"
+  source: real
+  rubric_points:
+    - {text: "Identifies Yuntian Deng as the PI / project lead (NOT another author such as Wentao Zhang)", required: true}
+
+- query: "is this open sourced"
+  source: real
+  rubric_points:
+    - {text: "Says yes, PAW is open source (MIT licensed)", required: true}
+    - {text: "Points to the GitHub source (github.com/programasweights)", required: true}
+
 - query: "what is rate limit"
   source: real
   rubric_points:
