@@ -12,6 +12,9 @@ Type=simple
 # WorkingDirectory + PAW_HELPER_CONTENT point at the content pack (this dir).
 WorkingDirectory=/opt/yuntiandeng-helper/repo/helper
 Environment=PAW_HELPER_CONTENT=/opt/yuntiandeng-helper/repo/helper
+# Offload inference to the PAW API: the in-process local model serializes behind a
+# lock, so concurrent requests collapse (4 concurrent ~92s vs ~1.7s via the API).
+Environment=PAW_HELPER_INFERENCE_BACKEND=remote_infer
 # CORS allow-list for the data endpoints (/ask,/feedback,/health). The shared
 # backend serves the embeddable widget to all of Yuntian's sites, so each site's
 # origin is listed here. /widget.js itself is public (not CORS-gated).
