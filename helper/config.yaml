@@ -123,24 +123,25 @@ domains:
     facts_mode: runtime      # facts injected at inference from _data/cs486_s26.yaml (no recompile on edits)
     context: course          # course_facts.retrieve(query) supplies the injected slice
     # Parallel Piazza branch: ONLY on the course page (origin). Runs CONCURRENTLY
-    # with the main course pipeline; piazza_gate decides whether to search, piazza
-    # ranks endorsed-public threads (BM25), and the aggregator augments the answer
-    # with "Related on Piazza" links (or rescues a decline). Dormant until
-    # piazza_gate is compiled into programs.json. min_score is BM25-scale; tune it
-    # against bench/piazza.yaml on real data.
+    # with the main course pipeline (so it adds ~0 wall time), then the aggregator
+    # augments the answer with "Related on Piazza" links (or rescues a decline).
+    #
+    # RETRIEVE-THEN-RERANK: BM25 (piazza.search) provides RECALL - top select_k
+    # threads over a low min_score floor that only trims pure noise. The PRECISION
+    # decision is piazza_selector, a PAW program shown the ORIGINAL question + the
+    # candidate titles; it returns only the genuinely-relevant ones (or "none"). A
+    # raw BM25 threshold can't separate true status matches from incidental token
+    # overlap (their score ranges overlap), but a question-aware reranker can - and
+    # it makes the merge robust to retriever false positives. Dormant until
+    # piazza_selector is compiled into programs.json.
     parallel_branches:
       - name: piazza
         when_page: "course"
-        gate: piazza_gate
         provider: piazza
-        # PRECISION-FIRST BM25 floor (calibrated 2026-06-24 on the real index): strong
-        # content matches score 13-20; incidental false matches top out ~7.2, so 8.0
-        # surfaces every content hit with zero false positives in bench/piazza.yaml.
-        # A missed surface is cheap (the main answer stands); a wrong one looks broken.
-        # Re-tune as the corpus grows (recall@k is the retrieval gate; this is the
-        # surfacing gate). Raw BM25 is corpus-scaled, so revisit after big syncs.
-        min_score: 8.0
-        max_items: 2
+        selector: piazza_selector
+        min_score: 2.0       # BM25 recall floor (trim noise); the selector decides relevance
+        select_k: 5          # candidates handed to the selector
+        max_items: 2         # cap on surfaced links
         result_label: "Related on Piazza"
   # NeuralOS demo (neural-os.com). Default for page "site:neuralos"; the domain
   # router sends NeuralOS-specific questions to "either" so the page prior holds,

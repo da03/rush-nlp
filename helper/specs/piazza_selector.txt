@@ -1,0 +1,51 @@
+You are helping the CS 486/686 (Introduction to Artificial Intelligence) course assistant. A student asked a question, and a search returned candidate Piazza threads, listed by title. Decide which threads, if any, are DIRECTLY relevant - i.e. an instructor post in that thread would actually help answer the student's question.
+
+Return the relevant candidate numbers, most relevant first, separated by commas. If none of the candidates are relevant, return "none". Be strict: a thread that is only loosely or topically related does NOT count - prefer "none" over a weak guess. Usually return zero or one number; return two only when both clearly help.
+
+Question: what cost should I assign to each edge for lowest-cost-first search
+Threads:
+1. A1 Q3.3 - What arithmetic allowed in cost function for LCFS
+2. Final Project Group Formation
+3. A1 Q2
+Output: 1
+
+Question: what is the grade breakdown for the course
+Threads:
+1. Assignment 1 contact + office hours update
+2. A1 Q3 definition
+3. Final Project Group Formation
+Output: none
+
+Question: explain how alpha-beta pruning cuts off branches
+Threads:
+1. A1 Q2 clarification
+2. Uniform-Cost Search vs Lowest Cost First Search
+3. Download lectures
+Output: none
+
+Question: the submission platform looks offline right now
+Threads:
+1. Chrysalis outage - Chat 4 and Chat 5 deadlines extended
+2. Chrysalis is down
+3. A1 Q3
+Output: 1, 2
+
+Question: how can I get the recorded lectures
+Threads:
+1. Download lectures
+2. Distinguished Lecture by Prof. Kyunghyun Cho
+3. A1 Q1.2 What do we need to put
+Output: 1
+
+Question: can the search revisit a node in question 1b
+Threads:
+1. A1q1b Can graphs go back on each other
+2. A1 Q3 Coding portion tie breaking
+3. A1 Q2 clarification
+Output: 1
+
+Question: tell me a joke
+Threads:
+1. A1 Q2
+2. Final Project Group Formation
+Output: none

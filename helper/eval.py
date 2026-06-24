@@ -278,23 +278,25 @@ def sec_piazza(p, t):
     import piazza
     summary = []
 
-    # -- gate accuracy --
-    gate_cases = suite.get("gate", [])
-    if "piazza_gate" in p.programs and gate_cases:
+    # -- selection precision (the PAW reranker, via the SAME path runtime uses) --
+    sel_cases = suite.get("selection", [])
+    if "piazza_selector" in p.programs and sel_cases:
         correct, miss = 0, []
-        for c in gate_cases:
-            verdict = p._infer("piazza_gate", c["query"], p.mt.get("gate", 8)).strip().lower()
-            pred = "yes" if verdict.startswith("yes") else "no"
-            correct += pred == c["expected"]
-            if pred != c["expected"]:
-                miss.append((c["query"], c["expected"], pred))
-        n = len(gate_cases)
-        t.add(f"\n=== Piazza gate ({n}) === {correct}/{n} = {correct/n:.0%}")
-        for q, e, pr in miss:
-            t.add(f"   miss: {q!r} {e}->{pr}")
-        summary.append(("piazza_gate", correct, n))
+        for c in sel_cases:
+            items = [{"label": title} for title in c["candidates"]]
+            chosen = p._select_candidates("piazza_selector", c["query"], items)
+            got = sorted(c["candidates"].index(it["label"]) + 1 for it in chosen)
+            ok = got == sorted(c["expect"])
+            correct += ok
+            if not ok:
+                miss.append((c["query"], sorted(c["expect"]), got))
+        n = len(sel_cases)
+        t.add(f"\n=== Piazza selection precision ({n}) === {correct}/{n} = {correct/n:.0%}")
+        for q, e, g in miss:
+            t.add(f"   miss: {q!r} expect {e} got {g}")
+        summary.append(("piazza_selection", correct, n))
     else:
-        t.add("\n(piazza gate: piazza_gate not compiled - skipped)")
+        t.add("\n(piazza selection: piazza_selector not compiled - skipped)")
 
     # -- retrieval + privacy (need synced data) --
     if not piazza.THREADS_PATH.exists():
@@ -320,7 +322,7 @@ def sec_piazza(p, t):
 
     # -- end-to-end triggering precision (gate + search + min_score + aggregate) --
     e2e_cases = suite.get("e2e", [])
-    if "piazza_gate" in p.programs and e2e_cases:
+    if "piazza_selector" in p.programs and e2e_cases:
         correct, miss = 0, []
         for c in e2e_cases:
             meta = p.run(c["query"], "course:cs486_s26")

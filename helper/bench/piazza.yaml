@@ -1,48 +1,52 @@
-# Piazza branch benchmark for CS 486/686. Three independently-graded suites:
+# Piazza branch benchmark for CS 486/686. Retrieve-then-rerank, four suites:
 #
-#   gate       - piazza_gate yes/no: SHOULD we also search Piazza for this query?
-#                (data-independent; runs wherever piazza_gate is compiled)
-#   retrieval  - recall@k: a paraphrased query should rank a specific real thread
-#                into the top-k (needs the server-only threads.json synced).
+#   retrieval  - recall@k: BM25 should rank the right real thread into the top-k
+#                (needs the server-only threads.json synced).
+#   selection  - precision: given the question + candidate TITLES, piazza_selector
+#                returns exactly the relevant ones (or none). Unit-tests the PAW
+#                reranker directly with real thread titles as candidates.
+#   e2e        - full pipeline on the course page: does it surface "Related on
+#                Piazza" when it should, and stay invisible otherwise?
 #   privacy    - must-not-surface: the served index must NEVER contain a private
 #                thread, and adversarial queries that mimic private-thread topics
 #                must not surface @61-@64 (verified private via piazza_sync --inspect).
 #
-# Queries are HELD OUT: paraphrases, never the verbatim Piazza subject, so recall
-# reflects generalization rather than string overlap. thread_id values are the real
+# Queries are HELD OUT: paraphrases, never the verbatim Piazza subject, so scores
+# reflect generalization rather than string overlap. thread_id values are the real
 # @numbers from the live class (see piazza_sync output), grounded by eyeballing the
 # actual instructor content on 2026-06-24.
 
-# --- Gate: should the helper ALSO consult Piazza? -----------------------------
-# YES = assignment / conceptual / content questions a Piazza thread likely covers,
-#       PLUS time-sensitive course STATUS not in the static course facts (outages,
-#       deadline changes, schedule/office-hour moves, recommended talks).
-# NO  = static logistics the course info already answers (grading weights, TA
-#       identity, fixed dates, textbook, platform LINKS), and off-topic/personal.
-gate:
-  # content / assignment -> yes
-  - {query: "how should I define the cost function for lowest cost first search in A1", expected: "yes"}
-  - {query: "does the end of sequence token probability count as 1 in question 3", expected: "yes"}
-  - {query: "can the search graph revisit a node in question 1b", expected: "yes"}
-  - {query: "what heuristic is acceptable for the q2 part c", expected: "yes"}
-  - {query: "I'm confused about the difference between uniform cost search and lowest cost first search", expected: "yes"}
-  - {query: "how do tie breaks work in the coding part of question 3", expected: "yes"}
-  - {query: "my autograder feedback looks wrong, is that expected", expected: "yes"}
-  - {query: "how do I download the lecture recordings", expected: "yes"}
-  # time-sensitive status / announcements -> yes (not in the static facts)
-  - {query: "is chrysalis down right now", expected: "yes"}
-  - {query: "was the assignment 1 deadline pushed back", expected: "yes"}
-  - {query: "did the office hours get moved this week", expected: "yes"}
-  - {query: "how do we form final project groups", expected: "yes"}
-  # static logistics fully covered by course facts -> no
-  - {query: "how is the final grade weighted", expected: "no"}
-  - {query: "who is the teaching assistant", expected: "no"}
-  - {query: "what is the link to piazza", expected: "no"}
-  - {query: "what textbook does the course use", expected: "no"}
-  - {query: "what room is the lecture in", expected: "no"}
-  # off-topic / personal -> no
-  - {query: "are you accepting new phd students", expected: "no"}
-  - {query: "what is the weather today", expected: "no"}
+# --- Selection precision: question + candidate titles -> the relevant ones -----
+# `candidates` are thread titles (1-indexed); `expect` is the list of titles the
+# selector should pick ([] means it must return "none"). The false candidates are
+# real titles that a recall-only retriever could plausibly surface, so this tests
+# that the reranker rejects topical-but-irrelevant threads.
+selection:
+  - query: "what arithmetic can I use in the cost function for lowest cost first search"
+    candidates: ["A1 Q3.3 - What arithmetic allowed in cost function for LCFS", "Final Project Group Formation", "A1 Q2"]
+    expect: [1]
+  - query: "is the end of sequence token probability automatically one in question 3"
+    candidates: ["A1Q3", "A1 Q3 definition", "Download lectures"]
+    expect: [1]
+  - query: "what is the difference between uniform cost search and lowest cost first search"
+    candidates: ["Uniform-Cost Search vs Lowest Cost First Search", "A1 Q3.3 - What arithmetic allowed in cost function for LCFS", "A1 Q2"]
+    expect: [1]
+  - query: "the chat submission server seems to be having problems"
+    candidates: ["Chrysalis is down", "Chrysalis outage - Chat 4 and Chat 5 deadlines extended", "A1 Q3"]
+    expect: [1, 2]
+  # gate-like negatives: the selector must reject topical-but-irrelevant candidates
+  - query: "how is the course graded"
+    candidates: ["Assignment 1 contact + office hours update", "A1 Q3 definition", "Final Project Group Formation"]
+    expect: []
+  - query: "how does alpha-beta pruning skip branches"
+    candidates: ["A1 Q2 clarification", "Uniform-Cost Search vs Lowest Cost First Search", "Download lectures"]
+    expect: []
+  - query: "what topics are on the midterm"
+    candidates: ["Final Project Group Formation", "A1 Q3", "Question About Autograder Feedback"]
+    expect: []
+  - query: "are you accepting new phd students"
+    candidates: ["A1 Q2", "Final Project Group Formation"]
+    expect: []
 
 # --- Retrieval recall@k: paraphrase -> the real thread it should rank ----------
 # expect_thread may be a single id or a list (any one in top-k counts as a hit).
