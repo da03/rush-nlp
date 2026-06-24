@@ -20,5 +20,7 @@ programasweights_website/
 helper/feedback.jsonl
 helper/queries.jsonl
 helper/bench/report.md
+# Piazza thread index: class content, must NEVER be committed (public repo).
+helper/.piazza/
 __pycache__/
 

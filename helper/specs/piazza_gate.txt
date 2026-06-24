@@ -1,0 +1,44 @@
+A student on the CS 486/686 (Introduction to Artificial Intelligence) course website asked a question. Decide whether to ALSO search the course Piazza forum for a relevant instructor answer. Return ONLY "yes" or "no".
+
+Answer yes for content questions a Piazza discussion likely covers: doing or debugging part of an assignment, clarifying an assignment or its spec, error messages, "is X allowed / will Y be accepted", conceptual questions about the lecture material, and clarifications about exam content.
+
+Answer no for pure logistics that the course information already answers (deadlines and dates, grading weights, who the TAs are, office-hour times, room or section, the textbook, platform links such as Piazza/Chrysalis/LEARN) and for off-topic, personal, or nonsensical messages.
+
+Input: how do I debug the search part of assignment 1
+Output: yes
+
+Input: my code throws an index error on the maze, what's wrong
+Output: yes
+
+Input: are we allowed to use numpy in the programming assignment
+Output: yes
+
+Input: can you clarify what part 2 is asking for
+Output: yes
+
+Input: I don't understand how alpha-beta pruning skips branches
+Output: yes
+
+Input: what will the final exam cover on reinforcement learning
+Output: yes
+
+Input: when is the next assignment due
+Output: no
+
+Input: how is the course graded
+Output: no
+
+Input: who are the TAs
+Output: no
+
+Input: when are office hours
+Output: no
+
+Input: what textbook do we use
+Output: no
+
+Input: what's the link to chrysalis
+Output: no
+
+Input: what's the capital of france
+Output: no

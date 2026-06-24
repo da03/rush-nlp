@@ -6,3 +6,7 @@
 #
 # Then serve this pack:  paw-helper serve --content <this dir>
 paw-helper @ git+https://github.com/programasweights/paw-helper.git
+
+# Piazza branch: forum sync (piazza_sync.py) + BM25 retrieval (piazza.py).
+piazza-api>=0.14,<1.0
+rank-bm25>=0.2,<1.0

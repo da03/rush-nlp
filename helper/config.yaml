@@ -78,6 +78,7 @@ max_tokens:
   answerer: 200
   validator: 4
   selector: 16
+  gate: 4          # parallel-branch yes/no gate (e.g. piazza_gate)
 
 # Spec + input + output share this context window (PAW constraint). compile.py /
 # eval.py assert composed specs (and worst-case course context) stay under it.
@@ -121,6 +122,20 @@ domains:
     answerer: course_answerer
     facts_mode: runtime      # facts injected at inference from _data/cs486_s26.yaml (no recompile on edits)
     context: course          # course_facts.retrieve(query) supplies the injected slice
+    # Parallel Piazza branch: ONLY on the course page (origin). Runs CONCURRENTLY
+    # with the main course pipeline; piazza_gate decides whether to search, piazza
+    # ranks endorsed-public threads (BM25), and the aggregator augments the answer
+    # with "Related on Piazza" links (or rescues a decline). Dormant until
+    # piazza_gate is compiled into programs.json. min_score is BM25-scale; tune it
+    # against bench/piazza.yaml on real data.
+    parallel_branches:
+      - name: piazza
+        when_page: "course"
+        gate: piazza_gate
+        provider: piazza
+        min_score: 3.0
+        max_items: 2
+        result_label: "Related on Piazza"
   # NeuralOS demo (neural-os.com). Default for page "site:neuralos"; the domain
   # router sends NeuralOS-specific questions to "either" so the page prior holds,
   # while questions about Yuntian / his other projects escape to the site domain.

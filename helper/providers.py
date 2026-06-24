@@ -14,6 +14,7 @@ runtime-injected facts and resource lists this pack's config.yaml refers to:
 """
 
 import course_facts
+import piazza
 import students_facts
 
 from paw_helper import common
@@ -93,4 +94,10 @@ def _select_repos(raw: str) -> list[dict]:
 RESOURCE_PROVIDERS = {
     "course_lectures": (course_facts.render_lectures, _select_slides),
     "pawsite_code": (_render_repos, _select_repos),
+}
+
+# Parallel-branch search providers: name -> search(query) -> [{label,url,description,score}].
+# The course page's Piazza branch ranks endorsed-public threads and surfaces links.
+SEARCH_PROVIDERS = {
+    "piazza": piazza.search,
 }
