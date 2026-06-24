@@ -64,6 +64,16 @@ retrieval:
   - {query: "how do I form a final project group", expect_thread: 10, k: 3}
   - {query: "did hala move her office hours", expect_thread: [30, 37], k: 3}
 
+# --- RAG answer quality: synthesized answer from the instructor threads ---------
+# Full pipeline on the course page; the Piazza branch should ANSWER (promoted to
+# primary) and the text should contain content only the instructor thread has.
+# These three are the exact queries that were reported broken (regression guard).
+answer:
+  - {query: "what's changed about assignment 1", expect_any: ["extended", "updated"]}
+  - {query: "was the assignment 1 deadline extended", expect_any: ["extended", "june 25"]}
+  - {query: "assignment 1 question 3", expect_any: ["q3", "question 3", "eos", "token", "length"]}
+  - {query: "what is the latest piazza post", expect_any: ["a1", "q3", "chrysalis", "project"], recency: true}
+
 # --- End-to-end triggering precision: does the course page surface Piazza? ----
 # Runs the FULL pipeline on the course page (gate -> search -> min_score -> aggregate).
 # expect_piazza true  = a strong content match should attach "Related on Piazza".

@@ -21,9 +21,37 @@ _RELOAD_TTL_S = 300  # re-check the file at most every 5 min
 
 _TOKEN = re.compile(r"[a-z0-9]+")
 
+# "what is the latest piazza post", "any recent announcements", "what's new on piazza"
+_RECENCY_RE = re.compile(
+    r"\b(latest|recent|recently|newest|new|last|most recent)\b[\s\S]*"
+    r"\b(post|posts|piazza|announcement|announcements|thread|threads|update|updates)\b",
+    re.IGNORECASE,
+)
+_CONTEXT_CHARS = 600  # cap per-thread context fed to the synthesizer
+
 
 def _tok(s: str) -> list[str]:
     return _TOKEN.findall((s or "").lower())
+
+
+def _context(t: dict) -> str:
+    """Text the RAG answerer synthesizes from: the endorsed instructor reply for a
+    Q&A, or the note body for an instructor announcement. Never private content."""
+    body = (t.get("instructor_answer") or t.get("body") or "").strip()
+    return body[:_CONTEXT_CHARS]
+
+
+def _item(t: dict, score: float, keep: bool = False) -> dict:
+    folders = ", ".join(t.get("folders", []) or [])
+    return {
+        "label": t.get("subject") or f"@{t.get('thread_id')}",
+        "url": t.get("url"),
+        "description": "Piazza" + (f" - {folders}" if folders else ""),
+        "score": float(score),
+        "context": _context(t),       # for the branch answerer (synthesis); not displayed
+        "keep": keep,                 # recency items bypass the selector
+        "thread_id": t.get("thread_id"),  # for eval recall/privacy
+    }
 
 
 class _Index:
@@ -59,23 +87,23 @@ class _Index:
                 self.bm25 = None
             self.mtime = mtime
 
+    def recent(self, n: int = 3) -> list[dict]:
+        """Most recently-updated threads (for recency/meta queries). Marked keep=True
+        so they bypass the content reranker - recency, not term overlap, qualifies them."""
+        self._maybe_reload()
+        ranked = sorted(self.threads, key=lambda t: t.get("updated") or "", reverse=True)[:n]
+        # Descending synthetic score keeps the original order through the score floor.
+        return [_item(t, 100.0 - i, keep=True) for i, t in enumerate(ranked)]
+
     def search(self, query: str, k: int = 5) -> list[dict]:
         self._maybe_reload()
+        if _RECENCY_RE.search(query or ""):
+            return self.recent(min(k, 3))
         if not self.bm25:
             return []
         scores = self.bm25.get_scores(_tok(query))
         ranked = sorted(zip(scores, self.threads), key=lambda sc: sc[0], reverse=True)[:k]
-        out = []
-        for score, t in ranked:
-            folders = ", ".join(t.get("folders", []) or [])
-            out.append({
-                "label": t.get("subject") or f"@{t.get('thread_id')}",
-                "url": t.get("url"),
-                "description": "Piazza" + (f" - {folders}" if folders else ""),
-                "score": float(score),
-                "thread_id": t.get("thread_id"),  # for eval recall/privacy; aggregator ignores it
-            })
-        return out
+        return [_item(t, score) for score, t in ranked]
 
 
 _INDEX = _Index()

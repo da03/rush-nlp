@@ -126,23 +126,28 @@ domains:
     # with the main course pipeline (so it adds ~0 wall time), then the aggregator
     # augments the answer with "Related on Piazza" links (or rescues a decline).
     #
-    # RETRIEVE-THEN-RERANK: BM25 (piazza.search) provides RECALL - top select_k
-    # threads over a low min_score floor that only trims pure noise. The PRECISION
-    # decision is piazza_selector, a PAW program shown the ORIGINAL question + the
-    # candidate titles; it returns only the genuinely-relevant ones (or "none"). A
-    # raw BM25 threshold can't separate true status matches from incidental token
-    # overlap (their score ranges overlap), but a question-aware reranker can - and
-    # it makes the merge robust to retriever false positives. Dormant until
-    # piazza_selector is compiled into programs.json.
+    # RETRIEVE -> RERANK -> ANSWER (Piazza RAG):
+    #  - piazza.search (BM25) provides RECALL: top select_k threads over a low
+    #    min_score floor that only trims pure noise. A recency query ("latest posts")
+    #    instead returns the most-recent threads with keep=True (bypass the reranker).
+    #  - piazza_selector (PAW) is PRECISION: shown the question + candidate titles, it
+    #    keeps only genuinely-relevant threads (or "none"). A raw BM25 threshold can't
+    #    separate true matches from incidental term overlap; a question-aware reranker
+    #    can, making the merge robust to retriever false positives.
+    #  - piazza_answerer (PAW) SYNTHESIZES a concise answer from the kept threads'
+    #    endorsed instructor replies, or declines. When it answers, the aggregator
+    #    PROMOTES it to the primary answer (overriding a generic main answer), with
+    #    the threads as citation links. Dormant until both programs are compiled.
     parallel_branches:
       - name: piazza
         when_page: "course"
         provider: piazza
         selector: piazza_selector
+        answerer: piazza_answerer
         min_score: 2.0       # BM25 recall floor (trim noise); the selector decides relevance
         select_k: 5          # candidates handed to the selector
-        max_items: 2         # cap on surfaced links
-        result_label: "Related on Piazza"
+        max_items: 2         # cap on surfaced threads (citations)
+        result_label: "From Piazza"
   # NeuralOS demo (neural-os.com). Default for page "site:neuralos"; the domain
   # router sends NeuralOS-specific questions to "either" so the page prior holds,
   # while questions about Yuntian / his other projects escape to the site domain.

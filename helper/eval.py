@@ -320,7 +320,24 @@ def sec_piazza(p, t):
             t.add(f"   miss: {q!r} expected one of {want}, got {ids}")
         summary.append(("piazza_recall", correct, n))
 
-    # -- end-to-end triggering precision (gate + search + min_score + aggregate) --
+    # -- RAG answer quality (synthesized from instructor threads, promoted to primary) --
+    ans_cases = suite.get("answer", [])
+    if "piazza_answerer" in p.programs and ans_cases:
+        correct, miss = 0, []
+        for c in ans_cases:
+            res = p.run(c["query"], "course:cs486_s26")["result"]
+            text = res.get("text", "") if res.get("type") == "answer" else ""
+            ok = bool(text) and _contains(text, c["expect_any"], "any")
+            correct += ok
+            if not ok:
+                miss.append((c["query"], text[:120]))
+        n = len(ans_cases)
+        t.add(f"\n=== Piazza RAG answer ({n}) === {correct}/{n} = {correct/n:.0%}")
+        for q, a in miss:
+            t.add(f"   miss: {q!r} got: {a!r}")
+        summary.append(("piazza_answer", correct, n))
+
+    # -- end-to-end triggering precision (search + selector + aggregate) --
     e2e_cases = suite.get("e2e", [])
     if "piazza_selector" in p.programs and e2e_cases:
         correct, miss = 0, []
