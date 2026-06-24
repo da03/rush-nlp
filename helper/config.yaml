@@ -133,7 +133,13 @@ domains:
         when_page: "course"
         gate: piazza_gate
         provider: piazza
-        min_score: 3.0
+        # PRECISION-FIRST BM25 floor (calibrated 2026-06-24 on the real index): strong
+        # content matches score 13-20; incidental false matches top out ~7.2, so 8.0
+        # surfaces every content hit with zero false positives in bench/piazza.yaml.
+        # A missed surface is cheap (the main answer stands); a wrong one looks broken.
+        # Re-tune as the corpus grows (recall@k is the retrieval gate; this is the
+        # surfacing gate). Raw BM25 is corpus-scaled, so revisit after big syncs.
+        min_score: 8.0
         max_items: 2
         result_label: "Related on Piazza"
   # NeuralOS demo (neural-os.com). Default for page "site:neuralos"; the domain

@@ -318,6 +318,23 @@ def sec_piazza(p, t):
             t.add(f"   miss: {q!r} expected one of {want}, got {ids}")
         summary.append(("piazza_recall", correct, n))
 
+    # -- end-to-end triggering precision (gate + search + min_score + aggregate) --
+    e2e_cases = suite.get("e2e", [])
+    if "piazza_gate" in p.programs and e2e_cases:
+        correct, miss = 0, []
+        for c in e2e_cases:
+            meta = p.run(c["query"], "course:cs486_s26")
+            got = "piazza" in (meta.get("branches") or [])
+            ok = got == c["expect_piazza"]
+            correct += ok
+            if not ok:
+                miss.append((c["query"], c["expect_piazza"], got))
+        n = len(e2e_cases)
+        t.add(f"\n=== Piazza end-to-end triggering ({n}) === {correct}/{n} = {correct/n:.0%}")
+        for q, e, g in miss:
+            t.add(f"   miss: {q!r} expect_piazza={e} got={g}")
+        summary.append(("piazza_e2e", correct, n))
+
     priv = suite.get("privacy", {})
     private_ids = set(priv.get("private_ids", []))
     piazza._INDEX._maybe_reload()

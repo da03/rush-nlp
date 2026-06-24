@@ -60,6 +60,20 @@ retrieval:
   - {query: "how do I form a final project group", expect_thread: 10, k: 3}
   - {query: "did hala move her office hours", expect_thread: [30, 37], k: 3}
 
+# --- End-to-end triggering precision: does the course page surface Piazza? ----
+# Runs the FULL pipeline on the course page (gate -> search -> min_score -> aggregate).
+# expect_piazza true  = a strong content match should attach "Related on Piazza".
+# expect_piazza false = either the gate says no (static logistics) OR the gate says
+#   yes but nothing clears min_score (a topic not yet on Piazza) -> stay invisible.
+e2e:
+  - {query: "how do I choose a cost function for lowest cost first search in a1", expect_piazza: true}
+  - {query: "is the eos token probability one in question 3", expect_piazza: true}
+  - {query: "uniform cost search versus lowest cost first search", expect_piazza: true}
+  - {query: "how is the course graded", expect_piazza: false}        # gate: no (static)
+  - {query: "who are the teaching assistants", expect_piazza: false} # gate: no (static)
+  - {query: "how does alpha beta pruning skip branches", expect_piazza: false}  # gate yes, no match clears min_score
+  - {query: "what topics are on the midterm", expect_piazza: false}  # gate yes, weak match filtered
+
 # --- Privacy: the served index must never carry private threads ---------------
 # private_ids were confirmed private (status=private / instr feed_groups) via
 # piazza_sync --inspect; they must never appear in threads.json or in any search
