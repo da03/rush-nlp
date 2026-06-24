@@ -318,12 +318,14 @@
       appendRelated(r);
     }
 
-    // A parallel branch (course Piazza search) can attach related links to a main
-    // result; render them below it.
+    // A parallel branch (course Piazza search) attaches the source thread(s) the
+    // answer was grounded in; render them below as a citation ("Source(s) on Piazza").
     function appendRelated(r) {
       var rel = (r && r.related) || [];
       if (!rel.length) return;
-      results.appendChild(el('p', 'paw-helper__placeholder', (r.related_label || 'Related') + ':'));
+      var lbl = r.related_label || 'Related';
+      if (rel.length > 1) lbl = lbl.replace(/^Source\b/, 'Sources'); // "Source on Piazza" -> "Sources on Piazza"
+      results.appendChild(el('p', 'paw-helper__placeholder', lbl + ':'));
       rel.forEach(function (it) {
         var a = el('a', 'paw-helper__result paw-helper__result--link');
         a.href = it.url; a.target = '_blank'; a.rel = 'noopener';

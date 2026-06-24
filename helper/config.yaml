@@ -147,7 +147,7 @@ domains:
         min_score: 2.0       # BM25 recall floor (trim noise); the selector decides relevance
         select_k: 5          # candidates handed to the selector
         max_items: 2         # cap on surfaced threads (citations)
-        result_label: "From Piazza"
+        result_label: "Source on Piazza"   # widget pluralizes to "Sources on Piazza" for >1
   # NeuralOS demo (neural-os.com). Default for page "site:neuralos"; the domain
   # router sends NeuralOS-specific questions to "either" so the page prior holds,
   # while questions about Yuntian / his other projects escape to the site domain.

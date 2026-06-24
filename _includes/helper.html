@@ -1,33 +1,10 @@
-<!-- "Ask about Yuntian" helper widget, powered by ProgramAsWeights.
-     Behaviour lives in /js/helper.js; styling in _sass/_helper.scss.
-     data-endpoint is the inference service base URL.
-     data-page is the page key sent to /ask so the router can apply a page prior
-     (set page.helper_page in a page's front matter; defaults to "site"). -->
-<div id="paw-helper" class="paw-helper" data-endpoint="https://helper.yuntiandeng.com" data-page="{{ page.helper_page | default: 'site' }}">
-  <button type="button" class="paw-helper__launch" aria-label="Ask about Yuntian" aria-haspopup="dialog" aria-expanded="false">
-    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 17 0z"></path>
-    </svg>
-    <span class="paw-helper__launch-label">Ask</span>
-  </button>
-
-  <div class="paw-helper__overlay" hidden></div>
-
-  <div class="paw-helper__dialog" role="dialog" aria-modal="true" aria-label="Ask about Yuntian" hidden>
-    <form class="paw-helper__bar" autocomplete="off">
-      <svg class="paw-helper__search" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path>
-      </svg>
-      <input type="text" class="paw-helper__input" placeholder="Ask about Yuntian, or what you're looking for…" aria-label="Ask about Yuntian">
-      <span class="paw-helper__spinner" hidden aria-hidden="true"></span>
-      <button type="button" class="paw-helper__close" aria-label="Close">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
-      </button>
-    </form>
-    <div class="paw-helper__results" aria-live="polite"></div>
-    <div class="paw-helper__footer">
-      <span>Powered by <span class="paw-helper__count">multiple</span> <a href="https://programasweights.com" target="_blank" rel="noopener" title="A pipeline of small ProgramAsWeights programs: a domain router, page classifiers, a topic router, specialized answerers, and a validator">ProgramAsWeights</a> programs</span>
-      <span class="paw-helper__kbd">esc</span>
-    </div>
-  </div>
-</div>
+<!-- "Ask about Yuntian" helper, powered by ProgramAsWeights.
+     Single source of truth: the self-contained widget served by the helper backend
+     (helper/widget.js -> https://helper.yuntiandeng.com/widget.js). It injects its
+     own Shadow-DOM UI (themed via this site's CSS custom properties) and renders
+     answers + Piazza source citations. Previously this site shipped its own copy
+     (_includes markup + js/helper.js + _sass/_helper.scss); those drifted from the
+     widget (e.g. citations were dropped), so we now embed the shared widget instead.
+     data-page is the page key sent to /ask (set page.helper_page in front matter). -->
+<script src="https://helper.yuntiandeng.com/widget.js"
+        data-page="{{ page.helper_page | default: 'site' }}" defer></script>
