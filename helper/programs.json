@@ -1,6 +1,6 @@
 {
   "compiler": "paw-ft-bs48",
-  "compiled_at": "2026-06-22T16:52:04.853639+00:00",
+  "compiled_at": "2026-06-24T06:04:03.323506+00:00",
   "programs": {
     "page_classifier": "eb5b6134042db08a13b4",
     "answerer": "b396456b787fac0b0938",
@@ -27,6 +27,7 @@
     "pawsite_privacy_answerer": "0cfea7b368c2a637362d",
     "pawsite_examples_answerer": "981da3c78c5b2b240d62",
     "pawsite_troubleshooting_answerer": "19726684a6c50a346717",
-    "code_selector": "ad80da5267a8639dd081"
+    "code_selector": "ad80da5267a8639dd081",
+    "piazza_gate": "1c335506e37ecc515a4c"
   }
 }

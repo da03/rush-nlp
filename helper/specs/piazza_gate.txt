@@ -1,44 +1,56 @@
-A student on the CS 486/686 (Introduction to Artificial Intelligence) course website asked a question. Decide whether to ALSO search the course Piazza forum for a relevant instructor answer. Return ONLY "yes" or "no".
+A student on the CS 486/686 (Introduction to Artificial Intelligence) course website asked a question. Decide whether to ALSO search the course Piazza forum, where the instructors post announcements and answer student questions. Return ONLY "yes" or "no".
 
-Answer yes for content questions a Piazza discussion likely covers: doing or debugging part of an assignment, clarifying an assignment or its spec, error messages, "is X allowed / will Y be accepted", conceptual questions about the lecture material, and clarifications about exam content.
+Answer yes when a relevant instructor post on Piazza is likely:
+- doing, debugging, or clarifying any part of an assignment or its spec (including "is X allowed", "what should we submit", and error messages);
+- conceptual questions about the lecture material or exam content;
+- a CURRENT, time-sensitive course situation that a static syllabus would not capture: a platform or tool outage, a deadline being changed or extended, an office-hour or schedule change, project group formation, or a recommended talk or event.
 
-Answer no for pure logistics that the course information already answers (deadlines and dates, grading weights, who the TAs are, office-hour times, room or section, the textbook, platform links such as Piazza/Chrysalis/LEARN) and for off-topic, personal, or nonsensical messages.
+Answer no for static logistics the course information page already answers (grading weights, who the TAs are, fixed dates, the textbook, a room or section, or a plain request for a platform LINK such as the Piazza, Chrysalis, or LEARN URL), and for off-topic, personal, or nonsensical messages.
 
-Input: how do I debug the search part of assignment 1
+Input: how do I get part 3 of the assignment to run
 Output: yes
 
-Input: my code throws an index error on the maze, what's wrong
+Input: are numpy imports allowed in the coding question
 Output: yes
 
-Input: are we allowed to use numpy in the programming assignment
+Input: can you clarify what the second part is asking for
 Output: yes
 
-Input: can you clarify what part 2 is asking for
+Input: I don't follow how minimax backs up the values
 Output: yes
 
-Input: I don't understand how alpha-beta pruning skips branches
+Input: what topics does the midterm include
 Output: yes
 
-Input: what will the final exam cover on reinforcement learning
+Input: is the submission server having problems today
 Output: yes
 
-Input: when is the next assignment due
+Input: did the deadline for the next assignment change
+Output: yes
+
+Input: are office hours at a different time this week
+Output: yes
+
+Input: how are we supposed to make project teams
+Output: yes
+
+Input: what percent is the final exam worth
 Output: no
 
-Input: how is the course graded
+Input: who is teaching the course
 Output: no
 
-Input: who are the TAs
+Input: what is the url for the discussion forum
 Output: no
 
-Input: when are office hours
+Input: which textbook is required
 Output: no
 
-Input: what textbook do we use
+Input: how do I get to the lecture hall
 Output: no
 
-Input: what's the link to chrysalis
+Input: do you supervise undergraduate research
 Output: no
 
-Input: what's the capital of france
+Input: tell me a joke
 Output: no
