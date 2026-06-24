@@ -1,0 +1,9 @@
+[Unit]
+Description=Nightly CS486/686 Piazza sync
+
+[Timer]
+OnCalendar=*-*-* 04:30:00 America/Toronto
+Persistent=true
+
+[Install]
+WantedBy=timers.target

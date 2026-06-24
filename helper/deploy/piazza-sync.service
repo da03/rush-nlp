@@ -1,0 +1,16 @@
+[Unit]
+Description=Sync CS486/686 Piazza into the helper thread index (endorsed-public only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Secrets (PIAZZA_EMAIL, PIAZZA_PASSWORD, PIAZZA_NID) live ONLY on the server,
+# never in the public repo.
+EnvironmentFile=/etc/yuntiandeng-helper/piazza.env
+# Server-only output dir (also read by the helper via the service drop-in below).
+Environment=PIAZZA_DATA_DIR=/var/lib/yuntiandeng-helper/piazza
+# Polite delay between post fetches (Piazza rate-limits aggressive pulls).
+Environment=PIAZZA_SLEEP=2.5
+WorkingDirectory=/opt/yuntiandeng-helper/repo/helper
+ExecStart=/opt/yuntiandeng-helper/venv/bin/python /opt/yuntiandeng-helper/repo/helper/piazza_sync.py

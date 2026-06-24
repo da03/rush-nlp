@@ -130,6 +130,66 @@ sudo systemctl daemon-reload && sudo systemctl restart yuntiandeng-helper
 
 Verify: `curl -s -D- -o/dev/null -X POST https://helper.yuntiandeng.com/ask -H 'Origin: https://neural-os.com' -H 'Content-Type: application/json' -d '{"query":"hi"}' | grep -i access-control-allow-origin`
 
+## Piazza branch (course page RAG)
+
+On the **course page only**, a parallel branch augments answers with relevant
+**endorsed-public** Piazza threads. It is retrieve-then-rerank: `piazza.py` (BM25)
+recalls candidate threads, and the `piazza_selector` PAW program is shown the
+original question + candidate titles and keeps only the genuinely relevant ones
+(or none). The branch runs concurrently with the main answer, so it adds ~0 wall
+time, and the merge is robust to retriever false positives.
+
+**Privacy**: `piazza_sync.py` keeps only PUBLIC posts that carry instructor
+content (an instructor/TA answer, or an instructor note). Private threads
+(`status=private` or a restricted `config.feed_groups`) are excluded even when
+answered. The synced `threads.json` lives ONLY on the server (`PIAZZA_DATA_DIR`),
+never in the public repo.
+
+```bash
+# 1. Deps (BM25 + the Piazza client).
+/opt/yuntiandeng-helper/venv/bin/pip install rank-bm25 piazza-api
+
+# 2. Server-only credentials (chmod 600; NEVER commit).
+sudo install -d /etc/yuntiandeng-helper
+sudo tee /etc/yuntiandeng-helper/piazza.env >/dev/null <<'EOF'
+PIAZZA_EMAIL=instructor@example.com
+PIAZZA_PASSWORD=...
+PIAZZA_NID=mp1dvecnhq8q4
+EOF
+sudo chmod 600 /etc/yuntiandeng-helper/piazza.env
+
+# 3. Point the running helper at the synced index (drop-in), then restart.
+sudo tee /etc/systemd/system/yuntiandeng-helper.service.d/piazza.conf >/dev/null <<'EOF'
+[Service]
+Environment=PIAZZA_DATA_DIR=/var/lib/yuntiandeng-helper/piazza
+EOF
+
+# 4. Nightly sync (the helper hot-reloads threads.json within 5 min, no restart).
+sudo cp helper/deploy/piazza-sync.service /etc/systemd/system/yuntiandeng-helper-piazza-sync.service
+sudo cp helper/deploy/piazza-sync.timer   /etc/systemd/system/yuntiandeng-helper-piazza-sync.timer
+sudo systemctl daemon-reload
+sudo systemctl enable --now yuntiandeng-helper-piazza-sync.timer
+sudo systemctl start yuntiandeng-helper-piazza-sync.service   # first sync now
+sudo systemctl restart yuntiandeng-helper
+```
+
+Eyeball / verify (the class is public, so inspecting content is expected):
+
+```bash
+# Dump real content + the keep/drop decision for the first N posts.
+sudo PIAZZA_DATA_DIR=/var/lib/yuntiandeng-helper/piazza \
+  bash -c 'set -a; . /etc/yuntiandeng-helper/piazza.env; set +a; \
+  /opt/yuntiandeng-helper/venv/bin/python /opt/yuntiandeng-helper/repo/helper/piazza_sync.py --inspect 8'
+
+# Benchmark the branch on the synced data (selection / recall@k / e2e / privacy).
+cd /opt/yuntiandeng-helper/repo/helper && PIAZZA_DATA_DIR=/var/lib/yuntiandeng-helper/piazza \
+  PAW_HELPER_CONTENT=$PWD /opt/yuntiandeng-helper/venv/bin/python eval.py --section piazza
+```
+
+Tuning lives in `config.yaml` under `domains.course.parallel_branches`: `min_score`
+(BM25 recall floor), `select_k` (candidates handed to the selector), `max_items`.
+`bench/piazza.yaml` is the regression suite; re-tune as the corpus grows.
+
 ## Notes
 
 - The first `/ask` after a restart downloads/loads the PAW base model (a few
