@@ -132,12 +132,16 @@ Verify: `curl -s -D- -o/dev/null -X POST https://helper.yuntiandeng.com/ask -H '
 
 ## Piazza branch (course page RAG)
 
-On the **course page only**, a parallel branch augments answers with relevant
-**endorsed-public** Piazza threads. It is retrieve-then-rerank: `piazza.py` (BM25)
-recalls candidate threads, and the `piazza_selector` PAW program is shown the
-original question + candidate titles and keeps only the genuinely relevant ones
-(or none). The branch runs concurrently with the main answer, so it adds ~0 wall
-time, and the merge is robust to retriever false positives.
+On the **course page only**, a parallel branch answers from relevant
+**endorsed-public** Piazza threads. It is retrieve -> rerank -> answer:
+`piazza.py` (BM25) recalls candidate threads; `piazza_selector` (PAW) is shown the
+original question + candidate titles and keeps only the genuinely relevant ones (or
+none); `piazza_answerer` (PAW) synthesizes a concise answer from the kept threads'
+endorsed instructor replies (or declines). When it answers, the aggregator promotes
+it to the primary answer (overriding a generic main answer), with the threads as
+citation links. A recency query ("latest posts") returns the most-recent threads
+directly. The branch runs concurrently with the main answer (~0 wall time), and the
+selector + answerer-decline keep the merge robust to retriever false positives.
 
 **Privacy**: `piazza_sync.py` keeps only PUBLIC posts that carry instructor
 content (an instructor/TA answer, or an instructor note). Private threads
