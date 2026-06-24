@@ -73,6 +73,7 @@ class _Index:
                 "url": t.get("url"),
                 "description": "Piazza" + (f" - {folders}" if folders else ""),
                 "score": float(score),
+                "thread_id": t.get("thread_id"),  # for eval recall/privacy; aggregator ignores it
             })
         return out
 

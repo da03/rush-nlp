@@ -269,6 +269,76 @@ def sec_nonenglish(p, t):
         t.add(f"   {c['query']!r} -> {ans!r}")
 
 
+def sec_piazza(p, t):
+    """Piazza branch: gate yes/no (needs piazza_gate compiled) + retrieval recall@k
+    and privacy must-not-surface (need the server-only threads.json synced)."""
+    suite = load("piazza.yaml")
+    if not suite:
+        return None
+    import piazza
+    summary = []
+
+    # -- gate accuracy --
+    gate_cases = suite.get("gate", [])
+    if "piazza_gate" in p.programs and gate_cases:
+        correct, miss = 0, []
+        for c in gate_cases:
+            verdict = p._infer("piazza_gate", c["query"], p.mt.get("gate", 8)).strip().lower()
+            pred = "yes" if verdict.startswith("yes") else "no"
+            correct += pred == c["expected"]
+            if pred != c["expected"]:
+                miss.append((c["query"], c["expected"], pred))
+        n = len(gate_cases)
+        t.add(f"\n=== Piazza gate ({n}) === {correct}/{n} = {correct/n:.0%}")
+        for q, e, pr in miss:
+            t.add(f"   miss: {q!r} {e}->{pr}")
+        summary.append(("piazza_gate", correct, n))
+    else:
+        t.add("\n(piazza gate: piazza_gate not compiled - skipped)")
+
+    # -- retrieval + privacy (need synced data) --
+    if not piazza.THREADS_PATH.exists():
+        t.add(f"(piazza retrieval/privacy: no {piazza.THREADS_PATH} - skipped)")
+        return summary or None
+
+    ret_cases = suite.get("retrieval", [])
+    correct, miss = 0, []
+    for c in ret_cases:
+        k = c.get("k", 3)
+        ids = [r.get("thread_id") for r in piazza._INDEX.search(c["query"], k=k)]
+        want = c["expect_thread"] if isinstance(c["expect_thread"], list) else [c["expect_thread"]]
+        ok = bool(set(ids) & set(want))
+        correct += ok
+        if not ok:
+            miss.append((c["query"], want, ids))
+    n = len(ret_cases)
+    if n:
+        t.add(f"\n=== Piazza retrieval recall@k ({n}) === {correct}/{n} = {correct/n:.0%}")
+        for q, want, ids in miss:
+            t.add(f"   miss: {q!r} expected one of {want}, got {ids}")
+        summary.append(("piazza_recall", correct, n))
+
+    priv = suite.get("privacy", {})
+    private_ids = set(priv.get("private_ids", []))
+    piazza._INDEX._maybe_reload()
+    index_ids = {th.get("thread_id") for th in piazza._INDEX.threads}
+    leaked = private_ids & index_ids
+    adv_hits = []
+    for q in priv.get("adversarial", []):
+        for r in piazza._INDEX.search(q, k=5):
+            if r.get("thread_id") in private_ids:
+                adv_hits.append((q, r.get("thread_id")))
+    ok = not leaked and not adv_hits
+    t.add(f"\n=== Piazza privacy (index has no private thread; adversarial don't surface) === "
+          f"{'PASS' if ok else 'FAIL'}")
+    if leaked:
+        t.add(f"   LEAK: private ids in served index: {sorted(leaked)}")
+    for q, tid in adv_hits:
+        t.add(f"   LEAK: adversarial {q!r} surfaced private @{tid}")
+    summary.append(("piazza_privacy", int(ok), 1))
+    return summary
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--baseline", action="store_true", help="Write bench/baseline.md")
@@ -311,6 +381,10 @@ def main():
         t.add("\n(open-ended skipped: rubric_checker not compiled)")
     if want("decline"):
         summary["decline"] = sec_decline(p, t)
+    if want("piazza"):
+        res = sec_piazza(p, t)
+        for name, c, n in (res or []):
+            summary[name] = (c, n)
     if want("real"):
         sec_nonenglish(p, t)
 

@@ -1,0 +1,72 @@
+# Piazza branch benchmark for CS 486/686. Three independently-graded suites:
+#
+#   gate       - piazza_gate yes/no: SHOULD we also search Piazza for this query?
+#                (data-independent; runs wherever piazza_gate is compiled)
+#   retrieval  - recall@k: a paraphrased query should rank a specific real thread
+#                into the top-k (needs the server-only threads.json synced).
+#   privacy    - must-not-surface: the served index must NEVER contain a private
+#                thread, and adversarial queries that mimic private-thread topics
+#                must not surface @61-@64 (verified private via piazza_sync --inspect).
+#
+# Queries are HELD OUT: paraphrases, never the verbatim Piazza subject, so recall
+# reflects generalization rather than string overlap. thread_id values are the real
+# @numbers from the live class (see piazza_sync output), grounded by eyeballing the
+# actual instructor content on 2026-06-24.
+
+# --- Gate: should the helper ALSO consult Piazza? -----------------------------
+# YES = assignment / conceptual / content questions a Piazza thread likely covers,
+#       PLUS time-sensitive course STATUS not in the static course facts (outages,
+#       deadline changes, schedule/office-hour moves, recommended talks).
+# NO  = static logistics the course info already answers (grading weights, TA
+#       identity, fixed dates, textbook, platform LINKS), and off-topic/personal.
+gate:
+  # content / assignment -> yes
+  - {query: "how should I define the cost function for lowest cost first search in A1", expected: "yes"}
+  - {query: "does the end of sequence token probability count as 1 in question 3", expected: "yes"}
+  - {query: "can the search graph revisit a node in question 1b", expected: "yes"}
+  - {query: "what heuristic is acceptable for the q2 part c", expected: "yes"}
+  - {query: "I'm confused about the difference between uniform cost search and lowest cost first search", expected: "yes"}
+  - {query: "how do tie breaks work in the coding part of question 3", expected: "yes"}
+  - {query: "my autograder feedback looks wrong, is that expected", expected: "yes"}
+  - {query: "how do I download the lecture recordings", expected: "yes"}
+  # time-sensitive status / announcements -> yes (not in the static facts)
+  - {query: "is chrysalis down right now", expected: "yes"}
+  - {query: "was the assignment 1 deadline pushed back", expected: "yes"}
+  - {query: "did the office hours get moved this week", expected: "yes"}
+  - {query: "how do we form final project groups", expected: "yes"}
+  # static logistics fully covered by course facts -> no
+  - {query: "how is the final grade weighted", expected: "no"}
+  - {query: "who is the teaching assistant", expected: "no"}
+  - {query: "what is the link to piazza", expected: "no"}
+  - {query: "what textbook does the course use", expected: "no"}
+  - {query: "what room is the lecture in", expected: "no"}
+  # off-topic / personal -> no
+  - {query: "are you accepting new phd students", expected: "no"}
+  - {query: "what is the weather today", expected: "no"}
+
+# --- Retrieval recall@k: paraphrase -> the real thread it should rank ----------
+# expect_thread may be a single id or a list (any one in top-k counts as a hit).
+retrieval:
+  - {query: "how do I pick a cost function for lowest-cost-first search in assignment 1", expect_thread: 66, k: 3}
+  - {query: "is the EOS token probability automatically one in A1 question 3", expect_thread: 67, k: 3}
+  - {query: "can the graph go back on itself in A1 Q1b", expect_thread: 53, k: 3}
+  - {query: "what makes an admissible heuristic for question 2 part c", expect_thread: [42, 46], k: 3}
+  - {query: "uniform cost search versus lowest cost first search", expect_thread: 14, k: 3}
+  - {query: "where can I download the lecture slides", expect_thread: 29, k: 3}
+  - {query: "tie breaking rule in the question 3 coding portion", expect_thread: 34, k: 3}
+  - {query: "the autograder feedback for the chat assignment looks off", expect_thread: 28, k: 3}
+  - {query: "is chrysalis currently down", expect_thread: [36, 38, 8, 15], k: 3}
+  - {query: "was assignment 1 extended by a week", expect_thread: [44, 38], k: 3}
+  - {query: "how do I form a final project group", expect_thread: 10, k: 3}
+  - {query: "did hala move her office hours", expect_thread: [30, 37], k: 3}
+
+# --- Privacy: the served index must never carry private threads ---------------
+# private_ids were confirmed private (status=private / instr feed_groups) via
+# piazza_sync --inspect; they must never appear in threads.json or in any search
+# result. The adversarial queries mimic private-thread topics to try to surface them.
+privacy:
+  private_ids: [61, 62, 63, 64]
+  adversarial:
+    - "private question about my assignment 1 submission"
+    - "can you look at my specific code for the chat assignment"
+    - "I emailed the instructors about my grade"
