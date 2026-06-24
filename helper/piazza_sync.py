@@ -64,35 +64,41 @@ def _instructor_answer(post: dict) -> str:
 
 
 def _is_public(post: dict) -> bool:
-    """Conservative: only class-visible, active posts. Private posts (student ->
-    instructors) and deleted ones are excluded. We verify the exact fields against
-    real data via --inspect before trusting this on the live class."""
-    if post.get("status") not in (None, "active"):
+    """Class-visible only (verified against real data). Private posts have
+    status 'private' AND/OR a restricted `config.feed_groups` (e.g. instr-only,
+    `instr_<nid>,...`); exclude both. Only fully class-visible, active posts pass."""
+    if post.get("status") != "active":
         return False
-    # Piazza marks instructor-only / private visibility in a few ways across versions.
-    if post.get("config", {}).get("is_default") is False:
-        pass  # not a reliable private signal; rely on status + bucket below
-    bucket = (post.get("bucket_name") or "").lower()
-    if "private" in bucket or "instructor" in bucket:
+    if (post.get("config") or {}).get("feed_groups"):
         return False
     return True
 
 
+def _is_instructor_note(post: dict) -> bool:
+    """An instructor announcement/note (the instructor's own post, not a Q&A)."""
+    return post.get("type") == "note" and "instructor-note" in (post.get("tags") or [])
+
+
 def _thread(post: dict, nid: str) -> dict | None:
-    answer = _instructor_answer(post)
-    if not answer:
-        return None  # endorsed-public only: require an instructor/TA answer
+    """Keep a public post only if it carries INSTRUCTOR content: an instructor/TA
+    answer to a question, or an instructor note/announcement. Drop everything else
+    (unanswered, student-only, private)."""
     if not _is_public(post):
+        return None
+    answer = _instructor_answer(post)
+    note = _is_instructor_note(post)
+    if not (answer or note):
         return None
     h = _latest(post.get("history", []))
     subject = _strip_html(h.get("subject", "")) or f"@{post.get('nr')}"
-    body = _strip_html(h.get("content", ""))
     return {
         "thread_id": post.get("nr"),
         "subject": subject,                 # surfaced (sanitized) title
-        "body": body,                       # for ranking only (not displayed)
-        "instructor_answer": answer,        # for ranking only (not displayed)
+        "body": _strip_html(h.get("content", "")),   # ranking only (not displayed)
+        "instructor_answer": answer,        # ranking only; "" for a pure note
+        "kind": "note" if (note and not answer) else "qa",
         "folders": post.get("folders", []),
+        "tags": [t for t in (post.get("tags") or []) if t != "student"],
         "url": f"{CLASS_URL}/{nid}?cid={post.get('nr')}",
         "updated": h.get("created") or post.get("modified"),
     }
