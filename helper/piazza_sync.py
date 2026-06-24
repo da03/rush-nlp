@@ -61,11 +61,11 @@ def _iter_posts(network, limit=None, sleep_s=2.0):
             try:
                 post = network.get_post(nr)
                 break
-            except Exception as e:  # noqa: BLE001 - retry only on rate limit
-                if "too fast" in str(e).lower() or "rate" in str(e).lower():
-                    time.sleep(3 * (attempt + 1))
+            except Exception as e:  # noqa: BLE001 - rate limits / empty JSON are transient
+                if attempt < 5:
+                    time.sleep(3 * (attempt + 1))  # back off and retry
                     continue
-                raise
+                print(f"  [skip @{nr}: {e}]", file=sys.stderr)  # give up on this one
         if post is not None:
             yield post
         time.sleep(sleep_s)
