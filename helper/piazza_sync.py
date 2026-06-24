@@ -46,6 +46,31 @@ def _login():
     return p
 
 
+def _iter_posts(network, limit=None, sleep_s=2.0):
+    """Yield full posts, throttled. Piazza rate-limits ("too fast"), so we list the
+    feed once, then fetch each post with a delay + exponential backoff retry."""
+    import time
+    feed = network.get_feed(limit=limit or 999, offset=0)
+    items = feed.get("feed", []) if isinstance(feed, dict) else (feed or [])
+    nrs = [it.get("nr") for it in items if isinstance(it, dict) and it.get("nr") is not None]
+    if limit:
+        nrs = nrs[:limit]
+    for nr in nrs:
+        post = None
+        for attempt in range(6):
+            try:
+                post = network.get_post(nr)
+                break
+            except Exception as e:  # noqa: BLE001 - retry only on rate limit
+                if "too fast" in str(e).lower() or "rate" in str(e).lower():
+                    time.sleep(3 * (attempt + 1))
+                    continue
+                raise
+        if post is not None:
+            yield post
+        time.sleep(sleep_s)
+
+
 def _strip_html(s: str) -> str:
     s = re.sub(r"<[^>]+>", " ", s or "")
     return re.sub(r"\s+", " ", html.unescape(s)).strip()
@@ -125,26 +150,34 @@ def main() -> None:
     nid = _resolve_nid(p)
     network = p.network(nid)
 
+    sleep_s = float(os.environ.get("PIAZZA_SLEEP", "2.0"))
+
     if args.inspect:
-        # PII-SAFE: print STRUCTURE + non-content metadata only (never subjects,
-        # bodies, or answers), so we can verify the privacy filter without leaking
-        # class content into logs.
-        for i, post in enumerate(network.iter_all_posts(limit=args.inspect)):
+        # Eyeball real content (the class is public) AND verify the privacy filter:
+        # for each post we print its visibility, what the filter decides, and the
+        # actual subject/answer so we can confirm we keep the right things. Private
+        # posts are clearly flagged and their content is NOT printed.
+        for i, post in enumerate(_iter_posts(network, limit=args.inspect, sleep_s=sleep_s)):
             h = _latest(post.get("history", []))
             kids = [c.get("type") for c in post.get("children", [])]
-            scalars = {k: v for k, v in post.items()
-                       if isinstance(v, (str, int, bool, float)) and len(str(v)) < 40}
-            print(f"\n===== post {i} =====")
-            print(f"  keys: {sorted(post.keys())}")
-            print(f"  scalar metadata: {scalars}")
-            print(f"  config: {post.get('config')}")
-            print(f"  folders: {post.get('folders')}  tags: {post.get('tags')}")
-            print(f"  children types: {kids}  has_i_answer: {'i_answer' in kids}")
-            print(f"  subject_len: {len(h.get('subject', ''))}  content_len: {len(h.get('content', ''))}")
+            public = _is_public(post)
+            kept = _thread(post, nid) is not None
+            print(f"\n===== post {i}  @{post.get('nr')}  type={post.get('type')} =====")
+            print(f"  status={post.get('status')}  feed_groups={(post.get('config') or {}).get('feed_groups')}")
+            print(f"  folders={post.get('folders')}  tags={post.get('tags')}  children={kids}")
+            print(f"  PUBLIC={public}  KEPT={kept}  ({'note' if _is_instructor_note(post) else 'qa' if _instructor_answer(post) else 'no instructor content'})")
+            if not public:
+                print("  [private/restricted -> content withheld]")
+                continue
+            print(f"  subject: {_strip_html(h.get('subject',''))!r}")
+            print(f"  body:    {_strip_html(h.get('content',''))[:600]!r}")
+            ans = _instructor_answer(post)
+            if ans:
+                print(f"  i_answer:{ans[:600]!r}")
         return
 
     threads, scanned = [], 0
-    for post in network.iter_all_posts(limit=args.limit or None):
+    for post in _iter_posts(network, limit=args.limit or None, sleep_s=sleep_s):
         scanned += 1
         try:
             t = _thread(post, nid)
