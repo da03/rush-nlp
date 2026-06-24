@@ -120,9 +120,21 @@ def main() -> None:
     network = p.network(nid)
 
     if args.inspect:
+        # PII-SAFE: print STRUCTURE + non-content metadata only (never subjects,
+        # bodies, or answers), so we can verify the privacy filter without leaking
+        # class content into logs.
         for i, post in enumerate(network.iter_all_posts(limit=args.inspect)):
-            print(f"\n===== raw post {i} (keys: {sorted(post.keys())}) =====")
-            print(json.dumps(post, indent=2, default=str)[:4000])
+            h = _latest(post.get("history", []))
+            kids = [c.get("type") for c in post.get("children", [])]
+            scalars = {k: v for k, v in post.items()
+                       if isinstance(v, (str, int, bool, float)) and len(str(v)) < 40}
+            print(f"\n===== post {i} =====")
+            print(f"  keys: {sorted(post.keys())}")
+            print(f"  scalar metadata: {scalars}")
+            print(f"  config: {post.get('config')}")
+            print(f"  folders: {post.get('folders')}  tags: {post.get('tags')}")
+            print(f"  children types: {kids}  has_i_answer: {'i_answer' in kids}")
+            print(f"  subject_len: {len(h.get('subject', ''))}  content_len: {len(h.get('content', ''))}")
         return
 
     threads, scanned = [], 0
