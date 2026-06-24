@@ -16,6 +16,37 @@
 # @numbers from the live class (see piazza_sync output), grounded by eyeballing the
 # actual instructor content on 2026-06-24.
 
+# --- Gate: should the helper consult Piazza, or does the course info own this? --
+# NO = static logistics the course page answers authoritatively (office-hour
+#      schedule for any/all TAs, grading, fixed dates, TA list, textbook, links) +
+#      off-topic. YES = assignment/content/conceptual, time-sensitive CHANGES, and
+#      recency/meta. Guards against Piazza overriding the authoritative main answer.
+gate:
+  # course-owned logistics -> no (regression guards: these were hijacking the main answer)
+  - {query: "office hours of all TAs", expected: "no"}
+  - {query: "what are the office hours", expected: "no"}
+  - {query: "when does each TA hold office hours", expected: "no"}
+  - {query: "how is the final grade weighted", expected: "no"}
+  - {query: "who is the teaching assistant", expected: "no"}
+  - {query: "what is the link to piazza", expected: "no"}
+  - {query: "what textbook does the course use", expected: "no"}
+  # off-topic / personal -> no
+  - {query: "are you accepting new phd students", expected: "no"}
+  - {query: "what is the weather today", expected: "no"}
+  # content / assignment / conceptual -> yes
+  - {query: "how should I define the cost function for lowest cost first search in A1", expected: "yes"}
+  - {query: "can the search graph revisit a node in question 1b", expected: "yes"}
+  - {query: "I'm confused about the difference between uniform cost search and lowest cost first search", expected: "yes"}
+  - {query: "my autograder feedback looks wrong, is that expected", expected: "yes"}
+  # time-sensitive change / status -> yes
+  - {query: "was the assignment 1 deadline pushed back", expected: "yes"}
+  - {query: "did the office hours get moved this week", expected: "yes"}
+  - {query: "is chrysalis down right now", expected: "yes"}
+  - {query: "how do we form final project groups", expected: "yes"}
+  # recency / meta -> yes
+  - {query: "what is the most recent piazza post", expected: "yes"}
+  - {query: "any recent announcements on the forum", expected: "yes"}
+
 # --- Selection precision: question + candidate titles -> the relevant ones -----
 # `candidates` are thread titles (1-indexed); `expect` is the list of titles the
 # selector should pick ([] means it must return "none"). The false candidates are
@@ -85,6 +116,8 @@ e2e:
   - {query: "uniform cost search versus lowest cost first search", expect_piazza: true}
   - {query: "how is the course graded", expect_piazza: false}        # gate: no (static)
   - {query: "who are the teaching assistants", expect_piazza: false} # gate: no (static)
+  - {query: "what are the office hours", expect_piazza: false}       # gate: no (course owns the schedule)
+  - {query: "office hours of all TAs", expect_piazza: false}         # gate: no (regression guard)
   - {query: "how does alpha beta pruning skip branches", expect_piazza: false}  # gate yes, no match clears min_score
   - {query: "what topics are on the midterm", expect_piazza: false}  # gate yes, weak match filtered
 

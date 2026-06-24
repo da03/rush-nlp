@@ -278,6 +278,22 @@ def sec_piazza(p, t):
     import piazza
     summary = []
 
+    # -- gate accuracy (course-owned logistics -> no; content/change/recency -> yes) --
+    gate_cases = suite.get("gate", [])
+    if "piazza_gate" in p.programs and gate_cases:
+        correct, miss = 0, []
+        for c in gate_cases:
+            verdict = p._infer("piazza_gate", c["query"], p.mt.get("gate", 8)).strip().lower()
+            pred = "yes" if verdict.startswith("yes") else "no"
+            correct += pred == c["expected"]
+            if pred != c["expected"]:
+                miss.append((c["query"], c["expected"], pred))
+        n = len(gate_cases)
+        t.add(f"\n=== Piazza gate ({n}) === {correct}/{n} = {correct/n:.0%}")
+        for q, e, pr in miss:
+            t.add(f"   miss: {q!r} {e}->{pr}")
+        summary.append(("piazza_gate", correct, n))
+
     # -- selection precision (the PAW reranker, via the SAME path runtime uses) --
     sel_cases = suite.get("selection", [])
     if "piazza_selector" in p.programs and sel_cases:

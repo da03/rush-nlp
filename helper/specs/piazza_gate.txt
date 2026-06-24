@@ -1,19 +1,17 @@
-A student on the CS 486/686 (Introduction to Artificial Intelligence) course website asked a question. Decide whether to ALSO search the course Piazza forum, where the instructors post announcements and answer student questions. Return ONLY "yes" or "no".
+A student on the CS 486/686 (Introduction to Artificial Intelligence) course website asked a question. The course website already authoritatively answers static logistics (schedules, who/when, grading, deadlines, the TA list, the textbook, room, platform links). Decide whether to ALSO consult the course Piazza forum - where instructors post announcements, time-sensitive changes, and answers to student questions. Return ONLY "yes" or "no".
 
-Answer yes when a relevant instructor post on Piazza is likely:
-- doing, debugging, or clarifying any part of an assignment or its spec (including "is X allowed", "what should we submit", and error messages);
+Answer yes when Piazza is likely to add something the static course info does NOT already cover:
+- doing, debugging, or clarifying any part of an assignment or its spec (including "is X allowed", "what should we submit", error messages);
 - conceptual questions about the lecture material or exam content;
-- a CURRENT, time-sensitive course situation that a static syllabus would not capture: a platform or tool outage, a deadline being changed or extended, an office-hour or schedule change, project group formation, or a recommended talk or event.
+- a time-sensitive CHANGE or current situation: a deadline being changed or extended, office hours being moved or cancelled, a platform or tool outage, project group formation, or a recommended talk or event;
+- asking what is NEW or RECENT on Piazza (the latest posts or announcements).
 
-Answer no for static logistics the course information page already answers (grading weights, who the TAs are, fixed dates, the textbook, a room or section, or a plain request for a platform LINK such as the Piazza, Chrysalis, or LEARN URL), and for off-topic, personal, or nonsensical messages.
+Answer no when the course's own information page already answers it - a request for static logistics such as the office-hour schedule (for any or all TAs), the grade breakdown, fixed dates and deadlines, who the TAs are, the textbook, the room, or a plain platform LINK - and for off-topic, personal, or nonsensical messages.
 
 Input: how do I get part 3 of the assignment to run
 Output: yes
 
 Input: are numpy imports allowed in the coding question
-Output: yes
-
-Input: can you clarify what the second part is asking for
 Output: yes
 
 Input: I don't follow how minimax backs up the values
@@ -22,31 +20,43 @@ Output: yes
 Input: what topics does the midterm include
 Output: yes
 
-Input: is the submission server having problems today
-Output: yes
-
 Input: did the deadline for the next assignment change
 Output: yes
 
-Input: are office hours at a different time this week
+Input: were the office hours moved this week
+Output: yes
+
+Input: is the submission server having problems today
 Output: yes
 
 Input: how are we supposed to make project teams
 Output: yes
 
+Input: what is the latest post on piazza
+Output: yes
+
+Input: any new announcements on the forum
+Output: yes
+
+Input: what are the office hours
+Output: no
+
+Input: office hours of all TAs
+Output: no
+
+Input: when does each TA hold office hours
+Output: no
+
 Input: what percent is the final exam worth
 Output: no
 
-Input: who is teaching the course
-Output: no
-
-Input: what is the url for the discussion forum
+Input: who are the teaching assistants
 Output: no
 
 Input: which textbook is required
 Output: no
 
-Input: how do I get to the lecture hall
+Input: what is the url for the discussion forum
 Output: no
 
 Input: do you supervise undergraduate research

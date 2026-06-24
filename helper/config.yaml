@@ -141,6 +141,9 @@ domains:
     parallel_branches:
       - name: piazza
         when_page: "course"
+        gate: piazza_gate   # course-owned logistics (office hours, grading, deadlines, TAs) -> skip Piazza;
+                            # content / time-sensitive changes / recency -> consult it. Prevents Piazza
+                            # from overriding the authoritative course answer for static logistics.
         provider: piazza
         selector: piazza_selector
         answerer: piazza_answerer
