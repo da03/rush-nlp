@@ -5,38 +5,6 @@
    card overflow; tighten them. */
 .reveal .algo-card .katex-display { margin: 0.2em 0; }
 
-/* V/Q backup-diagram visualization (slide 6). */
-.reveal .backup-diagram { display: block; margin: 0.3em auto; max-height: 320px; }
-.reveal .backup-diagram .v-node ellipse {
-  fill: #fef3c7;
-  stroke: #92400e;
-  stroke-width: 1.5;
-}
-.reveal .backup-diagram .q-node rect {
-  fill: #dbeafe;
-  stroke: #1d4ed8;
-  stroke-width: 1.5;
-}
-.reveal .backup-diagram text {
-  font-size: 12px;
-  font-weight: 600;
-  text-anchor: middle;
-  dominant-baseline: middle;
-  fill: #111827;
-}
-.reveal .backup-diagram .edge {
-  stroke: #6b7280;
-  stroke-width: 1.4;
-  fill: none;
-}
-.reveal .backup-diagram .edge-label {
-  font-size: 10px;
-  fill: #1d4ed8;
-  font-style: italic;
-}
-.reveal .backup-diagram .edge-label.policy { fill: #92400e; }
-.reveal .backup-diagram .edge-label.trans { fill: #6b7280; }
-
 /* Side-by-side V_i and V_{i+1} grid layout (slides 11-12). */
 .reveal .value-grid-row {
   display: flex;
@@ -58,6 +26,34 @@
   font-size: 1.6em;
   color: #6b7280;
   align-self: center;
+}
+
+/* Per-action value-iteration computation block (V1 worked-example slides 12-13). */
+.reveal .va-calc {
+  text-align: left;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.4em 0.65em;
+  font-size: 0.74em;
+  line-height: 1.3;
+}
+.reveal .va-calc .va-head { margin-bottom: 0.3em; font-size: 0.95em; }
+.reveal .va-calc .va-line { margin: 0.13em 0; }
+.reveal .va-calc .va-act {
+  display: inline-block;
+  min-width: 3.6em;
+  font-weight: 700;
+  color: #1d4ed8;
+}
+.reveal .va-calc .va-best { color: #166534; }
+.reveal .va-calc .va-best .va-act { color: #166534; }
+.reveal .va-calc .va-result {
+  margin-top: 0.3em;
+  padding-top: 0.25em;
+  border-top: 1px dashed #d1d5db;
+  font-weight: 700;
+  color: #166534;
 }
 
 /* Highlight an updated cell in V_i. */

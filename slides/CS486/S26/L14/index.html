@@ -50,6 +50,15 @@
   <p class="credit">RN 17.2 &middot; PM 9.5.2&ndash;9.5.3</p>
 </section>
 
+<!-- 1b. Reminders: Assignment 1 due today -->
+<section class="center-slide">
+  <h2>Reminders</h2>
+  <div class="defbox" style="max-width: 84%; margin: 0.6em auto; text-align: left;">
+    <p style="margin: 0 0 0.45em 0; font-size: 0.96em;">&#9200; <strong>Assignment 1 is due TODAY</strong> (Thu Jun 25), 11:59 PM on LEARN.</p>
+    <p style="margin: 0; font-size: 0.96em;">&#128221; Need an extension? Contact <strong>Dake Zhang</strong> (A1 owner) on <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> or <a href="mailto:d346zhan@uwaterloo.ca">d346zhan@uwaterloo.ca</a>.</p>
+  </div>
+</section>
+
 <!-- 2. Learning goals -->
 <section class="center-slide">
   <div class="course-breadcrumb">
@@ -72,7 +81,7 @@
 <section>
   <h2>Recap: \(\pi^\star = \arg\max_a Q^\star\)</h2>
   <p style="font-size: 0.9em;">From L13, the optimal policy is one greedy step from \(V^\star\):</p>
-  <p style="text-align: center; margin: 0.4em 0;">\(\pi^\star(s) = \arg\max_a Q^\star(s, a), \quad Q^\star(s, a) = R(s) + \gamma \sum_{s'} P(s' \mid s, a)\, V^\star(s').\)</p>
+  <p style="text-align: center; margin: 0.4em 0;">\(\pi^\star(s) = \arg\max_a Q^\star(s, a).\)</p>
   <div class="defbox fragment" style="margin-top: 0.5em;">
     <h3>Today's question</h3>
     <p style="margin: 0; font-size: 0.92em;">How do we actually <em>compute</em> \(V^\star\)?</p>
@@ -81,93 +90,67 @@
 </section>
 
 <!-- ============================================================
-     V and Q value functions (3 slides)
+     From value functions to the Bellman equation (4 slides)
      ============================================================ -->
 
-<!-- 4. V/Q glossary -->
-<section class="center-slide">
-  <h2>Value functions</h2>
-  <div class="defbox" style="max-width: 90%; margin: 0 auto; text-align: left;">
-    <ul style="margin: 0;">
-      <li>\(V^\pi(s)\) &mdash; value of being in state \(s\) under policy \(\pi\).</li>
-      <li>\(V^\star(s)\) &mdash; value of \(s\) under the <strong>optimal</strong> policy \(\pi^\star\).</li>
-      <li>\(Q^\pi(s, a)\) &mdash; value of taking action \(a\) in \(s\), then following \(\pi\).</li>
-      <li>\(Q^\star(s, a)\) &mdash; same, but under \(\pi^\star\).</li>
-      <li>\(\pi(a \mid s)\) &mdash; the policy, a distribution over actions per state.</li>
-    </ul>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.6em;">"Value" = expected discounted future reward.</p>
-</section>
-
-<!-- 5. Formal definitions + V/Q relation -->
+<!-- 4. Build (1): V* and Q*, and V* = max_a Q* -->
 <section>
-  <h2>Formal definitions</h2>
-  <p style="font-size: 0.88em;"><strong>Return</strong> (discounted future reward from time \(t\)):</p>
-  <p style="text-align: center; font-size: 0.92em;">\(G_t = R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + \cdots = R_{t+1} + \gamma G_{t+1}.\)</p>
-  <p style="font-size: 0.88em; margin-top: 0.4em;"><strong>Value functions are expected returns:</strong></p>
-  <p style="text-align: center; font-size: 0.92em;">\(V^\pi(s) = \mathbb{E}_\pi\bigl[G_t \mid s_t = s\bigr], \quad Q^\pi(s, a) = \mathbb{E}_\pi\bigl[G_t \mid s_t = s, a_t = a\bigr].\)</p>
-  <div class="fragment" style="margin-top: 0.5em;">
-    <p style="font-size: 0.88em;"><strong>The two are related</strong> (each is a sum of the other):</p>
-    <p style="text-align: center; font-size: 0.92em;">\(V^\pi(s) = \sum_a \pi(a \mid s)\, Q^\pi(s, a)\)</p>
-    <p style="text-align: center; font-size: 0.92em;">\(Q^\pi(s, a) = R(s) + \gamma \sum_{s'} P(s' \mid s, a)\, V^\pi(s')\)</p>
+  <h2>Two value functions: \(V^\star\) and \(Q^\star\)</h2>
+  <div class="defbox" style="text-align: left; max-width: 92%; margin: 0.3em auto;">
+    <p style="margin: 0 0 0.45em 0;">\(V^\star(s)\) &mdash; the best expected total (discounted) reward achievable <strong>starting from state \(s\)</strong> and acting optimally thereafter.</p>
+    <p style="margin: 0;">\(Q^\star(s, a)\) &mdash; the best expected total reward if you <strong>start in \(s\), take action \(a\) now</strong>, then act optimally.</p>
+  </div>
+  <p class="fragment" style="font-size: 0.9em; text-align: center; margin: 0.5em 0 0.2em;">Since you would just pick the best first action:</p>
+  <div class="fragment defbox" style="max-width: 58%; margin: 0.2em auto; border-color: #166534;">
+    <p style="text-align: center; font-size: 1.15em; margin: 0;">\(V^\star(s) = \displaystyle\max_a Q^\star(s, a)\)</p>
+    <p style="text-align: center; font-size: 0.8em; color: #166534; margin: 0.3em 0 0;">connection &#9312;</p>
   </div>
 </section>
 
-<!-- 6. Backup diagram -->
+<!-- 5. Build (2): unroll Q* (reward + expected future value, no discount yet) -->
 <section>
-  <h2>The backup diagram</h2>
-  <p style="font-size: 0.85em;">A picture of the V/Q recursion: <strong>policy</strong> branches on actions; <strong>environment</strong> branches on next states.</p>
-  <div style="text-align: center;">
-    <svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg" class="backup-diagram">
-      <g class="v-node">
-        <ellipse cx="240" cy="36" rx="50" ry="20"/>
-      </g>
-      <text x="240" y="36">\(V^\pi(s)\)</text>
-      <line class="edge" x1="240" y1="56" x2="120" y2="118" marker-end="url(#arrow-l14)"/>
-      <line class="edge" x1="240" y1="56" x2="240" y2="118" marker-end="url(#arrow-l14)"/>
-      <line class="edge" x1="240" y1="56" x2="360" y2="118" marker-end="url(#arrow-l14)"/>
-      <text class="edge-label policy" x="155" y="85">\(\pi(a_1 \mid s)\)</text>
-      <text class="edge-label policy" x="270" y="85">\(\pi(a_2 \mid s)\)</text>
-      <text class="edge-label policy" x="385" y="85">\(\pi(a_3 \mid s)\)</text>
-      <g class="q-node">
-        <rect x="65" y="118" width="110" height="30" rx="3"/>
-        <rect x="185" y="118" width="110" height="30" rx="3"/>
-        <rect x="305" y="118" width="110" height="30" rx="3"/>
-      </g>
-      <text x="120" y="133">\(Q^\pi(s, a_1)\)</text>
-      <text x="240" y="133">\(Q^\pi(s, a_2)\)</text>
-      <text x="360" y="133">\(Q^\pi(s, a_3)\)</text>
-      <line class="edge" x1="360" y1="148" x2="290" y2="210" marker-end="url(#arrow-l14)"/>
-      <line class="edge" x1="360" y1="148" x2="430" y2="210" marker-end="url(#arrow-l14)"/>
-      <text class="edge-label trans" x="300" y="180">\(P(s'_1 \mid s, a_3)\)</text>
-      <text class="edge-label trans" x="420" y="180">\(P(s'_2 \mid s, a_3)\)</text>
-      <g class="v-node">
-        <ellipse cx="290" cy="230" rx="40" ry="18"/>
-        <ellipse cx="420" cy="230" rx="40" ry="18"/>
-      </g>
-      <text x="290" y="230">\(V^\pi(s'_1)\)</text>
-      <text x="420" y="230">\(V^\pi(s'_2)\)</text>
-      <text x="35"  y="285" font-size="12" fill="#92400e">\(V = \sum_a \pi(a\mid s)\, Q(s, a)\)</text>
-      <text x="35"  y="305" font-size="12" fill="#1d4ed8">\(Q = R(s) + \gamma \sum_{s'} P(s'\mid s, a)\, V(s')\)</text>
-    </svg>
+  <h2>Unrolling \(Q^\star(s, a)\): reward + future value</h2>
+  <p style="font-size: 0.9em;">Take action \(a\) in state \(s\). What happens?</p>
+  <ul style="font-size: 0.88em; margin: 0.2em 0 0.4em 1.2em;">
+    <li class="fragment">You collect the reward \(R(s)\).</li>
+    <li class="fragment">The environment lands you in a next state \(s'\) with probability \(P(s' \mid s, a)\).</li>
+    <li class="fragment">From \(s'\) onward you act optimally &mdash; worth \(V^\star(s')\).</li>
+  </ul>
+  <div class="fragment defbox" style="max-width: 92%; margin: 0.3em auto;">
+    <p style="text-align: center; font-size: 0.96em; margin: 0;">\(Q^\star(s, a) = R(s) + \mathbb{E}_{s' \sim P(\cdot \mid s, a)}\bigl[V^\star(s')\bigr] = R(s) + \displaystyle\sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
   </div>
+  <p class="fragment" style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.3em;">One fix remaining: future reward should be <em>discounted</em>.</p>
 </section>
 
-<!-- ============================================================
-     Bellman equation (2 slides)
-     ============================================================ -->
-
-<!-- 7. The Bellman optimality equation -->
-<section class="center-slide">
-  <h2>The Bellman optimality equation</h2>
-  <p style="font-size: 0.9em;">For the optimal policy, choose the <em>best</em> action at every state:</p>
-  <p style="text-align: center; font-size: 0.95em; margin: 0.3em 0;">\(V^\star(s) = \max_a Q^\star(s, a), \quad Q^\star(s, a) = R(s) + \gamma \sum_{s'} P(s' \mid s, a)\, V^\star(s').\)</p>
-  <p class="fragment" style="font-size: 0.88em; text-align: center; margin-top: 0.3em;">Substitute one into the other:</p>
-  <div class="fragment defbox" style="max-width: 88%; margin: 0.3em auto;">
-    <h3>Bellman equation</h3>
-    <p style="text-align: center; font-size: 1em; margin: 0;">\(V^\star(s) = R(s) + \gamma\, \max_a \sum_{s'} P(s' \mid s, a)\, V^\star(s').\)</p>
+<!-- 6. Build (3): add the discount factor -->
+<section>
+  <h2>Discounting the future</h2>
+  <p style="font-size: 0.9em;">A reward received one step later is worth less than a reward now, so we <strong>discount</strong> the downstream value \(V^\star(s')\) by \(\gamma \in [0, 1)\):</p>
+  <div class="defbox" style="max-width: 90%; margin: 0.5em auto; border-color: #166534;">
+    <p style="text-align: center; font-size: 1.05em; margin: 0;">\(Q^\star(s, a) = R(s) + \gamma \displaystyle\sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
+    <p style="text-align: center; font-size: 0.8em; color: #166534; margin: 0.3em 0 0;">connection &#9313;</p>
   </div>
-  <p class="fragment" style="font-size: 0.85em; color: #166534; text-align: center; margin-top: 0.4em;">\(V^\star\) is the <strong>unique</strong> solution to this system of \(|S|\) equations.</p>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">Why discount? Future reward is less certain, and \(\gamma &lt; 1\) keeps the long-run sum finite (and the upcoming iteration convergent).</p>
+</section>
+
+<!-- 7. Build (4): put the two connections together -> Bellman -->
+<section>
+  <h2>Putting it together: the Bellman equation</h2>
+  <p style="font-size: 0.82em; margin: 0.1em 0;">The two connections between \(V^\star\) and \(Q^\star\):</p>
+  <div style="display: flex; gap: 0.6em; justify-content: center; align-items: stretch; margin: 0.2em 0;">
+    <div class="defbox" style="margin: 0; flex: 0.8; padding: 0.35em 0.6em;">
+      <p style="text-align: center; margin: 0; font-size: 0.84em;">&#9312;&nbsp;\(V^\star(s) = \displaystyle\max_a Q^\star(s, a)\)</p>
+    </div>
+    <div class="defbox" style="margin: 0; flex: 1.2; padding: 0.35em 0.6em;">
+      <p style="text-align: center; margin: 0; font-size: 0.8em;">&#9313;&nbsp;\(Q^\star(s, a) = R(s) + \gamma \displaystyle\sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; text-align: center; margin: 0.15em 0;">Substitute &#9313; into &#9312;:</p>
+  <div class="fragment defbox" style="max-width: 88%; margin: 0.1em auto; padding: 0.4em 0.7em; border-color: #166534;">
+    <h3 style="margin-bottom: 0.1em;">Bellman optimality equation</h3>
+    <p style="text-align: center; font-size: 0.95em; margin: 0;">\(V^\star(s) = R(s) + \gamma\, \displaystyle\max_a \sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.78em; color: #166534; text-align: center; margin-top: 0.2em;">\(|S|\) coupled equations; \(V^\star\) is their <strong>unique</strong> solution. Turn it into an update rule &rarr; <strong>value iteration</strong>.</p>
 </section>
 
 <!-- 8. V*(s_11) + Q1 -->
@@ -175,7 +158,7 @@
   <h2>Apply Bellman to \(V^\star(s_{11})\)</h2>
   <div class="two-col vcenter">
     <div style="flex: 0.7; text-align: center;">
-      <div class="gridworld">
+      <div class="gridworld v-values">
         <div class="gw-cell" style="background: #fef3c7;">\(s_{11}\)</div>
         <div class="gw-cell">&minus;0.04</div>
         <div class="gw-cell">&minus;0.04</div>
@@ -261,34 +244,75 @@
   <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.4em;">After one Bellman update, only the cells adjacent to a goal will see something different from \(-0.04\).</p>
 </section>
 
-<!-- 11. V_1(s) -->
+<!-- 11. One iteration V_1: closer look at s_23 (Q2) -->
 <section>
-  <h2>One iteration: \(V_1(s)\)</h2>
-  <p style="font-size: 0.82em;">Apply \(V_1(s) \leftarrow R(s) + \gamma \max_a \sum_{s'} P(s' \mid s, a) V_0(s')\) at every cell. Two cells worth a closer look:</p>
-  <div class="value-grid-row">
-    <div>
-      <span class="vgrid-label">\(V_1(s)\)</span>
+  <h2>One iteration: \(V_1(s_{23})\)</h2>
+  <p style="font-size: 0.78em; margin: 0.1em 0;">\(s_{23}\) is just left of the \(-1\) terminal. Update from \(V_0\) (all \(0\) except the \(\pm1\) terminals), \(\gamma=1\); each action is \(0.8\) intended + \(0.1\) each side (a wall bump stays put).</p>
+  <div class="two-col vcenter">
+    <div style="flex: 0.6; text-align: center;">
+      <span class="vgrid-label">\(V_0\) (input)</span>
       <div class="gridworld v-values">
-        <div class="gw-cell">&minus;0.04</div>
-        <div class="gw-cell">&minus;0.04</div>
-        <div class="gw-cell">&minus;0.04</div>
-        <div class="gw-cell">&minus;0.04</div>
-        <div class="gw-cell">&minus;0.04</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
         <div class="gw-cell gw-wall">X</div>
-        <div class="gw-cell gw-highlight">&minus;0.04</div>
+        <div class="gw-cell gw-highlight">\(s_{23}\)</div>
         <div class="gw-cell gw-goal-neg">&minus;1</div>
-        <div class="gw-cell">&minus;0.04</div>
-        <div class="gw-cell">&minus;0.04</div>
-        <div class="gw-cell gw-highlight-2">0.76</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
         <div class="gw-cell gw-goal-pos">+1</div>
       </div>
     </div>
-    <div style="flex: 0.95; font-size: 0.72em; padding-left: 0.5em;">
-      <p class="fragment" data-fragment-index="0" style="margin: 0.2em 0;"><strong>Q2. \(V_1(s_{23})\) (yellow):</strong> all neighbors are \(0\); best action is Left (avoids \(-1\)). \(\Rightarrow -0.04 + 0 = \boxed{-0.04}\).</p>
-      <p class="fragment" data-fragment-index="1" style="margin: 0.2em 0;"><strong>Q3. \(V_1(s_{33})\) (green):</strong> Right has \(0.8 \cdot 1 + 0.1 \cdot 0 + 0.1 \cdot 0 = 0.8\). \(\Rightarrow -0.04 + 0.8 = \boxed{0.76}\).</p>
+    <div style="flex: 1.4;">
+      <div class="va-calc">
+        <div class="va-head">\(V_1(s_{23}) = R(s_{23}) + \gamma \displaystyle\max_a \sum_{s'} P(s'\mid s_{23},a)\,V_0(s')\)</div>
+        <div class="va-line"><span class="va-act">Right</span>\(0.8(-1) + 0.1(0) + 0.1(0) = -0.8\)</div>
+        <div class="va-line"><span class="va-act">Up</span>\(0.8(0) + 0.1(0) + 0.1(-1) = -0.1\)</div>
+        <div class="va-line"><span class="va-act">Down</span>\(0.8(0) + 0.1(0) + 0.1(-1) = -0.1\)</div>
+        <div class="va-line va-best"><span class="va-act">Left</span>\(0.8(0) + 0.1(0) + 0.1(0) = 0\) &nbsp;&larr; best (stays clear of \(-1\))</div>
+        <div class="va-result fragment">\(\Rightarrow V_1(s_{23}) = -0.04 + (1)(0) = -0.04\)</div>
+      </div>
     </div>
   </div>
-  <p class="fragment" data-fragment-index="2" style="font-size: 0.78em; color: #6b7280; text-align: center;">The +1 reward has "leaked" one cell up; the &minus;1 hasn't propagated because we avoid it.</p>
+</section>
+
+<!-- 12. One iteration V_1: closer look at s_33 (Q3) -->
+<section>
+  <h2>One iteration: \(V_1(s_{33})\)</h2>
+  <p style="font-size: 0.8em; margin: 0.1em 0;">\(s_{33}\) sits just left of the \(+1\) terminal. Same update from \(V_0\), \(\gamma = 1\):</p>
+  <div class="two-col vcenter">
+    <div style="flex: 0.6; text-align: center;">
+      <span class="vgrid-label">\(V_0\) (input)</span>
+      <div class="gridworld v-values">
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell">0</div>
+        <div class="gw-cell gw-highlight-2">\(s_{33}\)</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+    <div style="flex: 1.4;">
+      <div class="va-calc">
+        <div class="va-head">\(V_1(s_{33}) = R(s_{33}) + \gamma \displaystyle\max_a \sum_{s'} P(s'\mid s_{33},a)\,V_0(s')\)</div>
+        <div class="va-line va-best"><span class="va-act">Right</span>\(0.8(+1) + 0.1(0) + 0.1(0) = 0.8\) &nbsp;&larr; best (toward \(+1\))</div>
+        <div class="va-line"><span class="va-act">Up</span>\(0.8(0) + 0.1(0) + 0.1(+1) = 0.1\)</div>
+        <div class="va-line"><span class="va-act">Down</span>\(0.8(0) + 0.1(0) + 0.1(+1) = 0.1\)</div>
+        <div class="va-line"><span class="va-act">Left</span>\(0.8(0) + 0.1(0) + 0.1(0) = 0\)</div>
+        <div class="va-result fragment">\(\Rightarrow V_1(s_{33}) = -0.04 + (1)(0.8) = 0.76\)</div>
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.78em; color: #166534; text-align: center; margin-top: 0.3em;">The \(+1\) reward has "leaked" one cell up; values propagate one cell per iteration.</p>
 </section>
 
 <!-- 12. V_2(s) -->
@@ -381,10 +405,11 @@
       <h3>Iteratively (cheap)</h3>
       <p style="font-size: 0.85em; margin: 0;">Run \(m\) simplified Bellman updates (no \(\max\)):</p>
       <p style="text-align: center; font-size: 0.82em; margin: 0.3em 0;">\(V_{j+1}(s) \leftarrow R(s) + \gamma \sum_{s'} P(s' \mid s, \pi(s))\, V_j(s')\)</p>
-      <p class="cost">cost: \(O(m \cdot |S| \cdot |A_{\text{avg}}|)\)</p>
+      <p class="cost">cost: \(O(m \cdot |S| \cdot b)\)</p>
+      <p style="font-size: 0.72em; color: #6b7280; margin: 0.2em 0 0;">\(b\) = avg # of successor states (those with \(P(s'\mid s, \pi(s)) &gt; 0\)). No sum over actions &mdash; \(\pi\) fixes the action.</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.8em; color: #1d4ed8; text-align: center; margin: 0.2em 0;">In practice, a small \(m\) is usually enough &mdash; PI converges in far fewer outer iterations than VI.</p>
+  <p class="fragment" style="font-size: 0.78em; color: #1d4ed8; text-align: center; margin: 0.1em 0 0;">In practice, a small \(m\) is usually enough &mdash; PI converges in far fewer outer iterations than VI.</p>
 </section>
 
 <!-- ============================================================
