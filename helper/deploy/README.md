@@ -133,15 +133,17 @@ Verify: `curl -s -D- -o/dev/null -X POST https://helper.yuntiandeng.com/ask -H '
 ## Piazza branch (course page RAG)
 
 On the **course page only**, a parallel branch answers from relevant
-**endorsed-public** Piazza threads. It is retrieve -> rerank -> answer:
-`piazza.py` (BM25) recalls candidate threads; `piazza_selector` (PAW) is shown the
-original question + candidate titles and keeps only the genuinely relevant ones (or
-none); `piazza_answerer` (PAW) synthesizes a concise answer from the kept threads'
-endorsed instructor replies (or declines). When it answers, the aggregator promotes
-it to the primary answer (overriding a generic main answer), with the threads as
-citation links. A recency query ("latest posts") returns the most-recent threads
-directly. The branch runs concurrently with the main answer (~0 wall time), and the
-selector + answerer-decline keep the merge robust to retriever false positives.
+**endorsed-public** Piazza threads. It is over-call -> rerank -> answer -> MERGE
+(no up-front topic gate): `piazza.py` (BM25) recalls candidate threads;
+`piazza_selector` (PAW) keeps only the genuinely relevant ones (or none);
+`piazza_answerer` (PAW) synthesizes a concise answer from the kept threads' endorsed
+instructor replies (or declines); then `piazza_merge` (PAW), shown the QUESTION + the
+course answer + the Piazza answer, decides `main` (course owns it - e.g. office
+hours, grading, deadlines - no hijack), `augment` (course answer + Piazza citation),
+or `branch` (promote the Piazza answer). Deciding from BOTH answers is far more
+robust than a finetuned yes/no gate on the query alone. A recency query ("latest
+posts") returns the most-recent threads directly. The branch runs concurrently with
+the main answer (~0 wall time on remote_infer).
 
 **Privacy**: `piazza_sync.py` keeps only PUBLIC posts that carry instructor
 content (an instructor/TA answer, or an instructor note). Private threads
@@ -193,6 +195,43 @@ cd /opt/yuntiandeng-helper/repo/helper && PIAZZA_DATA_DIR=/var/lib/yuntiandeng-h
 Tuning lives in `config.yaml` under `domains.course.parallel_branches`: `min_score`
 (BM25 recall floor), `select_k` (candidates handed to the selector), `max_items`.
 `bench/piazza.yaml` is the regression suite; re-tune as the corpus grows.
+
+## Pre-deploy evaluation gate (REQUIRED)
+
+Every change is gated on the benchmark suite - this is the discipline that catches
+regressions like the "office hours -> Piazza hijack" before they ship. Run BOTH the
+golden snapshot and the outcome suite, and (critically) run the suite on the SAME
+inference backend the server uses, because finetuned programs can decide borderline
+cases differently across `local_sdk` vs `remote_infer`:
+
+```bash
+# On the server (so threads.json + the production backend are available).
+cd /opt/yuntiandeng-helper/repo/helper
+BK=$(systemctl show yuntiandeng-helper -p Environment | grep -o 'PAW_HELPER_INFERENCE_BACKEND=[a-z_]*' | cut -d= -f2)
+
+# 1. Behavior-preserving check (no unrelated response changed).
+python snapshot.py --check
+
+# 2. Outcome gate: who wins the merge (main/piazza/augment) + content + must-not.
+PIAZZA_DATA_DIR=/var/lib/yuntiandeng-helper/piazza PAW_HELPER_CONTENT=$PWD \
+  PAW_HELPER_INFERENCE_BACKEND=$BK python eval.py --section course_e2e
+
+# 3. Component diagnostics (gate/merge/selector/recall/answer/e2e/privacy).
+PIAZZA_DATA_DIR=/var/lib/yuntiandeng-helper/piazza PAW_HELPER_CONTENT=$PWD \
+  PAW_HELPER_INFERENCE_BACKEND=$BK python eval.py --section piazza
+```
+
+Must pass before `systemctl restart`: no Piazza hijack of course-owned logistics
+(office hours / grading / TAs / deadlines stay `main`), privacy PASS (no private
+thread surfaces), and the content/recency/change cases route to Piazza.
+
+Process (keep the suite honest):
+- Every reported failure becomes a `bench/course_e2e.yaml` case BEFORE it is fixed
+  (the office-hours, "what changed", and "look at my submission" cases are encoded).
+- Periodically fold real `queries.jsonl` course traffic into the suite (`page=course:cs486_s26`),
+  deduped and eyeballed.
+- `eval.py --section course_e2e` is the gate; the `bench/piazza.yaml` component
+  suites (merge/selector/recall/answer/privacy) localize WHERE a regression is.
 
 ## Notes
 
