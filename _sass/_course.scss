@@ -526,6 +526,7 @@
     &--due     { background: rgba(217, 119, 6, 0.12);  color: #92400e; border-color: #fcd34d; }
     &--release { background: rgba(99, 102, 241, 0.12); color: #4338ca; border-color: #a5b4fc; }
     &--exam    { background: rgba(220, 38, 38, 0.12);  color: #991b1b; border-color: #fca5a5; }
+    &--async   { background: rgba(168, 85, 247, 0.12); color: #6b21a8; border-color: #d8b4fe; }
 }
 
 @mixin badge-dark {
@@ -533,6 +534,7 @@
     .badge--due     { background: rgba(217, 119, 6, 0.22);  color: #fde68a; border-color: #b45309; }
     .badge--release { background: rgba(99, 102, 241, 0.22); color: #c7d2fe; border-color: #4f46e5; }
     .badge--exam    { background: rgba(220, 38, 38, 0.22);  color: #fecaca; border-color: #991b1b; }
+    .badge--async   { background: rgba(168, 85, 247, 0.22); color: #e9d5ff; border-color: #7e22ce; }
 }
 
 @media (prefers-color-scheme: dark) { @include badge-dark; }

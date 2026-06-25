@@ -286,6 +286,8 @@ schedule:
     lecture_num: 17
     topic: "Unsupervised Learning"
     slides: /slides/CS486/S26/L17/
+    async: true
+    note: "Asynchronous &mdash; pre-recorded video (instructor at ICML). Watch on your own time; deadlines unchanged."
     deadlines:
       - { kind: due,     chat: 8, label: "Chat 8 due" }
       - { kind: due,     label: "Project proposal due (CS686)" }
@@ -295,6 +297,8 @@ schedule:
     lecture_num: 18
     topic: "Decision Trees"
     slides: /slides/CS486/S26/L18/
+    async: true
+    note: "Asynchronous &mdash; pre-recorded video (instructor at ICML). Watch on your own time; deadlines unchanged."
     deadlines:
       - { kind: out,     chat: 9, label: "Chat 9 out" }
       - { kind: due,     label: "Assignment 2 due" }
@@ -351,6 +355,17 @@ schedule:
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
+  - severity: event
+    show: true
+    title: "Jul 7 &amp; Jul 9 are asynchronous (instructor at ICML)"
+    body: >-
+      I'll be away at <strong>ICML</strong> the week of July 7, so <strong>L17 (Tue Jul 7, Unsupervised
+      Learning)</strong> and <strong>L18 (Thu Jul 9, Decision Trees)</strong> will be
+      <strong>pre-recorded videos</strong> &mdash; there is <strong>no in-person class</strong> on those two
+      days. Watch the recordings on your own time (links posted before each class). <strong>All deadlines are
+      unchanged</strong>: Chat 8 and the CS686 project proposal are due <strong>Tue Jul 7</strong>; Chat 9 is
+      released and <strong>Assignment 2 is due Thu Jul 9</strong>. Post questions on
+      <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> &mdash; the TAs are available all week.
   - severity: info
     show: true
     title: "Assignment 1 deadline extended to Thursday, June 25"
