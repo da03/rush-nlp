@@ -30,6 +30,12 @@
   color: #6b7280;
   align-self: center;
 }
+/* Policy-iteration value grids hold 6-char negatives (e.g. -1.396); shrink a
+   touch so nothing clips the cell. */
+.reveal .gridworld.v-values.pi-vals .gw-cell {
+  font-size: 0.36em;
+  letter-spacing: -0.02em;
+}
 
 /* Per-action value-iteration computation block (V1 worked-example slides 12-13). */
 .reveal .va-calc {

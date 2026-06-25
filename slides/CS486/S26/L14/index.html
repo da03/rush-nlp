@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L12/custom.css">
   <link rel="stylesheet" href="../L13/custom.css">
-  <link rel="stylesheet" href="custom.css?v=2">
+  <link rel="stylesheet" href="custom.css?v=3">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -347,8 +347,19 @@
 </section>
 
 <!-- ============================================================
-     Policy iteration (3 slides)
+     Policy iteration (with worked example)
      ============================================================ -->
+
+<!-- 12b. The value of a fixed policy -->
+<section class="center-slide">
+  <h2>The value of a fixed policy \(V^\pi\)</h2>
+  <div class="defbox" style="max-width: 90%; margin: 0.3em auto; text-align: left;">
+    <p style="margin: 0 0 0.4em;">\(V^\pi(s)\) &mdash; the expected discounted return if you <strong>start in \(s\) and follow the fixed policy \(\pi\) forever</strong>.</p>
+    <p style="margin: 0;">With the action pinned to \(\pi(s)\), it satisfies <strong>one linear equation per state</strong>:</p>
+    <p style="text-align: center; font-size: 1.05em; margin: 0.4em 0 0;">\(V^\pi(s) = R(s) + \gamma \displaystyle\sum_{s'} P(s' \mid s, \pi(s))\, V^\pi(s')\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">\(V^\star(s) = \displaystyle\max_\pi V^\pi(s)\). Policy iteration repeatedly computes \(V^\pi\), then makes \(\pi\) greedy w.r.t. it.</p>
+</section>
 
 <!-- 13. The policy iteration algorithm -->
 <section>
@@ -410,6 +421,202 @@
     </div>
   </div>
   <p class="fragment" style="font-size: 0.78em; color: #1d4ed8; text-align: center; margin: 0.1em 0 0;">In practice, a small \(m\) is usually enough &mdash; PI converges in far fewer outer iterations than VI.</p>
+</section>
+
+<!-- 15a. PI worked example: setup, pi_0 = all-right -->
+<section>
+  <h2>Policy iteration on the grid: \(\pi_0 = \) all-right</h2>
+  <p style="font-size: 0.82em; margin: 0.1em 0;">Same 3&times;4 grid (\(\gamma = 1\), \(R = -0.04\)). Start from a deliberately mediocre policy &mdash; every state goes <strong>right</strong>.</p>
+  <div class="two-col vcenter">
+    <div style="flex: 0.75; text-align: center;">
+      <span class="vgrid-label">\(\pi_0\)</span>
+      <div class="gridworld">
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+    <div style="flex: 1.25; font-size: 0.82em;">
+      <p style="margin: 0.1em 0;"><strong>Policy evaluation</strong> = solve one linear equation per state. For \(s_{11}\) under \(\pi_0\) (go right):</p>
+      <p style="text-align: center; font-size: 0.82em; margin: 0.35em 0;">\(V^{\pi_0}(s_{11}) = -0.04 + 0.8\,V^{\pi_0}(s_{12}) + 0.1\,V^{\pi_0}(s_{11}) + 0.1\,V^{\pi_0}(s_{21})\)</p>
+      <p style="margin: 0.1em 0; color: #6b7280;">9 such equations (one per non-terminal state) &rarr; hand the linear system to a solver.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 15b. PI worked example: round 1 -->
+<section>
+  <h2>Round 1: evaluate \(\pi_0\), then improve</h2>
+  <div class="value-grid-row">
+    <div>
+      <span class="vgrid-label">\(\pi_0\)</span>
+      <div class="gridworld">
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+    <div class="vgrid-arrow">&rarr;</div>
+    <div>
+      <span class="vgrid-label">\(V^{\pi_0}\) (solved)</span>
+      <div class="gridworld v-values pi-vals">
+        <div class="gw-cell">&minus;1.396</div>
+        <div class="gw-cell">&minus;1.439</div>
+        <div class="gw-cell">&minus;1.389</div>
+        <div class="gw-cell">&minus;1.400</div>
+        <div class="gw-cell">&minus;0.648</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell">&minus;0.905</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell">0.500</div>
+        <div class="gw-cell">0.694</div>
+        <div class="gw-cell">0.744</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+    <div class="vgrid-arrow">&rarr;</div>
+    <div>
+      <span class="vgrid-label">\(\pi_1 = \arg\max\)</span>
+      <div class="gridworld">
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.3em;">\(\pi_0\) drove the top half straight into the \(-1\) (values \(\approx -1.4\)). Greedy improvement turns those states <strong>down/around</strong> toward the \(+1\).</p>
+</section>
+
+<!-- 15c. PI worked example: round 2 -->
+<section>
+  <h2>Round 2: evaluate \(\pi_1\), then improve</h2>
+  <div class="value-grid-row">
+    <div>
+      <span class="vgrid-label">\(\pi_1\)</span>
+      <div class="gridworld">
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+    <div class="vgrid-arrow">&rarr;</div>
+    <div>
+      <span class="vgrid-label">\(V^{\pi_1}\) (solved)</span>
+      <div class="gridworld v-values pi-vals">
+        <div class="gw-cell">0.676</div>
+        <div class="gw-cell">0.389</div>
+        <div class="gw-cell">0.439</div>
+        <div class="gw-cell">&minus;0.885</div>
+        <div class="gw-cell">0.762</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell">0.660</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell">0.812</div>
+        <div class="gw-cell">0.868</div>
+        <div class="gw-cell">0.918</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+    <div class="vgrid-arrow">&rarr;</div>
+    <div>
+      <span class="vgrid-label">\(\pi_2 = \arg\max\)</span>
+      <div class="gridworld">
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&larr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&larr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.3em;">Values jump up; the top row now steers <strong>away</strong> from the \(-1\). Only the corner near \(-1\) still needs adjusting.</p>
+</section>
+
+<!-- 15d. PI worked example: convergence -->
+<section>
+  <h2>Convergence: PI meets VI</h2>
+  <p style="font-size: 0.82em; margin: 0.1em 0;">A couple more rounds settle the top row, and the policy stops changing &mdash; that is \(\pi^\star\).</p>
+  <div class="value-grid-row">
+    <div>
+      <span class="vgrid-label">\(\pi^\star\)</span>
+      <div class="gridworld">
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&larr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&larr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&larr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell"><span class="gw-arrow">&darr;</span></div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell"><span class="gw-arrow">&rarr;</span></div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+    <div class="vgrid-arrow">&nbsp;</div>
+    <div>
+      <span class="vgrid-label">\(V^\star = V^{\pi^\star}\)</span>
+      <div class="gridworld v-values pi-vals">
+        <div class="gw-cell">0.705</div>
+        <div class="gw-cell">0.655</div>
+        <div class="gw-cell">0.611</div>
+        <div class="gw-cell">0.388</div>
+        <div class="gw-cell">0.762</div>
+        <div class="gw-cell gw-wall">X</div>
+        <div class="gw-cell">0.660</div>
+        <div class="gw-cell gw-goal-neg">&minus;1</div>
+        <div class="gw-cell">0.812</div>
+        <div class="gw-cell">0.868</div>
+        <div class="gw-cell">0.918</div>
+        <div class="gw-cell gw-goal-pos">+1</div>
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.4em;">Exactly the \(V^\star\) and optimal policy from L13 &mdash; <strong>value iteration and policy iteration agree</strong>.</p>
 </section>
 
 <!-- ============================================================
