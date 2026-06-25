@@ -355,6 +355,15 @@ schedule:
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
+  - severity: warning
+    show: true
+    title: "Assignment 2 is now available - due Thursday, July 9"
+    body: >-
+      <strong>Assignment 2</strong> is now posted on
+      <a href="https://learn.uwaterloo.ca/">LEARN</a>, due <strong>Thursday, July 9 at 11:59 PM</strong>
+      (Waterloo time). Post questions on
+      <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> addressed to
+      <strong>Henry Lin</strong> (or <a href="mailto:h293lin@uwaterloo.ca">h293lin@uwaterloo.ca</a>).
   - severity: event
     show: true
     title: "Jul 7 &amp; Jul 9 are asynchronous (instructor at ICML)"
@@ -389,7 +398,7 @@ announcements:
       extensions stand: <strong>Chat 4 -> Tue Jun 16</strong> and <strong>Chat 5 -> Thu Jun 18</strong>
       (both 11:59 PM).
   - severity: info
-    show: true
+    show: false
     title: "Assignment 2: contact Henry Lin with all A2 questions"
     body: >-
       <strong>Henry Lin</strong> is now the point of contact for everything
