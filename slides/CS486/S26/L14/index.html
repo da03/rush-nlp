@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 14 — Value &amp; Policy Iteration</title>
+  <title>CS 486/686 Lecture 14 — Markov Decision Processes II</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 14: Value iteration and policy iteration for solving Markov decision processes. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 14 (Markov Decision Processes II): value iteration and policy iteration for solving MDPs. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L12/custom.css">
   <link rel="stylesheet" href="../L13/custom.css">
-  <link rel="stylesheet" href="custom.css">
+  <link rel="stylesheet" href="custom.css?v=2">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -44,7 +44,7 @@
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Value &amp; Policy Iteration</div>
+  <div class="course-title">CS 486/686<br>Markov Decision Processes II</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 14</p>
   <p class="credit">RN 17.2 &middot; PM 9.5.2&ndash;9.5.3</p>
@@ -117,7 +117,7 @@
     <li class="fragment">From \(s'\) onward you act optimally &mdash; worth \(V^\star(s')\).</li>
   </ul>
   <div class="fragment defbox" style="max-width: 92%; margin: 0.3em auto;">
-    <p style="text-align: center; font-size: 0.96em; margin: 0;">\(Q^\star(s, a) = R(s) + \mathbb{E}_{s' \sim P(\cdot \mid s, a)}\bigl[V^\star(s')\bigr] = R(s) + \displaystyle\sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
+    <p style="text-align: center; font-size: 0.9em; margin: 0;">\[ \begin{aligned} Q^\star(s, a) &= R(s) + \mathbb{E}_{s' \sim P(\cdot \mid s, a)}\bigl[V^\star(s')\bigr] \\ &= R(s) + \sum_{s'} P(s' \mid s, a)\, V^\star(s') \end{aligned} \]</p>
   </div>
   <p class="fragment" style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.3em;">One fix remaining: future reward should be <em>discounted</em>.</p>
 </section>
@@ -318,7 +318,7 @@
 <!-- 12. V_2(s) -->
 <section>
   <h2>Two iterations: \(V_2(s)\)</h2>
-  <p style="font-size: 0.82em;">Apply Bellman again, using \(V_1\) as input. Three cells worth a closer look:</p>
+  <p style="font-size: 0.82em;">Apply Bellman again, using \(V_1\) as input. For each cell we show its <strong>best action</strong> &mdash; the one \(\max_a\) selects. Three cells worth a closer look:</p>
   <div class="value-grid-row">
     <div>
       <span class="vgrid-label">\(V_2(s)\)</span>
@@ -338,9 +338,9 @@
       </div>
     </div>
     <div style="flex: 0.95; font-size: 0.72em; padding-left: 0.5em;">
-      <p class="fragment" data-fragment-index="0" style="margin: 0.2em 0;"><strong>Q4. \(V_2(s_{33}):\)</strong> Right gives \(0.8(+1) + 0.1(-0.04) + 0.1(0.76) = 0.872\). \(\Rightarrow -0.04 + 0.872 = \boxed{0.832}\).</p>
-      <p class="fragment" data-fragment-index="1" style="margin: 0.2em 0;"><strong>Q5. \(V_2(s_{23}):\)</strong> Down gives \(0.8(0.76) + 0.1(-0.04) + 0.1(-1) = 0.504\). \(\Rightarrow -0.04 + 0.504 = \boxed{0.464}\).</p>
-      <p class="fragment" data-fragment-index="2" style="margin: 0.2em 0;"><strong>Q6. \(V_2(s_{32}):\)</strong> Right gives \(0.8(0.76) + 0.1(-0.04) + 0.1(-0.04) = 0.6\). \(\Rightarrow -0.04 + 0.6 = \boxed{0.56}\).</p>
+      <p class="fragment" data-fragment-index="0" style="margin: 0.2em 0;"><strong>Q4. \(V_2(s_{33}):\)</strong> best action <strong>Right</strong> gives \(0.8(+1) + 0.1(-0.04) + 0.1(0.76) = 0.872\). \(\Rightarrow -0.04 + 0.872 = \boxed{0.832}\).</p>
+      <p class="fragment" data-fragment-index="1" style="margin: 0.2em 0;"><strong>Q5. \(V_2(s_{23}):\)</strong> best action <strong>Down</strong> gives \(0.8(0.76) + 0.1(-0.04) + 0.1(-1) = 0.504\). \(\Rightarrow -0.04 + 0.504 = \boxed{0.464}\).</p>
+      <p class="fragment" data-fragment-index="2" style="margin: 0.2em 0;"><strong>Q6. \(V_2(s_{32}):\)</strong> best action <strong>Right</strong> gives \(0.8(0.76) + 0.1(-0.04) + 0.1(-0.04) = 0.6\). \(\Rightarrow -0.04 + 0.6 = \boxed{0.56}\).</p>
     </div>
   </div>
   <p class="fragment" data-fragment-index="3" style="font-size: 0.78em; color: #166534; text-align: center;">Values propagate one cell per iteration. After enough sweeps they converge to the L13 \(V^\star\).</p>

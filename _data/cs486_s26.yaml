@@ -255,7 +255,7 @@ schedule:
   - type: lecture
     date: 2026-06-25
     lecture_num: 14
-    topic: "Value Iteration and Policy Iteration"
+    topic: "Markov Decision Processes II"
     slides: /slides/CS486/S26/L14/
     deadlines:
       - { kind: out,     chat: 7, label: "Chat 7 out" }
