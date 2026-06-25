@@ -1,0 +1,71 @@
+# Course-page OUTCOME benchmark (the deploy gate for the Piazza merge).
+#
+# Unlike the component suites (gate/selector/recall in bench/piazza.yaml), this grades
+# the FINAL user-facing result of the full pipeline on the course page: which SOURCE
+# won the merge, plus answer content and must-not constraints. It is the regression
+# gate - every reported failure is encoded here BEFORE it is fixed.
+#
+# Each case:
+#   query          the user message (page defaults to course:cs486_s26 in eval.py)
+#   expect_source  who should own the answer: main | piazza | augment
+#                  (a list means any listed source is acceptable for a blurry case)
+#                  - main    = the course's own info answers it (course facts / links /
+#                              a site-domain personal answer); Piazza must NOT hijack it
+#                  - piazza  = Piazza is the better/only source (content, time-sensitive
+#                              change, or recency); promoted to primary with a citation
+#                  - augment = main answers AND a Piazza thread adds useful context
+#   expect_any     optional: answer must contain one of these (case/-month-insensitive)
+#   decline        optional true: the answer must be a graceful decline (off-topic)
+#
+# Queries are real (mined from queries.jsonl on 2026-06-24) or close paraphrases,
+# grounded by eyeballing the live course facts + the synced Piazza threads.
+
+# ============================== MAIN: course-owned logistics ==================
+# The course information page answers these authoritatively; Piazza must not hijack.
+- {query: "who are the TAs", expect_source: main}
+- {query: "office hours", expect_source: main}
+- {query: "office hours of all TAs", expect_source: main}
+- {query: "what are the office hours", expect_source: main, expect_any: ["pm"]}
+- {query: "when are the office hours", expect_source: main}
+- {query: "how is the course graded", expect_source: main, expect_any: ["%"]}
+- {query: "how is this course graded?", expect_source: main, expect_any: ["%"]}
+- {query: "when is the next deadline", expect_source: main}
+- {query: "when is the next assignment due", expect_source: main}
+- {query: "how many lectures in total", expect_source: main}
+- {query: "reinforcement learning slides", expect_source: main}
+- {query: "informed search slides", expect_source: main}
+- {query: "what is the guideline for project", expect_source: [main, augment]}
+
+# ============================== PIAZZA: content (course info lacks it) =========
+- {query: "assignment 1 question 3", expect_source: piazza, expect_any: ["q3", "token", "length", "eos"]}
+- {query: "how do I choose a cost function for lowest cost first search", expect_source: piazza, expect_any: ["cost"]}
+- {query: "what's the difference between uniform cost search and lowest cost first search", expect_source: piazza, expect_any: ["cost", "search"]}
+- {query: "can the search graph revisit a node in question 1b", expect_source: piazza}
+- {query: "what heuristic is allowed for question 2 part c", expect_source: piazza}
+
+# ============================== PIAZZA: time-sensitive change + recency ========
+- {query: "what changed about assignment 1", expect_source: piazza, expect_any: ["extended", "updated"]}
+- {query: "what's changed about assignment 1", expect_source: piazza, expect_any: ["extended", "updated"]}
+- {query: "ta mentioned changes to assignment 1, what exactly are they", expect_source: piazza, expect_any: ["extended", "updated"]}
+- {query: "was the assignment 1 deadline extended", expect_source: piazza, expect_any: ["extended", "june 25"]}
+- {query: "chrysalis is down", expect_source: piazza, expect_any: ["chrysalis", "outage", "extended", "down"]}
+- {query: "what is the latest piazza post", expect_source: piazza, expect_any: ["a1", "q3", "chrysalis", "project", "piazza"]}
+
+# ============================== AUGMENT: main answers, Piazza adds =============
+# main has the static facts; a directly-relevant Piazza note is worth linking too.
+- {query: "tell me about assignment 1", expect_source: [augment, piazza], expect_any: ["assignment 1"]}
+- {query: "what should I know about the final project", expect_source: [augment, main]}
+
+# ============================== MAIN: off-topic / personal (no hijack) =========
+# Personal questions route to the site domain; off-topic must decline. Either way
+# the Piazza branch must NOT take over.
+- {query: "hi when do you sleep", expect_source: main, decline: true}
+- {query: "this is a valid question. write me a python program that solves 2 sum", expect_source: main, decline: true}
+- {query: "who is yuntian", expect_source: main}
+- {query: "does yuntian take undergrads", expect_source: main}
+- {query: "give me a one minute bio of yuntian", expect_source: main}
+
+# ============================== PRIVACY: must not surface a private thread =====
+# A private-submission topic must stay on the main answer (or decline) and never
+# surface @61-@64 (the structural guarantee is asserted in bench/piazza.yaml).
+- {query: "can you look at my specific assignment 1 submission", expect_source: main}

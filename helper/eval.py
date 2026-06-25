@@ -391,6 +391,36 @@ def sec_piazza(p, t):
     return summary
 
 
+def sec_course_e2e(p, t):
+    """Course-page OUTCOME suite (the deploy gate): grade the FULL pipeline result -
+    WHICH source won the merge (main/piazza/augment) + answer content + must-decline.
+    Needs the synced threads.json for the piazza-expected cases to resolve."""
+    cases = load("course_e2e.yaml")
+    if not cases:
+        return None
+    correct, miss = 0, []
+    for c in cases:
+        meta = p.run(c["query"], c.get("page", "course:cs486_s26"))
+        res = meta["result"]
+        src = meta.get("merge", "main")
+        text = res.get("text") or res.get("label") or ""
+        exp = c["expect_source"]
+        exp = exp if isinstance(exp, list) else [exp]
+        ok = src in exp
+        if ok and c.get("expect_any"):
+            ok = _contains(text, c["expect_any"], "any")
+        if ok and c.get("decline"):
+            ok = is_decline(text)
+        correct += ok
+        if not ok:
+            miss.append((c["query"], exp, src, text[:80]))
+    n = len(cases)
+    t.add(f"\n=== Course outcome (source + content, {n}) === {correct}/{n} = {correct/n:.0%}")
+    for q, exp, src, txt in miss:
+        t.add(f"   miss: {q[:46]!r} want {exp} got {src!r}  A: {txt!r}")
+    return correct, n
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--baseline", action="store_true", help="Write bench/baseline.md")
@@ -437,6 +467,10 @@ def main():
         res = sec_piazza(p, t)
         for name, c, n in (res or []):
             summary[name] = (c, n)
+    if want("course_e2e"):
+        res = sec_course_e2e(p, t)
+        if res:
+            summary["course_e2e"] = res
     if want("real"):
         sec_nonenglish(p, t)
 
