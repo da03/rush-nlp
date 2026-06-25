@@ -18,6 +18,18 @@ Piazza answer: Assignment 1 is part of the assignment grade.
 Piazza source(s): Assignments and Project Inquiry
 Output: main
 
+Question: when is the next deadline
+Course answer: The next deadline is Assignment 1, due Thursday, June 25, 2026 at 11:59 PM ET.
+Piazza answer: The Assignment 1 deadline was extended by a week to June 25, 2026.
+Piazza source(s): Assignment 1 materials updated + deadline extended
+Output: main
+
+Question: when is the next assignment due
+Course answer: The next chat assignments are due June 16 and June 18, and Assignment 1 is due June 25.
+Piazza answer: The Assignment 1 deadline was extended to June 25, 2026.
+Piazza source(s): Assignment 1 materials updated + deadline extended
+Output: main
+
 Question: can you look at my specific assignment 1 submission
 Course answer: I don't have that information.
 Piazza answer: The updated Assignment 1 files are on LEARN; use the new version.
