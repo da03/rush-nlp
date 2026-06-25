@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "question": "A Markov decision process (MDP) models an agent acting over time in a stochastic world. (a) List the components of an MDP and say what each one is. (b) State the Markov assumption for the transition model and explain what it says in words. (c) Explain why a fixed sequence of actions is NOT enough to act optimally in an MDP, and what we use instead.",
+    "key_concepts": [
+      "An MDP = (set of states S, set of actions A, transition model P(s' | s, a), reward function R(s), discount factor gamma). The agent occupies a state, takes an action, lands in a next state drawn from P, and collects reward; this repeats over time",
+      "Transition model P(s' | s, a) = probability of landing in s' when taking action a in state s. Rewards here depend on the current state, R(s) (some texts use R(s,a,s')); the agent wants to maximize its (discounted) total reward",
+      "Markov assumption: the next state depends only on the CURRENT state and action, P(s_{t+1} | s_t, a_t, s_{t-1}, a_{t-1}, ...) = P(s_{t+1} | s_t, a_t) -- the past is irrelevant given the present ('the future is independent of the past given the present')",
+      "A fixed action sequence fails because actions are STOCHASTIC: the intended move may not happen (e.g. in the grid world the agent moves as intended with prob 0.8 and slips to each side with prob 0.1, and bumping a wall stays put), so the agent cannot know in advance which state it will be in",
+      "Instead we use a POLICY pi(s): a mapping that prescribes an action for EVERY state, so the agent can react to wherever it actually ends up. Solving an MDP means finding the optimal policy pi*"
+    ],
+    "difficulty": "easy"
+  },
+  {
+    "id": 2,
+    "question": "Because an MDP runs over many time steps, we must aggregate a stream of rewards into a single number. (a) Name three ways to aggregate rewards over time and give the formula or idea for each. (b) Write the discounted return G_t and explain the role of the discount factor gamma. (c) Give two reasons we usually discount (gamma < 1).",
+    "key_concepts": [
+      "Three aggregation schemes: TOTAL reward (just sum all rewards -- can diverge for an infinite horizon); AVERAGE reward (reward per time step in the long run); DISCOUNTED reward (weight later rewards less, the standard choice)",
+      "Discounted return: G_t = R_{t+1} + gamma R_{t+2} + gamma^2 R_{t+3} + ... = sum over k >= 0 of gamma^k R_{t+k+1}; equivalently the recursion G_t = R_{t+1} + gamma G_{t+1}",
+      "Discount factor gamma in [0, 1): gamma near 0 = myopic / short-sighted (cares mostly about immediate reward); gamma near 1 = far-sighted (weights the long-term future almost as much as now)",
+      "Why discount (reason 1 -- convergence): with gamma < 1 the infinite sum is FINITE (bounded by R_max / (1 - gamma)), which makes the value functions well-defined and the Bellman iteration converge",
+      "Why discount (reason 2 -- modelling): a reward now is worth more than the same reward later -- future reward is less certain and usually less preferred, so discounting encodes that preference"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 3,
+    "question": "Two value functions summarize how good states and actions are under a policy. (a) Define the value function V^pi(s) and the Q-function Q^pi(s, a) in words. (b) Define the OPTIMAL value V*(s) and Q*(s, a), and write how the optimal policy is read off from Q* and how V* relates to Q*. (c) Explain how changing the reward R(s) on non-terminal states can reshape the optimal policy (the grid world's 'five reward regions').",
+    "key_concepts": [
+      "V^pi(s) = the expected discounted return starting from state s and then following policy pi forever: V^pi(s) = E_pi[ sum gamma^t R | s_0 = s ]. It scores how good it is to be in s under pi",
+      "Q^pi(s, a) = the expected discounted return if you take action a in s and then follow pi thereafter. Q*(s, a) and V*(s) are the same quantities under the OPTIMAL policy pi*",
+      "Optimal policy is greedy with respect to Q*: pi*(s) = argmax over a of Q*(s, a). And V*(s) = max over a of Q*(s, a) -- the value of a state is the value of its best action",
+      "Q* expands as Q*(s, a) = R(s) + gamma * sum over s' of P(s' | s, a) V*(s') -- immediate reward plus the discounted expected optimal value of the next state",
+      "The reward on non-terminal states reshapes pi*: a large negative R makes the agent rush to ANY exit (even the -1); a small negative R makes it take the safe long route to avoid the -1; a non-negative R can make it avoid terminating altogether -- different reward 'regions' give qualitatively different optimal policies"
+    ],
+    "difficulty": "medium"
+  },
+  {
+    "id": 4,
+    "question": "The Bellman optimality equation characterizes V*. (a) Starting from the two connections V*(s) = max_a Q*(s, a) and Q*(s, a) = R(s) + gamma sum_{s'} P(s'|s,a) V*(s'), derive the Bellman optimality equation for V*. (b) How many equations is this and what is special about its solution? (c) Why can't we just solve this system directly (in general) the way we solve a linear system?",
+    "key_concepts": [
+      "Substitute the expression for Q* into V* = max_a Q*(s,a): V*(s) = R(s) + gamma * max over a of [ sum over s' of P(s' | s, a) V*(s') ]. This is the Bellman optimality equation: the optimal value of s = immediate reward + discounted expected optimal value of where the best action leads",
+      "It is a system of |S| coupled equations -- one per state -- because each V*(s) is defined in terms of the V* of its successor states. They all reference each other",
+      "V* is the UNIQUE solution of this system (the Bellman operator is a contraction, so it has exactly one fixed point)",
+      "The system is NONLINEAR because of the max over actions -- the right-hand side is a maximum of linear expressions, not a linear function of the unknowns V*, so there is no general efficient closed-form / Gaussian-elimination solver",
+      "Because it is nonlinear, we solve it with an ITERATIVE algorithm (value iteration) instead of a one-shot linear solve"
+    ],
+    "difficulty": "hard"
+  },
+  {
+    "id": 5,
+    "question": "Two algorithms solve an MDP: value iteration and policy iteration. (a) Give the value iteration update rule and its convergence guarantee. (b) Give the two steps of policy iteration. (c) In policy iteration, why is POLICY EVALUATION easier than the Bellman optimality equation, and what are the two ways to perform it? (d) Briefly contrast value iteration and policy iteration.",
+    "key_concepts": [
+      "Value iteration: treat Bellman as an update rule. Start from arbitrary V_0; repeatedly apply V_{i+1}(s) <- R(s) + gamma max_a sum_{s'} P(s'|s,a) V_i(s') for every state; stop when max_s |V_{i+1}(s) - V_i(s)| < epsilon. Guarantee: V_i -> V* as i -> infinity (Bellman backup is a contraction). In the grid, values propagate one cell per sweep",
+      "Policy iteration: start from an arbitrary policy pi_0, then repeat two steps -- (1) POLICY EVALUATION: compute V^{pi_i}(s) for the current fixed policy; (2) POLICY IMPROVEMENT: pi_{i+1}(s) = argmax_a sum_{s'} P(s'|s,a) V^{pi_i}(s'). Stop when the policy stops changing (pi_{i+1} = pi_i)",
+      "Policy evaluation is easier because the action is FIXED by pi, so the max disappears and the equations become LINEAR: V^pi(s) = R(s) + gamma sum_{s'} P(s'|s, pi(s)) V^pi(s') -- |S| linear equations in |S| unknowns",
+      "Two ways to do policy evaluation: EXACTLY, by solving the |S| x |S| linear system (cost about O(|S|^3)); or ITERATIVELY, by running m cheap Bellman-style updates with no max, V_{j+1}(s) <- R(s) + gamma sum_{s'} P(s'|s, pi(s)) V_j(s') (cost about O(m * |S| * b), b = avg number of successor states)",
+      "Termination / trade-off: policy iteration terminates in finitely many steps (finitely many policies, each iteration strictly improves). Value iteration does one cheap backup per sweep but needs many sweeps; policy iteration does expensive evaluations but converges in far fewer OUTER iterations"
+    ],
+    "difficulty": "hard"
+  }
+]

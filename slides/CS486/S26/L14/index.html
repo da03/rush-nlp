@@ -110,16 +110,16 @@
 <!-- 5. Build (2): unroll Q* (reward + expected future value, no discount yet) -->
 <section>
   <h2>Unrolling \(Q^\star(s, a)\): reward + future value</h2>
-  <p style="font-size: 0.9em;">Take action \(a\) in state \(s\). What happens?</p>
-  <ul style="font-size: 0.88em; margin: 0.2em 0 0.4em 1.2em;">
+  <p style="font-size: 0.86em; margin: 0.1em 0;">Take action \(a\) in state \(s\). What happens?</p>
+  <ul style="font-size: 0.84em; margin: 0.1em 0 0.3em 1.2em;">
     <li class="fragment">You collect the reward \(R(s)\).</li>
     <li class="fragment">The environment lands you in a next state \(s'\) with probability \(P(s' \mid s, a)\).</li>
     <li class="fragment">From \(s'\) onward you act optimally &mdash; worth \(V^\star(s')\).</li>
   </ul>
-  <div class="fragment defbox" style="max-width: 92%; margin: 0.3em auto;">
+  <div class="fragment defbox eq-tight" style="max-width: 92%; margin: 0.2em auto; padding: 0.35em 0.7em;">
     <p style="text-align: center; font-size: 0.9em; margin: 0;">\[ \begin{aligned} Q^\star(s, a) &= R(s) + \mathbb{E}_{s' \sim P(\cdot \mid s, a)}\bigl[V^\star(s')\bigr] \\ &= R(s) + \sum_{s'} P(s' \mid s, a)\, V^\star(s') \end{aligned} \]</p>
   </div>
-  <p class="fragment" style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.3em;">One fix remaining: future reward should be <em>discounted</em>.</p>
+  <p class="fragment" style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.2em;">One fix remaining: future reward should be <em>discounted</em>.</p>
 </section>
 
 <!-- 6. Build (3): add the discount factor -->

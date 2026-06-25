@@ -5,6 +5,9 @@
    card overflow; tighten them. */
 .reveal .algo-card .katex-display { margin: 0.2em 0; }
 
+/* Tighten display-math margins inside a defbox (e.g. the two-line Q* unroll). */
+.reveal .defbox.eq-tight .katex-display { margin: 0.2em 0; }
+
 /* Side-by-side V_i and V_{i+1} grid layout (slides 11-12). */
 .reveal .value-grid-row {
   display: flex;
