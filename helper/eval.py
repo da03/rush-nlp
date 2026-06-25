@@ -294,6 +294,24 @@ def sec_piazza(p, t):
             t.add(f"   miss: {q!r} {e}->{pr}")
         summary.append(("piazza_gate", correct, n))
 
+    # -- merge judge (main/augment/branch, via the SAME _merge path runtime uses) --
+    merge_cases = suite.get("merge", [])
+    if "piazza_merge" in p.programs and merge_cases:
+        correct, miss = 0, []
+        for c in merge_cases:
+            items = [{"label": c.get("titles", "")}]
+            got = p._merge("piazza_merge", c["query"], c["main"], c["piazza"], items)
+            got = "piazza" if got == "branch" else got   # normalize to outcome vocab
+            exp = "piazza" if c["expect"] == "branch" else c["expect"]
+            correct += got == exp
+            if got != exp:
+                miss.append((c["query"], exp, got))
+        n = len(merge_cases)
+        t.add(f"\n=== Piazza merge judge ({n}) === {correct}/{n} = {correct/n:.0%}")
+        for q, e, g in miss:
+            t.add(f"   miss: {q!r} {e}->{g}")
+        summary.append(("piazza_merge", correct, n))
+
     # -- selection precision (the PAW reranker, via the SAME path runtime uses) --
     sel_cases = suite.get("selection", [])
     if "piazza_selector" in p.programs and sel_cases:

@@ -1,0 +1,55 @@
+You combine two answers to a CS 486/686 (Introduction to Artificial Intelligence) student's question: the COURSE answer (from the official course information) and a PIAZZA answer (synthesized from instructor forum posts). Decide how to present them. Return ONLY one word: main, augment, or branch.
+
+- main: the course answer already answers the question correctly and completely, OR the Piazza answer does not actually address what was asked. Show only the course answer.
+- branch: the Piazza answer addresses the question better - the course answer is generic, off-target, missing, or a decline, while the Piazza answer is specific and on-point. Show the Piazza answer.
+- augment: the course answer is correct and useful AND the Piazza answer adds genuinely complementary information. Show the course answer with the Piazza source attached.
+
+Prefer main for static logistics the course owns (the office-hour schedule, grading weights, fixed deadlines, the TA list, the textbook). Prefer branch for assignment content and clarifications, conceptual questions, time-sensitive changes (a deadline extension, an office-hour move, an outage), and "what is new on Piazza". Only choose branch if the Piazza answer genuinely answers THIS question.
+
+Question: what are the office hours
+Course answer: Office hours are Monday 1-2 PM, Monday 3-4 PM, Wednesday 1-2 PM, and Friday 3-4 PM.
+Piazza answer: Dake's office hours were updated to Monday 2-3 PM.
+Piazza source(s): Assignment 1 contact + office hours update
+Output: main
+
+Question: how is the course graded
+Course answer: Assignments are 30%, chat assignments 20%, and the final exam 50% (CS 486) or 40% (CS 686).
+Piazza answer: Assignment 1 is part of the assignment grade.
+Piazza source(s): Assignments and Project Inquiry
+Output: main
+
+Question: can you look at my specific assignment 1 submission
+Course answer: I don't have that information.
+Piazza answer: The updated Assignment 1 files are on LEARN; use the new version.
+Piazza source(s): Assignment 1 materials updated + deadline extended
+Output: main
+
+Question: what changed about assignment 1
+Course answer: Assignment 1 is released June 4 and due June 25.
+Piazza answer: The Assignment 1 materials were updated to fix inconsistencies, and the deadline was extended by a week to June 25.
+Piazza source(s): Assignment 1 materials updated + deadline extended
+Output: branch
+
+Question: assignment 1 question 3
+Course answer: Assignment 1 is due June 25; the contact is Dake Zhang.
+Piazza answer: Under the fixed-length assumption, P(EOS | w1..wn) = 1, so it does not change which length-n sentence is most likely.
+Piazza source(s): A1Q3
+Output: branch
+
+Question: what is the difference between uniform cost search and lowest cost first search
+Course answer: I don't have that information.
+Piazza answer: They refer to the same algorithm; both expand the frontier node with the lowest path cost.
+Piazza source(s): Uniform-Cost Search vs Lowest Cost First Search
+Output: branch
+
+Question: what is the latest piazza post
+Course answer: (none)
+Piazza answer: The most recent post is "A1 Q3.3", about choosing a cost function for lowest-cost-first search.
+Piazza source(s): A1 Q3.3 - What arithmetic allowed in cost function for LCFS
+Output: branch
+
+Question: what should I know about the final project
+Course answer: The final project is a group project; details and weight are on the course page.
+Piazza answer: Final project groups are formed through the posted sign-up; see the instructions.
+Piazza source(s): Final Project Group Formation
+Output: augment

@@ -78,7 +78,8 @@ max_tokens:
   answerer: 200
   validator: 4
   selector: 16
-  gate: 4          # parallel-branch yes/no gate (e.g. piazza_gate)
+  gate: 4          # parallel-branch yes/no gate (legacy; piazza now uses a merge judge)
+  merge: 4         # merge judge verdict: main | augment | branch
 
 # Spec + input + output share this context window (PAW constraint). compile.py /
 # eval.py assert composed specs (and worst-case course context) stay under it.
@@ -141,12 +142,16 @@ domains:
     parallel_branches:
       - name: piazza
         when_page: "course"
-        gate: piazza_gate   # course-owned logistics (office hours, grading, deadlines, TAs) -> skip Piazza;
-                            # content / time-sensitive changes / recency -> consult it. Prevents Piazza
-                            # from overriding the authoritative course answer for static logistics.
+        # OVER-CALL + question-aware MERGE (no up-front topic gate). We always search
+        # and synthesize, then piazza_merge decides - from the question + BOTH the
+        # course answer and the Piazza answer - whether to keep `main` (course owns it,
+        # e.g. office hours / grading -> no hijack), `augment` (main + a Piazza
+        # citation), or promote the Piazza answer (`branch`). Having both answers in
+        # hand is far more robust than a finetuned yes/no on the query alone.
         provider: piazza
         selector: piazza_selector
         answerer: piazza_answerer
+        merge: piazza_merge
         min_score: 2.0       # BM25 recall floor (trim noise); the selector decides relevance
         select_k: 5          # candidates handed to the selector
         max_items: 2         # cap on surfaced threads (citations)
