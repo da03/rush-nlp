@@ -48,7 +48,7 @@
 # "is assignment 3 released" -> A3 has no thread, so the A2 post must NOT be cited
 # (the answerer declines -> the branch contributes nothing; the answer stays `main`).
 - {query: "piazza assignment 2", expect_source: piazza, expect_any: ["assignment 2", "july 9"]}
-- {query: "is assignment 3 released yet", expect_source: main}
+- {query: "is assignment 3 released yet", expect_source: main, expect_any: ["not yet", "july 9", "not been released"]}
 
 # ============================== PIAZZA: time-sensitive change + recency ========
 - {query: "what changed about assignment 1", expect_source: piazza, expect_any: ["extended", "updated"]}

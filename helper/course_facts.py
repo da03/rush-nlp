@@ -138,7 +138,12 @@ def _assignments(c: dict) -> str:
     for a in c["assignments"]:
         owner = a.get("owner") or "TBA"
         oe = f" ({a['owner_email']})" if a.get("owner_email") else ""
-        rows.append(f"- Assignment {a['num']}: due {_d(a['due'])} (released {_d(a['out'])}); contact {owner}{oe}")
+        # Date-aware release status so "is assignment N released yet" is answered
+        # correctly: a FUTURE out date means it is not yet available (don't let the
+        # model state a future release date as if the assignment were already out).
+        rel = (f"released {_d(a['out'])}" if _as_date(a["out"]) <= _today()
+               else f"not yet released - will be released {_d(a['out'])}")
+        rows.append(f"- Assignment {a['num']}: due {_d(a['due'])} ({rel}); contact {owner}{oe}")
     return "\n".join(rows)
 
 
