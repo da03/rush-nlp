@@ -1,0 +1,43 @@
+# PAWsite (programasweights.com, page=site:paw) OUTCOME benchmark - the deploy gate.
+# Grades the FINAL pipeline result of real + paraphrased traffic. Fields (any subset):
+#   expect_domain  which domain handled it (site = a personal/Yuntian question escaped)
+#   expect_kind    result type: answer | link | links | feedback | none
+#   expect_any     answer/label contains one of these
+#   decline        must be a graceful decline (off-topic / unknown)
+# Grounded by eyeballing live site:paw answers on 2026-06-26 (most already correct;
+# the greeting/social cases are the known bug this batch fixes).
+
+# --- who built it (very common real traffic) ---
+- {query: "who is the pi", expect_domain: pawsite, expect_kind: answer, expect_any: ["yuntian"]}
+- {query: "who built this", expect_domain: pawsite, expect_kind: answer, expect_any: ["yuntian"]}
+- {query: "who developed paw", expect_domain: pawsite, expect_kind: answer, expect_any: ["yuntian"]}
+- {query: "who are the authors", expect_domain: pawsite, expect_kind: answer, expect_any: ["yuntian"]}
+
+# --- product / overview ---
+- {query: "what is paw", expect_domain: pawsite, expect_kind: answer, expect_any: ["compile", "spec", "model"]}
+- {query: "what can you do", expect_domain: pawsite, expect_kind: answer, expect_any: ["compile", "model", "program"]}
+- {query: "why should i use you", expect_domain: pawsite, expect_kind: answer, expect_any: ["compile", "model", "fast", "cheap"]}
+- {query: "is this open source", expect_domain: pawsite, expect_kind: answer, expect_any: ["mit", "open source", "yes"]}
+- {query: "what license is it", expect_domain: pawsite, expect_kind: answer, expect_any: ["mit", "license"]}
+- {query: "how do i install it", expect_domain: pawsite, expect_kind: answer, expect_any: ["pip install", "install"]}
+
+# --- tool/demo links ---
+- {query: "where is the alien game", expect_domain: pawsite, expect_kind: link, expect_any: ["alien"]}
+- {query: "where is the avatar demo", expect_domain: pawsite, expect_kind: link, expect_any: ["avatar"]}
+
+# --- classifier edges this batch hardens (find-existing -> hub; make-new -> playground) ---
+- {query: "play the alien game", expect_domain: pawsite, expect_kind: [link, links], expect_any: ["alien"]}
+- {query: "make a new classifier", expect_domain: pawsite, expect_kind: [link, links, answer]}
+- {query: "find a sentiment analyzer", expect_domain: pawsite, expect_kind: [link, links, answer]}
+
+# --- personal / Yuntian -> escape to the site domain ---
+- {query: "give me a bio of yuntian", expect_domain: site, expect_kind: answer, expect_any: ["yuntian"]}
+- {query: "where is yuntian's website", expect_domain: site}
+- {query: "are you taking phd students", expect_domain: site}
+
+# --- greeting / social (must NOT open the feedback form or a link) ---
+- {query: "thanks", expect_kind: [answer, none]}
+- {query: "hello", expect_kind: [answer, none]}
+
+# --- off-topic / nonsense -> decline ---
+- {query: "procesando un grupo de extractos validando", expect_kind: [answer, none], decline: true}

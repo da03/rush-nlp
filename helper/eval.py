@@ -409,34 +409,63 @@ def sec_piazza(p, t):
     return summary
 
 
-def sec_course_e2e(p, t):
-    """Course-page OUTCOME suite (the deploy gate): grade the FULL pipeline result -
-    WHICH source won the merge (main/piazza/augment) + answer content + must-decline.
-    Needs the synced threads.json for the piazza-expected cases to resolve."""
-    cases = load("course_e2e.yaml")
+def _as_list(v):
+    return v if isinstance(v, list) else [v]
+
+
+def _grade_e2e(p, t, title, suite_name, default_page):
+    """Generic OUTCOME grader (the per-domain deploy gate): run the FULL pipeline and
+    grade whichever expectations a case declares -
+      expect_domain  meta['domain'] (cross-domain routing: a personal Q on the paw
+                     page should route to 'site')
+      expect_source  meta['merge'] (course only: main | piazza | augment)
+      expect_kind    result type (answer | link | links | feedback | none)
+      expect_any     answer/label contains one of these (content check)
+      decline        the answer must be a graceful decline (privacy / off-topic)
+    A case passes only if ALL of its declared expectations hold."""
+    cases = load(suite_name)
     if not cases:
         return None
     correct, miss = 0, []
     for c in cases:
-        meta = p.run(c["query"], c.get("page", "course:cs486_s26"))
+        meta = p.run(c["query"], c.get("page", default_page))
         res = meta["result"]
-        src = meta.get("merge", "main")
         text = res.get("text") or res.get("label") or ""
-        exp = c["expect_source"]
-        exp = exp if isinstance(exp, list) else [exp]
-        ok = src in exp
-        if ok and c.get("expect_any"):
-            ok = _contains(text, c["expect_any"], "any")
-        if ok and c.get("decline"):
-            ok = is_decline(text)
-        correct += ok
-        if not ok:
-            miss.append((c["query"], exp, src, text[:80]))
+        why = []
+        if "expect_domain" in c and meta.get("domain") not in _as_list(c["expect_domain"]):
+            why.append(f"domain={meta.get('domain')}")
+        if "expect_source" in c and meta.get("merge", "main") not in _as_list(c["expect_source"]):
+            why.append(f"src={meta.get('merge', 'main')}")
+        if "expect_kind" in c and res.get("type") not in _as_list(c["expect_kind"]):
+            why.append(f"kind={res.get('type')}")
+        if not why and c.get("expect_any") and not _contains(text, c["expect_any"], "any"):
+            why.append("content")
+        if not why and c.get("decline") and not is_decline(text):
+            why.append("not-declined")
+        correct += not why
+        if why:
+            miss.append((c["query"], why, res.get("type"), text[:70]))
     n = len(cases)
-    t.add(f"\n=== Course outcome (source + content, {n}) === {correct}/{n} = {correct/n:.0%}")
-    for q, exp, src, txt in miss:
-        t.add(f"   miss: {q[:46]!r} want {exp} got {src!r}  A: {txt!r}")
+    t.add(f"\n=== {title} ({n}) === {correct}/{n} = {correct/n:.0%}")
+    for q, why, kind, txt in miss:
+        t.add(f"   miss: {q[:44]!r} [{','.join(why)}] {kind} A:{txt!r}")
     return correct, n
+
+
+def sec_course_e2e(p, t):
+    return _grade_e2e(p, t, "Course outcome", "course_e2e.yaml", "course:cs486_s26")
+
+
+def sec_site_e2e(p, t):
+    return _grade_e2e(p, t, "Site outcome", "site_e2e.yaml", "site")
+
+
+def sec_neuralos_e2e(p, t):
+    return _grade_e2e(p, t, "NeuralOS outcome", "neuralos_e2e.yaml", "site:neuralos")
+
+
+def sec_pawsite_e2e(p, t):
+    return _grade_e2e(p, t, "PAWsite outcome", "pawsite_e2e.yaml", "site:paw")
 
 
 def main():
@@ -489,6 +518,13 @@ def main():
         res = sec_course_e2e(p, t)
         if res:
             summary["course_e2e"] = res
+    for sect, fn, dom in [("site_e2e", sec_site_e2e, "site"),
+                          ("neuralos_e2e", sec_neuralos_e2e, "neuralos"),
+                          ("pawsite_e2e", sec_pawsite_e2e, "pawsite")]:
+        if want(sect) and dom in p.available:
+            res = fn(p, t)
+            if res:
+                summary[sect] = res
     if want("real"):
         sec_nonenglish(p, t)
 

@@ -1,0 +1,39 @@
+# Main site (yuntiandeng.com, page=site) OUTCOME benchmark - the deploy gate.
+# Grades the FINAL pipeline result of real + paraphrased traffic. Fields as in
+# course_e2e.yaml: expect_domain | expect_kind | expect_any | decline.
+# Grounded by eyeballing live site answers on 2026-06-26 (most already correct;
+# privacy declines + greeting/social are the cases to keep honest).
+
+# --- current focus (the single most common real query, 12x) ---
+- {query: "what are you working on", expect_domain: site, expect_kind: answer, expect_any: ["programasweights", "current", "research", "model"]}
+- {query: "what is your current focus", expect_domain: site, expect_kind: answer, expect_any: ["programasweights", "current", "research"]}
+
+# --- bio / education ---
+- {query: "where did you do your undergrad", expect_domain: site, expect_kind: answer, expect_any: ["tsinghua", "undergrad", "bachelor"]}
+- {query: "云天本科是哪个学校", expect_domain: site, expect_kind: answer, expect_any: ["tsinghua", "清华"]}
+- {query: "give me a short bio of yuntian", expect_domain: site, expect_kind: answer, expect_any: ["professor", "waterloo"]}
+
+# --- students / recruiting ---
+- {query: "are you taking phd students", expect_domain: site, expect_kind: answer, expect_any: ["recruit", "student", "phd"]}
+- {query: "can i apply to your group", expect_domain: site, expect_kind: answer, expect_any: ["recruit", "student", "apply"]}
+- {query: "who do you supervise", expect_domain: site, expect_kind: answer, expect_any: ["student", "wentao", "luke"]}
+- {query: "is yifan zong your student", expect_domain: site, expect_kind: answer, expect_any: ["yifan", "student", "former"]}
+
+# --- research topics + project sub-answerers ---
+- {query: "what is implicit chain of thought", expect_domain: site, expect_kind: answer, expect_any: ["reason", "thought", "implicit", "step"]}
+- {query: "how does neuralos work", expect_domain: site, expect_kind: answer, expect_any: ["operating system", "generat", "model"]}
+- {query: "what compilers does programasweights offer", expect_domain: site, expect_kind: answer, expect_any: ["compil", "fast", "finetune"]}
+
+# --- links ---
+- {query: "do you have twitter", expect_domain: site, expect_kind: answer, expect_any: ["twitter", "x.com", "x ("]}
+- {query: "where is your cv", expect_domain: site, expect_kind: [link, answer], expect_any: ["cv", "curriculum", "resume"]}
+
+# --- privacy-sensitive / unknown personal -> MUST decline (real queries) ---
+- {query: "does yuntian have kids", expect_domain: site, decline: true}
+- {query: "who is yuntian's mom", expect_domain: site, decline: true}
+- {query: "are your students single", expect_domain: site, decline: true}
+- {query: "where were you born", expect_domain: site, decline: true}
+
+# --- off-topic / greeting (must NOT open feedback; off-topic declines) ---
+- {query: "how to cook pasta", expect_kind: [answer, none], decline: true}
+- {query: "thanks", expect_kind: [answer, none]}

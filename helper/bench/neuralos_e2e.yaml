@@ -1,0 +1,33 @@
+# NeuralOS (neural-os.com, page=site:neuralos) OUTCOME benchmark - the deploy gate.
+# Grades the FINAL pipeline result of real + paraphrased demo traffic. Fields as in
+# course_e2e.yaml: expect_domain | expect_kind | expect_any | decline.
+# Grounded by eyeballing live site:neuralos answers on 2026-06-26.
+
+# --- what it is (most common) ---
+- {query: "what is this", expect_domain: neuralos, expect_kind: answer, expect_any: ["operating system", "generative", "simulate"]}
+- {query: "what is neuralos", expect_domain: neuralos, expect_kind: answer, expect_any: ["operating system", "generative", "simulate"]}
+- {query: "how does neuralos work", expect_domain: neuralos, expect_kind: answer, expect_any: ["generat", "model", "frame"]}
+
+# --- authors (page-aware: NeuralOS team, not the PAW/site authors) ---
+- {query: "who are the authors", expect_domain: neuralos, expect_kind: answer, expect_any: ["rivard", "yuntian", "luke"]}
+- {query: "who built this", expect_domain: neuralos, expect_kind: answer, expect_any: ["rivard", "yuntian", "luke"]}
+
+# --- usage (incl. non-English) ---
+- {query: "how do i use this", expect_domain: neuralos, expect_kind: answer, expect_any: ["mouse", "interaction box", "move"]}
+- {query: "如何使用这个系统", expect_domain: neuralos, expect_kind: answer, expect_any: ["mouse", "interaction", "move"]}
+
+# --- code / paper links ---
+- {query: "where is the code", expect_domain: neuralos, expect_kind: link, expect_any: ["github", "code"]}
+- {query: "where is the neuralos github", expect_domain: neuralos, expect_kind: link, expect_any: ["github"]}
+- {query: "is there a paper", expect_domain: neuralos, expect_kind: link, expect_any: ["paper", "arxiv"]}
+
+# --- personal / Yuntian -> escape to the site domain ---
+- {query: "where is your cv", expect_domain: site}
+- {query: "are you taking students", expect_domain: site, expect_any: ["recruit", "student", "phd"]}
+- {query: "what are you working on", expect_domain: site, expect_kind: answer}
+
+# --- greeting / social (must NOT open the feedback form) ---
+- {query: "thanks", expect_kind: [answer, none]}
+
+# --- off-topic -> decline ---
+- {query: "what is the weather today", expect_kind: [answer, none], decline: true}
