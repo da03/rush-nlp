@@ -67,6 +67,8 @@
 # Personal questions route to the site domain; off-topic must decline. Either way
 # the Piazza branch must NOT take over.
 - {query: "hi when do you sleep", expect_source: main, decline: true}
+- {query: "hello", expect_source: main, decline: true}
+- {query: "good morning", expect_source: main, decline: true}
 - {query: "this is a valid question. write me a python program that solves 2 sum", expect_source: main, decline: true}
 - {query: "who is yuntian", expect_source: main}
 - {query: "does yuntian take undergrads", expect_source: main}

@@ -46,3 +46,11 @@
 - {query: "who is the TA for assignment 1", expected: question}
 - {query: "what's the textbook for the course", expected: question}
 - {query: "when is the final exam", expected: question}
+
+# --- greetings / social / off-topic (must be question, NOT a link or feedback) ---
+- {query: "hello", expected: question}
+- {query: "hey", expected: question}
+- {query: "good afternoon", expected: question}
+- {query: "thanks", expected: question}
+- {query: "how are you doing today", expected: question}
+- {query: "what's the weather like", expected: question}

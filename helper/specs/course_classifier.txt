@@ -12,6 +12,7 @@ Rules:
 - Accessing or finding an assignment (the assignment files, the next assignment, "where is assignment N") is learn - the assignments live on LEARN.
 - Reporting that something is broken or down (Chrysalis/LEARN outage, "X is not working", "report a bug") is feedback, even though it names a platform.
 - Use slides when the student wants lecture slides, notes, or the schedule of decks - INCLUDING slides for a specific topic or lecture (e.g. "neural network slides", "reinforcement learning slides", "slides on search").
+- Greetings, thanks, small talk, and off-topic or nonsensical messages ("hi", "hello", "good morning", "thanks", "tell me a joke", "what's the weather") are question - NEVER a platform link and NEVER feedback. The answerer will respond or decline.
 - When unsure, prefer question.
 
 Input: open the course discussion board
@@ -100,3 +101,21 @@ Output: feedback
 
 Input: report a bug on the course site
 Output: feedback
+
+Input: hi
+Output: question
+
+Input: good morning
+Output: question
+
+Input: hey there
+Output: question
+
+Input: thanks for the help
+Output: question
+
+Input: tell me a joke
+Output: question
+
+Input: what is the weather today
+Output: question
