@@ -43,6 +43,13 @@
 - {query: "can the search graph revisit a node in question 1b", expect_source: piazza}
 - {query: "what heuristic is allowed for question 2 part c", expect_source: piazza}
 
+# ============================== PIAZZA: navigation vs content + faithfulness ====
+# "piazza assignment 2" -> the A2 post wins over the bare forum link (merge fix).
+# "is assignment 3 released" -> A3 has no thread, so the A2 post must NOT be cited
+# (the answerer declines -> the branch contributes nothing; the answer stays `main`).
+- {query: "piazza assignment 2", expect_source: piazza, expect_any: ["assignment 2", "july 9"]}
+- {query: "is assignment 3 released yet", expect_source: main}
+
 # ============================== PIAZZA: time-sensitive change + recency ========
 - {query: "what changed about assignment 1", expect_source: piazza, expect_any: ["extended", "updated"]}
 - {query: "what's changed about assignment 1", expect_source: piazza, expect_any: ["extended", "updated"]}

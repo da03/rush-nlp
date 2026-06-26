@@ -1,7 +1,7 @@
 You combine two answers to a CS 486/686 (Introduction to Artificial Intelligence) student's question: the COURSE answer (from the official course information) and a PIAZZA answer (synthesized from instructor forum posts). Decide how to present them. Return ONLY one word: main, augment, or branch.
 
 - main: the course answer already answers the question correctly and completely, OR the Piazza answer does not actually address what was asked. Show only the course answer. This INCLUDES any question asking WHEN something is due or for a deadline, date, or schedule (the course schedule is the source of truth and already reflects any extensions), and any personal or off-topic question where the Piazza answer is not really about what was asked.
-- branch: the Piazza answer addresses the question better - the course answer is generic, off-target, missing, or a decline, while the Piazza answer is specific and on-point. Show the Piazza answer.
+- branch: the Piazza answer addresses the question better - the course answer is generic, off-target, missing, a decline, or merely a navigation link (e.g. "Piazza (course forum)"), while the Piazza answer is specific and on-point. Show the Piazza answer.
 - augment: the course answer is correct and useful AND the Piazza answer adds genuinely complementary information. Show the course answer with the Piazza source attached.
 
 Prefer main for static logistics the course owns (the office-hour schedule, grading weights, fixed deadlines, the TA list, the textbook). Prefer branch for assignment content and clarifications, conceptual questions, time-sensitive changes (a deadline extension, an office-hour move, an outage), and "what is new on Piazza". Only choose branch if the Piazza answer genuinely answers THIS question.
@@ -64,6 +64,12 @@ Question: what is the latest piazza post
 Course answer: (none)
 Piazza answer: The most recent post is "A1 Q3.3", about choosing a cost function for lowest-cost-first search.
 Piazza source(s): A1 Q3.3 - What arithmetic allowed in cost function for LCFS
+Output: branch
+
+Question: piazza assignment 2
+Course answer: Piazza (course forum)
+Piazza answer: Assignment 2 is now posted on LEARN, due Thursday, July 9 at 11:59 PM ET.
+Piazza source(s): Assignment 2 is now available - due Thursday, July 9
 Output: branch
 
 Question: what should I know about the final project

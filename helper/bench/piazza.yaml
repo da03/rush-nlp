@@ -132,6 +132,7 @@ merge:
   - {query: "is the EOS probability one in question 3", main: "Assignment 1 is due June 25.", piazza: "Under the fixed-length assumption P(EOS | w1..wn)=1 for length-n sentences.", titles: "A1Q3", expect: branch}
   - {query: "what are the most recent posts on piazza", main: "(none)", piazza: "The latest post is about choosing a cost function for lowest-cost-first search.", titles: "A1 Q3.3", expect: branch}
   - {query: "tell me about the final project", main: "The final project is a group project worth part of the grade.", piazza: "Project groups are formed through the posted sign-up sheet.", titles: "Final Project Group Formation", expect: augment}
+  - {query: "piazza assignment 2", main: "Piazza (course forum)", piazza: "Assignment 2 is now posted on LEARN, due July 9.", titles: "Assignment 2 is now available", expect: branch}
 
 # --- Privacy: the served index must never carry private threads ---------------
 # private_ids were confirmed private (status=private / instr feed_groups) via
