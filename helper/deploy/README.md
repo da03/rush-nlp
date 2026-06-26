@@ -122,11 +122,34 @@ Environment=PAW_HELPER_CONTENT=/opt/yuntiandeng-helper/repo/helper
 Environment=HELPER_ALLOWED_ORIGINS=https://yuntiandeng.com,https://www.yuntiandeng.com,https://neural-os.com,https://www.neural-os.com,https://programasweights.com,https://www.programasweights.com
 Environment=PAW_HELPER_INFERENCE_BACKEND=remote_infer
 Environment=PAW_HELPER_INFER_ENDPOINT=https://programasweights.com/api/v1/infer
+EnvironmentFile=/etc/yuntiandeng-helper/paw.env
 ExecStart=
 ExecStart=/opt/yuntiandeng-helper/venv/bin/paw-helper serve --host 127.0.0.1 --port 8088
 EOF
 sudo systemctl daemon-reload && sudo systemctl restart yuntiandeng-helper
 ```
+
+CRITICAL - `remote_infer` needs a PAW API key. `/api/v1/infer` authenticates via
+the `X-API-Key` header; WITHOUT a valid key the calls are ANONYMOUS and hit a strict
+per-IP rate limit (~100/hr) -> 429 -> blank answers under any real load. systemd does
+NOT source `~/.bashrc`, so the key must be provided to the service explicitly (the
+`EnvironmentFile` above). Set it with a VALID, current prod key (a stale/rotated key
+silently resolves to anonymous - same blank-answer symptom):
+
+```bash
+sudo tee /etc/yuntiandeng-helper/paw.env >/dev/null <<'EOF'
+PAW_API_KEY=paw_sk_...   # a current prod key; X-API-Key auth (NOT Authorization: Bearer)
+EOF
+sudo chmod 600 /etc/yuntiandeng-helper/paw.env
+sudo systemctl restart yuntiandeng-helper
+# Verify it authenticated (200, not 429): a raw call returns output, and the helper's
+# concurrent requests stop returning blanks.
+```
+
+Authenticated tier: ~300-900 infer/hr and 5 concurrent in-flight per key (the helper
+makes ~5-10 infer calls per query, so heavy concurrency can still hit the 5-concurrent
+cap - bump the helper key's tier server-side if needed). `local_sdk` is the no-rate-limit
+fallback (set `PAW_HELPER_INFERENCE_BACKEND=local_sdk`) if the API is unavailable.
 
 Verify: `curl -s -D- -o/dev/null -X POST https://helper.yuntiandeng.com/ask -H 'Origin: https://neural-os.com' -H 'Content-Type: application/json' -d '{"query":"hi"}' | grep -i access-control-allow-origin`
 
@@ -202,12 +225,13 @@ Every change is gated on the benchmark suite - this is the discipline that catch
 regressions like the "office hours -> Piazza hijack" before they ship. Run BOTH the
 golden snapshot and the outcome suite.
 
-Backend note: finetuned programs can decide borderline cases differently across
-`local_sdk` vs `remote_infer`, so the FULL suite is run on `local_sdk` (reliable: a
-34-case suite is a burst of hundreds of API calls that rate-limits `remote_infer`,
-returning empty outputs and risking the live service), and a handful of key cases are
-SPOT-CHECKED on `remote_infer` (the live backend) with `curl` to catch backend-specific
-divergence. Do not run the full suite against `remote_infer`.
+Backend note: finetuned programs can decide borderline cases slightly differently
+across `local_sdk` vs `remote_infer`, so run the suite on the SAME backend the server
+uses. With a VALID `PAW_API_KEY` (authenticated tier), the full per-domain suites run
+fine on `remote_infer` (all four domains are 100% there). WITHOUT a key (anonymous),
+`remote_infer` rate-limits after ~100 calls and returns blank answers - if you see a
+suite suddenly collapse to lots of empty/`none` results, the key is missing/stale, not
+a behavior regression. `local_sdk` (no rate limit) is the reliable fallback.
 
 ```bash
 # On the server (so threads.json is available). Full suite on local_sdk (reliable).
