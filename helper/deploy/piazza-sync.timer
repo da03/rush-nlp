@@ -1,8 +1,12 @@
 [Unit]
-Description=Nightly CS486/686 Piazza sync
+Description=Hourly CS486/686 Piazza sync
 
 [Timer]
-OnCalendar=*-*-* 04:30:00 America/Toronto
+# Hourly so day-of instructor announcements (e.g. "Assignment 2 is now available")
+# surface within the hour instead of waiting for a nightly run. The sync is ~3 min
+# (throttled) and the helper hot-reloads threads.json within 5 min (no restart).
+OnCalendar=hourly
+RandomizedDelaySec=120
 Persistent=true
 
 [Install]
