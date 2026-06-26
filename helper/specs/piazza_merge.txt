@@ -54,6 +54,12 @@ Piazza answer: Under the fixed-length assumption, P(EOS | w1..wn) = 1, so it doe
 Piazza source(s): A1Q3
 Output: branch
 
+Question: was the assignment 1 deadline extended
+Course answer: Assignment 1 is due June 25, and was released on June 4.
+Piazza answer: Yes - the Assignment 1 deadline was extended by a week to Thursday, June 25, 2026.
+Piazza source(s): Assignment 1 materials updated + deadline extended
+Output: branch
+
 Question: what is the difference between uniform cost search and lowest cost first search
 Course answer: I don't have that information.
 Piazza answer: They refer to the same algorithm; both expand the frontier node with the lowest path cost.

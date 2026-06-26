@@ -200,25 +200,35 @@ Tuning lives in `config.yaml` under `domains.course.parallel_branches`: `min_sco
 
 Every change is gated on the benchmark suite - this is the discipline that catches
 regressions like the "office hours -> Piazza hijack" before they ship. Run BOTH the
-golden snapshot and the outcome suite, and (critically) run the suite on the SAME
-inference backend the server uses, because finetuned programs can decide borderline
-cases differently across `local_sdk` vs `remote_infer`:
+golden snapshot and the outcome suite.
+
+Backend note: finetuned programs can decide borderline cases differently across
+`local_sdk` vs `remote_infer`, so the FULL suite is run on `local_sdk` (reliable: a
+34-case suite is a burst of hundreds of API calls that rate-limits `remote_infer`,
+returning empty outputs and risking the live service), and a handful of key cases are
+SPOT-CHECKED on `remote_infer` (the live backend) with `curl` to catch backend-specific
+divergence. Do not run the full suite against `remote_infer`.
 
 ```bash
-# On the server (so threads.json + the production backend are available).
+# On the server (so threads.json is available). Full suite on local_sdk (reliable).
 cd /opt/yuntiandeng-helper/repo/helper
-BK=$(systemctl show yuntiandeng-helper -p Environment | grep -o 'PAW_HELPER_INFERENCE_BACKEND=[a-z_]*' | cut -d= -f2)
+export PIAZZA_DATA_DIR=/var/lib/yuntiandeng-helper/piazza PAW_HELPER_CONTENT=$PWD
+export PAW_HELPER_INFERENCE_BACKEND=local_sdk
 
 # 1. Behavior-preserving check (no unrelated response changed).
 python snapshot.py --check
 
 # 2. Outcome gate: who wins the merge (main/piazza/augment) + content + must-not.
-PIAZZA_DATA_DIR=/var/lib/yuntiandeng-helper/piazza PAW_HELPER_CONTENT=$PWD \
-  PAW_HELPER_INFERENCE_BACKEND=$BK python eval.py --section course_e2e
+python eval.py --section course_e2e
 
-# 3. Component diagnostics (gate/merge/selector/recall/answer/e2e/privacy).
-PIAZZA_DATA_DIR=/var/lib/yuntiandeng-helper/piazza PAW_HELPER_CONTENT=$PWD \
-  PAW_HELPER_INFERENCE_BACKEND=$BK python eval.py --section piazza
+# 3. Component diagnostics (merge/selector/recall/answer/e2e/privacy).
+python eval.py --section piazza
+
+# 4. Spot-check a few key cases on the LIVE backend (remote_infer) via the running
+#    service, to catch backend divergence without a full-suite burst:
+for q in "what are the office hours" "what changed about assignment 1" "is assignment 3 released yet"; do
+  curl -s -X POST 127.0.0.1:8088/ask -H 'Content-Type: application/json' \
+    -d "{\"query\":\"$q\",\"page\":\"course:cs486_s26\"}"; echo; done
 ```
 
 Must pass before `systemctl restart`: no Piazza hijack of course-owned logistics

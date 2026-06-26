@@ -1,6 +1,6 @@
 {
   "compiler": "paw-ft-bs48",
-  "compiled_at": "2026-06-26T03:12:26.826315+00:00",
+  "compiled_at": "2026-06-26T03:29:56.328393+00:00",
   "programs": {
     "page_classifier": "eb5b6134042db08a13b4",
     "answerer": "b396456b787fac0b0938",
@@ -31,6 +31,6 @@
     "piazza_gate": "ed7fbfe642318e305310",
     "piazza_selector": "8d004e96672404f7daed",
     "piazza_answerer": "384ea468e49eada390fa",
-    "piazza_merge": "cca2506d1d3aca99308a"
+    "piazza_merge": "21a69c945378f0cb08fc"
   }
 }
