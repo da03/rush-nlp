@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>The Website Helper — How it works &amp; the PAW programs</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
+
+  <style>
+    :root {
+      --site:   #2563eb;  /* yuntiandeng.com */
+      --course: #16a34a;  /* cs486 */
+      --neural: #9333ea;  /* neural-os.com */
+      --paw:    #ea580c;  /* programasweights.com */
+      --shared: #0891b2;  /* shared */
+      --ink:    #0f172a;
+      --muted:  #64748b;
+    }
+    .reveal { font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+    .reveal h1, .reveal h2, .reveal h3 { font-weight: 700; letter-spacing: -0.02em; text-transform: none; }
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.45em; margin-bottom: .4em; }
+    .reveal section { text-align: left; }
+    .reveal section.center { text-align: center; }
+    .reveal p, .reveal li { font-size: 0.78em; line-height: 1.45; }
+    .reveal small { color: var(--muted); }
+    .lead { color: var(--muted); font-size: 0.9em; }
+    .kicker { text-transform: uppercase; letter-spacing: .12em; font-size: .55em; color: var(--muted); font-weight: 700; }
+    code { font-size: .85em; background: #f1f5f9; padding: .08em .35em; border-radius: 5px; }
+
+    /* flow diagram */
+    .flow { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; justify-content: center; font-size: .62em; }
+    .box { background: #fff; border: 2px solid var(--shared); border-radius: 12px; padding: .5rem .7rem; font-weight: 600; box-shadow: 0 2px 10px rgba(15,23,42,.06); }
+    .box small { display:block; font-weight: 500; color: var(--muted); font-size: .8em; }
+    .arrow { color: var(--muted); font-weight: 700; font-size: 1.2em; }
+
+    /* program catalog */
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem 1.4rem; }
+    .grp { border-left: 4px solid var(--shared); padding-left: .7rem; }
+    .grp.site   { border-color: var(--site); }
+    .grp.course { border-color: var(--course); }
+    .grp.neural { border-color: var(--neural); }
+    .grp.paw    { border-color: var(--paw); }
+    .grp h3 { font-size: .8em; margin: 0 0 .35em; }
+    .grp .who { font-weight: 400; color: var(--muted); font-size: .8em; }
+    .pill { display:inline-block; font-family: ui-monospace, SFMono-Regular, monospace; font-size: .58em;
+            background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 999px; padding: .12em .55em; margin: .12em .12em 0 0; }
+    .grp.site .pill   { background:#eff6ff; border-color:#bfdbfe; }
+    .grp.course .pill { background:#f0fdf4; border-color:#bbf7d0; }
+    .grp.neural .pill { background:#faf5ff; border-color:#e9d5ff; }
+    .grp.paw .pill    { background:#fff7ed; border-color:#fed7aa; }
+    .role { color: var(--muted); font-size: .92em; }
+
+    table.mini { font-size: .62em; border-collapse: collapse; width: 100%; }
+    table.mini td, table.mini th { border-bottom: 1px solid #e2e8f0; padding: .3rem .4rem; text-align: left; vertical-align: top; }
+    table.mini th { color: var(--muted); font-weight: 700; }
+    .tag { font-family: ui-monospace, monospace; font-size: .9em; }
+
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; align-items: start; }
+    .card { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding: .8rem 1rem; box-shadow:0 2px 10px rgba(15,23,42,.05); }
+    .card h3 { margin:.1em 0 .3em; font-size:.82em; }
+    .dot { display:inline-block; width:.6em; height:.6em; border-radius:50%; margin-right:.4em; }
+    ul.tight li { margin: .12em 0; }
+    .reveal .footer { position: fixed; bottom: 8px; right: 14px; font-size: 12px; color: #cbd5e1; }
+    .big { font-size: 1.4em; font-weight: 700; }
+    .num { font-size: 2.2em; font-weight: 800; line-height:1; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1. TITLE -->
+    <section class="center">
+      <div class="kicker">ProgramAsWeights &middot; website helper</div>
+      <h1>How the Helper Works</h1>
+      <p class="lead">One shared pipeline serving four websites &mdash; <b>29 PAW programs serve</b> live (30 compiled; the 30th is an offline grader).</p>
+      <p><small>yuntiandeng.com &middot; cs&nbsp;486/686 &middot; neural-os.com &middot; programasweights.com</small></p>
+    </section>
+
+    <!-- 2. ONE BACKEND, MANY SITES -->
+    <section>
+      <h2>One backend, many sites</h2>
+      <p class="lead">Each site embeds a small widget that POSTs <code>{query, page}</code> to one shared backend; the <code>page</code> key tells the backend which site the visitor is on.</p>
+      <div class="flow" style="margin-top:.6rem">
+        <div class="box" style="border-color:var(--site)">yuntiandeng.com<small>shared widget.js</small></div>
+        <div class="box" style="border-color:var(--neural)">neural-os.com<small>widget.js (nginx)</small></div>
+        <div class="box" style="border-color:var(--paw)">programasweights.com<small>React component</small></div>
+      </div>
+      <div class="flow" style="margin:.5rem 0"><span class="arrow">&darr;&nbsp; POST /ask {query, page} &nbsp;&darr;</span></div>
+      <div class="flow">
+        <div class="box">Shared helper backend<small>rush-nlp / helper content pack</small></div>
+      </div>
+      <p style="margin-top:.5rem"><small>One content pack = config (the graph) + specs + facts + links + <code>programs.json</code> (the pinned compiled IDs). The framework (<code>paw-helper</code>) is generic; the content pack is per-deployment.</small></p>
+    </section>
+
+    <!-- 3. WHAT IS A PROGRAM -->
+    <section>
+      <h2>What is a &ldquo;program&rdquo;?</h2>
+      <p class="lead">Every decision in the pipeline is a <b>PAW program</b>: a short natural-language <i>spec</i> compiled into a tiny, specialized model.</p>
+      <div class="flow" style="margin:.7rem 0">
+        <div class="box">spec.txt<small>plain-English task + examples</small></div>
+        <span class="arrow">&rarr;</span>
+        <div class="box" style="border-color:var(--paw)">finetune compiler<small>paw-ft-bs48</small></div>
+        <span class="arrow">&rarr;</span>
+        <div class="box" style="border-color:var(--course)">pinned program ID<small>in programs.json</small></div>
+        <span class="arrow">&rarr;</span>
+        <div class="box">run on /infer<small>tiny model, &lt;1s</small></div>
+      </div>
+      <ul class="tight">
+        <li><b>Cheap + specialized:</b> each program does one narrow job (route, classify, answer, judge).</li>
+        <li><b>Rule + fuzzy:</b> deterministic Python (links, facts, redundancy) wraps the fuzzy PAW calls.</li>
+        <li><b>Reproducible:</b> IDs are pinned &amp; committed &mdash; the server runs exactly what was tested.</li>
+      </ul>
+    </section>
+
+    <!-- 4. REQUEST FLOW -->
+    <section>
+      <h2>The request flow</h2>
+      <div class="flow" style="margin:.5rem 0; font-size:.58em">
+        <div class="box">/ask<small>query + page</small></div>
+        <span class="arrow">&rarr;</span>
+        <div class="box" style="border-color:var(--shared)">domain_router<small>page-aware</small></div>
+        <span class="arrow">&rarr;</span>
+        <div class="box">&lt;domain&gt; classifier<small>link vs question</small></div>
+        <span class="arrow">&rarr;</span>
+        <div class="box">link?<small>return the link</small></div>
+      </div>
+      <div class="flow" style="font-size:.58em">
+        <span class="arrow">question &rarr;</span>
+        <div class="box" style="border-color:var(--course)">&lt;domain&gt; answerer<small>+ injected facts</small></div>
+        <span class="arrow">&rarr;</span>
+        <div class="box" style="border-color:var(--shared)">validator<small>on-topic? else decline</small></div>
+        <span class="arrow">&rarr;</span>
+        <div class="box">answer</div>
+      </div>
+      <p style="margin-top:.6rem"><small>Resilience knobs: <b>backtrack</b> (a failed validation declines rather than fabricates), <b>reconsider</b> (retry the page-default domain), and the course page&rsquo;s parallel <b>Piazza branch + merge</b> (next slides).</small></p>
+    </section>
+
+    <!-- 5. PAGE-AWARE ROUTING -->
+    <section>
+      <h2>Page-aware routing</h2>
+      <p class="lead">The same question routes differently depending on the page &mdash; the <code>domain_router</code> sees the page context.</p>
+      <table class="mini">
+        <tr><th>Query</th><th>on neural-os.com</th><th>on programasweights.com</th><th>on yuntiandeng.com</th></tr>
+        <tr><td>&ldquo;who are the authors?&rdquo;</td><td><span class="dot" style="background:var(--neural)"></span>NeuralOS team</td><td><span class="dot" style="background:var(--paw)"></span>PAW team</td><td><span class="dot" style="background:var(--site)"></span>(ambiguous &rarr; site)</td></tr>
+        <tr><td>&ldquo;where is your CV?&rdquo;</td><td colspan="3"><span class="dot" style="background:var(--site)"></span>always escapes to the <b>site</b> domain (it&rsquo;s about Yuntian)</td></tr>
+        <tr><td>&ldquo;when is the next deadline?&rdquo;</td><td colspan="3"><span class="dot" style="background:var(--course)"></span>routes to the <b>course</b> domain (the only one with deadlines)</td></tr>
+      </table>
+      <p style="margin-top:.5rem"><small>Default to the current page&rsquo;s domain; escape only when the subject clearly belongs elsewhere.</small></p>
+    </section>
+
+    <!-- 6. HIERARCHICAL ANSWERERS -->
+    <section>
+      <h2>Hierarchical answerers</h2>
+      <p class="lead">A flat answerer is the fallback; a <b>topic router</b> sends detailed questions to specialized sub-answerers, each fed only its own slice of facts.</p>
+      <div class="grid2">
+        <div class="card">
+          <h3><span class="dot" style="background:var(--site)"></span>site_topic_router</h3>
+          <span class="pill">paw_answerer</span><span class="pill">neuralos_answerer</span>
+          <span class="pill">students_answerer</span><span class="pill">bio_answerer</span>
+          <span class="pill">answerer (general)</span>
+        </div>
+        <div class="card">
+          <h3><span class="dot" style="background:var(--paw)"></span>pawsite_topic_router</h3>
+          <span class="pill">install</span><span class="pill">compile</span><span class="pill">browser</span>
+          <span class="pill">accounts</span><span class="pill">agents</span><span class="pill">privacy</span>
+          <span class="pill">examples</span><span class="pill">troubleshooting</span>
+        </div>
+      </div>
+      <p style="margin-top:.5rem"><small>Smaller, on-topic context &rarr; better answers and a tighter token budget.</small></p>
+    </section>
+
+    <!-- 7. RESOURCE ROUTERS -->
+    <section>
+      <h2>Resource routers (rule + fuzzy)</h2>
+      <p class="lead">When a classifier emits a generic label, a fuzzy <b>selector</b> picks specific deep links from a rule-supplied candidate list.</p>
+      <div class="grid2">
+        <div class="card">
+          <h3><span class="dot" style="background:var(--course)"></span>slide_selector</h3>
+          <p class="role">&ldquo;reinforcement learning slides&rdquo; &rarr; the actual lecture deck(s), not just the syllabus.</p>
+        </div>
+        <div class="card">
+          <h3><span class="dot" style="background:var(--paw)"></span>code_selector</h3>
+          <p class="role">&ldquo;the python sdk&rdquo; &rarr; Python repo; &ldquo;npm package&rdquo; &rarr; JS repo; bare &ldquo;source code&rdquo; &rarr; the org page.</p>
+        </div>
+      </div>
+      <p style="margin-top:.5rem"><small>Python renders the candidates &amp; maps the selector&rsquo;s output to links; the PAW program only does the fuzzy matching.</small></p>
+    </section>
+
+    <!-- 8. PIAZZA RAG -->
+    <section>
+      <h2>The course Piazza RAG branch</h2>
+      <p class="lead">On the course page only, a parallel branch answers from endorsed-public Piazza threads &mdash; <b>over-call &rarr; rerank &rarr; answer &rarr; merge</b>.</p>
+      <div class="flow" style="margin:.5rem 0; font-size:.56em">
+        <div class="box">BM25 search<small>recall (cheap)</small></div><span class="arrow">&rarr;</span>
+        <div class="box" style="border-color:var(--course)">piazza_selector<small>which threads</small></div><span class="arrow">&rarr;</span>
+        <div class="box" style="border-color:var(--course)">piazza_answerer<small>synthesize / decline</small></div><span class="arrow">&rarr;</span>
+        <div class="box" style="border-color:var(--course)">piazza_merge<small>main &middot; augment &middot; branch</small></div>
+      </div>
+      <ul class="tight">
+        <li><b>No brittle gate:</b> always search; the <i>question-aware merge judge</i> (sees both answers) decides whether Piazza wins, augments, or stays out.</li>
+        <li><b>Faithful:</b> if the answerer can&rsquo;t answer from the threads, it declines &mdash; and the branch shows nothing (no misleading citation).</li>
+        <li><b>Concurrent &amp; private:</b> runs alongside the main answer; only public, instructor-answered threads are indexed.</li>
+      </ul>
+    </section>
+
+    <!-- 9. FACTS -->
+    <section>
+      <h2>Facts: injected &amp; date-aware</h2>
+      <p class="lead">Domains inject facts at inference time &mdash; editing facts needs <b>no recompile</b> (only specs do).</p>
+      <ul class="tight">
+        <li><b>Runtime injection:</b> the right slice of YAML/Markdown is selected per query (the RAG seam).</li>
+        <li><b>Computed in Python</b> (course): <i>today&rsquo;s date</i> (America/Toronto), <i>next deadline</i> across chats &amp; assignments, and date-aware status &mdash; &ldquo;Assignment 3 is <b>not yet released</b>; releases July 9.&rdquo;</li>
+        <li><b>Hot-reload:</b> the Piazza index re-syncs hourly and reloads within 5 min, no restart.</li>
+      </ul>
+      <p><small>So &ldquo;when is the next deadline&rdquo; and &ldquo;is A3 out yet&rdquo; are correct on any given day without recompiling a single program.</small></p>
+    </section>
+
+    <!-- 10. CATALOG part 1 -->
+    <section>
+      <h2>The programs &mdash; shared &amp; site</h2>
+      <div class="cols">
+        <div class="grp">
+          <h3>Shared <span class="who">&middot; every site</span></h3>
+          <span class="pill">domain_router</span><span class="pill">validator</span>
+          <p class="role">Page-aware routing + the anti-hallucination on-topic check.<br><span class="pill">rubric_checker</span> grades the benchmark <b>offline</b> &mdash; so the widget&rsquo;s &ldquo;29&rdquo; = <b>30 compiled minus this grader</b>.</p>
+        </div>
+        <div class="grp site">
+          <h3>Site <span class="who">&middot; yuntiandeng.com (page=site)</span></h3>
+          <span class="pill">page_classifier</span><span class="pill">answerer</span>
+          <span class="pill">site_topic_router</span><span class="pill">paw_answerer</span>
+          <span class="pill">neuralos_answerer</span><span class="pill">students_answerer</span>
+          <span class="pill">bio_answerer</span>
+          <p class="role">CV, contact, papers, demos, social links + written answers about Yuntian, his research, students, and projects.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. CATALOG part 2 -->
+    <section>
+      <h2>The programs &mdash; course, NeuralOS, PAW</h2>
+      <div class="cols">
+        <div class="grp course">
+          <h3>Course <span class="who">&middot; cs 486/686 (page=course:cs486_s26)</span></h3>
+          <span class="pill">course_classifier</span><span class="pill">course_answerer</span>
+          <span class="pill">slide_selector</span><span class="pill">piazza_selector</span>
+          <span class="pill">piazza_answerer</span><span class="pill">piazza_merge</span>
+          <p class="role">Deadlines, grading, TAs, slides links + the Piazza RAG branch.<br><span class="pill">piazza_gate</span> <i>legacy &mdash; superseded by the merge judge.</i></p>
+        </div>
+        <div class="grp neural">
+          <h3>NeuralOS <span class="who">&middot; neural-os.com (page=site:neuralos)</span></h3>
+          <span class="pill">neuralos_classifier</span><span class="pill">neuralos_answerer</span>
+          <p class="role">What it is, how to use it, code/paper links. (The answerer is shared with the site&rsquo;s NeuralOS topic.)</p>
+        </div>
+        <div class="grp paw" style="grid-column: 1 / span 2;">
+          <h3>PAWsite <span class="who">&middot; programasweights.com (page=site:paw)</span></h3>
+          <span class="pill">pawsite_classifier</span><span class="pill">pawsite_answerer</span>
+          <span class="pill">pawsite_topic_router</span><span class="pill">code_selector</span>
+          <span class="pill">install</span><span class="pill">compile</span><span class="pill">browser</span><span class="pill">accounts</span>
+          <span class="pill">agents</span><span class="pill">privacy</span><span class="pill">examples</span><span class="pill">troubleshooting</span>
+          <p class="role">Playground / hub / docs / demos links + 8 specialized sub-answerers (each <code>pawsite_*_answerer</code>).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. EVAL -->
+    <section>
+      <h2>Evaluation gates every change</h2>
+      <p class="lead">The real lesson: per-component metrics miss <i>outcome</i> regressions. Each domain has an outcome suite that grades the final user-facing result.</p>
+      <div class="grid2">
+        <div class="card">
+          <h3>Outcome suites (the deploy gate)</h3>
+          <ul class="tight">
+            <li><code>course_e2e</code> &middot; <code>site_e2e</code></li>
+            <li><code>neuralos_e2e</code> &middot; <code>pawsite_e2e</code></li>
+            <li>graded on: which domain, result kind, content, must-decline.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>The discipline</h3>
+          <ul class="tight">
+            <li>Every reported bug becomes a test <b>before</b> the fix.</li>
+            <li>Mine real per-origin traffic; eyeball, don&rsquo;t trust numbers.</li>
+            <li>Run on the <b>same backend</b> the server uses.</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:.4rem" class="center"><b style="color:var(--course)">All four domains: 100% on the live backend.</b></p>
+    </section>
+
+    <!-- 13. RESILIENCE / OPS -->
+    <section>
+      <h2>Running it: backends &amp; resilience</h2>
+      <ul class="tight">
+        <li><b>Two interchangeable backends:</b> <code>local_sdk</code> (runs the tiny models in-process, no rate limit) and <code>remote_infer</code> (the PAW <code>/api/v1/infer</code> API, concurrent).</li>
+        <li><b>Auth matters:</b> <code>remote_infer</code> needs a valid <code>PAW_API_KEY</code> (<code>X-API-Key</code>). A missing/stale key &rarr; <i>anonymous</i> rate limit &rarr; blank answers &mdash; a gotcha we hit and fixed.</li>
+        <li><b>Resilience:</b> retry-on-empty for transient API blips; the index hot-reloads; pinned IDs mean reproducible serving.</li>
+        <li><b>One widget contract:</b> render answers, links, <code>related</code> citations, feedback &mdash; so frontends don&rsquo;t drift.</li>
+      </ul>
+    </section>
+
+    <!-- 14. NUMBERS -->
+    <section class="center">
+      <h2>By the numbers</h2>
+      <div class="flow" style="gap:2.5rem; margin-top:1rem">
+        <div><div class="num" style="color:var(--paw)">29</div><small>programs serving<br>(30 compiled, 1 offline grader)</small></div>
+        <div><div class="num" style="color:var(--course)">4</div><small>domains</small></div>
+        <div><div class="num" style="color:var(--site)">4</div><small>websites, 1 backend</small></div>
+        <div><div class="num" style="color:var(--neural)">100%</div><small>outcome suites passing</small></div>
+      </div>
+      <p style="margin-top:1.4rem" class="lead">Small specialized programs + page-aware routing + a question-aware merge + evaluation-gated iteration.</p>
+      <p><small>helper/docs &middot; built with ProgramAsWeights</small></p>
+    </section>
+
+  </div>
+</div>
+
+<div class="footer">The Website Helper &middot; ProgramAsWeights</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    width: 1150, height: 720,
+    margin: 0.06,
+    plugins: [ RevealNotes, RevealHighlight ]
+  });
+</script>
+</body>
+</html>
