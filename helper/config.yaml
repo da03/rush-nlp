@@ -188,6 +188,13 @@ domains:
         any_keywords: [" sdk", "repo", "repository", "github", "source code", " package"]
         # "github" must not force `code` for an OAuth/login phrasing ("log in with github").
         unless_keywords: ["install", "how do i", "how to", "what should", "log in", "sign in", "log into", "sign into", "oauth"]
+      # "who built/made this", "who are the authors", "who is the PI" are a WRITTEN
+      # answer (the team), never the profile/about/code link. The small classifier is
+      # brittle on these common queries across recompiles, so pin them deterministically.
+      - to: question
+        from: [profile, about, code, hub, settings]
+        any_keywords: ["author", "who built", "who made", "who developed", "who created",
+                       "who is the pi", "principal investigator", "who is behind", "who runs", "who's behind"]
     # Each sub-answerer gets ONLY its topic's facts slice (facts/pawsite_<topic>.md),
     # so the injected context is small and on-topic - the point of the hierarchy.
     topics:
