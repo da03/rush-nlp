@@ -90,6 +90,9 @@
 - {query: "hello", expected: question}
 - {query: "thanks", expected: question}
 - {query: "good morning", expected: question}
+# license/open-source -> question (we answer it), not the code link
+- {query: "is this open source", expected: question}
+- {query: "is it open source", expected: question}
 # demo links + make-new vs find-existing (classifier hardening)
 - {query: "play the alien game", expected: alien}
 - {query: "where is the avatar demo", expected: avatar}

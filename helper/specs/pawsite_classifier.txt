@@ -10,7 +10,7 @@ Rules:
 - "Where is / show me / take me to / open / browse X" is usually a link. "What is / how does / can I / is it / what license" is a question.
 - Getting-started, learning, guides, quickstarts, and the API reference -> docs (a page to read).
 - How to install / the install command (pip, npm) -> question (we answer the command inline). But the source code, repository, or package SOURCE -> code.
-- The license ("what license is this under") and whether it is free -> question (we answer it). Use terms only for "terms of service" / legal terms.
+- The license ("what license is this under"), whether it is free, and whether it is OPEN SOURCE ("is this open source") -> question (we answer it: yes, MIT). Use terms only for "terms of service" / legal terms. (The source code repository itself is still code.)
 - Source code, GitHub, repositories, an SDK, or a package (the Python SDK, the JavaScript/npm SDK, "the python sdk", "npm package") -> code (a fuzzy selector then picks Python vs JavaScript vs the org page). Exception: "how do I install" or "what should I install" is a question (we answer the command).
 - API keys, sign-in, login, account -> settings. The visitor's OWN compiled programs -> profile.
 - MAKING a new program (make / create / build / compile a classifier / function / model / program, from scratch) -> playground (the compiler). FINDING an EXISTING program by what it does ("find a sentiment analyzer", "is there a program that does X") -> hub (the community gallery).
@@ -140,6 +140,12 @@ Input: how does compilation work
 Output: question
 
 Input: is it free to use
+Output: question
+
+Input: is this open source
+Output: question
+
+Input: is it open source
 Output: question
 
 Input: what license is it under
