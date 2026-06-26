@@ -61,3 +61,8 @@
 - {query: "tell me who you are", expected: question}
 - {query: "what's the weather in paris", expected: question}
 - {query: "what's your favorite food", expected: question}
+
+# greetings / thanks / small talk -> question (never a link or feedback)
+- {query: "hello", expected: question}
+- {query: "thanks", expected: question}
+- {query: "good morning", expected: question}

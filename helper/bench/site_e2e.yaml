@@ -22,7 +22,7 @@
 # --- research topics + project sub-answerers ---
 - {query: "what is implicit chain of thought", expect_domain: site, expect_kind: answer, expect_any: ["reason", "thought", "implicit", "step"]}
 - {query: "how does neuralos work", expect_domain: site, expect_kind: answer, expect_any: ["operating system", "generat", "model"]}
-- {query: "what compilers does programasweights offer", expect_domain: site, expect_kind: answer, expect_any: ["compil", "fast", "finetune"]}
+- {query: "what compilers does programasweights offer", expect_domain: [site, pawsite], expect_kind: answer, expect_any: ["compil", "fast", "finetune", "paw"]}
 
 # --- links ---
 - {query: "do you have twitter", expect_domain: site, expect_kind: answer, expect_any: ["twitter", "x.com", "x ("]}

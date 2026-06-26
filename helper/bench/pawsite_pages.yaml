@@ -85,3 +85,12 @@
 - {query: "how to install", expected: question, source: real}
 - {query: "who built this", expected: question, source: real}
 - {query: "what are its limitations", expected: question, source: real}
+
+# greetings / thanks / small talk -> question (never feedback or a link)
+- {query: "hello", expected: question}
+- {query: "thanks", expected: question}
+- {query: "good morning", expected: question}
+# demo links + make-new vs find-existing (classifier hardening)
+- {query: "play the alien game", expected: alien}
+- {query: "where is the avatar demo", expected: avatar}
+- {query: "create a sentiment classifier", expected: playground}

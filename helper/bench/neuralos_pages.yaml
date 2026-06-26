@@ -46,3 +46,8 @@
 - {query: "is this a real operating system", expected: question}
 - {query: "can it play doom", expected: question}
 - {query: "why is it so slow", expected: question}
+
+# greetings / thanks / small talk -> question (never feedback or a link)
+- {query: "hello", expected: question}
+- {query: "thanks", expected: question}
+- {query: "good morning", expected: question}

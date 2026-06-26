@@ -1,8 +1,8 @@
 {
   "compiler": "paw-ft-bs48",
-  "compiled_at": "2026-06-26T04:04:29.899698+00:00",
+  "compiled_at": "2026-06-26T17:24:06.253849+00:00",
   "programs": {
-    "page_classifier": "eb5b6134042db08a13b4",
+    "page_classifier": "9c14703e7fc1db1bf0fd",
     "answerer": "b396456b787fac0b0938",
     "validator": "ae1d51dd17d296dc747f",
     "domain_router": "fb61c6aa55594627f276",
@@ -15,8 +15,8 @@
     "neuralos_answerer": "9bedd3209a1f29f60a42",
     "students_answerer": "78d35ac1c72a26b58cb0",
     "bio_answerer": "4a7cae0f5f0e17a65d07",
-    "neuralos_classifier": "215a7ac312c2ac5397c6",
-    "pawsite_classifier": "2bfa57b5b0c101f0d14e",
+    "neuralos_classifier": "2a7f7bc7992372c1aad9",
+    "pawsite_classifier": "f0487fccbe004b2dccc5",
     "pawsite_answerer": "a79ee5b0537b00bf2a07",
     "pawsite_topic_router": "72414bddbb16469d6df3",
     "pawsite_install_answerer": "efd692765a91368c349d",

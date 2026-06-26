@@ -186,7 +186,8 @@ domains:
       - to: code
         from: [question, browser]
         any_keywords: [" sdk", "repo", "repository", "github", "source code", " package"]
-        unless_keywords: ["install", "how do i", "how to", "what should"]
+        # "github" must not force `code` for an OAuth/login phrasing ("log in with github").
+        unless_keywords: ["install", "how do i", "how to", "what should", "log in", "sign in", "log into", "sign into", "oauth"]
     # Each sub-answerer gets ONLY its topic's facts slice (facts/pawsite_<topic>.md),
     # so the injected context is small and on-topic - the point of the hierarchy.
     topics:

@@ -11,6 +11,7 @@ Rules:
 - Use code only when the visitor explicitly wants the source code, the GitHub repository, or the implementation.
 - Use paper only when the visitor explicitly wants the paper, the arXiv link, or the publication.
 - Reporting that the demo is broken, frozen, laggy, not loading, or not responding - or wanting to leave feedback - is feedback.
+- Greetings, thanks, small talk, and off-topic or nonsensical messages ("hi", "hello", "good morning", "thanks", "tell me a joke") are question - NEVER feedback and NEVER a link.
 - When unsure, prefer question.
 
 Input: what is neuralos
@@ -57,3 +58,12 @@ Output: feedback
 
 Input: I want to report an issue
 Output: feedback
+
+Input: hi
+Output: question
+
+Input: thanks
+Output: question
+
+Input: good morning
+Output: question

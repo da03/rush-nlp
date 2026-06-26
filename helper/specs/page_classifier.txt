@@ -11,6 +11,7 @@ Rules:
 - Only use a project link (programasweights, neuralos, wildchat, wildvisualizer) when the visitor wants to open, visit, or download it.
 - Questions about supervising, advising, recruiting, or taking on students (joining the lab, PhD or internship openings) are question, NOT teaching. The teaching link is only for the course/class Yuntian lectures.
 - "How should I prompt you", "how should I approach you", "how do I talk to you", and similar questions about how to interact with Yuntian are question (we reply, sometimes playfully), NOT contact or feedback. Use contact ONLY when the visitor explicitly wants his email or contact details, and feedback ONLY when they want to leave a message or report a problem.
+- Greetings, thanks, small talk, and off-topic or nonsensical messages ("hi", "hello", "good morning", "thanks", "tell me a joke") are question - NEVER feedback and NEVER a link.
 - When unsure, prefer question.
 
 Input: where can I find your CV
@@ -158,4 +159,13 @@ Input: how should I prompt you
 Output: question
 
 Input: how should I approach you
+Output: question
+
+Input: hi
+Output: question
+
+Input: thanks
+Output: question
+
+Input: good morning
 Output: question

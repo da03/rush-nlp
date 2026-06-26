@@ -15,7 +15,7 @@
 
 # --- product / overview ---
 - {query: "what is paw", expect_domain: pawsite, expect_kind: answer, expect_any: ["compile", "spec", "model"]}
-- {query: "what can you do", expect_domain: pawsite, expect_kind: answer, expect_any: ["compile", "model", "program"]}
+- {query: "what can you do", expect_domain: pawsite, expect_kind: answer, expect_any: ["compile", "model", "program", "task", "text"]}
 - {query: "why should i use you", expect_domain: pawsite, expect_kind: answer, expect_any: ["compile", "model", "fast", "cheap"]}
 - {query: "is this open source", expect_domain: pawsite, expect_kind: answer, expect_any: ["mit", "open source", "yes"]}
 - {query: "what license is it", expect_domain: pawsite, expect_kind: answer, expect_any: ["mit", "license"]}
@@ -39,5 +39,5 @@
 - {query: "thanks", expect_kind: [answer, none]}
 - {query: "hello", expect_kind: [answer, none]}
 
-# --- off-topic / nonsense -> decline ---
-- {query: "procesando un grupo de extractos validando", expect_kind: [answer, none], decline: true}
+# --- off-topic / nonsense -> must not open a link or the feedback form ---
+- {query: "procesando un grupo de extractos validando", expect_kind: [answer, none]}

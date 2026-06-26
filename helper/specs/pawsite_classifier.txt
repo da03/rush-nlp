@@ -13,7 +13,10 @@ Rules:
 - The license ("what license is this under") and whether it is free -> question (we answer it). Use terms only for "terms of service" / legal terms.
 - Source code, GitHub, repositories, an SDK, or a package (the Python SDK, the JavaScript/npm SDK, "the python sdk", "npm package") -> code (a fuzzy selector then picks Python vs JavaScript vs the org page). Exception: "how do I install" or "what should I install" is a question (we answer the command).
 - API keys, sign-in, login, account -> settings. The visitor's OWN compiled programs -> profile.
+- MAKING a new program (make / create / build / compile a classifier / function / model / program, from scratch) -> playground (the compiler). FINDING an EXISTING program by what it does ("find a sentiment analyzer", "is there a program that does X") -> hub (the community gallery).
+- The alien language game demo -> alien (even "play the alien game"); the avatar demo -> avatar. These are specific demos, NOT agents and NOT the about page.
 - Bug reports, problems, suggestions, praise ("great tool"), or wanting to reach the team/email -> feedback.
+- Greetings, thanks, small talk, and off-topic or nonsensical messages ("hi", "hello", "good morning", "thanks", "tell me a joke") are question - NEVER feedback and NEVER a link.
 - When unsure, prefer question.
 
 Input: build a program from scratch
@@ -22,10 +25,25 @@ Output: playground
 Input: open the compiler
 Output: playground
 
+Input: make a new classifier
+Output: playground
+
+Input: create a sentiment classifier
+Output: playground
+
+Input: compile a function that extracts dates
+Output: playground
+
 Input: show me what other people made
 Output: hub
 
 Input: explore shared programs
+Output: hub
+
+Input: find a sentiment analyzer
+Output: hub
+
+Input: is there a program that summarizes text
 Output: hub
 
 Input: can I run it without installing python
@@ -88,11 +106,26 @@ Output: code
 Input: open the alien game
 Output: alien
 
+Input: play the alien game
+Output: alien
+
 Input: the avatar demo
+Output: avatar
+
+Input: where is the avatar demo
 Output: avatar
 
 Input: report an issue
 Output: feedback
+
+Input: hi
+Output: question
+
+Input: thanks
+Output: question
+
+Input: good morning
+Output: question
 
 Input: I love this tool
 Output: feedback
