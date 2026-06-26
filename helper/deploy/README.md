@@ -218,11 +218,16 @@ export PAW_HELPER_INFERENCE_BACKEND=local_sdk
 # 1. Behavior-preserving check (no unrelated response changed).
 python snapshot.py --check
 
-# 2. Outcome gate: who wins the merge (main/piazza/augment) + content + must-not.
-python eval.py --section course_e2e
+# 2. Outcome gate per domain (the FINAL user-facing result: domain routing, result
+#    kind, content, must-decline). One suite per page; all should stay green.
+python eval.py --section course_e2e      # course (+ Piazza merge: main/piazza/augment)
+python eval.py --section site_e2e        # yuntiandeng.com   (page=site)
+python eval.py --section neuralos_e2e    # neural-os.com     (page=site:neuralos)
+python eval.py --section pawsite_e2e     # programasweights.com (page=site:paw)
 
-# 3. Component diagnostics (merge/selector/recall/answer/e2e/privacy).
-python eval.py --section piazza
+# 3. Classifier routing (link-vs-question) + component diagnostics.
+python eval.py --section pages           # all domains' classifiers
+python eval.py --section piazza          # Piazza merge/selector/recall/answer/privacy
 
 # 4. Spot-check a few key cases on the LIVE backend (remote_infer) via the running
 #    service, to catch backend divergence without a full-suite burst:
