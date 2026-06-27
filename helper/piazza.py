@@ -41,7 +41,7 @@ def _context(t: dict) -> str:
     return body[:_CONTEXT_CHARS]
 
 
-def _item(t: dict, score: float, keep: bool = False) -> dict:
+def _item(t: dict, score: float, keep: bool = False, list_only: bool = False) -> dict:
     folders = ", ".join(t.get("folders", []) or [])
     return {
         "label": t.get("subject") or f"@{t.get('thread_id')}",
@@ -50,6 +50,7 @@ def _item(t: dict, score: float, keep: bool = False) -> dict:
         "score": float(score),
         "context": _context(t),       # for the branch answerer (synthesis); not displayed
         "keep": keep,                 # recency items bypass the selector
+        "list_only": list_only,       # recency: present as a links list, skip the Q&A answerer
         "thread_id": t.get("thread_id"),  # for eval recall/privacy
     }
 
@@ -93,7 +94,9 @@ class _Index:
         self._maybe_reload()
         ranked = sorted(self.threads, key=lambda t: t.get("updated") or "", reverse=True)[:n]
         # Descending synthetic score keeps the original order through the score floor.
-        return [_item(t, 100.0 - i, keep=True) for i, t in enumerate(ranked)]
+        # list_only: a recency query is a "show me the latest" request - present these
+        # as a links list, never synthesize a Q&A answer from them (which hallucinates).
+        return [_item(t, 100.0 - i, keep=True, list_only=True) for i, t in enumerate(ranked)]
 
     def search(self, query: str, k: int = 5) -> list[dict]:
         self._maybe_reload()
