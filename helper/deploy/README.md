@@ -39,6 +39,20 @@ sudo nginx -t && sudo systemctl reload nginx
 sudo certbot --nginx -d helper.yuntiandeng.com
 ```
 
+> **nginx config deploy safety (this server hosts several vhosts).** The repo's
+> `*.nginx.conf` files DRIFT from what is actually live (this server has had a
+> live-only `Access-Control-Allow-Origin *` and an `/avatar` block that the repo
+> lacked). Before overwriting any live nginx file with a repo copy:
+> 1. Find the ACTUALLY-served file - `sudo nginx -T | grep -n "server_name <host>"` -
+>    it may be a differently-named file in `sites-enabled/`, not `sites-available/`.
+> 2. `diff` live vs the repo file; the ONLY differences should be your intended change.
+>    If live has extra blocks, reconcile the repo to match live FIRST - never clobber
+>    live with a stale repo file.
+> 3. Back up the live file to `/root` (NEVER into `sites-enabled/` - `include
+>    sites-enabled/*` loads every file there, so a `.bak` becomes a duplicate `server`).
+> 4. `sudo nginx -t` before `sudo systemctl reload nginx`; restore the backup if it fails.
+> (certbot also edits this file in place, which is a common source of the drift above.)
+
 Verify:
 
 ```bash
