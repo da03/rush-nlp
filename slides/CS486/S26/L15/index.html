@@ -106,13 +106,27 @@
       </svg>
     </div>
     <div style="flex: 1.1;">
-      <p style="font-size: 0.82em; margin: 0.2em 0;">An MDP whose <strong>transition \(P\)</strong> and <strong>reward \(R\)</strong> are unknown. The agent sees state \(s\) and reward \(r\), picks an action \(a\), and observes \(s'\). Goal: maximize discounted return.</p>
-      <p class="fragment" style="font-size: 0.82em; margin: 0.4em 0 0.2em;"><strong>Three new challenges:</strong></p>
-      <ul class="fragment" style="font-size: 0.8em; margin: 0;">
-        <li style="margin: 0.15em 0;"><strong>Credit assignment:</strong> which past action caused this reward?</li>
-        <li style="margin: 0.15em 0;"><strong>Long-term impact:</strong> how will this action affect future returns?</li>
-        <li style="margin: 0.15em 0;"><strong>Explore vs exploit:</strong> try new actions or stick with the best known?</li>
-      </ul>
+      <p style="font-size: 0.9em; margin: 0.2em 0;">An MDP whose <strong>transition \(P\)</strong> and <strong>reward \(R\)</strong> are unknown. The agent sees state \(s\) and reward \(r\), picks an action \(a\), and observes the next state \(s'\).</p>
+      <p style="font-size: 0.9em; margin: 0.4em 0 0;"><strong>Goal:</strong> maximize discounted return &mdash; while learning the world as it goes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3b. Three new challenges -->
+<section>
+  <h2>Three new challenges in RL</h2>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="task-card fragment">
+      <h3>Credit assignment</h3>
+      <p>A reward now may be due to an action many steps ago. Which one gets the credit?</p>
+    </div>
+    <div class="task-card fragment">
+      <h3>Long-term impact</h3>
+      <p>An action shapes not just the next reward, but every future state and reward.</p>
+    </div>
+    <div class="task-card highlight fragment">
+      <h3>Explore vs exploit</h3>
+      <p>Try new actions to learn more, or cash in on the best known so far?</p>
     </div>
   </div>
 </section>
@@ -152,12 +166,12 @@
       <li>Re-solve Bellman to get \(V^\pi(s)\) (exactly or iteratively).</li>
     </ol>
   </div>
-  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.25em;">Each new experience refines the model; each Bellman solve costs \(O(n^3)\) or a few iterations.</p>
+  <p style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.25em;">The estimate \(P(s'\mid s,a) = \tfrac{N(s,a,s')}{N(s,a)}\) is just the <strong>maximum-likelihood</strong> fraction: how often \(a\) in \(s\) led to \(s'\). Each Bellman re-solve costs \(O(n^3)\) (or a few iterations).</p>
 </section>
 
-<!-- 6. Passive ADP example -->
+<!-- 6a. Passive ADP example: update the model -->
 <section>
-  <h2>Passive ADP: a worked example</h2>
+  <h2>Passive ADP: update the model</h2>
   <div class="two-col vcenter">
     <div style="flex: 0.55; text-align: center;">
       <div class="gridworld" style="grid-template-columns: repeat(2, 56px); grid-template-rows: repeat(2, 48px);">
@@ -169,13 +183,27 @@
       <p style="font-size: 0.7em; color: #6b7280; margin: 0.2em;">\(\pi(s_{11}) = \text{down}\), \(\pi(s_{21}) = \text{right}\), \(\gamma = 0.9\).</p>
     </div>
     <div style="flex: 1.1; font-size: 0.82em;">
-      <p style="margin: 0;"><strong>Before:</strong> \(N(s, a) = 5\) for all \(s, a\); \(N(s, a, s') = 3\) for intended direction, \(1\) for each side.</p>
+      <p style="margin: 0;"><strong>Before:</strong> \(N(s, a) = 5\); \(N(s, a, s') = 3\) intended, \(1\) to each side.</p>
       <p style="margin: 0.3em 0 0 0;"><strong>New experience:</strong> \(\langle s_{11}, \text{down}, s_{21}, -0.04 \rangle\).</p>
-      <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Update counts:</strong> \(N(s_{11}, \text{down}) = 6\), \(N(s_{11}, \text{down}, s_{21}) = 4\).</p>
-      <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Solve Bellman</strong> with the refreshed model:</p>
-      <p class="fragment" style="font-size: 0.9em; text-align: center; margin: 0.2em 0; color: #166534;">\(V(s_{11}) = -0.4378,\quad V(s_{21}) = -0.8034.\)</p>
+      <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Increment counts:</strong> \(N(s_{11}, \text{down}){:}\, 5 {\to} 6\), \(\ N(s_{11}, \text{down}, s_{21}){:}\, 3 {\to} 4\).</p>
+      <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Re-estimate</strong> \(P(\cdot \mid s_{11}, \text{down})\) as count fractions:</p>
+      <p class="fragment" style="text-align: center; margin: 0.15em 0;">\(s_{21}{:}\, \tfrac{4}{6}, \quad \text{stay } s_{11}{:}\, \tfrac{1}{6}, \quad +1{:}\, \tfrac{1}{6}\)</p>
+      <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin: 0.15em 0 0;">(Going down can slip sideways: left bumps the wall &rarr; stay; right &rarr; the \(+1\) cell.)</p>
     </div>
   </div>
+</section>
+
+<!-- 6b. Passive ADP example: solve Bellman -->
+<section>
+  <h2>Passive ADP: re-solve with the new model</h2>
+  <p style="font-size: 0.84em; margin: 0.2em 0;">Plug the estimated probabilities into the policy-evaluation equations (\(R = -0.04\), \(\gamma = 0.9\)). For \(s_{21}\), \(\pi(s_{21}) = \text{right}\): \(\tfrac{3}{5}\) to \(-1\), \(\tfrac{1}{5}\) up to \(s_{11}\), \(\tfrac{1}{5}\) stay.</p>
+  <div class="defbox" style="font-size: 0.92em;">
+    <p style="margin: 0.15em 0;">\(V(s_{11}) = -0.04 + 0.9\bigl[\tfrac{4}{6} V(s_{21}) + \tfrac{1}{6} V(s_{11}) + \tfrac{1}{6}(+1)\bigr]\)</p>
+    <p style="margin: 0.15em 0;">\(V(s_{21}) = -0.04 + 0.9\bigl[\tfrac{3}{5}(-1) + \tfrac{1}{5} V(s_{11}) + \tfrac{1}{5} V(s_{21})\bigr]\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.84em; margin: 0.3em 0 0;">Two linear equations, two unknowns &mdash; solve:</p>
+  <p class="fragment" style="text-align: center; font-size: 1.05em; color: #166534; margin: 0.2em 0;">\(V(s_{11}) = -0.438, \quad V(s_{21}) = -0.803.\)</p>
+  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.2em 0 0;">Every experience refines the model; re-solving Bellman propagates it to all states' values.</p>
 </section>
 
 <!-- 6b. Q1 quick check -->
@@ -216,44 +244,63 @@
   </div>
 </section>
 
-<!-- 8. Three exploration strategies -->
+<!-- 8a. Exploration strategy 1: epsilon-greedy -->
 <section>
-  <h2>Three exploration strategies</h2>
-  <div class="exploration-cards">
-    <div class="ecard fragment" data-fragment-index="0">
-      <h3>\(\varepsilon\)-greedy</h3>
-      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" class="ecard-svg" aria-hidden="true">
+  <h2>Exploration 1: \(\varepsilon\)-greedy</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" style="width: 300px; max-width: 92%; height: auto;" aria-hidden="true">
         <rect x="4"  y="14" width="110" height="22" fill="#1d4ed8"/>
         <rect x="114" y="14" width="42"  height="22" fill="#fbbf24"/>
         <text x="59" y="29" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">greedy 1-&#949;</text>
         <text x="135" y="29" font-size="10" fill="#78350f" text-anchor="middle" font-weight="700">&#949;</text>
         <text x="80" y="52" font-size="9" fill="#6b7280" text-anchor="middle">action probability</text>
       </svg>
-      <p style="font-size: 0.88em;">Random with prob \(\varepsilon\); greedy with prob \(1 - \varepsilon\). Decay \(\varepsilon\) over time.</p>
-      <p style="font-size: 0.78em; color: #6b7280; margin-top: 0.2em;">Simple, but treats all sub-optimal actions equally.</p>
     </div>
-    <div class="ecard fragment" data-fragment-index="1">
-      <h3>Softmax / Boltzmann</h3>
-      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" class="ecard-svg" aria-hidden="true">
-        <!-- low-T (peaky) -->
+    <div style="flex: 1.1;">
+      <p style="margin: 0.2em 0;">With probability \(\varepsilon\): take a <strong>random</strong> action (explore).</p>
+      <p style="margin: 0.2em 0;">With probability \(1 - \varepsilon\): take the <strong>greedy</strong> action (exploit).</p>
+      <p class="fragment" style="margin: 0.4em 0 0;">Start with a large \(\varepsilon\) and <strong>decay</strong> it over time &mdash; explore early, exploit once the values settle.</p>
+      <p class="fragment" style="font-size: 0.8em; color: #6b7280; margin-top: 0.4em;">Simple and popular, but it treats every sub-optimal action as equally worth trying.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8b. Exploration strategy 2: softmax / Boltzmann -->
+<section>
+  <h2>Exploration 2: softmax (Boltzmann)</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" style="width: 300px; max-width: 92%; height: auto;" aria-hidden="true">
         <rect x="6"   y="22" width="14" height="14" fill="#bfdbfe"/>
         <rect x="22"  y="6"  width="14" height="30" fill="#1d4ed8"/>
         <rect x="38"  y="26" width="14" height="10" fill="#bfdbfe"/>
         <text x="29" y="48" font-size="9" fill="#1d4ed8" text-anchor="middle" font-weight="700">low T</text>
-        <!-- high-T (uniform) -->
         <rect x="100" y="16" width="14" height="20" fill="#86efac"/>
         <rect x="116" y="14" width="14" height="22" fill="#86efac"/>
         <rect x="132" y="16" width="14" height="20" fill="#86efac"/>
         <text x="123" y="48" font-size="9" fill="#166534" text-anchor="middle" font-weight="700">high T</text>
         <text x="80" y="14" font-size="9" fill="#6b7280" text-anchor="middle">P(a)</text>
       </svg>
-      <p style="text-align: center; font-size: 0.92em; margin: 0.2em 0;">\(P(a) = \dfrac{e^{Q(s, a) / T}}{\sum_{a'} e^{Q(s, a') / T}}\)</p>
-      <p style="font-size: 0.78em; color: #6b7280; margin-top: 0.2em;">Low \(T\): peaky / greedy. High \(T\): uniform / exploratory.</p>
     </div>
-    <div class="ecard fragment" data-fragment-index="2">
-      <h3>Optimistic init</h3>
-      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" class="ecard-svg" aria-hidden="true">
-        <!-- three actions, untried one gets a star + R+ -->
+    <div style="flex: 1.1;">
+      <p style="margin: 0.2em 0;">Pick actions in proportion to their value, tuned by a <strong>temperature</strong> \(T\):</p>
+      <p style="text-align: center; font-size: 1.02em; margin: 0.2em 0;">\(P(a) = \dfrac{e^{Q(s, a) / T}}{\sum_{a'} e^{Q(s, a') / T}}\)</p>
+      <ul class="fragment" style="margin: 0.1em 0;">
+        <li>Low \(T\): nearly <strong>greedy</strong> (peaked on the best action).</li>
+        <li>High \(T\): nearly <strong>uniform</strong> (lots of exploration).</li>
+      </ul>
+      <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin-top: 0.15em;">Unlike \(\varepsilon\)-greedy, better actions are explored more than clearly-bad ones. Cool \(T\) over time (like simulated annealing).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8c. Exploration strategy 3: optimistic initialization -->
+<section>
+  <h2>Exploration 3: optimistic initialization</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" style="width: 300px; max-width: 92%; height: auto;" aria-hidden="true">
         <rect x="6"  y="20" width="34" height="16" fill="#9ca3af"/>
         <rect x="46" y="14" width="34" height="22" fill="#d97706"/>
         <text x="63" y="29" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">R&#8314;</text>
@@ -263,29 +310,45 @@
         <text x="63" y="48" font-size="9" fill="#92400e" text-anchor="middle" font-weight="700">untried</text>
         <text x="103" y="48" font-size="9" fill="#6b7280" text-anchor="middle">tried</text>
       </svg>
-      <p style="text-align: center; font-size: 0.85em; margin: 0.2em 0;">\(f(u, n) = \begin{cases} R^+ &amp; n &lt; N_e \\ u &amp; \text{else}\end{cases}\)</p>
-      <p style="font-size: 0.78em; color: #6b7280; margin-top: 0.2em;">"Shiny new toy" bonus until each action has been tried \(N_e\) times.</p>
+    </div>
+    <div style="flex: 1.1;">
+      <p style="margin: 0.2em 0;">Assume the best about actions you haven't tried enough. Replace a value \(u\) with an <strong>exploration function</strong> \(f\):</p>
+      <p style="text-align: center; font-size: 1.05em; margin: 0.25em 0;">\(f(u, n) = \begin{cases} R^+ &amp; n &lt; N_e \\ u &amp; \text{otherwise}\end{cases}\)</p>
+      <p class="fragment" style="font-size: 0.82em; margin: 0.2em 0;">\(R^+\) is an optimistic reward bound; \(N_e\) is how many tries before we trust the real estimate \(u\).</p>
+      <p class="fragment" style="font-size: 0.8em; color: #6b7280; margin-top: 0.2em;">Every action looks great until tried \(N_e\) times, pulling the agent toward the unknown.</p>
     </div>
   </div>
 </section>
 
-<!-- 9. Active ADP algorithm -->
+<!-- 9a. Active ADP: the exploration function f -->
+<section>
+  <h2>Active ADP: bake exploration into the value</h2>
+  <p style="font-size: 0.88em;">Active ADP = passive ADP, but now the agent <em>chooses</em> actions. The trick: act greedily on an <strong>optimistic</strong> value \(V^+\), seen through the exploration function \(f\) from before.</p>
+  <div class="defbox">
+    <p style="margin: 0 0 0.3em;">Pick the action whose successor value &mdash; <em>viewed through \(f\)</em> &mdash; looks best:</p>
+    <p style="text-align: center; margin: 0.2em 0;">\(a = \arg\max_{a}\, f\Bigl(\, \underbrace{\textstyle\sum_{s'} P(s'\mid s,a)\, V^+(s')}_{\text{estimated value of } a},\ \ \underbrace{N(s,a)}_{\text{times tried}} \,\Bigr)\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">\(f\) inflates the value of <strong>under-tried</strong> actions (\(N(s,a) < N_e\)), so the agent is pulled toward exploring them.</p>
+</section>
+
+<!-- 9b. Active ADP algorithm -->
 <section>
   <h2>The active ADP algorithm</h2>
   <div class="algo-card">
     <div class="algo-title">active-ADP(\(N_e,\ R^+\))</div>
     <ol>
       <li>Initialize \(R(s),\ V^+(s),\ N(s,a),\ N(s,a,s')\).</li>
-      <li>Repeat until every \((s,a)\) is visited \(\ge N_e\) times and \(V^+\) converged:
+      <li>Repeat until every \((s,a)\) is tried \(\ge N_e\) times and \(V^+\) converges:
         <ul style="margin:0.2em 0 0.2em 1em;">
-          <li>Pick action \(a = \arg\max_{a} f\!\left(\sum_{s'} P(s'\mid s,a)\, V^+(s'),\ N(s,a)\right)\).</li>
+          <li>Pick \(a = \arg\max_{a} f\!\left(\sum_{s'} P(s'\mid s,a)\, V^+(s'),\ N(s,a)\right)\) &nbsp;(the rule above).</li>
           <li>Execute \(a\); observe \(\langle s, a, s', r \rangle\); update \(R(s)\leftarrow r\), counts, and \(P(s'\mid s,a)\).</li>
-          <li>Update \(V^+(s) \leftarrow R(s) + \gamma\, \max_{a} f\!\left(\sum_{s'} P(s'\mid s,a)\, V^+(s'),\ N(s,a)\right)\).</li>
+          <li>\(V^+(s) \leftarrow R(s) + \gamma\, \max_{a} f\!\left(\sum_{s'} P(s'\mid s,a)\, V^+(s'),\ N(s,a)\right)\).</li>
+          <li>\(s \leftarrow s'\).</li>
         </ul>
       </li>
     </ol>
   </div>
-  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Same model-based loop as passive ADP, plus the exploration bonus \(f\) baked into action selection.</p>
+  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.3em;">Same model-based loop as passive ADP &mdash; only the action choice and the \(\max\) now pass through \(f\).</p>
 </section>
 
 <!-- ============================================================
@@ -295,21 +358,22 @@
 <!-- 10. From V to Q: model-free! -->
 <section>
   <h2>From V to Q: learn without a model</h2>
-  <p style="font-size: 0.85em;">Bellman for \(V\) and \(Q\) are both fixed-point equations:</p>
+  <p style="font-size: 0.84em; margin: 0.15em 0;">Bellman for \(V\) and \(Q\) are both fixed-point equations:</p>
   <div class="bellman-compare">
     <div class="bcard">
       <h3>Bellman for \(V^\star\)</h3>
       <p class="formula">\(V^\star(s) = R(s) + \gamma\, \max_a \sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
-      <p style="font-size: 0.8em; margin: 0.3em 0 0 0;">To pick \(\pi^\star\) you still need to know \(P\) and combine it with \(V^\star\).</p>
+      <p style="font-size: 0.76em; margin: 0.25em 0 0 0;">To pick \(\pi^\star\) you still need to know \(P\) and combine it with \(V^\star\).</p>
     </div>
     <div class="bcard linear">
       <h3>Bellman for \(Q^\star\)</h3>
       <p class="formula">\(Q^\star(s, a) = R(s) + \gamma \sum_{s'} P(s' \mid s, a)\, \max_{a'} Q^\star(s', a')\)</p>
-      <p style="font-size: 0.8em; margin: 0.3em 0 0 0;">If we know \(Q^\star\), then \(\pi^\star(s) = \arg\max_a Q^\star(s, a)\) &mdash; <strong>no \(P\) needed.</strong></p>
+      <p style="font-size: 0.76em; margin: 0.25em 0 0 0;">If we know \(Q^\star\), then \(\pi^\star(s) = \arg\max_a Q^\star(s, a)\) &mdash; <strong>no \(P\) needed.</strong></p>
       <span class="tag linear-tag">model-free!</span>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Learning \(Q\) directly is the trick that makes RL practical at scale.</p>
+  <p class="fragment" style="font-size: 0.78em; text-align: center; margin: 0.2em 0 0;">Where does \(Q^\star\) come from? Plug \(V^\star = \max_{a'} Q^\star\) into \(Q^\star = R + \gamma \sum P\, V^\star\).</p>
+  <p class="fragment" style="font-size: 0.8em; color: #1d4ed8; text-align: center; margin: 0.15em 0 0;">Learning \(Q\) directly is what makes RL practical at scale.</p>
 </section>
 
 <!-- 11. Temporal difference error -->
@@ -349,16 +413,16 @@
         <ul style="margin:0.2em 0 0.2em 1em;">
           <li>Pick \(a\) from \(s\) using <em>any</em> exploration strategy (\(\varepsilon\)-greedy, softmax, optimistic).</li>
           <li>Execute \(a\); observe \(\langle s,a,s',r \rangle\); update \(R(s) \leftarrow r\).</li>
-          <li>\(Q(s,a) \leftarrow Q(s,a) + \alpha\bigl(r + \gamma\, \max_{a'} Q(s',a') - Q(s,a)\bigr)\).</li>
+          <li>\(Q(s,a) \leftarrow Q(s,a) + \alpha\, \underbrace{\bigl(r + \gamma\, \max_{a'} Q(s',a') - Q(s,a)\bigr)}_{\delta,\ \text{the TD error}}\).</li>
           <li>\(s \leftarrow s'\).</li>
         </ul>
       </li>
     </ol>
   </div>
   <ul style="font-size: 0.8em; margin-top: 0.3em;">
-    <li><strong>Model-free</strong>: never estimates \(P\) explicitly.</li>
-    <li><strong>Learning rate</strong>: smaller \(\alpha\) = slower but more accurate; e.g. \(\alpha(N) = 10/(9+N(s,a))\).</li>
-    <li>Converges to \(Q^\star\) if every \((s,a)\) is visited infinitely often.</li>
+    <li>The update is exactly <strong>\(Q \leftarrow Q + \alpha\,\delta\)</strong> &mdash; nudge \(Q\) a fraction \(\alpha\) of the way toward the target.</li>
+    <li><strong>Learning rate</strong> \(\alpha(N) = 10/(9+N(s,a))\) shrinks with visits: early surprises move \(Q\) a lot, later ones fine-tune.</li>
+    <li><strong>Model-free</strong>; converges to \(Q^\star\) if every \((s,a)\) is visited infinitely often.</li>
   </ul>
 </section>
 
@@ -406,10 +470,21 @@
   <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">SARSA = State, Action, Reward, State, Action.</p>
 </section>
 
-<!-- 15. SARSA vs Q-learning worked example -->
+<!-- 15a. SARSA vs Q-learning: the scenario -->
 <section>
-  <h2>SARSA vs Q-learning: a side-by-side update</h2>
-  <p style="font-size: 0.78em; margin: 0.15em 0;">At \(s_{13}\), update \(Q(s_{13},\text{down}) = 0.4\). Next state \(s_{23}\): \(Q = (\text{L}{:}0.3,\ \text{R}{:}{-}0.4,\ \text{D}{:}0.7,\ \text{U}{:}0.3)\), \(r = -0.04,\ \gamma = 0.9,\ \alpha = 0.4\). The agent's \(\varepsilon\)-greedy step explores \(a' = \text{right}\) (into the bad cell).</p>
+  <h2>SARSA vs Q-learning: the scenario</h2>
+  <p style="margin: 0.25em 0; text-align: center;">Update \(Q(s_{13}, \text{down}) = 0.4\) after \(\langle s_{13}, \text{down}, s_{23} \rangle\), with \(r = -0.04,\ \gamma = 0.9,\ \alpha = 0.4\).</p>
+  <p style="margin: 0.25em 0; text-align: center;">The \(\varepsilon\)-greedy step <strong>explores</strong> \(a' = \text{right}\) in \(s_{23}\) (into the bad cell).</p>
+  <table class="q-table" style="margin: 0.5em auto;">
+    <thead><tr><th>\(Q(s_{23}, \cdot)\)</th><th>up</th><th>right</th><th>down</th><th>left</th></tr></thead>
+    <tbody><tr><th></th><td>0.3</td><td class="cell-update">&minus;0.4</td><td class="cell-max">0.7</td><td>0.3</td></tr></tbody>
+  </table>
+  <p style="font-size: 0.82em; color: #6b7280; text-align: center; margin: 0.3em 0;">Yellow = the explored next action \(a' = \text{right}\) (SARSA's target); &nbsp;green = \(\max_{a'} Q\) (Q-learning's target).</p>
+</section>
+
+<!-- 15b. SARSA vs Q-learning: the two updates -->
+<section>
+  <h2>SARSA vs Q-learning: the two updates</h2>
   <div class="compare-row">
     <div class="ccard sarsa">
       <h3>SARSA: uses \(a' = \text{right}\)</h3>
