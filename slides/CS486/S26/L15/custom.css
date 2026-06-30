@@ -31,7 +31,7 @@
    CSS, so style it here (mirrors L14). */
 .reveal .bellman-compare {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0.7em;
   margin: 0.4em 0;
 }
@@ -51,9 +51,9 @@
 }
 .reveal .bellman-compare .bcard.linear h3 { color: #166534; }
 .reveal .bellman-compare .bcard .formula {
-  font-size: 0.8em;
+  font-size: 0.55em;
   margin: 0.35em 0;
-  text-align: center;
+  text-align: left;
 }
 .reveal .bellman-compare .bcard .tag {
   display: inline-block;
@@ -66,7 +66,7 @@
 .reveal .bellman-compare .bcard .tag.linear-tag { background: #dcfce7; color: #166534; }
 
 /* RL agent-environment loop (slide 3). */
-.reveal .rl-loop { display: block; margin: 0.3em auto; max-height: 260px; }
+.reveal .rl-loop { display: block; margin: 0.3em auto; max-height: 300px; width: 100%; }
 .reveal .rl-loop .agent-box rect,
 .reveal .rl-loop .env-box rect {
   fill: #fff;
@@ -137,11 +137,11 @@
 /* TD-error gap number line (slide 11). */
 .reveal .td-gap {
   display: block;
-  margin: 0.2em auto 0.1em;
+  margin: 0.25em auto 0.15em;
   width: 100%;
-  max-width: 640px;
+  max-width: 700px;
   height: auto;
-  max-height: 70px;
+  max-height: 66px;
 }
 
 /* Q-table for RL worked examples (slides 13, 15). */
@@ -225,6 +225,9 @@
   max-width: 90%;
 }
 .reveal .update-derivation .step { display: block; }
+/* In the SARSA-vs-Q side-by-side, shrink the derivations a touch so each step
+   stays on one line and both cards end up the same height. */
+.reveal .compare-row .update-derivation { font-size: 0.66em; }
 .reveal .update-derivation .final {
   color: #166534;
   font-weight: 700;
