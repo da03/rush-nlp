@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L12/custom.css">
   <link rel="stylesheet" href="../L13/custom.css">
-  <link rel="stylesheet" href="custom.css?v=3">
+  <link rel="stylesheet" href="custom.css?v=4">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -480,6 +480,29 @@
   <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">SARSA = State, Action, Reward, State, Action.</p>
 </section>
 
+<!-- 14b. Why is Q-learning off-policy? -->
+<section>
+  <h2>Why is Q-learning <em>off</em>-policy?</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Every step, the agent runs <strong>two</strong> policies at once:</p>
+  <ul style="font-size: 0.82em; margin: 0.1em 0 0.35em 1.2em;">
+    <li><strong>Behavior policy</strong> &mdash; how it <em>actually</em> picks actions (\(\varepsilon\)-greedy: usually greedy, sometimes explores).</li>
+    <li><strong>Target policy</strong> &mdash; the policy whose value the update is learning about.</li>
+  </ul>
+  <div class="compare-row">
+    <div class="ccard qlearn">
+      <h3>Q-learning</h3>
+      <p style="font-size: 0.8em; margin: 0.2em 0;">The update uses \(\max_{a'} Q(s',a')\) &mdash; the value of the <strong>greedy</strong> next action &mdash; even when the agent is about to <em>explore</em> a different one.</p>
+      <p style="font-size: 0.8em; margin: 0.25em 0 0;">Behavior \(\ne\) target \(\Rightarrow\) <strong>off-policy</strong>. Converges to \(Q^\star\) no matter how it explores.</p>
+    </div>
+    <div class="ccard sarsa fragment">
+      <h3>SARSA</h3>
+      <p style="font-size: 0.8em; margin: 0.2em 0;">The update uses \(Q(s',a')\) for the action <strong>actually chosen</strong> by \(\varepsilon\)-greedy &mdash; the very move it will play next.</p>
+      <p style="font-size: 0.8em; margin: 0.25em 0 0;">Behavior \(=\) target \(\Rightarrow\) <strong>on-policy</strong>. Learns the value of the exploring policy itself.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;"><strong>Off-policy:</strong> learn about one policy (greedy) while <em>behaving</em> by another (exploratory). &nbsp;<strong>On-policy:</strong> learn about the policy you actually run.</p>
+</section>
+
 <!-- 15a. SARSA vs Q-learning: the scenario -->
 <section>
   <h2>SARSA vs Q-learning: the scenario</h2>
@@ -515,7 +538,8 @@
       <div class="result fragment" style="color: #166534;">= <strong>0.476</strong> &nbsp;<span style="font-family: -apple-system, sans-serif; font-weight: 600;">(rewarded for the best)</span></div>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; text-align: center; margin-top: 0.25em; color: #1d4ed8;">SARSA is <strong>conservative</strong> (learns what really happens); Q-learning is <strong>aggressive</strong> (learns the optimal policy).</p>
+  <p class="fragment" style="font-size: 0.8em; text-align: center; margin-top: 0.25em; color: #6b7280;">The agent is about to play \(a' = \text{right}\) (\(-0.4\)), but Q-learning updates toward \(\max = 0.7\) (down) &mdash; not the move it will make. <strong>That mismatch is "off-policy."</strong></p>
+  <p class="fragment" style="font-size: 0.82em; text-align: center; margin-top: 0.2em; color: #1d4ed8;">SARSA is <strong>conservative</strong> (learns what really happens); Q-learning is <strong>aggressive</strong> (learns the optimal policy).</p>
 </section>
 
 <!-- ============================================================
