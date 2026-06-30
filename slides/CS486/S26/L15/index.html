@@ -543,10 +543,33 @@
 </section>
 
 <!-- ============================================================
-     Comparison + properties (2 slides)
+     Check your understanding + summary (3 slides)
      ============================================================ -->
 
-<!-- 16. ADP vs Q-learning vs SARSA -->
+<!-- 17a. Q2: when is SARSA safer? -->
+<section>
+  <h2>When to use what (Q2)</h2>
+  <p class="quiz-q"><strong>Q2.</strong> For a high-stakes <em>online</em> learning problem (for example, a self-driving car still in training), which algorithm is safer?</p>
+  <ol class="quiz-options">
+    <li>Q-learning</li>
+    <li><strong>SARSA</strong></li>
+    <li>I don't know</li>
+  </ol>
+  <div class="quiz-answer fragment">
+    <strong>B &mdash; SARSA.</strong> SARSA's target uses the action that will <em>actually</em> be taken while exploring, so it learns to avoid catastrophic outcomes along the exploration path. Q-learning's target uses the greedy action, ignoring the cost of exploration mistakes.
+  </div>
+</section>
+
+<!-- 17b. Q3: model-free / on-policy taxonomy (open question) -->
+<section>
+  <h2>Putting the labels together (Q3)</h2>
+  <p class="quiz-q"><strong>Q3.</strong> For each of <strong>Q-learning</strong> and <strong>SARSA</strong>: is it <em>model-based</em> or <em>model-free</em>? Is it <em>on-policy</em> or <em>off-policy</em>?</p>
+  <div class="quiz-answer fragment">
+    <strong>Both are model-free</strong> (neither estimates \(P\)). &nbsp;<strong>Q-learning is off-policy</strong> &mdash; its target uses \(\max_{a'} Q(s',a')\), the greedy action. &nbsp;<strong>SARSA is on-policy</strong> &mdash; its target uses the action actually played.
+  </div>
+</section>
+
+<!-- 18. ADP vs Q-learning vs SARSA (summary, at the end) -->
 <section>
   <h2>ADP vs Q-learning vs SARSA</h2>
   <table class="props" style="width: 92%;">
@@ -586,36 +609,6 @@
     </tbody>
   </table>
   <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.4em;">ADP is sample-efficient but expensive per step; TD methods (Q, SARSA) flip that trade-off.</p>
-</section>
-
-<!-- 17a. Q2: when is SARSA safer? -->
-<section>
-  <h2>When to use what (Q2)</h2>
-  <p class="quiz-q"><strong>Q2.</strong> For a high-stakes <em>online</em> learning problem (for example, a self-driving car still in training), which algorithm is safer?</p>
-  <ol class="quiz-options">
-    <li>Q-learning</li>
-    <li><strong>SARSA</strong></li>
-    <li>I don't know</li>
-  </ol>
-  <div class="quiz-answer fragment">
-    <strong>B &mdash; SARSA.</strong> SARSA's target uses the action that will <em>actually</em> be taken while exploring, so it learns to avoid catastrophic outcomes along the exploration path. Q-learning's target uses the greedy action, ignoring the cost of exploration mistakes.
-  </div>
-</section>
-
-<!-- 17b. Q3: model-free / on-policy taxonomy -->
-<section>
-  <h2>Putting the labels together (Q3)</h2>
-  <p class="quiz-q"><strong>Q3.</strong> Which statement is true?</p>
-  <ol class="quiz-options" style="font-size: 0.82em;">
-    <li>Q-learning is model-free + off-policy; SARSA is model-based + on-policy.</li>
-    <li>Q-learning is model-based + off-policy; SARSA is model-free + on-policy.</li>
-    <li>Q-learning is model-free + on-policy; SARSA is model-based + off-policy.</li>
-    <li>Q-learning is model-based + on-policy; SARSA is model-free + off-policy.</li>
-    <li><strong>None of the above.</strong></li>
-  </ol>
-  <div class="quiz-answer fragment">
-    <strong>E &mdash; None of the above.</strong> Both Q-learning and SARSA are <em>model-free</em>. Q-learning is off-policy (target uses \(\max_{a'} Q\)); SARSA is on-policy (target uses the action actually played).
-  </div>
 </section>
 
 <!-- ============================================================
