@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L12/custom.css">
   <link rel="stylesheet" href="../L13/custom.css">
-  <link rel="stylesheet" href="custom.css?v=2">
+  <link rel="stylesheet" href="custom.css?v=3">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -112,25 +112,6 @@
   </div>
 </section>
 
-<!-- 3b. Three new challenges -->
-<section>
-  <h2>Three new challenges in RL</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
-    <div class="task-card fragment">
-      <h3>Credit assignment</h3>
-      <p>A reward now may be due to an action many steps ago. Which one gets the credit?</p>
-    </div>
-    <div class="task-card fragment">
-      <h3>Long-term impact</h3>
-      <p>An action shapes not just the next reward, but every future state and reward.</p>
-    </div>
-    <div class="task-card highlight fragment">
-      <h3>Explore vs exploit</h3>
-      <p>Try new actions to learn more, or cash in on the best known so far?</p>
-    </div>
-  </div>
-</section>
-
 <!-- ============================================================
      Passive ADP (3 slides)
      ============================================================ -->
@@ -138,7 +119,7 @@
 <!-- 4. Passive learning + ADP idea -->
 <section>
   <h2>Passive learning: just evaluate a fixed policy</h2>
-  <p style="font-size: 0.88em;">Fix a policy \(\pi\). Goal: learn \(V^\pi(s)\) for every state \(s\).</p>
+  <p style="font-size: 0.88em;">Fix a policy \(\pi\); goal: learn \(V^\pi(s)\) for every state \(s\). <strong>The catch:</strong> we no longer know the reward \(R(s)\) or the transitions \(P(s' \mid s, a)\) &mdash; we only get to <em>observe</em> experiences.</p>
   <div class="defbox fragment">
     <h3>Adaptive Dynamic Programming (ADP)</h3>
     <ol style="margin: 0;">
@@ -166,12 +147,12 @@
       <li>Re-solve Bellman to get \(V^\pi(s)\) (exactly or iteratively).</li>
     </ol>
   </div>
-  <p style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.25em;">The estimate \(P(s'\mid s,a) = \tfrac{N(s,a,s')}{N(s,a)}\) is just the <strong>maximum-likelihood</strong> fraction: how often \(a\) in \(s\) led to \(s'\). Each Bellman re-solve costs \(O(n^3)\) (or a few iterations).</p>
 </section>
 
 <!-- 6a. Passive ADP example: update the model -->
 <section>
   <h2>Passive ADP: update the model</h2>
+  <p style="font-size: 0.82em; margin: 0.1em 0;">Same grid world as before (the agent moves in the intended direction, or slips to either side) &mdash; but now <strong>we don't know</strong> those slip probabilities, so we <strong>count outcomes</strong> to estimate \(P\).</p>
   <div class="two-col vcenter">
     <div style="flex: 0.55; text-align: center;">
       <div class="gridworld" style="grid-template-columns: repeat(2, 66px); grid-template-rows: repeat(2, 56px);">
@@ -183,7 +164,7 @@
       <p style="font-size: 0.7em; color: #6b7280; margin: 0.2em;">\(\pi(s_{11}) = \text{down}\), \(\pi(s_{21}) = \text{right}\), \(\gamma = 0.9\).</p>
     </div>
     <div style="flex: 1.1; font-size: 0.82em;">
-      <p style="margin: 0;"><strong>Before:</strong> \(N(s, a) = 5\); \(N(s, a, s') = 3\) intended, \(1\) to each side.</p>
+      <p style="margin: 0;"><strong>Counts so far:</strong> \(N(s, a) = 5\), with \(N(s, a, s') = 3\) for the intended direction and \(1\) for each side.</p>
       <p style="margin: 0.3em 0 0 0;"><strong>New experience:</strong> \(\langle s_{11}, \text{down}, s_{21}, -0.04 \rangle\).</p>
       <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Increment counts:</strong> \(N(s_{11}, \text{down}){:}\, 5 {\to} 6\), \(\ N(s_{11}, \text{down}, s_{21}){:}\, 3 {\to} 4\).</p>
       <p class="fragment" style="margin: 0.3em 0 0 0;"><strong>Re-estimate</strong> \(P(\cdot \mid s_{11}, \text{down})\) as count fractions:</p>
@@ -196,14 +177,14 @@
 <!-- 6b. Passive ADP example: solve Bellman -->
 <section>
   <h2>Passive ADP: re-solve with the new model</h2>
-  <p style="font-size: 0.84em; margin: 0.2em 0;">Plug the estimated probabilities into the policy-evaluation equations (\(R = -0.04\), \(\gamma = 0.9\)). For \(s_{21}\), \(\pi(s_{21}) = \text{right}\): \(\tfrac{3}{5}\) to \(-1\), \(\tfrac{1}{5}\) up to \(s_{11}\), \(\tfrac{1}{5}\) stay.</p>
-  <div class="defbox" style="font-size: 0.92em;">
+  <p style="font-size: 0.8em; margin: 0.1em 0;"><strong>Reminder &mdash; policy evaluation:</strong> &nbsp;\(V^\pi(s) = R(s) + \gamma \sum_{s'} P(s' \mid s, \pi(s))\, V^\pi(s')\) &nbsp;(\(R = -0.04\), \(\gamma = 0.9\)).</p>
+  <p style="font-size: 0.8em; margin: 0.1em 0;">Estimate \(P(\cdot \mid s_{21}, \text{right})\) the same way (counts \(3\) intended, \(1\) each side, out of \(5\)): &nbsp;right \(\to -1\) is \(\tfrac{3}{5}\); &nbsp;up \(\to s_{11}\) is \(\tfrac{1}{5}\); &nbsp;down bumps the wall \(\to\) stay \(s_{21}\) is \(\tfrac{1}{5}\).</p>
+  <div class="defbox" style="font-size: 0.9em;">
     <p style="margin: 0.15em 0;">\(V(s_{11}) = -0.04 + 0.9\bigl[\tfrac{4}{6} V(s_{21}) + \tfrac{1}{6} V(s_{11}) + \tfrac{1}{6}(+1)\bigr]\)</p>
     <p style="margin: 0.15em 0;">\(V(s_{21}) = -0.04 + 0.9\bigl[\tfrac{3}{5}(-1) + \tfrac{1}{5} V(s_{11}) + \tfrac{1}{5} V(s_{21})\bigr]\)</p>
   </div>
   <p class="fragment" style="font-size: 0.84em; margin: 0.3em 0 0;">Two linear equations, two unknowns &mdash; solve:</p>
   <p class="fragment" style="text-align: center; font-size: 1.05em; color: #166534; margin: 0.2em 0;">\(V(s_{11}) = -0.438, \quad V(s_{21}) = -0.803.\)</p>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.2em 0 0;">Every experience refines the model; re-solving Bellman propagates it to all states' values.</p>
 </section>
 
 <!-- 6b. Q1 quick check -->
@@ -355,37 +336,52 @@
      Q-learning (4 slides)
      ============================================================ -->
 
-<!-- 10. From V to Q: model-free! -->
+<!-- 10a. Recap: the Bellman equation for V* (from L14) -->
 <section>
-  <h2>From V to Q: learn without a model</h2>
-  <p style="font-size: 0.84em; margin: 0.15em 0;">Bellman for \(V\) and \(Q\) are both fixed-point equations:</p>
-  <div class="bellman-compare">
-    <div class="bcard">
-      <h3>Bellman for \(V^\star\)</h3>
-      <p class="formula">\(\begin{aligned}V^\star(s) ={}& R(s) \\ &+ \gamma\, \max_a \textstyle\sum_{s'} P(s' \mid s, a)\, V^\star(s')\end{aligned}\)</p>
-      <p style="font-size: 0.76em; margin: 0.25em 0 0 0;">To pick \(\pi^\star\) you still need to know \(P\) and combine it with \(V^\star\).</p>
+  <h2>Recall: the Bellman equation for \(V^\star\)</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">From L14, two connections between \(V^\star\) and \(Q^\star\):</p>
+  <div style="display: flex; gap: 0.6em; justify-content: center; align-items: stretch; margin: 0.3em 0;">
+    <div class="defbox" style="margin: 0; flex: 0.8; padding: 0.4em 0.6em;">
+      <p style="text-align: center; margin: 0; font-size: 0.9em;">&#9312;&nbsp;\(V^\star(s) = \displaystyle\max_a Q^\star(s, a)\)</p>
     </div>
-    <div class="bcard linear">
-      <h3>Bellman for \(Q^\star\)</h3>
-      <p class="formula">\(\begin{aligned}Q^\star(s, a) ={}& R(s) \\ &+ \gamma \textstyle\sum_{s'} P(s' \mid s, a)\, \max_{a'} Q^\star(s', a')\end{aligned}\)</p>
-      <p style="font-size: 0.76em; margin: 0.25em 0 0 0;">If we know \(Q^\star\), then \(\pi^\star(s) = \arg\max_a Q^\star(s, a)\) &mdash; <strong>no \(P\) needed.</strong></p>
-      <span class="tag linear-tag">model-free!</span>
+    <div class="defbox" style="margin: 0; flex: 1.2; padding: 0.4em 0.6em;">
+      <p style="text-align: center; margin: 0; font-size: 0.85em;">&#9313;&nbsp;\(Q^\star(s, a) = R(s) + \gamma \displaystyle\sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.78em; text-align: center; margin: 0.2em 0 0;">Where does \(Q^\star\) come from? Plug \(V^\star = \max_{a'} Q^\star\) into \(Q^\star = R + \gamma \sum P\, V^\star\).</p>
-  <p class="fragment" style="font-size: 0.8em; color: #1d4ed8; text-align: center; margin: 0.15em 0 0;">Learning \(Q\) directly is what makes RL practical at scale.</p>
+  <p class="fragment" style="font-size: 0.85em; text-align: center; margin: 0.2em 0;">Substitute &#9313; into &#9312; (replace each \(Q^\star\) with reward + future value):</p>
+  <div class="fragment defbox" style="max-width: 90%; margin: 0.1em auto; border-color: #166534;">
+    <p style="text-align: center; font-size: 0.95em; margin: 0;">\(V^\star(s) = R(s) + \gamma\, \displaystyle\max_a \sum_{s'} P(s' \mid s, a)\, V^\star(s')\)</p>
+  </div>
+</section>
+
+<!-- 10b. Derive the Bellman equation for Q* -->
+<section>
+  <h2>The Bellman equation for \(Q^\star\)</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Now do the reverse &mdash; substitute &#9312; \(\bigl(V^\star(s') = \max_{a'} Q^\star(s', a')\bigr)\) into &#9313;:</p>
+  <div class="defbox" style="font-size: 0.92em;">
+    <p style="text-align: center; margin: 0.15em 0;">\(Q^\star(s, a) = R(s) + \gamma \displaystyle\sum_{s'} P(s' \mid s, a)\, \underline{V^\star(s')}\)</p>
+    <p class="fragment" style="text-align: center; margin: 0.15em 0;">\(= R(s) + \gamma \displaystyle\sum_{s'} P(s' \mid s, a)\, \underline{\max_{a'} Q^\star(s', a')}\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; text-align: center; margin: 0.3em 0 0; color: #166534;">Given \(Q^\star\), the best action is \(\pi^\star(s) = \arg\max_a Q^\star(s, a)\) &mdash; <strong>no \(P\) needed.</strong> That is what lets \(Q\)-learning be <strong>model-free</strong>.</p>
 </section>
 
 <!-- 11. Temporal difference error -->
 <section>
   <h2>Temporal difference (TD) error</h2>
-  <p style="font-size: 0.86em; margin: 0.2em 0;">After one transition \(\langle s, a, r, s' \rangle\), pretend that transition was certain (\(P(s' \mid s, a) = 1\)). Then by Bellman:</p>
-  <p style="text-align: center; font-size: 0.95em; margin: 0.15em 0;">\(Q(s, a) \;\stackrel{?}{=}\; \underbrace{R(s) + \gamma\, \max_{a'} Q(s', a')}_{\text{target}}\)</p>
-  <div class="defbox fragment" style="margin: 0.3em 0;">
+  <p style="font-size: 0.86em; margin: 0.2em 0;">After one transition \(\langle s, a, r, s' \rangle\), pretend that transition was certain (\(P(s' \mid s, a) = 1\)). Then by Bellman, \(Q(s, a)\) should equal the <strong>target</strong>:</p>
+  <p style="text-align: center; font-size: 0.98em; margin: 0.2em 0;">\(Q(s, a) \;\stackrel{?}{=}\; \underbrace{R(s) + \gamma\, \max_{a'} Q(s', a')}_{\text{target}}\)</p>
+  <div class="defbox fragment" style="margin: 0.4em auto; max-width: 92%;">
     <h3>TD error</h3>
-    <p style="text-align: center; margin: 0.2em 0; font-size: 1em;">\(\delta \;=\; \bigl(R(s) + \gamma\, \max_{a'} Q(s', a')\bigr) - Q(s, a)\)</p>
+    <p style="text-align: center; margin: 0.2em 0; font-size: 1.05em;">\(\delta \;=\; \bigl(R(s) + \gamma\, \max_{a'} Q(s', a')\bigr) - Q(s, a)\)</p>
+    <p class="fragment" style="text-align: center; font-size: 0.82em; color: #6b7280; margin: 0.3em 0 0;">How far the current estimate \(Q(s,a)\) is from the one-step target.</p>
   </div>
-  <svg viewBox="0 0 520 80" xmlns="http://www.w3.org/2000/svg" class="td-gap fragment" aria-hidden="true">
+</section>
+
+<!-- 11b. From TD error to the Q-learning update -->
+<section>
+  <h2>From the TD error to the update</h2>
+  <p style="font-size: 0.85em; text-align: center; margin: 0.1em 0;">One sample is noisy, so don't jump all the way &mdash; <strong>nudge</strong> \(Q(s,a)\) toward the target by a fraction \(\alpha\) of the gap \(\delta\):</p>
+  <svg viewBox="0 0 520 80" xmlns="http://www.w3.org/2000/svg" class="td-gap" aria-hidden="true">
     <line x1="20" y1="46" x2="500" y2="46" stroke="#9ca3af" stroke-width="1.5"/>
     <!-- current Q tick -->
     <line x1="140" y1="38" x2="140" y2="54" stroke="#1d4ed8" stroke-width="2.5"/>
@@ -399,7 +395,11 @@
     <path d="M 142 46 L 378 46" stroke="#d97706" stroke-width="2" marker-end="url(#arrow-rl)" fill="none"/>
     <text x="260" y="40" font-size="15" fill="#92400e" text-anchor="middle" font-weight="700">&#948;</text>
   </svg>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin: 0.1em 0;">Idea: nudge \(Q(s, a)\) toward the target by an amount proportional to \(\delta\).</p>
+  <div class="defbox" style="max-width: 92%; margin: 0.3em auto;">
+    <p style="text-align: center; margin: 0.15em 0; font-size: 1.0em;">\(Q(s, a) \;\leftarrow\; Q(s, a) + \alpha\, \delta\)</p>
+    <p class="fragment" style="text-align: center; margin: 0.15em 0; font-size: 0.95em;">\(=\; Q(s, a) + \alpha\bigl(\, \underbrace{R(s) + \gamma \max_{a'} Q(s', a')}_{\text{target}} - Q(s, a)\,\bigr)\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin: 0.2em 0 0;">\(\alpha \to 0\): barely move; \(\alpha = 1\): jump straight to the target. This update rule <em>is</em> Q-learning.</p>
 </section>
 
 <!-- 12. The Q-learning algorithm -->
@@ -408,21 +408,31 @@
   <div class="algo-card">
     <div class="algo-title">Q-learning(\(\alpha,\ \gamma\))</div>
     <ol>
-      <li>Initialize \(Q(s,a)\) arbitrarily, \(R(s)\), \(N(s,a)\).</li>
-      <li>Repeat until \(Q\) converges:
+      <li class="fragment">Initialize \(Q(s,a)\) arbitrarily; observe the starting state \(s\).</li>
+      <li class="fragment">Repeat until \(Q\) converges:
         <ul style="margin:0.2em 0 0.2em 1em;">
-          <li>Pick \(a\) from \(s\) using <em>any</em> exploration strategy (\(\varepsilon\)-greedy, softmax, optimistic).</li>
-          <li>Execute \(a\); observe \(\langle s,a,s',r \rangle\); update \(R(s) \leftarrow r\).</li>
-          <li>\(Q(s,a) \leftarrow Q(s,a) + \alpha\, \underbrace{\bigl(r + \gamma\, \max_{a'} Q(s',a') - Q(s,a)\bigr)}_{\delta,\ \text{the TD error}}\).</li>
-          <li>\(s \leftarrow s'\).</li>
+          <li class="fragment">Pick \(a\) from \(s\) using <em>any</em> exploration strategy (\(\varepsilon\)-greedy, softmax, optimistic).</li>
+          <li class="fragment">Execute \(a\); observe reward \(r\) and next state \(s'\).</li>
+          <li class="fragment">\(Q(s,a) \leftarrow Q(s,a) + \alpha\bigl(r + \gamma\, \max_{a'} Q(s',a') - Q(s,a)\bigr)\).</li>
+          <li class="fragment">\(s \leftarrow s'\).</li>
         </ul>
       </li>
     </ol>
   </div>
-  <ul style="font-size: 0.8em; margin-top: 0.3em;">
-    <li>The update is exactly <strong>\(Q \leftarrow Q + \alpha\,\delta\)</strong> &mdash; nudge \(Q\) a fraction \(\alpha\) of the way toward the target.</li>
-    <li><strong>Learning rate</strong> \(\alpha(N) = 10/(9+N(s,a))\) shrinks with visits: early surprises move \(Q\) a lot, later ones fine-tune.</li>
-    <li><strong>Model-free</strong>; converges to \(Q^\star\) if every \((s,a)\) is visited infinitely often.</li>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;"><strong>Model-free</strong> &mdash; it never estimates \(P\); converges to \(Q^\star\) if every \((s,a)\) is visited infinitely often.</p>
+</section>
+
+<!-- 12b. Choosing the learning rate -->
+<section>
+  <h2>Choosing the learning rate \(\alpha\)</h2>
+  <p style="font-size: 0.88em;">The algorithm works for any fixed \(\alpha \in (0, 1]\), but a good schedule lets \(\alpha\) <strong>shrink</strong> as a state&ndash;action pair is visited more often:</p>
+  <div class="defbox">
+    <p style="text-align: center; font-size: 1.1em; margin: 0;">\(\alpha(N) = \dfrac{10}{9 + N(s,a)}\)</p>
+  </div>
+  <ul style="font-size: 0.85em; margin-top: 0.5em;">
+    <li class="fragment">Early visits (small \(N\)): \(\alpha\) is large &mdash; move \(Q\) a lot on fresh information.</li>
+    <li class="fragment">Later visits (large \(N\)): \(\alpha\) is small &mdash; fine-tune and average out noise.</li>
+    <li class="fragment">A decaying \(\alpha\) is exactly what guarantees convergence to \(Q^\star\).</li>
   </ul>
 </section>
 
@@ -440,8 +450,8 @@
     </tbody>
   </table>
   <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.15em 0;">Yellow cell = the one we update; green = the max-value action in \(s_{33}\).</p>
-  <div class="update-derivation">
-    <span class="step fragment"><strong>target</strong> = r + &gamma; &middot; max<sub>a'</sub> Q(s<sub>33</sub>, a') = &minus;0.04 + 1.0 &middot; <span style="color: #166534;">0.9</span> = 0.86</span>
+  <div class="update-derivation fragment">
+    <span class="step"><strong>target</strong> = r + &gamma; &middot; max<sub>a'</sub> Q(s<sub>33</sub>, a') = &minus;0.04 + 1.0 &middot; <span style="color: #166534;">0.9</span> = 0.86</span>
     <span class="step fragment"><strong>&delta;</strong>      = target &minus; Q(s<sub>32</sub>, right) = 0.86 &minus; 0.7 = 0.16</span>
     <span class="step final fragment">Q(s<sub>32</sub>, right) &larr; 0.7 + 0.1 &middot; 0.16 = <strong>0.716</strong></span>
   </div>
@@ -488,8 +498,8 @@
   <div class="compare-row">
     <div class="ccard sarsa">
       <h3>SARSA: uses \(a' = \text{right}\)</h3>
-      <div class="update-derivation" style="background:#fffbeb; border-color:#d97706; border-left-color:#d97706;">
-        <span class="step fragment">target = &minus;0.04 + 0.9&middot;(<span style="color:#991b1b;">&minus;0.4</span>) = &minus;0.4</span>
+      <div class="update-derivation fragment" style="background:#fffbeb; border-color:#d97706; border-left-color:#d97706;">
+        <span class="step">target = &minus;0.04 + 0.9&middot;(<span style="color:#991b1b;">&minus;0.4</span>) = &minus;0.4</span>
         <span class="step fragment">&delta; = &minus;0.4 &minus; 0.4 = &minus;0.8</span>
         <span class="step fragment">Q(s<sub>13</sub>, down) &larr; 0.4 + 0.4 &middot; (&minus;0.8)</span>
       </div>
@@ -497,8 +507,8 @@
     </div>
     <div class="ccard qlearn">
       <h3>Q-learning: uses \(\max_{a'} = 0.7\)</h3>
-      <div class="update-derivation" style="background:#f0fdf4; border-color:#16a34a; border-left-color:#16a34a;">
-        <span class="step fragment">target = &minus;0.04 + 0.9 &middot; <span style="color:#166534;">0.7</span> = 0.59</span>
+      <div class="update-derivation fragment" style="background:#f0fdf4; border-color:#16a34a; border-left-color:#16a34a;">
+        <span class="step">target = &minus;0.04 + 0.9 &middot; <span style="color:#166534;">0.7</span> = 0.59</span>
         <span class="step fragment">&delta; = 0.59 &minus; 0.4 = 0.19</span>
         <span class="step fragment">Q(s<sub>13</sub>, down) &larr; 0.4 + 0.4 &middot; 0.19</span>
       </div>

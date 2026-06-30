@@ -139,9 +139,9 @@
   display: block;
   margin: 0.25em auto 0.15em;
   width: 100%;
-  max-width: 700px;
+  max-width: 840px;
   height: auto;
-  max-height: 66px;
+  max-height: 120px;
 }
 
 /* Q-table for RL worked examples (slides 13, 15). */
