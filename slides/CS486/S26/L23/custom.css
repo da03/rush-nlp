@@ -1,0 +1,22 @@
+/* L23 (Generative AI: Diffusion & Multimodal) — on top of shared/custom.css. */
+
+.reveal .algo-card {
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 6px;
+  padding: 0.5em 0.9em;
+  font-size: 0.8em;
+  margin: 0.3em auto;
+  max-width: 96%;
+}
+.reveal .algo-card .algo-title {
+  font-weight: 700; color: #1d4ed8; margin-bottom: 0.25em;
+  font-size: 0.95em; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+.reveal .l23-svg { display: block; margin: 0.3em auto; width: 100%; max-height: 300px; }
+.reveal .l23-svg .edge { stroke: #6b7280; stroke-width: 1.4; fill: none; }
+.reveal .l23-svg .axis-label { font-size: 12px; fill: #6b7280; }
+.reveal .l23-svg .fwd { stroke: #dc2626; stroke-width: 1.6; fill: none; }
+.reveal .l23-svg .rev { stroke: #16a34a; stroke-width: 1.6; fill: none; }
