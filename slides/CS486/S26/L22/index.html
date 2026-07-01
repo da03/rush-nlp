@@ -2,23 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 22 — Course Recap</title>
+  <title>CS 486/686 Lecture 22 — Large Language Models &amp; Systems</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 22: Course Recap — a tour of search, reasoning under uncertainty, decision-making, and learning. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 22: Large Language Models and Systems — tokenization, the autoregressive objective, pretraining and scaling laws, fine-tuning, RLHF/DPO alignment, in-context learning, decoding, and LLM systems (agents, tools, RAG). Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../L2/custom.css">
-  <link rel="stylesheet" href="../L4/custom.css">
-  <link rel="stylesheet" href="../L8/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="../L13/custom.css">
-  <link rel="stylesheet" href="../L18/custom.css">
-  <link rel="stylesheet" href="../L19/custom.css">
-  <link rel="stylesheet" href="../L20/custom.css">
-  <link rel="stylesheet" href="custom.css">
+  <link rel="stylesheet" href="custom.css?v=1">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -49,506 +42,235 @@
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Course Recap</div>
+  <div class="course-title">CS 486/686<br>Large Language Models &amp; Systems</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 22</p>
-  <p class="credit">Putting the term together: search, uncertainty, decisions, learning</p>
+  <p class="credit">Pretraining &middot; alignment &middot; agents &amp; RAG</p>
 </section>
 
-<!-- 2. The course in one picture -->
-<section>
-  <h2>The course in one picture</h2>
-  <svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" class="course-map">
-    <!-- Module 1: Search (always visible) -->
-    <g>
-      <rect class="module-box search" x="20" y="40" width="170" height="260"/>
-      <text class="module-title search" x="105" y="65">1. Search</text>
-      <text class="topic" x="105" y="95">Problem formulation</text>
-      <text class="topic" x="105" y="115">DFS / BFS / IDS</text>
-      <text class="topic" x="105" y="135">LCFS, GBFS, A*</text>
-      <text class="topic" x="105" y="155">Admissibility, consistency</text>
-      <text class="topic" x="105" y="180">CSPs</text>
-      <text class="topic" x="105" y="200">Backtracking, AC-3</text>
-      <text class="topic" x="105" y="225">Local search</text>
-      <text class="topic" x="105" y="245">Hill-climbing, SA</text>
-    </g>
-
-    <!-- Module 2: Uncertainty -->
-    <g class="fragment">
-      <line class="flow-arrow" x1="190" y1="170" x2="208" y2="170" marker-end="url(#arrow-l22)"/>
-      <rect class="module-box uncert" x="210" y="40" width="170" height="260"/>
-      <text class="module-title uncert" x="295" y="65">2. Uncertainty</text>
-      <text class="topic" x="295" y="95">Probability rules</text>
-      <text class="topic" x="295" y="115">Independence</text>
-      <text class="topic" x="295" y="135">Bayesian networks</text>
-      <text class="topic" x="295" y="155">D-separation</text>
-      <text class="topic" x="295" y="180">Variable Elimination</text>
-      <text class="topic" x="295" y="200">HMMs</text>
-      <text class="topic" x="295" y="225">Filtering / smoothing</text>
-      <text class="topic" x="295" y="245">Viterbi</text>
-    </g>
-
-    <!-- Module 3: Decisions -->
-    <g class="fragment">
-      <line class="flow-arrow" x1="380" y1="170" x2="398" y2="170" marker-end="url(#arrow-l22)"/>
-      <rect class="module-box decision" x="400" y="40" width="170" height="260"/>
-      <text class="module-title decision" x="485" y="65">3. Decisions</text>
-      <text class="topic" x="485" y="95">Utility, MEU</text>
-      <text class="topic" x="485" y="115">Decision networks</text>
-      <text class="topic" x="485" y="135">VOI</text>
-      <text class="topic" x="485" y="160">MDPs</text>
-      <text class="topic" x="485" y="180">Bellman equation</text>
-      <text class="topic" x="485" y="200">Value / Policy iteration</text>
-      <text class="topic" x="485" y="225">Reinforcement learning</text>
-      <text class="topic" x="485" y="245">Q-learning, SARSA</text>
-    </g>
-
-    <!-- Module 4: Learning -->
-    <g class="fragment">
-      <line class="flow-arrow" x1="570" y1="170" x2="588" y2="170" marker-end="url(#arrow-l22)"/>
-      <rect class="module-box learn" x="590" y="40" width="160" height="260"/>
-      <text class="module-title learn" x="670" y="65">4. Learning</text>
-      <text class="topic" x="670" y="95">Supervised learning</text>
-      <text class="topic" x="670" y="115">Bias / variance</text>
-      <text class="topic" x="670" y="135">Cross-validation</text>
-      <text class="topic" x="670" y="160">Decision trees, ID3</text>
-      <text class="topic" x="670" y="180">Unsupervised: PCA, k-means</text>
-      <text class="topic" x="670" y="205">Neural networks</text>
-      <text class="topic" x="670" y="225">Backprop</text>
-      <text class="topic" x="670" y="245">SGD, momentum, Adam</text>
-    </g>
-
-    <text x="380" y="325" text-anchor="middle" font-size="11" fill="#6b7280" font-style="italic">deterministic world &rarr; uncertainty &rarr; decisions under uncertainty &rarr; learning from data</text>
-  </svg>
-</section>
-
-<!-- 3. Search I: uninformed -->
-<section>
-  <h2>Search I &mdash; uninformed</h2>
-  <div class="recap-grid">
-    <div class="recall-card search">
-      <h3>Problem formulation</h3>
-      <ul>
-        <li>States, actions, transition model, initial &amp; goal states, path cost.</li>
-        <li>Search tree explores states by expanding the <strong>frontier</strong>.</li>
-      </ul>
-      <span class="answer fragment">Pick the data structure for the frontier &rarr; pick the algorithm.</span>
-    </div>
-    <div class="recall-card search fragment">
-      <h3>DFS vs BFS vs IDS</h3>
-      <ul>
-        <li><strong>DFS:</strong> stack &rarr; \(O(bm)\) space, not complete.</li>
-        <li><strong>BFS:</strong> queue &rarr; complete, \(O(b^d)\) time and space.</li>
-        <li><strong>IDS:</strong> DFS in increasing depth &rarr; BFS-completeness, DFS-space.</li>
-      </ul>
-      <span class="answer fragment">IDS combines the best of both.</span>
-    </div>
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <div class="course-breadcrumb">
+    <span class="bc-pill search">Search</span>
+    <span class="bc-arrow">&rsaquo;</span>
+    <span class="bc-pill uncert">Uncertainty</span>
+    <span class="bc-arrow">&rsaquo;</span>
+    <span class="bc-pill decision">Decisions</span>
+    <span class="bc-arrow">&rsaquo;</span>
+    <span class="bc-pill learn current">Learning</span>
   </div>
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Write the <strong>autoregressive</strong> LM objective and next-token loss.</li>
+    <li class="fragment">Explain <strong>tokenization</strong>, <strong>pretraining</strong>, and <strong>scaling laws</strong>.</li>
+    <li class="fragment">Describe <strong>fine-tuning</strong> and <strong>RLHF / DPO</strong> alignment.</li>
+    <li class="fragment">Explain <strong>in-context learning</strong> and <strong>decoding</strong>.</li>
+    <li class="fragment">Describe LLM <strong>systems</strong>: agents, tool use, and RAG.</li>
+  </ul>
 </section>
 
-<!-- 4. Search II: heuristic + A* -->
-<section>
-  <h2>Search II &mdash; heuristic + A*</h2>
-  <div class="recap-grid">
-    <div class="recall-card search">
-      <h3>The three frontier rules</h3>
-      <ul>
-        <li><strong>LCFS:</strong> min \(\text{cost}(n)\).</li>
-        <li><strong>GBFS:</strong> min \(h(n)\).</li>
-        <li><strong>A*:</strong> min \(f(n) = \text{cost}(n) + h(n)\).</li>
-      </ul>
-    </div>
-    <div class="recall-card search">
-      <h3>Heuristic properties</h3>
-      <ul class="fragment">
-        <li><strong>Admissible</strong> (\(h \le h^*\)) &rArr; A* is optimal with multi-path pruning off.</li>
-        <li><strong>Consistent</strong> (\(h(n) \le c(n,n') + h(n')\)) &rArr; safe to use multi-path pruning.</li>
-        <li>Consistent &rArr; admissible (not the other way around).</li>
-      </ul>
-    </div>
+<!-- 3. What is an LLM -->
+<section class="center-slide">
+  <h2>What is a large language model?</h2>
+  <div class="defbox" style="max-width:86%; margin:0.2em auto; text-align:left;">
+    <p style="margin:0; font-size:0.92em;">A <strong>decoder-only transformer</strong> (L21), stacked \(N\) blocks deep and trained to do one thing: <strong>predict the next token</strong>.</p>
   </div>
+  <p class="fragment" style="font-size:0.85em; margin-top:0.5em;">Everything else &mdash; writing code, answering questions, translating &mdash; emerges from doing that one task extremely well, at scale.</p>
 </section>
 
-<!-- 5. Search strategy summary table -->
+<!-- 4. Tokenization -->
 <section>
-  <h2>Search strategy summary</h2>
-  <table class="compare" style="font-size: 0.72em;">
-    <thead>
-      <tr>
-        <th>Strategy</th>
-        <th>Frontier choice</th>
-        <th>Complete?</th>
-        <th>Space</th>
-        <th>Time</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="fragment"><td>Depth-first</td><td>Last added</td><td class="no">No</td><td class="ok">Linear</td><td>Exp</td></tr>
-      <tr class="fragment"><td>Breadth-first</td><td>First added</td><td class="ok">Yes</td><td>Exp</td><td>Exp</td></tr>
-      <tr class="fragment"><td>Lowest-cost first</td><td>min \(\text{cost}(n)\)</td><td class="ok">Yes</td><td>Exp</td><td>Exp</td></tr>
-      <tr class="fragment"><td>Greedy best-first</td><td>min \(h(n)\)</td><td class="no">No</td><td>Exp</td><td>Exp</td></tr>
-      <tr class="fragment"><td>A*</td><td>min \(\text{cost}(n) + h(n)\)</td><td class="ok">Yes</td><td>Exp</td><td>Exp</td></tr>
-    </tbody>
-  </table>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em; text-align:center;">
-    A* dominates when the heuristic is informative enough to prune most of the tree.
-  </p>
-</section>
-
-<!-- 6. CSPs + local search -->
-<section>
-  <h2>CSPs + local search</h2>
-  <div class="recap-grid">
-    <div class="recall-card search">
-      <h3>Constraint satisfaction</h3>
-      <ul>
-        <li>Generate-and-test is exponential &mdash; exploit problem structure.</li>
-        <li><strong>Backtracking:</strong> incremental, prune as soon as a constraint fails.</li>
-        <li><strong>Arc consistency / AC-3:</strong> shrink domains before/during search; complexity \(O(cd^3)\).</li>
-      </ul>
-    </div>
-    <div class="recall-card search fragment">
-      <h3>Local search</h3>
-      <ul>
-        <li>Trade completeness for very large state spaces.</li>
-        <li><strong>Greedy descent / hill-climbing:</strong> always move to best neighbour.</li>
-        <li>Beats local minima with <strong>random restarts</strong> + <strong>simulated annealing</strong> (accept worse moves with prob \(e^{-\Delta/T}\)).</li>
-      </ul>
-    </div>
+  <h2>Step 0: tokenization (BPE)</h2>
+  <p style="font-size:0.85em; margin:0.1em 0;">Text is first split into <strong>subword tokens</strong> from a fixed vocabulary (~50k). <strong>Byte-Pair Encoding</strong> starts from characters and repeatedly merges the most frequent pair.</p>
+  <p style="text-align:center; font-size:0.9em; margin:0.3em 0;">"unbelievable" &rarr;</p>
+  <div class="tok-row">
+    <span class="tok">un</span><span class="tok">bel</span><span class="tok">iev</span><span class="tok">able</span>
   </div>
+  <ul style="font-size:0.8em; margin:0.25em 0 0 1.2em;">
+    <li class="fragment">Common words = one token; rare words split into pieces.</li>
+    <li class="fragment">Each token maps to an id, then to an embedding vector (the \(X\) rows from L21).</li>
+    <li class="fragment">The model predicts a distribution over the whole vocabulary at each step.</li>
+  </ul>
 </section>
 
-<!-- 7. Probability + independence -->
+<!-- 5. Autoregressive objective -->
 <section>
-  <h2>Probability + independence</h2>
-  <div class="recap-grid">
-    <div class="recall-card uncert">
-      <h3>The four rules</h3>
-      <ul>
-        <li><strong>Product:</strong> \(P(A,B) = P(A\mid B)\,P(B)\)</li>
-        <li><strong>Sum:</strong> \(P(A) = \sum_b P(A, B{=}b)\)</li>
-        <li><strong>Chain:</strong> \(P(X_1,\ldots,X_n) = \prod_i P(X_i \mid X_{&lt;i})\)</li>
-        <li><strong>Bayes:</strong> \(P(H\mid e) \propto P(e\mid H)\,P(H)\)</li>
-      </ul>
-    </div>
-    <div class="recall-card uncert fragment">
-      <h3>Independence</h3>
-      <ul>
-        <li><strong>Unconditional:</strong> \(P(A,B) = P(A)\,P(B)\).</li>
-        <li><strong>Conditional:</strong> \(P(A,B\mid C) = P(A\mid C)\,P(B\mid C)\).</li>
-        <li>Tells us which terms drop out of the chain rule &mdash; the key to scaling up inference.</li>
-      </ul>
-    </div>
+  <h2>The training objective: predict the next token</h2>
+  <p style="font-size:0.85em; margin:0.1em 0;">Factor the probability of a sequence left to right, and train to maximize it &mdash; i.e. minimize <strong>next-token cross-entropy</strong>:</p>
+  <div class="defbox" style="text-align:center; margin:0.2em auto;">
+    <p style="margin:0 0 0.2em; font-size:0.9em;">\(p(x_1,\ldots,x_T) = \displaystyle\prod_{t=1}^{T} p(x_t \mid x_{&lt;t})\)</p>
+    <p style="margin:0; font-size:0.9em;">\(\mathcal{L} = -\displaystyle\sum_{t=1}^{T} \log p(x_t \mid x_{&lt;t})\)</p>
   </div>
-</section>
-
-<!-- 8. Bayesian networks + d-separation -->
-<section>
-  <h2>Bayesian networks + d-separation</h2>
-  <div class="recap-grid">
-    <div class="recall-card uncert">
-      <h3>Construction recipe</h3>
-      <ul>
-        <li>Pick a variable order (causal often works best).</li>
-        <li>Add each node; choose the smallest set of parents that makes it conditionally independent of the rest.</li>
-        <li>Joint factorizes as \(P(X_1,\ldots,X_n) = \prod_i P(X_i \mid \mathrm{pa}(X_i))\).</li>
-      </ul>
-    </div>
-    <div class="recall-card uncert fragment">
-      <h3>3 d-separation patterns</h3>
-      <ul class="dsep-list">
-        <li>
-          <svg viewBox="0 0 100 32" xmlns="http://www.w3.org/2000/svg" class="l22-dsep-glyph" aria-hidden="true">
-            <line x1="18" y1="16" x2="40" y2="16" marker-end="url(#arrow-l22)"/>
-            <line x1="58" y1="16" x2="80" y2="16" marker-end="url(#arrow-l22)"/>
-            <circle cx="12" cy="16" r="6"/><text x="12" y="17">A</text>
-            <circle cx="50" cy="16" r="6"/><text x="50" y="17">B</text>
-            <circle cx="86" cy="16" r="6"/><text x="86" y="17">C</text>
-          </svg>
-          <strong>Chain</strong> \(A \to B \to C\): blocked by observing \(B\).
-        </li>
-        <li>
-          <svg viewBox="0 0 100 38" xmlns="http://www.w3.org/2000/svg" class="l22-dsep-glyph" aria-hidden="true">
-            <line x1="46" y1="14" x2="22" y2="28" marker-end="url(#arrow-l22)"/>
-            <line x1="54" y1="14" x2="78" y2="28" marker-end="url(#arrow-l22)"/>
-            <circle cx="50" cy="8"  r="6"/><text x="50" y="9">B</text>
-            <circle cx="14" cy="30" r="6"/><text x="14" y="31">A</text>
-            <circle cx="86" cy="30" r="6"/><text x="86" y="31">C</text>
-          </svg>
-          <strong>Common cause</strong> \(A \leftarrow B \to C\): blocked by observing \(B\).
-        </li>
-        <li>
-          <svg viewBox="0 0 100 38" xmlns="http://www.w3.org/2000/svg" class="l22-dsep-glyph" aria-hidden="true">
-            <line x1="18" y1="14" x2="44" y2="28" marker-end="url(#arrow-l22)"/>
-            <line x1="82" y1="14" x2="56" y2="28" marker-end="url(#arrow-l22)"/>
-            <circle cx="14" cy="8"  r="6"/><text x="14" y="9">A</text>
-            <circle cx="86" cy="8"  r="6"/><text x="86" y="9">C</text>
-            <circle cx="50" cy="30" r="6"/><text x="50" y="31">B</text>
-          </svg>
-          <strong>Common effect</strong> \(A \to B \leftarrow C\): blocked by <em>not</em> observing \(B\) or descendants.
-        </li>
-      </ul>
-      <span class="answer fragment">A path is blocked &rArr; the endpoints are conditionally independent.</span>
-    </div>
+  <div style="text-align:center; margin-top:0.3em;">
+    <svg viewBox="0 0 480 90" xmlns="http://www.w3.org/2000/svg" class="l22-svg" style="max-height:90px;">
+      <text x="40" y="70" class="axis-label" style="font-size:13px; fill:#1d4ed8;">The</text>
+      <text x="140" y="70" class="axis-label" style="font-size:13px; fill:#1d4ed8;">cat</text>
+      <text x="240" y="70" class="axis-label" style="font-size:13px; fill:#1d4ed8;">sat</text>
+      <text x="340" y="70" class="axis-label" style="font-size:13px; fill:#1d4ed8;">on</text>
+      <text x="40" y="22" class="axis-label" style="font-size:13px; fill:#166534;">cat</text>
+      <text x="140" y="22" class="axis-label" style="font-size:13px; fill:#166534;">sat</text>
+      <text x="240" y="22" class="axis-label" style="font-size:13px; fill:#166534;">on</text>
+      <text x="340" y="22" class="axis-label" style="font-size:13px; fill:#166534;">the</text>
+      <line class="edge" x1="45" y1="55" x2="45" y2="30" marker-end="url(#arrow-l22)"/>
+      <line class="edge" x1="145" y1="55" x2="145" y2="30" marker-end="url(#arrow-l22)"/>
+      <line class="edge" x1="245" y1="55" x2="245" y2="30" marker-end="url(#arrow-l22)"/>
+      <line class="edge" x1="345" y1="55" x2="345" y2="30" marker-end="url(#arrow-l22)"/>
+      <text x="420" y="46" class="axis-label">predict next</text>
+    </svg>
   </div>
+  <p class="fragment" style="font-size:0.8em; color:#6b7280; text-align:center; margin:0.1em 0;">The text <em>is</em> the label &mdash; no human annotation needed (self-supervised).</p>
 </section>
 
-<!-- 9. Inference: VE + HMM filtering -->
-<section>
-  <h2>Inference &mdash; VE &amp; HMM filtering</h2>
-  <div class="recap-grid">
-    <div class="recall-card uncert">
-      <h3>Variable elimination</h3>
-      <ul>
-        <li><strong>Define</strong> a factor for each CPT.</li>
-        <li><strong>Restrict</strong> factors to evidence.</li>
-        <li><strong>Multiply</strong> factors sharing a variable; <strong>sum out</strong> the hidden one.</li>
-        <li><strong>Normalize</strong> to get a posterior.</li>
-      </ul>
-    </div>
-    <div class="recall-card uncert fragment">
-      <h3>HMM filtering</h3>
-      <ul>
-        <li>Recursion: \(P(S_t \mid o_{0:t}) \propto P(o_t \mid S_t)\, \sum_{s_{t-1}} P(S_t \mid s_{t-1})\, P(s_{t-1} \mid o_{0:t-1})\)</li>
-        <li>One forward pass: \(O(t \cdot |S|^2)\) time.</li>
-      </ul>
-    </div>
-  </div>
+<!-- 6. Pretraining at scale -->
+<section class="center-slide">
+  <h2>Pretraining: one task, enormous scale</h2>
+  <ul style="text-align:left; margin-left:2em; font-size:0.86em; max-width:84%; margin-right:auto;">
+    <li class="fragment">Train on <strong>trillions of tokens</strong> of text (web, books, code).</li>
+    <li class="fragment">Self-supervised &rarr; no labels to collect; just predict the next token.</li>
+    <li class="fragment">The result is a <strong>base model</strong>: a broad next-token predictor, not yet a helpful assistant.</li>
+  </ul>
+  <p class="fragment" style="font-size:0.85em; color:#1d4ed8; text-align:center; margin-top:0.5em;">Why does simply scaling this up work so well?</p>
 </section>
 
-<!-- 10. HMM decoding: smoothing + Viterbi -->
+<!-- 7. Scaling laws -->
 <section>
-  <h2>HMM decoding &mdash; smoothing &amp; Viterbi</h2>
-  <div class="two-col" style="margin-top: 0.2em;">
-    <div style="flex: 1;">
-      <div class="recall-card uncert" style="height: auto;">
-        <h3>Forward&times;backward smoothing</h3>
-        <ul>
-          <li>Forward: \(\alpha_k = P(S_k \mid o_{0:k})\).</li>
-          <li>Backward: \(\beta_k = P(o_{k+1:t-1} \mid S_k)\).</li>
-          <li>Posterior: \(P(S_k \mid o_{0:t-1}) \propto \alpha_k\, \beta_k\).</li>
-        </ul>
-      </div>
-      <div class="recall-card uncert" style="margin-top: 0.5em;">
-        <h3>Viterbi</h3>
-        <ul>
-          <li>DP over the trellis, max instead of sum.</li>
-          <li>Backtrack the argmax pointers to recover the MAP sequence.</li>
-        </ul>
-      </div>
-    </div>
-    <div style="flex: 0.9;">
-      <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" class="mini-trellis">
-        <line class="edge" x1="40" y1="50"  x2="140" y2="50"/>
-        <line class="edge" x1="40" y1="50"  x2="140" y2="150"/>
-        <line class="edge" x1="40" y1="150" x2="140" y2="50"/>
-        <line class="edge" x1="40" y1="150" x2="140" y2="150"/>
-        <line class="edge" x1="140" y1="50"  x2="240" y2="50"/>
-        <line class="edge" x1="140" y1="50"  x2="240" y2="150"/>
-        <line class="edge" x1="140" y1="150" x2="240" y2="50"/>
-        <line class="edge" x1="140" y1="150" x2="240" y2="150"/>
-        <line class="edge" x1="240" y1="50"  x2="320" y2="50"/>
-        <line class="edge" x1="240" y1="50"  x2="320" y2="150"/>
-        <line class="edge" x1="240" y1="150" x2="320" y2="50"/>
-        <line class="edge" x1="240" y1="150" x2="320" y2="150"/>
-
-        <!-- Bare trellis nodes (always visible) -->
-        <circle class="node" cx="40" cy="50" r="16"/>
-        <circle class="node" cx="40" cy="150" r="16"/>
-        <circle class="node" cx="140" cy="50" r="16"/>
-        <circle class="node" cx="140" cy="150" r="16"/>
-        <circle class="node" cx="240" cy="50" r="16"/>
-        <circle class="node" cx="240" cy="150" r="16"/>
-        <circle class="node" cx="320" cy="50" r="16"/>
-        <circle class="node" cx="320" cy="150" r="16"/>
-        <!-- MAP path overlay (fragment) -->
-        <g class="fragment">
-          <line class="edge best" x1="40" y1="150" x2="140" y2="50"/>
-          <line class="edge best" x1="140" y1="50"  x2="240" y2="50"/>
-          <line class="edge best" x1="240" y1="50"  x2="320" y2="150"/>
-          <circle class="node best" cx="40" cy="150" r="16"/>
-          <circle class="node best" cx="140" cy="50" r="16"/>
-          <circle class="node best" cx="240" cy="50" r="16"/>
-          <circle class="node best" cx="320" cy="150" r="16"/>
-          <text x="180" y="20" font-size="11" fill="#15803d" font-weight="700">MAP path through the trellis</text>
-        </g>
-        <text x="40" y="50">s\(_1\)</text>
-        <text x="40" y="150">s\(_2\)</text>
-        <text x="140" y="50">s\(_1\)</text>
-        <text x="140" y="150">s\(_2\)</text>
-        <text x="240" y="50">s\(_1\)</text>
-        <text x="240" y="150">s\(_2\)</text>
-        <text x="320" y="50">s\(_1\)</text>
-        <text x="320" y="150">s\(_2\)</text>
-        <text x="40" y="190" font-size="10" fill="#6b7280">t=1</text>
-        <text x="140" y="190" font-size="10" fill="#6b7280">t=2</text>
-        <text x="240" y="190" font-size="10" fill="#6b7280">t=3</text>
-        <text x="320" y="190" font-size="10" fill="#6b7280">t=4</text>
+  <h2>Scaling laws</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05; text-align:center;">
+      <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg" class="l22-svg" style="max-height:200px;">
+        <line class="axis" x1="45" y1="30" x2="45" y2="175"/>
+        <line class="axis" x1="45" y1="175" x2="280" y2="175"/>
+        <text x="160" y="200" class="axis-label">compute / data / params (log)</text>
+        <text x="20" y="100" class="axis-label" transform="rotate(-90 20 100)">test loss (log)</text>
+        <line x1="55" y1="45" x2="270" y2="160" stroke="#dc2626" stroke-width="2.5"/>
       </svg>
     </div>
-  </div>
-</section>
-
-<!-- 11. Decision networks -->
-<section>
-  <h2>Decision networks</h2>
-  <div class="recap-grid">
-    <div class="recall-card decision">
-      <h3>Three node types</h3>
-      <ul>
-        <li><strong>Chance</strong> nodes &mdash; like a Bayes net (CPTs).</li>
-        <li><strong>Decision</strong> nodes &mdash; rectangles, no CPT, chosen by us.</li>
-        <li><strong>Utility</strong> node &mdash; diamond, deterministic function of its parents.</li>
-      </ul>
-    </div>
-    <div class="recall-card decision fragment">
-      <h3>Maximum expected utility</h3>
-      <ul>
-        <li>Policy \(\pi(d \mid \text{parents})\); MEU picks \(\pi^*\) maximizing \(\mathbb{E}[U]\).</li>
-        <li>Evaluate by enumeration or by running VE on the DN.</li>
-        <li><strong>Value of information:</strong> EU gain from observing a variable before deciding.</li>
+    <div style="flex:0.95;">
+      <p style="font-size:0.85em; margin:0.1em 0;">Test loss falls as a smooth <strong>power law</strong> as we scale model size, data, and compute together.</p>
+      <ul style="font-size:0.8em; margin:0.25em 0 0 1em;">
+        <li class="fragment">Predictable: you can forecast a bigger model's loss before training it.</li>
+        <li class="fragment"><strong>Chinchilla:</strong> for a compute budget, balance parameters <em>and</em> tokens (don't just grow the model).</li>
+        <li class="fragment">Scaling also unlocks <strong>emergent</strong> abilities not present in small models.</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- 12. MDPs -->
+<!-- 8. Fine-tuning / SFT -->
 <section>
-  <h2>Markov decision processes</h2>
-  <div class="recap-grid">
-    <div class="recall-card decision">
-      <h3>Setup</h3>
-      <ul>
-        <li>States, actions, transition \(P(s' \mid s, a)\), reward \(R(s)\), discount \(\gamma\).</li>
-        <li>Policy \(\pi : S \to A\); value \(V^\pi(s) = \mathbb{E}[\sum_t \gamma^t R(s_t) \mid \pi]\).</li>
-      </ul>
+  <h2>From base model to assistant: fine-tuning</h2>
+  <p style="font-size:0.85em; margin:0.1em 0;">A base model completes text; it doesn't reliably <em>follow instructions</em>. <strong>Supervised fine-tuning (SFT)</strong> continues training on curated pairs:</p>
+  <div class="algo-card">
+    <div class="algo-title">instruction tuning</div>
+    <p style="margin:0;">Train on \(\{(\text{instruction},\ \text{ideal response})\}\) with the same next-token loss &mdash; now the "answer" is a good, on-task response written by humans.</p>
+  </div>
+  <p class="fragment" style="font-size:0.82em; color:#6b7280; text-align:center; margin-top:0.35em;">Teaches format and helpfulness, but human-written answers are scarce and don't capture <em>preferences</em> between two decent replies.</p>
+</section>
+
+<!-- 9. RLHF / alignment -->
+<section>
+  <h2>Alignment: RLHF (and DPO)</h2>
+  <p style="font-size:0.83em; margin:0.1em 0;">Collect human <strong>preferences</strong> (which of two responses is better), fit a <strong>reward model</strong> \(r\), then optimize the policy \(\pi\) &mdash; this is the RL from L15, applied to text:</p>
+  <div class="defbox" style="text-align:center; margin:0.2em auto;">
+    <p style="margin:0; font-size:0.9em;">\(\max_{\pi}\ \mathbb{E}_{y\sim\pi}\big[\, r(x,y)\,\big] \;-\; \beta\, \mathrm{KL}\!\big(\pi \,\|\, \pi_{\text{ref}}\big)\)</p>
+  </div>
+  <ul style="font-size:0.8em; margin:0.2em 0 0 1.2em;">
+    <li class="fragment">Reward \(r\) = "how much humans prefer this answer."</li>
+    <li class="fragment">The <strong>KL</strong> term keeps \(\pi\) close to the fine-tuned model, so it doesn't game the reward.</li>
+    <li class="fragment"><strong>DPO</strong> reaches the same goal by optimizing preferences directly &mdash; no separate reward model or RL loop.</li>
+  </ul>
+</section>
+
+<!-- 10. In-context learning -->
+<section>
+  <h2>In-context learning &amp; prompting</h2>
+  <p style="font-size:0.85em; margin:0.1em 0;">A trained LLM can learn a task from <strong>examples in the prompt</strong> &mdash; with <em>no weight updates</em>:</p>
+  <div class="algo-card" style="font-family: ui-monospace, Menlo, monospace; font-size:0.78em;">
+    <div>tiny &rarr; small</div>
+    <div>huge &rarr; big</div>
+    <div>rapid &rarr; <span style="color:#166534; font-weight:700;">fast</span> &nbsp;<span style="color:#6b7280;">&#8592; model completes</span></div>
+  </div>
+  <ul style="font-size:0.8em; margin:0.25em 0 0 1.2em;">
+    <li class="fragment"><strong>Zero-/few-shot:</strong> describe the task (and optionally give examples) in plain language.</li>
+    <li class="fragment">The pattern is inferred at <em>inference time</em> from the context window.</li>
+    <li class="fragment">This flexibility is itself an <strong>emergent</strong> ability of large models.</li>
+  </ul>
+</section>
+
+<!-- 11. Decoding -->
+<section>
+  <h2>Decoding: turning probabilities into text</h2>
+  <p style="font-size:0.85em; margin:0.1em 0;">At each step the model gives a distribution over the vocabulary. How do we pick the next token?</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr;">
+    <div class="task-card">
+      <h3>Greedy / beam</h3>
+      <p style="font-size:0.8em;">Take the most likely token. Safe but repetitive.</p>
     </div>
-    <div class="recall-card decision fragment">
-      <h3>Bellman + the two algorithms</h3>
-      <ul>
-        <li><strong>Bellman optimality:</strong> \(V^*(s) = R(s) + \gamma \max_a \sum_{s'} P(s' \mid s, a)\, V^*(s')\).</li>
-        <li><strong>Value iteration:</strong> apply the Bellman update until convergence.</li>
-        <li><strong>Policy iteration:</strong> evaluate (linear system) &harr; improve (greedy) &mdash; converges fast.</li>
+    <div class="task-card">
+      <h3>Temperature</h3>
+      <p style="font-size:0.8em;">Divide logits by \(T\) before softmax: higher \(T\) = more random, lower = sharper.</p>
+    </div>
+    <div class="task-card">
+      <h3>Top-\(k\)</h3>
+      <p style="font-size:0.8em;">Sample only from the \(k\) most likely tokens.</p>
+    </div>
+    <div class="task-card">
+      <h3>Top-\(p\) (nucleus)</h3>
+      <p style="font-size:0.8em;">Sample from the smallest set whose probability exceeds \(p\).</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12. LLM systems: agents, tools, RAG -->
+<section>
+  <h2>LLM systems: agents, tools, and RAG</h2>
+  <p style="font-size:0.83em; margin:0.1em 0;">On their own, LLMs can't look things up or take actions. We wrap them in a loop and give them <strong>tools</strong>.</p>
+  <div class="two-col vcenter">
+    <div style="flex:1.05; text-align:center;">
+      <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" class="l22-svg" style="max-height:170px;">
+        <rect x="100" y="20" width="100" height="38" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="150" y="43" class="axis-label" style="fill:#1d4ed8; font-size:13px;">LLM (think)</text>
+        <rect x="30" y="120" width="90" height="38" rx="6" fill="#dcfce7" stroke="#166534" stroke-width="1.5"/>
+        <text x="75" y="143" class="axis-label" style="fill:#166534;">tool / act</text>
+        <rect x="180" y="120" width="90" height="38" rx="6" fill="#fef3c7" stroke="#b45309" stroke-width="1.5"/>
+        <text x="225" y="143" class="axis-label" style="fill:#b45309;">observe</text>
+        <path class="edge" d="M 120 55 C 90 80, 80 100, 75 118" marker-end="url(#arrow-l22)"/>
+        <path class="edge" d="M 180 139 C 250 139, 250 60, 200 45" marker-end="url(#arrow-l22)"/>
+        <path class="edge" d="M 120 139 L 180 139" marker-end="url(#arrow-l22)"/>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <ul style="font-size:0.8em; margin:0.1em 0 0 1em;">
+        <li class="fragment"><strong>Agents:</strong> think &rarr; act (call a tool) &rarr; observe &rarr; repeat.</li>
+        <li class="fragment"><strong>Tools:</strong> web search, a calculator, code execution, APIs.</li>
+        <li class="fragment"><strong>RAG:</strong> retrieve relevant documents and put them in the prompt, so answers are <em>grounded</em> in real sources.</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- 13. RL -->
+<!-- 13. Limitations -->
 <section>
-  <h2>Reinforcement learning</h2>
-  <div class="recap-grid">
-    <div class="recall-card decision">
-      <h3>Two learning regimes</h3>
-      <ul>
-        <li><strong>Passive ADP:</strong> follow a fixed policy, estimate \(\hat P, \hat R\), solve via PE.</li>
-        <li><strong>Active ADP:</strong> also pick actions &mdash; balance exploration vs exploitation (\(\varepsilon\)-greedy, softmax, optimistic init).</li>
-      </ul>
-    </div>
-    <div class="recall-card decision fragment">
-      <h3>Model-free updates</h3>
-      <ul>
-        <li><strong>Q-learning</strong> (off-policy): \(Q(s,a) \leftarrow Q(s,a) + \alpha\big[R + \gamma \max_{a'} Q(s', a') - Q(s,a)\big]\).</li>
-        <li><strong>SARSA</strong> (on-policy): use the action actually taken instead of \(\max_{a'}\).</li>
-        <li>ADP converges fast but needs a model; Q-learning is slower but model-free.</li>
-      </ul>
-    </div>
+  <h2>Limitations to keep in mind</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr;">
+    <div class="task-card"><h3>Hallucination</h3><p style="font-size:0.8em;">Fluent text is not truth &mdash; models state wrong facts confidently.</p></div>
+    <div class="task-card"><h3>Bias &amp; safety</h3><p style="font-size:0.8em;">Models absorb biases from training data; alignment is imperfect.</p></div>
+    <div class="task-card"><h3>Context &amp; cost</h3><p style="font-size:0.8em;">Finite context window; training and serving are expensive.</p></div>
+    <div class="task-card"><h3>Evaluation</h3><p style="font-size:0.8em;">Hard to measure "good" open-ended answers reliably.</p></div>
   </div>
+  <p class="fragment" style="font-size:0.82em; color:#1d4ed8; text-align:center; margin-top:0.35em;">RAG, tools, and human oversight mitigate &mdash; but don't eliminate &mdash; these.</p>
 </section>
 
-<!-- 14. Supervised + unsupervised -->
-<section>
-  <h2>Supervised + unsupervised learning</h2>
-  <div class="recap-grid">
-    <div class="recall-card learn">
-      <h3>Supervised</h3>
-      <ul>
-        <li><strong>Classification</strong> (discrete \(y\)) vs <strong>regression</strong> (continuous \(y\)).</li>
-        <li><strong>Bias-variance:</strong> underfit (high bias) &harr; overfit (high variance).</li>
-        <li><strong>Cross-validation:</strong> \(K\)-fold to pick the model complexity that minimizes held-out error.</li>
-        <li><strong>ERM:</strong> minimize empirical loss \(\frac{1}{N}\sum_i \ell(\hat y^{(i)}, y^{(i)})\).</li>
-      </ul>
-    </div>
-    <div class="recall-card learn fragment">
-      <h3>Unsupervised</h3>
-      <ul>
-        <li><strong>k-means:</strong> alternate assign &harr; recompute centroids; pick \(k\) via elbow / silhouette.</li>
-        <li><strong>PCA:</strong> project onto top eigenvectors of the covariance matrix; maximize variance.</li>
-        <li><strong>Autoencoders &amp; GANs:</strong> learn representations / generators with neural nets.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 15. Decision trees + neural networks -->
-<section>
-  <h2>Decision trees + neural networks</h2>
-  <div class="recap-grid">
-    <div class="recall-card learn">
-      <h3>Decision trees</h3>
-      <ul>
-        <li>Greedy top-down split with <strong>ID3</strong>.</li>
-        <li>Choose split that maximizes <strong>information gain</strong> \(I = H(Y) - H(Y\mid X)\).</li>
-        <li>Stop when pure / no features / no examples.</li>
-        <li>Interpretable, great for small tabular data.</li>
-      </ul>
-    </div>
-    <div class="recall-card learn fragment">
-      <h3>Neural networks</h3>
-      <ul>
-        <li>Weighted sums + non-linear activations (sigmoid, ReLU).</li>
-        <li><strong>Forward pass</strong> computes loss; <strong>backprop</strong> computes gradients via chain rule (\(\delta\) recursion).</li>
-        <li>Train with <strong>SGD</strong> + momentum / Adam.</li>
-        <li>Black box but unmatched for images, audio, text.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 16. Notation cheat sheet -->
-<section>
-  <h2>Notation cheat sheet</h2>
-  <p style="font-size: 0.82em; margin: 0.15em 0;">Symbols that recur across the four modules. Watch for the two collisions on the right.</p>
-  <table class="compare" style="font-size: 0.58em; width: 96%;">
-    <thead>
-      <tr><th>Symbol</th><th>Meaning</th><th>First seen</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>\(\gamma\)</td><td>Discount factor for future rewards</td><td>L13 (MDPs)</td></tr>
-      <tr><td>\(\pi\), \(\pi^\star\)</td><td>Policy / optimal policy</td><td>L12&ndash;L15</td></tr>
-      <tr><td>\(V(s),\ Q(s,a)\)</td><td>State / state-action value functions</td><td>L13&ndash;L15</td></tr>
-      <tr><td>\(H(p),\ IG\)</td><td>Entropy / information gain (\(IG = H_{\text{before}} - H_{\text{after}}\))</td><td>L6 (entropy) &middot; L18 (IG)</td></tr>
-      <tr><td>\(\mathcal{H}\)</td><td>Hypothesis class (ERM)</td><td>L16</td></tr>
-      <tr><td>\(\Sigma\)</td><td>Covariance matrix (PCA)</td><td>L17</td></tr>
-      <tr><td style="color:#b91c1c;"><strong>\(\alpha\)</strong></td><td>RL TD step size (L15); momentum coefficient (L21) &mdash; <em>different meanings</em></td><td>L15 / L21</td></tr>
-      <tr><td style="color:#b91c1c;"><strong>\(\varepsilon\)</strong></td><td>Exploration probability in \(\varepsilon\)-greedy (L15); learning rate in SGD (L21) &mdash; <em>different meanings</em></td><td>L15 / L21</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.4em;">
-    Worth a row on your two-sided study sheet.
-  </p>
-</section>
-
-<!-- 17. Final exam + thanks -->
+<!-- 14. Recap + next -->
 <section class="center-slide">
-  <h2>Final exam &mdash; logistics</h2>
-  <div class="exam-panel">
-    <h3>What to bring</h3>
-    <ul>
-      <li>Non-programmable calculator.</li>
-      <li>One two-sided A4 study sheet (handwritten or typed).</li>
-    </ul>
-    <h3 style="margin-top: 0.4em;">Format (tentative)</h3>
-    <ul>
-      <li>Around 8 problems spanning all four modules.</li>
-      <li>~84 marks total; 76+ marks count as 100%.</li>
-      <li>Pass threshold: 42 marks.</li>
-    </ul>
-    <div class="note">Exact details will be confirmed on the course page before exam day.</div>
-  </div>
-  <p class="fragment" style="margin-top: 0.6em; font-size: 0.95em; color: #1d4ed8;">
-    Thanks for a great term &mdash; good luck on the final!
-  </p>
+  <h2>Learning goals (recap) &mdash; Next: generative AI</h2>
+  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:84%; margin-right:auto;">
+    <li>&#10003; &nbsp;The <strong>autoregressive</strong> objective and next-token loss.</li>
+    <li>&#10003; &nbsp;<strong>Tokenization</strong>, <strong>pretraining</strong>, and <strong>scaling laws</strong>.</li>
+    <li>&#10003; &nbsp;<strong>Fine-tuning</strong> and <strong>RLHF / DPO</strong> alignment.</li>
+    <li>&#10003; &nbsp;<strong>In-context learning</strong>, <strong>decoding</strong>, and LLM <strong>systems</strong> (agents, RAG).</li>
+  </ul>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8; text-align:center; margin-top:0.6em;">LLMs generate <em>text</em>. L23: generating <strong>images &amp; more</strong> with diffusion.</p>
 </section>
 
 </div>
