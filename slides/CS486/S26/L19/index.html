@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 19 — Neural Networks I</title>
+  <title>CS 486/686 Lecture 19 — Neural Networks I: Neurons to CNNs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 19: Neural Networks I — the math neuron, activation functions, perceptrons, XOR, and recurrent networks. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 19: Neural Networks I — the math neuron, activation functions, perceptrons, XOR, multilayer perceptrons, and convolutional networks (CNNs). Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
@@ -43,10 +43,10 @@
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Neural Networks I</div>
+  <div class="course-title">CS 486/686<br>Neural Networks I: Neurons to CNNs</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 19</p>
-  <p class="credit">RN 21.1 &middot; PM 7.5</p>
+  <p class="credit">RN 21.1&ndash;21.3 &middot; PM 7.5</p>
 </section>
 
 <!-- 2. Learning goals -->
@@ -64,11 +64,10 @@
   <ul style="text-align:left; margin-left:2em;">
     <li class="fragment">Describe the <strong>simple mathematical model</strong> of a neuron.</li>
     <li class="fragment">Describe desirable properties of an <strong>activation function</strong>.</li>
-    <li class="fragment">Distinguish <strong>feedforward</strong> from <strong>recurrent</strong> networks.</li>
-    <li class="fragment">Learn a <strong>perceptron</strong> for a simple logical function.</li>
-    <li class="fragment">Determine the logical function represented by a perceptron.</li>
-    <li class="fragment">Explain why a perceptron <strong>cannot represent XOR</strong>.</li>
-    <li class="fragment">Understand <strong>recurrent neural networks</strong>.</li>
+    <li class="fragment">Learn / identify a <strong>perceptron</strong> for a logical function.</li>
+    <li class="fragment">Explain why a perceptron <strong>cannot represent XOR</strong> &mdash; and how a hidden layer fixes it.</li>
+    <li class="fragment">Stack neurons into a <strong>multilayer perceptron</strong>.</li>
+    <li class="fragment">Understand <strong>convolutional networks (CNNs)</strong> for images.</li>
   </ul>
 </section>
 
@@ -239,16 +238,17 @@
       <p class="tradeoff">Fast, sparse; <em>dying-ReLU</em> when input stays negative.</p>
     </div>
     <div class="act-card fragment">
-      <h3>Leaky ReLU</h3>
-      <p class="formula">\(g(x) = \max(0, x) + k\cdot\min(0, x)\)</p>
+      <h3>GELU / SiLU</h3>
+      <p class="formula">\(g(x) = x \cdot \sigma(x)\) &nbsp;(SiLU)</p>
       <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" class="act-plot">
         <line class="axis" x1="10" y1="60" x2="130" y2="60"/>
         <line class="axis" x1="70" y1="10" x2="70" y2="75"/>
-        <path class="curve" d="M 10 67 L 70 60 L 130 10"/>
+        <path class="curve" d="M 10 62 Q 55 66, 70 60 Q 90 52, 130 10"/>
       </svg>
-      <p class="tradeoff">Small negative slope keeps gradient alive on the left.</p>
+      <p class="tradeoff">Smooth, ReLU-like; the <strong>modern default</strong> in transformers/LLMs.</p>
     </div>
   </div>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.2em;">(Leaky ReLU adds a small negative slope to ReLU to keep the gradient alive.)</p>
 </section>
 
 <!-- ============================================================
@@ -265,7 +265,7 @@
     </div>
     <div class="task-card">
       <h3>Recurrent</h3>
-      <p>Outputs feed back as inputs. Supports <strong>short-term memory</strong> &mdash; behavior depends on history.</p>
+      <p>Outputs feed back as inputs to process <strong>sequences</strong> &mdash; we return to sequences (and their limits) in L21.</p>
     </div>
   </div>
   <div class="defbox fragment" style="margin-top: 0.5em;">
@@ -469,168 +469,120 @@
 </section>
 
 <!-- ============================================================
-     Recurrent networks (3 slides)
+     Multilayer perceptrons + CNNs (3 slides)
      ============================================================ -->
 
-<!-- 13. RNN definition -->
+<!-- 13. Multilayer perceptron -->
 <section>
-  <h2>Recurrent networks: process a sequence</h2>
-  <p style="font-size: 0.82em; margin: 0.15em 0;">When inputs come as a sequence (text, audio, sensor data), the same network reads one element at a time and carries a <strong>state</strong> across steps.</p>
+  <h2>Stacking neurons: the multilayer perceptron</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">XOR needed one hidden layer. Stack layers of neurons and you get a <strong>multilayer perceptron (MLP)</strong> &mdash; a fully-connected feedforward network.</p>
   <div class="two-col vcenter">
-    <div style="flex: 1.1;">
-      <div class="defbox">
-        <h3>Recurrence</h3>
-        <p style="text-align: center; margin: 0.2em 0; font-size: 0.92em;">\(h_t = f_W(h_{t-1},\, x_t), \quad y_t = f_Y(h_t)\)</p>
-        <p style="font-size: 0.78em; color: #6b7280; margin: 0;">The state \(h_t\) summarizes everything seen so far.</p>
-      </div>
-      <p style="font-size: 0.78em; margin-top: 0.3em;">Same weights at every step &mdash; the model can handle <em>any-length</em> sequence with a fixed parameter count.</p>
-    </div>
-    <div style="flex: 0.9; text-align: center;">
-      <svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg" class="rnn-cell" style="max-height: 150px;">
-        <rect class="cell-box" x="60" y="60" width="100" height="60"/>
-        <text x="110" y="92" font-size="14">RNN</text>
-        <g class="node"><circle cx="35" cy="90" r="14"/></g>
-        <text x="35" y="90" font-size="12" font-weight="700">x<tspan baseline-shift="sub" font-size="8">t</tspan></text>
-        <g class="out-node"><circle cx="185" cy="90" r="14"/></g>
-        <text x="185" y="90" font-size="12" font-weight="700">y<tspan baseline-shift="sub" font-size="8">t</tspan></text>
-        <line class="edge" x1="49" y1="90" x2="60" y2="90" marker-end="url(#arrow-l19)"/>
-        <line class="edge" x1="160" y1="90" x2="171" y2="90" marker-end="url(#arrow-l19)"/>
-        <path class="edge" d="M 110 60 C 110 30, 50 30, 50 50 L 50 60" fill="none" stroke-dasharray="3 2" marker-end="url(#arrow-l19)"/>
-        <text x="80" y="35" font-size="11" fill="#d97706" font-style="italic">h<tspan baseline-shift="sub" font-size="8">t-1</tspan></text>
-        <path class="edge" d="M 160 120 C 200 130, 200 150, 110 150 C 110 130, 110 130, 110 120" fill="none" stroke-dasharray="3 2"/>
-        <text x="135" y="170" font-size="11" fill="#d97706" font-style="italic">h<tspan baseline-shift="sub" font-size="8">t</tspan> (carry to next step)</text>
+    <div style="flex: 1; text-align:center;">
+      <svg viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:180px;">
+        <g stroke="#cbd5e1" stroke-width="1">
+          <line x1="52" y1="60" x2="150" y2="40"/><line x1="52" y1="60" x2="150" y2="85"/><line x1="52" y1="60" x2="150" y2="130"/><line x1="52" y1="60" x2="150" y2="175"/>
+          <line x1="52" y1="100" x2="150" y2="40"/><line x1="52" y1="100" x2="150" y2="85"/><line x1="52" y1="100" x2="150" y2="130"/><line x1="52" y1="100" x2="150" y2="175"/>
+          <line x1="52" y1="140" x2="150" y2="40"/><line x1="52" y1="140" x2="150" y2="85"/><line x1="52" y1="140" x2="150" y2="130"/><line x1="52" y1="140" x2="150" y2="175"/>
+          <line x1="150" y1="40" x2="285" y2="85"/><line x1="150" y1="40" x2="285" y2="130"/>
+          <line x1="150" y1="85" x2="285" y2="85"/><line x1="150" y1="85" x2="285" y2="130"/>
+          <line x1="150" y1="130" x2="285" y2="85"/><line x1="150" y1="130" x2="285" y2="130"/>
+          <line x1="150" y1="175" x2="285" y2="85"/><line x1="150" y1="175" x2="285" y2="130"/>
+        </g>
+        <g fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5">
+          <circle cx="40" cy="60" r="12"/><circle cx="40" cy="100" r="12"/><circle cx="40" cy="140" r="12"/>
+        </g>
+        <g fill="#fef3c7" stroke="#92400e" stroke-width="1.5">
+          <circle cx="150" cy="40" r="12"/><circle cx="150" cy="85" r="12"/><circle cx="150" cy="130" r="12"/><circle cx="150" cy="175" r="12"/>
+        </g>
+        <g fill="#dcfce7" stroke="#166534" stroke-width="1.5">
+          <circle cx="285" cy="85" r="12"/><circle cx="285" cy="130" r="12"/>
+        </g>
+        <text x="40" y="180" font-size="10" fill="#1d4ed8" text-anchor="middle">input</text>
+        <text x="150" y="196" font-size="10" fill="#92400e" text-anchor="middle">hidden</text>
+        <text x="285" y="160" font-size="10" fill="#166534" text-anchor="middle">output</text>
       </svg>
     </div>
+    <div style="flex: 0.95;">
+      <ul style="font-size: 0.82em; margin: 0.1em 0 0 1em;">
+        <li class="fragment">Each hidden unit computes \(g(\mathbf{w}^\top \mathbf{x} + b)\); layers compose into richer features.</li>
+        <li class="fragment"><strong>Universal approximation:</strong> a wide enough hidden layer can approximate any continuous function.</li>
+        <li class="fragment">Stack more hidden layers &rarr; a <strong>deep</strong> network. Output layer = softmax or linear (L16).</li>
+      </ul>
+    </div>
   </div>
 </section>
 
-<!-- 14. Vanilla RNN -->
+<!-- 14. CNNs: convolution + weight sharing -->
 <section>
-  <h2>Vanilla RNN: equations + unrolled</h2>
-  <div class="defbox">
-    <p style="text-align: center; margin: 0.2em 0; font-size: 0.95em;">\(h_t = \tanh\!\bigl(W_{hh}\, h_{t-1} + W_{xh}\, x_t\bigr), \quad y_t = W_{hy}\, h_t\)</p>
+  <h2>Convolutional networks: weight sharing for images</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">A fully-connected layer on a megapixel image needs billions of weights. A <strong>CNN</strong> instead slides one small <strong>filter</strong> over the image, reusing the same weights everywhere.</p>
+  <div class="two-col vcenter">
+    <div style="flex: 1.05; text-align:center;">
+      <svg viewBox="0 0 360 180" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:170px;">
+        <g stroke="#9ca3af" stroke-width="1" fill="#eff6ff">
+          <rect x="20" y="20" width="120" height="120"/>
+        </g>
+        <g stroke="#cbd5e1" stroke-width="0.8">
+          <line x1="20" y1="44" x2="140" y2="44"/><line x1="20" y1="68" x2="140" y2="68"/><line x1="20" y1="92" x2="140" y2="92"/><line x1="20" y1="116" x2="140" y2="116"/>
+          <line x1="44" y1="20" x2="44" y2="140"/><line x1="68" y1="20" x2="68" y2="140"/><line x1="92" y1="20" x2="92" y2="140"/><line x1="116" y1="20" x2="116" y2="140"/>
+        </g>
+        <rect x="20" y="20" width="72" height="72" fill="#fca5a5" fill-opacity="0.5" stroke="#dc2626" stroke-width="2"/>
+        <text x="80" y="158" font-size="11" fill="#1d4ed8" text-anchor="middle">input image</text>
+        <text x="56" y="15" font-size="10" fill="#dc2626" text-anchor="middle">filter</text>
+        <line x1="145" y1="80" x2="205" y2="80" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arrow-l19)"/>
+        <text x="175" y="72" font-size="10" fill="#6b7280" text-anchor="middle">&#8859;</text>
+        <g stroke="#166534" stroke-width="1" fill="#dcfce7">
+          <rect x="215" y="40" width="90" height="90"/>
+        </g>
+        <g stroke="#a7f3d0" stroke-width="0.8">
+          <line x1="215" y1="70" x2="305" y2="70"/><line x1="215" y1="100" x2="305" y2="100"/>
+          <line x1="245" y1="40" x2="245" y2="130"/><line x1="275" y1="40" x2="275" y2="130"/>
+        </g>
+        <rect x="215" y="40" width="30" height="30" fill="#86efac" stroke="#166534" stroke-width="1.5"/>
+        <text x="260" y="150" font-size="11" fill="#166534" text-anchor="middle">feature map</text>
+      </svg>
+    </div>
+    <div style="flex: 0.95;">
+      <ul style="font-size: 0.82em; margin: 0.1em 0 0 1em;">
+        <li class="fragment"><strong>Local:</strong> each output looks at a small patch (receptive field).</li>
+        <li class="fragment"><strong>Weight sharing:</strong> the same filter runs everywhere &mdash; far fewer parameters, and it detects a feature anywhere in the image.</li>
+        <li class="fragment">Many filters &rarr; many feature maps (edges, corners, textures &hellip;).</li>
+      </ul>
+    </div>
   </div>
-  <div style="text-align: center; margin-top: 0.4em;">
-    <svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg" class="rnn-cell">
-      <!-- t=1 (always visible) -->
-      <g>
-        <rect class="cell-box" x="50" y="80" width="80" height="50"/>
-        <text x="90" y="108" font-size="13">h<tspan baseline-shift="sub" font-size="9">1</tspan></text>
-        <g class="node"><circle cx="90" cy="170" r="12"/></g>
-        <text x="90" y="170" font-size="11">x<tspan baseline-shift="sub" font-size="7">1</tspan></text>
-        <line class="edge" x1="90" y1="158" x2="90" y2="130" marker-end="url(#arrow-l19)"/>
-        <g class="out-node"><circle cx="90" cy="40" r="12"/></g>
-        <text x="90" y="40" font-size="11">y<tspan baseline-shift="sub" font-size="7">1</tspan></text>
-        <line class="edge" x1="90" y1="80" x2="90" y2="52" marker-end="url(#arrow-l19)"/>
-      </g>
-      <!-- t=2 -->
-      <g class="fragment">
-        <line class="edge" x1="130" y1="105" x2="160" y2="105" marker-end="url(#arrow-l19)"/>
-        <text x="145" y="98" font-size="9" fill="#1d4ed8">W<tspan baseline-shift="sub" font-size="7">hh</tspan></text>
-        <rect class="cell-box" x="160" y="80" width="80" height="50"/>
-        <text x="200" y="108" font-size="13">h<tspan baseline-shift="sub" font-size="9">2</tspan></text>
-        <g class="node"><circle cx="200" cy="170" r="12"/></g>
-        <text x="200" y="170" font-size="11">x<tspan baseline-shift="sub" font-size="7">2</tspan></text>
-        <line class="edge" x1="200" y1="158" x2="200" y2="130" marker-end="url(#arrow-l19)"/>
-        <g class="out-node"><circle cx="200" cy="40" r="12"/></g>
-        <text x="200" y="40" font-size="11">y<tspan baseline-shift="sub" font-size="7">2</tspan></text>
-        <line class="edge" x1="200" y1="80" x2="200" y2="52" marker-end="url(#arrow-l19)"/>
-      </g>
-      <!-- t=3 -->
-      <g class="fragment">
-        <line class="edge" x1="240" y1="105" x2="270" y2="105" marker-end="url(#arrow-l19)"/>
-        <text x="255" y="98" font-size="9" fill="#1d4ed8">W<tspan baseline-shift="sub" font-size="7">hh</tspan></text>
-        <rect class="cell-box" x="270" y="80" width="80" height="50"/>
-        <text x="310" y="108" font-size="13">h<tspan baseline-shift="sub" font-size="9">3</tspan></text>
-        <g class="node"><circle cx="310" cy="170" r="12"/></g>
-        <text x="310" y="170" font-size="11">x<tspan baseline-shift="sub" font-size="7">3</tspan></text>
-        <line class="edge" x1="310" y1="158" x2="310" y2="130" marker-end="url(#arrow-l19)"/>
-        <g class="out-node"><circle cx="310" cy="40" r="12"/></g>
-        <text x="310" y="40" font-size="11">y<tspan baseline-shift="sub" font-size="7">3</tspan></text>
-        <line class="edge" x1="310" y1="80" x2="310" y2="52" marker-end="url(#arrow-l19)"/>
-      </g>
-      <!-- t=4 -->
-      <g class="fragment">
-        <line class="edge" x1="350" y1="105" x2="380" y2="105" marker-end="url(#arrow-l19)"/>
-        <text x="365" y="98" font-size="9" fill="#1d4ed8">W<tspan baseline-shift="sub" font-size="7">hh</tspan></text>
-        <rect class="cell-box" x="380" y="80" width="80" height="50"/>
-        <text x="420" y="108" font-size="13">h<tspan baseline-shift="sub" font-size="9">4</tspan></text>
-        <g class="node"><circle cx="420" cy="170" r="12"/></g>
-        <text x="420" y="170" font-size="11">x<tspan baseline-shift="sub" font-size="7">4</tspan></text>
-        <line class="edge" x1="420" y1="158" x2="420" y2="130" marker-end="url(#arrow-l19)"/>
-        <g class="out-node"><circle cx="420" cy="40" r="12"/></g>
-        <text x="420" y="40" font-size="11">y<tspan baseline-shift="sub" font-size="7">4</tspan></text>
-        <line class="edge" x1="420" y1="80" x2="420" y2="52" marker-end="url(#arrow-l19)"/>
-      </g>
-    </svg>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.3em;">The <strong>same</strong> \(W_{hh}, W_{xh}, W_{hy}\) are reused at every time step.</p>
 </section>
 
-<!-- 15. Language modeling -->
+<!-- 15. CNNs: pooling + feature hierarchy -->
 <section>
-  <h2>Application: language modeling</h2>
-  <p style="font-size: 0.85em;">Feed characters one at a time; predict the next character at each step.</p>
-  <div style="text-align: center;">
-    <svg viewBox="0 0 540 220" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
-      <!-- Right-side legend (always visible) -->
-      <text x="475" y="40" font-size="11" fill="#166534" font-weight="700">predictions</text>
-      <text x="475" y="110" font-size="11" fill="#92400e" font-weight="700">hidden state</text>
-      <text x="475" y="180" font-size="11" fill="#1d4ed8" font-weight="700">input chars</text>
-      <!-- t=1 (always visible) -->
-      <g>
-        <rect class="char-box" x="20" y="160" width="40" height="40"/>
-        <text x="40" y="180">h</text>
-        <text x="40" y="215" font-size="10" fill="#6b7280">t=1</text>
-        <rect class="hidden-box" x="20" y="90" width="40" height="40"/>
-        <text x="40" y="110">h<tspan baseline-shift="sub" font-size="8">1</tspan></text>
-        <line class="edge" x1="40" y1="160" x2="40" y2="130" marker-end="url(#arrow-l19)"/>
-        <rect class="pred-box" x="20" y="20" width="40" height="40"/>
-        <text x="40" y="40">"e"</text>
-        <line class="edge" x1="40" y1="90" x2="40" y2="60" marker-end="url(#arrow-l19)"/>
-      </g>
-      <!-- t=2 -->
-      <g class="fragment">
-        <line class="edge" x1="60" y1="110" x2="140" y2="110" marker-end="url(#arrow-l19)"/>
-        <rect class="char-box" x="140" y="160" width="40" height="40"/>
-        <text x="160" y="180">e</text>
-        <text x="160" y="215" font-size="10" fill="#6b7280">t=2</text>
-        <rect class="hidden-box" x="140" y="90" width="40" height="40"/>
-        <text x="160" y="110">h<tspan baseline-shift="sub" font-size="8">2</tspan></text>
-        <line class="edge" x1="160" y1="160" x2="160" y2="130" marker-end="url(#arrow-l19)"/>
-        <rect class="pred-box" x="140" y="20" width="40" height="40"/>
-        <text x="160" y="40">"l"</text>
-        <line class="edge" x1="160" y1="90" x2="160" y2="60" marker-end="url(#arrow-l19)"/>
-      </g>
-      <!-- t=3 -->
-      <g class="fragment">
-        <line class="edge" x1="180" y1="110" x2="260" y2="110" marker-end="url(#arrow-l19)"/>
-        <rect class="char-box" x="260" y="160" width="40" height="40"/>
-        <text x="280" y="180">l</text>
-        <text x="280" y="215" font-size="10" fill="#6b7280">t=3</text>
-        <rect class="hidden-box" x="260" y="90" width="40" height="40"/>
-        <text x="280" y="110">h<tspan baseline-shift="sub" font-size="8">3</tspan></text>
-        <line class="edge" x1="280" y1="160" x2="280" y2="130" marker-end="url(#arrow-l19)"/>
-        <rect class="pred-box" x="260" y="20" width="40" height="40"/>
-        <text x="280" y="40">"l"</text>
-        <line class="edge" x1="280" y1="90" x2="280" y2="60" marker-end="url(#arrow-l19)"/>
-      </g>
-      <!-- t=4 -->
-      <g class="fragment">
-        <line class="edge" x1="300" y1="110" x2="380" y2="110" marker-end="url(#arrow-l19)"/>
-        <rect class="char-box" x="380" y="160" width="40" height="40"/>
-        <text x="400" y="180">l</text>
-        <text x="400" y="215" font-size="10" fill="#6b7280">t=4</text>
-        <rect class="hidden-box" x="380" y="90" width="40" height="40"/>
-        <text x="400" y="110">h<tspan baseline-shift="sub" font-size="8">4</tspan></text>
-        <line class="edge" x1="400" y1="160" x2="400" y2="130" marker-end="url(#arrow-l19)"/>
-        <rect class="pred-box" x="380" y="20" width="40" height="40"/>
-        <text x="400" y="40">"o"</text>
-        <line class="edge" x1="400" y1="90" x2="400" y2="60" marker-end="url(#arrow-l19)"/>
-      </g>
+  <h2>Pooling &amp; the feature hierarchy</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Alternate <strong>convolution</strong> (detect features) with <strong>pooling</strong> (shrink the map, keep the strongest response). Stacking these builds features from simple to complex.</p>
+  <div style="text-align:center;">
+    <svg viewBox="0 0 620 150" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:150px;">
+      <rect x="10" y="35" width="70" height="70" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.4"/>
+      <text x="45" y="122" font-size="10" fill="#1d4ed8" text-anchor="middle">pixels</text>
+      <line x1="84" y1="70" x2="112" y2="70" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
+      <rect x="116" y="45" width="54" height="54" fill="#dcfce7" stroke="#166534" stroke-width="1.4"/>
+      <text x="143" y="118" font-size="10" fill="#166534" text-anchor="middle">edges</text>
+      <line x1="174" y1="70" x2="202" y2="70" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
+      <rect x="206" y="52" width="40" height="40" fill="#fef3c7" stroke="#92400e" stroke-width="1.4"/>
+      <text x="226" y="112" font-size="10" fill="#92400e" text-anchor="middle">textures</text>
+      <line x1="250" y1="70" x2="278" y2="70" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
+      <rect x="282" y="57" width="30" height="30" fill="#fde68a" stroke="#b45309" stroke-width="1.4"/>
+      <text x="297" y="107" font-size="10" fill="#b45309" text-anchor="middle">parts</text>
+      <line x1="316" y1="70" x2="344" y2="70" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
+      <rect x="348" y="60" width="24" height="24" fill="#fecaca" stroke="#991b1b" stroke-width="1.4"/>
+      <text x="360" y="104" font-size="10" fill="#991b1b" text-anchor="middle">objects</text>
+      <line x1="376" y1="72" x2="404" y2="72" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
+      <rect x="408" y="58" width="88" height="28" rx="4" fill="#ede9fe" stroke="#6d28d9" stroke-width="1.4"/>
+      <text x="452" y="76" font-size="11" fill="#6d28d9" text-anchor="middle">softmax</text>
+      <text x="452" y="104" font-size="10" fill="#6d28d9" text-anchor="middle">"cat"</text>
     </svg>
   </div>
-  <p style="font-size: 0.82em; color: #166534; text-align: center; margin-top: 0.3em;">Trained to predict the next character; sample autoregressively to generate text.</p>
+  <ul style="font-size: 0.8em; margin: 0.15em 0 0 1.2em;">
+    <li class="fragment"><strong>Pooling</strong> (e.g. 2&times;2 max) shrinks maps &rarr; small translations don't matter.</li>
+    <li class="fragment">Deeper layers see larger regions &rarr; edges &rarr; parts &rarr; whole objects.</li>
+    <li class="fragment">CNNs powered the deep-learning breakthrough in vision (ImageNet, 2012).</li>
+  </ul>
 </section>
 
 <!-- ============================================================
@@ -641,12 +593,11 @@
 <section class="center-slide">
   <h2>Learning goals (recap) &mdash; Next: training</h2>
   <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0; max-width: 85%; margin-right: auto;">
-    <li>&#10003; &nbsp;Describe the <strong>math neuron</strong>.</li>
-    <li>&#10003; &nbsp;Describe desirable properties of an <strong>activation function</strong>.</li>
-    <li>&#10003; &nbsp;Distinguish <strong>feedforward</strong> from <strong>recurrent</strong> networks.</li>
+    <li>&#10003; &nbsp;Describe the <strong>math neuron</strong> and activation functions.</li>
     <li>&#10003; &nbsp;Learn / identify a <strong>perceptron</strong> for a logical function.</li>
-    <li>&#10003; &nbsp;Explain why a perceptron <strong>cannot represent XOR</strong>.</li>
-    <li>&#10003; &nbsp;Understand <strong>RNNs</strong> and how they process sequences.</li>
+    <li>&#10003; &nbsp;Explain why a perceptron <strong>cannot represent XOR</strong> &mdash; and how a hidden layer fixes it.</li>
+    <li>&#10003; &nbsp;Stack neurons into a <strong>multilayer perceptron</strong>.</li>
+    <li>&#10003; &nbsp;Understand <strong>CNNs</strong>: convolution, weight sharing, pooling, feature hierarchy.</li>
   </ul>
   <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L20: how do we actually <em>train</em> these networks? &mdash; gradient descent + <strong>backpropagation</strong>.</p>
 </section>
