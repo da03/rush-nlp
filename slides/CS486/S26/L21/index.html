@@ -2,17 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 21 — Neural Networks III</title>
+  <title>CS 486/686 Lecture 21 — Transformers &amp; Attention</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 21: Neural Networks III — SGD details, momentum, Nesterov, AdaGrad, RMSProp, and Adam. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 21: Transformers and Attention — RNN limitations, scaled dot-product attention, multi-head attention, positional encodings, the transformer block, and causal masking. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../L19/custom.css">
-  <link rel="stylesheet" href="../L20/custom.css">
-  <link rel="stylesheet" href="custom.css">
+  <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="custom.css?v=1">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -38,27 +37,15 @@
     <marker id="arrow-l21" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
       <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
     </marker>
-    <marker id="arrow-l21-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/>
-    </marker>
-    <marker id="arrow-l21-green" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#15803d"/>
-    </marker>
-    <marker id="arrow-l21-black" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#111827"/>
-    </marker>
-    <marker id="arrow-l21-cyan" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#0891b2"/>
-    </marker>
   </defs>
 </svg>
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Neural Networks III</div>
+  <div class="course-title">CS 486/686<br>Transformers &amp; Attention</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 21</p>
-  <p class="credit">Optimization for deep learning &middot; slides adapted from CMSC 35246 (Shubhendu &amp; Risi, U. Chicago)</p>
+  <p class="credit">RN 21.6 &middot; "Attention Is All You Need" (Vaswani et al., 2017)</p>
 </section>
 
 <!-- 2. Learning goals -->
@@ -74,386 +61,302 @@
   </div>
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment"><strong>Stochastic gradient descent</strong>: noisy steps, learning-rate schedules, convergence.</li>
-    <li class="fragment"><strong>Momentum</strong> and its <strong>Nesterov</strong> look-ahead variant.</li>
-    <li class="fragment"><strong>Adaptive learning rates</strong>: AdaGrad and RMSProp.</li>
-    <li class="fragment"><strong>Adam</strong>: adaptive moments combining the two ideas.</li>
+    <li class="fragment">Explain why <strong>RNNs</strong> struggle with long sequences.</li>
+    <li class="fragment">Derive <strong>scaled dot-product attention</strong> from queries, keys, values.</li>
+    <li class="fragment">Explain <strong>multi-head attention</strong> and <strong>positional encodings</strong>.</li>
+    <li class="fragment">Assemble a <strong>transformer block</strong> (attention + FFN + residual + norm).</li>
+    <li class="fragment">Distinguish <strong>encoder</strong> from <strong>decoder</strong> (causal masking).</li>
   </ul>
 </section>
 
-<!-- 3. Roadmap -->
+<!-- 3. RNN recap + limitations -->
 <section>
-  <h2>Roadmap: first-order optimizers</h2>
-  <p style="font-size: 0.85em;">Backprop gives us \(\nabla_\theta L\). The optimizer decides what to do with it.</p>
-  <div class="optim-roadmap">
-    <span class="step">GD</span><span class="arrow">&rarr;</span>
-    <span class="step">SGD</span><span class="arrow">&rarr;</span>
-    <span class="step">+ Momentum</span><span class="arrow">&rarr;</span>
-    <span class="step">+ Nesterov</span>
-    <span class="arrow fragment">&rarr;</span>
-    <span class="step adv fragment">AdaGrad</span><span class="arrow fragment">&rarr;</span>
-    <span class="step adv fragment">RMSProp</span><span class="arrow fragment">&rarr;</span>
-    <span class="step adv fragment">Adam</span>
-  </div>
-  <ul style="font-size: 0.82em; margin-top: 0.5em;">
-    <li class="fragment"><strong>SGD:</strong> trade accuracy of gradient for speed of updates.</li>
-    <li class="fragment"><strong>Momentum:</strong> add inertia &mdash; escape ravines, damp oscillations.</li>
-    <li class="fragment"><strong>Adaptive:</strong> give each parameter its own learning rate.</li>
-    <li class="fragment"><strong>Adam:</strong> combine momentum + adaptive in one optimizer.</li>
-  </ul>
-</section>
-
-<!-- 4. SGD recap + LR schedule + convergence -->
-<section>
-  <h2>SGD recap</h2>
-  <div class="two-col" style="margin-top: 0.3em;">
-    <div style="flex: 1; font-size: 0.85em;">
-      <p style="margin: 0;"><strong>Batch GD:</strong></p>
-      <p style="margin: 0.2em 0;">\( \hat g \leftarrow \tfrac{1}{N}\, \nabla_\theta \sum_i L(f(x^{(i)}; \theta), y^{(i)}) \)</p>
-      <p style="margin: 0;"><strong>SGD</strong> (one example per step):</p>
-      <p style="margin: 0.2em 0;">\( \hat g \leftarrow \nabla_\theta L(f(x^{(i)}; \theta), y^{(i)}) \)</p>
-      <p style="margin: 0;">In both: \( \theta \leftarrow \theta - \varepsilon \hat g \).</p>
-    </div>
-    <div style="flex: 1; font-size: 0.85em;">
-      <p style="margin: 0;"><strong>Decay the learning rate</strong> linearly until iteration \(\tau\):</p>
-      <p style="margin: 0.2em 0;">\( \varepsilon_k = (1-\alpha)\,\varepsilon_0 + \alpha\,\varepsilon_\tau, \quad \alpha = k/\tau \)</p>
-      <p class="fragment" style="margin: 0.4em 0 0 0;"><strong>Sufficient for convergence:</strong></p>
-      <p class="fragment" style="margin: 0.2em 0;">\( \displaystyle\sum_k \varepsilon_k = \infty, \quad \sum_k \varepsilon_k^2 < \infty \)</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.6em; text-align:center;">
-    <strong>Mini-batch SGD</strong> (e.g. 32, 64): cheaper than full-batch, less noisy than per-example, scales to huge datasets.
-  </p>
-</section>
-
-<!-- 5. Pain points of vanilla SGD -->
-<section>
-  <h2>What goes wrong with plain SGD</h2>
-  <div class="two-col" style="margin-top: 0.2em;">
-    <div style="flex: 0.9;">
-      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" class="loss-curve">
-        <line class="axis" x1="20" y1="170" x2="305" y2="170"/>
-        <line class="axis" x1="20" y1="20" x2="20" y2="170"/>
-        <text x="0" y="15" class="label">L</text>
-        <text x="298" y="190" class="label">\(\theta\)</text>
-        <path class="curve" d="M30,60 Q70,160 110,90 Q150,30 190,140 Q220,180 260,90 Q285,40 300,70"/>
-        <circle class="marker-local" cx="110" cy="90" r="5"/>
-        <text x="110" y="78" text-anchor="middle" fill="#dc2626" font-size="10">local min</text>
-        <circle class="marker-local" cx="260" cy="90" r="5"/>
-        <circle class="marker-global" cx="190" cy="140" r="6"/>
-        <text x="190" y="158" text-anchor="middle" fill="#15803d" font-size="10">global min</text>
-        <g class="fragment">
-          <path class="path-no" d="M70,140 L80,135 L72,128 L82,122 L75,116 L84,110 L78,103 L88,98 L82,93 L102,92"/>
-          <text x="55" y="200" font-size="10" fill="#dc2626">oscillating + stuck</text>
+  <h2>Recall: RNNs process a sequence step by step</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1.05; text-align:center;">
+      <svg viewBox="0 0 420 130" xmlns="http://www.w3.org/2000/svg" class="l21-svg" style="max-height:130px;">
+        <g>
+          <rect x="30" y="45" width="50" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
+          <text x="55" y="68" class="axis-label" style="fill:#1d4ed8;">h&#8321;</text>
+          <rect x="130" y="45" width="50" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
+          <text x="155" y="68" class="axis-label" style="fill:#1d4ed8;">h&#8322;</text>
+          <rect x="230" y="45" width="50" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
+          <text x="255" y="68" class="axis-label" style="fill:#1d4ed8;">h&#8323;</text>
+          <rect x="330" y="45" width="50" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
+          <text x="355" y="68" class="axis-label" style="fill:#1d4ed8;">h&#8324;</text>
         </g>
+        <line class="edge" x1="80" y1="65" x2="130" y2="65" marker-end="url(#arrow-l21)"/>
+        <line class="edge" x1="180" y1="65" x2="230" y2="65" marker-end="url(#arrow-l21)"/>
+        <line class="edge" x1="280" y1="65" x2="330" y2="65" marker-end="url(#arrow-l21)"/>
+        <text x="55" y="115" class="axis-label">the</text>
+        <text x="155" y="115" class="axis-label">cat</text>
+        <text x="255" y="115" class="axis-label">sat</text>
+        <text x="355" y="115" class="axis-label">down</text>
+        <line class="edge" x1="55" y1="100" x2="55" y2="87" marker-end="url(#arrow-l21)"/>
+        <line class="edge" x1="155" y1="100" x2="155" y2="87" marker-end="url(#arrow-l21)"/>
+        <line class="edge" x1="255" y1="100" x2="255" y2="87" marker-end="url(#arrow-l21)"/>
+        <line class="edge" x1="355" y1="100" x2="355" y2="87" marker-end="url(#arrow-l21)"/>
       </svg>
     </div>
-    <div style="flex: 1; font-size: 0.85em;">
-      <p class="fragment" style="margin: 0;"><strong>Local minima.</strong> Non-convex losses have many. SGD shrinks gradients to zero there and stalls.</p>
-      <p class="fragment" style="margin: 0.6em 0 0 0;"><strong>Noisy oscillations.</strong> Each step uses only one example &mdash; the descent path zig-zags, slowing convergence.</p>
-      <p class="fragment" style="margin: 0.6em 0 0 0; color: #1d4ed8;"><strong>Both issues</strong> motivate the next big idea: <strong>momentum</strong>.</p>
+    <div style="flex: 0.95;">
+      <p style="font-size: 0.85em; margin: 0.1em 0;">The state \(h_t = f(h_{t-1}, x_t)\) carries information forward, one step at a time.</p>
+      <p style="font-size: 0.82em; margin: 0.3em 0; color:#991b1b;">Three problems at scale:</p>
+      <ul style="font-size: 0.8em; margin: 0.1em 0 0 1em;">
+        <li class="fragment"><strong>Sequential:</strong> step \(t\) waits for \(t{-}1\) &mdash; can't parallelize over the sequence.</li>
+        <li class="fragment"><strong>Long-range:</strong> signal from far-back tokens fades (vanishing gradients).</li>
+        <li class="fragment"><strong>Bottleneck:</strong> everything must squeeze through one fixed-size state.</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- 6. Momentum formula + intuition -->
-<section>
-  <h2>Momentum: add inertia</h2>
-  <p style="font-size: 0.85em;">Introduce a <strong>velocity</strong> vector \(\bm v\) &mdash; an exponentially weighted average of past gradients:</p>
-  <div style="text-align: center; font-size: 0.95em;">
-    \[ \bm v \leftarrow \alpha\, \bm v - \varepsilon\, \nabla_\theta L(\theta), \qquad \theta \leftarrow \theta + \bm v \]
-  </div>
-  <ul style="font-size: 0.85em; margin-top: 0.6em;">
-    <li class="fragment"><strong>\(\alpha \in [0, 1)\)</strong> controls how much past gradients persist. Common: \(\alpha = 0.9\).</li>
-    <li class="fragment"><strong>Recent gradients dominate</strong> &mdash; older ones decay geometrically.</li>
-    <li class="fragment" style="color: #1d4ed8;"><strong>Intuition:</strong> a ball rolling down a hill keeps moving in the average direction, smoothing oscillations and powering through small bumps.</li>
-  </ul>
-</section>
-
-<!-- 7. Worked example: 0.3x^4 - 0.1x^3 - 2x^2 - 0.8x -->
-<section>
-  <h2>Worked example</h2>
-  <p style="font-size: 0.82em; margin: 0.15em 0;">Minimize \( y = 0.3x^4 - 0.1x^3 - 2x^2 - 0.8x \), with gradient \( g = 1.2x^3 - 0.3x^2 - 4x - 0.8 \). Start at \(x_0 = -2\).</p>
-  <svg viewBox="0 0 500 150" xmlns="http://www.w3.org/2000/svg" class="l21-worked-curve" aria-hidden="true">
-    <!-- axes and tick labels -->
-    <line class="axis" x1="40" y1="130" x2="460" y2="130"/>
-    <line class="axis" x1="40" y1="20"  x2="40"  y2="130"/>
-    <line class="grid" x1="40" y1="57"  x2="460" y2="57"/>
-    <text class="axis-label" x="455" y="142" text-anchor="end">x</text>
-    <text class="axis-label" x="32"  y="24"  text-anchor="end">L</text>
-    <text class="axis-label" x="78"  y="142" text-anchor="middle">-2</text>
-    <text class="axis-label" x="230" y="142" text-anchor="middle">0</text>
-    <text class="axis-label" x="382" y="142" text-anchor="middle">2</text>
-    <!-- loss curve -->
-    <polyline class="curve" points="40,23 78,66 116,74 154,66 192,58 230,57 268,68 306,88 344,112 382,125 420,110 458,42"/>
-    <!-- start point -->
-    <circle class="start-dot" cx="78" cy="66" r="4"/>
-    <text x="78" y="54" font-size="9" fill="#4b5563" text-anchor="middle" font-weight="700">x&#8320; = -2</text>
-    <!-- SGD trajectory: short arrow toward local min -->
-    <path class="sgd-arrow" d="M 82,68 C 92,76 100,76 113,75" marker-end="url(#arrow-l21-red)" fill="none"/>
-    <circle class="local-dot" cx="116" cy="74" r="4.5"/>
-    <text x="116" y="102" font-size="10" fill="#dc2626" font-weight="700" text-anchor="middle">SGD stops</text>
-    <text x="116" y="114" font-size="9" fill="#991b1b" text-anchor="middle">(local min)</text>
-    <!-- Momentum trajectory: long arc over local min into global min -->
-    <g class="fragment">
-      <path class="momentum-arrow" d="M 82,64 Q 230,8 380,123" marker-end="url(#arrow-l21-green)" fill="none"/>
-      <text x="230" y="22" font-size="10" fill="#15803d" font-weight="700" text-anchor="middle">Momentum escapes the bump</text>
-      <circle class="global-dot" cx="382" cy="125" r="5"/>
-      <text x="395" y="120" font-size="10" fill="#15803d" font-weight="700">global min</text>
-    </g>
-  </svg>
-  <div class="momentum-tables">
-    <div class="mt">
-      <h3 style="color:#dc2626;">SGD (no momentum)</h3>
-      <table>
-        <thead><tr><th>iter</th><th>\(g_i\)</th><th>\(\theta_i\)</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>-18.2</td><td>-1.885</td></tr>
-          <tr><td>2</td><td>-2.36</td><td>-1.76</td></tr>
-          <tr><td>3</td><td>-1.2</td><td>-1.70</td></tr>
-          <tr><td>4</td><td>-0.78</td><td>-1.66</td></tr>
-          <tr><td>...</td><td>...</td><td>...</td></tr>
-          <tr><td>99</td><td>0.0002</td><td><span style="color:#dc2626; font-weight:700;">-1.586</span></td></tr>
-        </tbody>
-      </table>
-      <p style="font-size: 0.7em; color: #dc2626; margin: 0.2em 0 0 0; text-align:center;">stuck in local min</p>
-    </div>
-    <div class="mt yes fragment">
-      <h3>With momentum (\(\alpha=0.9\))</h3>
-      <table>
-        <thead><tr><th>iter</th><th>\(g_i\)</th><th>\(v_i\)</th><th>\(\theta_i\)</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>-18.2</td><td>0</td><td>-1.885</td></tr>
-          <tr><td>2</td><td>-2.36</td><td>-15.1</td><td>-1.12</td></tr>
-          <tr><td>3</td><td>1.61</td><td>-9.0</td><td>-0.67</td></tr>
-          <tr><td>4</td><td>1.39</td><td>-9.2</td><td>-0.21</td></tr>
-          <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-          <tr><td>99</td><td>0.0002</td><td>0.0003</td><td><span style="color:#15803d; font-weight:700;">2.042</span></td></tr>
-        </tbody>
-      </table>
-      <p style="font-size: 0.7em; color: #15803d; margin: 0.2em 0 0 0; text-align:center;">reaches global min</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; text-align:center; margin-top: 0.25em;">
-    Velocity carries the iterate over the local-min barrier near \(x \approx -1.6\).
-  </p>
-</section>
-
-<!-- 8. Step size analysis -->
-<section>
-  <h2>How big is one momentum step?</h2>
-  <p style="font-size: 0.85em;">Plain SGD takes a step of size \(\varepsilon\,\lVert g\rVert\). With momentum, recent gradients compound:</p>
-  <div style="text-align:center; font-size: 0.92em;">
-    \[ \text{step} \approx \varepsilon\lVert g_1\rVert + \alpha\,\varepsilon\lVert g_2\rVert + \alpha^2\,\varepsilon\lVert g_3\rVert + \cdots \approx \dfrac{\varepsilon\,\lVert \hat g\rVert}{1 - \alpha} \]
-  </div>
-  <div class="fragment" style="margin-top: 0.45em; padding: 0.5em 0.9em; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 4px; font-size: 0.86em;">
-    <strong>Concretely:</strong> \(\alpha = 0.9 \Rightarrow\) effective step size is up to <strong>10\(\times\)</strong> the per-step SGD step in a consistent direction.
-  </div>
-  <svg viewBox="0 0 480 90" xmlns="http://www.w3.org/2000/svg" class="l21-step-bar fragment" aria-hidden="true">
-    <!-- SGD: 1x step -->
-    <text x="10" y="28" font-size="11" fill="#1d4ed8" font-weight="700">SGD</text>
-    <rect x="70" y="18" width="22" height="16" fill="#1d4ed8" rx="2"/>
-    <text x="100" y="29" font-size="10" fill="#1d4ed8">1&times; step</text>
-    <!-- Momentum: 10x step -->
-    <text x="10" y="68" font-size="11" fill="#15803d" font-weight="700">Momentum</text>
-    <rect x="70" y="58" width="220" height="16" fill="#15803d" rx="2"/>
-    <text x="300" y="69" font-size="10" fill="#15803d">10&times; step (alpha = 0.9)</text>
-    <!-- subtle inner ticks at every "1 unit" -->
-    <g stroke="#fff" stroke-width="0.8" opacity="0.55">
-      <line x1="92"  y1="58" x2="92"  y2="74"/>
-      <line x1="114" y1="58" x2="114" y2="74"/>
-      <line x1="136" y1="58" x2="136" y2="74"/>
-      <line x1="158" y1="58" x2="158" y2="74"/>
-      <line x1="180" y1="58" x2="180" y2="74"/>
-      <line x1="202" y1="58" x2="202" y2="74"/>
-      <line x1="224" y1="58" x2="224" y2="74"/>
-      <line x1="246" y1="58" x2="246" y2="74"/>
-      <line x1="268" y1="58" x2="268" y2="74"/>
-    </g>
-  </svg>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.35em;">
-    In oscillating directions, opposite gradients cancel in \(\bm v\) &mdash; momentum naturally damps noise.
-  </p>
-</section>
-
-<!-- 9. Nesterov momentum -->
-<section>
-  <h2>Nesterov momentum: look ahead first</h2>
-  <p style="font-size: 0.85em;">Idea: step in the direction of accumulated momentum, then evaluate the gradient there as a <em>correction</em>.</p>
-  <div class="two-col" style="margin-top: 0.4em;">
-    <div style="flex: 1;">
-      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" class="nesterov-arrows">
-        <circle class="start" cx="40" cy="160" r="7"/>
-        <text x="40" y="180" text-anchor="middle" font-size="11" fill="#15803d" font-weight="700">\(\theta\)</text>
-        <line class="a-accum" x1="40" y1="160" x2="200" y2="40" marker-end="url(#arrow-l21-red)"/>
-        <text class="lbl-accum" x="60" y="100">accumulated</text>
-        <text class="lbl-accum" x="60" y="115">\(\alpha\bm v\)</text>
-        <line class="a-correct fragment" x1="200" y1="40" x2="240" y2="160" marker-end="url(#arrow-l21-black)"/>
-        <text class="lbl-correct fragment" x="240" y="80">correction</text>
-        <text class="lbl-correct fragment" x="240" y="95">\(-\varepsilon\nabla L(\theta+\alpha\bm v)\)</text>
-        <line class="a-new fragment" x1="40" y1="160" x2="240" y2="160" marker-end="url(#arrow-l21-cyan)"/>
-        <text class="lbl-new fragment" x="140" y="180">new step: \(\bm v_{\text{new}}\)</text>
-      </svg>
-    </div>
-    <div style="flex: 0.9; font-size: 0.86em;">
-      <p style="margin: 0;"><strong>Standard momentum:</strong></p>
-      <p style="margin: 0.2em 0;">\( \bm v \leftarrow \alpha \bm v - \varepsilon\, \nabla_\theta L(\theta) \)</p>
-      <p style="margin: 0.4em 0 0 0;"><strong>Nesterov momentum:</strong></p>
-      <p style="margin: 0.2em 0; color: #1d4ed8;">\( \bm v \leftarrow \alpha \bm v - \varepsilon\, \nabla_\theta L({\color{#dc2626}\theta + \alpha \bm v}) \)</p>
-      <p style="margin: 0.4em 0;">\( \theta \leftarrow \theta + \bm v \)</p>
-      <p class="fragment" style="font-size: 0.85em; color: #6b7280; margin-top: 0.5em;">
-        Gradient evaluated at the look-ahead point gives a better local correction.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- 10. Why one LR isn't enough -->
-<section>
-  <h2>Why one learning rate isn't enough</h2>
-  <p style="font-size: 0.85em;">Features differ in scale and frequency. A single \(\varepsilon\) is too small for flat directions, too large for steep ones.</p>
-  <div class="two-col" style="margin-top: 0.2em;">
-    <div style="flex: 1; text-align: center;">
-      <svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" class="contour-plot">
-        <ellipse class="contour" cx="110" cy="90" rx="30" ry="25"/>
-        <ellipse class="contour" cx="110" cy="90" rx="55" ry="45"/>
-        <ellipse class="contour" cx="110" cy="90" rx="80" ry="65"/>
-        <circle class="min-dot" cx="110" cy="90" r="4"/>
-        <line class="arrow-good" x1="30" y1="30" x2="105" y2="86" marker-end="url(#arrow-l21-green)"/>
-        <text x="110" y="170">isotropic (easy)</text>
-      </svg>
-    </div>
-    <div style="flex: 1; text-align: center;" class="fragment">
-      <svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg" class="contour-plot">
-        <ellipse class="contour" cx="110" cy="90" rx="90" ry="14"/>
-        <ellipse class="contour" cx="110" cy="90" rx="65" ry="10"/>
-        <ellipse class="contour" cx="110" cy="90" rx="40" ry="7"/>
-        <circle class="min-dot" cx="110" cy="90" r="4"/>
-        <path class="arrow-bad" d="M30,72 L50,108 L70,72 L90,108 L105,89" marker-end="url(#arrow-l21-red)"/>
-        <text x="110" y="170">anisotropic (zig-zag)</text>
-      </svg>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; margin-top: 0.3em; text-align:center;">
-    Give each parameter its <strong>own</strong> learning rate, scaled by its gradient history.
-  </p>
-</section>
-
-<!-- 11. AdaGrad -->
-<section>
-  <h2>AdaGrad: accumulate squared gradients</h2>
-  <p style="font-size: 0.85em;">Per-parameter learning rate, scaled by the running sum of squared gradients.</p>
-  <div class="algo-card">
-    <div class="algo-title">AdaGrad</div>
-    <div class="require">Require: global LR \(\varepsilon\), small \(\delta\); init \(\bm r = 0\).</div>
-    <ol>
-      <li>Sample example \((x^{(i)}, y^{(i)})\); compute \(\hat g \leftarrow \nabla_\theta L(f(x^{(i)};\theta), y^{(i)})\).</li>
-      <li class="fragment">Accumulate: <span class="highlight">\(\bm r \leftarrow \bm r + \hat g \odot \hat g\)</span></li>
-      <li class="fragment">Update: \(\Delta\theta \leftarrow -\dfrac{\varepsilon}{\delta + \sqrt{\bm r}} \odot \hat g\)</li>
-      <li class="fragment">Apply: \(\theta \leftarrow \theta + \Delta\theta\)</li>
-    </ol>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #dc2626; margin-top: 0.4em;">
-    <strong>Catch:</strong> \(\bm r\) only grows &mdash; the effective LR shrinks to zero, training stalls in non-convex settings.
-  </p>
-</section>
-
-<!-- 12. RMSProp -->
-<section>
-  <h2>RMSProp: forget old gradients</h2>
-  <p style="font-size: 0.85em;">Fix AdaGrad's shrink by replacing the running sum with an <strong>exponentially decaying</strong> moving average.</p>
-  <div class="algo-card">
-    <div class="algo-title">RMSProp</div>
-    <div class="require">Require: LR \(\varepsilon\), decay \(\rho\) (typically 0.9), small \(\delta\); init \(\bm r = 0\).</div>
-    <ol>
-      <li>Compute gradient: \(\hat g \leftarrow \nabla_\theta L(f(x^{(i)};\theta), y^{(i)})\).</li>
-      <li class="fragment">Decay+accumulate: <span class="highlight">\(\bm r \leftarrow \rho\, \bm r + (1-\rho)\, \hat g \odot \hat g\)</span></li>
-      <li class="fragment">Update: \(\Delta\theta \leftarrow -\dfrac{\varepsilon}{\delta + \sqrt{\bm r}} \odot \hat g\)</li>
-      <li class="fragment">Apply: \(\theta \leftarrow \theta + \Delta\theta\)</li>
-    </ol>
-  </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin-top: 0.4em;">
-    Related: <strong>AdaDelta</strong> goes one step further and removes the global LR \(\varepsilon\) by also tracking \(\mathbb{E}[\Delta\theta^2]\).
-  </p>
-</section>
-
-<!-- 13. Adam -->
-<section>
-  <h2>Adam: ADAptive Moments</h2>
-  <p style="font-size: 0.82em; margin: 0.15em 0;">Track <span style="color:#1d4ed8;">first moment (mean of \(\hat g\))</span> like momentum, and <span style="color:#a16207;">second moment (mean of \(\hat g^2\))</span> like RMSProp.</p>
-  <div class="algo-card" style="font-size: 0.66em;">
-    <div class="algo-title">Adam</div>
-    <div class="require">Require: LR \(\varepsilon\), decay rates \(\rho_1, \rho_2\) (typically 0.9, 0.999), small \(\delta\); init \(\bm s = 0\), \(\bm r = 0\), \(t = 0\).</div>
-    <ol>
-      <li>Compute gradient \(\hat g\); increment \(t\).</li>
-      <li class="fragment"><span style="color:#1d4ed8;">1st moment:</span> \(\bm s \leftarrow \rho_1\, \bm s + (1-\rho_1)\, \hat g\)</li>
-      <li class="fragment"><span style="color:#a16207;">2nd moment:</span> \(\bm r \leftarrow \rho_2\, \bm r + (1-\rho_2)\, \hat g \odot \hat g\)</li>
-      <li class="fragment"><strong>Bias correction:</strong> \(\hat{\bm s} \leftarrow \dfrac{\bm s}{1 - \rho_1^t},\quad \hat{\bm r} \leftarrow \dfrac{\bm r}{1 - \rho_2^t}\)</li>
-      <li class="fragment">Update: <span class="highlight">\(\Delta\theta = -\varepsilon\, \dfrac{\hat{\bm s}}{\sqrt{\hat{\bm r}} + \delta}\)</span></li>
-      <li class="fragment">Apply: \(\theta \leftarrow \theta + \Delta\theta\)</li>
-    </ol>
-  </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin-top: 0.25em; text-align:center;">
-    Bias correction fixes the cold-start: early \(\bm s, \bm r\) are biased toward 0 because they start at 0.
-  </p>
-</section>
-
-<!-- 14. Optimizer cheat sheet -->
-<section>
-  <h2>Optimizer cheat sheet</h2>
-  <table class="compare" style="font-size: 0.7em; width: 95%;">
-    <thead>
-      <tr>
-        <th>Method</th>
-        <th>Update direction</th>
-        <th>Per-param LR?</th>
-        <th>When to use</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td><strong>SGD</strong></td><td>\(-\varepsilon\, \hat g\)</td><td>No</td><td>Simple losses; baseline.</td></tr>
-      <tr class="fragment"><td><strong>+ Momentum</strong></td><td>\(\bm v = \alpha\bm v - \varepsilon\hat g\)</td><td>No</td><td>Noisy gradients, ravines, local minima.</td></tr>
-      <tr class="fragment"><td><strong>RMSProp</strong></td><td>\(-\dfrac{\varepsilon}{\sqrt{\bm r}+\delta} \hat g\)</td><td><strong>Yes</strong></td><td>RNNs, non-stationary or sparse gradients.</td></tr>
-      <tr class="fragment"><td><strong>Adam</strong></td><td>\(-\varepsilon\, \dfrac{\hat{\bm s}}{\sqrt{\hat{\bm r}}+\delta}\)</td><td><strong>Yes</strong></td><td><span style="color:#1d4ed8;">Default choice in deep learning today.</span></td></tr>
-    </tbody>
-  </table>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin-top: 0.35em; text-align:center;">
-    Tune the learning rate first; pick the optimizer second.
-  </p>
-</section>
-
-<!-- 15. Revisiting learning goals -->
+<!-- 4. The key idea: attention -->
 <section class="center-slide">
-  <h2>Revisiting learning goals</h2>
-  <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment"><strong>Stochastic gradient descent</strong>: noisy steps, learning-rate schedules, convergence.</li>
-    <li class="fragment"><strong>Momentum</strong> and its <strong>Nesterov</strong> look-ahead variant.</li>
-    <li class="fragment"><strong>Adaptive learning rates</strong>: AdaGrad and RMSProp.</li>
-    <li class="fragment"><strong>Adam</strong>: adaptive moments combining the two ideas.</li>
+  <h2>The idea: let every token look at every other</h2>
+  <div class="defbox" style="max-width: 86%; margin: 0.2em auto; text-align:left;">
+    <p style="margin:0; font-size: 0.9em;"><strong>Attention</strong> replaces the step-by-step chain with <em>direct</em> connections: to build a token's new representation, it reads a weighted mix of <strong>all</strong> tokens, choosing the weights based on relevance.</p>
+  </div>
+  <ul style="font-size: 0.84em; margin: 0.4em 0 0 2em; text-align:left; max-width: 82%; margin-left:auto; margin-right:auto;">
+    <li class="fragment">Any token reaches any other in <strong>one hop</strong> &mdash; no fading.</li>
+    <li class="fragment">All positions are computed <strong>in parallel</strong> &mdash; GPU-friendly.</li>
   </ul>
 </section>
 
-<!-- 16. Course wrap-up + exam prep -->
-<section class="center-slide">
-  <div class="course-breadcrumb">
-    <span class="bc-pill search">Search</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill uncert">Uncertainty</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill decision">Decisions</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill learn">Learning</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill recap current">Recap</span>
+<!-- 5. Tokens to embeddings -->
+<section>
+  <h2>Step 1: tokens become vectors</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Each of the \(n\) input tokens is mapped to a \(d\)-dimensional embedding. Stack them into a matrix:</p>
+  <p style="text-align:center; margin: 0.3em 0;">\(X = \begin{bmatrix} \text{---}\ \mathbf{x}_1\ \text{---} \\ \vdots \\ \text{---}\ \mathbf{x}_n\ \text{---}\end{bmatrix} \in \mathbb{R}^{n \times d}\)</p>
+  <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center; margin-top:0.3em;">Row \(i\) is token \(i\)'s current representation. Attention will update every row.</p>
+</section>
+
+<!-- 6. Queries, keys, values -->
+<section>
+  <h2>Step 2: queries, keys, values</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">From \(X\), three learned linear projections produce a <strong>query</strong>, <strong>key</strong>, and <strong>value</strong> for every token:</p>
+  <p style="text-align:center; margin: 0.25em 0;">\(Q = XW_Q, \qquad K = XW_K, \qquad V = XW_V\)</p>
+  <div class="two-col" style="margin-top:0.3em;">
+    <div class="defbox qkv-note" style="flex:1; border-left-color:#dc2626;">
+      <p style="margin:0; font-size:0.8em;"><strong style="color:#dc2626;">Query</strong> \(\mathbf{q}_i\): "what am I looking for?"</p>
+    </div>
+    <div class="defbox" style="flex:1; border-left-color:#1d4ed8;">
+      <p style="margin:0; font-size:0.8em;"><strong style="color:#1d4ed8;">Key</strong> \(\mathbf{k}_j\): "what do I offer?"</p>
+    </div>
+    <div class="defbox" style="flex:1; border-left-color:#166534;">
+      <p style="margin:0; font-size:0.8em;"><strong style="color:#166534;">Value</strong> \(\mathbf{v}_j\): "what I pass on if attended to."</p>
+    </div>
   </div>
-  <h2>Next: L22 &mdash; course recap &amp; exam prep</h2>
-  <ul style="text-align:left; margin-left:2em; font-size: 0.9em;">
-    <li class="fragment">A tour of everything we learned: search, CSPs, probabilistic reasoning, decision theory, MDPs, RL, ML.</li>
-    <li class="fragment">How the pieces fit into <strong>modern AI systems</strong>.</li>
-    <li class="fragment">Pointers to follow-up courses (CS480/680, CS485) and open research.</li>
-    <li class="fragment"><strong>Final exam logistics:</strong> what to bring, format, and a notation cheat sheet for your study card.</li>
+  <p class="fragment" style="font-size: 0.82em; color:#1d4ed8; text-align:center; margin-top:0.35em;">Token \(i\) attends to token \(j\) when query \(\mathbf{q}_i\) matches key \(\mathbf{k}_j\).</p>
+</section>
+
+<!-- 7. Scaled dot-product attention -->
+<section>
+  <h2>Step 3: scaled dot-product attention</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Score every query against every key (dot product), scale, softmax into weights, then mix the values:</p>
+  <div class="defbox" style="text-align:center; margin:0.25em auto;">
+    <p style="margin:0; font-size: 1.05em;">\(\text{Attention}(Q,K,V) = \operatorname{softmax}\!\left(\dfrac{QK^\top}{\sqrt{d_k}}\right) V\)</p>
+  </div>
+  <ul style="font-size: 0.8em; margin: 0.25em 0 0 1.2em;">
+    <li class="fragment">\(QK^\top \in \mathbb{R}^{n\times n}\): entry \((i,j)\) = similarity of token \(i\)'s query with token \(j\)'s key.</li>
+    <li class="fragment"><strong>softmax</strong> over each row &rarr; nonnegative weights summing to 1.</li>
+    <li class="fragment">Why \(\sqrt{d_k}\)? Dot products grow with dimension; scaling keeps softmax out of its saturated, tiny-gradient regime.</li>
   </ul>
-  <p class="fragment" style="margin-top: 0.8em; color: #6b7280;">Thanks for a great term &mdash; see you on Tuesday!</p>
+</section>
+
+<!-- 8. Worked attention example -->
+<section>
+  <h2>What the weights look like</h2>
+  <p style="font-size: 0.83em; margin: 0.1em 0;">Three tokens. Each <strong>row</strong> of \(\operatorname{softmax}(QK^\top/\sqrt{d_k})\) says how much a token attends to the others (rows sum to 1):</p>
+  <div class="two-col vcenter">
+    <div style="flex:1; text-align:center;">
+      <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:210px;">
+        <text x="40" y="30" class="attn-txt">the</text>
+        <text x="120" y="30" class="attn-txt">cat</text>
+        <text x="200" y="30" class="attn-txt">sat</text>
+        <text x="15" y="70" class="attn-txt">the</text>
+        <text x="15" y="130" class="attn-txt">cat</text>
+        <text x="15" y="190" class="attn-txt">sat</text>
+        <!-- row 1 -->
+        <rect class="attn-cell" x="60" y="45" width="50" height="50" fill="#1d4ed8" fill-opacity="0.75"/><text x="85" y="70" class="attn-txt" style="fill:#fff;">.7</text>
+        <rect class="attn-cell" x="110" y="45" width="50" height="50" fill="#1d4ed8" fill-opacity="0.2"/><text x="135" y="70" class="attn-txt">.2</text>
+        <rect class="attn-cell" x="160" y="45" width="50" height="50" fill="#1d4ed8" fill-opacity="0.1"/><text x="185" y="70" class="attn-txt">.1</text>
+        <!-- row 2 highlighted -->
+        <rect class="attn-cell" x="60" y="105" width="50" height="50" fill="#1d4ed8" fill-opacity="0.15"/><text x="85" y="130" class="attn-txt">.1</text>
+        <rect class="attn-cell" x="110" y="105" width="50" height="50" fill="#1d4ed8" fill-opacity="0.65"/><text x="135" y="130" class="attn-txt" style="fill:#fff;">.6</text>
+        <rect class="attn-cell" x="160" y="105" width="50" height="50" fill="#1d4ed8" fill-opacity="0.3"/><text x="185" y="130" class="attn-txt">.3</text>
+        <rect x="58" y="103" width="154" height="54" fill="none" stroke="#dc2626" stroke-width="2.5"/>
+        <!-- row 3 -->
+        <rect class="attn-cell" x="60" y="165" width="50" height="50" fill="#1d4ed8" fill-opacity="0.2"/><text x="85" y="190" class="attn-txt">.2</text>
+        <rect class="attn-cell" x="110" y="165" width="50" height="50" fill="#1d4ed8" fill-opacity="0.3"/><text x="135" y="190" class="attn-txt">.3</text>
+        <rect class="attn-cell" x="160" y="165" width="50" height="50" fill="#1d4ed8" fill-opacity="0.55"/><text x="185" y="190" class="attn-txt" style="fill:#fff;">.5</text>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.82em; margin:0.1em 0;">The red row: "<strong>cat</strong>" attends mostly to itself (0.6) and to "sat" (0.3).</p>
+      <p class="fragment" style="font-size:0.82em; margin:0.3em 0;">Its new vector is the weighted sum of values:</p>
+      <p class="fragment" style="text-align:center; font-size:0.8em; margin:0.2em 0;">\(\mathbf{z}_{\text{cat}} = 0.1\,\mathbf{v}_{\text{the}} + 0.6\,\mathbf{v}_{\text{cat}} + 0.3\,\mathbf{v}_{\text{sat}}\)</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Multi-head attention -->
+<section>
+  <h2>Multi-head attention</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">One attention pattern is limiting. Run \(h\) attention "heads" in parallel, each with its own \(W_Q, W_K, W_V\), then concatenate and project:</p>
+  <div class="defbox" style="text-align:center; margin:0.2em auto;">
+    <p style="margin:0 0 0.2em; font-size:0.82em;">\(\text{head}_i = \text{Attention}(XW_Q^i, XW_K^i, XW_V^i)\)</p>
+    <p style="margin:0; font-size:0.82em;">\(\text{MHA}(X) = \big[\,\text{head}_1; \ldots; \text{head}_h\,\big]\,W_O\)</p>
+  </div>
+  <ul style="font-size: 0.8em; margin: 0.25em 0 0 1.2em;">
+    <li class="fragment">Each head learns a different relation (e.g. syntax, coreference, position).</li>
+    <li class="fragment">Each head works in a smaller subspace \(d_k = d / h\), so the total cost is similar to one full-size head.</li>
+  </ul>
+</section>
+
+<!-- 10. Positional encodings -->
+<section>
+  <h2>Where's the order? Positional encodings</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Attention is a weighted sum &mdash; it's <strong>permutation-invariant</strong>: shuffle the tokens and the output just shuffles too. So we add position information to the embeddings.</p>
+  <div class="two-col vcenter">
+    <div style="flex:1;">
+      <div class="defbox">
+        <p style="margin:0; font-size:0.8em;">Sinusoidal encoding (original transformer):</p>
+        <p style="text-align:center; margin:0.2em 0; font-size:0.78em;">\(PE_{(pos,\,2i)} = \sin\!\big(pos / 10000^{2i/d}\big)\)</p>
+        <p style="text-align:center; margin:0; font-size:0.78em;">\(PE_{(pos,\,2i+1)} = \cos\!\big(pos / 10000^{2i/d}\big)\)</p>
+      </div>
+      <p style="font-size:0.78em; color:#6b7280; margin-top:0.3em;">Add \(PE\) to each token's embedding. Modern models often use <strong>learned</strong> positions or <strong>RoPE</strong> (rotary).</p>
+    </div>
+    <div style="flex:0.9; text-align:center;">
+      <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg" class="l21-svg" style="max-height:150px;">
+        <line class="edge" x1="20" y1="75" x2="285" y2="75"/>
+        <path d="M20 75 Q 40 30 60 75 T 100 75 T 140 75 T 180 75 T 220 75 T 260 75" fill="none" stroke="#dc2626" stroke-width="1.8"/>
+        <path d="M20 75 Q 50 120 80 75 T 140 75 T 200 75 T 260 75" fill="none" stroke="#1d4ed8" stroke-width="1.8"/>
+        <text x="150" y="145" class="axis-label">position &rarr;</text>
+        <text x="270" y="40" class="axis-label" style="fill:#dc2626;">dim 2i</text>
+        <text x="250" y="120" class="axis-label" style="fill:#1d4ed8;">dim 2i+1</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 11. The transformer block -->
+<section>
+  <h2>The transformer block</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.85; text-align:center;">
+      <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:290px;">
+        <line class="edge" x1="100" y1="295" x2="100" y2="270" marker-end="url(#arrow-l21)"/>
+        <text x="100" y="290" class="tb-label" style="font-size:11px;">X</text>
+        <rect class="tb-box tb-attn" x="35" y="230" width="130" height="38"/>
+        <text x="100" y="249" class="tb-label">Multi-Head Attention</text>
+        <rect class="tb-box tb-norm" x="45" y="192" width="110" height="30"/>
+        <text x="100" y="207" class="tb-label">Add &amp; Norm</text>
+        <line class="edge" x1="100" y1="230" x2="100" y2="222" marker-end="url(#arrow-l21)"/>
+        <rect class="tb-box tb-ffn" x="45" y="120" width="110" height="38"/>
+        <text x="100" y="139" class="tb-label">Feed-Forward</text>
+        <line class="edge" x1="100" y1="192" x2="100" y2="158" marker-end="url(#arrow-l21)"/>
+        <rect class="tb-box tb-norm" x="45" y="80" width="110" height="30"/>
+        <text x="100" y="95" class="tb-label">Add &amp; Norm</text>
+        <line class="edge" x1="100" y1="120" x2="100" y2="110" marker-end="url(#arrow-l21)"/>
+        <line class="edge" x1="100" y1="80" x2="100" y2="45" marker-end="url(#arrow-l21)"/>
+        <text x="100" y="30" class="tb-label" style="font-size:11px;">output</text>
+        <!-- residual arcs -->
+        <path d="M 30 249 C 12 249, 12 207, 43 207" fill="none" stroke="#6d28d9" stroke-width="1.4" stroke-dasharray="3 2" marker-end="url(#arrow-l21)"/>
+        <path d="M 30 139 C 12 139, 12 95, 43 95" fill="none" stroke="#6d28d9" stroke-width="1.4" stroke-dasharray="3 2" marker-end="url(#arrow-l21)"/>
+      </svg>
+    </div>
+    <div style="flex:1.05;">
+      <p style="font-size:0.85em; margin:0.1em 0;">Each block = two sublayers, each wrapped in a <strong>residual</strong> connection and <strong>layer norm</strong>:</p>
+      <ul style="font-size:0.8em; margin:0.2em 0 0 1em;">
+        <li class="fragment"><strong>Attention</strong>: tokens exchange information.</li>
+        <li class="fragment"><strong>Feed-forward</strong>: a per-token MLP adds nonlinear processing.</li>
+        <li class="fragment"><strong>Residuals</strong> (dashed) let gradients flow; <strong>norm</strong> keeps activations stable.</li>
+        <li class="fragment"><strong>Stack</strong> \(N\) of these blocks &rarr; a deep transformer.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 12. Encoder vs decoder + causal mask -->
+<section>
+  <h2>Encoder, decoder, and causal masking</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;">
+      <div class="task-cards" style="grid-template-columns:1fr 1fr;">
+        <div class="task-card">
+          <h3>Encoder</h3>
+          <p style="font-size:0.8em;">Every token attends to <strong>all</strong> tokens (bidirectional). Good for understanding a whole input.</p>
+        </div>
+        <div class="task-card">
+          <h3>Decoder</h3>
+          <p style="font-size:0.8em;">A token may attend only to <strong>earlier</strong> tokens &mdash; so it can generate the next one without peeking ahead.</p>
+        </div>
+      </div>
+      <p class="fragment" style="font-size:0.8em; margin-top:0.3em;">The <strong>causal mask</strong> sets future scores to \(-\infty\) before the softmax, zeroing those weights.</p>
+    </div>
+    <div style="flex:0.85; text-align:center;">
+      <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:170px;">
+        <text x="90" y="14" class="axis-label">key position &rarr;</text>
+        <g>
+          <!-- 4x4 mask: allowed (green) lower triangle incl diagonal, masked (gray x) upper -->
+          <rect x="30" y="25" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+          <rect x="64" y="25" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="81" y="44" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
+          <rect x="98" y="25" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="115" y="44" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
+          <rect x="132" y="25" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="149" y="44" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
+          <rect x="30" y="59" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+          <rect x="64" y="59" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+          <rect x="98" y="59" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="115" y="78" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
+          <rect x="132" y="59" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="149" y="78" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
+          <rect x="30" y="93" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+          <rect x="64" y="93" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+          <rect x="98" y="93" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+          <rect x="132" y="93" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="149" y="112" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
+          <rect x="30" y="127" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+          <rect x="64" y="127" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+          <rect x="98" y="127" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+          <rect x="132" y="127" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
+        </g>
+        <text x="12" y="150" class="axis-label" transform="rotate(-90 12 150)">query &rarr;</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 13. Complexity -->
+<section class="center-slide">
+  <h2>The cost of looking everywhere</h2>
+  <div class="defbox" style="max-width:80%; margin:0.2em auto; text-align:left;">
+    <p style="margin:0; font-size:0.9em;">Every token attends to every token &rarr; the score matrix \(QK^\top\) is \(n\times n\). Cost is</p>
+    <p style="text-align:center; margin:0.3em 0; font-size:1em;">\(O(n^2 d)\)</p>
+    <p style="margin:0; font-size:0.85em;">&mdash; quadratic in sequence length \(n\).</p>
+  </div>
+  <ul style="font-size:0.83em; text-align:left; max-width:80%; margin:0.4em auto 0; ">
+    <li class="fragment">Great trade for RNNs' sequential bottleneck: attention is fully <strong>parallel</strong>.</li>
+    <li class="fragment">But long contexts are expensive &mdash; a very active research area (efficient / sparse attention).</li>
+  </ul>
+</section>
+
+<!-- 14. Why it changed everything -->
+<section class="center-slide">
+  <h2>Why transformers took over</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>Parallel</h3><p style="font-size:0.8em;">All positions at once &mdash; trains fast on GPUs/TPUs.</p></div>
+    <div class="task-card fragment"><h3>Long-range</h3><p style="font-size:0.8em;">Any token reaches any other in one hop.</p></div>
+    <div class="task-card fragment"><h3>Scales</h3><p style="font-size:0.8em;">Add data + parameters and it keeps improving.</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center; margin-top:0.5em;">The same block powers vision, audio, protein folding &mdash; and every large language model.</p>
+</section>
+
+<!-- 15. Recap + next -->
+<section class="center-slide">
+  <h2>Learning goals (recap) &mdash; Next: LLMs</h2>
+  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:82%; margin-right:auto;">
+    <li>&#10003; &nbsp;Why <strong>RNNs</strong> struggle with long sequences.</li>
+    <li>&#10003; &nbsp;<strong>Scaled dot-product attention</strong> from queries, keys, values.</li>
+    <li>&#10003; &nbsp;<strong>Multi-head attention</strong> and <strong>positional encodings</strong>.</li>
+    <li>&#10003; &nbsp;The <strong>transformer block</strong>; encoder vs decoder (causal masking).</li>
+  </ul>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8; text-align:center; margin-top:0.6em;">L22: stack decoder blocks + train at scale &rarr; <strong>Large Language Models</strong>.</p>
 </section>
 
 </div>

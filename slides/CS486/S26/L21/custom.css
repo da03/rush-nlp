@@ -1,234 +1,42 @@
-/* L21-specific styles on top of shared/custom.css, L19/custom.css, L20/custom.css. */
+/* L21 (Transformers & Attention) — styles on top of shared/custom.css. */
 
-/* Optimizer roadmap flow strip. */
-.reveal .optim-roadmap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4em;
-  margin: 0.6em 0;
-  flex-wrap: wrap;
-}
-.reveal .optim-roadmap .step {
-  padding: 0.4em 0.8em;
-  background: #eef2ff;
-  border: 1px solid #c7d2fe;
-  border-radius: 6px;
-  font-size: 0.82em;
-  font-weight: 600;
-  color: #1d4ed8;
-}
-.reveal .optim-roadmap .step.adv {
-  background: #dcfce7;
-  border-color: #86efac;
-  color: #15803d;
-}
-.reveal .optim-roadmap .arrow {
-  color: #9ca3af;
-  font-weight: 700;
-}
-
-/* 1-D bumpy loss curve for SGD pain points and momentum example. */
-.reveal .loss-curve {
-  display: block;
-  margin: 0.3em auto;
-  max-height: 220px;
-}
-.reveal .loss-curve .axis {
-  stroke: #9ca3af;
-  stroke-width: 1.2;
-  fill: none;
-}
-.reveal .loss-curve .curve {
-  stroke: #1d4ed8;
-  stroke-width: 2;
-  fill: none;
-}
-.reveal .loss-curve .label {
-  font-size: 11px;
-  fill: #6b7280;
-}
-.reveal .loss-curve .marker-local {
-  fill: #dc2626;
-}
-.reveal .loss-curve .marker-global {
-  fill: #16a34a;
-}
-.reveal .loss-curve .path-no {
-  stroke: #dc2626;
-  stroke-width: 1.5;
-  fill: none;
-  stroke-dasharray: 4 3;
-}
-.reveal .loss-curve .path-yes {
-  stroke: #15803d;
-  stroke-width: 1.8;
-  fill: none;
-}
-.reveal .loss-curve text {
-  font-size: 11px;
-  fill: #111827;
-  font-weight: 600;
-}
-
-/* Loss-curve visual on slide 7 (worked example). */
-.reveal .l21-worked-curve {
-  display: block;
-  margin: 0.25em auto 0.2em;
-  width: 100%;
-  max-width: 560px;
-  height: auto;
-  max-height: 125px;
-}
-.reveal .l21-worked-curve .axis { stroke: #6b7280; stroke-width: 1; }
-.reveal .l21-worked-curve .grid { stroke: #e5e7eb; stroke-width: 0.6; stroke-dasharray: 3 3; }
-.reveal .l21-worked-curve .axis-label { font-size: 10px; fill: #6b7280; }
-.reveal .l21-worked-curve .curve {
-  stroke: #1d4ed8;
-  stroke-width: 2;
-  stroke-linejoin: round;
-  fill: none;
-}
-.reveal .l21-worked-curve .start-dot { fill: #4b5563; stroke: #fff; stroke-width: 1; }
-.reveal .l21-worked-curve .local-dot { fill: #dc2626; stroke: #fff; stroke-width: 1.5; }
-.reveal .l21-worked-curve .global-dot { fill: #16a34a; stroke: #fff; stroke-width: 1.5; }
-.reveal .l21-worked-curve .sgd-arrow { stroke: #dc2626; stroke-width: 1.8; fill: none; stroke-dasharray: 3 2; }
-.reveal .l21-worked-curve .momentum-arrow { stroke: #15803d; stroke-width: 2.2; fill: none; }
-
-/* Step-size comparison bar on slide 8. */
-.reveal .l21-step-bar {
-  display: block;
-  margin: 0.5em auto 0.2em;
-  width: 100%;
-  max-width: 500px;
-  height: auto;
-  max-height: 100px;
-}
-
-/* Side-by-side momentum tables. */
-.reveal .momentum-tables {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.8em;
-  margin: 0.3em 0;
-}
-.reveal .momentum-tables .mt {
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  background: #f9fafb;
-  padding: 0.4em 0.5em;
-}
-.reveal .momentum-tables .mt h3 {
-  font-size: 0.85em;
-  margin: 0 0 0.2em 0;
-  text-align: center;
-}
-.reveal .momentum-tables.no-momentum h3 { color: #dc2626; }
-.reveal .momentum-tables .mt.yes h3 { color: #15803d; }
-.reveal .momentum-tables table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  line-height: 1.2;
-  text-align: center;
-}
-.reveal .momentum-tables td,
-.reveal .momentum-tables th {
-  padding: 0.12em 0.3em;
-  border-bottom: 1px solid #f3f4f6;
-}
-.reveal .momentum-tables th {
-  background: #eff6ff;
-  color: #1e3a8a;
-  font-weight: 600;
-}
-
-/* Nesterov 3-arrow look-ahead figure. */
-.reveal .nesterov-arrows {
-  display: block;
-  margin: 0.3em auto;
-  max-height: 220px;
-}
-.reveal .nesterov-arrows .start {
-  fill: #16a34a;
-  stroke: #15803d;
-  stroke-width: 1.2;
-}
-.reveal .nesterov-arrows .a-accum {
-  stroke: #dc2626;
-  stroke-width: 2;
-  fill: none;
-}
-.reveal .nesterov-arrows .a-correct {
-  stroke: #111827;
-  stroke-width: 2;
-  fill: none;
-}
-.reveal .nesterov-arrows .a-new {
-  stroke: #0891b2;
-  stroke-width: 2.5;
-  fill: none;
-}
-.reveal .nesterov-arrows .lbl-accum { fill: #b91c1c; font-weight: 700; font-size: 11px; }
-.reveal .nesterov-arrows .lbl-correct { fill: #111827; font-weight: 700; font-size: 11px; }
-.reveal .nesterov-arrows .lbl-new { fill: #0e7490; font-weight: 700; font-size: 11px; }
-
-/* Anisotropic contour plot. */
-.reveal .contour-plot {
-  display: block;
-  margin: 0.3em auto;
-  max-height: 230px;
-}
-.reveal .contour-plot .contour {
-  stroke: #1d4ed8;
-  stroke-width: 1.3;
-  fill: none;
-}
-.reveal .contour-plot .arrow-bad {
-  stroke: #dc2626;
-  stroke-width: 1.5;
-  fill: none;
-  stroke-dasharray: 4 3;
-}
-.reveal .contour-plot .arrow-good {
-  stroke: #15803d;
-  stroke-width: 1.8;
-  fill: none;
-}
-.reveal .contour-plot .min-dot { fill: #16a34a; }
-.reveal .contour-plot text { font-size: 11px; fill: #111827; font-weight: 600; }
-
-/* Algorithm pseudocode card for AdaGrad/RMSProp/Adam. */
+/* Algorithm / definition card (shared decks define their own). */
 .reveal .algo-card {
   background: #f9fafb;
   border: 1px solid #d1d5db;
   border-left: 4px solid #1d4ed8;
   border-radius: 6px;
-  padding: 0.6em 0.9em;
-  font-size: 0.78em;
+  padding: 0.5em 0.9em;
+  font-size: 0.8em;
   margin: 0.3em auto;
-  max-width: 95%;
+  max-width: 96%;
 }
 .reveal .algo-card .algo-title {
   font-weight: 700;
   color: #1d4ed8;
-  margin-bottom: 0.3em;
+  margin-bottom: 0.25em;
+  font-size: 0.95em;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
 }
-.reveal .algo-card ol {
-  margin: 0.2em 0 0.2em 1.5em;
-  padding: 0;
-}
-.reveal .algo-card ol li {
-  margin: 0.15em 0;
-}
-.reveal .algo-card .require {
-  font-size: 0.92em;
-  color: #6b7280;
-  font-style: italic;
-  margin-bottom: 0.3em;
-}
-.reveal .algo-card .highlight {
-  background: #fef3c7;
-  padding: 0 0.2em;
-  border-radius: 3px;
-}
+
+/* Generic inline diagram sizing. */
+.reveal .l21-svg { display: block; margin: 0.3em auto; width: 100%; max-height: 300px; }
+.reveal .l21-svg .edge { stroke: #6b7280; stroke-width: 1.4; fill: none; }
+.reveal .l21-svg .axis-label { font-size: 12px; fill: #6b7280; }
+
+/* Attention weight heat-grid cells. */
+.reveal .attn-cell { stroke: #fff; stroke-width: 1.5; }
+.reveal .attn-txt { font-size: 12px; fill: #1f2937; text-anchor: middle; dominant-baseline: middle; }
+
+/* Transformer block boxes. */
+.reveal .tb-box { rx: 5; stroke-width: 1.6; }
+.reveal .tb-attn { fill: #dbeafe; stroke: #1d4ed8; }
+.reveal .tb-ffn  { fill: #dcfce7; stroke: #166534; }
+.reveal .tb-norm { fill: #fef3c7; stroke: #b45309; }
+.reveal .tb-add  { fill: #ede9fe; stroke: #6d28d9; }
+.reveal .tb-label { font-size: 12px; fill: #1f2937; text-anchor: middle; dominant-baseline: middle; }
+
+/* QKV projection tint boxes. */
+.reveal .qkv-q { fill: #fee2e2; stroke: #dc2626; }
+.reveal .qkv-k { fill: #dbeafe; stroke: #1d4ed8; }
+.reveal .qkv-v { fill: #dcfce7; stroke: #166534; }
