@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 20 — Neural Networks II</title>
+  <title>CS 486/686 Lecture 20 — Neural Networks II: Training</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 20: Neural Networks II — gradient descent, backpropagation, and NN vs decision trees. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 20: Neural Networks II — cross-entropy loss, gradient descent, backpropagation, optimizers (SGD/momentum/Adam/AdamW), regularization and normalization. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
@@ -46,10 +46,10 @@
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Neural Networks II</div>
+  <div class="course-title">CS 486/686<br>Neural Networks II: Training</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 20</p>
-  <p class="credit">RN 19.6.2, 21.1, 21.2 &middot; PM 7.5 &middot; GBC 4.3, 6.5</p>
+  <p class="credit">RN 21.1&ndash;21.2 &middot; PM 7.5 &middot; GBC 6.5, 7, 8</p>
 </section>
 
 <!-- 2. Learning goals -->
@@ -65,10 +65,10 @@
   </div>
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Explain the steps of <strong>gradient descent</strong>.</li>
-    <li class="fragment">Modify GD to speed up learning and ensure convergence.</li>
-    <li class="fragment">Describe the <strong>back-propagation</strong> algorithm (forward + backward passes).</li>
-    <li class="fragment">Compute the gradient for a weight in a multi-layer NN.</li>
+    <li class="fragment">Write the <strong>cross-entropy</strong> loss and the <strong>gradient-descent</strong> update.</li>
+    <li class="fragment">Describe <strong>back-propagation</strong> (forward + backward passes) and compute a weight's gradient.</li>
+    <li class="fragment">Speed up training with <strong>momentum</strong> and <strong>Adam / AdamW</strong>.</li>
+    <li class="fragment">Fight overfitting with <strong>regularization, dropout, and normalization</strong>.</li>
     <li class="fragment">Decide when to use a <strong>neural network</strong> vs a <strong>decision tree</strong>.</li>
   </ul>
 </section>
@@ -114,11 +114,10 @@
       </svg>
     </div>
     <div style="flex: 0.9; font-size: 0.82em;">
-      <p style="margin: 0;"><strong>Two outputs</strong> encode "spam" vs "ham":</p>
+      <p style="margin: 0;"><strong>Softmax outputs</strong> a probability over "spam" vs "ham":</p>
       <ul style="margin: 0.3em 0;">
-        <li>Spam &rarr; target \([1, 0]\)</li>
-        <li>Ham &rarr; target \([0, 1]\)</li>
-        <li>Ambiguous &rarr; \([0.5, 0.5]\)</li>
+        <li>Spam &rarr; one-hot target \([1, 0]\)</li>
+        <li>Ham &rarr; one-hot target \([0, 1]\)</li>
       </ul>
       <p style="margin: 0.4em 0 0 0; color: #1d4ed8;">We have paired data \((x_1, x_2, y)\). <strong>How do we set the weights \(W^{(1)}, W^{(2)}\)?</strong></p>
     </div>
@@ -128,9 +127,10 @@
 <!-- 4. Loss function + gradient descent -->
 <section>
   <h2>Loss function and gradient descent</h2>
-  <p style="font-size: 0.85em; margin: 0.2em 0;">Squared loss on a dataset \(D = \{(x^{(i)}, y^{(i)})\}_{i=1}^N\) with network output \(\hat{y}^{(i)} = f(x^{(i)}; W)\):</p>
-  <p style="text-align:center;">\[ L(W) = \tfrac{1}{2} \sum_{i=1}^{N} \big\| \hat{y}^{(i)} - y^{(i)} \big\|^2 \]</p>
-  <p style="font-size: 0.85em; margin: 0.6em 0 0.2em 0;" class="fragment"><strong>Gradient descent:</strong> repeat for many iterations:</p>
+  <p style="font-size: 0.85em; margin: 0.2em 0;">For classification we use the <strong>cross-entropy</strong> loss from L16 (softmax output \(\hat{y}^{(i)}\), one-hot target \(y^{(i)}\)):</p>
+  <p style="text-align:center;">\[ L(W) = -\sum_{i=1}^{N} \sum_{k} y^{(i)}_k \, \log \hat{y}^{(i)}_k \]</p>
+  <p style="font-size: 0.78em; margin: 0.1em 0; color: #6b7280;">(For regression, swap in squared error \(\tfrac12\sum_i\lVert\hat y^{(i)}-y^{(i)}\rVert^2\).)</p>
+  <p style="font-size: 0.85em; margin: 0.5em 0 0.2em 0;" class="fragment"><strong>Gradient descent:</strong> repeat for many iterations:</p>
   <ol style="font-size: 0.85em; margin: 0.2em 0 0.2em 1.5em;">
     <li class="fragment">Compute the gradient \(\nabla_W L(W) = \big[ \partial L / \partial w \big]_{w \in W}\).</li>
     <li class="fragment">Update every weight: \( w \leftarrow w - \eta\, \dfrac{\partial L}{\partial w} \).</li>
@@ -216,7 +216,7 @@
     </div>
   </div>
   <p class="fragment" style="font-size: 0.82em; margin: 0.8em 0 0 0; text-align:center; color:#6b7280;">
-    Plus tricks like momentum, Adam, learning-rate schedules &mdash; covered in CS480/680.
+    First, how do we <em>get</em> the gradient efficiently? Then how do we take smarter steps (momentum, Adam)?
   </p>
 </section>
 
@@ -385,7 +385,54 @@
   <div class="fragment" style="margin-top: 0.35em; padding: 0.5em 0.9em; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 4px; font-size: 0.86em;">
     <strong>Why it matters:</strong> during the forward pass we already compute \(g(a)\). Reuse it &mdash; no need to redo the exponential during the backward pass.
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.35em;">Similar shortcuts exist for tanh (\(1 - g^2\)) and ReLU (0 or 1).</p>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.35em;">Similar shortcuts exist for tanh (\(1 - g^2\)) and ReLU (0 or 1) &mdash; ReLU's constant gradient is a big reason it beats sigmoid in deep nets.</p>
+</section>
+
+<!-- ============================================================
+     Optimization + regularization (2 slides)
+     ============================================================ -->
+
+<!-- 12b. Smarter optimizers: momentum + Adam -->
+<section>
+  <h2>Beyond plain SGD: momentum and Adam</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Plain SGD is noisy and slow in ravines. Two ideas fix it:</p>
+  <div class="two-col" style="align-items:stretch;">
+    <div class="defbox fragment" style="flex:1;">
+      <h3 style="margin-top:0;">Momentum</h3>
+      <p style="margin:0 0 0.2em; font-size:0.8em;">Accumulate a velocity (an EWMA of past gradients) so consistent directions build speed:</p>
+      <p style="text-align:center; margin:0; font-size:0.8em;">\(v \leftarrow \beta v - \eta\,\nabla_W L, \quad W \leftarrow W + v\)</p>
+    </div>
+    <div class="defbox fragment" style="flex:1;">
+      <h3 style="margin-top:0;">Adam</h3>
+      <p style="margin:0 0 0.2em; font-size:0.8em;">Per-parameter step sizes: divide by a running estimate of each gradient's magnitude, plus momentum. Robust default:</p>
+      <p style="text-align:center; margin:0; font-size:0.8em;">\(W \leftarrow W - \eta\,\dfrac{\hat{m}}{\sqrt{\hat{v}}+\epsilon}\)</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;"><strong>AdamW</strong> (Adam + decoupled weight decay) is the standard optimizer for transformers/LLMs today. &nbsp;<a href="../optimizers/" style="color:#6b7280;">[optional deep-dive deck]</a></p>
+</section>
+
+<!-- 12c. Regularization + normalization -->
+<section>
+  <h2>Making training generalize &amp; stay stable</h2>
+  <div class="two-col" style="align-items:stretch;">
+    <div class="defbox" style="flex:1;">
+      <h3 style="margin-top:0;">Regularization (fight overfitting)</h3>
+      <ul style="margin:0.1em 0 0 1em; font-size:0.8em;">
+        <li class="fragment"><strong>Weight decay:</strong> add \(\lambda\lVert W\rVert^2\) to the loss (L16).</li>
+        <li class="fragment"><strong>Dropout:</strong> randomly zero some units each step so the net can't rely on any one.</li>
+        <li class="fragment"><strong>Early stopping:</strong> halt when validation loss turns up.</li>
+      </ul>
+    </div>
+    <div class="defbox" style="flex:1;">
+      <h3 style="margin-top:0;">Normalization &amp; schedules (stay stable)</h3>
+      <ul style="margin:0.1em 0 0 1em; font-size:0.8em;">
+        <li class="fragment"><strong>Batch / layer norm:</strong> re-center &amp; scale activations so gradients stay well-behaved.</li>
+        <li class="fragment"><strong>LR warmup + cosine decay:</strong> ramp \(\eta\) up, then anneal it down.</li>
+        <li class="fragment"><strong>Gradient clipping:</strong> cap the gradient norm to avoid blow-ups.</li>
+      </ul>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.35em;">These are the everyday knobs behind training any modern deep network.</p>
 </section>
 
 <!-- 13. When to use a neural network -->
@@ -424,7 +471,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr><td><strong>Data type</strong></td><td>Images, audio, text</td><td>Tabular data</td></tr>
+      <tr><td><strong>Data type</strong></td><td>Images, audio, text</td><td>Tabular data (gradient boosting usually wins here)</td></tr>
       <tr class="fragment"><td><strong>Data size</strong></td><td>Needs a lot; easy to overfit small data</td><td>Works with very little data</td></tr>
       <tr class="fragment"><td><strong>Target function</strong></td><td>Arbitrary functions</td><td>Nested if/else rules</td></tr>
       <tr class="fragment"><td><strong>Architecture</strong></td><td>Layers, units, activations, init, \(\eta\) all critical</td><td>A few hyperparameters (depth, pruning)</td></tr>
@@ -438,23 +485,24 @@
 <section class="center-slide">
   <h2>Revisiting learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Explain the steps of <strong>gradient descent</strong>.</li>
-    <li class="fragment">Modify GD to speed up learning and ensure convergence.</li>
-    <li class="fragment">Describe the <strong>back-propagation</strong> algorithm (forward + backward passes).</li>
-    <li class="fragment">Compute the gradient for a weight in a multi-layer NN.</li>
+    <li class="fragment">Write the <strong>cross-entropy</strong> loss and the gradient-descent update.</li>
+    <li class="fragment">Describe <strong>back-propagation</strong> and compute a weight's gradient.</li>
+    <li class="fragment">Speed up training with <strong>momentum</strong> and <strong>Adam / AdamW</strong>.</li>
+    <li class="fragment">Fight overfitting with <strong>regularization, dropout, and normalization</strong>.</li>
     <li class="fragment">Decide when to use a <strong>neural network</strong> vs a <strong>decision tree</strong>.</li>
   </ul>
 </section>
 
 <!-- 16. Next lecture teaser -->
 <section class="center-slide">
-  <h2>Next: Neural Networks III</h2>
-  <ul style="text-align:left; margin-left:2em; font-size: 0.9em;">
-    <li class="fragment">Convolutional networks &mdash; weight sharing for images.</li>
-    <li class="fragment">Word embeddings and sequence models.</li>
-    <li class="fragment">A peek at <strong>transformers</strong> and large language models.</li>
+  <h2>Next: Transformers &amp; Attention</h2>
+  <p style="font-size: 0.9em;">We can now build and train deep nets. But how do we handle <strong>sequences</strong> &mdash; language, code, audio &mdash; at scale?</p>
+  <ul style="text-align:left; margin-left:2em; font-size: 0.88em; margin-top: 0.5em;">
+    <li class="fragment">Why RNNs struggle with long sequences.</li>
+    <li class="fragment"><strong>Self-attention</strong>: the idea behind every modern LLM.</li>
+    <li class="fragment">The <strong>transformer</strong> block, end to end.</li>
   </ul>
-  <p class="fragment" style="margin-top: 0.8em; color: #6b7280;">See you on Thursday!</p>
+  <p class="fragment" style="margin-top: 0.6em; color: #1d4ed8;">L21: Transformers &amp; Attention.</p>
 </section>
 
 </div>
