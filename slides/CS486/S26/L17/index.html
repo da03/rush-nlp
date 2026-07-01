@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 17 — Unsupervised Learning</title>
+  <title>CS 486/686 Lecture 17 — Unsupervised &amp; Representation Learning</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 17: Unsupervised Learning — clustering, k-means, PCA, autoencoders, and GANs. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 17: Unsupervised and Representation Learning — clustering, k-means, PCA, autoencoders, and self-supervised / contrastive learning (CLIP). Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
@@ -43,10 +43,10 @@
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Unsupervised Learning</div>
+  <div class="course-title">CS 486/686<br>Unsupervised &amp; Representation Learning</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 17</p>
-  <p class="credit">RN 21.7.1 &middot; PM 10.2 &middot; GBC 14.1, 20.10.4</p>
+  <p class="credit">RN 21.7.1 &middot; PM 10.2 &middot; GBC 14.1</p>
 </section>
 
 <!-- 1b. Recorded asynchronous lecture (instructor at ICML) -->
@@ -75,7 +75,7 @@
     <li class="fragment">Understand what <strong>unsupervised learning</strong> is.</li>
     <li class="fragment">Trace the <strong>k-means</strong> clustering algorithm.</li>
     <li class="fragment">Perform <strong>PCA</strong>: mean-center, covariance, eigendecomposition.</li>
-    <li class="fragment">Understand the basic idea of <strong>autoencoders</strong> and <strong>GANs</strong>.</li>
+    <li class="fragment">Explain <strong>autoencoders</strong> and <strong>self-supervised / contrastive</strong> representations.</li>
   </ul>
 </section>
 
@@ -118,7 +118,7 @@
       <p style="font-size: 0.78em; color: #6b7280;">GANs, VAEs, diffusion.</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Today: one task from each, plus two neural variants.</p>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Today: clustering &amp; PCA, then how modern models learn <strong>representations</strong> without labels.</p>
 </section>
 
 <!-- ============================================================
@@ -536,72 +536,72 @@
     <div class="task-card">
       <h3>Deep neural autoencoder</h3>
       <p style="font-size: 0.82em;">Stack non-linear layers (ReLU, etc.) in both encoder and decoder; train end-to-end with backprop.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">Captures non-linear manifolds &mdash; the modern workhorse for representation learning.</p>
+      <p style="font-size: 0.78em; color: #6b7280;">Captures non-linear manifolds &mdash; a building block for the learned representations below.</p>
     </div>
   </div>
 </section>
 
 <!-- ============================================================
-     GANs (2 slides)
+     Self-supervised representations + generative preview (2 slides)
      ============================================================ -->
 
-<!-- 15. GANs: generator + discriminator -->
+<!-- 15. Self-supervised & contrastive learning -->
 <section>
-  <h2>Generative Adversarial Networks (GANs)</h2>
-  <p style="font-size: 0.85em;">Two networks play a game: a <strong>generator</strong> tries to fool a <strong>discriminator</strong>.</p>
-  <div style="text-align: center;">
-    <svg viewBox="0 0 520 200" xmlns="http://www.w3.org/2000/svg" class="gan-diagram">
-      <!-- Generator path: noise -> generator -> fake -->
-      <g class="fragment">
-        <rect class="box" x="20"  y="80" width="76" height="36"/>
-        <text class="box-label" x="58" y="103">noise z</text>
-        <line class="arch-arrow" x1="96"  y1="98" x2="130" y2="98" marker-end="url(#arrow-l17)"/>
-        <text class="edge-label" x="113" y="92" text-anchor="middle">z &#126; N(0, I)</text>
-        <rect class="box generator" x="130" y="80" width="100" height="36"/>
-        <text class="box-label" x="180" y="103">generator g</text>
-        <path class="arch-arrow" d="M 230 95 Q 250 95, 265 68" marker-end="url(#arrow-l17)" fill="none"/>
-        <rect class="box fake" x="265" y="50" width="80" height="36"/>
-        <text class="box-label" x="305" y="73">fake x</text>
-      </g>
-      <!-- Real path: real x box -->
-      <g class="fragment">
-        <rect class="box real" x="265" y="110" width="80" height="36"/>
-        <text class="box-label" x="305" y="133">real x</text>
-      </g>
-      <!-- Verdict: discriminator -->
-      <g class="fragment">
-        <line class="arch-arrow" x1="345" y1="68"  x2="380" y2="92" marker-end="url(#arrow-l17)"/>
-        <line class="arch-arrow" x1="345" y1="128" x2="380" y2="104" marker-end="url(#arrow-l17)"/>
-        <rect class="box discriminator" x="380" y="80" width="116" height="36"/>
-        <text class="box-label" x="438" y="103">discriminator d</text>
-        <text class="edge-label" x="438" y="138" text-anchor="middle">real or fake?</text>
-      </g>
-    </svg>
+  <h2>Self-supervised &amp; contrastive learning</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Labels are expensive. <strong>Self-supervised</strong> learning invents the supervision signal <em>from the data itself</em>, then learns a reusable representation.</p>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1; text-align: center;">
+      <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height: 200px;">
+        <rect x="18" y="30" width="86" height="40" rx="4" fill="#fdf2f8" stroke="#be185d" stroke-width="1.5"/>
+        <text x="61" y="55" font-size="12" fill="#be185d" text-anchor="middle">image</text>
+        <rect x="18" y="140" width="86" height="40" rx="4" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
+        <text x="61" y="165" font-size="11" fill="#4338ca" text-anchor="middle">"a dog"</text>
+        <line x1="104" y1="50" x2="140" y2="70" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
+        <line x1="104" y1="160" x2="140" y2="140" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
+        <rect x="140" y="60" width="44" height="90" rx="4" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4"/>
+        <text x="162" y="108" font-size="10" fill="#374151" text-anchor="middle" transform="rotate(-90 162 108)">encoders</text>
+        <line x1="184" y1="80" x2="216" y2="80" stroke="#be185d" stroke-width="1.6" marker-end="url(#arrow-l17)"/>
+        <line x1="184" y1="130" x2="216" y2="130" stroke="#4338ca" stroke-width="1.6" marker-end="url(#arrow-l17)"/>
+        <circle cx="240" cy="80" r="7" fill="#be185d"/>
+        <circle cx="240" cy="130" r="7" fill="#4338ca"/>
+        <path d="M 247 84 Q 268 105, 247 126" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-l17)"/>
+        <text x="288" y="108" font-size="10" fill="#166534" text-anchor="middle" transform="rotate(-90 288 108)">pull together</text>
+      </svg>
+    </div>
+    <div style="flex: 0.95;">
+      <p style="font-size: 0.82em; margin: 0.1em 0;"><strong>CLIP</strong>: an image encoder \(f\) and a text encoder \(g\). Train so a matching (image, caption) pair has high similarity, and mismatched pairs low:</p>
+      <p style="text-align:center; margin: 0.25em 0; font-size: 0.8em;">maximize \(\;f(\text{img})^\top g(\text{text})\;\) for true pairs</p>
+      <ul style="font-size: 0.8em; margin: 0.2em 0 0 1em;">
+        <li class="fragment">No human labels &mdash; the pairing <em>is</em> the signal.</li>
+        <li class="fragment">The learned embeddings <strong>transfer</strong> to many tasks (even zero-shot).</li>
+      </ul>
+    </div>
   </div>
-  <ul style="font-size: 0.82em; margin-top: 0.4em;">
-    <li><strong>Generator \(g(z)\)</strong>: turns Gaussian noise \(z\) into a synthetic example that should look real.</li>
-    <li><strong>Discriminator \(d(x)\)</strong>: binary classifier &mdash; was \(x\) drawn from training data, or from \(g\)?</li>
-  </ul>
 </section>
 
-<!-- 16. GAN training: minimax -->
+<!-- 16. Generative modelling: a quick map (GANs demoted, pointer to L23) -->
 <section>
-  <h2>GAN training: a minimax game</h2>
-  <p style="font-size: 0.88em;">Both networks optimize the same value, in opposite directions:</p>
-  <div class="defbox">
-    <p style="text-align: center; margin: 0.2em 0; font-size: 0.95em;">\(E \;=\; \mathbb{E}_{x \sim p_{\text{data}}}\!\bigl[\log d(x)\bigr] + \mathbb{E}_{z \sim p_z}\!\bigl[\log(1 - d(g(z)))\bigr]\)</p>
-  </div>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr; margin-top: 0.4em;">
+  <h2>Generative modelling: a quick map</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Beyond compressing data, we can learn its distribution \(p(x)\) and <strong>sample new examples</strong>. Four main families:</p>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
     <div class="task-card">
-      <h3>Discriminator</h3>
-      <p style="font-size: 0.82em;">Maximize \(E\): push \(d(\text{real}) \to 1\) and \(d(\text{fake}) \to 0\).</p>
+      <h3>Autoregressive</h3>
+      <p style="font-size: 0.8em;">Predict the next piece given the past: \(p(x)=\prod_t p(x_t \mid x_{&lt;t})\). Powers <strong>LLMs</strong>.</p>
     </div>
     <div class="task-card">
-      <h3>Generator</h3>
-      <p style="font-size: 0.82em;">Minimize \(E\): generate fakes that <em>fool</em> the discriminator.</p>
+      <h3>VAE</h3>
+      <p style="font-size: 0.8em;">An autoencoder with a probabilistic bottleneck; sample the code, then decode.</p>
+    </div>
+    <div class="task-card">
+      <h3>GAN</h3>
+      <p style="font-size: 0.8em;">A generator vs. a discriminator. Sharp samples, but tricky to train &mdash; now largely superseded.</p>
+    </div>
+    <div class="task-card">
+      <h3>Diffusion</h3>
+      <p style="font-size: 0.8em;">Learn to denoise; today's state of the art for images &amp; video.</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.85em; color: #166534; text-align: center; margin-top: 0.4em;">At equilibrium: \(g\) produces realistic samples and \(d(x) \approx \tfrac{1}{2}\) &mdash; maximally uncertain.</p>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">We go deep on <strong>diffusion &amp; multimodal generation</strong> in L23.</p>
 </section>
 
 <!-- ============================================================
@@ -615,9 +615,9 @@
     <li>&#10003; &nbsp;Understand what <strong>unsupervised learning</strong> is.</li>
     <li>&#10003; &nbsp;Trace the <strong>k-means</strong> clustering algorithm.</li>
     <li>&#10003; &nbsp;Perform <strong>PCA</strong> by mean-centering, covariance, and eigendecomposition.</li>
-    <li>&#10003; &nbsp;Understand the basic idea of <strong>autoencoders</strong> and <strong>GANs</strong>.</li>
+    <li>&#10003; &nbsp;Explain <strong>autoencoders</strong> and <strong>self-supervised / contrastive</strong> representations.</li>
   </ul>
-  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L18: back to supervised &mdash; the <strong>decision tree</strong> learner.</p>
+  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L18: back to supervised &mdash; <strong>decision trees &amp; ensembles</strong>.</p>
 </section>
 
 </div>
