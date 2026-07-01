@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 18 — Decision Trees</title>
+  <title>CS 486/686 Lecture 18 — Decision Trees &amp; Ensembles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 18: Decision Trees — anatomy, construction, entropy, information gain, and the ID3 algorithm. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 18: Decision Trees and Ensembles — anatomy, entropy, information gain, ID3, Gini/CART, pruning, random forests, and gradient boosting. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
@@ -35,10 +35,10 @@
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Decision Trees</div>
+  <div class="course-title">CS 486/686<br>Decision Trees &amp; Ensembles</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 18</p>
-  <p class="credit">RN 19.3 &middot; PM 7.3.1</p>
+  <p class="credit">RN 19.3, 19.8 &middot; PM 7.3.1, 7.5</p>
 </section>
 
 <!-- 1b. Recorded asynchronous lecture (instructor at ICML) -->
@@ -67,9 +67,9 @@
     <li class="fragment">Describe the <strong>components</strong> of a decision tree.</li>
     <li class="fragment"><strong>Construct</strong> a decision tree given a feature-testing order.</li>
     <li class="fragment">Compute a tree's <strong>prediction accuracy</strong> on a test set.</li>
-    <li class="fragment">Compute the <strong>entropy</strong> of a distribution.</li>
-    <li class="fragment">Compute the <strong>expected information gain</strong> of a feature.</li>
-    <li class="fragment">Trace + implement the <strong>DT learning algorithm</strong>.</li>
+    <li class="fragment">Compute <strong>entropy</strong> and <strong>expected information gain</strong>; trace the <strong>DT learner</strong>.</li>
+    <li class="fragment">Use <strong>Gini / CART</strong> and control overfitting with <strong>pruning</strong>.</li>
+    <li class="fragment">Combine trees into <strong>random forests</strong> and <strong>gradient boosting</strong>.</li>
   </ul>
 </section>
 
@@ -539,6 +539,95 @@
   <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Greedy: pick the locally best feature at each step. Not always globally optimal &mdash; but fast and effective.</p>
 </section>
 
+<!-- ============================================================
+     Gini / CART + pruning (2 slides)
+     ============================================================ -->
+
+<!-- 16b. Gini impurity & CART -->
+<section>
+  <h2>Another purity score: Gini &amp; CART</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Information gain uses entropy. A popular alternative measures how often a random example would be <strong>mislabeled</strong> if labeled by the node's class distribution:</p>
+  <div class="two-col" style="align-items:stretch; margin-top: 0.2em;">
+    <div class="defbox" style="flex:1;">
+      <h3 style="margin-top:0;">Gini impurity</h3>
+      <p style="text-align:center; margin:0.2em 0;">\(G = 1 - \displaystyle\sum_{i=1}^{k} P(c_i)^2\)</p>
+      <p style="margin:0; font-size:0.78em; color:#6b7280;">\(0\) when pure; maximal when classes are balanced &mdash; same spirit as entropy, cheaper to compute (no logs).</p>
+    </div>
+    <div class="defbox" style="flex:1;">
+      <h3 style="margin-top:0;">CART</h3>
+      <p style="margin:0; font-size:0.82em;">The tree learner behind scikit-learn: <strong>binary</strong> splits, Gini (or entropy) for classification, squared error for regression.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.35em;">Entropy vs. Gini rarely changes the tree much &mdash; both reward pure children.</p>
+</section>
+
+<!-- 16c. Overfitting & pruning -->
+<section>
+  <h2>Trees overfit &mdash; so we prune</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Grown to purity, a tree memorizes the training set (one leaf per noisy example) and generalizes poorly &mdash; exactly the overfitting from L16.</p>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
+    <div class="task-card">
+      <h3>Pre-pruning</h3>
+      <p style="font-size: 0.82em;">Stop growing early: cap <strong>max depth</strong>, require a <strong>minimum #examples</strong> per node, or a minimum gain to split.</p>
+    </div>
+    <div class="task-card">
+      <h3>Post-pruning</h3>
+      <p style="font-size: 0.82em;">Grow the full tree, then <strong>collapse</strong> branches that don't improve validation accuracy.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.35em;">Pick the depth / pruning strength with <strong>cross-validation</strong> (L16).</p>
+</section>
+
+<!-- ============================================================
+     Ensembles (2 slides)
+     ============================================================ -->
+
+<!-- 16d. Bagging & random forests -->
+<section>
+  <h2>Random forests: a crowd of trees</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">One deep tree is high-variance. <strong>Bagging</strong> averages many trees, each trained on a bootstrap sample; a <strong>random forest</strong> also splits on a random feature subset to decorrelate them.</p>
+  <div class="two-col vcenter">
+    <div style="flex: 1.05; text-align:center;">
+      <svg viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:160px;">
+        <g stroke="#166534" stroke-width="1.6" fill="none">
+          <path d="M40 30 L25 60 M40 30 L55 60 M25 60 L18 90 M25 60 L34 90"/>
+          <path d="M150 30 L135 60 M150 30 L165 60 M165 60 L158 90 M165 60 L174 90"/>
+          <path d="M260 30 L245 60 M260 30 L275 60 M245 60 L238 90 M245 60 L254 90"/>
+        </g>
+        <circle cx="40" cy="26" r="6" fill="#dcfce7" stroke="#166534"/>
+        <circle cx="150" cy="26" r="6" fill="#dcfce7" stroke="#166534"/>
+        <circle cx="260" cy="26" r="6" fill="#dcfce7" stroke="#166534"/>
+        <text x="40" y="110" font-size="10" fill="#374151" text-anchor="middle">tree 1: Yes</text>
+        <text x="150" y="110" font-size="10" fill="#374151" text-anchor="middle">tree 2: Yes</text>
+        <text x="260" y="110" font-size="10" fill="#374151" text-anchor="middle">tree 3: No</text>
+        <path d="M40 118 L150 140 M150 118 L150 140 M260 118 L150 140" stroke="#9ca3af" stroke-width="1.2" fill="none"/>
+        <rect x="96" y="140" width="108" height="24" rx="4" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
+        <text x="150" y="156" font-size="11" fill="#1d4ed8" text-anchor="middle" font-weight="700">majority vote: Yes</text>
+      </svg>
+    </div>
+    <div style="flex: 0.95;">
+      <ul style="font-size: 0.82em; margin: 0.1em 0 0 1em;">
+        <li class="fragment"><strong>Classification:</strong> majority vote.</li>
+        <li class="fragment"><strong>Regression:</strong> average the predictions.</li>
+        <li class="fragment">Averaging cancels individual trees' errors &rarr; <strong>lower variance</strong>, strong off-the-shelf accuracy.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 16e. Gradient boosting -->
+<section>
+  <h2>Gradient boosting: fix your own mistakes</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Instead of averaging independent trees, <strong>add trees in sequence</strong>, each one correcting the residual errors of the trees so far:</p>
+  <p style="text-align:center; margin: 0.25em 0;">\(F_m(x) = F_{m-1}(x) + \gamma\, h_m(x)\)</p>
+  <ul style="font-size: 0.82em; margin: 0.2em 0 0 1.2em;">
+    <li class="fragment">\(h_m\) is a small tree fit to the <strong>gradient of the loss</strong> (for squared loss, the residuals).</li>
+    <li class="fragment">\(\gamma\) is a small learning rate &mdash; many shallow trees, added slowly.</li>
+    <li class="fragment"><strong>XGBoost / LightGBM</strong> are the go-to winners on <strong>tabular</strong> data today.</li>
+  </ul>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.3em;">Forests reduce <em>variance</em> (parallel); boosting reduces <em>bias</em> (sequential).</p>
+</section>
+
 <!-- 17. Learning goals (recap) + next -->
 <section class="center-slide">
   <h2>Learning goals (recap) &mdash; Next: neural networks</h2>
@@ -546,9 +635,9 @@
     <li>&#10003; &nbsp;Describe the <strong>components</strong> of a decision tree.</li>
     <li>&#10003; &nbsp;<strong>Construct</strong> a tree given a feature-testing order.</li>
     <li>&#10003; &nbsp;Compute <strong>test-set accuracy</strong>.</li>
-    <li>&#10003; &nbsp;Compute the <strong>entropy</strong> of a distribution.</li>
-    <li>&#10003; &nbsp;Compute the <strong>expected information gain</strong>.</li>
-    <li>&#10003; &nbsp;Trace + implement the <strong>DT learning algorithm</strong>.</li>
+    <li>&#10003; &nbsp;Compute <strong>entropy</strong> and <strong>information gain</strong>; trace the <strong>DT learner</strong>.</li>
+    <li>&#10003; &nbsp;Use <strong>Gini / CART</strong>; control overfitting with <strong>pruning</strong>.</li>
+    <li>&#10003; &nbsp;Combine trees: <strong>random forests</strong> &amp; <strong>gradient boosting</strong>.</li>
   </ul>
   <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L19: from hand-engineered trees to <strong>neural networks</strong> &mdash; the building block of deep learning.</p>
 </section>
