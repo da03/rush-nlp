@@ -276,7 +276,7 @@ schedule:
   - type: lecture
     date: 2026-07-02
     lecture_num: 16
-    topic: "Introduction to Machine Learning"
+    topic: "Supervised Learning & Generalization"
     slides: /slides/CS486/S26/L16/
     deadlines:
       - { kind: out,     chat: 8, label: "Chat 8 out" }
@@ -284,7 +284,7 @@ schedule:
   - type: lecture
     date: 2026-07-07
     lecture_num: 17
-    topic: "Unsupervised Learning"
+    topic: "Unsupervised & Representation Learning"
     slides: /slides/CS486/S26/L17/
     async: true
     note: "Asynchronous &mdash; pre-recorded video (instructor at ICML). Watch on your own time; deadlines unchanged."
@@ -295,7 +295,7 @@ schedule:
   - type: lecture
     date: 2026-07-09
     lecture_num: 18
-    topic: "Decision Trees"
+    topic: "Decision Trees & Ensembles"
     slides: /slides/CS486/S26/L18/
     async: true
     note: "Asynchronous &mdash; pre-recorded video (instructor at ICML). Watch on your own time; deadlines unchanged."
@@ -307,7 +307,7 @@ schedule:
   - type: lecture
     date: 2026-07-14
     lecture_num: 19
-    topic: "Neural Networks I"
+    topic: "Neural Networks I: Neurons to CNNs"
     slides: /slides/CS486/S26/L19/
     deadlines:
       - { kind: due,     chat: 9, label: "Chat 9 due" }
@@ -315,7 +315,7 @@ schedule:
   - type: lecture
     date: 2026-07-16
     lecture_num: 20
-    topic: "Neural Networks II"
+    topic: "Neural Networks II: Training"
     slides: /slides/CS486/S26/L20/
     deadlines:
       - { kind: out,     chat: 10, label: "Chat 10 out" }
@@ -323,7 +323,7 @@ schedule:
   - type: lecture
     date: 2026-07-21
     lecture_num: 21
-    topic: "Neural Networks III"
+    topic: "Transformers & Attention"
     slides: /slides/CS486/S26/L21/
     deadlines:
       - { kind: due,     chat: 10, label: "Chat 10 due" }
@@ -331,16 +331,20 @@ schedule:
   - type: lecture
     date: 2026-07-23
     lecture_num: 22
-    topic: "Course Recap"
+    topic: "Large Language Models & Systems"
     slides: /slides/CS486/S26/L22/
 
-  - type: no_class
+  - type: lecture
     date: 2026-07-28
-    label: "No class (buffer / review)"
+    lecture_num: 23
+    topic: "Generative AI: Diffusion & Multimodal"
+    slides: /slides/CS486/S26/L23/
 
-  - type: no_class
+  - type: lecture
     date: 2026-07-30
-    label: "No class"
+    lecture_num: 24
+    topic: "Recap, Modern-AI Landscape & Exam Prep"
+    slides: /slides/CS486/S26/L24/
 
   - type: no_class
     date: 2026-08-04
@@ -369,7 +373,7 @@ announcements:
     title: "Jul 7 &amp; Jul 9 are asynchronous (instructor at ICML)"
     body: >-
       I'll be away at <strong>ICML</strong> the week of July 7, so <strong>L17 (Tue Jul 7, Unsupervised
-      Learning)</strong> and <strong>L18 (Thu Jul 9, Decision Trees)</strong> will be
+      &amp; Representation Learning)</strong> and <strong>L18 (Thu Jul 9, Decision Trees &amp; Ensembles)</strong> will be
       <strong>pre-recorded videos</strong> &mdash; there is <strong>no in-person class</strong> on those two
       days. Watch the recordings on your own time (links posted before each class). <strong>All deadlines are
       unchanged</strong>: Chat 8 and the CS686 project proposal are due <strong>Tue Jul 7</strong>; Chat 9 is

@@ -199,6 +199,37 @@
   font-weight: 600;
 }
 
+/* Generic chart scaffolding for the regression / logistic / double-descent
+   plots (reused across the new algorithm slides). */
+.reveal .l16-chart { display: block; margin: 0.3em auto; max-height: 300px; width: 100%; }
+.reveal .l16-chart .axis { stroke: #6b7280; stroke-width: 1; }
+.reveal .l16-chart .grid { stroke: #e5e7eb; stroke-width: 0.6; stroke-dasharray: 3 3; }
+.reveal .l16-chart .axis-label { font-size: 12px; fill: #6b7280; }
+.reveal .l16-chart .point { fill: #1f2937; stroke: #fff; stroke-width: 1.2; }
+.reveal .l16-chart .point.pos { fill: #dc2626; }
+.reveal .l16-chart .point.neg { fill: #1d4ed8; }
+.reveal .l16-chart .fit-line { fill: none; stroke: #16a34a; stroke-width: 3; stroke-linecap: round; }
+.reveal .l16-chart .resid { stroke: #d97706; stroke-width: 1.4; stroke-dasharray: 3 2; }
+.reveal .l16-chart .sig-curve { fill: none; stroke: #7c3aed; stroke-width: 3; stroke-linecap: round; }
+.reveal .l16-chart .thresh { stroke: #9ca3af; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.reveal .l16-chart .dd-classical { fill: none; stroke: #1d4ed8; stroke-width: 2.5; stroke-linecap: round; }
+.reveal .l16-chart .dd-modern { fill: none; stroke: #dc2626; stroke-width: 2.5; stroke-linecap: round; }
+
+/* Softmax probability bars (multi-class slide). */
+.reveal .softmax-bars {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 0.7em; height: 120px; margin: 0.4em auto;
+}
+.reveal .softmax-bars .sm-bar {
+  width: 54px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+}
+.reveal .softmax-bars .sm-fill {
+  width: 100%; background: #93c5fd; border: 1px solid #1d4ed8; border-radius: 4px 4px 0 0;
+}
+.reveal .softmax-bars .sm-bar.true .sm-fill { background: #86efac; border-color: #166534; }
+.reveal .softmax-bars .sm-val { font-size: 0.72em; color: #374151; margin-bottom: 0.2em; }
+.reveal .softmax-bars .sm-lab { font-size: 0.74em; font-weight: 600; margin-top: 0.25em; }
+
 /* Mini app icons row (slide 3). */
 .reveal .app-icons {
   display: grid;
