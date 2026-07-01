@@ -309,6 +309,11 @@ Process (keep the suite honest):
   `review.py` highlights the fallback/unanswered queries - those are the gaps to
   fix in `facts.md` / `links.yaml` / the specs, then recompile.
 - CORS origins are set via `HELPER_ALLOWED_ORIGINS` in the systemd drop-in.
+- Burst hardening: a drop-in `yuntiandeng-helper.service.d/cache.conf` with
+  `Environment=HELPER_CACHE_TTL_S=60` caches identical (page, query) answers for 60s.
+  Answers are deterministic (temperature 0), so this is behavior-preserving; it absorbs
+  a launch/demo spike (the same questions repeated) - a cache hit skips the ~5-10 infer
+  calls and is logged with `cached: true`. Enabled on prod.
 - For Yuntian's shared helper backend, `PAW_HELPER_INFERENCE_BACKEND=remote_infer`
   sends pinned program IDs through the central PAW `/api/v1/infer` endpoint instead
   of loading/running every helper program in this helper service process.
