@@ -276,7 +276,7 @@ schedule:
   - type: lecture
     date: 2026-07-02
     lecture_num: 16
-    topic: "Decision Trees & Ensembles"
+    topic: "Decision Trees"
     slides: /slides/CS486/S26/L16/
     deadlines:
       - { kind: out,     chat: 8, label: "Chat 8 out" }

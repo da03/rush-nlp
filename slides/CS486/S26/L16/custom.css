@@ -1,8 +1,13 @@
-/* L18-specific styles on top of shared/custom.css, L9/custom.css, L10/custom.css. */
+/* L16 (Decision Trees) styles on top of shared/custom.css, L9/custom.css, L10/custom.css. */
 
-/* Tighter rows for the 14-row Jeeves training table (slide 5). */
+/* Tighter rows for the 14-row training table. */
 .reveal table.factor-table th,
 .reveal table.factor-table td { padding: 0.08em 0.5em; }
+
+/* Readability for the 14-row training table: zebra striping + centered cells. */
+.reveal table.jeeves-table td,
+.reveal table.jeeves-table th { text-align: center; }
+.reveal table.jeeves-table tbody tr:nth-child(even) { background: #f3f4f6; }
 
 /* Decision-tree rendering (slides 6, 7, 9). */
 .reveal .dt-tree {

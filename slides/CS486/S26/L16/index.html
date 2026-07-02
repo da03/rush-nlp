@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 16 — Decision Trees &amp; Ensembles</title>
+  <title>CS 486/686 Lecture 16 — Decision Trees</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 16: Decision Trees and Ensembles — anatomy, entropy, information gain, ID3, Gini/CART, pruning, random forests, and gradient boosting. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 16: Decision Trees — anatomy, entropy, information gain, ID3, Gini/CART, pruning, and tree ensembles (random forests, gradient boosting). Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
@@ -35,7 +35,7 @@
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Decision Trees &amp; Ensembles</div>
+  <div class="course-title">CS 486/686<br>Decision Trees</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 16</p>
   <p class="credit">RN 19.3, 19.8 &middot; PM 7.3.1, 7.5</p>
@@ -64,12 +64,12 @@
   </div>
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Describe the <strong>components</strong> of a decision tree.</li>
-    <li class="fragment"><strong>Construct</strong> a decision tree given a feature-testing order.</li>
-    <li class="fragment">Compute a tree's <strong>prediction accuracy</strong> on a test set.</li>
-    <li class="fragment">Compute <strong>entropy</strong> and <strong>expected information gain</strong>; trace the <strong>DT learner</strong>.</li>
-    <li class="fragment">Use <strong>Gini / CART</strong> and control overfitting with <strong>pruning</strong>.</li>
-    <li class="fragment">Combine trees into <strong>random forests</strong> and <strong>gradient boosting</strong>.</li>
+    <li>Describe the <strong>components</strong> of a decision tree.</li>
+    <li><strong>Construct</strong> a tree from a feature-testing order.</li>
+    <li>Compute a tree's <strong>test-set accuracy</strong>.</li>
+    <li>Compute <strong>entropy</strong> and <strong>information gain</strong>; trace the <strong>DT learner</strong>.</li>
+    <li>Use <strong>Gini / CART</strong>; control overfitting with <strong>pruning</strong>.</li>
+    <li>Combine trees: <strong>random forests</strong> and <strong>gradient boosting</strong>.</li>
   </ul>
 </section>
 
@@ -158,21 +158,21 @@
 <!-- 4. Running example: Jeeves the valet -->
 <section>
   <h2>Running example: Jeeves the valet</h2>
-  <p style="font-size: 0.88em;">Jeeves wants to predict whether Bertie will play tennis today. He has been recording the weather and Bertie's behavior every morning for 14 days.</p>
+  <p style="font-size: 0.88em;"><strong>Predict from the weather:</strong> will Bertie play tennis today? Jeeves has logged 14 mornings.</p>
   <div class="defbox">
     <h3>Features and target</h3>
     <ul style="margin: 0; font-size: 0.88em;">
-      <li><strong>Input features:</strong> Outlook (Sunny/Overcast/Rain), Temp (Hot/Mild/Cool), Humidity (High/Normal), Wind (Weak/Strong).</li>
+      <li><strong>Features:</strong> Outlook (Sunny/Overcast/Rain), Temp (Hot/Mild/Cool), Humidity (High/Normal), Wind (Weak/Strong).</li>
       <li><strong>Target:</strong> Tennis? (Yes / No).</li>
     </ul>
   </div>
-  <p class="fragment" style="font-size: 0.85em; color: #6b7280; text-align: center; margin-top: 0.4em;">14-day training set + 14-day held-out test set. Goal: build a classifier from training, evaluate on test.</p>
+  <p class="fragment" style="font-size: 0.85em; color: #6b7280; text-align: center; margin-top: 0.4em;">Learn from the training days &rarr; evaluate on a held-out test set.</p>
 </section>
 
 <!-- 5. The Jeeves training set -->
 <section>
-  <h2>The Jeeves training set</h2>
-  <table class="factor-table" style="font-size: 0.58em;">
+  <h2>The training set (14 days)</h2>
+  <table class="factor-table jeeves-table" style="font-size: 0.66em;">
     <thead>
       <tr><th>Day</th><th>Outlook</th><th>Temp</th><th>Humidity</th><th>Wind</th><th>Tennis?</th></tr>
     </thead>
@@ -268,10 +268,10 @@
   <div class="defbox">
     <h3>An order for the Jeeves data</h3>
     <ul style="margin: 0; font-size: 0.85em;">
-      <li>First, test <strong>Outlook</strong>.</li>
-      <li>For Outlook = Sunny, test <strong>Temp</strong>.</li>
-      <li>For Outlook = Rain, test <strong>Wind</strong>.</li>
-      <li>(For other branches, test Humidity before Wind.)</li>
+      <li><strong>Root:</strong> test Outlook.</li>
+      <li>Sunny &rarr; test <strong>Temp</strong> (then Humidity if still mixed).</li>
+      <li>Overcast &rarr; all Yes, done.</li>
+      <li>Rain &rarr; test <strong>Wind</strong>.</li>
     </ul>
   </div>
   <p style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">Each example flows down the tree according to its feature values; leaves end up with subsets of the training set.</p>
@@ -280,49 +280,50 @@
 <!-- 9. The resulting Jeeves DT -->
 <section>
   <h2>The Jeeves decision tree</h2>
-  <div class="dt-tree">
-    <div class="dt-node">Outlook</div>
-    <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-      <span style="width:120px; text-align:center;">Sunny</span>
-      <span style="width:80px; text-align:center;">Overcast</span>
-      <span style="width:140px; text-align:center;">Rain</span>
-    </div>
-    <div class="dt-level">
-      <div class="dt-branch fragment" style="width: 200px;">
-        <div class="dt-node">Temp</div>
-        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-          <span>Hot</span><span>Mild</span><span>Cool</span>
-        </div>
-        <div class="dt-level">
-          <div class="dt-leaf no">No</div>
-          <div class="dt-branch">
-            <div class="dt-node">Humidity</div>
-            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-              <span>High</span><span>Normal</span>
-            </div>
-            <div class="dt-level">
-              <div class="dt-leaf no">No</div>
-              <div class="dt-leaf yes">Yes</div>
-            </div>
-          </div>
-          <div class="dt-leaf yes">Yes</div>
-        </div>
-      </div>
-      <div class="dt-branch fragment">
-        <div class="dt-leaf yes">Yes</div>
-        <div style="font-size: 0.7em; color: #6b7280;">days 3, 7, 12, 13</div>
-      </div>
-      <div class="dt-branch fragment" style="width: 180px;">
-        <div class="dt-node">Wind</div>
-        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-          <span>Weak</span><span>Strong</span>
-        </div>
-        <div class="dt-level">
-          <div class="dt-leaf yes">Yes</div>
-          <div class="dt-leaf no">No</div>
-        </div>
-      </div>
-    </div>
+  <div style="text-align:center;">
+    <svg viewBox="0 0 660 278" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:720px; max-height:400px; display:block; margin:0.2em auto;">
+      <!-- root (always visible) -->
+      <rect x="300" y="12" width="76" height="30" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.6"/>
+      <text x="338" y="32" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a8a">Outlook</text>
+
+      <!-- Sunny -> Temp subtree -->
+      <g class="fragment">
+        <line x1="320" y1="42" x2="150" y2="86" stroke="#9ca3af" stroke-width="1.3"/>
+        <text x="214" y="60" font-size="11" fill="#6b7280">Sunny</text>
+        <rect x="118" y="86" width="64" height="28" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="150" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">Temp</text>
+        <line x1="135" y1="114" x2="80" y2="166" stroke="#9ca3af" stroke-width="1.3"/><text x="96" y="144" font-size="10" fill="#6b7280">Hot</text>
+        <line x1="150" y1="114" x2="151" y2="166" stroke="#9ca3af" stroke-width="1.3"/><text x="156" y="144" font-size="10" fill="#6b7280">Mild</text>
+        <line x1="165" y1="114" x2="246" y2="166" stroke="#9ca3af" stroke-width="1.3"/><text x="212" y="144" font-size="10" fill="#6b7280">Cool</text>
+        <rect x="59" y="166" width="42" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.4"/><text x="80" y="183" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">No</text>
+        <rect x="118" y="166" width="66" height="26" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/><text x="151" y="183" text-anchor="middle" font-size="12" font-weight="700" fill="#1e3a8a">Humidity</text>
+        <rect x="224" y="166" width="44" height="24" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="1.4"/><text x="246" y="183" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">Yes</text>
+        <line x1="138" y1="192" x2="120" y2="238" stroke="#9ca3af" stroke-width="1.3"/><text x="100" y="218" font-size="10" fill="#6b7280">High</text>
+        <line x1="164" y1="192" x2="192" y2="238" stroke="#9ca3af" stroke-width="1.3"/><text x="186" y="218" font-size="10" fill="#6b7280">Normal</text>
+        <rect x="99" y="238" width="42" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.4"/><text x="120" y="255" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">No</text>
+        <rect x="170" y="238" width="44" height="24" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="1.4"/><text x="192" y="255" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">Yes</text>
+      </g>
+
+      <!-- Overcast -> Yes -->
+      <g class="fragment">
+        <line x1="338" y1="42" x2="338" y2="86" stroke="#9ca3af" stroke-width="1.3"/>
+        <text x="344" y="66" font-size="11" fill="#6b7280">Overcast</text>
+        <rect x="316" y="86" width="46" height="26" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+        <text x="339" y="104" text-anchor="middle" font-size="13" font-weight="700" fill="#166534">Yes</text>
+      </g>
+
+      <!-- Rain -> Wind subtree -->
+      <g class="fragment">
+        <line x1="356" y1="42" x2="556" y2="86" stroke="#9ca3af" stroke-width="1.3"/>
+        <text x="468" y="60" font-size="11" fill="#6b7280">Rain</text>
+        <rect x="524" y="86" width="64" height="28" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+        <text x="556" y="105" text-anchor="middle" font-size="13" font-weight="700" fill="#1e3a8a">Wind</text>
+        <line x1="544" y1="114" x2="522" y2="166" stroke="#9ca3af" stroke-width="1.3"/><text x="503" y="144" font-size="10" fill="#6b7280">Weak</text>
+        <line x1="568" y1="114" x2="590" y2="166" stroke="#9ca3af" stroke-width="1.3"/><text x="586" y="144" font-size="10" fill="#6b7280">Strong</text>
+        <rect x="500" y="166" width="44" height="24" rx="4" fill="#dcfce7" stroke="#16a34a" stroke-width="1.4"/><text x="522" y="183" text-anchor="middle" font-size="12" font-weight="700" fill="#166534">Yes</text>
+        <rect x="569" y="166" width="42" height="24" rx="4" fill="#fee2e2" stroke="#dc2626" stroke-width="1.4"/><text x="590" y="183" text-anchor="middle" font-size="12" font-weight="700" fill="#991b1b">No</text>
+      </g>
+    </svg>
   </div>
   <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.15em;">Built from the 14 training rows by following the feature order above.</p>
 </section>
@@ -347,11 +348,11 @@
     </div>
     <div class="task-card">
       <h3>No examples left</h3>
-      <p>A feature value never appeared in training data &mdash; no examples reach this leaf.</p>
-      <p style="font-size: 0.78em; color: #1d4ed8;">Return the <strong>majority class at the parent node</strong>.</p>
+      <p>A feature value unseen in training &mdash; no examples reach here.</p>
+      <p style="font-size: 0.78em; color: #1d4ed8;">Return the <strong>parent's majority class</strong>.</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">"No features left" handles noisy labels; "no examples left" handles unseen feature combinations.</p>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">"No features left" &rarr; noisy labels; "no examples left" &rarr; unseen feature combinations.</p>
 </section>
 
 <!-- ============================================================
@@ -484,12 +485,11 @@
 <!-- 14. Expected information gain -->
 <section>
   <h2>Expected information gain</h2>
-  <p style="font-size: 0.85em;">If we split on a feature with \(k\) values, weighted-average the children's entropies:</p>
+  <p style="font-size: 0.85em;">Split on a feature with \(k\) values &rarr; compare the entropy <em>before</em> vs. the weighted entropy <em>after</em>:</p>
   <div class="defbox">
-    <h3>The three formulas</h3>
-    <p style="text-align: center; margin: 0.3em 0; font-size: 0.92em;">\(H_{\text{before}} = I\!\left(\tfrac{p}{p+n},\, \tfrac{n}{p+n}\right)\)</p>
-    <p style="text-align: center; margin: 0.3em 0; font-size: 0.92em;">\(H_{\text{after}} = \sum_{i=1}^{k} \dfrac{p_i + n_i}{p + n}\; I\!\left(\tfrac{p_i}{p_i+n_i},\, \tfrac{n_i}{p_i+n_i}\right)\)</p>
-    <p style="text-align: center; margin: 0.3em 0; font-size: 1em; color: #166534;">\(IG = H_{\text{before}} - H_{\text{after}}\)</p>
+    <p style="margin: 0.2em 0; font-size: 0.9em;"><span style="color:#6b7280; font-size:0.85em;">before (parent):</span> &nbsp;\(H_{\text{before}} = I\!\left(\tfrac{p}{p+n},\, \tfrac{n}{p+n}\right)\)</p>
+    <p class="fragment" style="margin: 0.35em 0; font-size: 0.9em;"><span style="color:#6b7280; font-size:0.85em;">after (children):</span> &nbsp;\(H_{\text{after}} = \sum_{i=1}^{k} \dfrac{p_i + n_i}{p + n}\; I\!\left(\tfrac{p_i}{p_i+n_i},\, \tfrac{n_i}{p_i+n_i}\right)\)</p>
+    <p class="fragment" style="margin: 0.35em 0 0.1em; font-size: 1em; color: #166534;"><span style="color:#166534; font-size:0.85em;">gain:</span> &nbsp;\(IG = H_{\text{before}} - H_{\text{after}}\)</p>
   </div>
   <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Pick the feature with the <strong>largest</strong> information gain at every node.</p>
 </section>
@@ -546,7 +546,7 @@
 <!-- 16b. Gini impurity & CART -->
 <section>
   <h2>Another purity score: Gini &amp; CART</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Information gain uses entropy. A popular alternative measures how often a random example would be <strong>mislabeled</strong> if labeled by the node's class distribution:</p>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Information gain uses entropy. A cheaper alternative: how often we'd <strong>mislabel</strong> an example drawn at random from the node.</p>
   <div class="two-col" style="align-items:stretch; margin-top: 0.2em;">
     <div class="defbox" style="flex:1;">
       <h3 style="margin-top:0;">Gini impurity</h3>
