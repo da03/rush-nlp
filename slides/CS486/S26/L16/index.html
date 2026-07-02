@@ -172,28 +172,37 @@
 <!-- 5. The Jeeves training set -->
 <section>
   <h2>The training set (14 days)</h2>
-  <table class="factor-table jeeves-table" style="font-size: 0.66em;">
-    <thead>
-      <tr><th>Day</th><th>Outlook</th><th>Temp</th><th>Humidity</th><th>Wind</th><th>Tennis?</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>1</td><td>Sunny</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-      <tr><td>2</td><td>Sunny</td><td>Hot</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-      <tr><td>3</td><td>Overcast</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>4</td><td>Rain</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>5</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>6</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-      <tr><td>7</td><td>Overcast</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>8</td><td>Sunny</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-      <tr><td>9</td><td>Sunny</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>10</td><td>Rain</td><td>Mild</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>11</td><td>Sunny</td><td>Mild</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>12</td><td>Overcast</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>13</td><td>Overcast</td><td>Hot</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>14</td><td>Rain</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.2em 0;">9 Yes, 5 No. We'll learn a tree from these 14 rows.</p>
+  <div class="two-col" style="gap: 0.9em; align-items: flex-start;">
+    <table class="factor-table jeeves-table" style="font-size: 0.55em; flex: 1;">
+      <thead>
+        <tr><th>Day</th><th>Outlook</th><th>Temp</th><th>Humidity</th><th>Wind</th><th>Tennis?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Sunny</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+        <tr><td>2</td><td>Sunny</td><td>Hot</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+        <tr><td>3</td><td>Overcast</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+        <tr><td>4</td><td>Rain</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+        <tr><td>5</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+        <tr><td>6</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+        <tr><td>7</td><td>Overcast</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      </tbody>
+    </table>
+    <table class="factor-table jeeves-table" style="font-size: 0.55em; flex: 1;">
+      <thead>
+        <tr><th>Day</th><th>Outlook</th><th>Temp</th><th>Humidity</th><th>Wind</th><th>Tennis?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>8</td><td>Sunny</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+        <tr><td>9</td><td>Sunny</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+        <tr><td>10</td><td>Rain</td><td>Mild</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+        <tr><td>11</td><td>Sunny</td><td>Mild</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+        <tr><td>12</td><td>Overcast</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+        <tr><td>13</td><td>Overcast</td><td>Hot</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+        <tr><td>14</td><td>Rain</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.35em 0;">9 Yes, 5 No. We'll learn a tree from these 14 rows.</p>
 </section>
 
 <!-- 6. Anatomy of a decision tree -->
