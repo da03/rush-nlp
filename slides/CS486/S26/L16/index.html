@@ -629,11 +629,11 @@
 <!-- 16e. Gradient boosting -->
 <section>
   <h2>Gradient boosting: fix your own mistakes</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Instead of averaging independent trees, <strong>add trees in sequence</strong>, each one correcting the residual errors of the trees so far:</p>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Instead of averaging independent trees, <strong>add trees in sequence</strong>. Let \(F_m(x)\) be the ensemble's prediction on input \(x\) after \(m\) trees (start with \(F_0 = 0\)); each new tree corrects the errors made so far:</p>
   <p style="text-align:center; margin: 0.25em 0;">\(F_m(x) = F_{m-1}(x) + \gamma\, h_m(x)\)</p>
   <ul style="font-size: 0.82em; margin: 0.2em 0 0 1.2em;">
-    <li class="fragment">\(h_m\) is a small tree fit to the <strong>gradient of the loss</strong> (for squared loss, the residuals).</li>
-    <li class="fragment">\(\gamma\) is a small learning rate &mdash; many shallow trees, added slowly.</li>
+    <li class="fragment">\(h_m\) = the \(m\)-th small tree, fit to the current <strong>residuals</strong> (for squared loss, residual = true label \(-\ F_{m-1}(x)\), the part not yet explained).</li>
+    <li class="fragment">\(\gamma\) = a small learning rate &mdash; many shallow trees, each added slowly.</li>
     <li class="fragment"><strong>XGBoost / LightGBM</strong> are the go-to winners on <strong>tabular</strong> data today.</li>
   </ul>
   <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.3em;">Forests reduce <em>variance</em> (parallel); boosting reduces <em>bias</em> (sequential).</p>
