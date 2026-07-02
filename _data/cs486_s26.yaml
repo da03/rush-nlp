@@ -276,7 +276,7 @@ schedule:
   - type: lecture
     date: 2026-07-02
     lecture_num: 16
-    topic: "Supervised Learning & Generalization"
+    topic: "Decision Trees & Ensembles"
     slides: /slides/CS486/S26/L16/
     deadlines:
       - { kind: out,     chat: 8, label: "Chat 8 out" }
@@ -284,7 +284,7 @@ schedule:
   - type: lecture
     date: 2026-07-07
     lecture_num: 17
-    topic: "Unsupervised & Representation Learning"
+    topic: "Supervised Learning & Generalization"
     slides: /slides/CS486/S26/L17/
     async: true
     note: "Asynchronous &mdash; pre-recorded video (instructor at ICML). Watch on your own time; deadlines unchanged."
@@ -295,7 +295,7 @@ schedule:
   - type: lecture
     date: 2026-07-09
     lecture_num: 18
-    topic: "Decision Trees & Ensembles"
+    topic: "Unsupervised & Representation Learning"
     slides: /slides/CS486/S26/L18/
     async: true
     note: "Asynchronous &mdash; pre-recorded video (instructor at ICML). Watch on your own time; deadlines unchanged."
@@ -372,8 +372,8 @@ announcements:
     show: true
     title: "Jul 7 &amp; Jul 9 are asynchronous (instructor at ICML)"
     body: >-
-      I'll be away at <strong>ICML</strong> the week of July 7, so <strong>L17 (Tue Jul 7, Unsupervised
-      &amp; Representation Learning)</strong> and <strong>L18 (Thu Jul 9, Decision Trees &amp; Ensembles)</strong> will be
+      I'll be away at <strong>ICML</strong> the week of July 7, so <strong>L17 (Tue Jul 7, Supervised
+      Learning &amp; Generalization)</strong> and <strong>L18 (Thu Jul 9, Unsupervised &amp; Representation Learning)</strong> will be
       <strong>pre-recorded videos</strong> &mdash; there is <strong>no in-person class</strong> on those two
       days. Watch the recordings on your own time (links posted before each class). <strong>All deadlines are
       unchanged</strong>: Chat 8 and the CS686 project proposal are due <strong>Tue Jul 7</strong>; Chat 9 is

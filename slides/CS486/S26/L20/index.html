@@ -127,7 +127,7 @@
 <!-- 4. Loss function + gradient descent -->
 <section>
   <h2>Loss function and gradient descent</h2>
-  <p style="font-size: 0.85em; margin: 0.2em 0;">For classification we use the <strong>cross-entropy</strong> loss from L16 (softmax output \(\hat{y}^{(i)}\), one-hot target \(y^{(i)}\)):</p>
+  <p style="font-size: 0.85em; margin: 0.2em 0;">For classification we use the <strong>cross-entropy</strong> loss from L17 (softmax output \(\hat{y}^{(i)}\), one-hot target \(y^{(i)}\)):</p>
   <p style="text-align:center;">\[ L(W) = -\sum_{i=1}^{N} \sum_{k} y^{(i)}_k \, \log \hat{y}^{(i)}_k \]</p>
   <p style="font-size: 0.78em; margin: 0.1em 0; color: #6b7280;">(For regression, swap in squared error \(\tfrac12\sum_i\lVert\hat y^{(i)}-y^{(i)}\rVert^2\).)</p>
   <p style="font-size: 0.85em; margin: 0.5em 0 0.2em 0;" class="fragment"><strong>Gradient descent:</strong> repeat for many iterations:</p>
@@ -418,7 +418,7 @@
     <div class="defbox" style="flex:1;">
       <h3 style="margin-top:0;">Regularization (fight overfitting)</h3>
       <ul style="margin:0.1em 0 0 1em; font-size:0.8em;">
-        <li class="fragment"><strong>Weight decay:</strong> add \(\lambda\lVert W\rVert^2\) to the loss (L16).</li>
+        <li class="fragment"><strong>Weight decay:</strong> add \(\lambda\lVert W\rVert^2\) to the loss (L17).</li>
         <li class="fragment"><strong>Dropout:</strong> randomly zero some units each step so the net can't rely on any one.</li>
         <li class="fragment"><strong>Early stopping:</strong> halt when validation loss turns up.</li>
       </ul>

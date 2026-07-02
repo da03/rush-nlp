@@ -102,7 +102,7 @@
 <!-- 4. VAE -->
 <section>
   <h2>Variational autoencoders (VAEs)</h2>
-  <p style="font-size:0.84em; margin:0.1em 0;">An autoencoder (L17) with a <strong>probabilistic</strong> bottleneck: the encoder outputs a distribution \(q_\phi(z\mid x)\); the decoder \(p_\theta(x\mid z)\) reconstructs. Train by maximizing the <strong>ELBO</strong>:</p>
+  <p style="font-size:0.84em; margin:0.1em 0;">An autoencoder (L18) with a <strong>probabilistic</strong> bottleneck: the encoder outputs a distribution \(q_\phi(z\mid x)\); the decoder \(p_\theta(x\mid z)\) reconstructs. Train by maximizing the <strong>ELBO</strong>:</p>
   <div class="defbox" style="text-align:center; margin:0.2em auto;">
     <p style="margin:0; font-size:0.86em;">\(\log p(x) \;\ge\; \underbrace{\mathbb{E}_{q_\phi(z\mid x)}\!\big[\log p_\theta(x\mid z)\big]}_{\text{reconstruction}} \;-\; \underbrace{\mathrm{KL}\!\big(q_\phi(z\mid x)\,\|\,p(z)\big)}_{\text{stay near prior } \mathcal{N}(0,I)}\)</p>
   </div>
@@ -230,7 +230,7 @@
 <!-- 11. Multimodal / CLIP -->
 <section>
   <h2>Multimodal models: a shared space (CLIP)</h2>
-  <p style="font-size:0.84em; margin:0.1em 0;">To connect <em>text</em> and <em>images</em>, train an image encoder \(f\) and text encoder \(g\) so matching pairs land close together (contrastive objective, L17):</p>
+  <p style="font-size:0.84em; margin:0.1em 0;">To connect <em>text</em> and <em>images</em>, train an image encoder \(f\) and text encoder \(g\) so matching pairs land close together (contrastive objective, L18):</p>
   <div class="defbox" style="text-align:center; margin:0.2em auto;">
     <p style="margin:0; font-size:0.84em;">maximize \(f(\text{image})^\top g(\text{text})\) for true pairs, minimize it for mismatched pairs</p>
   </div>

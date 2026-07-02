@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 18 — Decision Trees &amp; Ensembles</title>
+  <title>CS 486/686 Lecture 18 — Unsupervised &amp; Representation Learning</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 18: Decision Trees and Ensembles — anatomy, entropy, information gain, ID3, Gini/CART, pruning, random forests, and gradient boosting. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 18: Unsupervised and Representation Learning — clustering, k-means, PCA, autoencoders, and self-supervised / contrastive learning (CLIP). Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../L9/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
+  <link rel="stylesheet" href="../L17/custom.css">
   <link rel="stylesheet" href="custom.css">
 </head>
 <body>
@@ -33,12 +33,20 @@
 <div class="reveal">
 <div class="slides">
 
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <marker id="arrow-l17" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+</svg>
+
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Decision Trees &amp; Ensembles</div>
+  <div class="course-title">CS 486/686<br>Unsupervised &amp; Representation Learning</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 18</p>
-  <p class="credit">RN 19.3, 19.8 &middot; PM 7.3.1, 7.5</p>
+  <p class="credit">RN 21.7.1 &middot; PM 10.2 &middot; GBC 14.1</p>
 </section>
 
 <!-- 1b. Recorded asynchronous lecture (instructor at ICML) -->
@@ -64,582 +72,552 @@
   </div>
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Describe the <strong>components</strong> of a decision tree.</li>
-    <li class="fragment"><strong>Construct</strong> a decision tree given a feature-testing order.</li>
-    <li class="fragment">Compute a tree's <strong>prediction accuracy</strong> on a test set.</li>
-    <li class="fragment">Compute <strong>entropy</strong> and <strong>expected information gain</strong>; trace the <strong>DT learner</strong>.</li>
-    <li class="fragment">Use <strong>Gini / CART</strong> and control overfitting with <strong>pruning</strong>.</li>
-    <li class="fragment">Combine trees into <strong>random forests</strong> and <strong>gradient boosting</strong>.</li>
+    <li class="fragment">Understand what <strong>unsupervised learning</strong> is.</li>
+    <li class="fragment">Trace the <strong>k-means</strong> clustering algorithm.</li>
+    <li class="fragment">Perform <strong>PCA</strong>: mean-center, covariance, eigendecomposition.</li>
+    <li class="fragment">Explain <strong>autoencoders</strong> and <strong>self-supervised / contrastive</strong> representations.</li>
   </ul>
 </section>
 
-<!-- 3. Decision trees in the wild -->
+<!-- 3. Two big unsupervised tasks -->
 <section>
-  <h2>Decision trees in the wild</h2>
-  <p style="font-size: 0.88em;">A decision tree is nothing more than a <strong>nested if-then-else</strong> &mdash; learned automatically from data.</p>
-  <div class="examples-row">
-    <div class="ex-card">
-      <h3>Should I use an emoji?</h3>
-      <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="mini-svg" aria-hidden="true">
-        <rect class="q" x="60" y="6" width="80" height="22" rx="3"/>
-        <text x="100" y="22" class="q-text">work-related?</text>
-        <line class="edge" x1="80" y1="28" x2="40" y2="48"/>
-        <line class="edge" x1="120" y1="28" x2="160" y2="48"/>
-        <text x="58" y="42" class="edge-text">yes</text>
-        <text x="138" y="42" class="edge-text">no</text>
-        <rect class="leaf no" x="14" y="48" width="52" height="20" rx="3"/>
-        <text x="40" y="62" class="leaf-text no">no emoji</text>
-        <rect class="q" x="124" y="48" width="72" height="22" rx="3"/>
-        <text x="160" y="64" class="q-text">friend?</text>
-        <line class="edge" x1="148" y1="70" x2="116" y2="92"/>
-        <line class="edge" x1="172" y1="70" x2="186" y2="92"/>
-        <text x="124" y="86" class="edge-text">yes</text>
-        <text x="186" y="86" class="edge-text">no</text>
-        <rect class="leaf yes" x="92" y="94" width="48" height="20" rx="3"/>
-        <text x="116" y="108" class="leaf-text yes">emoji</text>
-        <rect class="leaf no" x="160" y="94" width="40" height="20" rx="3"/>
-        <text x="180" y="108" class="leaf-text no">no</text>
+  <h2>Two big unsupervised tasks</h2>
+  <p style="font-size: 0.88em;">No labels &mdash; only the raw data \(\{x_i\}\). What can we learn?</p>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
+    <div class="task-card">
+      <h3>Representation learning</h3>
+      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" class="l17-icon" aria-hidden="true">
+        <circle cx="22" cy="20" r="3" fill="#1d4ed8"/>
+        <circle cx="32" cy="14" r="3" fill="#1d4ed8"/>
+        <circle cx="28" cy="28" r="3" fill="#1d4ed8"/>
+        <circle cx="60" cy="36" r="3" fill="#16a34a"/>
+        <circle cx="70" cy="30" r="3" fill="#16a34a"/>
+        <circle cx="66" cy="44" r="3" fill="#16a34a"/>
+        <circle cx="98" cy="22" r="3" fill="#dc2626"/>
+        <circle cx="108" cy="16" r="3" fill="#dc2626"/>
+        <circle cx="104" cy="30" r="3" fill="#dc2626"/>
+        <path d="M 120 32 L 142 32" stroke="#1f2937" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
+        <text x="151" y="35" font-size="10" fill="#1f2937" font-weight="700">z</text>
+        <text x="80" y="58" font-size="9" fill="#6b7280" text-anchor="middle">compress</text>
       </svg>
+      <p>Find a low-dimensional summary of each example.</p>
+      <p style="font-size: 0.78em; color: #6b7280;">Clustering, PCA, autoencoders.</p>
     </div>
-    <div class="ex-card">
-      <h3>What pet?</h3>
-      <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="mini-svg" aria-hidden="true">
-        <rect class="q" x="64" y="6" width="72" height="22" rx="3"/>
-        <text x="100" y="22" class="q-text">backyard?</text>
-        <line class="edge" x1="82" y1="28" x2="40" y2="48"/>
-        <line class="edge" x1="118" y1="28" x2="160" y2="48"/>
-        <text x="56" y="42" class="edge-text">yes</text>
-        <text x="138" y="42" class="edge-text">no</text>
-        <rect class="q" x="6" y="48" width="68" height="22" rx="3"/>
-        <text x="40" y="64" class="q-text">cuddly?</text>
-        <rect class="leaf fish" x="132" y="48" width="56" height="22" rx="3"/>
-        <text x="160" y="64" class="leaf-text fish">fish</text>
-        <line class="edge" x1="22" y1="70" x2="8" y2="92"/>
-        <line class="edge" x1="56" y1="70" x2="74" y2="92"/>
-        <text x="2" y="86" class="edge-text">yes</text>
-        <text x="74" y="86" class="edge-text">no</text>
-        <rect class="leaf dog" x="0" y="94" width="40" height="22" rx="3"/>
-        <text x="20" y="110" class="leaf-text dog">dog</text>
-        <rect class="leaf cat" x="50" y="94" width="40" height="22" rx="3"/>
-        <text x="70" y="110" class="leaf-text cat">cat</text>
+    <div class="task-card">
+      <h3>Generative modelling</h3>
+      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" class="l17-icon" aria-hidden="true">
+        <rect x="14" y="14" width="22" height="32" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4" rx="2"/>
+        <text x="25" y="34" font-size="9" fill="#1d4ed8" text-anchor="middle">p(x)</text>
+        <path d="M 42 30 L 64 30" stroke="#1f2937" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
+        <rect x="70"  y="18" width="20" height="24" fill="#fde68a" stroke="#92400e" stroke-width="1"/>
+        <rect x="96"  y="18" width="20" height="24" fill="#fee2e2" stroke="#dc2626" stroke-width="1"/>
+        <rect x="122" y="18" width="20" height="24" fill="#dcfce7" stroke="#166534" stroke-width="1"/>
+        <text x="106" y="58" font-size="9" fill="#6b7280" text-anchor="middle">new samples</text>
       </svg>
-    </div>
-    <div class="ex-card">
-      <h3>Which language?</h3>
-      <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="mini-svg" aria-hidden="true">
-        <rect class="q" x="52" y="6" width="96" height="22" rx="3"/>
-        <text x="100" y="22" class="q-text">speed &gt; readable?</text>
-        <line class="edge" x1="76" y1="28" x2="40" y2="48"/>
-        <line class="edge" x1="124" y1="28" x2="160" y2="48"/>
-        <text x="56" y="42" class="edge-text">yes</text>
-        <text x="138" y="42" class="edge-text">no</text>
-        <rect class="leaf cpp" x="10" y="48" width="56" height="22" rx="3"/>
-        <text x="38" y="64" class="leaf-text cpp">C++</text>
-        <rect class="q" x="128" y="48" width="60" height="22" rx="3"/>
-        <text x="158" y="64" class="q-text">web?</text>
-        <line class="edge" x1="148" y1="70" x2="124" y2="92"/>
-        <line class="edge" x1="172" y1="70" x2="188" y2="92"/>
-        <text x="124" y="86" class="edge-text">yes</text>
-        <text x="186" y="86" class="edge-text">no</text>
-        <rect class="leaf js" x="104" y="94" width="40" height="22" rx="3"/>
-        <text x="124" y="110" class="leaf-text js">JS</text>
-        <rect class="leaf py" x="156" y="94" width="44" height="22" rx="3"/>
-        <text x="178" y="110" class="leaf-text py">Python</text>
-      </svg>
+      <p>Learn the data distribution so we can <em>sample new examples</em>.</p>
+      <p style="font-size: 0.78em; color: #6b7280;">GANs, VAEs, diffusion.</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Simple to read, fast to evaluate, and surprisingly effective in practice.</p>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Today: clustering &amp; PCA, then how modern models learn <strong>representations</strong> without labels.</p>
 </section>
 
 <!-- ============================================================
-     Jeeves setup (3 slides)
+     Clustering setup (1 slide)
      ============================================================ -->
 
-<!-- 4. Running example: Jeeves the valet -->
+<!-- 4. Clustering: hard vs soft -->
 <section>
-  <h2>Running example: Jeeves the valet</h2>
-  <p style="font-size: 0.88em;">Jeeves wants to predict whether Bertie will play tennis today. He has been recording the weather and Bertie's behavior every morning for 14 days.</p>
-  <div class="defbox">
-    <h3>Features and target</h3>
-    <ul style="margin: 0; font-size: 0.88em;">
-      <li><strong>Input features:</strong> Outlook (Sunny/Overcast/Rain), Temp (Hot/Mild/Cool), Humidity (High/Normal), Wind (Weak/Strong).</li>
-      <li><strong>Target:</strong> Tennis? (Yes / No).</li>
-    </ul>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; color: #6b7280; text-align: center; margin-top: 0.4em;">14-day training set + 14-day held-out test set. Goal: build a classifier from training, evaluate on test.</p>
-</section>
-
-<!-- 5. The Jeeves training set -->
-<section>
-  <h2>The Jeeves training set</h2>
-  <table class="factor-table" style="font-size: 0.58em;">
-    <thead>
-      <tr><th>Day</th><th>Outlook</th><th>Temp</th><th>Humidity</th><th>Wind</th><th>Tennis?</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>1</td><td>Sunny</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-      <tr><td>2</td><td>Sunny</td><td>Hot</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-      <tr><td>3</td><td>Overcast</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>4</td><td>Rain</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>5</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>6</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-      <tr><td>7</td><td>Overcast</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>8</td><td>Sunny</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-      <tr><td>9</td><td>Sunny</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>10</td><td>Rain</td><td>Mild</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>11</td><td>Sunny</td><td>Mild</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>12</td><td>Overcast</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>13</td><td>Overcast</td><td>Hot</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
-      <tr><td>14</td><td>Rain</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.2em 0;">9 Yes, 5 No. We'll learn a tree from these 14 rows.</p>
-</section>
-
-<!-- 6. Anatomy of a decision tree -->
-<section>
-  <h2>Anatomy of a decision tree</h2>
+  <h2>Clustering: hard vs soft</h2>
+  <p style="font-size: 0.88em;">Group training examples into <strong>clusters</strong>, treating them like discovered categories.</p>
   <div class="two-col vcenter">
-    <div style="flex: 1.1;">
-      <ul style="font-size: 0.85em;">
-        <li>A supervised classifier with a <strong>single discrete target</strong>.</li>
-        <li>Each <strong>internal node</strong> tests an input feature.</li>
-        <li><strong>Edges</strong> are labeled with feature values.</li>
-        <li>Each <strong>leaf</strong> predicts a target class.</li>
-        <li><strong>Classify</strong>: follow edges from the root down to a leaf.</li>
+    <div style="flex: 1.2;">
+      <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
+        <div class="task-card">
+          <h3>Hard clustering</h3>
+          <p style="font-size: 0.82em;">Each \(x\) gets <em>exactly one</em> cluster.</p>
+          <p style="text-align: center; font-family: ui-monospace, Menlo, monospace;">\(\text{class}(x) = c\)</p>
+        </div>
+        <div class="task-card">
+          <h3>Soft clustering</h3>
+          <p style="font-size: 0.82em;">Each \(x\) gets a <em>distribution</em> over clusters.</p>
+          <p style="text-align: center; font-family: ui-monospace, Menlo, monospace;">\(\text{class}(x) \sim P(C \mid x)\)</p>
+        </div>
+      </div>
+    </div>
+    <div style="flex: 0.8; text-align: center;">
+      <svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
+        <circle class="point c1" cx="55"  cy="60"  r="6"/>
+        <circle class="point c1" cx="40"  cy="80"  r="6"/>
+        <circle class="point c1" cx="60"  cy="95"  r="6"/>
+        <circle class="point c1" cx="75"  cy="75"  r="6"/>
+        <circle class="point c1" cx="50"  cy="105" r="6"/>
+        <circle class="point c2" cx="155" cy="50"  r="6"/>
+        <circle class="point c2" cx="175" cy="70"  r="6"/>
+        <circle class="point c2" cx="150" cy="85"  r="6"/>
+        <circle class="point c2" cx="180" cy="55"  r="6"/>
+        <circle class="point c3" cx="100" cy="155" r="6"/>
+        <circle class="point c3" cx="120" cy="170" r="6"/>
+        <circle class="point c3" cx="95"  cy="175" r="6"/>
+        <circle class="point c3" cx="135" cy="150" r="6"/>
+        <circle class="point c3" cx="115" cy="180" r="6"/>
+      </svg>
+      <p style="font-size: 0.7em; color: #6b7280; margin: 0;">Each color is a discovered cluster &mdash; no labels were given.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     K-means (4 slides)
+     ============================================================ -->
+
+<!-- 5. k-Means: centroids + distance -->
+<section>
+  <h2>k-Means: centroids and distance</h2>
+  <p style="font-size: 0.85em;"><strong>Inputs:</strong> number of clusters \(k\) and \(m\) training examples \(x_i \in \mathbb{R}^n\). Each cluster has a <strong>centroid</strong> \(c \in \mathbb{R}^n\); each \(x_i\) is assigned to its closest centroid.</p>
+  <div class="two-col vcenter">
+    <div style="flex: 1;">
+      <div class="defbox">
+        <h3>Euclidean distance (L2)</h3>
+        <p style="text-align: center; margin: 0;">\(d(c, x) = \sqrt{\sum_{j = 1}^{n} (c_j - x_j)^2}\)</p>
+      </div>
+      <ul style="font-size: 0.82em; margin-top: 0.5em;">
+        <li><strong>Hard clustering</strong>: each example goes to one centroid.</li>
+        <li>Centroids live in the same feature space as the data.</li>
       </ul>
     </div>
-    <div style="flex: 0.9; text-align: center;">
-      <div class="dt-tree">
-        <div class="dt-node">Outlook</div>
-        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-          <span>Sunny</span><span>Overcast</span><span>Rain</span>
-        </div>
-        <div class="dt-level">
-          <div class="dt-branch">
-            <div class="dt-node">Humidity</div>
-            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-              <span>High</span><span>Normal</span>
-            </div>
-            <div class="dt-level">
-              <div class="dt-leaf no">No</div>
-              <div class="dt-leaf yes">Yes</div>
-            </div>
-          </div>
-          <div class="dt-branch">
-            <div class="dt-leaf yes">Yes</div>
-          </div>
-          <div class="dt-branch">
-            <div class="dt-node">Wind</div>
-            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-              <span>Weak</span><span>Strong</span>
-            </div>
-            <div class="dt-level">
-              <div class="dt-leaf yes">Yes</div>
-              <div class="dt-leaf no">No</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <p style="font-size: 0.7em; color: #6b7280; margin: 0.2em;">Sketch only &mdash; we'll build the real tree shortly.</p>
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
+        <circle class="point c1" cx="55"  cy="55"  r="5"/>
+        <circle class="point c1" cx="45"  cy="70"  r="5"/>
+        <circle class="point c1" cx="65"  cy="60"  r="5"/>
+        <circle class="point c1" cx="55"  cy="80"  r="5"/>
+        <circle class="point c2" cx="165" cy="55"  r="5"/>
+        <circle class="point c2" cx="175" cy="70"  r="5"/>
+        <circle class="point c2" cx="155" cy="75"  r="5"/>
+        <circle class="point c2" cx="180" cy="50"  r="5"/>
+        <circle class="point c3" cx="110" cy="150" r="5"/>
+        <circle class="point c3" cx="125" cy="160" r="5"/>
+        <circle class="point c3" cx="95"  cy="165" r="5"/>
+        <circle class="point c3" cx="115" cy="175" r="5"/>
+        <polygon class="centroid c1" points="55,67 60,77 50,77"/>
+        <polygon class="centroid c2" points="167,63 172,73 162,73"/>
+        <polygon class="centroid c3" points="111,164 116,174 106,174"/>
+      </svg>
+      <p style="font-size: 0.72em; color: #6b7280; margin: 0;">Triangles = current centroids; circles = data points.</p>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     Construction (3 slides)
-     ============================================================ -->
-
-<!-- 7. Classify an example -->
+<!-- 6. k-Means: the alternating algorithm -->
 <section>
-  <h2>Classify an example: walk down the tree</h2>
-  <p style="font-size: 0.88em;">Given a new example, follow the tests from the root to a leaf:</p>
-  <div class="defbox" style="margin-top: 0.4em;">
-    <p style="margin: 0; font-size: 0.92em;">Example: <strong>Outlook = Overcast, Temp = Hot, Humidity = High, Wind = Weak.</strong></p>
-    <p style="margin: 0.3em 0 0 0; font-size: 0.88em; color: #1d4ed8;">Test Outlook \(\to\) value is Overcast \(\to\) leaf <strong style="color:#166534;">Yes</strong>. Done.</p>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; margin-top: 0.5em;"><strong>Observation:</strong> the path itself is a nested if-then-else program. Converting a tree to code is straightforward.</p>
-</section>
-
-<!-- 8. Build a tree given an order -->
-<section>
-  <h2>Build a tree given an order</h2>
-  <p style="font-size: 0.85em;">Pick a feature-testing order; recursively split the training examples by that feature's value.</p>
-  <div class="defbox">
-    <h3>An order for the Jeeves data</h3>
-    <ul style="margin: 0; font-size: 0.85em;">
-      <li>First, test <strong>Outlook</strong>.</li>
-      <li>For Outlook = Sunny, test <strong>Temp</strong>.</li>
-      <li>For Outlook = Rain, test <strong>Wind</strong>.</li>
-      <li>(For other branches, test Humidity before Wind.)</li>
-    </ul>
-  </div>
-  <p style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">Each example flows down the tree according to its feature values; leaves end up with subsets of the training set.</p>
-</section>
-
-<!-- 9. The resulting Jeeves DT -->
-<section>
-  <h2>The Jeeves decision tree</h2>
-  <div class="dt-tree">
-    <div class="dt-node">Outlook</div>
-    <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-      <span style="width:120px; text-align:center;">Sunny</span>
-      <span style="width:80px; text-align:center;">Overcast</span>
-      <span style="width:140px; text-align:center;">Rain</span>
-    </div>
-    <div class="dt-level">
-      <div class="dt-branch fragment" style="width: 200px;">
-        <div class="dt-node">Temp</div>
-        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-          <span>Hot</span><span>Mild</span><span>Cool</span>
-        </div>
-        <div class="dt-level">
-          <div class="dt-leaf no">No</div>
-          <div class="dt-branch">
-            <div class="dt-node">Humidity</div>
-            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-              <span>High</span><span>Normal</span>
-            </div>
-            <div class="dt-level">
-              <div class="dt-leaf no">No</div>
-              <div class="dt-leaf yes">Yes</div>
-            </div>
-          </div>
-          <div class="dt-leaf yes">Yes</div>
-        </div>
-      </div>
-      <div class="dt-branch fragment">
-        <div class="dt-leaf yes">Yes</div>
-        <div style="font-size: 0.7em; color: #6b7280;">days 3, 7, 12, 13</div>
-      </div>
-      <div class="dt-branch fragment" style="width: 180px;">
-        <div class="dt-node">Wind</div>
-        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
-          <span>Weak</span><span>Strong</span>
-        </div>
-        <div class="dt-level">
-          <div class="dt-leaf yes">Yes</div>
-          <div class="dt-leaf no">No</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.15em;">Built from the 14 training rows by following the feature order above.</p>
-</section>
-
-<!-- ============================================================
-     Stopping conditions (1 slide)
-     ============================================================ -->
-
-<!-- 10. When do we stop? Three cases -->
-<section>
-  <h2>When do we stop? Three cases</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
-    <div class="task-card highlight">
-      <h3>All same class</h3>
-      <p>Every example at this node has the same label.</p>
-      <p style="font-size: 0.78em; color: #166534;">Return that label.</p>
-    </div>
-    <div class="task-card">
-      <h3>No features left</h3>
-      <p>We've tested every feature, but examples still disagree (noisy data).</p>
-      <p style="font-size: 0.78em; color: #1d4ed8;">Return the <strong>majority class</strong> at this node.</p>
-    </div>
-    <div class="task-card">
-      <h3>No examples left</h3>
-      <p>A feature value never appeared in training data &mdash; no examples reach this leaf.</p>
-      <p style="font-size: 0.78em; color: #1d4ed8;">Return the <strong>majority class at the parent node</strong>.</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">"No features left" handles noisy labels; "no examples left" handles unseen feature combinations.</p>
-</section>
-
-<!-- ============================================================
-     Algorithm + greedy choice (2 slides)
-     ============================================================ -->
-
-<!-- 11. The DT-learning algorithm -->
-<section>
-  <h2>The decision-tree learner</h2>
+  <h2>The k-means algorithm</h2>
+  <p style="font-size: 0.85em;">Alternate two steps until convergence:</p>
   <div class="algo-card">
-    <div class="algo-title">DT-Learner(examples, features)</div>
+    <div class="algo-title">k-means(\(X,\ k\))</div>
     <ol>
-      <li>If all examples are in the same class, return that class.</li>
-      <li>Else if no features left, return the majority class of <em>examples</em>.</li>
-      <li>Else if no examples left, return the majority class at the <em>parent</em>.</li>
-      <li>Else: choose a feature \(f\); for each value \(v\) of \(f\),
+      <li>Initialize \(k\) centroids \(C[0\ldots k-1]\) randomly.</li>
+      <li>Repeat until assignments stop changing:
         <ul style="margin: 0.2em 0 0.2em 1em;">
-          <li>build an edge labeled \(v\);</li>
-          <li>recurse on examples with \(f = v\) and features \(\setminus \{f\}\).</li>
+          <li><strong>Assign step:</strong> for each example \(i\), \(\ y[i] \leftarrow \arg\min_{c}\, d\!\bigl(C[c],\, X[i]\bigr)\).</li>
+          <li><strong>Update step:</strong> for each cluster \(c\), \(\ C[c] \leftarrow\) mean of all \(X[i]\) with \(y[i] = c\).</li>
         </ul>
       </li>
     </ol>
   </div>
-  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">The only open question: <strong>which feature do we pick to test?</strong></p>
+  <ul style="font-size: 0.8em; margin-top: 0.3em;">
+    <li>Guaranteed to converge with L2 distance.</li>
+    <li>Not guaranteed to find the global optimum.</li>
+    <li><strong>Mitigate:</strong> random restarts, feature scaling.</li>
+  </ul>
 </section>
 
-<!-- 12. Which feature? Outlook vs Temp -->
+<!-- 7. K-means iteration visualization -->
 <section>
-  <h2>Which feature should we test?</h2>
-  <p style="font-size: 0.85em;">Pick the feature whose split makes the children most <strong>class-pure</strong>.</p>
-  <div class="split-bars">
-    <div class="split-card fragment">
-      <h3>Split on Outlook</h3>
-      <div class="bar-row">
-        <span class="bar-label">Sunny (5)</span>
-        <div class="bar-container">
-          <div class="bar-yes" style="flex: 2;"><span class="bar-text">2 yes</span></div>
-          <div class="bar-no"  style="flex: 3;"><span class="bar-text">3 no</span></div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">Overcast (4)</span>
-        <div class="bar-container">
-          <div class="bar-yes" style="flex: 4;"><span class="bar-text">4 yes</span></div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">Rain (5)</span>
-        <div class="bar-container">
-          <div class="bar-yes" style="flex: 3;"><span class="bar-text">3 yes</span></div>
-          <div class="bar-no"  style="flex: 2;"><span class="bar-text">2 no</span></div>
-        </div>
-      </div>
-      <p style="font-size: 0.78em; color: #166534; margin-top: 0.4em;">Overcast cleanly predicts <strong>Yes</strong> &mdash; one branch is pure!</p>
+  <h2>k-Means in action</h2>
+  <p style="font-size: 0.85em;">Same 12 points, three snapshots: random init &rarr; mid-iteration &rarr; converged.</p>
+  <div class="kmeans-panels">
+    <div class="panel fragment">
+      <div class="panel-label">Iteration 0 (random init)</div>
+      <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
+        <circle class="point c2" cx="40"  cy="50"  r="5"/>
+        <circle class="point c3" cx="55"  cy="40"  r="5"/>
+        <circle class="point c1" cx="50"  cy="65"  r="5"/>
+        <circle class="point c2" cx="35"  cy="75"  r="5"/>
+        <circle class="point c1" cx="145" cy="50"  r="5"/>
+        <circle class="point c3" cx="160" cy="65"  r="5"/>
+        <circle class="point c2" cx="155" cy="40"  r="5"/>
+        <circle class="point c1" cx="170" cy="55"  r="5"/>
+        <circle class="point c3" cx="95"  cy="140" r="5"/>
+        <circle class="point c1" cx="110" cy="150" r="5"/>
+        <circle class="point c2" cx="85"  cy="155" r="5"/>
+        <circle class="point c3" cx="120" cy="135" r="5"/>
+        <polygon class="centroid c1" points="120,80 125,90 115,90"/>
+        <polygon class="centroid c2" points="70,100 75,110 65,110"/>
+        <polygon class="centroid c3" points="100,40 105,50 95,50"/>
+      </svg>
     </div>
-    <div class="split-card fragment">
-      <h3>Split on Temp</h3>
-      <div class="bar-row">
-        <span class="bar-label">Hot (4)</span>
-        <div class="bar-container">
-          <div class="bar-yes" style="flex: 2;"><span class="bar-text">2 yes</span></div>
-          <div class="bar-no"  style="flex: 2;"><span class="bar-text">2 no</span></div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">Mild (6)</span>
-        <div class="bar-container">
-          <div class="bar-yes" style="flex: 4;"><span class="bar-text">4 yes</span></div>
-          <div class="bar-no"  style="flex: 2;"><span class="bar-text">2 no</span></div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">Cool (4)</span>
-        <div class="bar-container">
-          <div class="bar-yes" style="flex: 3;"><span class="bar-text">3 yes</span></div>
-          <div class="bar-no"  style="flex: 1;"><span class="bar-text">1 no</span></div>
-        </div>
-      </div>
-      <p style="font-size: 0.78em; color: #991b1b; margin-top: 0.4em;">Every Temp value still mixes Yes/No &mdash; messier.</p>
+    <div class="panel fragment">
+      <div class="panel-label">Iteration 2 (mid)</div>
+      <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
+        <circle class="point c1" cx="40"  cy="50"  r="5"/>
+        <circle class="point c1" cx="55"  cy="40"  r="5"/>
+        <circle class="point c1" cx="50"  cy="65"  r="5"/>
+        <circle class="point c1" cx="35"  cy="75"  r="5"/>
+        <circle class="point c2" cx="145" cy="50"  r="5"/>
+        <circle class="point c2" cx="160" cy="65"  r="5"/>
+        <circle class="point c2" cx="155" cy="40"  r="5"/>
+        <circle class="point c2" cx="170" cy="55"  r="5"/>
+        <circle class="point c3" cx="95"  cy="140" r="5"/>
+        <circle class="point c3" cx="110" cy="150" r="5"/>
+        <circle class="point c3" cx="85"  cy="155" r="5"/>
+        <circle class="point c1" cx="120" cy="135" r="5"/>
+        <polygon class="centroid c1" points="55,75 60,85 50,85"/>
+        <polygon class="centroid c2" points="158,55 163,65 153,65"/>
+        <polygon class="centroid c3" points="97,148 102,158 92,158"/>
+      </svg>
+    </div>
+    <div class="panel fragment">
+      <div class="panel-label">Converged</div>
+      <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
+        <circle class="point c1" cx="40"  cy="50"  r="5"/>
+        <circle class="point c1" cx="55"  cy="40"  r="5"/>
+        <circle class="point c1" cx="50"  cy="65"  r="5"/>
+        <circle class="point c1" cx="35"  cy="75"  r="5"/>
+        <circle class="point c2" cx="145" cy="50"  r="5"/>
+        <circle class="point c2" cx="160" cy="65"  r="5"/>
+        <circle class="point c2" cx="155" cy="40"  r="5"/>
+        <circle class="point c2" cx="170" cy="55"  r="5"/>
+        <circle class="point c3" cx="95"  cy="140" r="5"/>
+        <circle class="point c3" cx="110" cy="150" r="5"/>
+        <circle class="point c3" cx="85"  cy="155" r="5"/>
+        <circle class="point c3" cx="120" cy="135" r="5"/>
+        <polygon class="centroid c1" points="45,57 50,67 40,67"/>
+        <polygon class="centroid c2" points="157,52 162,62 152,62"/>
+        <polygon class="centroid c3" points="102,145 107,155 97,155"/>
+      </svg>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.3em;">We need a metric to score "purity". Enter <strong>entropy</strong>.</p>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.3em;">Centroids drift; assignments stabilize; cost decreases monotonically.</p>
+</section>
+
+<!-- 8. K-means worked example -->
+<section>
+  <h2>One iteration: a numeric walk-through</h2>
+  <p style="font-size: 0.78em; margin: 0.2em 0;">\(k = 2\), Euclidean (squared) distance. Data + initial centroids:</p>
+  <div class="two-col vcenter">
+    <div style="flex: 1;">
+      <table class="factor-table" style="font-size: 0.72em;">
+        <thead><tr><th>example</th><th>\(x_1\)</th><th>\(x_2\)</th><th>\(x_3\)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>0.2</td><td>0.5</td><td>0</td></tr>
+          <tr><td>2</td><td>&minus;0.6</td><td>2.1</td><td>1.2</td></tr>
+          <tr><td>3</td><td>&minus;0.5</td><td>1.9</td><td>1.3</td></tr>
+          <tr><td>4</td><td>0.1</td><td>0.5</td><td>&minus;0.3</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size: 0.66em; text-align: center; margin: 0.3em 0;">\(c_1 = (0.3, 0.8, -0.5), \;\; c_2 = (-0.1, -0.5, 1.0)\).</p>
+    </div>
+    <div style="flex: 1.1; font-size: 0.72em;">
+      <p style="margin: 0 0 0.15em;"><strong>Assign step</strong> (squared distance to each centroid):</p>
+      <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.9em; line-height: 1.35; background: #f9fafb; padding: 0.35em 0.5em; border-radius: 3px; margin: 0.15em 0;">
+        <span class="fragment">ex 1: d&sup2;(c<sub>1</sub>) = 0.35, d&sup2;(c<sub>2</sub>) = 2.09 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
+        <span class="fragment">ex 2: d&sup2;(c<sub>1</sub>) = 5.39, d&sup2;(c<sub>2</sub>) = 7.05 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
+        <span class="fragment">ex 3: d&sup2;(c<sub>1</sub>) = 5.09, d&sup2;(c<sub>2</sub>) = 6.01 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
+        <span class="fragment">ex 4: d&sup2;(c<sub>1</sub>) = 0.17, d&sup2;(c<sub>2</sub>) = 2.73 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span>
+      </div>
+      <p style="margin: 0.15em 0 0;"><strong class="fragment">Update step</strong>:</p>
+      <p class="fragment" style="text-align: center; font-family: ui-monospace, Menlo, monospace; color: #166534; font-weight: 600; margin: 0.15em 0;">\(c_1' = (-0.2, 1.25, 0.55), \;\; c_2' = \varnothing\)</p>
+      <p class="fragment" style="color: #991b1b; font-size: 0.88em; margin: 0.15em 0 0;"><strong>Watch out:</strong> \(c_2\) got no examples. Re-initialize it (random restart).</p>
+    </div>
+  </div>
 </section>
 
 <!-- ============================================================
-     Entropy + information gain (3 slides)
+     Choosing k (1 slide)
      ============================================================ -->
 
-<!-- 13. Entropy -->
+<!-- 9. Elbow + silhouette -->
 <section>
-  <h2>Entropy: measuring uncertainty</h2>
-  <div class="two-col vcenter">
+  <h2>How do we choose \(k\)?</h2>
+  <p style="font-size: 0.82em; margin: 0.2em 0;">Larger \(k\) always gives lower training error &mdash; but defeats the point of compression.</p>
+  <div class="two-col">
     <div style="flex: 1;">
+      <h3 style="color: #1d4ed8; font-size: 1em; margin: 0.2em 0;">Elbow method</h3>
+      <ol style="font-size: 0.78em; margin: 0.3em 0 0.3em 1.2em;">
+        <li>Run k-means for \(k \in \{1, \ldots, k_{\max}\}\).</li>
+        <li>Plot average within-cluster distance.</li>
+        <li>Pick the "elbow" where error stops dropping fast.</li>
+      </ol>
+      <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg" class="elbow-chart">
+        <line class="grid" x1="40" y1="40"  x2="200" y2="40"/>
+        <line class="grid" x1="40" y1="80"  x2="200" y2="80"/>
+        <line class="grid" x1="40" y1="120" x2="200" y2="120"/>
+        <line class="axis" x1="40" y1="20" x2="40"  y2="140"/>
+        <line class="axis" x1="40" y1="140" x2="200" y2="140"/>
+        <text class="axis-label" x="120" y="155" text-anchor="middle">k</text>
+        <text class="axis-label" x="15" y="80"  text-anchor="middle" transform="rotate(-90 15 80)">error</text>
+        <path class="curve" d="M 50 40 Q 70 70, 90 100 Q 120 125, 200 132"/>
+        <circle class="knee" cx="90" cy="100" r="5"/>
+        <text class="knee-label" x="95" y="90">k* = 3</text>
+      </svg>
+    </div>
+    <div style="flex: 1;">
+      <h3 style="color: #16a34a; font-size: 1em; margin: 0.2em 0;">Silhouette score</h3>
+      <p style="text-align: center; font-size: 0.85em; margin: 0.2em 0;">\(s(x) = \dfrac{b(x) - a(x)}{\max(a(x),\, b(x))}\)</p>
+      <ul style="font-size: 0.78em; margin: 0.3em 0 0.3em 1.2em;">
+        <li>\(a(x)\) = mean distance to own cluster.</li>
+        <li>\(b(x)\) = mean distance to <em>nearest other</em> cluster.</li>
+        <li>Pick \(k\) maximizing average \(s\).</li>
+      </ul>
+      <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg" class="silhouette-chart">
+        <line class="grid" x1="40" y1="40"  x2="200" y2="40"/>
+        <line class="grid" x1="40" y1="80"  x2="200" y2="80"/>
+        <line class="grid" x1="40" y1="120" x2="200" y2="120"/>
+        <line class="axis" x1="40" y1="20" x2="40"  y2="140"/>
+        <line class="axis" x1="40" y1="140" x2="200" y2="140"/>
+        <text class="axis-label" x="120" y="155" text-anchor="middle">k</text>
+        <text class="axis-label" x="15" y="80"  text-anchor="middle" transform="rotate(-90 15 80)">s(x)</text>
+        <path class="curve" d="M 50 110 Q 70 70, 90 45 Q 120 80, 200 125"/>
+        <circle class="max-dot" cx="90" cy="45" r="5"/>
+        <text class="axis-label" x="95" y="38" style="fill:#166534; font-weight:700;">k* = 3</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PCA + dimension reduction (3 slides)
+     ============================================================ -->
+
+<!-- 10. The manifold idea -->
+<section>
+  <h2>Dimension reduction: the manifold idea</h2>
+  <p style="font-size: 0.88em;">High-dimensional data often lives on a <strong>low-dimensional manifold</strong>. Extra dimensions are mostly noise.</p>
+  <div style="text-align: center;">
+    <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="manifold-viz">
+      <line class="axis" x1="40"  y1="170" x2="380" y2="170"/>
+      <line class="axis" x1="40"  y1="170" x2="40"  y2="20"/>
+      <line class="axis" x1="40"  y1="170" x2="120" y2="120"/>
+      <text class="axis-label" x="385" y="173">x</text>
+      <text class="axis-label" x="35"  y="15"  text-anchor="end">y</text>
+      <text class="axis-label" x="125" y="115">z</text>
+      <path class="ribbon" d="M 60 150 Q 110 80, 180 140 Q 250 200, 320 110"/>
+      <circle class="point" cx="75"  cy="142" r="3"/>
+      <circle class="point" cx="100" cy="110" r="3"/>
+      <circle class="point" cx="140" cy="105" r="3"/>
+      <circle class="point" cx="170" cy="138" r="3"/>
+      <circle class="point" cx="210" cy="170" r="3"/>
+      <circle class="point" cx="250" cy="180" r="3"/>
+      <circle class="point" cx="290" cy="140" r="3"/>
+      <circle class="point" cx="320" cy="115" r="3"/>
+    </svg>
+  </div>
+  <p style="font-size: 0.82em; text-align: center; color: #1d4ed8; margin-top: 0.3em;">Goal: recover the intrinsic 1D coordinate along the blue ribbon.</p>
+</section>
+
+<!-- 11. PCA: maximize variance -->
+<section>
+  <h2>Principal Component Analysis (PCA)</h2>
+  <div class="two-col vcenter">
+    <div style="flex: 1.1;">
       <div class="defbox">
-        <h3>Entropy</h3>
-        <p style="text-align: center; margin: 0;">\(I\bigl(P(c_1), \ldots, P(c_k)\bigr) = -\sum_{i=1}^{k} P(c_i)\, \log_2 P(c_i)\)</p>
-        <p style="font-size: 0.78em; color: #6b7280; margin: 0.3em 0 0 0;">Bits of uncertainty. Bigger = less certain.</p>
+        <h3>The PCA recipe</h3>
+        <p style="margin: 0; font-size: 0.85em;">Find <strong>orthogonal axes</strong> that successively <strong>maximize the variance</strong> of the projected data.</p>
       </div>
-      <ul style="font-size: 0.82em; margin-top: 0.5em;">
-        <li><strong>\(I(0.5, 0.5) = 1\)</strong>: maximally uncertain.</li>
-        <li><strong>\(I(0.01, 0.99) \approx 0.08\)</strong>: nearly certain the second outcome.</li>
-        <li>\(I(1, 0) = I(0, 1) = 0\): no uncertainty at all.</li>
+      <ul style="font-size: 0.82em; margin-top: 0.4em;">
+        <li>First PC = direction of largest variance.</li>
+        <li>Second PC = direction orthogonal to first that maximizes remaining variance.</li>
+        <li>Project onto the top \(k\) PCs for a compact representation.</li>
       </ul>
     </div>
-    <div style="flex: 0.9; text-align: center;">
-      <svg viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg" class="entropy-plot">
-        <line class="grid" x1="40" y1="170" x2="300" y2="170"/>
-        <line class="grid" x1="40" y1="120" x2="300" y2="120"/>
-        <line class="grid" x1="40" y1="70"  x2="300" y2="70"/>
-        <line class="axis" x1="40" y1="20"  x2="40" y2="180"/>
-        <line class="axis" x1="40" y1="180" x2="300" y2="180"/>
-        <text class="axis-label" x="35" y="175" text-anchor="end">0</text>
-        <text class="axis-label" x="35" y="125" text-anchor="end">0.5</text>
-        <text class="axis-label" x="35" y="25"  text-anchor="end">1</text>
-        <text class="axis-label" x="40"  y="195" text-anchor="middle">0</text>
-        <text class="axis-label" x="170" y="195" text-anchor="middle">0.5</text>
-        <text class="axis-label" x="300" y="195" text-anchor="middle">1</text>
-        <text class="axis-label" x="170" y="212" text-anchor="middle" style="font-style: italic;">p</text>
-        <text class="axis-label" x="18" y="95"  text-anchor="middle" transform="rotate(-90 18 95)" style="font-style: italic;">H(p)</text>
-        <path class="curve" d="M 40 170 C 60 130, 90 80, 118 38 S 144 20, 170 20 S 222 38, 250 80 C 280 130, 295 160, 300 170"/>
+    <div style="flex: 1; text-align: center;">
+      <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" class="pca-viz">
+        <circle class="point" cx="60"  cy="150" r="3"/>
+        <circle class="point" cx="80"  cy="140" r="3"/>
+        <circle class="point" cx="95"  cy="125" r="3"/>
+        <circle class="point" cx="100" cy="135" r="3"/>
+        <circle class="point" cx="115" cy="115" r="3"/>
+        <circle class="point" cx="125" cy="105" r="3"/>
+        <circle class="point" cx="140" cy="95"  r="3"/>
+        <circle class="point" cx="155" cy="85"  r="3"/>
+        <circle class="point" cx="165" cy="75"  r="3"/>
+        <circle class="point" cx="180" cy="65"  r="3"/>
+        <circle class="point" cx="90"  cy="155" r="3"/>
+        <circle class="point" cx="110" cy="140" r="3"/>
+        <circle class="point" cx="130" cy="118" r="3"/>
+        <circle class="point" cx="150" cy="100" r="3"/>
+        <circle class="point" cx="170" cy="80"  r="3"/>
         <g class="fragment">
-          <circle class="marker" cx="170" cy="20" r="4"/>
-          <text class="marker-label" x="178" y="18">max = 1</text>
+          <line class="pc-arrow pc1" x1="50" y1="160" x2="200" y2="50" marker-end="url(#arrow-l17)"/>
+          <text class="pc-label pc1" x="205" y="45">PC1</text>
+        </g>
+        <g class="fragment">
+          <line class="pc-arrow pc2" x1="135" y1="80" x2="95" y2="125" marker-end="url(#arrow-l17)"/>
+          <text class="pc-label pc2" x="55" y="135">PC2</text>
         </g>
       </svg>
     </div>
   </div>
 </section>
 
-<!-- 14. Expected information gain -->
+<!-- 12. PCA algorithm -->
 <section>
-  <h2>Expected information gain</h2>
-  <p style="font-size: 0.85em;">If we split on a feature with \(k\) values, weighted-average the children's entropies:</p>
-  <div class="defbox">
-    <h3>The three formulas</h3>
-    <p style="text-align: center; margin: 0.3em 0; font-size: 0.92em;">\(H_{\text{before}} = I\!\left(\tfrac{p}{p+n},\, \tfrac{n}{p+n}\right)\)</p>
-    <p style="text-align: center; margin: 0.3em 0; font-size: 0.92em;">\(H_{\text{after}} = \sum_{i=1}^{k} \dfrac{p_i + n_i}{p + n}\; I\!\left(\tfrac{p_i}{p_i+n_i},\, \tfrac{n_i}{p_i+n_i}\right)\)</p>
-    <p style="text-align: center; margin: 0.3em 0; font-size: 1em; color: #166534;">\(IG = H_{\text{before}} - H_{\text{after}}\)</p>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Pick the feature with the <strong>largest</strong> information gain at every node.</p>
-</section>
-
-<!-- 15a. Jeeves walkthrough: H_before + IG Outlook -->
-<section>
-  <h2>Jeeves: gain at the root (Outlook)</h2>
-  <p style="font-size: 0.85em;">Training set has 9 Yes, 5 No \((p = 9,\ n = 5)\).</p>
-  <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; background: #f9fafb; padding: 0.7em 1em; border-radius: 4px; border-left: 4px solid #1d4ed8;">
-    <p style="margin: 0 0 0.3em 0;"><strong>Q3.</strong> &nbsp;\(H_{\text{before}} = I(9/14, 5/14) = ?\)</p>
-    <p class="fragment" style="margin: 0 0 0.8em 0; color: #166534;">\(\Rightarrow\) <strong>0.940</strong> bits.</p>
-    <p style="margin: 0 0 0.3em 0;"><strong>Q4.</strong> &nbsp;Split on <strong>Outlook</strong>: Sunny (2+/3&minus;), Overcast (4+/0&minus;), Rain (3+/2&minus;).</p>
-    <p class="fragment" style="margin: 0; color: #166534;">\(H_{\text{after}} = \tfrac{5}{14}(0.971) + \tfrac{4}{14}(0) + \tfrac{5}{14}(0.971) = 0.694\).</p>
-    <p class="fragment" style="margin: 0.2em 0 0 0; color: #166534;">\(\Rightarrow IG(\text{Outlook}) = 0.940 - 0.694 = \mathbf{0.247}\).</p>
-  </div>
-</section>
-
-<!-- 15b. Jeeves walkthrough: IG Humidity + winner -->
-<section>
-  <h2>Jeeves: gain at the root (Humidity) and winner</h2>
-  <p style="font-size: 0.85em;">Same \(H_{\text{before}} = 0.940\). Now try splitting on Humidity instead.</p>
-  <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; background: #f9fafb; padding: 0.7em 1em; border-radius: 4px; border-left: 4px solid #1d4ed8;">
-    <p style="margin: 0 0 0.3em 0;"><strong>Q5.</strong> &nbsp;Split on <strong>Humidity</strong>: High (3+/4&minus;), Normal (6+/1&minus;).</p>
-    <p class="fragment" style="margin: 0; color: #166534;">\(H_{\text{after}} = \tfrac{7}{14}(0.985) + \tfrac{7}{14}(0.591) = 0.788\).</p>
-    <p class="fragment" style="margin: 0.2em 0 0.8em 0; color: #166534;">\(\Rightarrow IG(\text{Humidity}) = 0.940 - 0.788 = \mathbf{0.151}\).</p>
-    <p style="margin: 0 0 0.3em 0;"><strong>Q6.</strong> &nbsp;Which feature do we pick as the root?</p>
-    <p class="fragment" style="margin: 0.2em 0 0 0; color: #1d4ed8;"><strong>Outlook</strong> &mdash; higher IG: \(0.247 > 0.151\).</p>
-  </div>
-</section>
-
-<!-- ============================================================
-     ID3 + Wrap-up (2 slides)
-     ============================================================ -->
-
-<!-- 16. ID3 -->
-<section>
-  <h2>ID3: the canonical algorithm</h2>
+  <h2>How to compute PCA</h2>
   <div class="algo-card">
-    <div class="algo-title">ID3(examples, features)</div>
+    <div class="algo-title">PCA(\(X,\ k\))</div>
     <ol>
-      <li>Apply the three base cases from DT-Learner (same-class / no-features / no-examples).</li>
-      <li>For each feature \(f\) in features, compute \(IG(f)\) on the current examples.</li>
-      <li>Choose \(f^\star = \arg\max_{f}\, IG(f)\); make an internal node testing \(f^\star\).</li>
-      <li>For each value \(v\) of \(f^\star\): recurse on examples with \(f^\star = v\) and features \(\setminus \{f^\star\}\).</li>
+      <li>Mean-center the data: \(x \leftarrow x - \text{mean}(x)\).</li>
+      <li>Compute the covariance matrix \(\Sigma = \tfrac{1}{m}\, X^\top X\).</li>
+      <li>Eigendecompose \(\Sigma\): \(\Sigma\, v_k = \lambda_k\, v_k\). Eigenvectors \(v_k\) are the principal components, sorted by \(\lambda_1 \ge \lambda_2 \ge \ldots\)</li>
+      <li>Project onto the top \(k\) PCs: \(z = V_{\text{top-}k}^\top\, x\).</li>
     </ol>
   </div>
-  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Greedy: pick the locally best feature at each step. Not always globally optimal &mdash; but fast and effective.</p>
+  <p class="fragment" style="font-size: 0.85em; color: #166534; text-align: center; margin-top: 0.4em;">Fraction of variance kept by the \(k\)-th PC: &nbsp;\(\dfrac{\lambda_k}{\sum_j \lambda_j}\). Cumulative across top \(k\) PCs guides how many to keep.</p>
 </section>
 
 <!-- ============================================================
-     Gini / CART + pruning (2 slides)
+     Autoencoders (2 slides)
      ============================================================ -->
 
-<!-- 16b. Gini impurity & CART -->
+<!-- 13. Autoencoders: encoder + decoder -->
 <section>
-  <h2>Another purity score: Gini &amp; CART</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Information gain uses entropy. A popular alternative measures how often a random example would be <strong>mislabeled</strong> if labeled by the node's class distribution:</p>
-  <div class="two-col" style="align-items:stretch; margin-top: 0.2em;">
-    <div class="defbox" style="flex:1;">
-      <h3 style="margin-top:0;">Gini impurity</h3>
-      <p style="text-align:center; margin:0.2em 0;">\(G = 1 - \displaystyle\sum_{i=1}^{k} P(c_i)^2\)</p>
-      <p style="margin:0; font-size:0.78em; color:#6b7280;">\(0\) when pure; maximal when classes are balanced &mdash; same spirit as entropy, cheaper to compute (no logs).</p>
-    </div>
-    <div class="defbox" style="flex:1;">
-      <h3 style="margin-top:0;">CART</h3>
-      <p style="margin:0; font-size:0.82em;">The tree learner behind scikit-learn: <strong>binary</strong> splits, Gini (or entropy) for classification, squared error for regression.</p>
-    </div>
+  <h2>Autoencoders: encoder + decoder</h2>
+  <p style="font-size: 0.88em;">A neural net learns to <strong>squeeze and reconstruct</strong> its input.</p>
+  <div style="text-align: center;">
+    <svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg" class="autoenc-diagram">
+      <!-- Always-visible input -->
+      <rect class="layer" x="40"  y="30"  width="40" height="140"/>
+      <text class="layer-label" x="60"  y="190">x</text>
+      <!-- Encoder zone -->
+      <g class="fragment">
+        <line class="arch-arrow" x1="80"  y1="100" x2="100" y2="100"/>
+        <rect class="layer" x="100" y="55"  width="36" height="90"/>
+        <text class="layer-label" x="118" y="190">e(x)</text>
+        <text class="zone-label enc" x="100" y="20">encoder</text>
+      </g>
+      <!-- Bottleneck code -->
+      <g class="fragment">
+        <line class="arch-arrow" x1="136" y1="100" x2="156" y2="100"/>
+        <rect class="layer bottleneck" x="156" y="80"  width="32" height="40"/>
+        <text class="layer-label" x="172" y="190">z = e(x)</text>
+        <text class="zone-label code" x="172" y="20">code</text>
+      </g>
+      <!-- Decoder + reconstruction -->
+      <g class="fragment">
+        <line class="arch-arrow" x1="188" y1="100" x2="208" y2="100"/>
+        <rect class="layer" x="208" y="55"  width="36" height="90"/>
+        <text class="layer-label" x="226" y="190">d(z)</text>
+        <line class="arch-arrow" x1="244" y1="100" x2="264" y2="100"/>
+        <rect class="layer" x="264" y="30"  width="40" height="140"/>
+        <text class="layer-label" x="284" y="190">x&#770; = d(e(x))</text>
+        <text class="zone-label dec" x="244" y="20">decoder</text>
+      </g>
+      <!-- Loss + caption (always visible) -->
+      <text x="350" y="80" font-size="13" fill="#1f2937" font-weight="600">Loss:</text>
+      <text x="350" y="100" font-size="12" fill="#1d4ed8">E = &sum;<tspan baseline-shift="sub" font-size="9">i</tspan> (x<tspan baseline-shift="sub" font-size="9">i</tspan> &minus; d(e(x<tspan baseline-shift="sub" font-size="9">i</tspan>)))&sup2;</text>
+      <text x="350" y="130" font-size="11" fill="#6b7280">Encoder + decoder are</text>
+      <text x="350" y="144" font-size="11" fill="#6b7280">trained jointly so that</text>
+      <text x="350" y="158" font-size="11" fill="#6b7280">the bottleneck z keeps</text>
+      <text x="350" y="172" font-size="11" fill="#6b7280">enough info to rebuild x.</text>
+    </svg>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.35em;">Entropy vs. Gini rarely changes the tree much &mdash; both reward pure children.</p>
 </section>
 
-<!-- 16c. Overfitting & pruning -->
+<!-- 14. Linear vs deep autoencoders -->
 <section>
-  <h2>Trees overfit &mdash; so we prune</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Grown to purity, a tree memorizes the training set (one leaf per noisy example) and generalizes poorly &mdash; exactly the overfitting from L16.</p>
+  <h2>Linear vs deep autoencoders</h2>
   <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
     <div class="task-card">
-      <h3>Pre-pruning</h3>
-      <p style="font-size: 0.82em;">Stop growing early: cap <strong>max depth</strong>, require a <strong>minimum #examples</strong> per node, or a minimum gain to split.</p>
+      <h3>Linear autoencoder</h3>
+      <p style="font-size: 0.82em;">Single linear layer; weights shared between encoder and decoder.</p>
+      <p style="text-align: center; font-size: 0.92em; margin: 0.3em 0;">\(\hat{z} = W x, \quad \hat{x} = W^\top \hat{z}\)</p>
+      <p style="font-size: 0.78em; color: #6b7280;">With squared loss, the solution recovers the same subspace as PCA.</p>
     </div>
     <div class="task-card">
-      <h3>Post-pruning</h3>
-      <p style="font-size: 0.82em;">Grow the full tree, then <strong>collapse</strong> branches that don't improve validation accuracy.</p>
+      <h3>Deep neural autoencoder</h3>
+      <p style="font-size: 0.82em;">Stack non-linear layers (ReLU, etc.) in both encoder and decoder; train end-to-end with backprop.</p>
+      <p style="font-size: 0.78em; color: #6b7280;">Captures non-linear manifolds &mdash; a building block for the learned representations below.</p>
     </div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.35em;">Pick the depth / pruning strength with <strong>cross-validation</strong> (L16).</p>
 </section>
 
 <!-- ============================================================
-     Ensembles (2 slides)
+     Self-supervised representations + generative preview (2 slides)
      ============================================================ -->
 
-<!-- 16d. Bagging & random forests -->
+<!-- 15. Self-supervised & contrastive learning -->
 <section>
-  <h2>Random forests: a crowd of trees</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">One deep tree is high-variance. <strong>Bagging</strong> averages many trees, each trained on a bootstrap sample; a <strong>random forest</strong> also splits on a random feature subset to decorrelate them.</p>
+  <h2>Self-supervised &amp; contrastive learning</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Labels are expensive. <strong>Self-supervised</strong> learning invents the supervision signal <em>from the data itself</em>, then learns a reusable representation.</p>
   <div class="two-col vcenter">
-    <div style="flex: 1.05; text-align:center;">
-      <svg viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:160px;">
-        <g stroke="#166534" stroke-width="1.6" fill="none">
-          <path d="M40 30 L25 60 M40 30 L55 60 M25 60 L18 90 M25 60 L34 90"/>
-          <path d="M150 30 L135 60 M150 30 L165 60 M165 60 L158 90 M165 60 L174 90"/>
-          <path d="M260 30 L245 60 M260 30 L275 60 M245 60 L238 90 M245 60 L254 90"/>
-        </g>
-        <circle cx="40" cy="26" r="6" fill="#dcfce7" stroke="#166534"/>
-        <circle cx="150" cy="26" r="6" fill="#dcfce7" stroke="#166534"/>
-        <circle cx="260" cy="26" r="6" fill="#dcfce7" stroke="#166534"/>
-        <text x="40" y="110" font-size="10" fill="#374151" text-anchor="middle">tree 1: Yes</text>
-        <text x="150" y="110" font-size="10" fill="#374151" text-anchor="middle">tree 2: Yes</text>
-        <text x="260" y="110" font-size="10" fill="#374151" text-anchor="middle">tree 3: No</text>
-        <path d="M40 118 L150 140 M150 118 L150 140 M260 118 L150 140" stroke="#9ca3af" stroke-width="1.2" fill="none"/>
-        <rect x="96" y="140" width="108" height="24" rx="4" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
-        <text x="150" y="156" font-size="11" fill="#1d4ed8" text-anchor="middle" font-weight="700">majority vote: Yes</text>
+    <div style="flex: 1.1; text-align: center;">
+      <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height: 200px;">
+        <rect x="18" y="30" width="86" height="40" rx="4" fill="#fdf2f8" stroke="#be185d" stroke-width="1.5"/>
+        <text x="61" y="55" font-size="12" fill="#be185d" text-anchor="middle">image</text>
+        <rect x="18" y="140" width="86" height="40" rx="4" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
+        <text x="61" y="165" font-size="11" fill="#4338ca" text-anchor="middle">"a dog"</text>
+        <line x1="104" y1="50" x2="140" y2="70" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
+        <line x1="104" y1="160" x2="140" y2="140" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
+        <rect x="140" y="60" width="44" height="90" rx="4" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4"/>
+        <text x="162" y="108" font-size="10" fill="#374151" text-anchor="middle" transform="rotate(-90 162 108)">encoders</text>
+        <line x1="184" y1="80" x2="216" y2="80" stroke="#be185d" stroke-width="1.6" marker-end="url(#arrow-l17)"/>
+        <line x1="184" y1="130" x2="216" y2="130" stroke="#4338ca" stroke-width="1.6" marker-end="url(#arrow-l17)"/>
+        <circle cx="240" cy="80" r="7" fill="#be185d"/>
+        <circle cx="240" cy="130" r="7" fill="#4338ca"/>
+        <path d="M 247 84 Q 268 105, 247 126" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-l17)"/>
+        <text x="288" y="108" font-size="10" fill="#166534" text-anchor="middle" transform="rotate(-90 288 108)">pull together</text>
       </svg>
     </div>
     <div style="flex: 0.95;">
-      <ul style="font-size: 0.82em; margin: 0.1em 0 0 1em;">
-        <li class="fragment"><strong>Classification:</strong> majority vote.</li>
-        <li class="fragment"><strong>Regression:</strong> average the predictions.</li>
-        <li class="fragment">Averaging cancels individual trees' errors &rarr; <strong>lower variance</strong>, strong off-the-shelf accuracy.</li>
+      <p style="font-size: 0.82em; margin: 0.1em 0;"><strong>CLIP</strong>: an image encoder \(f\) and a text encoder \(g\). Train so a matching (image, caption) pair has high similarity, and mismatched pairs low:</p>
+      <p style="text-align:center; margin: 0.25em 0; font-size: 0.8em;">maximize \(\;f(\text{img})^\top g(\text{text})\;\) for true pairs</p>
+      <ul style="font-size: 0.8em; margin: 0.2em 0 0 1em;">
+        <li class="fragment">No human labels &mdash; the pairing <em>is</em> the signal.</li>
+        <li class="fragment">The learned embeddings <strong>transfer</strong> to many tasks (even zero-shot).</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- 16e. Gradient boosting -->
+<!-- 16. Generative modelling: a quick map (GANs demoted, pointer to L23) -->
 <section>
-  <h2>Gradient boosting: fix your own mistakes</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Instead of averaging independent trees, <strong>add trees in sequence</strong>, each one correcting the residual errors of the trees so far:</p>
-  <p style="text-align:center; margin: 0.25em 0;">\(F_m(x) = F_{m-1}(x) + \gamma\, h_m(x)\)</p>
-  <ul style="font-size: 0.82em; margin: 0.2em 0 0 1.2em;">
-    <li class="fragment">\(h_m\) is a small tree fit to the <strong>gradient of the loss</strong> (for squared loss, the residuals).</li>
-    <li class="fragment">\(\gamma\) is a small learning rate &mdash; many shallow trees, added slowly.</li>
-    <li class="fragment"><strong>XGBoost / LightGBM</strong> are the go-to winners on <strong>tabular</strong> data today.</li>
-  </ul>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.3em;">Forests reduce <em>variance</em> (parallel); boosting reduces <em>bias</em> (sequential).</p>
+  <h2>Generative modelling: a quick map</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Beyond compressing data, we can learn its distribution \(p(x)\) and <strong>sample new examples</strong>. Four main families:</p>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
+    <div class="task-card">
+      <h3>Autoregressive</h3>
+      <p style="font-size: 0.8em;">Predict the next piece given the past: \(p(x)=\prod_t p(x_t \mid x_{&lt;t})\). Powers <strong>LLMs</strong>.</p>
+    </div>
+    <div class="task-card">
+      <h3>VAE</h3>
+      <p style="font-size: 0.8em;">An autoencoder with a probabilistic bottleneck; sample the code, then decode.</p>
+    </div>
+    <div class="task-card">
+      <h3>GAN</h3>
+      <p style="font-size: 0.8em;">A generator vs. a discriminator. Sharp samples, but tricky to train &mdash; now largely superseded.</p>
+    </div>
+    <div class="task-card">
+      <h3>Diffusion</h3>
+      <p style="font-size: 0.8em;">Learn to denoise; today's state of the art for images &amp; video.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">We go deep on <strong>diffusion &amp; multimodal generation</strong> in L23.</p>
 </section>
+
+<!-- ============================================================
+     Wrap-up (1 slide)
+     ============================================================ -->
 
 <!-- 17. Learning goals (recap) + next -->
 <section class="center-slide">
   <h2>Learning goals (recap) &mdash; Next: neural networks</h2>
   <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0; max-width: 80%; margin-right: auto;">
-    <li>&#10003; &nbsp;Describe the <strong>components</strong> of a decision tree.</li>
-    <li>&#10003; &nbsp;<strong>Construct</strong> a tree given a feature-testing order.</li>
-    <li>&#10003; &nbsp;Compute <strong>test-set accuracy</strong>.</li>
-    <li>&#10003; &nbsp;Compute <strong>entropy</strong> and <strong>information gain</strong>; trace the <strong>DT learner</strong>.</li>
-    <li>&#10003; &nbsp;Use <strong>Gini / CART</strong>; control overfitting with <strong>pruning</strong>.</li>
-    <li>&#10003; &nbsp;Combine trees: <strong>random forests</strong> &amp; <strong>gradient boosting</strong>.</li>
+    <li>&#10003; &nbsp;Understand what <strong>unsupervised learning</strong> is.</li>
+    <li>&#10003; &nbsp;Trace the <strong>k-means</strong> clustering algorithm.</li>
+    <li>&#10003; &nbsp;Perform <strong>PCA</strong> by mean-centering, covariance, and eigendecomposition.</li>
+    <li>&#10003; &nbsp;Explain <strong>autoencoders</strong> and <strong>self-supervised / contrastive</strong> representations.</li>
   </ul>
-  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L19: from hand-engineered trees to <strong>neural networks</strong> &mdash; the building block of deep learning.</p>
+  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L19: <strong>neural networks</strong> &mdash; the building block of deep learning.</p>
 </section>
 
 </div>

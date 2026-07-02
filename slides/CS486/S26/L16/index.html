@@ -2,16 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 16 — Supervised Learning &amp; Generalization</title>
+  <title>CS 486/686 Lecture 16 — Decision Trees &amp; Ensembles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 16: Supervised Learning and Generalization — types of learning, linear and logistic regression, cross-entropy and softmax, overfitting, cross-validation, regularization, and double descent. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 16: Decision Trees and Ensembles — anatomy, entropy, information gain, ID3, Gini/CART, pruning, random forests, and gradient boosting. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../L9/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="custom.css?v=2">
+  <link rel="stylesheet" href="custom.css">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -32,20 +33,12 @@
 <div class="reveal">
 <div class="slides">
 
-<svg width="0" height="0" style="position:absolute;">
-  <defs>
-    <marker id="arrow-rl-l16" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#1f2937"/>
-    </marker>
-  </defs>
-</svg>
-
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Supervised Learning &amp; Generalization</div>
+  <div class="course-title">CS 486/686<br>Decision Trees &amp; Ensembles</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 16</p>
-  <p class="credit">RN 19.1&ndash;19.2, 19.6 &middot; PM 7.1&ndash;7.3</p>
+  <p class="credit">RN 19.3, 19.8 &middot; PM 7.3.1, 7.5</p>
 </section>
 
 <!-- 1b. Reminder: next week is asynchronous (instructor at ICML) -->
@@ -71,557 +64,582 @@
   </div>
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Name the <strong>types of learning</strong> and tell <strong>classification</strong> from <strong>regression</strong>.</li>
-    <li class="fragment">See supervised learning as <strong>fitting parameters to minimize a loss</strong>.</li>
-    <li class="fragment">Derive and fit <strong>linear regression</strong> and <strong>logistic regression</strong>.</li>
-    <li class="fragment">Use <strong>cross-entropy</strong> and <strong>softmax</strong> for classification.</li>
-    <li class="fragment">Explain <strong>overfitting</strong>; control it with <strong>cross-validation</strong> and <strong>regularization</strong>.</li>
+    <li class="fragment">Describe the <strong>components</strong> of a decision tree.</li>
+    <li class="fragment"><strong>Construct</strong> a decision tree given a feature-testing order.</li>
+    <li class="fragment">Compute a tree's <strong>prediction accuracy</strong> on a test set.</li>
+    <li class="fragment">Compute <strong>entropy</strong> and <strong>expected information gain</strong>; trace the <strong>DT learner</strong>.</li>
+    <li class="fragment">Use <strong>Gini / CART</strong> and control overfitting with <strong>pruning</strong>.</li>
+    <li class="fragment">Combine trees into <strong>random forests</strong> and <strong>gradient boosting</strong>.</li>
   </ul>
 </section>
 
-<!-- 3. Why ML? + applications -->
+<!-- 3. Decision trees in the wild -->
 <section>
-  <h2>Why an agent that learns?</h2>
-  <div class="app-icons">
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="6" width="38" height="28" rx="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
-        <line x1="25" y1="12" x2="25" y2="28" stroke="#dc2626" stroke-width="3"/>
-        <line x1="17" y1="20" x2="33" y2="20" stroke="#dc2626" stroke-width="3"/>
+  <h2>Decision trees in the wild</h2>
+  <p style="font-size: 0.88em;">A decision tree is nothing more than a <strong>nested if-then-else</strong> &mdash; learned automatically from data.</p>
+  <div class="examples-row">
+    <div class="ex-card">
+      <h3>Should I use an emoji?</h3>
+      <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="mini-svg" aria-hidden="true">
+        <rect class="q" x="60" y="6" width="80" height="22" rx="3"/>
+        <text x="100" y="22" class="q-text">work-related?</text>
+        <line class="edge" x1="80" y1="28" x2="40" y2="48"/>
+        <line class="edge" x1="120" y1="28" x2="160" y2="48"/>
+        <text x="58" y="42" class="edge-text">yes</text>
+        <text x="138" y="42" class="edge-text">no</text>
+        <rect class="leaf no" x="14" y="48" width="52" height="20" rx="3"/>
+        <text x="40" y="62" class="leaf-text no">no emoji</text>
+        <rect class="q" x="124" y="48" width="72" height="22" rx="3"/>
+        <text x="160" y="64" class="q-text">friend?</text>
+        <line class="edge" x1="148" y1="70" x2="116" y2="92"/>
+        <line class="edge" x1="172" y1="70" x2="186" y2="92"/>
+        <text x="124" y="86" class="edge-text">yes</text>
+        <text x="186" y="86" class="edge-text">no</text>
+        <rect class="leaf yes" x="92" y="94" width="48" height="20" rx="3"/>
+        <text x="116" y="108" class="leaf-text yes">emoji</text>
+        <rect class="leaf no" x="160" y="94" width="40" height="20" rx="3"/>
+        <text x="180" y="108" class="leaf-text no">no</text>
       </svg>
-      <div class="app-label">Medical diagnosis</div>
     </div>
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="10" width="38" height="22" rx="2" fill="#fff" stroke="#1f2937" stroke-width="1.5"/>
-        <path d="M6 12 L25 24 L44 12" fill="none" stroke="#1f2937" stroke-width="1.5"/>
-        <circle cx="38" cy="28" r="6" fill="#dc2626"/>
-        <text x="38" y="32" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">!</text>
+    <div class="ex-card">
+      <h3>What pet?</h3>
+      <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="mini-svg" aria-hidden="true">
+        <rect class="q" x="64" y="6" width="72" height="22" rx="3"/>
+        <text x="100" y="22" class="q-text">backyard?</text>
+        <line class="edge" x1="82" y1="28" x2="40" y2="48"/>
+        <line class="edge" x1="118" y1="28" x2="160" y2="48"/>
+        <text x="56" y="42" class="edge-text">yes</text>
+        <text x="138" y="42" class="edge-text">no</text>
+        <rect class="q" x="6" y="48" width="68" height="22" rx="3"/>
+        <text x="40" y="64" class="q-text">cuddly?</text>
+        <rect class="leaf fish" x="132" y="48" width="56" height="22" rx="3"/>
+        <text x="160" y="64" class="leaf-text fish">fish</text>
+        <line class="edge" x1="22" y1="70" x2="8" y2="92"/>
+        <line class="edge" x1="56" y1="70" x2="74" y2="92"/>
+        <text x="2" y="86" class="edge-text">yes</text>
+        <text x="74" y="86" class="edge-text">no</text>
+        <rect class="leaf dog" x="0" y="94" width="40" height="22" rx="3"/>
+        <text x="20" y="110" class="leaf-text dog">dog</text>
+        <rect class="leaf cat" x="50" y="94" width="40" height="22" rx="3"/>
+        <text x="70" y="110" class="leaf-text cat">cat</text>
       </svg>
-      <div class="app-label">Spam filtering</div>
     </div>
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8" y="6" width="34" height="24" rx="4" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
-        <path d="M16 30 L16 36 L24 30" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6" stroke-linejoin="round"/>
-        <circle cx="18" cy="18" r="2" fill="#4338ca"/>
-        <circle cx="25" cy="18" r="2" fill="#4338ca"/>
-        <circle cx="32" cy="18" r="2" fill="#4338ca"/>
+    <div class="ex-card">
+      <h3>Which language?</h3>
+      <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" class="mini-svg" aria-hidden="true">
+        <rect class="q" x="52" y="6" width="96" height="22" rx="3"/>
+        <text x="100" y="22" class="q-text">speed &gt; readable?</text>
+        <line class="edge" x1="76" y1="28" x2="40" y2="48"/>
+        <line class="edge" x1="124" y1="28" x2="160" y2="48"/>
+        <text x="56" y="42" class="edge-text">yes</text>
+        <text x="138" y="42" class="edge-text">no</text>
+        <rect class="leaf cpp" x="10" y="48" width="56" height="22" rx="3"/>
+        <text x="38" y="64" class="leaf-text cpp">C++</text>
+        <rect class="q" x="128" y="48" width="60" height="22" rx="3"/>
+        <text x="158" y="64" class="q-text">web?</text>
+        <line class="edge" x1="148" y1="70" x2="124" y2="92"/>
+        <line class="edge" x1="172" y1="70" x2="188" y2="92"/>
+        <text x="124" y="86" class="edge-text">yes</text>
+        <text x="186" y="86" class="edge-text">no</text>
+        <rect class="leaf js" x="104" y="94" width="40" height="22" rx="3"/>
+        <text x="124" y="110" class="leaf-text js">JS</text>
+        <rect class="leaf py" x="156" y="94" width="44" height="22" rx="3"/>
+        <text x="178" y="110" class="leaf-text py">Python</text>
       </svg>
-      <div class="app-label">Chatbots (LLMs)</div>
-    </div>
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <line x1="4" y1="20" x2="46" y2="20" stroke="#d1d5db" stroke-width="1"/>
-        <path d="M4 20 l 2 -4 l 2 8 l 3 -10 l 3 12 l 3 -6 l 3 4 l 4 -8 l 3 10 l 3 -12 l 3 6 l 3 -4 l 3 8 l 3 -10 l 3 4" fill="none" stroke="#16a34a" stroke-width="1.5"/>
-      </svg>
-      <div class="app-label">Speech</div>
-    </div>
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8" y="8" width="34" height="24" rx="3" fill="#fdf2f8" stroke="#be185d" stroke-width="1.6"/>
-        <circle cx="18" cy="17" r="3" fill="#f59e0b"/>
-        <path d="M11 30 L21 20 L27 26 L33 18 L39 30 Z" fill="#be185d" opacity="0.7"/>
-      </svg>
-      <div class="app-label">Image generation</div>
     </div>
   </div>
-  <p style="font-size: 0.88em; margin-top: 0.5em;"><strong>Learning</strong> = improving on future tasks based on experience (data).</p>
-  <ul style="font-size: 0.85em;">
-    <li class="fragment">We can't anticipate every situation, and the world keeps changing.</li>
-    <li class="fragment">For most of these tasks we have <em>no idea how to program a solution</em> &mdash; only how to <em>show examples</em>.</li>
-  </ul>
-</section>
-
-<!-- 4. Three kinds of learning -->
-<section>
-  <h2>Three kinds of learning</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
-    <div class="task-card">
-      <h3>Supervised</h3>
-      <svg viewBox="0 0 110 56" xmlns="http://www.w3.org/2000/svg" class="card-icon" aria-hidden="true">
-        <text x="14" y="22" font-size="11" fill="#1d4ed8" font-weight="700">x&#8321;</text>
-        <text x="14" y="42" font-size="11" fill="#1d4ed8" font-weight="700">x&#8322;</text>
-        <text x="36" y="22" font-size="11" fill="#dc2626" font-weight="700">y&#8321;</text>
-        <text x="36" y="42" font-size="11" fill="#dc2626" font-weight="700">y&#8322;</text>
-        <path d="M 55 30 L 75 30" stroke="#1f2937" stroke-width="1.6" marker-end="url(#arrow-rl-l16)" fill="none"/>
-        <rect x="78" y="20" width="28" height="20" rx="3" fill="#dcfce7" stroke="#166534" stroke-width="1.4"/>
-        <text x="92" y="34" font-size="11" fill="#166534" text-anchor="middle" font-weight="700">h(x)</text>
-      </svg>
-      <p>Given inputs + <strong>targets</strong>, predict targets for new inputs.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">Today's focus.</p>
-    </div>
-    <div class="task-card">
-      <h3>Unsupervised</h3>
-      <svg viewBox="0 0 110 56" xmlns="http://www.w3.org/2000/svg" class="card-icon" aria-hidden="true">
-        <ellipse cx="32" cy="30" rx="22" ry="16" fill="none" stroke="#1d4ed8" stroke-width="1.2" stroke-dasharray="3 2"/>
-        <ellipse cx="80" cy="30" rx="20" ry="14" fill="none" stroke="#d97706" stroke-width="1.2" stroke-dasharray="3 2"/>
-        <circle cx="24" cy="24" r="2.2" fill="#1f2937"/>
-        <circle cx="34" cy="22" r="2.2" fill="#1f2937"/>
-        <circle cx="40" cy="34" r="2.2" fill="#1f2937"/>
-        <circle cx="28" cy="38" r="2.2" fill="#1f2937"/>
-        <circle cx="72" cy="26" r="2.2" fill="#1f2937"/>
-        <circle cx="84" cy="22" r="2.2" fill="#1f2937"/>
-        <circle cx="88" cy="36" r="2.2" fill="#1f2937"/>
-        <circle cx="76" cy="38" r="2.2" fill="#1f2937"/>
-      </svg>
-      <p>No targets &mdash; find <strong>structure</strong>: clustering, representations.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">L17.</p>
-    </div>
-    <div class="task-card">
-      <h3>Reinforcement</h3>
-      <svg viewBox="0 0 110 56" xmlns="http://www.w3.org/2000/svg" class="card-icon" aria-hidden="true">
-        <rect x="8"  y="18" width="34" height="22" rx="3" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
-        <text x="25" y="33" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">agent</text>
-        <rect x="68" y="18" width="34" height="22" rx="3" fill="#dcfce7" stroke="#166534" stroke-width="1.4"/>
-        <text x="85" y="33" font-size="10" fill="#166534" text-anchor="middle" font-weight="700">env</text>
-        <path d="M 42 24 L 68 24" stroke="#1f2937" stroke-width="1.4" marker-end="url(#arrow-rl-l16)" fill="none"/>
-        <text x="55" y="20" font-size="8" fill="#6b7280" text-anchor="middle">a</text>
-        <path d="M 68 36 C 60 50, 50 50, 42 36" stroke="#d97706" stroke-width="1.4" marker-end="url(#arrow-rl-l16)" fill="none"/>
-        <text x="55" y="52" font-size="8" fill="#92400e" text-anchor="middle" font-weight="700">r</text>
-      </svg>
-      <p>Learn from rewards &mdash; what to <em>do</em>.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">L15 (done).</p>
-    </div>
-  </div>
-</section>
-
-<!-- 5. Q1 + Q2 quizzes -->
-<section>
-  <h2>Supervised or unsupervised?</h2>
-  <div class="two-col">
-    <div style="flex: 1;">
-      <p class="quiz-q"><strong>Q1.</strong> We have a user's credit-card transactions and want to flag any that look <em>different</em> from the rest. We have no fraud labels.</p>
-      <ol class="quiz-options">
-        <li>Supervised</li>
-        <li><strong>Unsupervised</strong></li>
-      </ol>
-      <div class="quiz-answer fragment">
-        <strong>B &mdash; Unsupervised.</strong> No target labels to predict.
-      </div>
-    </div>
-    <div style="flex: 1;">
-      <p class="quiz-q"><strong>Q2.</strong> We have historical weather labels (sunny/cloudy/rain/snow) for a date, and we want to predict the same date next year.</p>
-      <ol class="quiz-options">
-        <li><strong>Supervised</strong></li>
-        <li>Unsupervised</li>
-      </ol>
-      <div class="quiz-answer fragment">
-        <strong>A &mdash; Supervised.</strong> Each example has a target (the weather label).
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 6. Classification vs regression (definitions + quick check) -->
-<section>
-  <h2>Two flavors of supervised learning</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
-    <div class="task-card">
-      <h3>Classification</h3>
-      <svg viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" class="cr-svg" aria-hidden="true">
-        <line x1="20" y1="40" x2="200" y2="40" stroke="#9ca3af" stroke-width="1"/>
-        <circle cx="40"  cy="40" r="11" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
-        <text x="40"  y="44" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">dog</text>
-        <circle cx="110" cy="40" r="11" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
-        <text x="110" y="44" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">cat</text>
-        <circle cx="180" cy="40" r="11" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
-        <text x="180" y="44" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">bird</text>
-        <text x="110" y="64" font-size="10" fill="#6b7280" text-anchor="middle">discrete labels</text>
-      </svg>
-      <p>Target is <strong>discrete</strong> &mdash; e.g. dog vs cat.</p>
-    </div>
-    <div class="task-card">
-      <h3>Regression</h3>
-      <svg viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" class="cr-svg" aria-hidden="true">
-        <line x1="20" y1="40" x2="200" y2="40" stroke="#16a34a" stroke-width="2.5"/>
-        <line x1="20" y1="34" x2="20" y2="46" stroke="#16a34a" stroke-width="1.5"/>
-        <line x1="200" y1="34" x2="200" y2="46" stroke="#16a34a" stroke-width="1.5"/>
-        <circle cx="135" cy="40" r="6" fill="#16a34a"/>
-        <text x="20"  y="26" font-size="10" fill="#166534" text-anchor="middle">-10&#176;C</text>
-        <text x="200" y="26" font-size="10" fill="#166534" text-anchor="middle">35&#176;C</text>
-        <text x="135" y="22" font-size="10" fill="#166534" text-anchor="middle" font-weight="700">17.3&#176;C</text>
-        <text x="110" y="64" font-size="10" fill="#6b7280" text-anchor="middle">continuous value</text>
-      </svg>
-      <p>Target is <strong>continuous</strong> &mdash; e.g. tomorrow's temperature.</p>
-    </div>
-  </div>
-  <div class="two-col" style="margin-top: 0.3em;">
-    <div style="flex: 1;">
-      <p class="quiz-q fragment"><strong>Q3.</strong> Predict next year's weather label (sunny/rain/...) for a date.</p>
-      <div class="quiz-answer fragment"><strong>Classification</strong> &mdash; discrete target.</div>
-    </div>
-    <div style="flex: 1;">
-      <p class="quiz-q fragment"><strong>Q4.</strong> Predict next month's price of a house.</p>
-      <div class="quiz-answer fragment"><strong>Regression</strong> &mdash; continuous target.</div>
-    </div>
-  </div>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Simple to read, fast to evaluate, and surprisingly effective in practice.</p>
 </section>
 
 <!-- ============================================================
-     Core: learning = fit parameters to minimize a loss (6 slides)
+     Jeeves setup (3 slides)
      ============================================================ -->
 
-<!-- 7. Supervised learning = fit parameters to minimize a loss -->
-<section class="center-slide">
-  <h2>The recipe behind every supervised learner</h2>
-  <div class="defbox" style="max-width: 88%; margin: 0.2em auto; text-align: left;">
-    <p style="margin: 0 0 0.4em 0; font-size: 0.9em;"><strong>1. Model.</strong> Pick a function \(h_{\mathbf{w}}\) with tunable <strong>parameters</strong> \(\mathbf{w}\) (weights).</p>
-    <p style="margin: 0 0 0.4em 0; font-size: 0.9em;"><strong>2. Loss.</strong> Measure how wrong \(h_{\mathbf{w}}\) is: \(L(\mathbf{w}) = \tfrac{1}{m}\sum_{i} \ell\bigl(h_{\mathbf{w}}(x_i),\, y_i\bigr)\).</p>
-    <p style="margin: 0; font-size: 0.9em;"><strong>3. Fit.</strong> Choose \(\mathbf{w}\) that makes \(L(\mathbf{w})\) small &mdash; usually by <strong>gradient descent</strong>.</p>
+<!-- 4. Running example: Jeeves the valet -->
+<section>
+  <h2>Running example: Jeeves the valet</h2>
+  <p style="font-size: 0.88em;">Jeeves wants to predict whether Bertie will play tennis today. He has been recording the weather and Bertie's behavior every morning for 14 days.</p>
+  <div class="defbox">
+    <h3>Features and target</h3>
+    <ul style="margin: 0; font-size: 0.88em;">
+      <li><strong>Input features:</strong> Outlook (Sunny/Overcast/Rain), Temp (Hot/Mild/Cool), Humidity (High/Normal), Wind (Weak/Strong).</li>
+      <li><strong>Target:</strong> Tennis? (Yes / No).</li>
+    </ul>
   </div>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Change the model and the loss &rarr; you get every method in this module (regression &rarr; neural nets &rarr; transformers).</p>
+  <p class="fragment" style="font-size: 0.85em; color: #6b7280; text-align: center; margin-top: 0.4em;">14-day training set + 14-day held-out test set. Goal: build a classifier from training, evaluate on test.</p>
 </section>
 
-<!-- 8. Linear regression: the model -->
+<!-- 5. The Jeeves training set -->
 <section>
-  <h2>Linear regression: the model</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1.05; text-align: center;">
-      <svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
-        <line class="grid" x1="60" y1="70"  x2="430" y2="70"/>
-        <line class="grid" x1="60" y1="145" x2="430" y2="145"/>
-        <line class="axis" x1="60" y1="30" x2="60" y2="220"/>
-        <line class="axis" x1="60" y1="220" x2="430" y2="220"/>
-        <text class="axis-label" x="245" y="248" text-anchor="middle" style="font-style:italic;">x (size)</text>
-        <text class="axis-label" x="28" y="125" text-anchor="middle" transform="rotate(-90 28 125)" style="font-style:italic;">y (price)</text>
-        <line class="fit-line" x1="70" y1="195" x2="410" y2="80"/>
-        <circle class="point" cx="100" cy="200" r="4.5"/>
-        <circle class="point" cx="140" cy="170" r="4.5"/>
-        <circle class="point" cx="180" cy="165" r="4.5"/>
-        <circle class="point" cx="220" cy="135" r="4.5"/>
-        <circle class="point" cx="260" cy="140" r="4.5"/>
-        <circle class="point" cx="300" cy="105" r="4.5"/>
-        <circle class="point" cx="340" cy="110" r="4.5"/>
-        <circle class="point" cx="380" cy="80"  r="4.5"/>
-        <text class="axis-label" x="352" y="72" style="fill:#16a34a; font-weight:700;">h(x)=wx+b</text>
-      </svg>
-    </div>
-    <div style="flex: 0.95;">
-      <p style="font-size: 0.9em; margin: 0.1em 0;">One real input \(x\), one real output:</p>
-      <p style="text-align:center; margin: 0.3em 0;">\(h_{\mathbf{w}}(x) = w\,x + b\)</p>
-      <p class="fragment" style="font-size: 0.9em; margin: 0.3em 0;">With \(n\) features \(\mathbf{x}=(x_1,\dots,x_n)\):</p>
-      <p class="fragment" style="text-align:center; margin: 0.3em 0;">\(h_{\mathbf{w}}(\mathbf{x}) = \mathbf{w}^\top \mathbf{x} + b\)</p>
-      <p class="fragment" style="font-size: 0.82em; color:#6b7280; margin-top: 0.4em;">Parameters to learn: the slope(s) \(\mathbf{w}\) and intercept \(b\).</p>
-    </div>
-  </div>
+  <h2>The Jeeves training set</h2>
+  <table class="factor-table" style="font-size: 0.58em;">
+    <thead>
+      <tr><th>Day</th><th>Outlook</th><th>Temp</th><th>Humidity</th><th>Wind</th><th>Tennis?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Sunny</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+      <tr><td>2</td><td>Sunny</td><td>Hot</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+      <tr><td>3</td><td>Overcast</td><td>Hot</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>4</td><td>Rain</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>5</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>6</td><td>Rain</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+      <tr><td>7</td><td>Overcast</td><td>Cool</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>8</td><td>Sunny</td><td>Mild</td><td>High</td><td>Weak</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+      <tr><td>9</td><td>Sunny</td><td>Cool</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>10</td><td>Rain</td><td>Mild</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>11</td><td>Sunny</td><td>Mild</td><td>Normal</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>12</td><td>Overcast</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>13</td><td>Overcast</td><td>Hot</td><td>Normal</td><td>Weak</td><td style="color:#166534; font-weight:700;">Yes</td></tr>
+      <tr><td>14</td><td>Rain</td><td>Mild</td><td>High</td><td>Strong</td><td style="color:#991b1b; font-weight:700;">No</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin: 0.2em 0;">9 Yes, 5 No. We'll learn a tree from these 14 rows.</p>
 </section>
 
-<!-- 9. Linear regression: the loss + gradient descent -->
+<!-- 6. Anatomy of a decision tree -->
 <section>
-  <h2>Linear regression: fitting by least squares</h2>
-  <p style="font-size: 0.85em; margin: 0.15em 0;">Loss = mean <strong>squared error</strong> between prediction and target:</p>
-  <p style="text-align:center; margin: 0.25em 0;">\(L(\mathbf{w}, b) = \dfrac{1}{m}\displaystyle\sum_{i=1}^{m}\bigl(h_{\mathbf{w}}(x_i) - y_i\bigr)^2\)</p>
-  <div class="two-col" style="align-items:stretch; margin-top:0.3em;">
-    <div class="defbox fragment" style="flex:1;">
-      <h3 style="margin-top:0;">Closed form</h3>
-      <p style="margin:0; font-size:0.82em;">\(L\) is convex &mdash; set \(\nabla L = 0\) and solve. For features \(X\): \(\mathbf{w}^\star = (X^\top X)^{-1} X^\top \mathbf{y}\).</p>
-    </div>
-    <div class="defbox fragment" style="flex:1;">
-      <h3 style="margin-top:0;">Gradient descent</h3>
-      <p style="margin:0 0 0.2em; font-size:0.82em;">Works for <em>any</em> differentiable model. Repeat:</p>
-      <p style="text-align:center; margin:0; font-size:0.82em;">\(\mathbf{w} \leftarrow \mathbf{w} - \eta\, \nabla_{\mathbf{w}} L\)</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Gradient descent is the workhorse for the rest of the module &mdash; the models just get bigger.</p>
-</section>
-
-<!-- 10. Logistic regression: model for classification -->
-<section>
-  <h2>Classification: logistic regression</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1.05; text-align:center;">
-      <svg viewBox="0 0 440 240" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
-        <line class="axis" x1="40" y1="42" x2="40" y2="210"/>
-        <line class="axis" x1="40" y1="210" x2="410" y2="210"/>
-        <line class="thresh" x1="40" y1="125" x2="410" y2="125"/>
-        <line class="thresh" x1="225" y1="42" x2="225" y2="210"/>
-        <text class="axis-label" x="20" y="52" text-anchor="middle">1</text>
-        <text class="axis-label" x="20" y="129" text-anchor="middle">.5</text>
-        <text class="axis-label" x="20" y="208" text-anchor="middle">0</text>
-        <text class="axis-label" x="225" y="228" text-anchor="middle" style="font-style:italic;">z = w&#183;x + b</text>
-        <path class="sig-curve" d="M 45 205 C 150 205, 185 200, 225 125 C 265 50, 300 45, 405 45"/>
-        <circle class="point neg" cx="80"  cy="205" r="4.5"/>
-        <circle class="point neg" cx="120" cy="205" r="4.5"/>
-        <circle class="point neg" cx="160" cy="205" r="4.5"/>
-        <circle class="point pos" cx="290" cy="45" r="4.5"/>
-        <circle class="point pos" cx="330" cy="45" r="4.5"/>
-        <circle class="point pos" cx="370" cy="45" r="4.5"/>
-      </svg>
-    </div>
-    <div style="flex: 0.95;">
-      <p style="font-size: 0.88em; margin: 0.1em 0;">Squash the linear score into a <strong>probability</strong> with the sigmoid:</p>
-      <p style="text-align:center; margin: 0.3em 0;">\(\hat{y} = \sigma(z) = \dfrac{1}{1 + e^{-z}}, \; z = \mathbf{w}^\top\mathbf{x}+b\)</p>
-      <ul style="font-size: 0.82em; margin: 0.3em 0 0 1em;">
-        <li class="fragment">\(\hat{y} = P(y{=}1 \mid \mathbf{x})\).</li>
-        <li class="fragment">Predict class 1 when \(\hat{y} > 0.5\), i.e. \(z > 0\).</li>
-        <li class="fragment">The boundary \(z = 0\) is a <strong>hyperplane</strong>.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 11. Cross-entropy loss -->
-<section>
-  <h2>Loss for classification: cross-entropy</h2>
-  <p style="font-size: 0.85em; margin: 0.15em 0;">Squared error is a poor fit for probabilities. Instead, maximize the probability of the true labels &mdash; equivalently, minimize <strong>binary cross-entropy</strong>:</p>
-  <p style="text-align:center; margin: 0.3em 0;">\(L(\mathbf{w}) = -\dfrac{1}{m}\displaystyle\sum_{i=1}^{m}\Bigl[\, y_i \log \hat{y}_i + (1 - y_i)\log(1 - \hat{y}_i)\,\Bigr]\)</p>
-  <div class="two-col" style="margin-top:0.35em;">
-    <div class="defbox fragment" style="flex:1;">
-      <p style="margin:0; font-size:0.82em;">True label \(y=1\): loss is \(-\log \hat{y}\) &mdash; small when \(\hat{y}\to 1\), <strong>huge</strong> when \(\hat{y}\to 0\).</p>
-    </div>
-    <div class="defbox fragment" style="flex:1;">
-      <p style="margin:0; font-size:0.82em;">Confident <em>and</em> wrong is punished the hardest &mdash; exactly the behaviour we want.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 12. Softmax + multi-class cross-entropy -->
-<section>
-  <h2>Many classes: softmax + cross-entropy</h2>
-  <p style="font-size: 0.85em; margin: 0.15em 0;">Output one score \(z_k\) per class; <strong>softmax</strong> turns scores into a probability distribution:</p>
-  <p style="text-align:center; margin: 0.25em 0;">\(P(y{=}k \mid \mathbf{x}) = \dfrac{e^{z_k}}{\sum_j e^{z_j}}, \qquad L = -\log P(y{=}\text{true class})\)</p>
-  <div class="softmax-bars">
-    <div class="sm-bar"><span class="sm-val">0.10</span><div class="sm-fill" style="height: 16px;"></div><span class="sm-lab">dog</span></div>
-    <div class="sm-bar true"><span class="sm-val">0.70</span><div class="sm-fill" style="height: 84px;"></div><span class="sm-lab">cat &#10003;</span></div>
-    <div class="sm-bar"><span class="sm-val">0.15</span><div class="sm-fill" style="height: 24px;"></div><span class="sm-lab">bird</span></div>
-    <div class="sm-bar"><span class="sm-val">0.05</span><div class="sm-fill" style="height: 10px;"></div><span class="sm-lab">fish</span></div>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.2em;">This softmax + cross-entropy is exactly the output layer we'll reuse for neural nets (L20).</p>
-</section>
-
-<!-- ============================================================
-     Generalization (5 slides)
-     ============================================================ -->
-
-<!-- 13. Overfitting via model complexity (polynomial fit) -->
-<section>
-  <h2>More power is not always better</h2>
-  <p style="font-size: 0.82em;">Same 9 points, increasingly flexible models. The wiggliest one fits training data best &mdash; but would you trust it on a new \(x\)?</p>
-  <div style="text-align: center;">
-    <svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg" class="poly-fit">
-      <line class="grid" x1="60" y1="60"  x2="440" y2="60"/>
-      <line class="grid" x1="60" y1="130" x2="440" y2="130"/>
-      <line class="grid" x1="60" y1="200" x2="440" y2="200"/>
-      <line class="axis" x1="60" y1="20" x2="60" y2="240"/>
-      <line class="axis" x1="60" y1="240" x2="440" y2="240"/>
-      <text class="axis-label" x="250" y="275" text-anchor="middle" style="font-style: italic;">x</text>
-      <text class="axis-label" x="25"  y="125" text-anchor="middle" style="font-style: italic;">y</text>
-      <path class="curve curve-d1 fragment" data-fragment-index="0" d="M 60 159 L 420 64"/>
-      <path class="curve curve-d3 fragment" data-fragment-index="1" d="M 60 159 C 160 95, 280 290, 420 64"/>
-      <path class="curve curve-d9 fragment" data-fragment-index="2" d="M 60 159 Q 80 142, 105 126 Q 130 134, 150 148 Q 173 174, 195 185 Q 218 205, 240 210 Q 263 199, 285 192 Q 308 178, 330 167 Q 352 130, 375 112 Q 398 80, 420 64"/>
-      <g>
-        <circle class="point" cx="60"  cy="159" r="4"/>
-        <circle class="point" cx="105" cy="126" r="4"/>
-        <circle class="point" cx="150" cy="148" r="4"/>
-        <circle class="point" cx="195" cy="185" r="4"/>
-        <circle class="point" cx="240" cy="210" r="4"/>
-        <circle class="point" cx="285" cy="192" r="4"/>
-        <circle class="point" cx="330" cy="167" r="4"/>
-        <circle class="point" cx="375" cy="112" r="4"/>
-        <circle class="point" cx="420" cy="64"  r="4"/>
-      </g>
-    </svg>
-  </div>
-  <div class="poly-legend">
-    <span class="legend-item fragment" data-fragment-index="0"><span class="swatch" style="background:#1d4ed8;"></span>degree 1 (underfits)</span>
-    <span class="legend-item fragment" data-fragment-index="1"><span class="swatch" style="background:#d97706;"></span>degree 3 (good fit)</span>
-    <span class="legend-item fragment" data-fragment-index="2"><span class="swatch" style="background:#7c3aed;"></span>degree 9 (overfits)</span>
-  </div>
-</section>
-
-<!-- 14. Bias and variance + dartboard -->
-<section>
-  <h2>Bias and variance</h2>
+  <h2>Anatomy of a decision tree</h2>
   <div class="two-col vcenter">
     <div style="flex: 1.1;">
-      <div class="defbox" style="font-size: 0.78em;">
-        <h3 style="color: #1d4ed8;">Bias</h3>
-        <p style="margin: 0;">Even with infinite data, how far off is the model family? High bias = too simple, <strong>underfits</strong>.</p>
-      </div>
-      <div class="defbox" style="font-size: 0.78em; margin-top: 0.5em;">
-        <h3 style="color: #d97706;">Variance</h3>
-        <p style="margin: 0;">How much does the fit swing with a different training set? High variance = too flexible, <strong>overfits</strong>.</p>
-      </div>
+      <ul style="font-size: 0.85em;">
+        <li>A supervised classifier with a <strong>single discrete target</strong>.</li>
+        <li>Each <strong>internal node</strong> tests an input feature.</li>
+        <li><strong>Edges</strong> are labeled with feature values.</li>
+        <li>Each <strong>leaf</strong> predicts a target class.</li>
+        <li><strong>Classify</strong>: follow edges from the root down to a leaf.</li>
+      </ul>
     </div>
-    <div style="flex: 1;">
-      <div class="dartboard-grid">
-        <div></div>
-        <div class="col-header">low variance</div>
-        <div class="col-header">high variance</div>
-        <div class="row-header">low bias</div>
-        <div class="fragment">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
-            <circle class="ring" cx="50" cy="50" r="45"/>
-            <circle class="ring" cx="50" cy="50" r="30"/>
-            <circle class="bullseye" cx="50" cy="50" r="15"/>
-            <circle class="dart" cx="48" cy="51" r="2"/>
-            <circle class="dart" cx="51" cy="48" r="2"/>
-            <circle class="dart" cx="49" cy="49" r="2"/>
-            <circle class="dart" cx="52" cy="52" r="2"/>
-            <circle class="dart" cx="47" cy="50" r="2"/>
-          </svg>
+    <div style="flex: 0.9; text-align: center;">
+      <div class="dt-tree">
+        <div class="dt-node">Outlook</div>
+        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+          <span>Sunny</span><span>Overcast</span><span>Rain</span>
         </div>
-        <div class="fragment">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
-            <circle class="ring" cx="50" cy="50" r="45"/>
-            <circle class="ring" cx="50" cy="50" r="30"/>
-            <circle class="bullseye" cx="50" cy="50" r="15"/>
-            <circle class="dart" cx="35" cy="42" r="2"/>
-            <circle class="dart" cx="62" cy="55" r="2"/>
-            <circle class="dart" cx="40" cy="65" r="2"/>
-            <circle class="dart" cx="58" cy="38" r="2"/>
-            <circle class="dart" cx="50" cy="50" r="2"/>
-          </svg>
-        </div>
-        <div class="row-header">high bias</div>
-        <div class="fragment">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
-            <circle class="ring" cx="50" cy="50" r="45"/>
-            <circle class="ring" cx="50" cy="50" r="30"/>
-            <circle class="bullseye" cx="50" cy="50" r="15"/>
-            <circle class="dart" cx="75" cy="22" r="2"/>
-            <circle class="dart" cx="78" cy="25" r="2"/>
-            <circle class="dart" cx="77" cy="20" r="2"/>
-            <circle class="dart" cx="74" cy="25" r="2"/>
-            <circle class="dart" cx="76" cy="23" r="2"/>
-          </svg>
-        </div>
-        <div class="fragment">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
-            <circle class="ring" cx="50" cy="50" r="45"/>
-            <circle class="ring" cx="50" cy="50" r="30"/>
-            <circle class="bullseye" cx="50" cy="50" r="15"/>
-            <circle class="dart" cx="20" cy="20" r="2"/>
-            <circle class="dart" cx="80" cy="25" r="2"/>
-            <circle class="dart" cx="25" cy="78" r="2"/>
-            <circle class="dart" cx="85" cy="75" r="2"/>
-            <circle class="dart" cx="55" cy="20" r="2"/>
-          </svg>
+        <div class="dt-level">
+          <div class="dt-branch">
+            <div class="dt-node">Humidity</div>
+            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+              <span>High</span><span>Normal</span>
+            </div>
+            <div class="dt-level">
+              <div class="dt-leaf no">No</div>
+              <div class="dt-leaf yes">Yes</div>
+            </div>
+          </div>
+          <div class="dt-branch">
+            <div class="dt-leaf yes">Yes</div>
+          </div>
+          <div class="dt-branch">
+            <div class="dt-node">Wind</div>
+            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+              <span>Weak</span><span>Strong</span>
+            </div>
+            <div class="dt-level">
+              <div class="dt-leaf yes">Yes</div>
+              <div class="dt-leaf no">No</div>
+            </div>
+          </div>
         </div>
       </div>
-      <p style="font-size: 0.72em; color: #6b7280; text-align: center; margin: 0.2em 0;">Dots = predictions from re-trained models. Bullseye = truth.</p>
+      <p style="font-size: 0.7em; color: #6b7280; margin: 0.2em;">Sketch only &mdash; we'll build the real tree shortly.</p>
     </div>
   </div>
 </section>
 
-<!-- 15. K-fold cross-validation -->
+<!-- ============================================================
+     Construction (3 slides)
+     ============================================================ -->
+
+<!-- 7. Classify an example -->
 <section>
-  <h2>K-fold cross-validation</h2>
-  <p style="font-size: 0.84em; margin: 0.15em 0;">How to pick the right complexity? Use a slice of training data as a <strong>surrogate test set</strong>.</p>
+  <h2>Classify an example: walk down the tree</h2>
+  <p style="font-size: 0.88em;">Given a new example, follow the tests from the root to a leaf:</p>
+  <div class="defbox" style="margin-top: 0.4em;">
+    <p style="margin: 0; font-size: 0.92em;">Example: <strong>Outlook = Overcast, Temp = Hot, Humidity = High, Wind = Weak.</strong></p>
+    <p style="margin: 0.3em 0 0 0; font-size: 0.88em; color: #1d4ed8;">Test Outlook \(\to\) value is Overcast \(\to\) leaf <strong style="color:#166534;">Yes</strong>. Done.</p>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; margin-top: 0.5em;"><strong>Observation:</strong> the path itself is a nested if-then-else program. Converting a tree to code is straightforward.</p>
+</section>
+
+<!-- 8. Build a tree given an order -->
+<section>
+  <h2>Build a tree given an order</h2>
+  <p style="font-size: 0.85em;">Pick a feature-testing order; recursively split the training examples by that feature's value.</p>
+  <div class="defbox">
+    <h3>An order for the Jeeves data</h3>
+    <ul style="margin: 0; font-size: 0.85em;">
+      <li>First, test <strong>Outlook</strong>.</li>
+      <li>For Outlook = Sunny, test <strong>Temp</strong>.</li>
+      <li>For Outlook = Rain, test <strong>Wind</strong>.</li>
+      <li>(For other branches, test Humidity before Wind.)</li>
+    </ul>
+  </div>
+  <p style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">Each example flows down the tree according to its feature values; leaves end up with subsets of the training set.</p>
+</section>
+
+<!-- 9. The resulting Jeeves DT -->
+<section>
+  <h2>The Jeeves decision tree</h2>
+  <div class="dt-tree">
+    <div class="dt-node">Outlook</div>
+    <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+      <span style="width:120px; text-align:center;">Sunny</span>
+      <span style="width:80px; text-align:center;">Overcast</span>
+      <span style="width:140px; text-align:center;">Rain</span>
+    </div>
+    <div class="dt-level">
+      <div class="dt-branch fragment" style="width: 200px;">
+        <div class="dt-node">Temp</div>
+        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+          <span>Hot</span><span>Mild</span><span>Cool</span>
+        </div>
+        <div class="dt-level">
+          <div class="dt-leaf no">No</div>
+          <div class="dt-branch">
+            <div class="dt-node">Humidity</div>
+            <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+              <span>High</span><span>Normal</span>
+            </div>
+            <div class="dt-level">
+              <div class="dt-leaf no">No</div>
+              <div class="dt-leaf yes">Yes</div>
+            </div>
+          </div>
+          <div class="dt-leaf yes">Yes</div>
+        </div>
+      </div>
+      <div class="dt-branch fragment">
+        <div class="dt-leaf yes">Yes</div>
+        <div style="font-size: 0.7em; color: #6b7280;">days 3, 7, 12, 13</div>
+      </div>
+      <div class="dt-branch fragment" style="width: 180px;">
+        <div class="dt-node">Wind</div>
+        <div class="dt-level" style="font-size: 0.7em; color: #6b7280;">
+          <span>Weak</span><span>Strong</span>
+        </div>
+        <div class="dt-level">
+          <div class="dt-leaf yes">Yes</div>
+          <div class="dt-leaf no">No</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.15em;">Built from the 14 training rows by following the feature order above.</p>
+</section>
+
+<!-- ============================================================
+     Stopping conditions (1 slide)
+     ============================================================ -->
+
+<!-- 10. When do we stop? Three cases -->
+<section>
+  <h2>When do we stop? Three cases</h2>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
+    <div class="task-card highlight">
+      <h3>All same class</h3>
+      <p>Every example at this node has the same label.</p>
+      <p style="font-size: 0.78em; color: #166534;">Return that label.</p>
+    </div>
+    <div class="task-card">
+      <h3>No features left</h3>
+      <p>We've tested every feature, but examples still disagree (noisy data).</p>
+      <p style="font-size: 0.78em; color: #1d4ed8;">Return the <strong>majority class</strong> at this node.</p>
+    </div>
+    <div class="task-card">
+      <h3>No examples left</h3>
+      <p>A feature value never appeared in training data &mdash; no examples reach this leaf.</p>
+      <p style="font-size: 0.78em; color: #1d4ed8;">Return the <strong>majority class at the parent node</strong>.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #6b7280; text-align: center; margin-top: 0.5em;">"No features left" handles noisy labels; "no examples left" handles unseen feature combinations.</p>
+</section>
+
+<!-- ============================================================
+     Algorithm + greedy choice (2 slides)
+     ============================================================ -->
+
+<!-- 11. The DT-learning algorithm -->
+<section>
+  <h2>The decision-tree learner</h2>
   <div class="algo-card">
-    <div class="algo-title">k-fold-CV(model, dataset, \(K\))</div>
+    <div class="algo-title">DT-Learner(examples, features)</div>
     <ol>
-      <li>Split training data into \(K\) equally sized folds.</li>
-      <li>For \(i = 1, \ldots, K\): train on the other \(K - 1\) folds; evaluate on fold \(i\).</li>
-      <li>Average the error over the \(K\) runs; keep the hyperparameters with the best average.</li>
+      <li>If all examples are in the same class, return that class.</li>
+      <li>Else if no features left, return the majority class of <em>examples</em>.</li>
+      <li>Else if no examples left, return the majority class at the <em>parent</em>.</li>
+      <li>Else: choose a feature \(f\); for each value \(v\) of \(f\),
+        <ul style="margin: 0.2em 0 0.2em 1em;">
+          <li>build an edge labeled \(v\);</li>
+          <li>recurse on examples with \(f = v\) and features \(\setminus \{f\}\).</li>
+        </ul>
+      </li>
     </ol>
   </div>
-  <div class="cv-folds">
-    <div class="row fragment">
-      <div class="row-label">i = 1</div>
-      <div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div>
-    </div>
-    <div class="row fragment">
-      <div class="row-label">i = 2</div>
-      <div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div>
-    </div>
-    <div class="row fragment">
-      <div class="row-label">i = 3</div>
-      <div class="fold">train</div><div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div>
-    </div>
-    <div class="legend">
-      <span><span class="swatch train"></span>training fold</span>
-      <span><span class="swatch valid"></span>validation fold</span>
-    </div>
-  </div>
+  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">The only open question: <strong>which feature do we pick to test?</strong></p>
 </section>
 
-<!-- 16. Overfitting chart + regularization -->
+<!-- 12. Which feature? Outlook vs Temp -->
 <section>
-  <h2>Diagnosing &amp; fighting overfitting</h2>
+  <h2>Which feature should we test?</h2>
+  <p style="font-size: 0.85em;">Pick the feature whose split makes the children most <strong>class-pure</strong>.</p>
+  <div class="split-bars">
+    <div class="split-card fragment">
+      <h3>Split on Outlook</h3>
+      <div class="bar-row">
+        <span class="bar-label">Sunny (5)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 2;"><span class="bar-text">2 yes</span></div>
+          <div class="bar-no"  style="flex: 3;"><span class="bar-text">3 no</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Overcast (4)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 4;"><span class="bar-text">4 yes</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Rain (5)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 3;"><span class="bar-text">3 yes</span></div>
+          <div class="bar-no"  style="flex: 2;"><span class="bar-text">2 no</span></div>
+        </div>
+      </div>
+      <p style="font-size: 0.78em; color: #166534; margin-top: 0.4em;">Overcast cleanly predicts <strong>Yes</strong> &mdash; one branch is pure!</p>
+    </div>
+    <div class="split-card fragment">
+      <h3>Split on Temp</h3>
+      <div class="bar-row">
+        <span class="bar-label">Hot (4)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 2;"><span class="bar-text">2 yes</span></div>
+          <div class="bar-no"  style="flex: 2;"><span class="bar-text">2 no</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Mild (6)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 4;"><span class="bar-text">4 yes</span></div>
+          <div class="bar-no"  style="flex: 2;"><span class="bar-text">2 no</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Cool (4)</span>
+        <div class="bar-container">
+          <div class="bar-yes" style="flex: 3;"><span class="bar-text">3 yes</span></div>
+          <div class="bar-no"  style="flex: 1;"><span class="bar-text">1 no</span></div>
+        </div>
+      </div>
+      <p style="font-size: 0.78em; color: #991b1b; margin-top: 0.4em;">Every Temp value still mixes Yes/No &mdash; messier.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.3em;">We need a metric to score "purity". Enter <strong>entropy</strong>.</p>
+</section>
+
+<!-- ============================================================
+     Entropy + information gain (3 slides)
+     ============================================================ -->
+
+<!-- 13. Entropy -->
+<section>
+  <h2>Entropy: measuring uncertainty</h2>
   <div class="two-col vcenter">
-    <div style="flex: 1.1; text-align: center;">
-      <svg viewBox="0 0 420 280" xmlns="http://www.w3.org/2000/svg" class="overfit-chart">
-        <line class="grid" x1="60" y1="60"  x2="380" y2="60"/>
-        <line class="grid" x1="60" y1="140" x2="380" y2="140"/>
-        <line class="grid" x1="60" y1="200" x2="380" y2="200"/>
-        <line class="axis" x1="60" y1="20" x2="60" y2="240"/>
-        <line class="axis" x1="60" y1="240" x2="380" y2="240"/>
-        <text class="axis-label" x="220" y="258" text-anchor="middle">model complexity</text>
-        <text class="axis-label" x="25" y="135" text-anchor="middle" transform="rotate(-90 25 135)">error</text>
-        <path class="curve-train" d="M 70 60 Q 200 165, 380 230"/>
-        <text class="axis-label" x="365" y="225" text-anchor="end" style="fill:#1d4ed8; font-weight:700;">training</text>
-        <path class="curve-valid" d="M 70 80 Q 130 200, 200 140 Q 280 95, 380 50"/>
-        <text class="axis-label" x="365" y="58" text-anchor="end" style="fill:#dc2626; font-weight:700;">validation</text>
+    <div style="flex: 1;">
+      <div class="defbox">
+        <h3>Entropy</h3>
+        <p style="text-align: center; margin: 0;">\(I\bigl(P(c_1), \ldots, P(c_k)\bigr) = -\sum_{i=1}^{k} P(c_i)\, \log_2 P(c_i)\)</p>
+        <p style="font-size: 0.78em; color: #6b7280; margin: 0.3em 0 0 0;">Bits of uncertainty. Bigger = less certain.</p>
+      </div>
+      <ul style="font-size: 0.82em; margin-top: 0.5em;">
+        <li><strong>\(I(0.5, 0.5) = 1\)</strong>: maximally uncertain.</li>
+        <li><strong>\(I(0.01, 0.99) \approx 0.08\)</strong>: nearly certain the second outcome.</li>
+        <li>\(I(1, 0) = I(0, 1) = 0\): no uncertainty at all.</li>
+      </ul>
+    </div>
+    <div style="flex: 0.9; text-align: center;">
+      <svg viewBox="0 0 340 220" xmlns="http://www.w3.org/2000/svg" class="entropy-plot">
+        <line class="grid" x1="40" y1="170" x2="300" y2="170"/>
+        <line class="grid" x1="40" y1="120" x2="300" y2="120"/>
+        <line class="grid" x1="40" y1="70"  x2="300" y2="70"/>
+        <line class="axis" x1="40" y1="20"  x2="40" y2="180"/>
+        <line class="axis" x1="40" y1="180" x2="300" y2="180"/>
+        <text class="axis-label" x="35" y="175" text-anchor="end">0</text>
+        <text class="axis-label" x="35" y="125" text-anchor="end">0.5</text>
+        <text class="axis-label" x="35" y="25"  text-anchor="end">1</text>
+        <text class="axis-label" x="40"  y="195" text-anchor="middle">0</text>
+        <text class="axis-label" x="170" y="195" text-anchor="middle">0.5</text>
+        <text class="axis-label" x="300" y="195" text-anchor="middle">1</text>
+        <text class="axis-label" x="170" y="212" text-anchor="middle" style="font-style: italic;">p</text>
+        <text class="axis-label" x="18" y="95"  text-anchor="middle" transform="rotate(-90 18 95)" style="font-style: italic;">H(p)</text>
+        <path class="curve" d="M 40 170 C 60 130, 90 80, 118 38 S 144 20, 170 20 S 222 38, 250 80 C 280 130, 295 160, 300 170"/>
         <g class="fragment">
-          <circle class="marker" cx="200" cy="140" r="4"/>
-          <text class="marker-label" x="200" y="130" text-anchor="middle" style="fill:#166534;">sweet spot</text>
+          <circle class="marker" cx="170" cy="20" r="4"/>
+          <text class="marker-label" x="178" y="18">max = 1</text>
         </g>
       </svg>
     </div>
-    <div style="flex: 0.9;">
-      <p style="font-size: 0.85em; margin: 0.1em 0;">Training error keeps dropping; <strong>validation</strong> error turns back up &mdash; that gap is overfitting.</p>
-      <div class="defbox fragment" style="margin-top: 0.4em;">
-        <h3 style="margin-top:0;">Regularization</h3>
-        <p style="margin:0; font-size: 0.8em;">Add a penalty on large weights to the loss:</p>
-        <p style="text-align:center; margin:0.2em 0; font-size:0.8em;">\(L(\mathbf{w}) + \lambda \lVert \mathbf{w}\rVert^2\)</p>
-        <p style="margin:0; font-size: 0.78em; color:#6b7280;">\(\lambda\) trades bias against variance; tune it with cross-validation.</p>
-      </div>
-    </div>
   </div>
 </section>
 
-<!-- 17. Double descent (modern caveat) -->
+<!-- 14. Expected information gain -->
 <section>
-  <h2>A modern twist: double descent</h2>
+  <h2>Expected information gain</h2>
+  <p style="font-size: 0.85em;">If we split on a feature with \(k\) values, weighted-average the children's entropies:</p>
+  <div class="defbox">
+    <h3>The three formulas</h3>
+    <p style="text-align: center; margin: 0.3em 0; font-size: 0.92em;">\(H_{\text{before}} = I\!\left(\tfrac{p}{p+n},\, \tfrac{n}{p+n}\right)\)</p>
+    <p style="text-align: center; margin: 0.3em 0; font-size: 0.92em;">\(H_{\text{after}} = \sum_{i=1}^{k} \dfrac{p_i + n_i}{p + n}\; I\!\left(\tfrac{p_i}{p_i+n_i},\, \tfrac{n_i}{p_i+n_i}\right)\)</p>
+    <p style="text-align: center; margin: 0.3em 0; font-size: 1em; color: #166534;">\(IG = H_{\text{before}} - H_{\text{after}}\)</p>
+  </div>
+  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Pick the feature with the <strong>largest</strong> information gain at every node.</p>
+</section>
+
+<!-- 15a. Jeeves walkthrough: H_before + IG Outlook -->
+<section>
+  <h2>Jeeves: gain at the root (Outlook)</h2>
+  <p style="font-size: 0.85em;">Training set has 9 Yes, 5 No \((p = 9,\ n = 5)\).</p>
+  <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; background: #f9fafb; padding: 0.7em 1em; border-radius: 4px; border-left: 4px solid #1d4ed8;">
+    <p style="margin: 0 0 0.3em 0;"><strong>Q3.</strong> &nbsp;\(H_{\text{before}} = I(9/14, 5/14) = ?\)</p>
+    <p class="fragment" style="margin: 0 0 0.8em 0; color: #166534;">\(\Rightarrow\) <strong>0.940</strong> bits.</p>
+    <p style="margin: 0 0 0.3em 0;"><strong>Q4.</strong> &nbsp;Split on <strong>Outlook</strong>: Sunny (2+/3&minus;), Overcast (4+/0&minus;), Rain (3+/2&minus;).</p>
+    <p class="fragment" style="margin: 0; color: #166534;">\(H_{\text{after}} = \tfrac{5}{14}(0.971) + \tfrac{4}{14}(0) + \tfrac{5}{14}(0.971) = 0.694\).</p>
+    <p class="fragment" style="margin: 0.2em 0 0 0; color: #166534;">\(\Rightarrow IG(\text{Outlook}) = 0.940 - 0.694 = \mathbf{0.247}\).</p>
+  </div>
+</section>
+
+<!-- 15b. Jeeves walkthrough: IG Humidity + winner -->
+<section>
+  <h2>Jeeves: gain at the root (Humidity) and winner</h2>
+  <p style="font-size: 0.85em;">Same \(H_{\text{before}} = 0.940\). Now try splitting on Humidity instead.</p>
+  <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; background: #f9fafb; padding: 0.7em 1em; border-radius: 4px; border-left: 4px solid #1d4ed8;">
+    <p style="margin: 0 0 0.3em 0;"><strong>Q5.</strong> &nbsp;Split on <strong>Humidity</strong>: High (3+/4&minus;), Normal (6+/1&minus;).</p>
+    <p class="fragment" style="margin: 0; color: #166534;">\(H_{\text{after}} = \tfrac{7}{14}(0.985) + \tfrac{7}{14}(0.591) = 0.788\).</p>
+    <p class="fragment" style="margin: 0.2em 0 0.8em 0; color: #166534;">\(\Rightarrow IG(\text{Humidity}) = 0.940 - 0.788 = \mathbf{0.151}\).</p>
+    <p style="margin: 0 0 0.3em 0;"><strong>Q6.</strong> &nbsp;Which feature do we pick as the root?</p>
+    <p class="fragment" style="margin: 0.2em 0 0 0; color: #1d4ed8;"><strong>Outlook</strong> &mdash; higher IG: \(0.247 > 0.151\).</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     ID3 + Wrap-up (2 slides)
+     ============================================================ -->
+
+<!-- 16. ID3 -->
+<section>
+  <h2>ID3: the canonical algorithm</h2>
+  <div class="algo-card">
+    <div class="algo-title">ID3(examples, features)</div>
+    <ol>
+      <li>Apply the three base cases from DT-Learner (same-class / no-features / no-examples).</li>
+      <li>For each feature \(f\) in features, compute \(IG(f)\) on the current examples.</li>
+      <li>Choose \(f^\star = \arg\max_{f}\, IG(f)\); make an internal node testing \(f^\star\).</li>
+      <li>For each value \(v\) of \(f^\star\): recurse on examples with \(f^\star = v\) and features \(\setminus \{f^\star\}\).</li>
+    </ol>
+  </div>
+  <p style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Greedy: pick the locally best feature at each step. Not always globally optimal &mdash; but fast and effective.</p>
+</section>
+
+<!-- ============================================================
+     Gini / CART + pruning (2 slides)
+     ============================================================ -->
+
+<!-- 16b. Gini impurity & CART -->
+<section>
+  <h2>Another purity score: Gini &amp; CART</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Information gain uses entropy. A popular alternative measures how often a random example would be <strong>mislabeled</strong> if labeled by the node's class distribution:</p>
+  <div class="two-col" style="align-items:stretch; margin-top: 0.2em;">
+    <div class="defbox" style="flex:1;">
+      <h3 style="margin-top:0;">Gini impurity</h3>
+      <p style="text-align:center; margin:0.2em 0;">\(G = 1 - \displaystyle\sum_{i=1}^{k} P(c_i)^2\)</p>
+      <p style="margin:0; font-size:0.78em; color:#6b7280;">\(0\) when pure; maximal when classes are balanced &mdash; same spirit as entropy, cheaper to compute (no logs).</p>
+    </div>
+    <div class="defbox" style="flex:1;">
+      <h3 style="margin-top:0;">CART</h3>
+      <p style="margin:0; font-size:0.82em;">The tree learner behind scikit-learn: <strong>binary</strong> splits, Gini (or entropy) for classification, squared error for regression.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.35em;">Entropy vs. Gini rarely changes the tree much &mdash; both reward pure children.</p>
+</section>
+
+<!-- 16c. Overfitting & pruning -->
+<section>
+  <h2>Trees overfit &mdash; so we prune</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Grown to purity, a tree memorizes the training set (one leaf per noisy example) and generalizes poorly &mdash; a first taste of <strong>overfitting</strong> (we'll formalize it next lecture).</p>
+  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
+    <div class="task-card">
+      <h3>Pre-pruning</h3>
+      <p style="font-size: 0.82em;">Stop growing early: cap <strong>max depth</strong>, require a <strong>minimum #examples</strong> per node, or a minimum gain to split.</p>
+    </div>
+    <div class="task-card">
+      <h3>Post-pruning</h3>
+      <p style="font-size: 0.82em;">Grow the full tree, then <strong>collapse</strong> branches that don't improve validation accuracy.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.35em;">Pick the depth / pruning strength with <strong>cross-validation</strong> (formalized in L17).</p>
+</section>
+
+<!-- ============================================================
+     Ensembles (2 slides)
+     ============================================================ -->
+
+<!-- 16d. Bagging & random forests -->
+<section>
+  <h2>Random forests: a crowd of trees</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">One deep tree is high-variance. <strong>Bagging</strong> averages many trees, each trained on a bootstrap sample; a <strong>random forest</strong> also splits on a random feature subset to decorrelate them.</p>
   <div class="two-col vcenter">
     <div style="flex: 1.05; text-align:center;">
-      <svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
-        <line class="axis" x1="60" y1="30" x2="60" y2="220"/>
-        <line class="axis" x1="60" y1="220" x2="430" y2="220"/>
-        <line class="thresh" x1="250" y1="45" x2="250" y2="220"/>
-        <text class="axis-label" x="250" y="248" text-anchor="middle">model size</text>
-        <text class="axis-label" x="28" y="125" text-anchor="middle" transform="rotate(-90 28 125)">test error</text>
-        <text class="axis-label" x="250" y="38" text-anchor="middle" style="fill:#6b7280;">interpolation threshold</text>
-        <path class="dd-classical" d="M 70 70 Q 160 165, 250 70"/>
-        <path class="dd-modern" d="M 250 70 Q 335 100, 420 160"/>
-        <text class="axis-label" x="120" y="62" style="fill:#1d4ed8; font-weight:700;">classical U</text>
-        <text class="axis-label" x="330" y="150" style="fill:#dc2626; font-weight:700;">2nd descent</text>
+      <svg viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:160px;">
+        <g stroke="#166534" stroke-width="1.6" fill="none">
+          <path d="M40 30 L25 60 M40 30 L55 60 M25 60 L18 90 M25 60 L34 90"/>
+          <path d="M150 30 L135 60 M150 30 L165 60 M165 60 L158 90 M165 60 L174 90"/>
+          <path d="M260 30 L245 60 M260 30 L275 60 M245 60 L238 90 M245 60 L254 90"/>
+        </g>
+        <circle cx="40" cy="26" r="6" fill="#dcfce7" stroke="#166534"/>
+        <circle cx="150" cy="26" r="6" fill="#dcfce7" stroke="#166534"/>
+        <circle cx="260" cy="26" r="6" fill="#dcfce7" stroke="#166534"/>
+        <text x="40" y="110" font-size="10" fill="#374151" text-anchor="middle">tree 1: Yes</text>
+        <text x="150" y="110" font-size="10" fill="#374151" text-anchor="middle">tree 2: Yes</text>
+        <text x="260" y="110" font-size="10" fill="#374151" text-anchor="middle">tree 3: No</text>
+        <path d="M40 118 L150 140 M150 118 L150 140 M260 118 L150 140" stroke="#9ca3af" stroke-width="1.2" fill="none"/>
+        <rect x="96" y="140" width="108" height="24" rx="4" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
+        <text x="150" y="156" font-size="11" fill="#1d4ed8" text-anchor="middle" font-weight="700">majority vote: Yes</text>
       </svg>
     </div>
     <div style="flex: 0.95;">
-      <p style="font-size: 0.86em; margin: 0.1em 0;">The classical U-curve isn't the whole story.</p>
-      <ul style="font-size: 0.82em; margin: 0.3em 0 0 1em;">
-        <li class="fragment">Past the point where the model fits training data <em>exactly</em>, test error can <strong>fall again</strong>.</li>
-        <li class="fragment">Very large models (deep nets, LLMs) often generalize <em>better</em>, not worse.</li>
-        <li class="fragment">Why? Still an active research question &mdash; "bigger" changed the rules.</li>
+      <ul style="font-size: 0.82em; margin: 0.1em 0 0 1em;">
+        <li class="fragment"><strong>Classification:</strong> majority vote.</li>
+        <li class="fragment"><strong>Regression:</strong> average the predictions.</li>
+        <li class="fragment">Averaging cancels individual trees' errors &rarr; <strong>lower variance</strong>, strong off-the-shelf accuracy.</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     Wrap-up (2 slides)
-     ============================================================ -->
-
-<!-- 18. Learning goals (recap) -->
-<section class="center-slide">
-  <h2>Learning goals (recap)</h2>
-  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0;">
-    <li>&#10003; &nbsp;Name the types of learning; classification vs regression.</li>
-    <li>&#10003; &nbsp;Supervised learning = <strong>model + loss + fit</strong>.</li>
-    <li>&#10003; &nbsp;<strong>Linear</strong> and <strong>logistic regression</strong>; least squares &amp; gradient descent.</li>
-    <li>&#10003; &nbsp;<strong>Cross-entropy</strong> and <strong>softmax</strong> for classification.</li>
-    <li>&#10003; &nbsp;Control overfitting with <strong>cross-validation</strong> and <strong>regularization</strong>.</li>
+<!-- 16e. Gradient boosting -->
+<section>
+  <h2>Gradient boosting: fix your own mistakes</h2>
+  <p style="font-size: 0.85em; margin: 0.1em 0;">Instead of averaging independent trees, <strong>add trees in sequence</strong>, each one correcting the residual errors of the trees so far:</p>
+  <p style="text-align:center; margin: 0.25em 0;">\(F_m(x) = F_{m-1}(x) + \gamma\, h_m(x)\)</p>
+  <ul style="font-size: 0.82em; margin: 0.2em 0 0 1.2em;">
+    <li class="fragment">\(h_m\) is a small tree fit to the <strong>gradient of the loss</strong> (for squared loss, the residuals).</li>
+    <li class="fragment">\(\gamma\) is a small learning rate &mdash; many shallow trees, added slowly.</li>
+    <li class="fragment"><strong>XGBoost / LightGBM</strong> are the go-to winners on <strong>tabular</strong> data today.</li>
   </ul>
+  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.3em;">Forests reduce <em>variance</em> (parallel); boosting reduces <em>bias</em> (sequential).</p>
 </section>
 
-<!-- 19. Next: unsupervised learning -->
+<!-- 17. Learning goals (recap) + next -->
 <section class="center-slide">
-  <h2>Next: unsupervised &amp; representation learning</h2>
-  <p style="font-size: 0.92em;">Today, labels guided every hypothesis. Without labels, what <em>structure</em> can we still find in data?</p>
-  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L17: clustering (k-means), PCA, autoencoders, and learned representations.</p>
+  <h2>Learning goals (recap) &mdash; Next: supervised learning</h2>
+  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0; max-width: 80%; margin-right: auto;">
+    <li>&#10003; &nbsp;Describe the <strong>components</strong> of a decision tree.</li>
+    <li>&#10003; &nbsp;<strong>Construct</strong> a tree given a feature-testing order.</li>
+    <li>&#10003; &nbsp;Compute <strong>test-set accuracy</strong>.</li>
+    <li>&#10003; &nbsp;Compute <strong>entropy</strong> and <strong>information gain</strong>; trace the <strong>DT learner</strong>.</li>
+    <li>&#10003; &nbsp;Use <strong>Gini / CART</strong>; control overfitting with <strong>pruning</strong>.</li>
+    <li>&#10003; &nbsp;Combine trees: <strong>random forests</strong> &amp; <strong>gradient boosting</strong>.</li>
+  </ul>
+  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L17: the general recipe behind supervised learning &mdash; <strong>regression, loss functions, and generalization</strong>.</p>
 </section>
 
 </div>
