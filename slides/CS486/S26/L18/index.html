@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 18 — Unsupervised &amp; Representation Learning</title>
+  <title>CS 486/686 Lecture 18 - Neural Networks and Learned Embeddings</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 18: Unsupervised and Representation Learning — clustering, k-means, PCA, autoencoders, and self-supervised / contrastive learning (CLIP). Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 18: Neural networks and learned embeddings - hidden representations, backpropagation, embeddings, PCA/t-SNE, k-means, autoencoders, and CLIP-style contrastive learning. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="../L17/custom.css">
-  <link rel="stylesheet" href="custom.css">
+  <link rel="stylesheet" href="../L17/custom.css?v=3">
+  <link rel="stylesheet" href="custom.css?v=3">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -35,589 +35,409 @@
 
 <svg width="0" height="0" style="position:absolute;">
   <defs>
-    <marker id="arrow-l17" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+    <marker id="arrow-l18" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#475569"/>
     </marker>
   </defs>
 </svg>
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Unsupervised &amp; Representation Learning</div>
+  <div class="course-title">CS 486/686<br>Neural Networks and Learned Embeddings</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 18</p>
-  <p class="credit">RN 21.7.1 &middot; PM 10.2 &middot; GBC 14.1</p>
+  <p class="credit">From fixed features to learned vector representations</p>
 </section>
 
-<!-- 1b. Recorded asynchronous lecture (instructor at ICML) -->
+<!-- 2. Recorded asynchronous lecture -->
 <section class="center-slide">
   <h2>Recorded lecture (asynchronous)</h2>
   <div class="defbox" style="max-width: 86%; margin: 0.6em auto; text-align: left;">
-    <p style="margin: 0 0 0.45em 0;">&#127909; This lecture is <strong>pre-recorded</strong> &mdash; I'm away at <strong>ICML</strong> this week, so there's no in-person class today. Watch at your own pace.</p>
-    <p style="margin: 0 0 0.45em 0;">&#128197; <strong>Due today (Thu Jul 9):</strong> Assignment 2 (and Chat 9 is now out).</p>
-    <p style="margin: 0;">&#128172; Questions? Post on <strong>Piazza</strong> &mdash; the TAs are available, and I'll follow up when I'm back.</p>
+    <p style="margin: 0 0 0.45em 0;">&#127909; This lecture is <strong>pre-recorded</strong> - I'm away at <strong>ICML</strong> this week, so there's no in-person class today. Watch at your own pace.</p>
+    <p style="margin: 0 0 0.45em 0;">&#128197; <strong>Due today (Thu Jul 9):</strong> Assignment 2. Chat 9 is now out.</p>
+    <p style="margin: 0;">&#128172; Questions? Post on <strong>Piazza</strong> - the TAs are available, and I'll follow up when I'm back.</p>
   </div>
 </section>
 
-<!-- 2. Learning goals -->
+<!-- 3. Setup -->
 <section class="center-slide">
-  <div class="course-breadcrumb">
-    <span class="bc-pill search">Search</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill uncert">Uncertainty</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill decision">Decisions</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill learn current">Learning</span>
+  <h2>The problem with fixed features</h2>
+  <p style="font-size:1em;">L17 assumed the useful input vector already exists.</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:90%; margin:0.6em auto;">
+    <div class="task-card"><h3>pixels</h3><p>Where is the cat ear?</p></div>
+    <div class="task-card fragment"><h3>word IDs</h3><p>Why is dog close to puppy?</p></div>
+    <div class="task-card fragment"><h3>screenshots</h3><p>Which region is a button?</p></div>
   </div>
-  <h2>Learning goals</h2>
-  <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Understand what <strong>unsupervised learning</strong> is.</li>
-    <li class="fragment">Trace the <strong>k-means</strong> clustering algorithm.</li>
-    <li class="fragment">Perform <strong>PCA</strong>: mean-center, covariance, eigendecomposition.</li>
-    <li class="fragment">Explain <strong>autoencoders</strong> and <strong>self-supervised / contrastive</strong> representations.</li>
-  </ul>
+  <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">Modern ML learns the features too.</p>
 </section>
 
-<!-- 3. Two big unsupervised tasks -->
-<section>
-  <h2>Two big unsupervised tasks</h2>
-  <p style="font-size: 0.88em;">No labels &mdash; only the raw data \(\{x_i\}\). What can we learn?</p>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
-    <div class="task-card">
-      <h3>Representation learning</h3>
-      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" class="l17-icon" aria-hidden="true">
-        <circle cx="22" cy="20" r="3" fill="#1d4ed8"/>
-        <circle cx="32" cy="14" r="3" fill="#1d4ed8"/>
-        <circle cx="28" cy="28" r="3" fill="#1d4ed8"/>
-        <circle cx="60" cy="36" r="3" fill="#16a34a"/>
-        <circle cx="70" cy="30" r="3" fill="#16a34a"/>
-        <circle cx="66" cy="44" r="3" fill="#16a34a"/>
-        <circle cx="98" cy="22" r="3" fill="#dc2626"/>
-        <circle cx="108" cy="16" r="3" fill="#dc2626"/>
-        <circle cx="104" cy="30" r="3" fill="#dc2626"/>
-        <path d="M 120 32 L 142 32" stroke="#1f2937" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
-        <text x="151" y="35" font-size="10" fill="#1f2937" font-weight="700">z</text>
-        <text x="80" y="58" font-size="9" fill="#6b7280" text-anchor="middle">compress</text>
-      </svg>
-      <p>Find a low-dimensional summary of each example.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">Clustering, PCA, autoencoders.</p>
-    </div>
-    <div class="task-card">
-      <h3>Generative modelling</h3>
-      <svg viewBox="0 0 160 60" xmlns="http://www.w3.org/2000/svg" class="l17-icon" aria-hidden="true">
-        <rect x="14" y="14" width="22" height="32" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4" rx="2"/>
-        <text x="25" y="34" font-size="9" fill="#1d4ed8" text-anchor="middle">p(x)</text>
-        <path d="M 42 30 L 64 30" stroke="#1f2937" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
-        <rect x="70"  y="18" width="20" height="24" fill="#fde68a" stroke="#92400e" stroke-width="1"/>
-        <rect x="96"  y="18" width="20" height="24" fill="#fee2e2" stroke="#dc2626" stroke-width="1"/>
-        <rect x="122" y="18" width="20" height="24" fill="#dcfce7" stroke="#166534" stroke-width="1"/>
-        <text x="106" y="58" font-size="9" fill="#6b7280" text-anchor="middle">new samples</text>
-      </svg>
-      <p>Learn the data distribution so we can <em>sample new examples</em>.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">GANs, VAEs, diffusion.</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Today: clustering &amp; PCA, then how modern models learn <strong>representations</strong> without labels.</p>
+<!-- 4. Hidden representations -->
+<section class="center-slide">
+  <h2>Neural nets learn representations</h2>
+  <svg viewBox="0 0 800 150" xmlns="http://www.w3.org/2000/svg" style="width:82%; max-height:180px;">
+    <g font-size="20" font-weight="700" text-anchor="middle">
+      <rect x="20" y="45" width="150" height="56" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="95" y="80" fill="#1e3a8a">raw input</text>
+      <rect x="245" y="45" width="190" height="56" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="340" y="80" fill="#92400e">hidden features</text>
+      <rect x="510" y="45" width="170" height="56" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="595" y="80" fill="#166534">prediction</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.5" marker-end="url(#arrow-l18)">
+      <line x1="170" y1="73" x2="240" y2="73"/><line x1="435" y1="73" x2="505" y2="73"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.9em;color:#6b7280;">The hidden layer is not just computation: it is a learned view of the input.</p>
 </section>
 
-<!-- ============================================================
-     Clustering setup (1 slide)
-     ============================================================ -->
-
-<!-- 4. Clustering: hard vs soft -->
+<!-- 5. Neuron -->
 <section>
-  <h2>Clustering: hard vs soft</h2>
-  <p style="font-size: 0.88em;">Group training examples into <strong>clusters</strong>, treating them like discovered categories.</p>
+  <h2>A neuron is a feature detector</h2>
   <div class="two-col vcenter">
-    <div style="flex: 1.2;">
-      <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
-        <div class="task-card">
-          <h3>Hard clustering</h3>
-          <p style="font-size: 0.82em;">Each \(x\) gets <em>exactly one</em> cluster.</p>
-          <p style="text-align: center; font-family: ui-monospace, Menlo, monospace;">\(\text{class}(x) = c\)</p>
-        </div>
-        <div class="task-card">
-          <h3>Soft clustering</h3>
-          <p style="font-size: 0.82em;">Each \(x\) gets a <em>distribution</em> over clusters.</p>
-          <p style="text-align: center; font-family: ui-monospace, Menlo, monospace;">\(\text{class}(x) \sim P(C \mid x)\)</p>
-        </div>
-      </div>
-    </div>
-    <div style="flex: 0.8; text-align: center;">
-      <svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
-        <circle class="point c1" cx="55"  cy="60"  r="6"/>
-        <circle class="point c1" cx="40"  cy="80"  r="6"/>
-        <circle class="point c1" cx="60"  cy="95"  r="6"/>
-        <circle class="point c1" cx="75"  cy="75"  r="6"/>
-        <circle class="point c1" cx="50"  cy="105" r="6"/>
-        <circle class="point c2" cx="155" cy="50"  r="6"/>
-        <circle class="point c2" cx="175" cy="70"  r="6"/>
-        <circle class="point c2" cx="150" cy="85"  r="6"/>
-        <circle class="point c2" cx="180" cy="55"  r="6"/>
-        <circle class="point c3" cx="100" cy="155" r="6"/>
-        <circle class="point c3" cx="120" cy="170" r="6"/>
-        <circle class="point c3" cx="95"  cy="175" r="6"/>
-        <circle class="point c3" cx="135" cy="150" r="6"/>
-        <circle class="point c3" cx="115" cy="180" r="6"/>
+    <div style="flex:1.05;text-align:center;">
+      <svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:260px;">
+        <g fill="#dbeafe" stroke="#1d4ed8" stroke-width="2">
+          <circle cx="50" cy="55" r="18"/><circle cx="50" cy="110" r="18"/><circle cx="50" cy="165" r="18"/>
+        </g>
+        <text x="50" y="60" text-anchor="middle" font-size="14">x1</text><text x="50" y="115" text-anchor="middle" font-size="14">x2</text><text x="50" y="170" text-anchor="middle" font-size="14">x3</text>
+        <g stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)">
+          <line x1="70" y1="55" x2="185" y2="105"/><line x1="70" y1="110" x2="185" y2="110"/><line x1="70" y1="165" x2="185" y2="115"/>
+        </g>
+        <circle cx="220" cy="110" r="34" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+        <text x="220" y="116" text-anchor="middle" font-size="16" font-weight="700">\(\sum\)</text>
+        <rect x="295" y="86" width="70" height="48" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="330" y="116" text-anchor="middle" font-size="16" font-weight="700">g</text>
+        <line x1="254" y1="110" x2="290" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
       </svg>
-      <p style="font-size: 0.7em; color: #6b7280; margin: 0;">Each color is a discovered cluster &mdash; no labels were given.</p>
+    </div>
+    <div style="flex:0.95;">
+      <p style="text-align:center;">\(z = w^\top x + b\)</p>
+      <p style="text-align:center;">\(a = g(z)\)</p>
+      <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">Weights decide what pattern to detect.</p>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     K-means (4 slides)
-     ============================================================ -->
+<!-- 6. Nonlinearity -->
+<section class="center-slide">
+  <h2>Why add a nonlinearity?</h2>
+  <p style="font-size:1em;">Stacking linear layers is still linear.</p>
+  <p class="fragment" style="font-size:1.05em;text-align:center;">\(W_2(W_1x)= (W_2W_1)x\)</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:76%; margin:0.6em auto;">
+    <div class="task-card fragment"><h3>ReLU</h3><p>\(g(x)=\max(0,x)\)</p></div>
+    <div class="task-card fragment"><h3>GELU / SiLU</h3><p>smooth modern defaults</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em;color:#6b7280;">Nonlinearity lets layers bend the representation.</p>
+</section>
 
-<!-- 5. k-Means: centroids + distance -->
+<!-- 7. One hidden layer -->
 <section>
-  <h2>k-Means: centroids and distance</h2>
-  <p style="font-size: 0.85em;"><strong>Inputs:</strong> number of clusters \(k\) and \(m\) training examples \(x_i \in \mathbb{R}^n\). Each cluster has a <strong>centroid</strong> \(c \in \mathbb{R}^n\); each \(x_i\) is assigned to its closest centroid.</p>
+  <h2>One hidden layer = learned feature map</h2>
   <div class="two-col vcenter">
-    <div style="flex: 1;">
-      <div class="defbox">
-        <h3>Euclidean distance (L2)</h3>
-        <p style="text-align: center; margin: 0;">\(d(c, x) = \sqrt{\sum_{j = 1}^{n} (c_j - x_j)^2}\)</p>
-      </div>
-      <ul style="font-size: 0.82em; margin-top: 0.5em;">
-        <li><strong>Hard clustering</strong>: each example goes to one centroid.</li>
-        <li>Centroids live in the same feature space as the data.</li>
-      </ul>
-    </div>
-    <div style="flex: 1; text-align: center;">
-      <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
-        <circle class="point c1" cx="55"  cy="55"  r="5"/>
-        <circle class="point c1" cx="45"  cy="70"  r="5"/>
-        <circle class="point c1" cx="65"  cy="60"  r="5"/>
-        <circle class="point c1" cx="55"  cy="80"  r="5"/>
-        <circle class="point c2" cx="165" cy="55"  r="5"/>
-        <circle class="point c2" cx="175" cy="70"  r="5"/>
-        <circle class="point c2" cx="155" cy="75"  r="5"/>
-        <circle class="point c2" cx="180" cy="50"  r="5"/>
-        <circle class="point c3" cx="110" cy="150" r="5"/>
-        <circle class="point c3" cx="125" cy="160" r="5"/>
-        <circle class="point c3" cx="95"  cy="165" r="5"/>
-        <circle class="point c3" cx="115" cy="175" r="5"/>
-        <polygon class="centroid c1" points="55,67 60,77 50,77"/>
-        <polygon class="centroid c2" points="167,63 172,73 162,73"/>
-        <polygon class="centroid c3" points="111,164 116,174 106,174"/>
+    <div style="flex:1.05;text-align:center;">
+      <svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:260px;">
+        <g stroke="#cbd5e1" stroke-width="1.5">
+          <line x1="65" y1="70" x2="205" y2="45"/><line x1="65" y1="70" x2="205" y2="105"/><line x1="65" y1="70" x2="205" y2="165"/>
+          <line x1="65" y1="150" x2="205" y2="45"/><line x1="65" y1="150" x2="205" y2="105"/><line x1="65" y1="150" x2="205" y2="165"/>
+          <line x1="235" y1="45" x2="345" y2="110"/><line x1="235" y1="105" x2="345" y2="110"/><line x1="235" y1="165" x2="345" y2="110"/>
+        </g>
+        <g fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"><circle cx="50" cy="70" r="15"/><circle cx="50" cy="150" r="15"/></g>
+        <g fill="#fef3c7" stroke="#d97706" stroke-width="2"><circle cx="220" cy="45" r="17"/><circle cx="220" cy="105" r="17"/><circle cx="220" cy="165" r="17"/></g>
+        <g fill="#dcfce7" stroke="#16a34a" stroke-width="2"><circle cx="360" cy="110" r="17"/></g>
+        <text x="50" y="195" text-anchor="middle" fill="#1d4ed8" font-size="13">input</text>
+        <text x="220" y="195" text-anchor="middle" fill="#92400e" font-size="13">learned features</text>
+        <text x="360" y="195" text-anchor="middle" fill="#166534" font-size="13">output</text>
       </svg>
-      <p style="font-size: 0.72em; color: #6b7280; margin: 0;">Triangles = current centroids; circles = data points.</p>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;">Each hidden unit learns a detector.</p>
+      <p class="fragment" style="font-size:0.9em;">The output layer combines detectors.</p>
+      <p class="fragment" style="font-size:0.86em;color:#6b7280;">This is how fixed features become learned features.</p>
     </div>
   </div>
 </section>
 
-<!-- 6. k-Means: the alternating algorithm -->
+<!-- 8. XOR -->
 <section>
-  <h2>The k-means algorithm</h2>
-  <p style="font-size: 0.85em;">Alternate two steps until convergence:</p>
-  <div class="algo-card">
-    <div class="algo-title">k-means(\(X,\ k\))</div>
-    <ol>
-      <li>Initialize \(k\) centroids \(C[0\ldots k-1]\) randomly.</li>
-      <li>Repeat until assignments stop changing:
-        <ul style="margin: 0.2em 0 0.2em 1em;">
-          <li><strong>Assign step:</strong> for each example \(i\), \(\ y[i] \leftarrow \arg\min_{c}\, d\!\bigl(C[c],\, X[i]\bigr)\).</li>
-          <li><strong>Update step:</strong> for each cluster \(c\), \(\ C[c] \leftarrow\) mean of all \(X[i]\) with \(y[i] = c\).</li>
-        </ul>
-      </li>
-    </ol>
-  </div>
-  <ul style="font-size: 0.8em; margin-top: 0.3em;">
-    <li>Guaranteed to converge with L2 distance.</li>
-    <li>Not guaranteed to find the global optimum.</li>
-    <li><strong>Mitigate:</strong> random restarts, feature scaling.</li>
-  </ul>
-</section>
-
-<!-- 7. K-means iteration visualization -->
-<section>
-  <h2>k-Means in action</h2>
-  <p style="font-size: 0.85em;">Same 12 points, three snapshots: random init &rarr; mid-iteration &rarr; converged.</p>
-  <div class="kmeans-panels">
-    <div class="panel fragment">
-      <div class="panel-label">Iteration 0 (random init)</div>
-      <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
-        <circle class="point c2" cx="40"  cy="50"  r="5"/>
-        <circle class="point c3" cx="55"  cy="40"  r="5"/>
-        <circle class="point c1" cx="50"  cy="65"  r="5"/>
-        <circle class="point c2" cx="35"  cy="75"  r="5"/>
-        <circle class="point c1" cx="145" cy="50"  r="5"/>
-        <circle class="point c3" cx="160" cy="65"  r="5"/>
-        <circle class="point c2" cx="155" cy="40"  r="5"/>
-        <circle class="point c1" cx="170" cy="55"  r="5"/>
-        <circle class="point c3" cx="95"  cy="140" r="5"/>
-        <circle class="point c1" cx="110" cy="150" r="5"/>
-        <circle class="point c2" cx="85"  cy="155" r="5"/>
-        <circle class="point c3" cx="120" cy="135" r="5"/>
-        <polygon class="centroid c1" points="120,80 125,90 115,90"/>
-        <polygon class="centroid c2" points="70,100 75,110 65,110"/>
-        <polygon class="centroid c3" points="100,40 105,50 95,50"/>
-      </svg>
-    </div>
-    <div class="panel fragment">
-      <div class="panel-label">Iteration 2 (mid)</div>
-      <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
-        <circle class="point c1" cx="40"  cy="50"  r="5"/>
-        <circle class="point c1" cx="55"  cy="40"  r="5"/>
-        <circle class="point c1" cx="50"  cy="65"  r="5"/>
-        <circle class="point c1" cx="35"  cy="75"  r="5"/>
-        <circle class="point c2" cx="145" cy="50"  r="5"/>
-        <circle class="point c2" cx="160" cy="65"  r="5"/>
-        <circle class="point c2" cx="155" cy="40"  r="5"/>
-        <circle class="point c2" cx="170" cy="55"  r="5"/>
-        <circle class="point c3" cx="95"  cy="140" r="5"/>
-        <circle class="point c3" cx="110" cy="150" r="5"/>
-        <circle class="point c3" cx="85"  cy="155" r="5"/>
-        <circle class="point c1" cx="120" cy="135" r="5"/>
-        <polygon class="centroid c1" points="55,75 60,85 50,85"/>
-        <polygon class="centroid c2" points="158,55 163,65 153,65"/>
-        <polygon class="centroid c3" points="97,148 102,158 92,158"/>
-      </svg>
-    </div>
-    <div class="panel fragment">
-      <div class="panel-label">Converged</div>
-      <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
-        <circle class="point c1" cx="40"  cy="50"  r="5"/>
-        <circle class="point c1" cx="55"  cy="40"  r="5"/>
-        <circle class="point c1" cx="50"  cy="65"  r="5"/>
-        <circle class="point c1" cx="35"  cy="75"  r="5"/>
-        <circle class="point c2" cx="145" cy="50"  r="5"/>
-        <circle class="point c2" cx="160" cy="65"  r="5"/>
-        <circle class="point c2" cx="155" cy="40"  r="5"/>
-        <circle class="point c2" cx="170" cy="55"  r="5"/>
-        <circle class="point c3" cx="95"  cy="140" r="5"/>
-        <circle class="point c3" cx="110" cy="150" r="5"/>
-        <circle class="point c3" cx="85"  cy="155" r="5"/>
-        <circle class="point c3" cx="120" cy="135" r="5"/>
-        <polygon class="centroid c1" points="45,57 50,67 40,67"/>
-        <polygon class="centroid c2" points="157,52 162,62 152,62"/>
-        <polygon class="centroid c3" points="102,145 107,155 97,155"/>
-      </svg>
-    </div>
-  </div>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.3em;">Centroids drift; assignments stabilize; cost decreases monotonically.</p>
-</section>
-
-<!-- 8. K-means worked example -->
-<section>
-  <h2>One iteration: a numeric walk-through</h2>
-  <p style="font-size: 0.78em; margin: 0.2em 0;">\(k = 2\), Euclidean (squared) distance. Data + initial centroids:</p>
+  <h2>XOR: why hidden features help</h2>
   <div class="two-col vcenter">
-    <div style="flex: 1;">
-      <table class="factor-table" style="font-size: 0.72em;">
-        <thead><tr><th>example</th><th>\(x_1\)</th><th>\(x_2\)</th><th>\(x_3\)</th></tr></thead>
+    <div style="flex:1;text-align:center;">
+      <svg viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:260px;">
+        <line x1="55" y1="190" x2="190" y2="190" stroke="#6b7280"/><line x1="55" y1="190" x2="55" y2="55" stroke="#6b7280"/>
+        <circle cx="65" cy="180" r="7" fill="#dc2626"/><circle cx="175" cy="180" r="7" fill="#16a34a"/><circle cx="65" cy="70" r="7" fill="#16a34a"/><circle cx="175" cy="70" r="7" fill="#dc2626"/>
+        <text x="123" y="215" text-anchor="middle" font-size="13" fill="#6b7280">raw input: not linearly separable</text>
+        <g class="fragment">
+          <line x1="215" y1="120" x2="260" y2="120" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+          <line x1="285" y1="190" x2="345" y2="190" stroke="#6b7280"/><line x1="285" y1="190" x2="285" y2="55" stroke="#6b7280"/>
+          <circle cx="300" cy="170" r="7" fill="#dc2626"/><circle cx="330" cy="78" r="7" fill="#16a34a"/><circle cx="315" cy="95" r="7" fill="#16a34a"/><circle cx="300" cy="155" r="7" fill="#dc2626"/>
+          <line x1="290" y1="125" x2="342" y2="125" stroke="#1d4ed8" stroke-width="2"/>
+          <text x="315" y="215" text-anchor="middle" font-size="13" fill="#1d4ed8">hidden features make it easy</text>
+        </g>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;">A hidden layer can transform the space.</p>
+      <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">Then a simple output layer can solve the task.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. MLP equations -->
+<section class="center-slide">
+  <h2>An MLP is a differentiable program</h2>
+  <p style="font-size:1.05em;">\(h = g(W_1x+b_1)\)</p>
+  <p style="font-size:1.05em;">\(\hat y = \mathrm{softmax}(W_2h+b_2)\)</p>
+  <p class="fragment" style="font-size:0.9em;color:#6b7280;">Every operation is differentiable, so L17's training loop applies unchanged.</p>
+</section>
+
+<!-- 10. Code -->
+<section>
+  <h2>The code barely changes</h2>
+  <pre style="font-size:0.58em; width:78%; margin:0.25em auto;"><code>model = nn.Sequential(
+    nn.Linear(d_in, 64),
+    nn.ReLU(),
+    nn.Linear(64, n_classes),
+)
+
+loss = loss_fn(model(x), y)
+loss.backward()
+optimizer.step()</code></pre>
+  <p class="fragment" style="font-size:0.86em;color:#1d4ed8;text-align:center;">The function is richer; the training pattern is the same.</p>
+</section>
+
+<!-- 11. Backprop -->
+<section class="center-slide">
+  <h2>Backpropagation assigns credit</h2>
+  <svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" style="width:82%;max-height:210px;">
+    <g font-size="18" font-weight="700" text-anchor="middle">
+      <rect x="40" y="65" width="120" height="50" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="100" y="97" fill="#1e3a8a">input</text>
+      <rect x="230" y="65" width="150" height="50" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="305" y="97" fill="#92400e">hidden</text>
+      <rect x="450" y="65" width="130" height="50" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="515" y="97" fill="#166534">loss</text>
+    </g>
+    <g stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#arrow-l18)">
+      <line x1="160" y1="90" x2="225" y2="90"/><line x1="380" y1="90" x2="445" y2="90"/>
+    </g>
+    <g class="fragment" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow-l18)">
+      <line x1="450" y1="130" x2="380" y2="130"/><line x1="230" y1="130" x2="160" y2="130"/>
+    </g>
+    <text x="305" y="38" text-anchor="middle" font-size="16" fill="#1d4ed8">forward: compute prediction</text>
+    <text class="fragment" x="305" y="170" text-anchor="middle" font-size="16" fill="#dc2626">backward: how should each weight change?</text>
+  </svg>
+</section>
+
+<!-- 12. What hidden layers learn -->
+<section class="center-slide">
+  <h2>What do hidden layers learn?</h2>
+  <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg" style="width:86%;max-height:190px;">
+    <g font-size="17" font-weight="700" text-anchor="middle">
+      <rect x="20" y="50" width="110" height="46" rx="7" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/><text x="75" y="79" fill="#1e3a8a">pixels</text>
+      <rect x="175" y="50" width="110" height="46" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="230" y="79" fill="#166534">edges</text>
+      <rect x="330" y="50" width="110" height="46" rx="7" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="385" y="79" fill="#92400e">parts</text>
+      <rect x="485" y="50" width="120" height="46" rx="7" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="545" y="79" fill="#991b1b">objects</text>
+      <rect x="650" y="50" width="90" height="46" rx="7" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/><text x="695" y="79" fill="#5b21b6">label</text>
+    </g>
+    <g stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)">
+      <line x1="130" y1="73" x2="170" y2="73"/><line x1="285" y1="73" x2="325" y2="73"/><line x1="440" y1="73" x2="480" y2="73"/><line x1="605" y1="73" x2="645" y2="73"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.88em;color:#6b7280;">Deep models compose simple features into useful abstractions.</p>
+</section>
+
+<!-- 13. CNN -->
+<section>
+  <h2>CNNs learn visual features</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;text-align:center;">
+      <svg viewBox="0 0 380 185" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:220px;">
+        <rect x="25" y="25" width="110" height="110" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
+        <g stroke="#cbd5e1"><line x1="47" y1="25" x2="47" y2="135"/><line x1="69" y1="25" x2="69" y2="135"/><line x1="91" y1="25" x2="91" y2="135"/><line x1="113" y1="25" x2="113" y2="135"/><line x1="25" y1="47" x2="135" y2="47"/><line x1="25" y1="69" x2="135" y2="69"/><line x1="25" y1="91" x2="135" y2="91"/><line x1="25" y1="113" x2="135" y2="113"/></g>
+        <rect x="25" y="25" width="66" height="66" fill="#fca5a5" fill-opacity="0.55" stroke="#dc2626" stroke-width="2"/>
+        <line x1="150" y1="80" x2="215" y2="80" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+        <rect x="230" y="45" width="100" height="80" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+        <text x="80" y="160" text-anchor="middle" font-size="13" fill="#1d4ed8">image</text>
+        <text x="280" y="160" text-anchor="middle" font-size="13" fill="#166534">feature map</text>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;"><strong>Local filters</strong> detect patterns in patches.</p>
+      <p class="fragment" style="font-size:0.9em;"><strong>Weight sharing</strong> detects the same pattern anywhere.</p>
+      <p class="fragment" style="font-size:0.86em;color:#6b7280;">Later: VLMs use image encoders to turn images into vectors/tokens.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 14. One-hot to embeddings -->
+<section>
+  <h2>Word IDs have no geometry</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1;">
+      <p style="font-size:0.9em;">A raw ID is arbitrary:</p>
+      <p style="font-size:1em;text-align:center;"><code>cat = 17</code>, <code>dog = 932</code></p>
+    </div>
+    <div style="flex:1;" class="fragment">
+      <p style="font-size:0.9em;">An embedding gives each item a vector:</p>
+      <p style="font-size:1em;text-align:center;">\(\mathrm{Embed}[\text{cat}] \in \mathbb{R}^d\)</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size:0.9em;color:#1d4ed8;text-align:center;">Now similarity can live in vector space.</p>
+</section>
+
+<!-- 15. Embedding table -->
+<section>
+  <h2>An embedding table is just parameters</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;">
+      <table class="factor-table" style="font-size:0.72em;margin:0 auto;">
+        <thead><tr><th>item</th><th>learned vector</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>0.2</td><td>0.5</td><td>0</td></tr>
-          <tr><td>2</td><td>&minus;0.6</td><td>2.1</td><td>1.2</td></tr>
-          <tr><td>3</td><td>&minus;0.5</td><td>1.9</td><td>1.3</td></tr>
-          <tr><td>4</td><td>0.1</td><td>0.5</td><td>&minus;0.3</td></tr>
+          <tr><td>cat</td><td>[0.22, -0.71, 0.10, ...]</td></tr>
+          <tr><td>dog</td><td>[0.19, -0.66, 0.12, ...]</td></tr>
+          <tr><td>car</td><td>[-0.80, 0.31, -0.40, ...]</td></tr>
         </tbody>
       </table>
-      <p style="font-size: 0.66em; text-align: center; margin: 0.3em 0;">\(c_1 = (0.3, 0.8, -0.5), \;\; c_2 = (-0.1, -0.5, 1.0)\).</p>
     </div>
-    <div style="flex: 1.1; font-size: 0.72em;">
-      <p style="margin: 0 0 0.15em;"><strong>Assign step</strong> (squared distance to each centroid):</p>
-      <div style="font-family: ui-monospace, Menlo, monospace; font-size: 0.9em; line-height: 1.35; background: #f9fafb; padding: 0.35em 0.5em; border-radius: 3px; margin: 0.15em 0;">
-        <span class="fragment">ex 1: d&sup2;(c<sub>1</sub>) = 0.35, d&sup2;(c<sub>2</sub>) = 2.09 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
-        <span class="fragment">ex 2: d&sup2;(c<sub>1</sub>) = 5.39, d&sup2;(c<sub>2</sub>) = 7.05 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
-        <span class="fragment">ex 3: d&sup2;(c<sub>1</sub>) = 5.09, d&sup2;(c<sub>2</sub>) = 6.01 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span><br>
-        <span class="fragment">ex 4: d&sup2;(c<sub>1</sub>) = 0.17, d&sup2;(c<sub>2</sub>) = 2.73 &rarr; <span style="color:#1d4ed8;">c<sub>1</sub></span></span>
-      </div>
-      <p style="margin: 0.15em 0 0;"><strong class="fragment">Update step</strong>:</p>
-      <p class="fragment" style="text-align: center; font-family: ui-monospace, Menlo, monospace; color: #166534; font-weight: 600; margin: 0.15em 0;">\(c_1' = (-0.2, 1.25, 0.55), \;\; c_2' = \varnothing\)</p>
-      <p class="fragment" style="color: #991b1b; font-size: 0.88em; margin: 0.15em 0 0;"><strong>Watch out:</strong> \(c_2\) got no examples. Re-initialize it (random restart).</p>
+    <div style="flex:0.95;">
+      <pre style="font-size:0.56em;"><code>emb = nn.Embedding(
+    num_embeddings=vocab_size,
+    embedding_dim=128,
+)</code></pre>
+      <p class="fragment" style="font-size:0.86em;color:#6b7280;">Gradient descent updates these vectors during training.</p>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     Choosing k (1 slide)
-     ============================================================ -->
-
-<!-- 9. Elbow + silhouette -->
-<section>
-  <h2>How do we choose \(k\)?</h2>
-  <p style="font-size: 0.82em; margin: 0.2em 0;">Larger \(k\) always gives lower training error &mdash; but defeats the point of compression.</p>
-  <div class="two-col">
-    <div style="flex: 1;">
-      <h3 style="color: #1d4ed8; font-size: 1em; margin: 0.2em 0;">Elbow method</h3>
-      <ol style="font-size: 0.78em; margin: 0.3em 0 0.3em 1.2em;">
-        <li>Run k-means for \(k \in \{1, \ldots, k_{\max}\}\).</li>
-        <li>Plot average within-cluster distance.</li>
-        <li>Pick the "elbow" where error stops dropping fast.</li>
-      </ol>
-      <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg" class="elbow-chart">
-        <line class="grid" x1="40" y1="40"  x2="200" y2="40"/>
-        <line class="grid" x1="40" y1="80"  x2="200" y2="80"/>
-        <line class="grid" x1="40" y1="120" x2="200" y2="120"/>
-        <line class="axis" x1="40" y1="20" x2="40"  y2="140"/>
-        <line class="axis" x1="40" y1="140" x2="200" y2="140"/>
-        <text class="axis-label" x="120" y="155" text-anchor="middle">k</text>
-        <text class="axis-label" x="15" y="80"  text-anchor="middle" transform="rotate(-90 15 80)">error</text>
-        <path class="curve" d="M 50 40 Q 70 70, 90 100 Q 120 125, 200 132"/>
-        <circle class="knee" cx="90" cy="100" r="5"/>
-        <text class="knee-label" x="95" y="90">k* = 3</text>
-      </svg>
-    </div>
-    <div style="flex: 1;">
-      <h3 style="color: #16a34a; font-size: 1em; margin: 0.2em 0;">Silhouette score</h3>
-      <p style="text-align: center; font-size: 0.85em; margin: 0.2em 0;">\(s(x) = \dfrac{b(x) - a(x)}{\max(a(x),\, b(x))}\)</p>
-      <ul style="font-size: 0.78em; margin: 0.3em 0 0.3em 1.2em;">
-        <li>\(a(x)\) = mean distance to own cluster.</li>
-        <li>\(b(x)\) = mean distance to <em>nearest other</em> cluster.</li>
-        <li>Pick \(k\) maximizing average \(s\).</li>
-      </ul>
-      <svg viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg" class="silhouette-chart">
-        <line class="grid" x1="40" y1="40"  x2="200" y2="40"/>
-        <line class="grid" x1="40" y1="80"  x2="200" y2="80"/>
-        <line class="grid" x1="40" y1="120" x2="200" y2="120"/>
-        <line class="axis" x1="40" y1="20" x2="40"  y2="140"/>
-        <line class="axis" x1="40" y1="140" x2="200" y2="140"/>
-        <text class="axis-label" x="120" y="155" text-anchor="middle">k</text>
-        <text class="axis-label" x="15" y="80"  text-anchor="middle" transform="rotate(-90 15 80)">s(x)</text>
-        <path class="curve" d="M 50 110 Q 70 70, 90 45 Q 120 80, 200 125"/>
-        <circle class="max-dot" cx="90" cy="45" r="5"/>
-        <text class="axis-label" x="95" y="38" style="fill:#166534; font-weight:700;">k* = 3</text>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     PCA + dimension reduction (3 slides)
-     ============================================================ -->
-
-<!-- 10. The manifold idea -->
-<section>
-  <h2>Dimension reduction: the manifold idea</h2>
-  <p style="font-size: 0.88em;">High-dimensional data often lives on a <strong>low-dimensional manifold</strong>. Extra dimensions are mostly noise.</p>
-  <div style="text-align: center;">
-    <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="manifold-viz">
-      <line class="axis" x1="40"  y1="170" x2="380" y2="170"/>
-      <line class="axis" x1="40"  y1="170" x2="40"  y2="20"/>
-      <line class="axis" x1="40"  y1="170" x2="120" y2="120"/>
-      <text class="axis-label" x="385" y="173">x</text>
-      <text class="axis-label" x="35"  y="15"  text-anchor="end">y</text>
-      <text class="axis-label" x="125" y="115">z</text>
-      <path class="ribbon" d="M 60 150 Q 110 80, 180 140 Q 250 200, 320 110"/>
-      <circle class="point" cx="75"  cy="142" r="3"/>
-      <circle class="point" cx="100" cy="110" r="3"/>
-      <circle class="point" cx="140" cy="105" r="3"/>
-      <circle class="point" cx="170" cy="138" r="3"/>
-      <circle class="point" cx="210" cy="170" r="3"/>
-      <circle class="point" cx="250" cy="180" r="3"/>
-      <circle class="point" cx="290" cy="140" r="3"/>
-      <circle class="point" cx="320" cy="115" r="3"/>
-    </svg>
-  </div>
-  <p style="font-size: 0.82em; text-align: center; color: #1d4ed8; margin-top: 0.3em;">Goal: recover the intrinsic 1D coordinate along the blue ribbon.</p>
-</section>
-
-<!-- 11. PCA: maximize variance -->
-<section>
-  <h2>Principal Component Analysis (PCA)</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1.1;">
-      <div class="defbox">
-        <h3>The PCA recipe</h3>
-        <p style="margin: 0; font-size: 0.85em;">Find <strong>orthogonal axes</strong> that successively <strong>maximize the variance</strong> of the projected data.</p>
-      </div>
-      <ul style="font-size: 0.82em; margin-top: 0.4em;">
-        <li>First PC = direction of largest variance.</li>
-        <li>Second PC = direction orthogonal to first that maximizes remaining variance.</li>
-        <li>Project onto the top \(k\) PCs for a compact representation.</li>
-      </ul>
-    </div>
-    <div style="flex: 1; text-align: center;">
-      <svg viewBox="0 0 240 200" xmlns="http://www.w3.org/2000/svg" class="pca-viz">
-        <circle class="point" cx="60"  cy="150" r="3"/>
-        <circle class="point" cx="80"  cy="140" r="3"/>
-        <circle class="point" cx="95"  cy="125" r="3"/>
-        <circle class="point" cx="100" cy="135" r="3"/>
-        <circle class="point" cx="115" cy="115" r="3"/>
-        <circle class="point" cx="125" cy="105" r="3"/>
-        <circle class="point" cx="140" cy="95"  r="3"/>
-        <circle class="point" cx="155" cy="85"  r="3"/>
-        <circle class="point" cx="165" cy="75"  r="3"/>
-        <circle class="point" cx="180" cy="65"  r="3"/>
-        <circle class="point" cx="90"  cy="155" r="3"/>
-        <circle class="point" cx="110" cy="140" r="3"/>
-        <circle class="point" cx="130" cy="118" r="3"/>
-        <circle class="point" cx="150" cy="100" r="3"/>
-        <circle class="point" cx="170" cy="80"  r="3"/>
-        <g class="fragment">
-          <line class="pc-arrow pc1" x1="50" y1="160" x2="200" y2="50" marker-end="url(#arrow-l17)"/>
-          <text class="pc-label pc1" x="205" y="45">PC1</text>
-        </g>
-        <g class="fragment">
-          <line class="pc-arrow pc2" x1="135" y1="80" x2="95" y2="125" marker-end="url(#arrow-l17)"/>
-          <text class="pc-label pc2" x="55" y="135">PC2</text>
-        </g>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- 12. PCA algorithm -->
-<section>
-  <h2>How to compute PCA</h2>
-  <div class="algo-card">
-    <div class="algo-title">PCA(\(X,\ k\))</div>
-    <ol>
-      <li>Mean-center the data: \(x \leftarrow x - \text{mean}(x)\).</li>
-      <li>Compute the covariance matrix \(\Sigma = \tfrac{1}{m}\, X^\top X\).</li>
-      <li>Eigendecompose \(\Sigma\): \(\Sigma\, v_k = \lambda_k\, v_k\). Eigenvectors \(v_k\) are the principal components, sorted by \(\lambda_1 \ge \lambda_2 \ge \ldots\)</li>
-      <li>Project onto the top \(k\) PCs: \(z = V_{\text{top-}k}^\top\, x\).</li>
-    </ol>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; color: #166534; text-align: center; margin-top: 0.4em;">Fraction of variance kept by the \(k\)-th PC: &nbsp;\(\dfrac{\lambda_k}{\sum_j \lambda_j}\). Cumulative across top \(k\) PCs guides how many to keep.</p>
-</section>
-
-<!-- ============================================================
-     Autoencoders (2 slides)
-     ============================================================ -->
-
-<!-- 13. Autoencoders: encoder + decoder -->
-<section>
-  <h2>Autoencoders: encoder + decoder</h2>
-  <p style="font-size: 0.88em;">A neural net learns to <strong>squeeze and reconstruct</strong> its input.</p>
-  <div style="text-align: center;">
-    <svg viewBox="0 0 480 200" xmlns="http://www.w3.org/2000/svg" class="autoenc-diagram">
-      <!-- Always-visible input -->
-      <rect class="layer" x="40"  y="30"  width="40" height="140"/>
-      <text class="layer-label" x="60"  y="190">x</text>
-      <!-- Encoder zone -->
-      <g class="fragment">
-        <line class="arch-arrow" x1="80"  y1="100" x2="100" y2="100"/>
-        <rect class="layer" x="100" y="55"  width="36" height="90"/>
-        <text class="layer-label" x="118" y="190">e(x)</text>
-        <text class="zone-label enc" x="100" y="20">encoder</text>
-      </g>
-      <!-- Bottleneck code -->
-      <g class="fragment">
-        <line class="arch-arrow" x1="136" y1="100" x2="156" y2="100"/>
-        <rect class="layer bottleneck" x="156" y="80"  width="32" height="40"/>
-        <text class="layer-label" x="172" y="190">z = e(x)</text>
-        <text class="zone-label code" x="172" y="20">code</text>
-      </g>
-      <!-- Decoder + reconstruction -->
-      <g class="fragment">
-        <line class="arch-arrow" x1="188" y1="100" x2="208" y2="100"/>
-        <rect class="layer" x="208" y="55"  width="36" height="90"/>
-        <text class="layer-label" x="226" y="190">d(z)</text>
-        <line class="arch-arrow" x1="244" y1="100" x2="264" y2="100"/>
-        <rect class="layer" x="264" y="30"  width="40" height="140"/>
-        <text class="layer-label" x="284" y="190">x&#770; = d(e(x))</text>
-        <text class="zone-label dec" x="244" y="20">decoder</text>
-      </g>
-      <!-- Loss + caption (always visible) -->
-      <text x="350" y="80" font-size="13" fill="#1f2937" font-weight="600">Loss:</text>
-      <text x="350" y="100" font-size="12" fill="#1d4ed8">E = &sum;<tspan baseline-shift="sub" font-size="9">i</tspan> (x<tspan baseline-shift="sub" font-size="9">i</tspan> &minus; d(e(x<tspan baseline-shift="sub" font-size="9">i</tspan>)))&sup2;</text>
-      <text x="350" y="130" font-size="11" fill="#6b7280">Encoder + decoder are</text>
-      <text x="350" y="144" font-size="11" fill="#6b7280">trained jointly so that</text>
-      <text x="350" y="158" font-size="11" fill="#6b7280">the bottleneck z keeps</text>
-      <text x="350" y="172" font-size="11" fill="#6b7280">enough info to rebuild x.</text>
-    </svg>
-  </div>
-</section>
-
-<!-- 14. Linear vs deep autoencoders -->
-<section>
-  <h2>Linear vs deep autoencoders</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
-    <div class="task-card">
-      <h3>Linear autoencoder</h3>
-      <p style="font-size: 0.82em;">Single linear layer; weights shared between encoder and decoder.</p>
-      <p style="text-align: center; font-size: 0.92em; margin: 0.3em 0;">\(\hat{z} = W x, \quad \hat{x} = W^\top \hat{z}\)</p>
-      <p style="font-size: 0.78em; color: #6b7280;">With squared loss, the solution recovers the same subspace as PCA.</p>
-    </div>
-    <div class="task-card">
-      <h3>Deep neural autoencoder</h3>
-      <p style="font-size: 0.82em;">Stack non-linear layers (ReLU, etc.) in both encoder and decoder; train end-to-end with backprop.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">Captures non-linear manifolds &mdash; a building block for the learned representations below.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     Self-supervised representations + generative preview (2 slides)
-     ============================================================ -->
-
-<!-- 15. Self-supervised & contrastive learning -->
-<section>
-  <h2>Self-supervised &amp; contrastive learning</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Labels are expensive. <strong>Self-supervised</strong> learning invents the supervision signal <em>from the data itself</em>, then learns a reusable representation.</p>
-  <div class="two-col vcenter">
-    <div style="flex: 1.1; text-align: center;">
-      <svg viewBox="0 0 300 210" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height: 200px;">
-        <rect x="18" y="30" width="86" height="40" rx="4" fill="#fdf2f8" stroke="#be185d" stroke-width="1.5"/>
-        <text x="61" y="55" font-size="12" fill="#be185d" text-anchor="middle">image</text>
-        <rect x="18" y="140" width="86" height="40" rx="4" fill="#eef2ff" stroke="#4338ca" stroke-width="1.5"/>
-        <text x="61" y="165" font-size="11" fill="#4338ca" text-anchor="middle">"a dog"</text>
-        <line x1="104" y1="50" x2="140" y2="70" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
-        <line x1="104" y1="160" x2="140" y2="140" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arrow-l17)"/>
-        <rect x="140" y="60" width="44" height="90" rx="4" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4"/>
-        <text x="162" y="108" font-size="10" fill="#374151" text-anchor="middle" transform="rotate(-90 162 108)">encoders</text>
-        <line x1="184" y1="80" x2="216" y2="80" stroke="#be185d" stroke-width="1.6" marker-end="url(#arrow-l17)"/>
-        <line x1="184" y1="130" x2="216" y2="130" stroke="#4338ca" stroke-width="1.6" marker-end="url(#arrow-l17)"/>
-        <circle cx="240" cy="80" r="7" fill="#be185d"/>
-        <circle cx="240" cy="130" r="7" fill="#4338ca"/>
-        <path d="M 247 84 Q 268 105, 247 126" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-l17)"/>
-        <text x="288" y="108" font-size="10" fill="#166534" text-anchor="middle" transform="rotate(-90 288 108)">pull together</text>
-      </svg>
-    </div>
-    <div style="flex: 0.95;">
-      <p style="font-size: 0.82em; margin: 0.1em 0;"><strong>CLIP</strong>: an image encoder \(f\) and a text encoder \(g\). Train so a matching (image, caption) pair has high similarity, and mismatched pairs low:</p>
-      <p style="text-align:center; margin: 0.25em 0; font-size: 0.8em;">maximize \(\;f(\text{img})^\top g(\text{text})\;\) for true pairs</p>
-      <ul style="font-size: 0.8em; margin: 0.2em 0 0 1em;">
-        <li class="fragment">No human labels &mdash; the pairing <em>is</em> the signal.</li>
-        <li class="fragment">The learned embeddings <strong>transfer</strong> to many tasks (even zero-shot).</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 16. Generative modelling: a quick map (GANs demoted, pointer to L23) -->
-<section>
-  <h2>Generative modelling: a quick map</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Beyond compressing data, we can learn its distribution \(p(x)\) and <strong>sample new examples</strong>. Four main families:</p>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
-    <div class="task-card">
-      <h3>Autoregressive</h3>
-      <p style="font-size: 0.8em;">Predict the next piece given the past: \(p(x)=\prod_t p(x_t \mid x_{&lt;t})\). Powers <strong>LLMs</strong>.</p>
-    </div>
-    <div class="task-card">
-      <h3>VAE</h3>
-      <p style="font-size: 0.8em;">An autoencoder with a probabilistic bottleneck; sample the code, then decode.</p>
-    </div>
-    <div class="task-card">
-      <h3>GAN</h3>
-      <p style="font-size: 0.8em;">A generator vs. a discriminator. Sharp samples, but tricky to train &mdash; now largely superseded.</p>
-    </div>
-    <div class="task-card">
-      <h3>Diffusion</h3>
-      <p style="font-size: 0.8em;">Learn to denoise; today's state of the art for images &amp; video.</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">We go deep on <strong>diffusion &amp; multimodal generation</strong> in L23.</p>
-</section>
-
-<!-- ============================================================
-     Wrap-up (1 slide)
-     ============================================================ -->
-
-<!-- 17. Learning goals (recap) + next -->
+<!-- 16. How embeddings learn -->
 <section class="center-slide">
-  <h2>Learning goals (recap) &mdash; Next: neural networks</h2>
-  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0; max-width: 80%; margin-right: auto;">
-    <li>&#10003; &nbsp;Understand what <strong>unsupervised learning</strong> is.</li>
-    <li>&#10003; &nbsp;Trace the <strong>k-means</strong> clustering algorithm.</li>
-    <li>&#10003; &nbsp;Perform <strong>PCA</strong> by mean-centering, covariance, and eigendecomposition.</li>
-    <li>&#10003; &nbsp;Explain <strong>autoencoders</strong> and <strong>self-supervised / contrastive</strong> representations.</li>
+  <h2>How does an embedding learn?</h2>
+  <p style="font-size:1em;"><code>the cat sat on the ___</code></p>
+  <p class="fragment" style="font-size:0.95em;">If the model should predict <strong>mat</strong>, gradients update the embeddings that helped make the prediction.</p>
+  <svg class="fragment" viewBox="0 0 620 130" xmlns="http://www.w3.org/2000/svg" style="width:76%;max-height:160px;">
+    <circle cx="120" cy="70" r="10" fill="#1d4ed8"/><text x="120" y="100" text-anchor="middle" font-size="13">cat</text>
+    <circle cx="190" cy="62" r="10" fill="#1d4ed8"/><text x="190" y="92" text-anchor="middle" font-size="13">dog</text>
+    <circle cx="450" cy="70" r="10" fill="#dc2626"/><text x="450" y="100" text-anchor="middle" font-size="13">car</text>
+    <circle cx="510" cy="58" r="10" fill="#dc2626"/><text x="510" y="88" text-anchor="middle" font-size="13">truck</text>
+    <text x="315" y="120" text-anchor="middle" font-size="14" fill="#6b7280">geometry emerges from the training objective</text>
+  </svg>
+</section>
+
+<!-- 17. Geometry caveat -->
+<section class="center-slide">
+  <h2>Embedding geometry is useful, not magic</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:78%; margin:0.6em auto;">
+    <div class="task-card"><h3>useful</h3><p>nearest neighbors, retrieval, clustering</p></div>
+    <div class="task-card fragment"><h3>dangerous</h3><p>2D plots can overstate structure</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.88em;color:#6b7280;">Distances mean what the training objective made them mean.</p>
+</section>
+
+<!-- 18. PCA/t-SNE -->
+<section>
+  <h2>Inspect embeddings by projecting them</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;text-align:center;">
+      <svg viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg" class="pca-viz">
+        <circle class="point" cx="90" cy="70" r="4"/><circle class="point" cx="110" cy="82" r="4"/><circle class="point" cx="130" cy="75" r="4"/><circle class="point" cx="260" cy="150" r="4"/><circle class="point" cx="280" cy="160" r="4"/><circle class="point" cx="240" cy="170" r="4"/>
+        <line x1="70" y1="180" x2="300" y2="60" class="pc-arrow pc1"/><text x="290" y="58" class="pc-label pc1">PC1</text>
+        <line x1="145" y1="55" x2="205" y2="190" class="pc-arrow pc2"/><text x="205" y="205" class="pc-label pc2">PC2</text>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;"><strong>PCA</strong>: linear view of high-dimensional vectors.</p>
+      <p class="fragment" style="font-size:0.9em;"><strong>t-SNE/UMAP</strong>: nonlinear visualization.</p>
+      <p class="fragment" style="font-size:0.84em;color:#6b7280;">Use plots to ask questions, not as proof.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19. k-means -->
+<section>
+  <h2>Cluster embeddings with k-means</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;text-align:center;">
+      <svg viewBox="0 0 360 230" xmlns="http://www.w3.org/2000/svg" class="cluster-scatter">
+        <circle class="point c1" cx="80" cy="75" r="6"/><circle class="point c1" cx="105" cy="90" r="6"/><circle class="point c1" cx="95" cy="55" r="6"/>
+        <circle class="point c2" cx="245" cy="70" r="6"/><circle class="point c2" cx="275" cy="80" r="6"/><circle class="point c2" cx="260" cy="105" r="6"/>
+        <circle class="point c3" cx="175" cy="165" r="6"/><circle class="point c3" cx="205" cy="155" r="6"/><circle class="point c3" cx="190" cy="190" r="6"/>
+        <path d="M93 73 L93 73" stroke="#fff"/><circle class="centroid c1" cx="93" cy="73" r="10"/>
+        <circle class="centroid c2" cx="260" cy="85" r="10"/><circle class="centroid c3" cx="190" cy="170" r="10"/>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;">After embeddings exist, k-means becomes practical.</p>
+      <ul style="font-size:0.82em;">
+        <li class="fragment">inspect datasets</li>
+        <li class="fragment">find groups or duplicates</li>
+        <li class="fragment">build codebook intuition</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 20. Autoencoder -->
+<section>
+  <h2>Autoencoders learn compression</h2>
+  <svg viewBox="0 0 760 170" xmlns="http://www.w3.org/2000/svg" style="width:84%;max-height:200px;display:block;margin:0 auto;">
+    <g font-size="18" font-weight="700" text-anchor="middle">
+      <rect x="25" y="55" width="110" height="50" rx="7" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="80" y="86" fill="#1e3a8a">input</text>
+      <rect x="205" y="55" width="130" height="50" rx="7" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="270" y="86" fill="#92400e">encoder</text>
+      <rect x="405" y="55" width="95" height="50" rx="7" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/><text x="452" y="86" fill="#5b21b6">latent z</text>
+      <rect x="570" y="55" width="130" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="635" y="86" fill="#166534">decoder</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.5" marker-end="url(#arrow-l18)">
+      <line x1="135" y1="80" x2="200" y2="80"/><line x1="335" y1="80" x2="400" y2="80"/><line x1="500" y1="80" x2="565" y2="80"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.88em;text-align:center;color:#6b7280;">Latent diffusion will generate in a compressed latent space.</p>
+</section>
+
+<!-- 21. CLIP -->
+<section>
+  <h2>Contrastive learning aligns modalities</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;text-align:center;">
+      <svg viewBox="0 0 430 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:260px;">
+        <rect x="35" y="50" width="110" height="70" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="90" y="90" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">image</text>
+        <rect x="35" y="145" width="110" height="42" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="90" y="171" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">caption</text>
+        <circle cx="300" cy="80" r="12" fill="#1d4ed8"/><text x="300" y="58" text-anchor="middle" font-size="12">image vec</text>
+        <circle cx="318" cy="105" r="12" fill="#d97706"/><text x="318" y="132" text-anchor="middle" font-size="12">text vec</text>
+        <line x1="145" y1="85" x2="285" y2="80" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+        <line x1="145" y1="166" x2="305" y2="105" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+        <path d="M300 80 Q330 92 318 105" fill="none" stroke="#16a34a" stroke-width="3"/>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;">Matched image/text pairs are pulled together.</p>
+      <p class="fragment" style="font-size:0.9em;">Mismatched pairs are pushed apart.</p>
+      <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">This is the bridge to VLMs and retrieval.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 22. Where next -->
+<section class="center-slide">
+  <h2>Why this matters for LLMs</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:90%; margin:0.5em auto;">
+    <div class="task-card"><h3>tokens</h3><p>become embeddings</p></div>
+    <div class="task-card fragment"><h3>attention</h3><p>moves information between embeddings</p></div>
+    <div class="task-card fragment"><h3>transformers</h3><p>scale this up</p></div>
+  </div>
+</section>
+
+<!-- 23. Recap -->
+<section class="center-slide">
+  <h2>Recap</h2>
+  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:82%; margin-right:auto;">
+    <li>&#10003; &nbsp;Neural nets learn <strong>features</strong>, not just predictions.</li>
+    <li>&#10003; &nbsp;Backprop assigns credit through the graph.</li>
+    <li>&#10003; &nbsp;<strong>Embeddings</strong> are learned vectors.</li>
+    <li>&#10003; &nbsp;PCA, t-SNE, and k-means help inspect embeddings.</li>
+    <li>&#10003; &nbsp;Autoencoders and CLIP prepare us for diffusion and VLMs.</li>
   </ul>
-  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L19: <strong>neural networks</strong> &mdash; the building block of deep learning.</p>
+</section>
+
+<!-- 24. Preview -->
+<section class="center-slide">
+  <h2>Next question</h2>
+  <p style="font-size:1.05em;">A sentence is a sequence of embeddings.</p>
+  <p class="fragment" style="font-size:1.05em;color:#1d4ed8;">How should each word look at the other words?</p>
+  <p class="fragment" style="font-size:0.9em;color:#6b7280;">L19: sequence models, attention, and transformers.</p>
 </section>
 
 </div>

@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 17 — Supervised Learning &amp; Generalization</title>
+  <title>CS 486/686 Lecture 17 - Training Models From Scratch</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 17: Supervised Learning and Generalization — types of learning, linear and logistic regression, cross-entropy and softmax, overfitting, cross-validation, regularization, and double descent. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 17: Training models from scratch - parameters, losses, gradients, PyTorch autograd, regression, classification, cross-entropy, and generalization. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="custom.css?v=2">
+  <link rel="stylesheet" href="custom.css?v=3">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -34,594 +34,388 @@
 
 <svg width="0" height="0" style="position:absolute;">
   <defs>
-    <marker id="arrow-rl-l16" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#1f2937"/>
+    <marker id="arrow-l17" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#475569"/>
     </marker>
   </defs>
 </svg>
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Supervised Learning &amp; Generalization</div>
+  <div class="course-title">CS 486/686<br>Training Models From Scratch</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 17</p>
-  <p class="credit">RN 19.1&ndash;19.2, 19.6 &middot; PM 7.1&ndash;7.3</p>
+  <p class="credit">Core loop: data &rarr; model &rarr; loss &rarr; gradient &rarr; update</p>
 </section>
 
-<!-- 1b. Recorded asynchronous lecture (instructor at ICML) -->
+<!-- 2. Recorded asynchronous lecture -->
 <section class="center-slide">
   <h2>Recorded lecture (asynchronous)</h2>
   <div class="defbox" style="max-width: 86%; margin: 0.6em auto; text-align: left;">
-    <p style="margin: 0 0 0.45em 0;">&#127909; This lecture is <strong>pre-recorded</strong> &mdash; I'm away at <strong>ICML</strong> this week, so there's no in-person class today. Watch at your own pace.</p>
+    <p style="margin: 0 0 0.45em 0;">&#127909; This lecture is <strong>pre-recorded</strong> - I'm away at <strong>ICML</strong> this week, so there's no in-person class today. Watch at your own pace.</p>
     <p style="margin: 0 0 0.45em 0;">&#128197; <strong>Due today (Tue Jul 7):</strong> Chat 8 and the CS686 project proposal.</p>
-    <p style="margin: 0;">&#128172; Questions? Post on <strong>Piazza</strong> &mdash; the TAs are available, and I'll follow up when I'm back.</p>
+    <p style="margin: 0;">&#128172; Questions? Post on <strong>Piazza</strong> - the TAs are available, and I'll follow up when I'm back.</p>
   </div>
 </section>
 
-<!-- 2. Learning goals -->
+<!-- 3. Goal -->
 <section class="center-slide">
-  <div class="course-breadcrumb">
-    <span class="bc-pill search">Search</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill uncert">Uncertainty</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill decision">Decisions</span>
-    <span class="bc-arrow">&rsaquo;</span>
-    <span class="bc-pill learn current">Learning</span>
-  </div>
-  <h2>Learning goals</h2>
-  <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Name the <strong>types of learning</strong> and tell <strong>classification</strong> from <strong>regression</strong>.</li>
-    <li class="fragment">See supervised learning as <strong>fitting parameters to minimize a loss</strong>.</li>
-    <li class="fragment">Derive and fit <strong>linear regression</strong> and <strong>logistic regression</strong>.</li>
-    <li class="fragment">Use <strong>cross-entropy</strong> and <strong>softmax</strong> for classification.</li>
-    <li class="fragment">Explain <strong>overfitting</strong>; control it with <strong>cross-validation</strong> and <strong>regularization</strong>.</li>
-  </ul>
+  <h2>Today's target</h2>
+  <p style="font-size:0.95em;">By the end, this loop should feel readable:</p>
+  <pre style="font-size:0.62em; width:72%; margin:0.4em auto;"><code>for x, y in loader:
+    pred = model(x)
+    loss = loss_fn(pred, y)
+    loss.backward()
+    optimizer.step()
+    optimizer.zero_grad()</code></pre>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8;">Everything later - neural nets, LLMs, diffusion - scales up this idea.</p>
 </section>
 
-<!-- 3. Why ML? + applications -->
-<section>
-  <h2>Why an agent that learns?</h2>
-  <div class="app-icons">
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="6" width="38" height="28" rx="3" fill="#fff" stroke="#dc2626" stroke-width="2"/>
-        <line x1="25" y1="12" x2="25" y2="28" stroke="#dc2626" stroke-width="3"/>
-        <line x1="17" y1="20" x2="33" y2="20" stroke="#dc2626" stroke-width="3"/>
-      </svg>
-      <div class="app-label">Medical diagnosis</div>
-    </div>
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="10" width="38" height="22" rx="2" fill="#fff" stroke="#1f2937" stroke-width="1.5"/>
-        <path d="M6 12 L25 24 L44 12" fill="none" stroke="#1f2937" stroke-width="1.5"/>
-        <circle cx="38" cy="28" r="6" fill="#dc2626"/>
-        <text x="38" y="32" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle">!</text>
-      </svg>
-      <div class="app-label">Spam filtering</div>
-    </div>
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8" y="6" width="34" height="24" rx="4" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6"/>
-        <path d="M16 30 L16 36 L24 30" fill="#eef2ff" stroke="#4338ca" stroke-width="1.6" stroke-linejoin="round"/>
-        <circle cx="18" cy="18" r="2" fill="#4338ca"/>
-        <circle cx="25" cy="18" r="2" fill="#4338ca"/>
-        <circle cx="32" cy="18" r="2" fill="#4338ca"/>
-      </svg>
-      <div class="app-label">Chatbots (LLMs)</div>
-    </div>
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <line x1="4" y1="20" x2="46" y2="20" stroke="#d1d5db" stroke-width="1"/>
-        <path d="M4 20 l 2 -4 l 2 8 l 3 -10 l 3 12 l 3 -6 l 3 4 l 4 -8 l 3 10 l 3 -12 l 3 6 l 3 -4 l 3 8 l 3 -10 l 3 4" fill="none" stroke="#16a34a" stroke-width="1.5"/>
-      </svg>
-      <div class="app-label">Speech</div>
-    </div>
-    <div class="app-card">
-      <svg viewBox="0 0 50 40" xmlns="http://www.w3.org/2000/svg">
-        <rect x="8" y="8" width="34" height="24" rx="3" fill="#fdf2f8" stroke="#be185d" stroke-width="1.6"/>
-        <circle cx="18" cy="17" r="3" fill="#f59e0b"/>
-        <path d="M11 30 L21 20 L27 26 L33 18 L39 30 Z" fill="#be185d" opacity="0.7"/>
-      </svg>
-      <div class="app-label">Image generation</div>
-    </div>
-  </div>
-  <p style="font-size: 0.88em; margin-top: 0.5em;"><strong>Learning</strong> = improving on future tasks based on experience (data).</p>
-  <ul style="font-size: 0.85em;">
-    <li class="fragment">We can't anticipate every situation, and the world keeps changing.</li>
-    <li class="fragment">For most of these tasks we have <em>no idea how to program a solution</em> &mdash; only how to <em>show examples</em>.</li>
-  </ul>
+<!-- 4. Universal recipe -->
+<section class="center-slide">
+  <h2>The learning recipe</h2>
+  <svg viewBox="0 0 900 140" xmlns="http://www.w3.org/2000/svg" style="width:92%; max-height:190px;">
+    <g font-size="22" font-weight="700" text-anchor="middle">
+      <rect x="20" y="45" width="120" height="50" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="80" y="78" fill="#1e3a8a">data</text>
+      <rect x="175" y="45" width="130" height="50" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="240" y="78" fill="#92400e">model</text>
+      <rect x="340" y="45" width="145" height="50" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="412" y="78" fill="#166534">prediction</text>
+      <rect x="520" y="45" width="120" height="50" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="580" y="78" fill="#991b1b">loss</text>
+      <rect x="675" y="45" width="145" height="50" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/><text x="748" y="78" fill="#5b21b6">update</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.5" marker-end="url(#arrow-l17)">
+      <line x1="140" y1="70" x2="170" y2="70"/><line x1="305" y1="70" x2="335" y2="70"/><line x1="485" y1="70" x2="515" y2="70"/><line x1="640" y1="70" x2="670" y2="70"/>
+      <path d="M748 96 C710 132, 300 132, 240 98" fill="none"/>
+    </g>
+    <text x="495" y="128" text-anchor="middle" font-size="16" fill="#6b7280">make the next prediction a little better</text>
+  </svg>
 </section>
 
-<!-- 4. Three kinds of learning -->
+<!-- 5. Parameters -->
 <section>
-  <h2>Three kinds of learning</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
-    <div class="task-card">
-      <h3>Supervised</h3>
-      <svg viewBox="0 0 110 56" xmlns="http://www.w3.org/2000/svg" class="card-icon" aria-hidden="true">
-        <text x="14" y="22" font-size="11" fill="#1d4ed8" font-weight="700">x&#8321;</text>
-        <text x="14" y="42" font-size="11" fill="#1d4ed8" font-weight="700">x&#8322;</text>
-        <text x="36" y="22" font-size="11" fill="#dc2626" font-weight="700">y&#8321;</text>
-        <text x="36" y="42" font-size="11" fill="#dc2626" font-weight="700">y&#8322;</text>
-        <path d="M 55 30 L 75 30" stroke="#1f2937" stroke-width="1.6" marker-end="url(#arrow-rl-l16)" fill="none"/>
-        <rect x="78" y="20" width="28" height="20" rx="3" fill="#dcfce7" stroke="#166534" stroke-width="1.4"/>
-        <text x="92" y="34" font-size="11" fill="#166534" text-anchor="middle" font-weight="700">h(x)</text>
+  <h2>Parameters are the knobs</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;text-align:center;">
+      <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
+        <line class="axis" x1="55" y1="220" x2="390" y2="220"/><line class="axis" x1="55" y1="40" x2="55" y2="220"/>
+        <line class="fit-line" x1="70" y1="195" x2="360" y2="70"/>
+        <circle class="point" cx="95" cy="190" r="5"/><circle class="point" cx="135" cy="175" r="5"/><circle class="point" cx="180" cy="145" r="5"/><circle class="point" cx="225" cy="135" r="5"/><circle class="point" cx="275" cy="105" r="5"/><circle class="point" cx="330" cy="85" r="5"/>
+        <text x="285" y="64" fill="#16a34a" font-weight="700" font-size="16">\(\hat y = wx + b\)</text>
+        <text x="220" y="250" text-anchor="middle" fill="#6b7280" font-size="13">input \(x\)</text>
+        <text x="22" y="130" text-anchor="middle" fill="#6b7280" font-size="13" transform="rotate(-90 22 130)">target \(y\)</text>
       </svg>
-      <p>Given inputs + <strong>targets</strong>, predict targets for new inputs.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">Today's focus.</p>
     </div>
-    <div class="task-card">
-      <h3>Unsupervised</h3>
-      <svg viewBox="0 0 110 56" xmlns="http://www.w3.org/2000/svg" class="card-icon" aria-hidden="true">
-        <ellipse cx="32" cy="30" rx="22" ry="16" fill="none" stroke="#1d4ed8" stroke-width="1.2" stroke-dasharray="3 2"/>
-        <ellipse cx="80" cy="30" rx="20" ry="14" fill="none" stroke="#d97706" stroke-width="1.2" stroke-dasharray="3 2"/>
-        <circle cx="24" cy="24" r="2.2" fill="#1f2937"/>
-        <circle cx="34" cy="22" r="2.2" fill="#1f2937"/>
-        <circle cx="40" cy="34" r="2.2" fill="#1f2937"/>
-        <circle cx="28" cy="38" r="2.2" fill="#1f2937"/>
-        <circle cx="72" cy="26" r="2.2" fill="#1f2937"/>
-        <circle cx="84" cy="22" r="2.2" fill="#1f2937"/>
-        <circle cx="88" cy="36" r="2.2" fill="#1f2937"/>
-        <circle cx="76" cy="38" r="2.2" fill="#1f2937"/>
-      </svg>
-      <p>No targets &mdash; find <strong>structure</strong>: clustering, representations.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">L18.</p>
-    </div>
-    <div class="task-card">
-      <h3>Reinforcement</h3>
-      <svg viewBox="0 0 110 56" xmlns="http://www.w3.org/2000/svg" class="card-icon" aria-hidden="true">
-        <rect x="8"  y="18" width="34" height="22" rx="3" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
-        <text x="25" y="33" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">agent</text>
-        <rect x="68" y="18" width="34" height="22" rx="3" fill="#dcfce7" stroke="#166534" stroke-width="1.4"/>
-        <text x="85" y="33" font-size="10" fill="#166534" text-anchor="middle" font-weight="700">env</text>
-        <path d="M 42 24 L 68 24" stroke="#1f2937" stroke-width="1.4" marker-end="url(#arrow-rl-l16)" fill="none"/>
-        <text x="55" y="20" font-size="8" fill="#6b7280" text-anchor="middle">a</text>
-        <path d="M 68 36 C 60 50, 50 50, 42 36" stroke="#d97706" stroke-width="1.4" marker-end="url(#arrow-rl-l16)" fill="none"/>
-        <text x="55" y="52" font-size="8" fill="#92400e" text-anchor="middle" font-weight="700">r</text>
-      </svg>
-      <p>Learn from rewards &mdash; what to <em>do</em>.</p>
-      <p style="font-size: 0.78em; color: #6b7280;">L15 (done).</p>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;">The data is fixed.</p>
+      <p class="fragment" style="font-size:0.9em;">The model has tunable <strong>parameters</strong>: \(w\) and \(b\).</p>
+      <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">Training means choosing parameters that make predictions good.</p>
     </div>
   </div>
 </section>
 
-<!-- 5. Q1 + Q2 quizzes -->
+<!-- 6. Scalar loss -->
 <section>
-  <h2>Supervised or unsupervised?</h2>
+  <h2>Start with one knob</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1;text-align:center;">
+      <svg viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
+        <line class="axis" x1="50" y1="220" x2="390" y2="220"/><line class="axis" x1="210" y1="35" x2="210" y2="225"/>
+        <path d="M60 60 Q210 250 360 60" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+        <circle cx="90" cy="90" r="7" fill="#dc2626"/><text x="90" y="78" text-anchor="middle" fill="#991b1b" font-size="13">start</text>
+        <circle cx="210" cy="220" r="6" fill="#16a34a"/><text x="210" y="242" text-anchor="middle" fill="#166534" font-size="13">best</text>
+        <text x="225" y="38" fill="#1f2937" font-size="16">\(L(x) = (x-2)^2\)</text>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;">Forget ML for one slide.</p>
+      <p class="fragment" style="font-size:0.9em;">We only need to make a loss small.</p>
+      <p class="fragment" style="font-size:0.9em;color:#6b7280;">This is the smallest possible version of training.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Gradient descent -->
+<section class="center-slide">
+  <h2>Move downhill</h2>
+  <p style="font-size:1em;">The gradient points uphill.</p>
+  <p style="font-size:1.2em; text-align:center;">\(x \leftarrow x - \eta \dfrac{dL}{dx}\)</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:78%; margin:0.6em auto;">
+    <div class="task-card"><h3>\(-dL/dx\)</h3><p>direction that decreases loss</p></div>
+    <div class="task-card fragment"><h3>\(\eta\)</h3><p>learning rate: how big a step?</p></div>
+  </div>
+</section>
+
+<!-- 8. Autograd -->
+<section>
+  <h2>PyTorch computes gradients for us</h2>
   <div class="two-col">
-    <div style="flex: 1;">
-      <p class="quiz-q"><strong>Q1.</strong> We have a user's credit-card transactions and want to flag any that look <em>different</em> from the rest. We have no fraud labels.</p>
-      <ol class="quiz-options">
-        <li>Supervised</li>
-        <li><strong>Unsupervised</strong></li>
-      </ol>
-      <div class="quiz-answer fragment">
-        <strong>B &mdash; Unsupervised.</strong> No target labels to predict.
-      </div>
+    <div style="flex:1;">
+      <p style="font-size:0.78em; font-weight:700; color:#1d4ed8;">Manual derivative</p>
+      <pre style="font-size:0.55em;"><code>def loss(x):
+    return (x - 2) ** 2
+
+def manual_grad(x):
+    return 2 * (x - 2)</code></pre>
     </div>
-    <div style="flex: 1;">
-      <p class="quiz-q"><strong>Q2.</strong> We have historical weather labels (sunny/cloudy/rain/snow) for a date, and we want to predict the same date next year.</p>
-      <ol class="quiz-options">
-        <li><strong>Supervised</strong></li>
-        <li>Unsupervised</li>
-      </ol>
-      <div class="quiz-answer fragment">
-        <strong>A &mdash; Supervised.</strong> Each example has a target (the weather label).
-      </div>
+    <div style="flex:1;">
+      <p style="font-size:0.78em; font-weight:700; color:#16a34a;">Automatic differentiation</p>
+      <pre style="font-size:0.55em;"><code>x = nn.Parameter(torch.tensor(-4.0))
+L = (x - 2) ** 2
+L.backward()
+print(x.grad)  # -12</code></pre>
+    </div>
+  </div>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">For millions of parameters, we rely on autograd.</p>
+</section>
+
+<!-- 9. Computation graph -->
+<section class="center-slide">
+  <h2>Autograd follows the computation graph</h2>
+  <svg viewBox="0 0 680 170" xmlns="http://www.w3.org/2000/svg" style="width:80%;max-height:200px;">
+    <g font-size="19" font-weight="700" text-anchor="middle">
+      <rect x="40" y="55" width="90" height="48" rx="8" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="85" y="86" fill="#1e3a8a">x</text>
+      <rect x="210" y="55" width="120" height="48" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="270" y="86" fill="#92400e">x - 2</text>
+      <rect x="410" y="55" width="120" height="48" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/><text x="470" y="86" fill="#991b1b">square</text>
+      <rect x="600" y="55" width="60" height="48" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="630" y="86" fill="#166534">L</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.5" marker-end="url(#arrow-l17)">
+      <line x1="130" y1="79" x2="205" y2="79"/><line x1="330" y1="79" x2="405" y2="79"/><line x1="530" y1="79" x2="595" y2="79"/>
+    </g>
+    <g class="fragment" stroke="#dc2626" stroke-width="2.5" marker-end="url(#arrow-l17)">
+      <line x1="600" y1="118" x2="530" y2="118"/><line x1="410" y1="118" x2="330" y2="118"/><line x1="210" y1="118" x2="130" y2="118"/>
+    </g>
+    <text class="fragment" x="340" y="152" text-anchor="middle" font-size="16" fill="#991b1b">backward pass: chain rule in reverse</text>
+  </svg>
+</section>
+
+<!-- 10. Model training -->
+<section class="center-slide">
+  <h2>From one knob to many</h2>
+  <p style="font-size:1em;">A model has many parameters, collected as \(\theta\).</p>
+  <p style="font-size:1.2em; text-align:center;">\(\theta \leftarrow \theta - \eta \nabla_\theta L(\theta)\)</p>
+  <div class="defbox fragment" style="max-width:70%; margin:0.5em auto; text-align:left;">
+    <p style="margin:0.15em 0;"><code>model.parameters()</code> = \(\theta\)</p>
+    <p style="margin:0.15em 0;"><code>loss.backward()</code> = compute \(\nabla_\theta L\)</p>
+    <p style="margin:0.15em 0;"><code>optimizer.step()</code> = update \(\theta\)</p>
+  </div>
+</section>
+
+<!-- 11. Regression -->
+<section>
+  <h2>Example 1: regression</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.1;text-align:center;">
+      <svg viewBox="0 0 440 260" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
+        <line class="axis" x1="55" y1="220" x2="400" y2="220"/><line class="axis" x1="55" y1="35" x2="55" y2="220"/>
+        <line class="fit-line" x1="70" y1="200" x2="380" y2="70"/>
+        <g stroke="#d97706" stroke-width="1.6" stroke-dasharray="3 2">
+          <line x1="115" y1="175" x2="115" y2="181"/><line x1="200" y1="155" x2="200" y2="145"/><line x1="290" y1="110" x2="290" y2="107"/>
+        </g>
+        <circle class="point" cx="115" cy="175" r="5"/><circle class="point" cx="155" cy="158" r="5"/><circle class="point" cx="200" cy="155" r="5"/><circle class="point" cx="245" cy="125" r="5"/><circle class="point" cx="290" cy="110" r="5"/><circle class="point" cx="345" cy="92" r="5"/>
+        <text x="250" y="55" fill="#16a34a" font-weight="700" font-size="15">\(\hat y = wx+b\)</text>
+      </svg>
+    </div>
+    <div style="flex:0.9;">
+      <p style="font-size:0.9em;">Prediction is a number.</p>
+      <p style="font-size:1em;text-align:center;">\(L = \frac{1}{m}\sum_i(\hat y_i-y_i)^2\)</p>
+      <p class="fragment" style="font-size:0.84em;color:#6b7280;">Squared error punishes large residuals.</p>
     </div>
   </div>
 </section>
 
-<!-- 6. Classification vs regression (definitions + quick check) -->
+<!-- 12. Regression code -->
 <section>
-  <h2>Two flavors of supervised learning</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
-    <div class="task-card">
-      <h3>Classification</h3>
-      <svg viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" class="cr-svg" aria-hidden="true">
-        <line x1="20" y1="40" x2="200" y2="40" stroke="#9ca3af" stroke-width="1"/>
-        <circle cx="40"  cy="40" r="11" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
-        <text x="40"  y="44" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">dog</text>
-        <circle cx="110" cy="40" r="11" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
-        <text x="110" y="44" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">cat</text>
-        <circle cx="180" cy="40" r="11" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
-        <text x="180" y="44" font-size="10" fill="#1d4ed8" text-anchor="middle" font-weight="700">bird</text>
-        <text x="110" y="64" font-size="10" fill="#6b7280" text-anchor="middle">discrete labels</text>
-      </svg>
-      <p>Target is <strong>discrete</strong> &mdash; e.g. dog vs cat.</p>
-    </div>
+  <h2>Regression in PyTorch</h2>
+  <pre style="font-size:0.58em; width:78%; margin:0.3em auto;"><code>model = nn.Linear(1, 1)
+loss_fn = nn.MSELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+
+pred = model(x)
+loss = loss_fn(pred, y)
+loss.backward()
+optimizer.step()
+optimizer.zero_grad()</code></pre>
+  <p class="fragment" style="font-size:0.85em; text-align:center; color:#1d4ed8;">Same recipe, now the knob is a line.</p>
+</section>
+
+<!-- 13. Classification -->
+<section class="center-slide">
+  <h2>Example 2: classification</h2>
+  <p style="font-size:1em;">Now the target is a class, not a number.</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:76%; margin:0.6em auto;">
     <div class="task-card">
       <h3>Regression</h3>
-      <svg viewBox="0 0 220 70" xmlns="http://www.w3.org/2000/svg" class="cr-svg" aria-hidden="true">
-        <line x1="20" y1="40" x2="200" y2="40" stroke="#16a34a" stroke-width="2.5"/>
-        <line x1="20" y1="34" x2="20" y2="46" stroke="#16a34a" stroke-width="1.5"/>
-        <line x1="200" y1="34" x2="200" y2="46" stroke="#16a34a" stroke-width="1.5"/>
-        <circle cx="135" cy="40" r="6" fill="#16a34a"/>
-        <text x="20"  y="26" font-size="10" fill="#166534" text-anchor="middle">-10&#176;C</text>
-        <text x="200" y="26" font-size="10" fill="#166534" text-anchor="middle">35&#176;C</text>
-        <text x="135" y="22" font-size="10" fill="#166534" text-anchor="middle" font-weight="700">17.3&#176;C</text>
-        <text x="110" y="64" font-size="10" fill="#6b7280" text-anchor="middle">continuous value</text>
-      </svg>
-      <p>Target is <strong>continuous</strong> &mdash; e.g. tomorrow's temperature.</p>
+      <p>\(\hat y = 217.3\)</p>
     </div>
-  </div>
-  <div class="two-col" style="margin-top: 0.3em;">
-    <div style="flex: 1;">
-      <p class="quiz-q fragment"><strong>Q3.</strong> Predict next year's weather label (sunny/rain/...) for a date.</p>
-      <div class="quiz-answer fragment"><strong>Classification</strong> &mdash; discrete target.</div>
-    </div>
-    <div style="flex: 1;">
-      <p class="quiz-q fragment"><strong>Q4.</strong> Predict next month's price of a house.</p>
-      <div class="quiz-answer fragment"><strong>Regression</strong> &mdash; continuous target.</div>
+    <div class="task-card fragment">
+      <h3>Classification</h3>
+      <p>\(P(\text{spam}\mid x)=0.91\)</p>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     Core: learning = fit parameters to minimize a loss (6 slides)
-     ============================================================ -->
+<!-- 14. Logistic regression -->
+<section>
+  <h2>Logistic regression</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;text-align:center;">
+      <svg viewBox="0 0 430 250" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
+        <line class="axis" x1="45" y1="210" x2="395" y2="210"/><line class="axis" x1="45" y1="40" x2="45" y2="210"/>
+        <line class="thresh" x1="45" y1="125" x2="395" y2="125"/><line class="thresh" x1="220" y1="40" x2="220" y2="210"/>
+        <path class="sig-curve" d="M55 202 C135 202, 175 192, 220 125 C265 58, 305 48, 385 48"/>
+        <text x="395" y="44" text-anchor="end" fill="#7c3aed" font-weight="700" font-size="14">\(\sigma(z)\)</text>
+        <text x="218" y="230" text-anchor="middle" fill="#6b7280" font-size="12">score \(z=w^\top x+b\)</text>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;">Compute a score:</p>
+      <p style="text-align:center;">\(z=w^\top x+b\)</p>
+      <p class="fragment" style="font-size:0.9em;">Squash it into a probability:</p>
+      <p class="fragment" style="text-align:center;">\(\hat y=\sigma(z)=\frac{1}{1+e^{-z}}\)</p>
+    </div>
+  </div>
+</section>
 
-<!-- 7. Supervised learning = fit parameters to minimize a loss -->
+<!-- 15. Cross entropy -->
 <section class="center-slide">
-  <h2>The recipe behind every supervised learner</h2>
-  <div class="defbox" style="max-width: 88%; margin: 0.2em auto; text-align: left;">
-    <p style="margin: 0 0 0.4em 0; font-size: 0.9em;"><strong>1. Model.</strong> Pick a function \(h_{\mathbf{w}}\) with tunable <strong>parameters</strong> \(\mathbf{w}\) (weights).</p>
-    <p style="margin: 0 0 0.4em 0; font-size: 0.9em;"><strong>2. Loss.</strong> Measure how wrong \(h_{\mathbf{w}}\) is: \(L(\mathbf{w}) = \tfrac{1}{m}\sum_{i} \ell\bigl(h_{\mathbf{w}}(x_i),\, y_i\bigr)\).</p>
-    <p style="margin: 0; font-size: 0.9em;"><strong>3. Fit.</strong> Choose \(\mathbf{w}\) that makes \(L(\mathbf{w})\) small &mdash; usually by <strong>gradient descent</strong>.</p>
-  </div>
-  <p class="fragment" style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">Change the model and the loss &rarr; you get every method in this module (regression &rarr; neural nets &rarr; transformers).</p>
-</section>
-
-<!-- 8. Linear regression: the model -->
-<section>
-  <h2>Linear regression: the model</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1.05; text-align: center;">
-      <svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
-        <line class="grid" x1="60" y1="70"  x2="430" y2="70"/>
-        <line class="grid" x1="60" y1="145" x2="430" y2="145"/>
-        <line class="axis" x1="60" y1="30" x2="60" y2="220"/>
-        <line class="axis" x1="60" y1="220" x2="430" y2="220"/>
-        <text class="axis-label" x="245" y="248" text-anchor="middle" style="font-style:italic;">x (size)</text>
-        <text class="axis-label" x="28" y="125" text-anchor="middle" transform="rotate(-90 28 125)" style="font-style:italic;">y (price)</text>
-        <line class="fit-line" x1="70" y1="195" x2="410" y2="80"/>
-        <circle class="point" cx="100" cy="200" r="4.5"/>
-        <circle class="point" cx="140" cy="170" r="4.5"/>
-        <circle class="point" cx="180" cy="165" r="4.5"/>
-        <circle class="point" cx="220" cy="135" r="4.5"/>
-        <circle class="point" cx="260" cy="140" r="4.5"/>
-        <circle class="point" cx="300" cy="105" r="4.5"/>
-        <circle class="point" cx="340" cy="110" r="4.5"/>
-        <circle class="point" cx="380" cy="80"  r="4.5"/>
-        <text class="axis-label" x="352" y="72" style="fill:#16a34a; font-weight:700;">h(x)=wx+b</text>
-      </svg>
-    </div>
-    <div style="flex: 0.95;">
-      <p style="font-size: 0.9em; margin: 0.1em 0;">One real input \(x\), one real output:</p>
-      <p style="text-align:center; margin: 0.3em 0;">\(h_{\mathbf{w}}(x) = w\,x + b\)</p>
-      <p class="fragment" style="font-size: 0.9em; margin: 0.3em 0;">With \(n\) features \(\mathbf{x}=(x_1,\dots,x_n)\):</p>
-      <p class="fragment" style="text-align:center; margin: 0.3em 0;">\(h_{\mathbf{w}}(\mathbf{x}) = \mathbf{w}^\top \mathbf{x} + b\)</p>
-      <p class="fragment" style="font-size: 0.82em; color:#6b7280; margin-top: 0.4em;">Parameters to learn: the slope(s) \(\mathbf{w}\) and intercept \(b\).</p>
-    </div>
+  <h2>Loss for classification</h2>
+  <p style="font-size:0.95em;">Punish being confidently wrong.</p>
+  <p style="font-size:1.1em; text-align:center;">\(-y\log \hat y - (1-y)\log(1-\hat y)\)</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:74%; margin:0.5em auto;">
+    <div class="task-card"><h3>true: spam</h3><p>\(\hat y=0.99\) &rarr; small loss</p></div>
+    <div class="task-card fragment"><h3>true: spam</h3><p>\(\hat y=0.01\) &rarr; huge loss</p></div>
   </div>
 </section>
 
-<!-- 9. Linear regression: the loss + gradient descent -->
+<!-- 16. Softmax -->
 <section>
-  <h2>Linear regression: fitting by least squares</h2>
-  <p style="font-size: 0.85em; margin: 0.15em 0;">Loss = mean <strong>squared error</strong> between prediction and target:</p>
-  <p style="text-align:center; margin: 0.25em 0;">\(L(\mathbf{w}, b) = \dfrac{1}{m}\displaystyle\sum_{i=1}^{m}\bigl(h_{\mathbf{w}}(x_i) - y_i\bigr)^2\)</p>
-  <div class="two-col" style="align-items:stretch; margin-top:0.3em;">
-    <div class="defbox fragment" style="flex:1;">
-      <h3 style="margin-top:0;">Closed form</h3>
-      <p style="margin:0; font-size:0.82em;">\(L\) is convex &mdash; set \(\nabla L = 0\) and solve. For features \(X\): \(\mathbf{w}^\star = (X^\top X)^{-1} X^\top \mathbf{y}\).</p>
-    </div>
-    <div class="defbox fragment" style="flex:1;">
-      <h3 style="margin-top:0;">Gradient descent</h3>
-      <p style="margin:0 0 0.2em; font-size:0.82em;">Works for <em>any</em> differentiable model. Repeat:</p>
-      <p style="text-align:center; margin:0; font-size:0.82em;">\(\mathbf{w} \leftarrow \mathbf{w} - \eta\, \nabla_{\mathbf{w}} L\)</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Gradient descent is the workhorse for the rest of the module &mdash; the models just get bigger.</p>
-</section>
-
-<!-- 10. Logistic regression: model for classification -->
-<section>
-  <h2>Classification: logistic regression</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1.05; text-align:center;">
-      <svg viewBox="0 0 440 240" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
-        <line class="axis" x1="40" y1="42" x2="40" y2="210"/>
-        <line class="axis" x1="40" y1="210" x2="410" y2="210"/>
-        <line class="thresh" x1="40" y1="125" x2="410" y2="125"/>
-        <line class="thresh" x1="225" y1="42" x2="225" y2="210"/>
-        <text class="axis-label" x="20" y="52" text-anchor="middle">1</text>
-        <text class="axis-label" x="20" y="129" text-anchor="middle">.5</text>
-        <text class="axis-label" x="20" y="208" text-anchor="middle">0</text>
-        <text class="axis-label" x="225" y="228" text-anchor="middle" style="font-style:italic;">z = w&#183;x + b</text>
-        <path class="sig-curve" d="M 45 205 C 150 205, 185 200, 225 125 C 265 50, 300 45, 405 45"/>
-        <circle class="point neg" cx="80"  cy="205" r="4.5"/>
-        <circle class="point neg" cx="120" cy="205" r="4.5"/>
-        <circle class="point neg" cx="160" cy="205" r="4.5"/>
-        <circle class="point pos" cx="290" cy="45" r="4.5"/>
-        <circle class="point pos" cx="330" cy="45" r="4.5"/>
-        <circle class="point pos" cx="370" cy="45" r="4.5"/>
-      </svg>
-    </div>
-    <div style="flex: 0.95;">
-      <p style="font-size: 0.88em; margin: 0.1em 0;">Squash the linear score into a <strong>probability</strong> with the sigmoid:</p>
-      <p style="text-align:center; margin: 0.3em 0;">\(\hat{y} = \sigma(z) = \dfrac{1}{1 + e^{-z}}, \; z = \mathbf{w}^\top\mathbf{x}+b\)</p>
-      <ul style="font-size: 0.82em; margin: 0.3em 0 0 1em;">
-        <li class="fragment">\(\hat{y} = P(y{=}1 \mid \mathbf{x})\).</li>
-        <li class="fragment">Predict class 1 when \(\hat{y} > 0.5\), i.e. \(z > 0\).</li>
-        <li class="fragment">The boundary \(z = 0\) is a <strong>hyperplane</strong>.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 11. Cross-entropy loss -->
-<section>
-  <h2>Loss for classification: cross-entropy</h2>
-  <p style="font-size: 0.85em; margin: 0.15em 0;">Squared error is a poor fit for probabilities. Instead, maximize the probability of the true labels &mdash; equivalently, minimize <strong>binary cross-entropy</strong>:</p>
-  <p style="text-align:center; margin: 0.3em 0;">\(L(\mathbf{w}) = -\dfrac{1}{m}\displaystyle\sum_{i=1}^{m}\Bigl[\, y_i \log \hat{y}_i + (1 - y_i)\log(1 - \hat{y}_i)\,\Bigr]\)</p>
-  <div class="two-col" style="margin-top:0.35em;">
-    <div class="defbox fragment" style="flex:1;">
-      <p style="margin:0; font-size:0.82em;">True label \(y=1\): loss is \(-\log \hat{y}\) &mdash; small when \(\hat{y}\to 1\), <strong>huge</strong> when \(\hat{y}\to 0\).</p>
-    </div>
-    <div class="defbox fragment" style="flex:1;">
-      <p style="margin:0; font-size:0.82em;">Confident <em>and</em> wrong is punished the hardest &mdash; exactly the behaviour we want.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 12. Softmax + multi-class cross-entropy -->
-<section>
-  <h2>Many classes: softmax + cross-entropy</h2>
-  <p style="font-size: 0.85em; margin: 0.15em 0;">Output one score \(z_k\) per class; <strong>softmax</strong> turns scores into a probability distribution:</p>
-  <p style="text-align:center; margin: 0.25em 0;">\(P(y{=}k \mid \mathbf{x}) = \dfrac{e^{z_k}}{\sum_j e^{z_j}}, \qquad L = -\log P(y{=}\text{true class})\)</p>
+  <h2>Many classes: softmax</h2>
+  <p style="font-size:0.88em;">One score per class; softmax turns scores into probabilities.</p>
+  <p style="text-align:center;">\(P(y=k\mid x)=\frac{e^{z_k}}{\sum_j e^{z_j}}\)</p>
   <div class="softmax-bars">
-    <div class="sm-bar"><span class="sm-val">0.10</span><div class="sm-fill" style="height: 16px;"></div><span class="sm-lab">dog</span></div>
-    <div class="sm-bar true"><span class="sm-val">0.70</span><div class="sm-fill" style="height: 84px;"></div><span class="sm-lab">cat &#10003;</span></div>
-    <div class="sm-bar"><span class="sm-val">0.15</span><div class="sm-fill" style="height: 24px;"></div><span class="sm-lab">bird</span></div>
-    <div class="sm-bar"><span class="sm-val">0.05</span><div class="sm-fill" style="height: 10px;"></div><span class="sm-lab">fish</span></div>
+    <div class="sm-bar"><span class="sm-val">0.10</span><div class="sm-fill" style="height:16px;"></div><span class="sm-lab">dog</span></div>
+    <div class="sm-bar true"><span class="sm-val">0.70</span><div class="sm-fill" style="height:84px;"></div><span class="sm-lab">cat</span></div>
+    <div class="sm-bar"><span class="sm-val">0.15</span><div class="sm-fill" style="height:24px;"></div><span class="sm-lab">bird</span></div>
+    <div class="sm-bar"><span class="sm-val">0.05</span><div class="sm-fill" style="height:10px;"></div><span class="sm-lab">fish</span></div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.2em;">This softmax + cross-entropy is exactly the output layer we'll reuse for neural nets (L20).</p>
+  <p class="fragment" style="font-size:0.82em;color:#1d4ed8;text-align:center;">Next-token prediction is this, but over a vocabulary.</p>
 </section>
 
-<!-- ============================================================
-     Generalization (5 slides)
-     ============================================================ -->
+<!-- 17. Full training loop -->
+<section>
+  <h2>The full loop, annotated</h2>
+  <pre style="font-size:0.55em; width:78%; margin:0.2em auto;"><code>for x, y in loader:                 # mini-batch
+    pred = model(x)                 # forward pass
+    loss = loss_fn(pred, y)         # measure error
+    loss.backward()                 # compute gradients
+    optimizer.step()                # update parameters
+    optimizer.zero_grad()           # reset gradient buffers</code></pre>
+  <p class="fragment" style="font-size:0.85em;color:#6b7280;text-align:center;">This is the code pattern to recognize for the rest of the module.</p>
+</section>
 
-<!-- 13. Overfitting via model complexity (polynomial fit) -->
+<!-- 18. Mini-batches -->
+<section class="center-slide">
+  <h2>Why mini-batches?</h2>
+  <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg" style="width:82%;max-height:190px;">
+    <g transform="translate(30,45)">
+      <rect x="0" y="0" width="700" height="54" rx="6" fill="#eff6ff" stroke="#93c5fd"/>
+      <g fill="#1d4ed8">
+        <rect x="15" y="10" width="65" height="34" rx="4"/><rect x="92" y="10" width="65" height="34" rx="4"/><rect x="169" y="10" width="65" height="34" rx="4"/>
+        <rect x="246" y="10" width="65" height="34" rx="4"/><rect x="323" y="10" width="65" height="34" rx="4"/><rect x="400" y="10" width="65" height="34" rx="4"/>
+        <rect x="477" y="10" width="65" height="34" rx="4"/><rect x="554" y="10" width="65" height="34" rx="4"/><rect x="631" y="10" width="50" height="34" rx="4"/>
+      </g>
+      <text x="350" y="90" text-anchor="middle" font-size="17" fill="#6b7280">one epoch = one pass over the dataset</text>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.9em;">Mini-batches make updates cheap, stable enough, and GPU-friendly.</p>
+</section>
+
+<!-- 19. Evaluation split -->
+<section class="center-slide">
+  <h2>Evaluation is not training</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:86%; margin:0.5em auto;">
+    <div class="task-card"><h3>train</h3><p>updates weights</p></div>
+    <div class="task-card fragment"><h3>validation</h3><p>chooses settings</p></div>
+    <div class="task-card fragment"><h3>test</h3><p>final estimate</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em;color:#6b7280;">Do not tune on the test set.</p>
+</section>
+
+<!-- 20. Overfitting -->
 <section>
   <h2>More power is not always better</h2>
-  <p style="font-size: 0.82em;">Same 9 points, increasingly flexible models. The wiggliest one fits training data best &mdash; but would you trust it on a new \(x\)?</p>
-  <div style="text-align: center;">
+  <p style="font-size:0.82em;">Same data, increasingly flexible models.</p>
+  <div style="text-align:center;">
     <svg viewBox="0 0 480 280" xmlns="http://www.w3.org/2000/svg" class="poly-fit">
-      <line class="grid" x1="60" y1="60"  x2="440" y2="60"/>
-      <line class="grid" x1="60" y1="130" x2="440" y2="130"/>
-      <line class="grid" x1="60" y1="200" x2="440" y2="200"/>
-      <line class="axis" x1="60" y1="20" x2="60" y2="240"/>
-      <line class="axis" x1="60" y1="240" x2="440" y2="240"/>
-      <text class="axis-label" x="250" y="275" text-anchor="middle" style="font-style: italic;">x</text>
-      <text class="axis-label" x="25"  y="125" text-anchor="middle" style="font-style: italic;">y</text>
-      <path class="curve curve-d1 fragment" data-fragment-index="0" d="M 60 159 L 420 64"/>
-      <path class="curve curve-d3 fragment" data-fragment-index="1" d="M 60 159 C 160 95, 280 290, 420 64"/>
-      <path class="curve curve-d9 fragment" data-fragment-index="2" d="M 60 159 Q 80 142, 105 126 Q 130 134, 150 148 Q 173 174, 195 185 Q 218 205, 240 210 Q 263 199, 285 192 Q 308 178, 330 167 Q 352 130, 375 112 Q 398 80, 420 64"/>
+      <line class="axis" x1="60" y1="20" x2="60" y2="240"/><line class="axis" x1="60" y1="240" x2="440" y2="240"/>
+      <path class="curve curve-d1 fragment" data-fragment-index="0" d="M60 175 L420 70"/>
+      <path class="curve curve-d3 fragment" data-fragment-index="1" d="M60 170 C155 85, 275 285, 420 70"/>
+      <path class="curve curve-d9 fragment" data-fragment-index="2" d="M60 175 Q90 115, 120 130 Q150 160, 180 145 Q215 110, 245 205 Q285 230, 315 155 Q350 85, 420 70"/>
       <g>
-        <circle class="point" cx="60"  cy="159" r="4"/>
-        <circle class="point" cx="105" cy="126" r="4"/>
-        <circle class="point" cx="150" cy="148" r="4"/>
-        <circle class="point" cx="195" cy="185" r="4"/>
-        <circle class="point" cx="240" cy="210" r="4"/>
-        <circle class="point" cx="285" cy="192" r="4"/>
-        <circle class="point" cx="330" cy="167" r="4"/>
-        <circle class="point" cx="375" cy="112" r="4"/>
-        <circle class="point" cx="420" cy="64"  r="4"/>
+        <circle class="point" cx="60" cy="175" r="4"/><circle class="point" cx="120" cy="130" r="4"/><circle class="point" cx="180" cy="145" r="4"/><circle class="point" cx="245" cy="205" r="4"/><circle class="point" cx="315" cy="155" r="4"/><circle class="point" cx="420" cy="70" r="4"/>
       </g>
     </svg>
   </div>
   <div class="poly-legend">
-    <span class="legend-item fragment" data-fragment-index="0"><span class="swatch" style="background:#1d4ed8;"></span>degree 1 (underfits)</span>
-    <span class="legend-item fragment" data-fragment-index="1"><span class="swatch" style="background:#d97706;"></span>degree 3 (good fit)</span>
-    <span class="legend-item fragment" data-fragment-index="2"><span class="swatch" style="background:#7c3aed;"></span>degree 9 (overfits)</span>
+    <span class="legend-item fragment" data-fragment-index="0"><span class="swatch" style="background:#1d4ed8;"></span>underfit</span>
+    <span class="legend-item fragment" data-fragment-index="1"><span class="swatch" style="background:#d97706;"></span>good fit</span>
+    <span class="legend-item fragment" data-fragment-index="2"><span class="swatch" style="background:#7c3aed;"></span>overfit</span>
   </div>
 </section>
 
-<!-- 14. Bias and variance + dartboard -->
+<!-- 21. Curves -->
 <section>
-  <h2>Bias and variance</h2>
+  <h2>Watch train and validation loss</h2>
   <div class="two-col vcenter">
-    <div style="flex: 1.1;">
-      <div class="defbox" style="font-size: 0.78em;">
-        <h3 style="color: #1d4ed8;">Bias</h3>
-        <p style="margin: 0;">Even with infinite data, how far off is the model family? High bias = too simple, <strong>underfits</strong>.</p>
-      </div>
-      <div class="defbox" style="font-size: 0.78em; margin-top: 0.5em;">
-        <h3 style="color: #d97706;">Variance</h3>
-        <p style="margin: 0;">How much does the fit swing with a different training set? High variance = too flexible, <strong>overfits</strong>.</p>
-      </div>
-    </div>
-    <div style="flex: 1;">
-      <div class="dartboard-grid">
-        <div></div>
-        <div class="col-header">low variance</div>
-        <div class="col-header">high variance</div>
-        <div class="row-header">low bias</div>
-        <div class="fragment">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
-            <circle class="ring" cx="50" cy="50" r="45"/>
-            <circle class="ring" cx="50" cy="50" r="30"/>
-            <circle class="bullseye" cx="50" cy="50" r="15"/>
-            <circle class="dart" cx="48" cy="51" r="2"/>
-            <circle class="dart" cx="51" cy="48" r="2"/>
-            <circle class="dart" cx="49" cy="49" r="2"/>
-            <circle class="dart" cx="52" cy="52" r="2"/>
-            <circle class="dart" cx="47" cy="50" r="2"/>
-          </svg>
-        </div>
-        <div class="fragment">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
-            <circle class="ring" cx="50" cy="50" r="45"/>
-            <circle class="ring" cx="50" cy="50" r="30"/>
-            <circle class="bullseye" cx="50" cy="50" r="15"/>
-            <circle class="dart" cx="35" cy="42" r="2"/>
-            <circle class="dart" cx="62" cy="55" r="2"/>
-            <circle class="dart" cx="40" cy="65" r="2"/>
-            <circle class="dart" cx="58" cy="38" r="2"/>
-            <circle class="dart" cx="50" cy="50" r="2"/>
-          </svg>
-        </div>
-        <div class="row-header">high bias</div>
-        <div class="fragment">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
-            <circle class="ring" cx="50" cy="50" r="45"/>
-            <circle class="ring" cx="50" cy="50" r="30"/>
-            <circle class="bullseye" cx="50" cy="50" r="15"/>
-            <circle class="dart" cx="75" cy="22" r="2"/>
-            <circle class="dart" cx="78" cy="25" r="2"/>
-            <circle class="dart" cx="77" cy="20" r="2"/>
-            <circle class="dart" cx="74" cy="25" r="2"/>
-            <circle class="dart" cx="76" cy="23" r="2"/>
-          </svg>
-        </div>
-        <div class="fragment">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="dartboard">
-            <circle class="ring" cx="50" cy="50" r="45"/>
-            <circle class="ring" cx="50" cy="50" r="30"/>
-            <circle class="bullseye" cx="50" cy="50" r="15"/>
-            <circle class="dart" cx="20" cy="20" r="2"/>
-            <circle class="dart" cx="80" cy="25" r="2"/>
-            <circle class="dart" cx="25" cy="78" r="2"/>
-            <circle class="dart" cx="85" cy="75" r="2"/>
-            <circle class="dart" cx="55" cy="20" r="2"/>
-          </svg>
-        </div>
-      </div>
-      <p style="font-size: 0.72em; color: #6b7280; text-align: center; margin: 0.2em 0;">Dots = predictions from re-trained models. Bullseye = truth.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 15. K-fold cross-validation -->
-<section>
-  <h2>K-fold cross-validation</h2>
-  <p style="font-size: 0.84em; margin: 0.15em 0;">How to pick the right complexity? Use a slice of training data as a <strong>surrogate test set</strong>.</p>
-  <div class="algo-card">
-    <div class="algo-title">k-fold-CV(model, dataset, \(K\))</div>
-    <ol>
-      <li>Split training data into \(K\) equally sized folds.</li>
-      <li>For \(i = 1, \ldots, K\): train on the other \(K - 1\) folds; evaluate on fold \(i\).</li>
-      <li>Average the error over the \(K\) runs; keep the hyperparameters with the best average.</li>
-    </ol>
-  </div>
-  <div class="cv-folds">
-    <div class="row fragment">
-      <div class="row-label">i = 1</div>
-      <div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div>
-    </div>
-    <div class="row fragment">
-      <div class="row-label">i = 2</div>
-      <div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div><div class="fold">train</div>
-    </div>
-    <div class="row fragment">
-      <div class="row-label">i = 3</div>
-      <div class="fold">train</div><div class="fold">train</div><div class="fold valid">val</div><div class="fold">train</div><div class="fold">train</div>
-    </div>
-    <div class="legend">
-      <span><span class="swatch train"></span>training fold</span>
-      <span><span class="swatch valid"></span>validation fold</span>
-    </div>
-  </div>
-</section>
-
-<!-- 16. Overfitting chart + regularization -->
-<section>
-  <h2>Diagnosing &amp; fighting overfitting</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1.1; text-align: center;">
+    <div style="flex:1.08;text-align:center;">
       <svg viewBox="0 0 420 280" xmlns="http://www.w3.org/2000/svg" class="overfit-chart">
-        <line class="grid" x1="60" y1="60"  x2="380" y2="60"/>
-        <line class="grid" x1="60" y1="140" x2="380" y2="140"/>
-        <line class="grid" x1="60" y1="200" x2="380" y2="200"/>
-        <line class="axis" x1="60" y1="20" x2="60" y2="240"/>
-        <line class="axis" x1="60" y1="240" x2="380" y2="240"/>
-        <text class="axis-label" x="220" y="258" text-anchor="middle">model complexity</text>
-        <text class="axis-label" x="25" y="135" text-anchor="middle" transform="rotate(-90 25 135)">error</text>
-        <path class="curve-train" d="M 70 60 Q 200 165, 380 230"/>
-        <text class="axis-label" x="365" y="225" text-anchor="end" style="fill:#1d4ed8; font-weight:700;">training</text>
-        <path class="curve-valid" d="M 70 80 Q 130 200, 200 140 Q 280 95, 380 50"/>
-        <text class="axis-label" x="365" y="58" text-anchor="end" style="fill:#dc2626; font-weight:700;">validation</text>
-        <g class="fragment">
-          <circle class="marker" cx="200" cy="140" r="4"/>
-          <text class="marker-label" x="200" y="130" text-anchor="middle" style="fill:#166534;">sweet spot</text>
-        </g>
+        <line class="axis" x1="60" y1="240" x2="380" y2="240"/><line class="axis" x1="60" y1="30" x2="60" y2="240"/>
+        <path class="curve-train" d="M70 70 Q190 155, 370 220"/>
+        <path class="curve-valid" d="M70 85 Q150 200, 210 140 Q285 80, 370 55"/>
+        <circle class="marker fragment" cx="210" cy="140" r="5"/><text class="marker-label fragment" x="210" y="128" text-anchor="middle" fill="#166534">stop here</text>
+        <text x="355" y="220" fill="#1d4ed8" font-weight="700" font-size="13">train</text>
+        <text x="355" y="55" fill="#dc2626" font-weight="700" font-size="13">validation</text>
       </svg>
     </div>
-    <div style="flex: 0.9;">
-      <p style="font-size: 0.85em; margin: 0.1em 0;">Training error keeps dropping; <strong>validation</strong> error turns back up &mdash; that gap is overfitting.</p>
-      <div class="defbox fragment" style="margin-top: 0.4em;">
-        <h3 style="margin-top:0;">Regularization</h3>
-        <p style="margin:0; font-size: 0.8em;">Add a penalty on large weights to the loss:</p>
-        <p style="text-align:center; margin:0.2em 0; font-size:0.8em;">\(L(\mathbf{w}) + \lambda \lVert \mathbf{w}\rVert^2\)</p>
-        <p style="margin:0; font-size: 0.78em; color:#6b7280;">\(\lambda\) trades bias against variance; tune it with cross-validation.</p>
-      </div>
+    <div style="flex:0.92;">
+      <p style="font-size:0.9em;">Training loss can keep improving.</p>
+      <p class="fragment" style="font-size:0.9em;">Validation loss tells us when generalization is getting worse.</p>
     </div>
   </div>
 </section>
 
-<!-- 17. Double descent (modern caveat) -->
-<section>
-  <h2>A modern twist: double descent</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1.05; text-align:center;">
-      <svg viewBox="0 0 460 260" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
-        <line class="axis" x1="60" y1="30" x2="60" y2="220"/>
-        <line class="axis" x1="60" y1="220" x2="430" y2="220"/>
-        <line class="thresh" x1="250" y1="45" x2="250" y2="220"/>
-        <text class="axis-label" x="250" y="248" text-anchor="middle">model size</text>
-        <text class="axis-label" x="28" y="125" text-anchor="middle" transform="rotate(-90 28 125)">test error</text>
-        <text class="axis-label" x="250" y="38" text-anchor="middle" style="fill:#6b7280;">interpolation threshold</text>
-        <path class="dd-classical" d="M 70 70 Q 160 165, 250 70"/>
-        <path class="dd-modern" d="M 250 70 Q 335 100, 420 160"/>
-        <text class="axis-label" x="120" y="62" style="fill:#1d4ed8; font-weight:700;">classical U</text>
-        <text class="axis-label" x="330" y="150" style="fill:#dc2626; font-weight:700;">2nd descent</text>
-      </svg>
-    </div>
-    <div style="flex: 0.95;">
-      <p style="font-size: 0.86em; margin: 0.1em 0;">The classical U-curve isn't the whole story.</p>
-      <ul style="font-size: 0.82em; margin: 0.3em 0 0 1em;">
-        <li class="fragment">Past the point where the model fits training data <em>exactly</em>, test error can <strong>fall again</strong>.</li>
-        <li class="fragment">Very large models (deep nets, LLMs) often generalize <em>better</em>, not worse.</li>
-        <li class="fragment">Why? Still an active research question &mdash; "bigger" changed the rules.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     Wrap-up (2 slides)
-     ============================================================ -->
-
-<!-- 18. Learning goals (recap) -->
+<!-- 22. Regularization -->
 <section class="center-slide">
-  <h2>Learning goals (recap)</h2>
-  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0;">
-    <li>&#10003; &nbsp;Name the types of learning; classification vs regression.</li>
-    <li>&#10003; &nbsp;Supervised learning = <strong>model + loss + fit</strong>.</li>
-    <li>&#10003; &nbsp;<strong>Linear</strong> and <strong>logistic regression</strong>; least squares &amp; gradient descent.</li>
-    <li>&#10003; &nbsp;<strong>Cross-entropy</strong> and <strong>softmax</strong> for classification.</li>
-    <li>&#10003; &nbsp;Control overfitting with <strong>cross-validation</strong> and <strong>regularization</strong>.</li>
+  <h2>Three ways to fight overfitting</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:90%; margin:0.5em auto;">
+    <div class="task-card"><h3>More data</h3><p>show the model more of the world</p></div>
+    <div class="task-card fragment"><h3>Regularize</h3><p>prefer simpler weights</p></div>
+    <div class="task-card fragment"><h3>Early stop</h3><p>stop when validation turns up</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em;text-align:center;">Example: \(L(\theta) + \lambda\lVert\theta\rVert^2\)</p>
+</section>
+
+<!-- 23. Carry forward -->
+<section class="center-slide">
+  <h2>What carries forward?</h2>
+  <p style="font-size:1em;">Later models change the architecture and loss.</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:90%; margin:0.5em auto;">
+    <div class="task-card"><h3>neural net</h3><p>more layers</p></div>
+    <div class="task-card fragment"><h3>LLM</h3><p>predict next token</p></div>
+    <div class="task-card fragment"><h3>diffusion</h3><p>predict noise</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">The training loop stays recognizable.</p>
+</section>
+
+<!-- 24. Recap -->
+<section class="center-slide">
+  <h2>Recap - next: learned representations</h2>
+  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:82%; margin-right:auto;">
+    <li>&#10003; &nbsp;A model learns by minimizing a <strong>loss</strong>.</li>
+    <li>&#10003; &nbsp;<strong>Autograd</strong> computes gradients through a graph.</li>
+    <li>&#10003; &nbsp;Regression uses squared error; classification uses <strong>cross-entropy</strong>.</li>
+    <li>&#10003; &nbsp;Validation loss catches <strong>overfitting</strong>.</li>
   </ul>
-</section>
-
-<!-- 19. Next: unsupervised learning -->
-<section class="center-slide">
-  <h2>Next: unsupervised &amp; representation learning</h2>
-  <p style="font-size: 0.92em;">Today, labels guided every hypothesis. Without labels, what <em>structure</em> can we still find in data?</p>
-  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L18: clustering (k-means), PCA, autoencoders, and learned representations.</p>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8; text-align:center; margin-top:0.7em;">L18: if linear models use fixed features, how do neural nets learn their own?</p>
 </section>
 
 </div>
