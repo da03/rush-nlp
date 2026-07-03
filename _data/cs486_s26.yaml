@@ -307,7 +307,7 @@ schedule:
   - type: lecture
     date: 2026-07-14
     lecture_num: 19
-    topic: "Neural Networks I: Neurons to CNNs"
+    topic: "Sequence Models, Attention & Transformers"
     slides: /slides/CS486/S26/L19/
     deadlines:
       - { kind: due,     chat: 9, label: "Chat 9 due" }

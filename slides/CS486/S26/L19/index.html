@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 19 — Neural Networks I: Neurons to CNNs</title>
+  <title>CS 486/686 Lecture 19 - Sequence Models, Attention, and Transformers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 19: Neural Networks I — the math neuron, activation functions, perceptrons, XOR, multilayer perceptrons, and convolutional networks (CNNs). Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 19: Sequence models, attention, and transformers - RNNs, state-space intuition, Q/K/V attention, multi-head attention, positional information, transformer blocks, and causal masking. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="../L17/custom.css">
-  <link rel="stylesheet" href="custom.css">
+  <link rel="stylesheet" href="../L17/custom.css?v=3">
+  <link rel="stylesheet" href="../L18/custom.css?v=3">
+  <link rel="stylesheet" href="custom.css?v=5">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -36,17 +37,23 @@
 <svg width="0" height="0" style="position:absolute;">
   <defs>
     <marker id="arrow-l19" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+      <path d="M0,0 L8,4 L0,8 z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-l19-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#1d4ed8"/>
+    </marker>
+    <marker id="arrow-l19-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/>
     </marker>
   </defs>
 </svg>
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Neural Networks I: Neurons to CNNs</div>
+  <div class="course-title">CS 486/686<br>Sequence Models, Attention, and Transformers</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 19</p>
-  <p class="credit">RN 21.1&ndash;21.3 &middot; PM 7.5</p>
+  <p class="credit">How embeddings talk to each other</p>
 </section>
 
 <!-- 2. Learning goals -->
@@ -62,544 +69,390 @@
   </div>
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Describe the <strong>simple mathematical model</strong> of a neuron.</li>
-    <li class="fragment">Describe desirable properties of an <strong>activation function</strong>.</li>
-    <li class="fragment">Learn / identify a <strong>perceptron</strong> for a logical function.</li>
-    <li class="fragment">Explain why a perceptron <strong>cannot represent XOR</strong> &mdash; and how a hidden layer fixes it.</li>
-    <li class="fragment">Stack neurons into a <strong>multilayer perceptron</strong>.</li>
-    <li class="fragment">Understand <strong>convolutional networks (CNNs)</strong> for images.</li>
+    <li class="fragment">Model a sentence as a <strong>sequence of embeddings</strong>.</li>
+    <li class="fragment">Explain <strong>RNNs</strong> and why they struggle to scale.</li>
+    <li class="fragment">Explain <strong>attention</strong> as token-to-token retrieval.</li>
+    <li class="fragment">Assemble a <strong>transformer block</strong> and understand <strong>causal masking</strong>.</li>
   </ul>
 </section>
 
-<!-- 3. Why neural networks? -->
-<section>
-  <h2>Learning complex non-linear relationships</h2>
-  <p style="font-size: 0.88em;">In vision, speech, translation, and beyond, the relationship between inputs and outputs is too complex to hand-program.</p>
-  <div class="defbox fragment">
-    <p style="margin: 0; font-size: 0.92em;">We need a model that can:</p>
-    <ul style="margin: 0.3em 0 0 1.2em; font-size: 0.88em;">
-      <li>Learn complex relationships.</li>
-      <li>Be trained efficiently on lots of data.</li>
-      <li>Generalize without overfitting.</li>
-    </ul>
-  </div>
-  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">Loose inspiration: the human brain &mdash; many simple components, densely connected.</p>
-</section>
-
-<!-- ============================================================
-     Neuron model (3 slides)
-     ============================================================ -->
-
-<!-- 4. From brain neurons to math neurons -->
-<section>
-  <h2>From brain neurons to math neurons</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1.1;">
-      <ul style="font-size: 0.85em;">
-        <li><strong>Dendrites</strong> receive input signals.</li>
-        <li><strong>Soma</strong> processes the signals.</li>
-        <li><strong>Axon</strong> sends an output signal.</li>
-        <li><strong>Synapses</strong> connect neurons together.</li>
-        <li>Neurons fire (or don't) based on the inputs.</li>
-      </ul>
-    </div>
-    <div style="flex: 1; text-align: center;">
-      <svg viewBox="0 0 280 180" xmlns="http://www.w3.org/2000/svg">
-        <line x1="20" y1="50" x2="100" y2="90" stroke="#6b7280" stroke-width="2"/>
-        <line x1="20" y1="90" x2="100" y2="90" stroke="#6b7280" stroke-width="2"/>
-        <line x1="20" y1="130" x2="100" y2="90" stroke="#6b7280" stroke-width="2"/>
-        <text x="10" y="50" font-size="10" fill="#1d4ed8" text-anchor="end">dendrite</text>
-        <text x="10" y="93" font-size="10" fill="#1d4ed8" text-anchor="end">dendrite</text>
-        <text x="10" y="133" font-size="10" fill="#1d4ed8" text-anchor="end">dendrite</text>
-        <ellipse cx="120" cy="90" rx="25" ry="20" fill="#fde68a" stroke="#92400e" stroke-width="2"/>
-        <text x="120" y="93" font-size="11" font-weight="700" text-anchor="middle">soma</text>
-        <line x1="145" y1="90" x2="240" y2="90" stroke="#6b7280" stroke-width="2.5"/>
-        <text x="195" y="82" font-size="10" fill="#1d4ed8" text-anchor="middle">axon</text>
-        <circle cx="245" cy="80" r="3" fill="#16a34a"/>
-        <circle cx="248" cy="95" r="3" fill="#16a34a"/>
-        <circle cx="243" cy="105" r="3" fill="#16a34a"/>
-        <text x="265" y="100" font-size="10" fill="#166534">synapses</text>
-      </svg>
-    </div>
-  </div>
-  <p style="font-size: 0.85em; color: #1d4ed8; text-align: center; margin-top: 0.5em;">The math model abstracts this into <strong>weighted sum + non-linear activation</strong>.</p>
-</section>
-
-<!-- 5. The math model -->
-<section>
-  <h2>The math model (McCulloch &amp; Pitts, 1943)</h2>
-  <div class="two-col vcenter">
-    <div style="flex: 1.1; text-align: center;">
-      <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg" class="neuron-diagram">
-        <!-- Inputs (always visible) -->
-        <g class="bias-node"><circle cx="20" cy="40" r="14"/></g>
-        <text x="20" y="40">1</text>
-        <g class="input-node">
-          <circle cx="20" cy="90" r="14"/>
-          <circle cx="20" cy="140" r="14"/>
-          <circle cx="20" cy="190" r="14"/>
-        </g>
-        <text x="20" y="90">a<tspan baseline-shift="sub" font-size="8">1</tspan></text>
-        <text x="20" y="140">a<tspan baseline-shift="sub" font-size="8">2</tspan></text>
-        <text x="20" y="190">a<tspan baseline-shift="sub" font-size="8">n</tspan></text>
-        <!-- Edges + weights + sum node -->
-        <g class="fragment">
-          <line class="edge" x1="35" y1="40"  x2="170" y2="115" marker-end="url(#arrow-l19)"/>
-          <line class="edge" x1="35" y1="90"  x2="170" y2="120" marker-end="url(#arrow-l19)"/>
-          <line class="edge" x1="35" y1="140" x2="170" y2="125" marker-end="url(#arrow-l19)"/>
-          <line class="edge" x1="35" y1="190" x2="170" y2="130" marker-end="url(#arrow-l19)"/>
-          <text class="weight-label" x="90" y="65">w<tspan baseline-shift="sub" font-size="8">0j</tspan></text>
-          <text class="weight-label" x="90" y="100">w<tspan baseline-shift="sub" font-size="8">1j</tspan></text>
-          <text class="weight-label" x="90" y="140">w<tspan baseline-shift="sub" font-size="8">2j</tspan></text>
-          <text class="weight-label" x="90" y="180">w<tspan baseline-shift="sub" font-size="8">nj</tspan></text>
-          <g class="sum-node"><circle cx="195" cy="125" r="22"/></g>
-          <text x="195" y="123" font-size="14">&Sigma;</text>
-          <text x="195" y="158" font-size="11" fill="#6b7280">in<tspan baseline-shift="sub" font-size="8">j</tspan></text>
-        </g>
-        <!-- Activation -->
-        <g class="fragment">
-          <line class="edge" x1="217" y1="125" x2="240" y2="125" marker-end="url(#arrow-l19)"/>
-          <rect class="activation-box" x="240" y="106" width="50" height="38"/>
-          <text x="265" y="128" font-size="14">g(&middot;)</text>
-        </g>
-        <!-- Output -->
-        <g class="fragment">
-          <line class="edge" x1="290" y1="125" x2="306" y2="125" marker-end="url(#arrow-l19)"/>
-          <g class="out-node"><circle cx="320" cy="125" r="14"/></g>
-          <text x="320" y="125">a<tspan baseline-shift="sub" font-size="8">j</tspan></text>
-        </g>
-      </svg>
-    </div>
-    <div style="flex: 1;">
-      <div class="defbox">
-        <p style="margin: 0; text-align: center; font-size: 0.95em;">\(in_j = \sum_{i = 0}^{n} w_{ij}\, a_i\)</p>
-        <p style="margin: 0.4em 0 0 0; text-align: center; font-size: 0.95em;">\(a_j = g(in_j)\)</p>
-      </div>
-      <p style="font-size: 0.78em; color: #6b7280; margin-top: 0.4em;">\(a_0 = 1\) is the bias; \(w_{0j}\) acts as a threshold. \(g\) is a non-linear <strong>activation function</strong>.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 6. Desirable properties of activation -->
+<!-- 3. From L18 to L19 -->
 <section class="center-slide">
-  <h2>Desirable properties of the activation function</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr 1fr;">
-    <div class="task-card">
-      <h3>Non-linear</h3>
-      <p>Complex relationships are non-linear; stacking linear layers stays linear.</p>
-    </div>
-    <div class="task-card">
-      <h3>Mimics real neurons</h3>
-      <p>Fires (\(\approx 1\)) when input is big; quiet (\(\approx 0\)) otherwise.</p>
-    </div>
-    <div class="task-card">
-      <h3>Differentiable</h3>
-      <p>So we can train via gradient-based optimization (next lecture!).</p>
-    </div>
-  </div>
+  <h2>From embeddings to sequences</h2>
+  <p style="font-size:0.95em;">L18: each item can become a learned vector.</p>
+  <svg viewBox="0 0 850 170" xmlns="http://www.w3.org/2000/svg" class="seq-svg">
+    <g class="token-row" transform="translate(50,52)">
+      <rect x="0" y="0" width="86" height="42" rx="7"/><text x="43" y="27">The</text>
+      <rect x="98" y="0" width="86" height="42" rx="7"/><text x="141" y="27">robot</text>
+      <rect x="196" y="0" width="86" height="42" rx="7"/><text x="239" y="27">picked</text>
+      <rect x="294" y="0" width="86" height="42" rx="7"/><text x="337" y="27">up</text>
+      <rect x="392" y="0" width="86" height="42" rx="7"/><text x="435" y="27">the</text>
+      <rect x="490" y="0" width="86" height="42" rx="7"/><text x="533" y="27">cup</text>
+      <rect x="588" y="0" width="86" height="42" rx="7"/><text x="631" y="27">...</text>
+    </g>
+    <g stroke="#475569" stroke-width="2" marker-end="url(#arrow-l19)">
+      <line x1="94" y1="104" x2="94" y2="130"/><line x1="192" y1="104" x2="192" y2="130"/><line x1="290" y1="104" x2="290" y2="130"/>
+      <line x1="388" y1="104" x2="388" y2="130"/><line x1="486" y1="104" x2="486" y2="130"/><line x1="584" y1="104" x2="584" y2="130"/>
+    </g>
+    <text x="340" y="156" text-anchor="middle" font-size="17" fill="#6b7280">L19: how do these vectors interact?</text>
+  </svg>
 </section>
 
-<!-- ============================================================
-     Activation functions (1 slide)
-     ============================================================ -->
-
-<!-- 7. Four common activation functions -->
-<section>
-  <h2>Four common activation functions</h2>
-  <div class="act-fn-grid">
-    <div class="act-card fragment">
-      <h3>Step</h3>
-      <p class="formula">\(g(x) = 1\) if \(x &gt; 0\), else \(0\).</p>
-      <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" class="act-plot">
-        <line class="axis" x1="10" y1="60" x2="130" y2="60"/>
-        <line class="axis" x1="70" y1="10" x2="70" y2="75"/>
-        <path class="curve" d="M 10 60 L 70 60 L 70 20 L 130 20"/>
-      </svg>
-      <p class="tradeoff">Simple but <em>not differentiable</em>; rarely used in practice.</p>
+<!-- 4. Not bag of words -->
+<section class="center-slide">
+  <h2>A sentence is not a bag of words</h2>
+  <div class="two-col" style="max-width:78%; margin:0.6em auto;">
+    <div class="defbox" style="flex:1; text-align:center;">
+      <p style="font-size:1.05em; margin:0;">dog bites man</p>
     </div>
-    <div class="act-card fragment">
-      <h3>Sigmoid</h3>
-      <p class="formula">\(g(x) = \dfrac{1}{1 + e^{-x}}\)</p>
-      <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" class="act-plot">
-        <line class="axis" x1="10" y1="60" x2="130" y2="60"/>
-        <line class="axis" x1="70" y1="10" x2="70" y2="75"/>
-        <path class="curve" d="M 10 58 C 40 57, 55 53, 70 40 C 85 27, 100 23, 130 22"/>
-      </svg>
-      <p class="tradeoff">Smooth, but <em>vanishing-gradient</em> in saturation regions.</p>
-    </div>
-    <div class="act-card fragment">
-      <h3>ReLU</h3>
-      <p class="formula">\(g(x) = \max(0, x)\)</p>
-      <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" class="act-plot">
-        <line class="axis" x1="10" y1="60" x2="130" y2="60"/>
-        <line class="axis" x1="70" y1="10" x2="70" y2="75"/>
-        <path class="curve" d="M 10 60 L 70 60 L 130 10"/>
-      </svg>
-      <p class="tradeoff">Fast, sparse; <em>dying-ReLU</em> when input stays negative.</p>
-    </div>
-    <div class="act-card fragment">
-      <h3>GELU / SiLU</h3>
-      <p class="formula">\(g(x) = x \cdot \sigma(x)\) &nbsp;(SiLU)</p>
-      <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg" class="act-plot">
-        <line class="axis" x1="10" y1="60" x2="130" y2="60"/>
-        <line class="axis" x1="70" y1="10" x2="70" y2="75"/>
-        <path class="curve" d="M 10 62 Q 55 66, 70 60 Q 90 52, 130 10"/>
-      </svg>
-      <p class="tradeoff">Smooth, ReLU-like; the <strong>modern default</strong> in transformers/LLMs.</p>
+    <div class="defbox fragment" style="flex:1; text-align:center;">
+      <p style="font-size:1.05em; margin:0;">man bites dog</p>
     </div>
   </div>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.2em;">(Leaky ReLU adds a small negative slope to ReLU to keep the gradient alive.)</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Same words. Different order. Different meaning.</p>
 </section>
 
-<!-- ============================================================
-     Perceptrons (3 slides)
-     ============================================================ -->
-
-<!-- 8. FF vs RNN + perceptron def -->
-<section>
-  <h2>Networks: feedforward vs recurrent</h2>
-  <div class="task-cards" style="grid-template-columns: 1fr 1fr;">
-    <div class="task-card">
-      <h3>Feedforward</h3>
-      <p>Connections form a <strong>DAG</strong> (no loops). The network is just a function of its inputs.</p>
-    </div>
-    <div class="task-card">
-      <h3>Recurrent</h3>
-      <p>Outputs feed back as inputs to process <strong>sequences</strong> &mdash; we return to sequences (and their limits) in L21.</p>
-    </div>
-  </div>
-  <div class="defbox fragment" style="margin-top: 0.5em;">
-    <h3>Perceptron</h3>
-    <p style="margin: 0; font-size: 0.88em;">A <strong>single-layer feedforward</strong> network: inputs connect directly to outputs. Can represent AND, OR, NOT and many other logical functions.</p>
-  </div>
+<!-- 5. Running example -->
+<section class="center-slide">
+  <h2>Running example</h2>
+  <p style="font-size:1.15em; max-width:85%; margin:0.5em auto;">The robot picked up the cup because <strong>it</strong> was empty.</p>
+  <p class="fragment" style="font-size:1em;">What does <strong>it</strong> refer to?</p>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">The answer depends on context, not the token alone.</p>
 </section>
 
-<!-- 9a. Q1 identify a perceptron -->
+<!-- 6. RNN state -->
 <section>
-  <h2>Identify a perceptron</h2>
-  <p class="quiz-q"><strong>Q1.</strong> The perceptron below uses step activation with weights \(w_0 = 0.5\), \(w_1 = -1\), \(w_2 = -1\). What logical function does it compute?</p>
-  <div style="text-align: center; margin: 0.15em 0;">
-    <svg viewBox="0 0 320 150" xmlns="http://www.w3.org/2000/svg" class="perceptron-diagram" style="max-height: 150px;">
-      <line class="edge" x1="40"  y1="30"  x2="220" y2="75" marker-end="url(#arrow-l19)"/>
-      <line class="edge" x1="40"  y1="75"  x2="220" y2="75" marker-end="url(#arrow-l19)"/>
-      <line class="edge" x1="40"  y1="120" x2="220" y2="75" marker-end="url(#arrow-l19)"/>
-      <text class="weight" x="125" y="44">0.5</text>
-      <text class="weight" x="125" y="70">&minus;1</text>
-      <text class="weight" x="125" y="106">&minus;1</text>
-      <g class="bias"><circle cx="25" cy="30" r="14"/></g>
-      <text x="25" y="30">1</text>
-      <g class="input">
-        <circle cx="25" cy="75"  r="14"/>
-        <circle cx="25" cy="120" r="14"/>
-      </g>
-      <text x="25" y="75">x<tspan baseline-shift="sub" font-size="8">1</tspan></text>
-      <text x="25" y="120">x<tspan baseline-shift="sub" font-size="8">2</tspan></text>
-      <g class="output"><circle cx="235" cy="75" r="16"/></g>
-      <text x="235" y="75">o</text>
-    </svg>
-  </div>
-  <ol class="quiz-options" style="font-size: 0.85em;">
-    <li>\(x_1 \wedge x_2\)</li>
-    <li>\(\neg (x_1 \wedge x_2)\)</li>
-    <li>\(x_1 \vee x_2\)</li>
-    <li><strong>\(\neg (x_1 \vee x_2)\)</strong> &nbsp;(NOR)</li>
-  </ol>
-  <div class="quiz-answer fragment">
-    <strong>D &mdash; NOR.</strong> The output is \(g(0.5 - x_1 - x_2)\), which is 1 only when \(0.5 - x_1 - x_2 > 0\), i.e. both \(x_1\) and \(x_2\) are 0.
-  </div>
-</section>
-
-<!-- 9b. Q2 learn weights for AND -->
-<section>
-  <h2>Learn a perceptron: AND</h2>
-  <p class="quiz-q"><strong>Q2.</strong> Find weights \((w_0, w_1, w_2)\) so the perceptron \(o = g(w_0 + w_1 x_1 + w_2 x_2)\) computes \(x_1 \wedge x_2\). The AND truth table outputs 1 <em>only</em> on \((1, 1)\).</p>
-  <ol class="quiz-options" style="font-size: 0.85em;">
-    <li>\(w_0 = -1,\ \ w_1 = 0.5,\ \ w_2 = 0.5\)</li>
-    <li>\(w_0 = 0.5,\ \ w_1 = -1,\ \ w_2 = 1\)</li>
-    <li>\(w_0 = 1.5,\ \ w_1 = -1,\ \ w_2 = -1\)</li>
-    <li><strong>\(w_0 = -1.5,\ \ w_1 = 1,\ \ w_2 = 1\)</strong></li>
-  </ol>
-  <div class="quiz-answer fragment">
-    <strong>D.</strong> Check: \(-1.5 + x_1 + x_2 > 0\) iff \(x_1 + x_2 > 1.5\), i.e. both equal 1. The other options either misclassify \((1,1)\) or fire on \((0, 0)\).
-  </div>
-</section>
-
-<!-- 10. Q3 + Q4 -->
-<section>
-  <h2>More perceptron arithmetic</h2>
-  <p style="font-size: 0.82em;">Step activation: \(g(x) = 1\) if \(x &gt; 0\), else \(0\).</p>
-  <div class="two-col">
-    <div style="flex: 1;">
-      <p class="quiz-q"><strong>Q3.</strong> What does \(h_1 = g(x_1 + x_2 - 0.5)\) compute?</p>
-      <ol class="quiz-options" style="font-size: 0.78em;">
-        <li><strong>\(x_1 \vee x_2\)</strong> (OR)</li>
-        <li>\(x_1 \wedge x_2\)</li>
-        <li>\(\neg(x_1 \vee x_2)\)</li>
-        <li>\(\neg(x_1 \wedge x_2)\)</li>
-      </ol>
-      <div class="quiz-answer fragment">
-        <strong>A &mdash; OR.</strong> Outputs 1 if at least one input is 1.
-      </div>
-    </div>
-    <div style="flex: 1;">
-      <p class="quiz-q"><strong>Q4.</strong> What does \(h_2 = g(-x_1 - x_2 + 1.5)\) compute?</p>
-      <ol class="quiz-options" style="font-size: 0.78em;">
-        <li>\(x_1 \vee x_2\)</li>
-        <li>\(x_1 \wedge x_2\)</li>
-        <li>\(\neg(x_1 \vee x_2)\)</li>
-        <li><strong>\(\neg(x_1 \wedge x_2)\)</strong> (NAND)</li>
-      </ol>
-      <div class="quiz-answer fragment">
-        <strong>D &mdash; NAND.</strong> Outputs 0 only when both inputs are 1.
-      </div>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;">Remember \(h_1\) and \(h_2\) &mdash; we'll combine them to build XOR.</p>
-</section>
-
-<!-- ============================================================
-     XOR (2 slides)
-     ============================================================ -->
-
-<!-- 11. Why a perceptron can't do XOR -->
-<section>
-  <h2>Why a perceptron can't represent XOR</h2>
-  <p style="font-size: 0.85em;">A perceptron is a <strong>linear classifier</strong>. Its decision boundary is a hyperplane in the input space.</p>
-  <div class="lin-sep-row">
-    <div class="sep-panel fragment">
-      <h3>AND</h3>
-      <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" class="sep-plot">
-        <line class="axis" x1="15" y1="115" x2="115" y2="115"/>
-        <line class="axis" x1="15" y1="115" x2="15" y2="15"/>
-        <line class="sep-line" x1="20" y1="40" x2="100" y2="115"/>
-        <circle class="neg" cx="20"  cy="115" r="5"/>
-        <circle class="neg" cx="100" cy="115" r="5"/>
-        <circle class="neg" cx="20"  cy="35"  r="5"/>
-        <circle class="pos" cx="100" cy="35"  r="5"/>
-        <text x="20" y="125" font-size="9" fill="#6b7280">0</text>
-        <text x="100" y="125" font-size="9" fill="#6b7280">1</text>
-        <text x="10" y="115" font-size="9" fill="#6b7280" text-anchor="end">0</text>
-        <text x="10" y="35"  font-size="9" fill="#6b7280" text-anchor="end">1</text>
-      </svg>
-      <div class="caption">Separable</div>
-    </div>
-    <div class="sep-panel fragment">
-      <h3>OR</h3>
-      <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" class="sep-plot">
-        <line class="axis" x1="15" y1="115" x2="115" y2="115"/>
-        <line class="axis" x1="15" y1="115" x2="15" y2="15"/>
-        <line class="sep-line" x1="20" y1="80" x2="60" y2="115"/>
-        <circle class="neg" cx="20"  cy="115" r="5"/>
-        <circle class="pos" cx="100" cy="115" r="5"/>
-        <circle class="pos" cx="20"  cy="35"  r="5"/>
-        <circle class="pos" cx="100" cy="35"  r="5"/>
-        <text x="20" y="125" font-size="9" fill="#6b7280">0</text>
-        <text x="100" y="125" font-size="9" fill="#6b7280">1</text>
-        <text x="10" y="115" font-size="9" fill="#6b7280" text-anchor="end">0</text>
-        <text x="10" y="35"  font-size="9" fill="#6b7280" text-anchor="end">1</text>
-      </svg>
-      <div class="caption">Separable</div>
-    </div>
-    <div class="sep-panel fragment">
-      <h3>XOR</h3>
-      <svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" class="sep-plot">
-        <line class="axis" x1="15" y1="115" x2="115" y2="115"/>
-        <line class="axis" x1="15" y1="115" x2="15" y2="15"/>
-        <circle class="neg" cx="20"  cy="115" r="5"/>
-        <circle class="pos" cx="100" cy="115" r="5"/>
-        <circle class="pos" cx="20"  cy="35"  r="5"/>
-        <circle class="neg" cx="100" cy="35"  r="5"/>
-        <text x="20" y="125" font-size="9" fill="#6b7280">0</text>
-        <text x="100" y="125" font-size="9" fill="#6b7280">1</text>
-        <text x="10" y="115" font-size="9" fill="#6b7280" text-anchor="end">0</text>
-        <text x="10" y="35"  font-size="9" fill="#6b7280" text-anchor="end">1</text>
-      </svg>
-      <div class="caption" style="color:#991b1b;"><strong>Not</strong> separable</div>
-    </div>
-  </div>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.3em;">Minsky &amp; Papert (1969) showed this &mdash; and it triggered the first AI winter.</p>
-</section>
-
-<!-- 12. XOR as a 2-layer network -->
-<section>
-  <h2>XOR as a 2-layer network</h2>
-  <p style="font-size: 0.85em;">Rewrite XOR using gates a perceptron <em>can</em> handle: &nbsp;\(x_1 \oplus x_2 = (x_1 \vee x_2) \wedge \neg(x_1 \wedge x_2) = h_1 \wedge h_2\).</p>
+  <h2>The first idea: recurrent state</h2>
   <div class="two-col vcenter">
-    <div style="flex: 1; text-align: center;">
-      <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" class="perceptron-diagram">
-        <line class="edge" x1="35"  y1="60"  x2="125" y2="60" marker-end="url(#arrow-l19)"/>
-        <line class="edge" x1="35"  y1="60"  x2="125" y2="140" marker-end="url(#arrow-l19)"/>
-        <line class="edge" x1="35"  y1="140" x2="125" y2="60" marker-end="url(#arrow-l19)"/>
-        <line class="edge" x1="35"  y1="140" x2="125" y2="140" marker-end="url(#arrow-l19)"/>
-        <line class="edge" x1="155" y1="60"  x2="245" y2="100" marker-end="url(#arrow-l19)"/>
-        <line class="edge" x1="155" y1="140" x2="245" y2="100" marker-end="url(#arrow-l19)"/>
-        <g class="input">
-          <circle cx="20" cy="60"  r="14"/>
-          <circle cx="20" cy="140" r="14"/>
+    <div style="flex:1.08;">
+      <svg viewBox="0 0 620 190" xmlns="http://www.w3.org/2000/svg" class="seq-svg">
+        <g class="rnn-state">
+          <rect x="55" y="62" width="72" height="46" rx="8"/><text x="91" y="91">h1</text>
+          <rect x="185" y="62" width="72" height="46" rx="8"/><text x="221" y="91">h2</text>
+          <rect x="315" y="62" width="72" height="46" rx="8"/><text x="351" y="91">h3</text>
+          <rect x="445" y="62" width="72" height="46" rx="8"/><text x="481" y="91">h4</text>
         </g>
-        <text x="20" y="60">x<tspan baseline-shift="sub" font-size="8">1</tspan></text>
-        <text x="20" y="140">x<tspan baseline-shift="sub" font-size="8">2</tspan></text>
-        <g class="hidden">
-          <circle cx="140" cy="60" r="16"/>
-          <circle cx="140" cy="140" r="16"/>
+        <g class="token-mini">
+          <rect x="55" y="135" width="72" height="30" rx="5"/><text x="91" y="154">The</text>
+          <rect x="185" y="135" width="72" height="30" rx="5"/><text x="221" y="154">robot</text>
+          <rect x="315" y="135" width="72" height="30" rx="5"/><text x="351" y="154">picked</text>
+          <rect x="445" y="135" width="72" height="30" rx="5"/><text x="481" y="154">up</text>
         </g>
-        <text x="140" y="60">h<tspan baseline-shift="sub" font-size="8">1</tspan></text>
-        <text x="140" y="140">h<tspan baseline-shift="sub" font-size="8">2</tspan></text>
-        <text x="140" y="34" font-size="10" fill="#1d4ed8" font-style="italic">OR</text>
-        <text x="140" y="170" font-size="10" fill="#1d4ed8" font-style="italic">NAND</text>
-        <g class="output"><circle cx="260" cy="100" r="16"/></g>
-        <text x="260" y="100">o</text>
-        <text x="260" y="74" font-size="10" fill="#166534" font-style="italic">AND</text>
+        <g stroke="#475569" stroke-width="2" marker-end="url(#arrow-l19)">
+          <line x1="127" y1="85" x2="180" y2="85"/><line x1="257" y1="85" x2="310" y2="85"/><line x1="387" y1="85" x2="440" y2="85"/>
+          <line x1="91" y1="135" x2="91" y2="111"/><line x1="221" y1="135" x2="221" y2="111"/><line x1="351" y1="135" x2="351" y2="111"/><line x1="481" y1="135" x2="481" y2="111"/>
+        </g>
       </svg>
     </div>
-    <div style="flex: 0.95; font-size: 0.78em;">
-      <p style="margin: 0;"><strong>Truth-table check:</strong></p>
-      <table class="factor-table" style="font-size: 0.85em; margin: 0.2em auto;">
-        <thead><tr><th>\(x_1\)</th><th>\(x_2\)</th><th>\(h_1\)<br>(OR)</th><th>\(h_2\)<br>(NAND)</th><th>\(h_1 \wedge h_2\)</th></tr></thead>
+    <div style="flex:0.92;">
+      <p style="font-size:0.95em;">Read one token at a time.</p>
+      <p class="fragment" style="text-align:center; font-size:1em;">\(h_t = f(h_{t-1}, x_t)\)</p>
+      <p class="fragment" style="font-size:0.86em; color:#6b7280;">The hidden state summarizes the past.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7. RNN walkthrough -->
+<section class="center-slide">
+  <h2>RNN inference: update and pass forward</h2>
+  <div class="rnn-steps">
+    <div class="step-card"><strong>The</strong><span>state: article</span></div>
+    <div class="step-card fragment"><strong>robot</strong><span>state: entity</span></div>
+    <div class="step-card fragment"><strong>picked</strong><span>state: action</span></div>
+    <div class="step-card fragment"><strong>up</strong><span>state: phrase</span></div>
+  </div>
+  <p class="fragment" style="font-size:0.88em; color:#6b7280;">Elegant idea: every new token edits the running summary.</p>
+</section>
+
+<!-- 8. RNN limits -->
+<section class="center-slide">
+  <h2>Why RNNs are limited</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>Sequential</h3><p style="font-size:0.78em;">Step \(t\) waits for \(t-1\).</p></div>
+    <div class="task-card fragment"><h3>Bottleneck</h3><p style="font-size:0.78em;">Everything squeezes into one state.</p></div>
+    <div class="task-card fragment"><h3>Long paths</h3><p style="font-size:0.78em;">Distant tokens interact through many steps.</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">Good concept, hard scaling story.</p>
+</section>
+
+<!-- 9. Modern recurrence -->
+<section class="center-slide">
+  <h2>Modern recurrence revisits the idea</h2>
+  <p style="font-size:1.05em;">Structured state updates can be faster and stabler:</p>
+  <p style="font-size:1.1em;">\(\text{state}_t = A\,\text{state}_{t-1} + Bx_t\)</p>
+  <div class="defbox fragment" style="max-width:76%; margin:0.5em auto;">
+    <p style="margin:0; font-size:0.86em;">State-space models and linear RNNs keep the recurrence idea, but redesign it for modern hardware.</p>
+  </div>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280;">Transformers dominate today, but recurrence is not dead.</p>
+</section>
+
+<!-- 10. Direct lookup -->
+<section>
+  <h2>Different idea: let tokens look directly</h2>
+  <p style="font-size:0.86em;">Instead of compressing the past, let a token retrieve the information it needs.</p>
+  <svg viewBox="0 0 920 230" xmlns="http://www.w3.org/2000/svg" class="seq-svg">
+    <g class="token-row" transform="translate(30,110)">
+      <rect x="0" y="0" width="78" height="40" rx="7"/><text x="39" y="26">The</text>
+      <rect x="88" y="0" width="78" height="40" rx="7"/><text x="127" y="26">robot</text>
+      <rect x="176" y="0" width="78" height="40" rx="7"/><text x="215" y="26">picked</text>
+      <rect x="264" y="0" width="78" height="40" rx="7"/><text x="303" y="26">up</text>
+      <rect x="352" y="0" width="78" height="40" rx="7"/><text x="391" y="26">the</text>
+      <rect x="440" y="0" width="78" height="40" rx="7"/><text x="479" y="26">cup</text>
+      <rect x="528" y="0" width="78" height="40" rx="7"/><text x="567" y="26">because</text>
+      <rect x="616" y="0" width="78" height="40" rx="7" class="focus"/><text x="655" y="26">it</text>
+      <rect x="704" y="0" width="78" height="40" rx="7"/><text x="743" y="26">was</text>
+      <rect x="792" y="0" width="78" height="40" rx="7"/><text x="831" y="26">empty</text>
+    </g>
+    <path d="M685 112 C650 35, 530 35, 510 108" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow-l19-red)"/>
+    <path class="fragment" d="M682 112 C610 70, 205 70, 170 108" fill="none" stroke="#1d4ed8" stroke-width="2.2" stroke-dasharray="5 4" marker-end="url(#arrow-l19-blue)"/>
+    <text x="590" y="43" font-size="16" fill="#991b1b" font-weight="700">mostly cup</text>
+  </svg>
+</section>
+
+<!-- 11. Attention retrieval -->
+<section>
+  <h2>Attention is content-based lookup</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; margin-top:0.6em;">
+    <div class="task-card"><h3>Query</h3><p style="font-size:0.82em;">What am I looking for?</p></div>
+    <div class="task-card fragment"><h3>Key</h3><p style="font-size:0.82em;">What do I advertise?</p></div>
+    <div class="task-card fragment"><h3>Value</h3><p style="font-size:0.82em;">What information do I provide?</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8; text-align:center; margin-top:0.7em;">A query matches keys, then reads a weighted mix of values.</p>
+</section>
+
+<!-- 12. QKV -->
+<section class="center-slide">
+  <h2>Queries, keys, values are learned projections</h2>
+  <p style="font-size:0.95em;">For token embedding \(\mathbf{x}_i\):</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:84%; margin:0.5em auto;">
+    <div class="task-card"><h3>query</h3><p>\(\mathbf{q}_i = W_Q\mathbf{x}_i\)</p></div>
+    <div class="task-card fragment"><h3>key</h3><p>\(\mathbf{k}_i = W_K\mathbf{x}_i\)</p></div>
+    <div class="task-card fragment"><h3>value</h3><p>\(\mathbf{v}_i = W_V\mathbf{x}_i\)</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Same embedding, three roles.</p>
+</section>
+
+<!-- 13. Scores -->
+<section>
+  <h2>Score: which token matters?</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1;">
+      <p style="font-size:0.95em;">For query token <strong>it</strong>:</p>
+      <p style="text-align:center; font-size:1.05em;">\(\text{score}(i,j)=\mathbf{q}_i^\top\mathbf{k}_j\)</p>
+    </div>
+    <div style="flex:0.95;">
+      <table class="factor-table" style="font-size:0.78em; margin:0 auto;">
+        <thead><tr><th>candidate key</th><th>score</th></tr></thead>
         <tbody>
-          <tr class="fragment"><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td></tr>
-          <tr class="fragment"><td>0</td><td>1</td><td>1</td><td>1</td><td class="val" style="color:#166534;">1</td></tr>
-          <tr class="fragment"><td>1</td><td>0</td><td>1</td><td>1</td><td class="val" style="color:#166534;">1</td></tr>
-          <tr class="fragment"><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td></tr>
+          <tr><td>robot</td><td>medium</td></tr>
+          <tr style="background:#dcfce7;"><td><strong>cup</strong></td><td><strong>high</strong></td></tr>
+          <tr><td>empty</td><td>medium</td></tr>
+          <tr><td>the</td><td>low</td></tr>
         </tbody>
       </table>
-      <p class="fragment" style="margin: 0.3em 0 0 0; color: #166534; font-size: 0.85em;"><strong>Matches XOR exactly.</strong> One hidden layer is enough.</p>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     Multilayer perceptrons + CNNs (3 slides)
-     ============================================================ -->
-
-<!-- 13. Multilayer perceptron -->
-<section>
-  <h2>Stacking neurons: the multilayer perceptron</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">XOR needed one hidden layer. Stack layers of neurons and you get a <strong>multilayer perceptron (MLP)</strong> &mdash; a fully-connected feedforward network.</p>
-  <div class="two-col vcenter">
-    <div style="flex: 1; text-align:center;">
-      <svg viewBox="0 0 340 200" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:180px;">
-        <g stroke="#cbd5e1" stroke-width="1">
-          <line x1="52" y1="60" x2="150" y2="40"/><line x1="52" y1="60" x2="150" y2="85"/><line x1="52" y1="60" x2="150" y2="130"/><line x1="52" y1="60" x2="150" y2="175"/>
-          <line x1="52" y1="100" x2="150" y2="40"/><line x1="52" y1="100" x2="150" y2="85"/><line x1="52" y1="100" x2="150" y2="130"/><line x1="52" y1="100" x2="150" y2="175"/>
-          <line x1="52" y1="140" x2="150" y2="40"/><line x1="52" y1="140" x2="150" y2="85"/><line x1="52" y1="140" x2="150" y2="130"/><line x1="52" y1="140" x2="150" y2="175"/>
-          <line x1="150" y1="40" x2="285" y2="85"/><line x1="150" y1="40" x2="285" y2="130"/>
-          <line x1="150" y1="85" x2="285" y2="85"/><line x1="150" y1="85" x2="285" y2="130"/>
-          <line x1="150" y1="130" x2="285" y2="85"/><line x1="150" y1="130" x2="285" y2="130"/>
-          <line x1="150" y1="175" x2="285" y2="85"/><line x1="150" y1="175" x2="285" y2="130"/>
-        </g>
-        <g fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5">
-          <circle cx="40" cy="60" r="12"/><circle cx="40" cy="100" r="12"/><circle cx="40" cy="140" r="12"/>
-        </g>
-        <g fill="#fef3c7" stroke="#92400e" stroke-width="1.5">
-          <circle cx="150" cy="40" r="12"/><circle cx="150" cy="85" r="12"/><circle cx="150" cy="130" r="12"/><circle cx="150" cy="175" r="12"/>
-        </g>
-        <g fill="#dcfce7" stroke="#166534" stroke-width="1.5">
-          <circle cx="285" cy="85" r="12"/><circle cx="285" cy="130" r="12"/>
-        </g>
-        <text x="40" y="180" font-size="10" fill="#1d4ed8" text-anchor="middle">input</text>
-        <text x="150" y="196" font-size="10" fill="#92400e" text-anchor="middle">hidden</text>
-        <text x="285" y="160" font-size="10" fill="#166534" text-anchor="middle">output</text>
-      </svg>
-    </div>
-    <div style="flex: 0.95;">
-      <ul style="font-size: 0.82em; margin: 0.1em 0 0 1em;">
-        <li class="fragment">Each hidden unit computes \(g(\mathbf{w}^\top \mathbf{x} + b)\); layers compose into richer features.</li>
-        <li class="fragment"><strong>Universal approximation:</strong> a wide enough hidden layer can approximate any continuous function.</li>
-        <li class="fragment">Stack more hidden layers &rarr; a <strong>deep</strong> network. Output layer = softmax or linear (L17).</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 14. CNNs: convolution + weight sharing -->
-<section>
-  <h2>Convolutional networks: weight sharing for images</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">A fully-connected layer on a megapixel image needs billions of weights. A <strong>CNN</strong> instead slides one small <strong>filter</strong> over the image, reusing the same weights everywhere.</p>
-  <div class="two-col vcenter">
-    <div style="flex: 1.05; text-align:center;">
-      <svg viewBox="0 0 360 180" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:170px;">
-        <g stroke="#9ca3af" stroke-width="1" fill="#eff6ff">
-          <rect x="20" y="20" width="120" height="120"/>
-        </g>
-        <g stroke="#cbd5e1" stroke-width="0.8">
-          <line x1="20" y1="44" x2="140" y2="44"/><line x1="20" y1="68" x2="140" y2="68"/><line x1="20" y1="92" x2="140" y2="92"/><line x1="20" y1="116" x2="140" y2="116"/>
-          <line x1="44" y1="20" x2="44" y2="140"/><line x1="68" y1="20" x2="68" y2="140"/><line x1="92" y1="20" x2="92" y2="140"/><line x1="116" y1="20" x2="116" y2="140"/>
-        </g>
-        <rect x="20" y="20" width="72" height="72" fill="#fca5a5" fill-opacity="0.5" stroke="#dc2626" stroke-width="2"/>
-        <text x="80" y="158" font-size="11" fill="#1d4ed8" text-anchor="middle">input image</text>
-        <text x="56" y="15" font-size="10" fill="#dc2626" text-anchor="middle">filter</text>
-        <line x1="145" y1="80" x2="205" y2="80" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arrow-l19)"/>
-        <text x="175" y="72" font-size="10" fill="#6b7280" text-anchor="middle">&#8859;</text>
-        <g stroke="#166534" stroke-width="1" fill="#dcfce7">
-          <rect x="215" y="40" width="90" height="90"/>
-        </g>
-        <g stroke="#a7f3d0" stroke-width="0.8">
-          <line x1="215" y1="70" x2="305" y2="70"/><line x1="215" y1="100" x2="305" y2="100"/>
-          <line x1="245" y1="40" x2="245" y2="130"/><line x1="275" y1="40" x2="275" y2="130"/>
-        </g>
-        <rect x="215" y="40" width="30" height="30" fill="#86efac" stroke="#166534" stroke-width="1.5"/>
-        <text x="260" y="150" font-size="11" fill="#166534" text-anchor="middle">feature map</text>
-      </svg>
-    </div>
-    <div style="flex: 0.95;">
-      <ul style="font-size: 0.82em; margin: 0.1em 0 0 1em;">
-        <li class="fragment"><strong>Local:</strong> each output looks at a small patch (receptive field).</li>
-        <li class="fragment"><strong>Weight sharing:</strong> the same filter runs everywhere &mdash; far fewer parameters, and it detects a feature anywhere in the image.</li>
-        <li class="fragment">Many filters &rarr; many feature maps (edges, corners, textures &hellip;).</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 15. CNNs: pooling + feature hierarchy -->
-<section>
-  <h2>Pooling &amp; the feature hierarchy</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Alternate <strong>convolution</strong> (detect features) with <strong>pooling</strong> (shrink the map, keep the strongest response). Stacking these builds features from simple to complex.</p>
-  <div style="text-align:center;">
-    <svg viewBox="0 0 620 150" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:150px;">
-      <rect x="10" y="35" width="70" height="70" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.4"/>
-      <text x="45" y="122" font-size="10" fill="#1d4ed8" text-anchor="middle">pixels</text>
-      <line x1="84" y1="70" x2="112" y2="70" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
-      <rect x="116" y="45" width="54" height="54" fill="#dcfce7" stroke="#166534" stroke-width="1.4"/>
-      <text x="143" y="118" font-size="10" fill="#166534" text-anchor="middle">edges</text>
-      <line x1="174" y1="70" x2="202" y2="70" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
-      <rect x="206" y="52" width="40" height="40" fill="#fef3c7" stroke="#92400e" stroke-width="1.4"/>
-      <text x="226" y="112" font-size="10" fill="#92400e" text-anchor="middle">textures</text>
-      <line x1="250" y1="70" x2="278" y2="70" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
-      <rect x="282" y="57" width="30" height="30" fill="#fde68a" stroke="#b45309" stroke-width="1.4"/>
-      <text x="297" y="107" font-size="10" fill="#b45309" text-anchor="middle">parts</text>
-      <line x1="316" y1="70" x2="344" y2="70" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
-      <rect x="348" y="60" width="24" height="24" fill="#fecaca" stroke="#991b1b" stroke-width="1.4"/>
-      <text x="360" y="104" font-size="10" fill="#991b1b" text-anchor="middle">objects</text>
-      <line x1="376" y1="72" x2="404" y2="72" stroke="#6b7280" stroke-width="1.4" marker-end="url(#arrow-l19)"/>
-      <rect x="408" y="58" width="88" height="28" rx="4" fill="#ede9fe" stroke="#6d28d9" stroke-width="1.4"/>
-      <text x="452" y="76" font-size="11" fill="#6d28d9" text-anchor="middle">softmax</text>
-      <text x="452" y="104" font-size="10" fill="#6d28d9" text-anchor="middle">"cat"</text>
-    </svg>
-  </div>
-  <ul style="font-size: 0.8em; margin: 0.15em 0 0 1.2em;">
-    <li class="fragment"><strong>Pooling</strong> (e.g. 2&times;2 max) shrinks maps &rarr; small translations don't matter.</li>
-    <li class="fragment">Deeper layers see larger regions &rarr; edges &rarr; parts &rarr; whole objects.</li>
-    <li class="fragment">CNNs powered the deep-learning breakthrough in vision (ImageNet, 2012).</li>
-  </ul>
-</section>
-
-<!-- ============================================================
-     Wrap-up (1 slide)
-     ============================================================ -->
-
-<!-- 16. Learning goals (recap) + next -->
+<!-- 14. Softmax -->
 <section class="center-slide">
-  <h2>Learning goals (recap) &mdash; Next: training</h2>
-  <ul style="text-align:left; margin-left:2em; list-style: none; padding-left: 0; max-width: 85%; margin-right: auto;">
-    <li>&#10003; &nbsp;Describe the <strong>math neuron</strong> and activation functions.</li>
-    <li>&#10003; &nbsp;Learn / identify a <strong>perceptron</strong> for a logical function.</li>
-    <li>&#10003; &nbsp;Explain why a perceptron <strong>cannot represent XOR</strong> &mdash; and how a hidden layer fixes it.</li>
-    <li>&#10003; &nbsp;Stack neurons into a <strong>multilayer perceptron</strong>.</li>
-    <li>&#10003; &nbsp;Understand <strong>CNNs</strong>: convolution, weight sharing, pooling, feature hierarchy.</li>
+  <h2>Softmax turns scores into weights</h2>
+  <div class="attn-bars">
+    <div class="attn-bar"><span>robot</span><div style="height:36px;"></div><b>0.18</b></div>
+    <div class="attn-bar hot"><span>cup</span><div style="height:110px;"></div><b>0.62</b></div>
+    <div class="attn-bar"><span>empty</span><div style="height:28px;"></div><b>0.14</b></div>
+    <div class="attn-bar"><span>other</span><div style="height:14px;"></div><b>0.06</b></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Attention weights are a probability distribution over tokens.</p>
+</section>
+
+<!-- 15. Weighted sum -->
+<section class="center-slide">
+  <h2>Then mix the values</h2>
+  <p style="font-size:1.05em;">\(\text{context}_i = \sum_j \alpha_{ij}\mathbf{v}_j\)</p>
+  <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg" class="seq-svg" style="max-height:180px;">
+    <g class="token-mini">
+      <rect x="80" y="50" width="90" height="42" rx="7"/><text x="125" y="77">robot</text>
+      <rect x="235" y="35" width="90" height="58" rx="7" class="hot"/><text x="280" y="70">cup</text>
+      <rect x="390" y="50" width="90" height="42" rx="7"/><text x="435" y="77">empty</text>
+      <rect x="610" y="50" width="90" height="42" rx="7" class="focus"/><text x="655" y="77">it</text>
+    </g>
+    <g stroke="#475569" stroke-width="2" marker-end="url(#arrow-l19)">
+      <line x1="170" y1="72" x2="600" y2="72"/>
+      <line x1="325" y1="64" x2="600" y2="64" stroke="#dc2626" stroke-width="4"/>
+      <line x1="480" y1="72" x2="600" y2="72"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8;">The new vector for <strong>it</strong> carries information from <strong>cup</strong>.</p>
+</section>
+
+<!-- 16. Formula -->
+<section>
+  <h2>Scaled dot-product attention</h2>
+  <div class="defbox" style="text-align:center; margin:0.4em auto;">
+    <p style="font-size:1.05em; margin:0;">\(\text{Attention}(Q,K,V)=\operatorname{softmax}\!\left(\dfrac{QK^\top}{\sqrt{d_k}}\right)V\)</p>
+  </div>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; margin-top:0.5em;">
+    <div class="task-card fragment"><h3>\(QK^\top\)</h3><p style="font-size:0.78em;">all pairwise relevance scores</p></div>
+    <div class="task-card fragment"><h3>\(V\)</h3><p style="font-size:0.78em;">the information being mixed</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">The \(\sqrt{d_k}\) scaling keeps softmax numerically well-behaved.</p>
+</section>
+
+<!-- 17. Heatmap -->
+<section>
+  <h2>Attention can be visualized as a heatmap</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05; text-align:center;">
+      <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" class="attn-heat">
+        <text x="120" y="28">robot</text><text x="180" y="28">cup</text><text x="240" y="28">it</text><text x="300" y="28">empty</text>
+        <text x="45" y="72">robot</text><text x="45" y="132">cup</text><text x="45" y="192" class="focus-txt">it</text><text x="45" y="252">empty</text>
+        <g transform="translate(90,45)">
+          <rect x="0" y="0" width="55" height="55" fill="#1d4ed8" fill-opacity=".65"/><rect x="55" y="0" width="55" height="55" fill="#1d4ed8" fill-opacity=".15"/><rect x="110" y="0" width="55" height="55" fill="#1d4ed8" fill-opacity=".1"/><rect x="165" y="0" width="55" height="55" fill="#1d4ed8" fill-opacity=".1"/>
+          <rect x="0" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".2"/><rect x="55" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".55"/><rect x="110" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".1"/><rect x="165" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".15"/>
+          <rect x="0" y="110" width="55" height="55" fill="#1d4ed8" fill-opacity=".18"/><rect x="55" y="110" width="55" height="55" fill="#dc2626" fill-opacity=".7"/><rect x="110" y="110" width="55" height="55" fill="#1d4ed8" fill-opacity=".05"/><rect x="165" y="110" width="55" height="55" fill="#1d4ed8" fill-opacity=".14"/>
+          <rect x="0" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".08"/><rect x="55" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".2"/><rect x="110" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".18"/><rect x="165" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".55"/>
+          <rect x="0" y="110" width="220" height="55" fill="none" stroke="#dc2626" stroke-width="3"/>
+        </g>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.88em;">Rows ask: where does this token attend?</p>
+      <p class="fragment" style="font-size:0.88em;">The row for <strong>it</strong> focuses on <strong>cup</strong>.</p>
+      <p class="fragment" style="font-size:0.82em; color:#6b7280;">Caveat: attention is inspectable, but not always a faithful explanation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 18. Multi-head -->
+<section class="center-slide">
+  <h2>Multi-head attention</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>syntax</h3><p style="font-size:0.8em;">subject &harr; verb</p></div>
+    <div class="task-card fragment"><h3>coreference</h3><p style="font-size:0.8em;">it &harr; cup</p></div>
+    <div class="task-card fragment"><h3>local</h3><p style="font-size:0.8em;">nearby phrases</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8; margin-top:0.7em;">Different heads can retrieve different kinds of information in parallel.</p>
+</section>
+
+<!-- 19. Position -->
+<section>
+  <h2>Attention still needs position</h2>
+  <p style="font-size:0.86em;">Attention sees a set of vectors unless we tell it where each token is.</p>
+  <div class="two-col vcenter">
+    <div style="flex:1;">
+      <pre style="font-size:0.56em;"><code>x = token_embedding(input_ids)
+x = x + position_embedding(positions)</code></pre>
+    </div>
+    <div style="flex:1;">
+      <div class="defbox">
+        <p style="margin:0; font-size:0.84em;"><strong>Modern note:</strong> many LLMs use relative or rotary position information (RoPE), not just learned absolute positions.</p>
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Position tells the model that “dog bites man” differs from “man bites dog.”</p>
+</section>
+
+<!-- 20. Transformer block -->
+<section>
+  <h2>The transformer block</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.9; text-align:center;">
+      <svg viewBox="0 0 230 310" xmlns="http://www.w3.org/2000/svg" class="transformer-block">
+        <line x1="115" y1="292" x2="115" y2="266" marker-end="url(#arrow-l19)"/>
+        <rect class="tb-attn" x="42" y="224" width="146" height="42"/><text x="115" y="249">attention</text>
+        <rect class="tb-norm" x="55" y="180" width="120" height="34"/><text x="115" y="201">add + norm</text>
+        <line x1="115" y1="224" x2="115" y2="214" marker-end="url(#arrow-l19)"/>
+        <rect class="tb-ffn" x="55" y="112" width="120" height="42"/><text x="115" y="137">feed-forward</text>
+        <line x1="115" y1="180" x2="115" y2="154" marker-end="url(#arrow-l19)"/>
+        <rect class="tb-norm" x="55" y="68" width="120" height="34"/><text x="115" y="89">add + norm</text>
+        <line x1="115" y1="112" x2="115" y2="102" marker-end="url(#arrow-l19)"/>
+        <line x1="115" y1="68" x2="115" y2="38" marker-end="url(#arrow-l19)"/>
+        <path d="M38 245 C18 245, 18 197, 54 197" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow-l19)"/>
+        <path d="M50 133 C24 133, 24 85, 54 85" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow-l19)"/>
+      </svg>
+    </div>
+    <div style="flex:1.05;">
+      <p style="font-size:0.9em;"><strong>Attention:</strong> tokens communicate.</p>
+      <p class="fragment" style="font-size:0.9em;"><strong>Feed-forward:</strong> each token thinks locally.</p>
+      <p class="fragment" style="font-size:0.86em; color:#6b7280;">Residuals and normalization keep deep stacks trainable.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 21. Communication vs computation -->
+<section class="center-slide">
+  <h2>Two jobs inside each block</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:78%; margin:0.6em auto;">
+    <div class="task-card"><h3>attention</h3><p>talk across tokens</p></div>
+    <div class="task-card fragment"><h3>MLP</h3><p>think inside each token</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Stack this block many times and representations become richer.</p>
+</section>
+
+<!-- 22. Causal masking -->
+<section>
+  <h2>Causal masking prevents peeking</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.9; text-align:center;">
+      <svg viewBox="0 0 260 230" xmlns="http://www.w3.org/2000/svg" class="mask-grid">
+        <text x="142" y="22">key position</text>
+        <text x="18" y="135" transform="rotate(-90 18 135)">query</text>
+        <g transform="translate(55,38)">
+          <rect class="ok" x="0" y="0" width="34" height="34"/><rect class="no" x="34" y="0" width="34" height="34"/><text x="51" y="21">x</text><rect class="no" x="68" y="0" width="34" height="34"/><text x="85" y="21">x</text><rect class="no" x="102" y="0" width="34" height="34"/><text x="119" y="21">x</text><rect class="no" x="136" y="0" width="34" height="34"/><text x="153" y="21">x</text>
+          <rect class="ok" x="0" y="34" width="34" height="34"/><rect class="ok" x="34" y="34" width="34" height="34"/><rect class="no" x="68" y="34" width="34" height="34"/><text x="85" y="55">x</text><rect class="no" x="102" y="34" width="34" height="34"/><text x="119" y="55">x</text><rect class="no" x="136" y="34" width="34" height="34"/><text x="153" y="55">x</text>
+          <rect class="ok" x="0" y="68" width="34" height="34"/><rect class="ok" x="34" y="68" width="34" height="34"/><rect class="ok" x="68" y="68" width="34" height="34"/><rect class="no" x="102" y="68" width="34" height="34"/><text x="119" y="89">x</text><rect class="no" x="136" y="68" width="34" height="34"/><text x="153" y="89">x</text>
+          <rect class="ok" x="0" y="102" width="34" height="34"/><rect class="ok" x="34" y="102" width="34" height="34"/><rect class="ok" x="68" y="102" width="34" height="34"/><rect class="ok" x="102" y="102" width="34" height="34"/><rect class="no" x="136" y="102" width="34" height="34"/><text x="153" y="123">x</text>
+          <rect class="ok" x="0" y="136" width="34" height="34"/><rect class="ok" x="34" y="136" width="34" height="34"/><rect class="ok" x="68" y="136" width="34" height="34"/><rect class="ok" x="102" y="136" width="34" height="34"/><rect class="ok" x="136" y="136" width="34" height="34"/>
+        </g>
+      </svg>
+    </div>
+    <div style="flex:1.05;">
+      <p style="font-size:0.9em;">A language model predicts the future.</p>
+      <p class="fragment" style="font-size:0.9em;">So token \(t\) can only attend to positions \(\leq t\).</p>
+      <p class="fragment" style="font-size:0.86em; color:#6b7280;">Future scores are set to \(-\infty\) before softmax.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 23. Encoder decoder -->
+<section class="center-slide">
+  <h2>Encoder vs decoder</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
+    <div class="task-card"><h3>Encoder</h3><p style="font-size:0.82em;">Every token can look both directions. Good for understanding.</p></div>
+    <div class="task-card fragment"><h3>Decoder</h3><p style="font-size:0.82em;">Tokens look left only. Good for generation.</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Qwen/GPT-style LLMs are decoder-only causal transformers.</p>
+</section>
+
+<!-- 24. Why transformers -->
+<section class="center-slide">
+  <h2>Why transformers took over</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>Parallel</h3><p style="font-size:0.8em;">All positions at once during training.</p></div>
+    <div class="task-card fragment"><h3>Long-range</h3><p style="font-size:0.8em;">Any token reaches any other in one hop.</p></div>
+    <div class="task-card fragment"><h3>Scalable</h3><p style="font-size:0.8em;">Bigger models and data kept improving.</p></div>
+  </div>
+</section>
+
+<!-- 25. Next -->
+<section class="center-slide">
+  <h2>Now we have the architecture</h2>
+  <p style="font-size:1.05em;">Next we need the training task:</p>
+  <p class="fragment" style="font-size:1.15em; color:#1d4ed8;"><strong>predict the next token at massive scale</strong></p>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">L20: pretraining language models from first principles.</p>
+</section>
+
+<!-- 26. Recap -->
+<section class="center-slide">
+  <h2>Recap</h2>
+  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:84%; margin-right:auto;">
+    <li>&#10003; &nbsp;RNNs summarize the past with a <strong>hidden state</strong>.</li>
+    <li>&#10003; &nbsp;Attention retrieves information directly between <strong>tokens</strong>.</li>
+    <li>&#10003; &nbsp;Queries, keys, and values implement learned retrieval.</li>
+    <li>&#10003; &nbsp;Transformer blocks stack <strong>attention</strong> and <strong>feed-forward</strong> computation.</li>
+    <li>&#10003; &nbsp;Causal masks turn transformers into language generators.</li>
   </ul>
-  <p class="fragment" style="font-size: 0.88em; color: #1d4ed8; text-align: center; margin-top: 0.7em;">L20: how do we actually <em>train</em> these networks? &mdash; gradient descent + <strong>backpropagation</strong>.</p>
 </section>
 
 </div>
