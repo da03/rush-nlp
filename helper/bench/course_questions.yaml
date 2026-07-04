@@ -37,7 +37,7 @@
   expected_all: ["Poole", "Mackworth"]            # readings.primary.authors
 
 - query: "when is the final exam"
-  expected_any: ["Aug 7", "August 7"]             # final_exam.window: "Aug 7 - 20, 2026"
+  expected_all: ["August 8", "7:30 PM", "PAC 5"]  # final_exam.window/note
 
 - query: "what is the instructor's email"
   expected_any: ["yuntian@uwaterloo.ca"]          # course.instructor.email

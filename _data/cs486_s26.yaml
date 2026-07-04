@@ -33,8 +33,8 @@ course:
       time: "TTh 2:30 PM - 3:50 PM"
       room: "MC 4021"
   final_exam:
-    window: "Aug 7 - 20, 2026"
-    note: "Exact date set by Registrar (TBA)"
+    window: "Saturday, August 8, 2026, 7:30 PM - 10:00 PM"
+    note: "PAC 5"
 
 # 7 TAs - rendered as a grid of staff cards.
 tas:
@@ -353,8 +353,8 @@ schedule:
       - { kind: due, label: "Assignment 3 due" }
 
   - type: final_exam
-    window: "Aug 7 - 20"
-    note: "Final exam period (specific date set by Registrar). Final project report (CS686) due during this period (TBA)."
+    window: "Saturday, August 8, 2026, 7:30 PM - 10:00 PM"
+    note: "Location: PAC 5. Final project report (CS686) due during the exam period (TBA)."
 
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.

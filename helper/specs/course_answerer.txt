@@ -78,7 +78,7 @@ Output: The primary textbook is Artificial Intelligence: Foundations of Computat
 
 Input: Course facts:
 ## Overview
-- Final exam: Aug 7 - 20, 2026 (Exact date set by Registrar (TBA)).
+- Final exam: Saturday, August 8, 2026, 7:30 PM - 10:00 PM (PAC 5).
 
 Question: what is the late policy
 Output: I don't have that information.
