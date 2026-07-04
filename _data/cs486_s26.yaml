@@ -315,7 +315,7 @@ schedule:
   - type: lecture
     date: 2026-07-16
     lecture_num: 20
-    topic: "Neural Networks II: Training"
+    topic: "Pretraining Language Models From First Principles"
     slides: /slides/CS486/S26/L20/
     deadlines:
       - { kind: out,     chat: 10, label: "Chat 10 out" }

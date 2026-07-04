@@ -2,17 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 20 — Neural Networks II: Training</title>
+  <title>CS 486/686 Lecture 20 - Pretraining Language Models From First Principles</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 20: Neural Networks II — cross-entropy loss, gradient descent, backpropagation, optimizers (SGD/momentum/Adam/AdamW), regularization and normalization. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 20: Pretraining language models from first principles - tokenization, next-token prediction, logits, softmax, cross-entropy, self-supervised pretraining, and decoding. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="../L19/custom.css">
-  <link rel="stylesheet" href="custom.css">
+  <link rel="stylesheet" href="../L17/custom.css?v=3">
+  <link rel="stylesheet" href="../L19/custom.css?v=5">
+  <link rel="stylesheet" href="custom.css?v=4">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -36,20 +37,20 @@
 <svg width="0" height="0" style="position:absolute;">
   <defs>
     <marker id="arrow-l20" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+      <path d="M0,0 L8,4 L0,8 z" fill="#475569"/>
     </marker>
-    <marker id="arrow-l20-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/>
+    <marker id="arrow-l20-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#1d4ed8"/>
     </marker>
   </defs>
 </svg>
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Neural Networks II: Training</div>
+  <div class="course-title">CS 486/686<br>Pretraining Language Models From First Principles</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 20</p>
-  <p class="credit">RN 21.1&ndash;21.2 &middot; PM 7.5 &middot; GBC 6.5, 7, 8</p>
+  <p class="credit">How a transformer learns to predict text</p>
 </section>
 
 <!-- 2. Learning goals -->
@@ -65,444 +66,376 @@
   </div>
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Write the <strong>cross-entropy</strong> loss and the <strong>gradient-descent</strong> update.</li>
-    <li class="fragment">Describe <strong>back-propagation</strong> (forward + backward passes) and compute a weight's gradient.</li>
-    <li class="fragment">Speed up training with <strong>momentum</strong> and <strong>Adam / AdamW</strong>.</li>
-    <li class="fragment">Fight overfitting with <strong>regularization, dropout, and normalization</strong>.</li>
-    <li class="fragment">Decide when to use a <strong>neural network</strong> vs a <strong>decision tree</strong>.</li>
+    <li class="fragment">Turn <strong>text</strong> into tokens and embeddings.</li>
+    <li class="fragment">Explain <strong>next-token prediction</strong> and <strong>cross-entropy</strong>.</li>
+    <li class="fragment">Explain <strong>pretraining</strong> as self-supervised learning at scale.</li>
+    <li class="fragment">Distinguish <strong>training</strong> from <strong>decoding / inference</strong>.</li>
   </ul>
 </section>
 
-<!-- 3. The training problem: 2-layer NN -->
-<section>
-  <h2>The training problem</h2>
-  <p style="font-size: 0.85em;">A 2-layer feedforward network for spam classification &mdash; predict \([a^{(2)}_1, a^{(2)}_2]\) from two features (email length, sender trust).</p>
-  <div class="two-col vcenter">
-    <div style="flex: 1; text-align: center;">
-      <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" class="nn-diagram">
-        <line class="edge" x1="35" y1="60"  x2="155" y2="60"/>
-        <line class="edge" x1="35" y1="60"  x2="155" y2="160"/>
-        <line class="edge" x1="35" y1="160" x2="155" y2="60"/>
-        <line class="edge" x1="35" y1="160" x2="155" y2="160"/>
-        <line class="edge" x1="175" y1="60"  x2="275" y2="60"/>
-        <line class="edge" x1="175" y1="60"  x2="275" y2="160"/>
-        <line class="edge" x1="175" y1="160" x2="275" y2="60"/>
-        <line class="edge" x1="175" y1="160" x2="275" y2="160"/>
-        <g class="input">
-          <circle cx="20" cy="60" r="14"/>
-          <circle cx="20" cy="160" r="14"/>
-        </g>
-        <text x="20" y="60">x<tspan baseline-shift="sub" font-size="8">1</tspan></text>
-        <text x="20" y="160">x<tspan baseline-shift="sub" font-size="8">2</tspan></text>
-        <g class="hidden">
-          <circle cx="165" cy="60" r="16"/>
-          <circle cx="165" cy="160" r="16"/>
-        </g>
-        <text x="165" y="60">z<tspan baseline-shift="sub" font-size="8">1</tspan><tspan baseline-shift="super" font-size="8">(1)</tspan></text>
-        <text x="165" y="160">z<tspan baseline-shift="sub" font-size="8">2</tspan><tspan baseline-shift="super" font-size="8">(1)</tspan></text>
-        <g class="output">
-          <circle cx="290" cy="60" r="14"/>
-          <circle cx="290" cy="160" r="14"/>
-        </g>
-        <text x="290" y="60">z<tspan baseline-shift="sub" font-size="8">1</tspan><tspan baseline-shift="super" font-size="8">(2)</tspan></text>
-        <text x="290" y="160">z<tspan baseline-shift="sub" font-size="8">2</tspan><tspan baseline-shift="super" font-size="8">(2)</tspan></text>
-        <text class="layer-label" x="20" y="20">inputs</text>
-        <text class="layer-label" x="165" y="20">hidden</text>
-        <text class="layer-label" x="290" y="20">outputs</text>
-        <text class="weight-label" x="90" y="50" font-size="11" fill="#1d4ed8" font-style="italic">W<tspan baseline-shift="super" font-size="8">(1)</tspan></text>
-        <text class="weight-label" x="225" y="50" font-size="11" fill="#1d4ed8" font-style="italic">W<tspan baseline-shift="super" font-size="8">(2)</tspan></text>
-      </svg>
-    </div>
-    <div style="flex: 0.9; font-size: 0.82em;">
-      <p style="margin: 0;"><strong>Softmax outputs</strong> a probability over "spam" vs "ham":</p>
-      <ul style="margin: 0.3em 0;">
-        <li>Spam &rarr; one-hot target \([1, 0]\)</li>
-        <li>Ham &rarr; one-hot target \([0, 1]\)</li>
-      </ul>
-      <p style="margin: 0.4em 0 0 0; color: #1d4ed8;">We have paired data \((x_1, x_2, y)\). <strong>How do we set the weights \(W^{(1)}, W^{(2)}\)?</strong></p>
-    </div>
-  </div>
-</section>
-
-<!-- 4. Loss function + gradient descent -->
-<section>
-  <h2>Loss function and gradient descent</h2>
-  <p style="font-size: 0.85em; margin: 0.2em 0;">For classification we use the <strong>cross-entropy</strong> loss from L17 (softmax output \(\hat{y}^{(i)}\), one-hot target \(y^{(i)}\)):</p>
-  <p style="text-align:center;">\[ L(W) = -\sum_{i=1}^{N} \sum_{k} y^{(i)}_k \, \log \hat{y}^{(i)}_k \]</p>
-  <p style="font-size: 0.78em; margin: 0.1em 0; color: #6b7280;">(For regression, swap in squared error \(\tfrac12\sum_i\lVert\hat y^{(i)}-y^{(i)}\rVert^2\).)</p>
-  <p style="font-size: 0.85em; margin: 0.5em 0 0.2em 0;" class="fragment"><strong>Gradient descent:</strong> repeat for many iterations:</p>
-  <ol style="font-size: 0.85em; margin: 0.2em 0 0.2em 1.5em;">
-    <li class="fragment">Compute the gradient \(\nabla_W L(W) = \big[ \partial L / \partial w \big]_{w \in W}\).</li>
-    <li class="fragment">Update every weight: \( w \leftarrow w - \eta\, \dfrac{\partial L}{\partial w} \).</li>
-  </ol>
-  <p style="font-size: 0.8em; margin: 0.6em 0; color: #6b7280;" class="fragment">\(\eta &gt; 0\) is the <em>learning rate</em> (step size).</p>
-</section>
-
-<!-- 5. Direction and step-size intuition -->
-<section>
-  <h2>Why this works</h2>
-  <div class="gd-intuition">
-    <div class="ic">
-      <h3>Direction: steepest descent</h3>
-      <p>\(\nabla_W L\) points in the direction of <em>fastest increase</em> of \(L\).</p>
-      <p>Moving in <strong>\(-\nabla_W L\)</strong> decreases \(L\) the fastest.</p>
-    </div>
-    <div class="ic fragment">
-      <h3>Step size: \(\eta\) trade-off</h3>
-      <p>Too small \(\Rightarrow\) very slow learning.</p>
-      <p>Too large \(\Rightarrow\) overshoots the minimum, may diverge.</p>
-    </div>
-  </div>
-  <div class="fragment" style="text-align: center; margin-top: 0.6em;">
-    <svg viewBox="0 0 460 150" xmlns="http://www.w3.org/2000/svg" style="max-height: 160px;">
-      <!-- Loss surface (always visible) -->
-      <path d="M30,130 Q90,30 150,130 T270,130 T390,130" stroke="#6b7280" stroke-width="2" fill="none"/>
-      <text x="220" y="148" font-size="11" fill="#6b7280">loss surface</text>
-      <!-- Good eta: 3 blue dots descending into a valley -->
-      <g class="fragment">
-        <circle cx="40" cy="120" r="6" fill="#1d4ed8"/>
-        <circle cx="70" cy="80" r="6" fill="#1d4ed8"/>
-        <circle cx="120" cy="120" r="6" fill="#1d4ed8"/>
-        <text x="80" y="20" font-size="12" fill="#1d4ed8" font-weight="700">good eta</text>
-      </g>
-      <!-- Bad eta: overshooting jumps across the valley -->
-      <g class="fragment">
-        <line x1="230" y1="120" x2="310" y2="40" stroke="#dc2626" stroke-dasharray="3 2"/>
-        <line x1="310" y1="40" x2="390" y2="135" stroke="#dc2626" stroke-dasharray="3 2"/>
-        <circle cx="230" cy="120" r="6" fill="#dc2626"/>
-        <circle cx="310" cy="40" r="6" fill="#dc2626"/>
-        <circle cx="390" cy="135" r="6" fill="#dc2626"/>
-        <text x="290" y="20" font-size="12" fill="#dc2626" font-weight="700">eta too large</text>
-      </g>
-    </svg>
-  </div>
-</section>
-
-<!-- 6. Batch vs SGD vs mini-batch -->
-<section>
-  <h2>Three flavors of gradient descent</h2>
-  <div class="cv-folds" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.7em; margin-top: 0.4em;">
-    <div style="padding:0.6em; border:1px solid #c7d2fe; border-radius:6px; background:#eef2ff;">
-      <h3 style="margin:0; font-size:0.95em; color:#1d4ed8;">Batch GD</h3>
-      <svg viewBox="0 0 160 32" xmlns="http://www.w3.org/2000/svg" class="batch-icon" aria-hidden="true">
-        <rect x="4" y="6" width="152" height="20" fill="#1d4ed8" rx="3"/>
-        <text x="80" y="20" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">all N examples</text>
-      </svg>
-      <p style="font-size:0.78em; margin:0.3em 0;">Gradient uses <strong>all</strong> \(N\) examples per step.</p>
-      <p style="font-size:0.78em; margin:0.3em 0; color:#16a34a;">Stable, accurate gradient.</p>
-      <p style="font-size:0.78em; margin:0.3em 0; color:#dc2626;">Slow for large \(N\).</p>
-    </div>
-    <div class="fragment" style="padding:0.6em; border:1px solid #fde68a; border-radius:6px; background:#fef9c3;">
-      <h3 style="margin:0; font-size:0.95em; color:#a16207;">Stochastic GD</h3>
-      <svg viewBox="0 0 160 32" xmlns="http://www.w3.org/2000/svg" class="batch-icon" aria-hidden="true">
-        <rect x="4" y="6" width="152" height="20" fill="#fef3c7" stroke="#a16207" stroke-width="1" rx="3"/>
-        <rect x="74" y="8" width="14" height="16" fill="#a16207" rx="2"/>
-        <text x="80" y="20" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">1</text>
-      </svg>
-      <p style="font-size:0.78em; margin:0.3em 0;">One example per step.</p>
-      <p style="font-size:0.78em; margin:0.3em 0; color:#16a34a;">Cheap; noise helps escape local minima.</p>
-      <p style="font-size:0.78em; margin:0.3em 0; color:#dc2626;">Noisy updates.</p>
-    </div>
-    <div class="fragment" style="padding:0.6em; border:1px solid #bbf7d0; border-radius:6px; background:#dcfce7;">
-      <h3 style="margin:0; font-size:0.95em; color:#15803d;">Mini-batch GD</h3>
-      <svg viewBox="0 0 160 32" xmlns="http://www.w3.org/2000/svg" class="batch-icon" aria-hidden="true">
-        <rect x="4" y="6" width="152" height="20" fill="#dcfce7" stroke="#15803d" stroke-width="1" rx="3"/>
-        <rect x="56" y="8" width="48" height="16" fill="#15803d" rx="2"/>
-        <text x="80" y="20" font-size="10" fill="#fff" text-anchor="middle" font-weight="700">batch of 32</text>
-      </svg>
-      <p style="font-size:0.78em; margin:0.3em 0;">A small batch (e.g. 32, 64) per step.</p>
-      <p style="font-size:0.78em; margin:0.3em 0; color:#16a34a;">Best of both worlds; GPU-friendly.</p>
-      <p style="font-size:0.78em; margin:0.3em 0; color:#1d4ed8;">Standard choice today.</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; margin: 0.8em 0 0 0; text-align:center; color:#6b7280;">
-    First, how do we <em>get</em> the gradient efficiently? Then how do we take smarter steps (momentum, Adam)?
-  </p>
-</section>
-
-<!-- 7. Backprop: forward + backward overview -->
-<section>
-  <h2>Back-propagation: efficient gradients</h2>
-  <p style="font-size: 0.85em; margin: 0.2em 0;">Two passes per training example \((x, y)\):</p>
-  <div class="two-col vcenter" style="margin-top: 0.4em;">
-    <div style="flex: 1; padding:0.6em; background:#eef2ff; border-left: 4px solid #1d4ed8; border-radius: 4px;">
-      <div style="color:#1d4ed8; font-weight:700;">&rarr; Forward pass</div>
-      <p style="font-size:0.82em; margin:0.3em 0;">Push inputs through layers, compute every \(a^{(\ell)}, z^{(\ell)}\), and the loss \(E\).</p>
-    </div>
-    <div class="fragment" style="flex: 1; padding:0.6em; background:#fee2e2; border-left: 4px solid #dc2626; border-radius: 4px;">
-      <div style="color:#dc2626; font-weight:700;">&larr; Backward pass</div>
-      <p style="font-size:0.82em; margin:0.3em 0;">Propagate \(\partial E\) back through the layers, compute every \(\partial E / \partial W^{(\ell)}\).</p>
-    </div>
-  </div>
-  <div class="fragment" style="text-align:center; margin-top: 0.7em;">
-    <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" class="nn-diagram">
-      <!-- Nodes (always visible) -->
-      <g class="input"><circle cx="20" cy="60" r="14"/><circle cx="20" cy="160" r="14"/></g>
-      <g class="hidden"><circle cx="165" cy="60" r="16"/><circle cx="165" cy="160" r="16"/></g>
-      <g class="output"><circle cx="290" cy="60" r="14"/><circle cx="290" cy="160" r="14"/></g>
-      <text x="20" y="60">x<tspan baseline-shift="sub" font-size="8">1</tspan></text>
-      <text x="20" y="160">x<tspan baseline-shift="sub" font-size="8">2</tspan></text>
-      <text x="165" y="60">z<tspan baseline-shift="sub" font-size="8">1</tspan><tspan baseline-shift="super" font-size="8">(1)</tspan></text>
-      <text x="165" y="160">z<tspan baseline-shift="sub" font-size="8">2</tspan><tspan baseline-shift="super" font-size="8">(1)</tspan></text>
-      <text x="290" y="60">y&#770;<tspan baseline-shift="sub" font-size="8">1</tspan></text>
-      <text x="290" y="160">y&#770;<tspan baseline-shift="sub" font-size="8">2</tspan></text>
-      <!-- Forward arrows -->
-      <g class="fragment">
-        <line class="edge-fwd" x1="35" y1="60"  x2="155" y2="60"  marker-end="url(#arrow-l20)"/>
-        <line class="edge-fwd" x1="35" y1="160" x2="155" y2="60"  marker-end="url(#arrow-l20)"/>
-        <line class="edge-fwd" x1="35" y1="60"  x2="155" y2="160" marker-end="url(#arrow-l20)"/>
-        <line class="edge-fwd" x1="35" y1="160" x2="155" y2="160" marker-end="url(#arrow-l20)"/>
-        <line class="edge-fwd" x1="175" y1="60"  x2="275" y2="60"  marker-end="url(#arrow-l20)"/>
-        <line class="edge-fwd" x1="175" y1="160" x2="275" y2="60"  marker-end="url(#arrow-l20)"/>
-        <line class="edge-fwd" x1="175" y1="60"  x2="275" y2="160" marker-end="url(#arrow-l20)"/>
-        <line class="edge-fwd" x1="175" y1="160" x2="275" y2="160" marker-end="url(#arrow-l20)"/>
-        <text class="layer-label" x="100" y="195" fill="#1d4ed8" font-size="11" font-weight="700">forward (compute E)</text>
-      </g>
-      <!-- Backward arrows -->
-      <g class="fragment">
-        <line class="edge-bwd" x1="275" y1="70" x2="180" y2="70"/>
-        <line class="edge-bwd" x1="275" y1="150" x2="180" y2="150"/>
-        <line class="edge-bwd" x1="155" y1="70" x2="50" y2="70"/>
-        <line class="edge-bwd" x1="155" y1="150" x2="50" y2="150"/>
-        <text class="layer-label" x="220" y="20" fill="#dc2626" font-size="11" font-weight="700">backward (compute &part;E/&part;W)</text>
-      </g>
-    </svg>
-  </div>
-</section>
-
-<!-- 8. Forward pass equations -->
-<section>
-  <h2>Forward pass</h2>
-  <p style="font-size: 0.85em;">Compute pre-activations \(a^{(\ell)}\) and activations \(z^{(\ell)} = g(a^{(\ell)})\) layer by layer.</p>
-  <div class="fragment" style="font-size: 0.92em;">
-    \[ a^{(1)}_j = \sum_i x_i\, W^{(1)}_{i,j}, \qquad z^{(1)}_j = g(a^{(1)}_j) \]
-  </div>
-  <div class="fragment" style="font-size: 0.92em;">
-    \[ a^{(2)}_k = \sum_j z^{(1)}_j\, W^{(2)}_{j,k}, \qquad z^{(2)}_k = g(a^{(2)}_k) \]
-  </div>
-  <div class="fragment" style="font-size: 0.92em;">
-    \[ E = E\!\left(z^{(2)}, y\right) \]
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em;">
-    <strong>Cache</strong> every \(a^{(\ell)}\) and \(z^{(\ell)}\) &mdash; we'll need them on the way back.
-  </p>
-</section>
-
-<!-- 9. Backward pass equations -->
-<section>
-  <h2>Backward pass</h2>
-  <p style="font-size: 0.85em;">Walk back through the network, computing local errors \(\delta\) via the chain rule.</p>
-  <div class="fragment" style="font-size: 0.88em;">
-    <p style="margin: 0 0 0.2em 0; font-size: 0.78em; color: #b91c1c; font-weight: 700;">Layer 2 (output side):</p>
-    \[ \dfrac{\partial E}{\partial W^{(2)}_{j,k}} = \delta^{(2)}_k\, z^{(1)}_j, \qquad \delta^{(2)}_k = \dfrac{\partial E}{\partial z^{(2)}_k}\, g'\!\bigl(a^{(2)}_k\bigr) \]
-  </div>
-  <div class="fragment" style="font-size: 0.88em;">
-    <p style="margin: 0.3em 0 0.2em 0; font-size: 0.78em; color: #b91c1c; font-weight: 700;">Layer 1 (propagate back):</p>
-    \[ \dfrac{\partial E}{\partial W^{(1)}_{i,j}} = \delta^{(1)}_j\, x_i, \qquad \delta^{(1)}_j = \Bigl( \sum_k \delta^{(2)}_k\, W^{(2)}_{j,k} \Bigr)\, g'\!\bigl(a^{(1)}_j\bigr) \]
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; margin-top: 0.6em; text-align:center;">
-    <strong>Pattern:</strong> &nbsp; gradient = local error \(\times\) input to that weight.
-  </p>
-</section>
-
-<!-- 10. Recursive delta -->
-<section>
-  <h2>The recursive structure of \(\delta\)</h2>
-  <p style="font-size: 0.82em; margin: 0.15em 0;">For unit \(j\) in layer \(\ell\), define \(\delta^{(\ell)}_j = \dfrac{\partial E}{\partial a^{(\ell)}_j}\). Then:</p>
-  <div style="font-size: 0.74em;">
-    \[
-    \delta^{(\ell)}_j =
-    \begin{cases}
-      \dfrac{\partial E}{\partial z^{(\ell)}_j}\, g'(a^{(\ell)}_j), & \text{output unit (base)} \\[0.8em]
-      \Bigg( \displaystyle \sum_k \delta^{(\ell+1)}_k\, W^{(\ell+1)}_{j,k} \Bigg)\, g'(a^{(\ell)}_j), & \text{hidden unit (recursive)}
-    \end{cases}
-    \]
-  </div>
-  <div class="fragment" style="text-align:center; margin-top: 0.5em;">
-    <svg viewBox="0 0 360 150" xmlns="http://www.w3.org/2000/svg" class="delta-diagram">
-      <circle class="neuron focus" cx="80" cy="75" r="22"/>
-      <text x="80" y="75">j (layer \(\ell\))</text>
-      <text class="delta-label" x="80" y="115">\(\delta^{(\ell)}_j\)</text>
-      <line class="delta-edge" x1="200" y1="35" x2="105" y2="65" marker-end="url(#arrow-l20-red)"/>
-      <line class="delta-edge" x1="200" y1="115" x2="105" y2="85" marker-end="url(#arrow-l20-red)"/>
-      <text class="weight-label" x="155" y="40">W<tspan baseline-shift="super" font-size="8">(\(\ell\)+1)</tspan><tspan baseline-shift="sub" font-size="8">j,1</tspan></text>
-      <text class="weight-label" x="155" y="105">W<tspan baseline-shift="super" font-size="8">(\(\ell\)+1)</tspan><tspan baseline-shift="sub" font-size="8">j,2</tspan></text>
-      <circle class="next-neuron" cx="220" cy="35" r="18"/>
-      <text x="220" y="35">k=1</text>
-      <circle class="next-neuron" cx="220" cy="115" r="18"/>
-      <text x="220" y="115">k=2</text>
-      <text class="delta-label" x="270" y="35">\(\delta^{(\ell+1)}_1\)</text>
-      <text class="delta-label" x="270" y="115">\(\delta^{(\ell+1)}_2\)</text>
-      <text x="180" y="145" font-size="10" fill="#6b7280">downstream layer \(\ell\!+\!1\)</text>
-    </svg>
-  </div>
-  <p class="fragment" style="font-size: 0.78em; color: #6b7280; margin: 0.1em 0; text-align:center;">
-    \(\delta\) for a hidden unit = weighted sum of downstream \(\delta\)s, modulated by \(g'\).
-  </p>
-</section>
-
-<!-- 11. Matrix-form backprop -->
-<section>
-  <h2>Backprop in matrix form</h2>
-  <p style="font-size: 0.85em; margin: 0.2em 0;">Stack layer activations into vectors. Let \(\delta_\ell = \partial E / \partial z^{(\ell)}\) and \(W_\ell\) be the weight matrix.</p>
-  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.45em 0.9em; font-size: 0.8em;">
-    <strong>Algorithm.</strong>
-    <ol style="margin: 0.15em 0 0.15em 1.5em; line-height: 1.3;">
-      <li>Initialize weights \(W_\ell\) for every layer.</li>
-      <li class="fragment"><strong>Forward:</strong> push \(x\) through, cache \(z^{(1)}, z^{(2)}, \ldots\)</li>
-      <li class="fragment"><strong>Output \(\delta\):</strong> set \(\delta_n = \partial E / \partial z^{(n)}\).</li>
-      <li class="fragment"><strong>Backward sweep,</strong> for \(\ell = n, n\!-\!1, \ldots, 1\):
-        <div style="margin: 0.2em 0 0 1em; font-size: 0.92em;">
-          \(\delta_{\ell-1} = \delta_\ell \cdot \dfrac{\partial g(x^{(\ell)})}{\partial x^{(\ell)}} \cdot W_\ell\) <br>
-          \(\dfrac{\partial E}{\partial W_\ell} = \delta_\ell \cdot \dfrac{\partial g(x^{(\ell)})}{\partial x^{(\ell)}} \cdot z^{(\ell-1)}\)
-        </div>
-      </li>
-      <li class="fragment">Plug \(\partial E / \partial W_\ell\) into gradient descent.</li>
-    </ol>
-  </div>
-</section>
-
-<!-- 12. Sigmoid derivative trick -->
-<section>
-  <h2>The sigmoid derivative trick</h2>
-  <p style="font-size: 0.85em;">For \(g(x) = \dfrac{1}{1 + e^{-x}}\):</p>
-  <div style="text-align: center;">
-    \[ g'(x) = \frac{1}{1 + e^{-x}} \cdot \frac{e^{-x}}{1 + e^{-x}} = g(x)\,\big(1 - g(x)\big) \]
-  </div>
-  <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg" class="sigmoid-mini fragment" aria-hidden="true">
-    <line class="grid" x1="20" y1="60" x2="300" y2="60"/>
-    <line class="axis" x1="160" y1="10" x2="160" y2="115"/>
-    <line class="axis" x1="20" y1="115" x2="300" y2="115"/>
-    <text class="axis-label" x="295" y="112" text-anchor="end">x</text>
-    <text class="axis-label" x="156" y="20" text-anchor="end">1</text>
-    <text class="axis-label" x="156" y="118" text-anchor="end">0</text>
-    <text class="axis-label" x="160" y="68" text-anchor="middle">.5</text>
-    <!-- sigmoid curve from x=-6 to x=6 across [20, 300] (center at 160) -->
-    <path class="curve" d="M 20 113 C 80 112, 130 100, 150 80 S 175 30, 190 22 S 250 14, 300 13"/>
-    <circle class="peak" cx="160" cy="60" r="4"/>
-    <text class="peak-label" x="166" y="56">max g'(x) = 1/4 at x = 0</text>
+<!-- 3. From L19 to L20 -->
+<section class="center-slide">
+  <h2>From architecture to objective</h2>
+  <svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
+    <g class="lm-boxes">
+      <rect x="30" y="55" width="130" height="46" rx="7"/><text x="95" y="83">tokens</text>
+      <rect x="210" y="55" width="150" height="46" rx="7"/><text x="285" y="83">embeddings</text>
+      <rect x="410" y="55" width="190" height="46" rx="7"/><text x="505" y="83">causal transformer</text>
+      <rect x="650" y="55" width="130" height="46" rx="7" class="question"/><text x="715" y="83">?</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l20)">
+      <line x1="160" y1="78" x2="205" y2="78"/><line x1="360" y1="78" x2="405" y2="78"/><line x1="600" y1="78" x2="645" y2="78"/>
+    </g>
   </svg>
-  <div class="fragment" style="margin-top: 0.35em; padding: 0.5em 0.9em; background: #dcfce7; border-left: 4px solid #16a34a; border-radius: 4px; font-size: 0.86em;">
-    <strong>Why it matters:</strong> during the forward pass we already compute \(g(a)\). Reuse it &mdash; no need to redo the exponential during the backward pass.
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.35em;">Similar shortcuts exist for tanh (\(1 - g^2\)) and ReLU (0 or 1) &mdash; ReLU's constant gradient is a big reason it beats sigmoid in deep nets.</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Architecture alone does nothing. We need a training signal.</p>
 </section>
 
-<!-- ============================================================
-     Optimization + regularization (2 slides)
-     ============================================================ -->
-
-<!-- 12b. Smarter optimizers: momentum + Adam -->
-<section>
-  <h2>Beyond plain SGD: momentum and Adam</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Plain SGD is noisy and slow in ravines. Two ideas fix it:</p>
-  <div class="two-col" style="align-items:stretch;">
-    <div class="defbox fragment" style="flex:1;">
-      <h3 style="margin-top:0;">Momentum</h3>
-      <p style="margin:0 0 0.2em; font-size:0.8em;">Accumulate a velocity (an EWMA of past gradients) so consistent directions build speed:</p>
-      <p style="text-align:center; margin:0; font-size:0.8em;">\(v \leftarrow \beta v - \eta\,\nabla_W L, \quad W \leftarrow W + v\)</p>
-    </div>
-    <div class="defbox fragment" style="flex:1;">
-      <h3 style="margin-top:0;">Adam</h3>
-      <p style="margin:0 0 0.2em; font-size:0.8em;">Per-parameter step sizes: divide by a running estimate of each gradient's magnitude, plus momentum. Robust default:</p>
-      <p style="text-align:center; margin:0; font-size:0.8em;">\(W \leftarrow W - \eta\,\dfrac{\hat{m}}{\sqrt{\hat{v}}+\epsilon}\)</p>
-    </div>
+<!-- 4. Language modeling task -->
+<section class="center-slide">
+  <h2>The language modeling task</h2>
+  <p style="font-size:1.1em;">The robot picked up the cup because it was ___</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:82%; margin:0.7em auto;">
+    <div class="task-card fragment"><h3>empty</h3><p>likely</p></div>
+    <div class="task-card fragment"><h3>blue</h3><p>possible</p></div>
+    <div class="task-card fragment"><h3>quantum</h3><p>unlikely</p></div>
   </div>
-  <p class="fragment" style="font-size: 0.82em; color: #1d4ed8; text-align: center; margin-top: 0.4em;"><strong>AdamW</strong> (Adam + decoupled weight decay) is the standard optimizer for transformers/LLMs today. &nbsp;<a href="../optimizers/" style="color:#6b7280;">[optional deep-dive deck]</a></p>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">Language modeling means predicting what comes next.</p>
 </section>
 
-<!-- 12c. Regularization + normalization -->
-<section>
-  <h2>Making training generalize &amp; stay stable</h2>
-  <div class="two-col" style="align-items:stretch;">
-    <div class="defbox" style="flex:1;">
-      <h3 style="margin-top:0;">Regularization (fight overfitting)</h3>
-      <ul style="margin:0.1em 0 0 1em; font-size:0.8em;">
-        <li class="fragment"><strong>Weight decay:</strong> add \(\lambda\lVert W\rVert^2\) to the loss (L17).</li>
-        <li class="fragment"><strong>Dropout:</strong> randomly zero some units each step so the net can't rely on any one.</li>
-        <li class="fragment"><strong>Early stopping:</strong> halt when validation loss turns up.</li>
-      </ul>
-    </div>
-    <div class="defbox" style="flex:1;">
-      <h3 style="margin-top:0;">Normalization &amp; schedules (stay stable)</h3>
-      <ul style="margin:0.1em 0 0 1em; font-size:0.8em;">
-        <li class="fragment"><strong>Batch / layer norm:</strong> re-center &amp; scale activations so gradients stay well-behaved.</li>
-        <li class="fragment"><strong>LR warmup + cosine decay:</strong> ramp \(\eta\) up, then anneal it down.</li>
-        <li class="fragment"><strong>Gradient clipping:</strong> cap the gradient norm to avoid blow-ups.</li>
-      </ul>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.8em; color: #6b7280; text-align: center; margin-top: 0.35em;">These are the everyday knobs behind training any modern deep network.</p>
+<!-- 5. Text to tensor -->
+<section class="center-slide">
+  <h2>Text is not directly a tensor</h2>
+  <svg viewBox="0 0 880 150" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
+    <g class="lm-boxes">
+      <rect x="35" y="55" width="130" height="46" rx="7"/><text x="100" y="83">raw text</text>
+      <rect x="220" y="55" width="130" height="46" rx="7"/><text x="285" y="83">tokenizer</text>
+      <rect x="405" y="55" width="130" height="46" rx="7"/><text x="470" y="83">token IDs</text>
+      <rect x="590" y="55" width="150" height="46" rx="7"/><text x="665" y="83">embeddings</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l20)">
+      <line x1="165" y1="78" x2="215" y2="78"/><line x1="350" y1="78" x2="400" y2="78"/><line x1="535" y1="78" x2="585" y2="78"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.88em; color:#6b7280;">Models see token IDs and vectors, not words as humans see them.</p>
 </section>
 
-<!-- 13. When to use a neural network -->
-<section>
-  <h2>When to use (or not use) a neural network</h2>
-  <div class="two-col" style="margin-top: 0.4em;">
-    <div style="flex: 1; padding:0.7em; background:#dcfce7; border-left:4px solid #16a34a; border-radius:4px;">
-      <div style="color:#15803d; font-weight:700; margin-bottom:0.3em;">Reach for an NN when</div>
-      <ul style="margin:0.2em 0 0.2em 1.2em; font-size: 0.82em;">
-        <li>High-dimensional, real-valued, or noisy inputs.</li>
-        <li>Target function form is unknown (no good hand-crafted model).</li>
-        <li>Interpretability is not a priority.</li>
-        <li>Plenty of training data is available.</li>
-      </ul>
-    </div>
-    <div class="fragment" style="flex: 1; padding:0.7em; background:#fee2e2; border-left:4px solid #dc2626; border-radius:4px;">
-      <div style="color:#b91c1c; font-weight:700; margin-bottom:0.3em;">Avoid an NN when</div>
-      <ul style="margin:0.2em 0 0.2em 1.2em; font-size: 0.82em;">
-        <li>Architecture is hard to choose (layers, units, activations).</li>
-        <li>Weights need to be inspected and explained.</li>
-        <li>Data is tabular and small &mdash; overfitting risk is high.</li>
-      </ul>
-    </div>
+<!-- 6. Tokenization hard -->
+<section class="center-slide">
+  <h2>Why tokenization is hard</h2>
+  <div class="tok-row" style="margin-top:0.5em;">
+    <span class="tok">cat</span><span class="tok">cats</span><span class="tok">unbelievable</span><span class="tok">CS486</span><span class="tok">spaces?</span>
+  </div>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:76%; margin:0.7em auto;">
+    <div class="task-card fragment"><h3>word vocab</h3><p style="font-size:0.8em;">brittle for rare words</p></div>
+    <div class="task-card fragment"><h3>character vocab</h3><p style="font-size:0.8em;">very long sequences</p></div>
   </div>
 </section>
 
-<!-- 14. NN vs DT comparison table -->
+<!-- 7. Subwords -->
+<section class="center-slide">
+  <h2>Subwords are the compromise</h2>
+  <p style="font-size:0.95em;">Common pieces become reusable tokens.</p>
+  <p style="font-size:1.05em; margin-top:0.5em;"><code>unbelievable</code></p>
+  <div class="tok-row fragment">
+    <span class="tok">un</span><span class="tok">believe</span><span class="tok">able</span>
+  </div>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280;">Exact splits depend on the tokenizer, but the idea is the same: balance vocabulary size and sequence length.</p>
+</section>
+
+<!-- 8. Token embeddings -->
 <section>
-  <h2>Neural network vs decision tree</h2>
-  <table class="compare" style="font-size: 0.72em; margin: 0.3em auto;">
-    <thead>
-      <tr>
-        <th></th>
-        <th style="color:#1d4ed8;">Neural network</th>
-        <th style="color:#a16207;">Decision tree</th>
-      </tr>
-    </thead>
+  <h2>Token IDs become embeddings</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;">
+      <table class="factor-table" style="font-size:0.72em; margin:0 auto;">
+        <thead><tr><th>token</th><th>id</th><th>embedding row</th></tr></thead>
+        <tbody>
+          <tr><td>The</td><td>791</td><td>[0.12, -0.40, ...]</td></tr>
+          <tr><td>robot</td><td>21933</td><td>[0.51, 0.08, ...]</td></tr>
+          <tr><td>cup</td><td>7721</td><td>[-0.20, 0.33, ...]</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;">This is the embedding table from L18.</p>
+      <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">Pretraining updates these rows.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9. Position + transformer -->
+<section class="center-slide">
+  <h2>Add position, then transformer blocks</h2>
+  <p style="font-size:1em;">\(\text{input}_t = \text{token\_embedding}_t + \text{position}_t\)</p>
+  <svg viewBox="0 0 760 120" xmlns="http://www.w3.org/2000/svg" class="lm-flow" style="max-height:150px;">
+    <g class="lm-boxes">
+      <rect x="50" y="40" width="150" height="44" rx="7"/><text x="125" y="67">token vector</text>
+      <rect x="245" y="40" width="150" height="44" rx="7"/><text x="320" y="67">+ position</text>
+      <rect x="450" y="40" width="210" height="44" rx="7"/><text x="555" y="67">causal transformer</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l20)">
+      <line x1="200" y1="62" x2="240" y2="62"/><line x1="395" y1="62" x2="445" y2="62"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Each position can only use earlier context because of the causal mask.</p>
+</section>
+
+<!-- 10. Output head -->
+<section>
+  <h2>The output head predicts a token</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05;">
+      <svg viewBox="0 0 520 170" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
+        <g class="lm-boxes">
+          <rect x="30" y="60" width="130" height="46" rx="7"/><text x="95" y="88">hidden_t</text>
+          <rect x="220" y="60" width="120" height="46" rx="7"/><text x="280" y="88">linear</text>
+          <rect x="400" y="60" width="100" height="46" rx="7" class="question"/><text x="450" y="88">logits</text>
+        </g>
+        <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l20)">
+          <line x1="160" y1="83" x2="215" y2="83"/><line x1="340" y1="83" x2="395" y2="83"/>
+        </g>
+        <text x="450" y="130" text-anchor="middle" font-size="14" fill="#6b7280">one score per vocabulary token</text>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.9em;">At every position, the model outputs a vector of scores.</p>
+      <p class="fragment" style="font-size:0.86em; color:#6b7280;">If the vocabulary has 150k tokens, there are 150k logits.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 11. Logits -->
+<section>
+  <h2>Logits are scores, not probabilities</h2>
+  <table class="factor-table" style="font-size:0.8em; margin:0.4em auto;">
+    <thead><tr><th>candidate next token</th><th>logit</th></tr></thead>
     <tbody>
-      <tr><td><strong>Data type</strong></td><td>Images, audio, text</td><td>Tabular data (gradient boosting usually wins here)</td></tr>
-      <tr class="fragment"><td><strong>Data size</strong></td><td>Needs a lot; easy to overfit small data</td><td>Works with very little data</td></tr>
-      <tr class="fragment"><td><strong>Target function</strong></td><td>Arbitrary functions</td><td>Nested if/else rules</td></tr>
-      <tr class="fragment"><td><strong>Architecture</strong></td><td>Layers, units, activations, init, \(\eta\) all critical</td><td>A few hyperparameters (depth, pruning)</td></tr>
-      <tr class="fragment"><td><strong>Interpretability</strong></td><td>Black box</td><td>Easy to explain to humans</td></tr>
-      <tr class="fragment"><td><strong>Train / inference</strong></td><td>Slow to train and run</td><td>Fast</td></tr>
+      <tr style="background:#dcfce7;"><td><strong>empty</strong></td><td><strong>8.2</strong></td></tr>
+      <tr><td>red</td><td>3.1</td></tr>
+      <tr><td>broken</td><td>2.7</td></tr>
+      <tr><td>robot</td><td>-1.4</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment" style="font-size:0.86em; text-align:center; color:#6b7280;">Bigger logit = more preferred, but not yet a probability.</p>
+</section>
+
+<!-- 12. Softmax -->
+<section>
+  <h2>Softmax turns logits into probabilities</h2>
+  <div class="lm-bars">
+    <div class="lm-bar hot"><span>empty</span><div style="height:130px;"></div><b>0.91</b></div>
+    <div class="lm-bar"><span>red</span><div style="height:28px;"></div><b>0.04</b></div>
+    <div class="lm-bar"><span>broken</span><div style="height:22px;"></div><b>0.03</b></div>
+    <div class="lm-bar"><span>robot</span><div style="height:8px;"></div><b>0.00</b></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; text-align:center; color:#6b7280;">Now we have a next-token distribution.</p>
+</section>
+
+<!-- 13. Shifted examples -->
+<section>
+  <h2>One sequence gives many examples</h2>
+  <p style="font-size:0.9em;">Raw text supervises itself by shifting one token right.</p>
+  <table class="factor-table shift-table" style="font-size:0.76em; margin:0.35em auto;">
+    <thead><tr><th>input context</th><th>target</th></tr></thead>
+    <tbody>
+      <tr><td>The</td><td>robot</td></tr>
+      <tr class="fragment"><td>The robot</td><td>picked</td></tr>
+      <tr class="fragment"><td>The robot picked</td><td>up</td></tr>
+      <tr class="fragment"><td>The robot picked up the</td><td>cup</td></tr>
     </tbody>
   </table>
 </section>
 
-<!-- 15. Revisiting learning goals -->
-<section class="center-slide">
-  <h2>Revisiting learning goals</h2>
-  <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Write the <strong>cross-entropy</strong> loss and the gradient-descent update.</li>
-    <li class="fragment">Describe <strong>back-propagation</strong> and compute a weight's gradient.</li>
-    <li class="fragment">Speed up training with <strong>momentum</strong> and <strong>Adam / AdamW</strong>.</li>
-    <li class="fragment">Fight overfitting with <strong>regularization, dropout, and normalization</strong>.</li>
-    <li class="fragment">Decide when to use a <strong>neural network</strong> vs a <strong>decision tree</strong>.</li>
-  </ul>
+<!-- 14. Causal mask -->
+<section>
+  <h2>Causal masking makes training legal</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.9; text-align:center;">
+      <svg viewBox="0 0 260 230" xmlns="http://www.w3.org/2000/svg" class="mask-grid">
+        <text x="142" y="22">key position</text>
+        <text x="18" y="135" transform="rotate(-90 18 135)">query</text>
+        <g transform="translate(55,38)">
+          <rect class="ok" x="0" y="0" width="34" height="34"/><rect class="no" x="34" y="0" width="34" height="34"/><text x="51" y="21">x</text><rect class="no" x="68" y="0" width="34" height="34"/><text x="85" y="21">x</text><rect class="no" x="102" y="0" width="34" height="34"/><text x="119" y="21">x</text>
+          <rect class="ok" x="0" y="34" width="34" height="34"/><rect class="ok" x="34" y="34" width="34" height="34"/><rect class="no" x="68" y="34" width="34" height="34"/><text x="85" y="55">x</text><rect class="no" x="102" y="34" width="34" height="34"/><text x="119" y="55">x</text>
+          <rect class="ok" x="0" y="68" width="34" height="34"/><rect class="ok" x="34" y="68" width="34" height="34"/><rect class="ok" x="68" y="68" width="34" height="34"/><rect class="no" x="102" y="68" width="34" height="34"/><text x="119" y="89">x</text>
+          <rect class="ok" x="0" y="102" width="34" height="34"/><rect class="ok" x="34" y="102" width="34" height="34"/><rect class="ok" x="68" y="102" width="34" height="34"/><rect class="ok" x="102" y="102" width="34" height="34"/>
+        </g>
+      </svg>
+    </div>
+    <div style="flex:1.05;">
+      <p style="font-size:0.9em;">Position \(t\) predicts token \(t+1\).</p>
+      <p class="fragment" style="font-size:0.9em;">It may only see tokens \(\leq t\).</p>
+      <p class="fragment" style="font-size:0.86em; color:#6b7280;">No future peeking, even during training.</p>
+    </div>
+  </div>
 </section>
 
-<!-- 16. Next lecture teaser -->
+<!-- 15. Factorization -->
 <section class="center-slide">
-  <h2>Next: Transformers &amp; Attention</h2>
-  <p style="font-size: 0.9em;">We can now build and train deep nets. But how do we handle <strong>sequences</strong> &mdash; language, code, audio &mdash; at scale?</p>
-  <ul style="text-align:left; margin-left:2em; font-size: 0.88em; margin-top: 0.5em;">
-    <li class="fragment">Why RNNs struggle with long sequences.</li>
-    <li class="fragment"><strong>Self-attention</strong>: the idea behind every modern LLM.</li>
-    <li class="fragment">The <strong>transformer</strong> block, end to end.</li>
+  <h2>Autoregressive factorization</h2>
+  <p style="font-size:1.05em;">A text probability is built one next-token prediction at a time:</p>
+  <p style="font-size:1.15em;">\(P(x_1,\ldots,x_T)=\prod_{t=1}^{T}P(x_t\mid x_{&lt;t})\)</p>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Same idea as generation: left to right, token by token.</p>
+</section>
+
+<!-- 16. Cross entropy -->
+<section class="center-slide">
+  <h2>Cross-entropy for the next token</h2>
+  <p style="font-size:1em;">If the true next token is <strong>empty</strong>:</p>
+  <p style="font-size:1.15em;">\(\text{loss} = -\log P(\text{empty}\mid\text{context})\)</p>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8;">This is multiclass classification over the vocabulary.</p>
+</section>
+
+<!-- 17. Pretraining loop -->
+<section>
+  <h2>The pretraining loop</h2>
+  <pre style="font-size:0.56em; width:78%; margin:0.25em auto;"><code>ids = tokenizer(text)
+x = ids[:-1]
+y = ids[1:]
+
+logits = model(x)              # [T, vocab_size]
+loss = cross_entropy(logits, y)
+loss.backward()
+optimizer.step()</code></pre>
+  <p class="fragment" style="font-size:0.86em; text-align:center; color:#1d4ed8;">This is L17's training loop, scaled to billions/trillions of tokens.</p>
+</section>
+
+<!-- 18. What updates -->
+<section class="center-slide">
+  <h2>What gets updated?</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>embeddings</h3><p style="font-size:0.78em;">token vectors</p></div>
+    <div class="task-card fragment"><h3>attention</h3><p style="font-size:0.78em;">retrieval weights</p></div>
+    <div class="task-card fragment"><h3>feed-forward</h3><p style="font-size:0.78em;">per-token compute</p></div>
+    <div class="task-card fragment"><h3>output head</h3><p style="font-size:0.78em;">logits</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Pretraining changes all model parameters.</p>
+</section>
+
+<!-- 19. Self-supervised -->
+<section class="center-slide">
+  <h2>Why this is self-supervised</h2>
+  <p style="font-size:1em;">No human labels are required.</p>
+  <p class="fragment" style="font-size:1em;">Raw text gives both inputs and targets by shifting tokens.</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Scale becomes possible because labels are essentially free.</p>
+  <p class="fragment" style="font-size:0.82em; color:#6b7280;">But data quality still matters.</p>
+</section>
+
+<!-- 20. What learned -->
+<section class="center-slide">
+  <h2>What does pretraining teach?</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>patterns</h3><p style="font-size:0.8em;">grammar, style, syntax</p></div>
+    <div class="task-card fragment"><h3>associations</h3><p style="font-size:0.8em;">facts seen in data</p></div>
+    <div class="task-card fragment"><h3>skills</h3><p style="font-size:0.8em;">traces from text and code</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; margin-top:0.6em;">It learns statistical prediction, not guaranteed truth.</p>
+</section>
+
+<!-- 21. Scale -->
+<section class="center-slide">
+  <h2>Pretraining at scale</h2>
+  <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg" class="scale-stack">
+    <rect x="70" y="50" width="160" height="55" rx="8"/><text x="150" y="84">data</text>
+    <text x="260" y="84">&times;</text>
+    <rect x="300" y="50" width="160" height="55" rx="8"/><text x="380" y="84">parameters</text>
+    <text x="490" y="84">&times;</text>
+    <rect x="530" y="50" width="160" height="55" rx="8"/><text x="610" y="84">compute</text>
+  </svg>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">Modern LMs improve when these are scaled carefully together.</p>
+</section>
+
+<!-- 22. Training vs inference -->
+<section class="center-slide">
+  <h2>Training is not inference</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.5em auto;">
+    <div class="task-card">
+      <h3>Training</h3>
+      <p style="font-size:0.8em;">many tokens in parallel</p>
+      <p style="font-size:0.8em;">targets are known</p>
+      <p style="font-size:0.8em;">weights update</p>
+    </div>
+    <div class="task-card fragment">
+      <h3>Inference</h3>
+      <p style="font-size:0.8em;">one new token at a time</p>
+      <p style="font-size:0.8em;">no target label</p>
+      <p style="font-size:0.8em;">weights fixed</p>
+    </div>
+  </div>
+</section>
+
+<!-- 23. Greedy -->
+<section>
+  <h2>Greedy decoding</h2>
+  <p style="font-size:0.9em;">Pick the highest-probability token each step.</p>
+  <div class="lm-bars">
+    <div class="lm-bar hot"><span>empty</span><div style="height:130px;"></div><b>choose</b></div>
+    <div class="lm-bar"><span>red</span><div style="height:28px;"></div><b></b></div>
+    <div class="lm-bar"><span>broken</span><div style="height:22px;"></div><b></b></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Simple and stable, but often dull or brittle.</p>
+</section>
+
+<!-- 24. Temperature -->
+<section>
+  <h2>Sampling and temperature</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1;">
+      <p style="font-size:0.9em;">Temperature reshapes the distribution:</p>
+      <p style="text-align:center;">\(\operatorname{softmax}(\text{logits}/T)\)</p>
+    </div>
+    <div style="flex:1;">
+      <div class="task-cards" style="grid-template-columns:1fr;">
+        <div class="task-card"><h3>low \(T\)</h3><p style="font-size:0.8em;">sharper, safer, repetitive</p></div>
+        <div class="task-card fragment"><h3>high \(T\)</h3><p style="font-size:0.8em;">flatter, diverse, risky</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 25. Top k p -->
+<section class="center-slide">
+  <h2>Restrict randomness to plausible tokens</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:78%; margin:0.6em auto;">
+    <div class="task-card"><h3>top-k</h3><p style="font-size:0.82em;">sample from the \(k\) most likely tokens</p></div>
+    <div class="task-card fragment"><h3>top-p</h3><p style="font-size:0.82em;">sample from the smallest set with total probability \(\geq p\)</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Decoding choices shape output even when weights are fixed.</p>
+</section>
+
+<!-- 26. Limitations -->
+<section class="center-slide">
+  <h2>What pretraining does not solve</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>truth</h3><p style="font-size:0.78em;">fluent text can be wrong</p></div>
+    <div class="task-card fragment"><h3>instructions</h3><p style="font-size:0.78em;">base models complete text</p></div>
+    <div class="task-card fragment"><h3>private data</h3><p style="font-size:0.78em;">not known unless supplied</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">Later: prompting, fine-tuning, RAG, and tools.</p>
+</section>
+
+<!-- 27. Bridge -->
+<section class="center-slide">
+  <h2>Next: open the hood</h2>
+  <p style="font-size:1em;">Now we know:</p>
+  <ul style="text-align:left; max-width:70%; margin:0.4em auto;">
+    <li class="fragment">the architecture: causal transformer</li>
+    <li class="fragment">the objective: next-token prediction</li>
+    <li class="fragment">the inference step: sample the next token</li>
   </ul>
-  <p class="fragment" style="margin-top: 0.6em; color: #1d4ed8;">L21: Transformers &amp; Attention.</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">L21: dissect a real small language model.</p>
+</section>
+
+<!-- 28. Recap -->
+<section class="center-slide">
+  <h2>Recap</h2>
+  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:84%; margin-right:auto;">
+    <li>&#10003; &nbsp;Text becomes <strong>tokens, IDs, embeddings</strong>.</li>
+    <li>&#10003; &nbsp;A causal transformer predicts <strong>next-token logits</strong>.</li>
+    <li>&#10003; &nbsp;<strong>Softmax + cross-entropy</strong> train the model.</li>
+    <li>&#10003; &nbsp;Pretraining is <strong>self-supervised</strong> at scale.</li>
+    <li>&#10003; &nbsp;Decoding turns probabilities into generated text.</li>
+  </ul>
 </section>
 
 </div>
