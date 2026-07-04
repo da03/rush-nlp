@@ -2,16 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 21 — Transformers &amp; Attention</title>
+  <title>CS 486/686 Lecture 21 - Dissecting a Small Language Model</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 21: Transformers and Attention — RNN limitations, scaled dot-product attention, multi-head attention, positional encodings, the transformer block, and causal masking. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 21: Dissecting a small language model - Qwen3-0.6B, tokenizer/model/config loading, token traces, logits, decoding, prompting, few-shot prompting, thinking mode, and failure modes. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="custom.css?v=1">
+  <link rel="stylesheet" href="../L17/custom.css?v=3">
+  <link rel="stylesheet" href="../L20/custom.css?v=4">
+  <link rel="stylesheet" href="custom.css?v=2">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -35,17 +37,20 @@
 <svg width="0" height="0" style="position:absolute;">
   <defs>
     <marker id="arrow-l21" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+      <path d="M0,0 L8,4 L0,8 z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-l21-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#1d4ed8"/>
     </marker>
   </defs>
 </svg>
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Transformers &amp; Attention</div>
+  <div class="course-title">CS 486/686<br>Dissecting a Small Language Model</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 21</p>
-  <p class="credit">RN 21.6 &middot; "Attention Is All You Need" (Vaswani et al., 2017)</p>
+  <p class="credit">Opening the hood on Qwen3-0.6B</p>
 </section>
 
 <!-- 2. Learning goals -->
@@ -61,302 +66,422 @@
   </div>
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Explain why <strong>RNNs</strong> struggle with long sequences.</li>
-    <li class="fragment">Derive <strong>scaled dot-product attention</strong> from queries, keys, values.</li>
-    <li class="fragment">Explain <strong>multi-head attention</strong> and <strong>positional encodings</strong>.</li>
-    <li class="fragment">Assemble a <strong>transformer block</strong> (attention + FFN + residual + norm).</li>
-    <li class="fragment">Distinguish <strong>encoder</strong> from <strong>decoder</strong> (causal masking).</li>
+    <li class="fragment">Load or inspect a <strong>small causal LM</strong>.</li>
+    <li class="fragment">Trace one generated token at a time.</li>
+    <li class="fragment">See how <strong>decoding</strong> and <strong>prompting</strong> change behavior.</li>
+    <li class="fragment">Recognize limitations and failure modes.</li>
   </ul>
 </section>
 
-<!-- 3. RNN recap + limitations -->
+<!-- 3. From L20 to L21 -->
+<section class="center-slide">
+  <h2>From L20 to L21</h2>
+  <svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
+    <g class="lm-boxes">
+      <rect x="25" y="55" width="110" height="46" rx="7"/><text x="80" y="83">text</text>
+      <rect x="175" y="55" width="115" height="46" rx="7"/><text x="232" y="83">tokens</text>
+      <rect x="330" y="55" width="190" height="46" rx="7"/><text x="425" y="83">causal transformer</text>
+      <rect x="560" y="55" width="110" height="46" rx="7"/><text x="615" y="83">logits</text>
+      <rect x="710" y="55" width="130" height="46" rx="7" class="question"/><text x="775" y="83">next token</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l21)">
+      <line x1="135" y1="78" x2="170" y2="78"/><line x1="290" y1="78" x2="325" y2="78"/><line x1="520" y1="78" x2="555" y2="78"/><line x1="670" y1="78" x2="705" y2="78"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">L20 taught the pipeline. Today we watch it run.</p>
+</section>
+
+<!-- 4. Model card -->
 <section>
-  <h2>Recall: RNNs process a sequence step by step</h2>
+  <h2>The model we will dissect</h2>
   <div class="two-col vcenter">
-    <div style="flex: 1.05; text-align:center;">
-      <svg viewBox="0 0 420 130" xmlns="http://www.w3.org/2000/svg" class="l21-svg" style="max-height:130px;">
-        <g>
-          <rect x="30" y="45" width="50" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
-          <text x="55" y="68" class="axis-label" style="fill:#1d4ed8;">h&#8321;</text>
-          <rect x="130" y="45" width="50" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
-          <text x="155" y="68" class="axis-label" style="fill:#1d4ed8;">h&#8322;</text>
-          <rect x="230" y="45" width="50" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
-          <text x="255" y="68" class="axis-label" style="fill:#1d4ed8;">h&#8323;</text>
-          <rect x="330" y="45" width="50" height="40" rx="5" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.4"/>
-          <text x="355" y="68" class="axis-label" style="fill:#1d4ed8;">h&#8324;</text>
-        </g>
-        <line class="edge" x1="80" y1="65" x2="130" y2="65" marker-end="url(#arrow-l21)"/>
-        <line class="edge" x1="180" y1="65" x2="230" y2="65" marker-end="url(#arrow-l21)"/>
-        <line class="edge" x1="280" y1="65" x2="330" y2="65" marker-end="url(#arrow-l21)"/>
-        <text x="55" y="115" class="axis-label">the</text>
-        <text x="155" y="115" class="axis-label">cat</text>
-        <text x="255" y="115" class="axis-label">sat</text>
-        <text x="355" y="115" class="axis-label">down</text>
-        <line class="edge" x1="55" y1="100" x2="55" y2="87" marker-end="url(#arrow-l21)"/>
-        <line class="edge" x1="155" y1="100" x2="155" y2="87" marker-end="url(#arrow-l21)"/>
-        <line class="edge" x1="255" y1="100" x2="255" y2="87" marker-end="url(#arrow-l21)"/>
-        <line class="edge" x1="355" y1="100" x2="355" y2="87" marker-end="url(#arrow-l21)"/>
+    <div style="flex:0.95;">
+      <div class="model-badge">Qwen3-0.6B</div>
+      <p style="font-size:0.86em; color:#6b7280; text-align:center;">a real small causal language model</p>
+    </div>
+    <div style="flex:1.05;">
+      <div class="fact-grid">
+        <div><strong>0.6B</strong><span>parameters</span></div>
+        <div><strong>28</strong><span>layers</span></div>
+        <div><strong>32k</strong><span>context</span></div>
+        <div><strong>~151k</strong><span>vocab</span></div>
+        <div><strong>GQA</strong><span>16 Q / 8 KV</span></div>
+        <div><strong>BBPE</strong><span>tokenizer</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="fragment" style="font-size:0.84em; color:#1d4ed8; text-align:center;">A "small" LM is still a serious learned system.</p>
+</section>
+
+<!-- 5. What gets loaded -->
+<section class="center-slide">
+  <h2>What gets loaded?</h2>
+  <div class="task-cards" style="grid-template-columns:repeat(4,1fr);">
+    <div class="task-card fragment"><h3>tokenizer</h3><p style="font-size:0.78em;">text &harr; token IDs</p></div>
+    <div class="task-card fragment"><h3>config</h3><p style="font-size:0.78em;">layers, heads, vocab</p></div>
+    <div class="task-card fragment"><h3>weights</h3><p style="font-size:0.78em;">learned parameters</p></div>
+    <div class="task-card fragment"><h3>settings</h3><p style="font-size:0.78em;">temperature, max tokens</p></div>
+  </div>
+</section>
+
+<!-- 6. Demo path -->
+<section class="center-slide">
+  <h2>Demo path and fallback</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
+    <div class="task-card"><h3>optional live path</h3><p style="font-size:0.8em;">Transformers.js + ONNX + WebGPU</p></div>
+    <div class="task-card fragment"><h3>reliable path</h3><p style="font-size:0.8em;">precomputed traces embedded here</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">The concepts do not depend on a live GPU demo working.</p>
+</section>
+
+<!-- 7. JS code -->
+<section>
+  <h2>Optional browser inference</h2>
+  <pre style="font-size:0.52em; width:84%; margin:0.35em auto;"><code>import { pipeline, TextStreamer } from "@huggingface/transformers";
+
+const generator = await pipeline(
+  "text-generation",
+  "onnx-community/Qwen3-0.6B-ONNX",
+  { device: "webgpu", dtype: "q4f16" },
+);</code></pre>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">This loads a web-ready tokenizer and quantized model weights.</p>
+</section>
+
+<!-- 8. Python code -->
+<section>
+  <h2>The same pipeline in Python</h2>
+  <pre style="font-size:0.56em; width:82%; margin:0.35em auto;"><code>tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B")
+model = AutoModelForCausalLM.from_pretrained(
+    "Qwen/Qwen3-0.6B",
+    torch_dtype="auto",
+    device_map="auto",
+)</code></pre>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Browser and Python paths expose the same conceptual pieces.</p>
+</section>
+
+<!-- 9. Prompt -->
+<section class="center-slide">
+  <h2>Start with a prompt</h2>
+  <div class="prompt-box">Explain gradient descent in one sentence.</div>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">Inference begins as human-readable text.</p>
+</section>
+
+<!-- 10. Chat template -->
+<section>
+  <h2>The model sees a chat template</h2>
+  <div class="chat-template">
+    <div><strong>system</strong><span>You are a helpful assistant.</span></div>
+    <div><strong>user</strong><span>Explain gradient descent in one sentence.</span></div>
+    <div><strong>assistant</strong><span></span></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The model's actual input is usually not exactly what the user typed.</p>
+</section>
+
+<!-- 11. Prompt to tokens -->
+<section>
+  <h2>Prompt to tokens</h2>
+  <div class="tok-row">
+    <span class="tok">Explain</span><span class="tok"> gradient</span><span class="tok"> descent</span><span class="tok"> in</span><span class="tok"> one</span><span class="tok"> sentence</span><span class="tok">.</span>
+  </div>
+  <table class="factor-table" style="font-size:0.72em; margin:0.45em auto;">
+    <thead><tr><th>token</th><th>illustrative id</th></tr></thead>
+    <tbody>
+      <tr><td>Explain</td><td>8493</td></tr>
+      <tr><td> gradient</td><td>33497</td></tr>
+      <tr><td> descent</td><td>41184</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- 12. Embeddings -->
+<section class="center-slide">
+  <h2>Tokens become embeddings</h2>
+  <svg viewBox="0 0 820 145" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
+    <g class="lm-boxes">
+      <rect x="55" y="50" width="130" height="46" rx="7"/><text x="120" y="78">token ID</text>
+      <rect x="265" y="50" width="170" height="46" rx="7"/><text x="350" y="78">embedding row</text>
+      <rect x="515" y="50" width="170" height="46" rx="7"/><text x="600" y="78">vector</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l21)">
+      <line x1="185" y1="73" x2="260" y2="73"/><line x1="435" y1="73" x2="510" y2="73"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Each token begins generation as a learned vector.</p>
+</section>
+
+<!-- 13. 28 blocks -->
+<section>
+  <h2>Through 28 transformer blocks</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.9; text-align:center;">
+      <svg viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg" class="block-stack">
+        <rect x="55" y="225" width="130" height="34" rx="6"/><text x="120" y="246">block 1</text>
+        <rect x="55" y="180" width="130" height="34" rx="6"/><text x="120" y="201">block 2</text>
+        <text x="120" y="158">...</text>
+        <rect x="55" y="98" width="130" height="34" rx="6"/><text x="120" y="119">block 27</text>
+        <rect x="55" y="53" width="130" height="34" rx="6"/><text x="120" y="74">block 28</text>
       </svg>
     </div>
-    <div style="flex: 0.95;">
-      <p style="font-size: 0.85em; margin: 0.1em 0;">The state \(h_t = f(h_{t-1}, x_t)\) carries information forward, one step at a time.</p>
-      <p style="font-size: 0.82em; margin: 0.3em 0; color:#991b1b;">Three problems at scale:</p>
-      <ul style="font-size: 0.8em; margin: 0.1em 0 0 1em;">
-        <li class="fragment"><strong>Sequential:</strong> step \(t\) waits for \(t{-}1\) &mdash; can't parallelize over the sequence.</li>
-        <li class="fragment"><strong>Long-range:</strong> signal from far-back tokens fades (vanishing gradients).</li>
-        <li class="fragment"><strong>Bottleneck:</strong> everything must squeeze through one fixed-size state.</li>
-      </ul>
+    <div style="flex:1.05;">
+      <p style="font-size:0.9em;"><strong>Attention:</strong> communicate across context.</p>
+      <p class="fragment" style="font-size:0.9em;"><strong>Feed-forward:</strong> per-token computation.</p>
+      <p class="fragment" style="font-size:0.86em; color:#6b7280;">Residuals and normalization keep the deep stack stable.</p>
     </div>
   </div>
 </section>
 
-<!-- 4. The key idea: attention -->
+<!-- 14. Last position -->
 <section class="center-slide">
-  <h2>The idea: let every token look at every other</h2>
-  <div class="defbox" style="max-width: 86%; margin: 0.2em auto; text-align:left;">
-    <p style="margin:0; font-size: 0.9em;"><strong>Attention</strong> replaces the step-by-step chain with <em>direct</em> connections: to build a token's new representation, it reads a weighted mix of <strong>all</strong> tokens, choosing the weights based on relevance.</p>
+  <h2>The last position predicts next</h2>
+  <svg viewBox="0 0 850 150" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
+    <g class="lm-boxes">
+      <rect x="45" y="55" width="190" height="46" rx="7"/><text x="140" y="83">last hidden vector</text>
+      <rect x="330" y="55" width="130" height="46" rx="7"/><text x="395" y="83">output head</text>
+      <rect x="560" y="55" width="150" height="46" rx="7" class="question"/><text x="635" y="83">next-token logits</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l21)">
+      <line x1="235" y1="78" x2="325" y2="78"/><line x1="460" y1="78" x2="555" y2="78"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">For generation, the next distribution comes from the final prompt position.</p>
+</section>
+
+<!-- 15. Logits -->
+<section>
+  <h2>Logits: top candidates</h2>
+  <p style="font-size:0.82em;">Illustrative trace after the prompt: <code>Explain gradient descent in one sentence.</code></p>
+  <table class="factor-table" style="font-size:0.76em; margin:0.35em auto;">
+    <thead><tr><th>candidate token</th><th>logit</th><th>interpretation</th></tr></thead>
+    <tbody>
+      <tr style="background:#dcfce7;"><td>Gradient</td><td>8.4</td><td>high</td></tr>
+      <tr><td>It</td><td>6.8</td><td>medium</td></tr>
+      <tr><td>A</td><td>6.3</td><td>medium</td></tr>
+      <tr><td>zq</td><td>-2.5</td><td>very low</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment" style="font-size:0.8em; color:#6b7280; text-align:center;">The exact values here are a teaching trace, not a live benchmark.</p>
+</section>
+
+<!-- 16. Softmax -->
+<section>
+  <h2>Softmax and decoding choice</h2>
+  <div class="lm-bars">
+    <div class="lm-bar hot"><span>Gradient</span><div style="height:118px;"></div><b>0.54</b></div>
+    <div class="lm-bar"><span>It</span><div style="height:55px;"></div><b>0.21</b></div>
+    <div class="lm-bar"><span>A</span><div style="height:42px;"></div><b>0.16</b></div>
+    <div class="lm-bar"><span>zq</span><div style="height:8px;"></div><b>0.00</b></div>
   </div>
-  <ul style="font-size: 0.84em; margin: 0.4em 0 0 2em; text-align:left; max-width: 82%; margin-left:auto; margin-right:auto;">
-    <li class="fragment">Any token reaches any other in <strong>one hop</strong> &mdash; no fading.</li>
-    <li class="fragment">All positions are computed <strong>in parallel</strong> &mdash; GPU-friendly.</li>
-  </ul>
+  <p class="fragment" style="font-size:0.86em; text-align:center; color:#1d4ed8;">Decoding turns scores into one actual next token.</p>
 </section>
 
-<!-- 5. Tokens to embeddings -->
-<section>
-  <h2>Step 1: tokens become vectors</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Each of the \(n\) input tokens is mapped to a \(d\)-dimensional embedding. Stack them into a matrix:</p>
-  <p style="text-align:center; margin: 0.3em 0;">\(X = \begin{bmatrix} \text{---}\ \mathbf{x}_1\ \text{---} \\ \vdots \\ \text{---}\ \mathbf{x}_n\ \text{---}\end{bmatrix} \in \mathbb{R}^{n \times d}\)</p>
-  <p class="fragment" style="font-size: 0.82em; color:#6b7280; text-align:center; margin-top:0.3em;">Row \(i\) is token \(i\)'s current representation. Attention will update every row.</p>
+<!-- 17. Append loop -->
+<section class="center-slide">
+  <h2>Append and repeat</h2>
+  <svg viewBox="0 0 860 170" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
+    <g class="lm-boxes">
+      <rect x="35" y="60" width="130" height="46" rx="7"/><text x="100" y="88">context</text>
+      <rect x="230" y="60" width="120" height="46" rx="7"/><text x="290" y="88">model</text>
+      <rect x="415" y="60" width="130" height="46" rx="7"/><text x="480" y="88">next token</text>
+      <rect x="610" y="60" width="135" height="46" rx="7" class="question"/><text x="678" y="88">append</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l21)">
+      <line x1="165" y1="83" x2="225" y2="83"/><line x1="350" y1="83" x2="410" y2="83"/><line x1="545" y1="83" x2="605" y2="83"/>
+      <path d="M678 108 C640 150, 160 150, 105 110" fill="none"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Generation is autoregressive and sequential at inference time.</p>
 </section>
 
-<!-- 6. Queries, keys, values -->
+<!-- 18. KV cache -->
 <section>
-  <h2>Step 2: queries, keys, values</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">From \(X\), three learned linear projections produce a <strong>query</strong>, <strong>key</strong>, and <strong>value</strong> for every token:</p>
-  <p style="text-align:center; margin: 0.25em 0;">\(Q = XW_Q, \qquad K = XW_K, \qquad V = XW_V\)</p>
-  <div class="two-col" style="margin-top:0.3em;">
-    <div class="defbox qkv-note" style="flex:1; border-left-color:#dc2626;">
-      <p style="margin:0; font-size:0.8em;"><strong style="color:#dc2626;">Query</strong> \(\mathbf{q}_i\): "what am I looking for?"</p>
-    </div>
-    <div class="defbox" style="flex:1; border-left-color:#1d4ed8;">
-      <p style="margin:0; font-size:0.8em;"><strong style="color:#1d4ed8;">Key</strong> \(\mathbf{k}_j\): "what do I offer?"</p>
-    </div>
-    <div class="defbox" style="flex:1; border-left-color:#166534;">
-      <p style="margin:0; font-size:0.8em;"><strong style="color:#166534;">Value</strong> \(\mathbf{v}_j\): "what I pass on if attended to."</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size: 0.82em; color:#1d4ed8; text-align:center; margin-top:0.35em;">Token \(i\) attends to token \(j\) when query \(\mathbf{q}_i\) matches key \(\mathbf{k}_j\).</p>
-</section>
-
-<!-- 7. Scaled dot-product attention -->
-<section>
-  <h2>Step 3: scaled dot-product attention</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Score every query against every key (dot product), scale, softmax into weights, then mix the values:</p>
-  <div class="defbox" style="text-align:center; margin:0.25em auto;">
-    <p style="margin:0; font-size: 1.05em;">\(\text{Attention}(Q,K,V) = \operatorname{softmax}\!\left(\dfrac{QK^\top}{\sqrt{d_k}}\right) V\)</p>
-  </div>
-  <ul style="font-size: 0.8em; margin: 0.25em 0 0 1.2em;">
-    <li class="fragment">\(QK^\top \in \mathbb{R}^{n\times n}\): entry \((i,j)\) = similarity of token \(i\)'s query with token \(j\)'s key.</li>
-    <li class="fragment"><strong>softmax</strong> over each row &rarr; nonnegative weights summing to 1.</li>
-    <li class="fragment">Why \(\sqrt{d_k}\)? Dot products grow with dimension; scaling keeps softmax out of its saturated, tiny-gradient regime.</li>
-  </ul>
-</section>
-
-<!-- 8. Worked attention example -->
-<section>
-  <h2>What the weights look like</h2>
-  <p style="font-size: 0.83em; margin: 0.1em 0;">Three tokens. Each <strong>row</strong> of \(\operatorname{softmax}(QK^\top/\sqrt{d_k})\) says how much a token attends to the others (rows sum to 1):</p>
+  <h2>KV cache: do not recompute everything</h2>
   <div class="two-col vcenter">
-    <div style="flex:1; text-align:center;">
-      <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:210px;">
-        <text x="40" y="30" class="attn-txt">the</text>
-        <text x="120" y="30" class="attn-txt">cat</text>
-        <text x="200" y="30" class="attn-txt">sat</text>
-        <text x="15" y="70" class="attn-txt">the</text>
-        <text x="15" y="130" class="attn-txt">cat</text>
-        <text x="15" y="190" class="attn-txt">sat</text>
-        <!-- row 1 -->
-        <rect class="attn-cell" x="60" y="45" width="50" height="50" fill="#1d4ed8" fill-opacity="0.75"/><text x="85" y="70" class="attn-txt" style="fill:#fff;">.7</text>
-        <rect class="attn-cell" x="110" y="45" width="50" height="50" fill="#1d4ed8" fill-opacity="0.2"/><text x="135" y="70" class="attn-txt">.2</text>
-        <rect class="attn-cell" x="160" y="45" width="50" height="50" fill="#1d4ed8" fill-opacity="0.1"/><text x="185" y="70" class="attn-txt">.1</text>
-        <!-- row 2 highlighted -->
-        <rect class="attn-cell" x="60" y="105" width="50" height="50" fill="#1d4ed8" fill-opacity="0.15"/><text x="85" y="130" class="attn-txt">.1</text>
-        <rect class="attn-cell" x="110" y="105" width="50" height="50" fill="#1d4ed8" fill-opacity="0.65"/><text x="135" y="130" class="attn-txt" style="fill:#fff;">.6</text>
-        <rect class="attn-cell" x="160" y="105" width="50" height="50" fill="#1d4ed8" fill-opacity="0.3"/><text x="185" y="130" class="attn-txt">.3</text>
-        <rect x="58" y="103" width="154" height="54" fill="none" stroke="#dc2626" stroke-width="2.5"/>
-        <!-- row 3 -->
-        <rect class="attn-cell" x="60" y="165" width="50" height="50" fill="#1d4ed8" fill-opacity="0.2"/><text x="85" y="190" class="attn-txt">.2</text>
-        <rect class="attn-cell" x="110" y="165" width="50" height="50" fill="#1d4ed8" fill-opacity="0.3"/><text x="135" y="190" class="attn-txt">.3</text>
-        <rect class="attn-cell" x="160" y="165" width="50" height="50" fill="#1d4ed8" fill-opacity="0.55"/><text x="185" y="190" class="attn-txt" style="fill:#fff;">.5</text>
+    <div style="flex:1.05;">
+      <svg viewBox="0 0 470 190" xmlns="http://www.w3.org/2000/svg" class="cache-viz">
+        <rect x="35" y="55" width="180" height="80" rx="8"/><text x="125" y="84">old keys/values</text><text x="125" y="112">stored cache</text>
+        <rect x="285" y="55" width="140" height="80" rx="8" class="new"/><text x="355" y="84">new token</text><text x="355" y="112">new K/V</text>
+        <line x1="215" y1="95" x2="280" y2="95" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l21)"/>
       </svg>
     </div>
     <div style="flex:0.95;">
-      <p style="font-size:0.82em; margin:0.1em 0;">The red row: "<strong>cat</strong>" attends mostly to itself (0.6) and to "sat" (0.3).</p>
-      <p class="fragment" style="font-size:0.82em; margin:0.3em 0;">Its new vector is the weighted sum of values:</p>
-      <p class="fragment" style="text-align:center; font-size:0.8em; margin:0.2em 0;">\(\mathbf{z}_{\text{cat}} = 0.1\,\mathbf{v}_{\text{the}} + 0.6\,\mathbf{v}_{\text{cat}} + 0.3\,\mathbf{v}_{\text{sat}}\)</p>
+      <p style="font-size:0.9em;">Generated tokens keep their keys/values.</p>
+      <p class="fragment" style="font-size:0.9em;">The next step computes only the new token's pieces.</p>
+      <p class="fragment" style="font-size:0.86em; color:#6b7280;">This is why long context costs memory.</p>
     </div>
   </div>
 </section>
 
-<!-- 9. Multi-head attention -->
-<section>
-  <h2>Multi-head attention</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">One attention pattern is limiting. Run \(h\) attention "heads" in parallel, each with its own \(W_Q, W_K, W_V\), then concatenate and project:</p>
-  <div class="defbox" style="text-align:center; margin:0.2em auto;">
-    <p style="margin:0 0 0.2em; font-size:0.82em;">\(\text{head}_i = \text{Attention}(XW_Q^i, XW_K^i, XW_V^i)\)</p>
-    <p style="margin:0; font-size:0.82em;">\(\text{MHA}(X) = \big[\,\text{head}_1; \ldots; \text{head}_h\,\big]\,W_O\)</p>
+<!-- 19. Context length -->
+<section class="center-slide">
+  <h2>Context length is working memory</h2>
+  <div class="context-bar">
+    <div class="prompt">prompt tokens</div>
+    <div class="generated">generated tokens</div>
+    <div class="space">remaining window</div>
   </div>
-  <ul style="font-size: 0.8em; margin: 0.25em 0 0 1.2em;">
-    <li class="fragment">Each head learns a different relation (e.g. syntax, coreference, position).</li>
-    <li class="fragment">Each head works in a smaller subspace \(d_k = d / h\), so the total cost is similar to one full-size head.</li>
-  </ul>
+  <p style="font-size:0.9em;">For Qwen3-0.6B: up to about <strong>32k tokens</strong>.</p>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">It is not permanent memory; it is the current working context.</p>
 </section>
 
-<!-- 10. Positional encodings -->
+<!-- 20. Greedy vs sampling -->
+<section class="center-slide">
+  <h2>Decoding changes behavior</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
+    <div class="task-card"><h3>greedy</h3><p style="font-size:0.8em;">deterministic, safe, repetitive</p></div>
+    <div class="task-card fragment"><h3>sampling</h3><p style="font-size:0.8em;">varied, sometimes better, sometimes worse</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Weights stay fixed; only the token selection rule changes.</p>
+</section>
+
+<!-- 21. Temperature -->
 <section>
-  <h2>Where's the order? Positional encodings</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Attention is a weighted sum &mdash; it's <strong>permutation-invariant</strong>: shuffle the tokens and the output just shuffles too. So we add position information to the embeddings.</p>
+  <h2>Temperature controls randomness</h2>
   <div class="two-col vcenter">
     <div style="flex:1;">
-      <div class="defbox">
-        <p style="margin:0; font-size:0.8em;">Sinusoidal encoding (original transformer):</p>
-        <p style="text-align:center; margin:0.2em 0; font-size:0.78em;">\(PE_{(pos,\,2i)} = \sin\!\big(pos / 10000^{2i/d}\big)\)</p>
-        <p style="text-align:center; margin:0; font-size:0.78em;">\(PE_{(pos,\,2i+1)} = \cos\!\big(pos / 10000^{2i/d}\big)\)</p>
+      <div class="mini-dist">
+        <h3>low T</h3>
+        <div><span>Gradient</span><b style="width:88%;"></b></div>
+        <div><span>It</span><b style="width:18%;"></b></div>
+        <div><span>A</span><b style="width:10%;"></b></div>
       </div>
-      <p style="font-size:0.78em; color:#6b7280; margin-top:0.3em;">Add \(PE\) to each token's embedding. Modern models often use <strong>learned</strong> positions or <strong>RoPE</strong> (rotary).</p>
     </div>
-    <div style="flex:0.9; text-align:center;">
-      <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg" class="l21-svg" style="max-height:150px;">
-        <line class="edge" x1="20" y1="75" x2="285" y2="75"/>
-        <path d="M20 75 Q 40 30 60 75 T 100 75 T 140 75 T 180 75 T 220 75 T 260 75" fill="none" stroke="#dc2626" stroke-width="1.8"/>
-        <path d="M20 75 Q 50 120 80 75 T 140 75 T 200 75 T 260 75" fill="none" stroke="#1d4ed8" stroke-width="1.8"/>
-        <text x="150" y="145" class="axis-label">position &rarr;</text>
-        <text x="270" y="40" class="axis-label" style="fill:#dc2626;">dim 2i</text>
-        <text x="250" y="120" class="axis-label" style="fill:#1d4ed8;">dim 2i+1</text>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- 11. The transformer block -->
-<section>
-  <h2>The transformer block</h2>
-  <div class="two-col vcenter">
-    <div style="flex:0.85; text-align:center;">
-      <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:290px;">
-        <line class="edge" x1="100" y1="295" x2="100" y2="270" marker-end="url(#arrow-l21)"/>
-        <text x="100" y="290" class="tb-label" style="font-size:11px;">X</text>
-        <rect class="tb-box tb-attn" x="35" y="230" width="130" height="38"/>
-        <text x="100" y="249" class="tb-label">Multi-Head Attention</text>
-        <rect class="tb-box tb-norm" x="45" y="192" width="110" height="30"/>
-        <text x="100" y="207" class="tb-label">Add &amp; Norm</text>
-        <line class="edge" x1="100" y1="230" x2="100" y2="222" marker-end="url(#arrow-l21)"/>
-        <rect class="tb-box tb-ffn" x="45" y="120" width="110" height="38"/>
-        <text x="100" y="139" class="tb-label">Feed-Forward</text>
-        <line class="edge" x1="100" y1="192" x2="100" y2="158" marker-end="url(#arrow-l21)"/>
-        <rect class="tb-box tb-norm" x="45" y="80" width="110" height="30"/>
-        <text x="100" y="95" class="tb-label">Add &amp; Norm</text>
-        <line class="edge" x1="100" y1="120" x2="100" y2="110" marker-end="url(#arrow-l21)"/>
-        <line class="edge" x1="100" y1="80" x2="100" y2="45" marker-end="url(#arrow-l21)"/>
-        <text x="100" y="30" class="tb-label" style="font-size:11px;">output</text>
-        <!-- residual arcs -->
-        <path d="M 30 249 C 12 249, 12 207, 43 207" fill="none" stroke="#6d28d9" stroke-width="1.4" stroke-dasharray="3 2" marker-end="url(#arrow-l21)"/>
-        <path d="M 30 139 C 12 139, 12 95, 43 95" fill="none" stroke="#6d28d9" stroke-width="1.4" stroke-dasharray="3 2" marker-end="url(#arrow-l21)"/>
-      </svg>
-    </div>
-    <div style="flex:1.05;">
-      <p style="font-size:0.85em; margin:0.1em 0;">Each block = two sublayers, each wrapped in a <strong>residual</strong> connection and <strong>layer norm</strong>:</p>
-      <ul style="font-size:0.8em; margin:0.2em 0 0 1em;">
-        <li class="fragment"><strong>Attention</strong>: tokens exchange information.</li>
-        <li class="fragment"><strong>Feed-forward</strong>: a per-token MLP adds nonlinear processing.</li>
-        <li class="fragment"><strong>Residuals</strong> (dashed) let gradients flow; <strong>norm</strong> keeps activations stable.</li>
-        <li class="fragment"><strong>Stack</strong> \(N\) of these blocks &rarr; a deep transformer.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 12. Encoder vs decoder + causal mask -->
-<section>
-  <h2>Encoder, decoder, and causal masking</h2>
-  <div class="two-col vcenter">
-    <div style="flex:1.05;">
-      <div class="task-cards" style="grid-template-columns:1fr 1fr;">
-        <div class="task-card">
-          <h3>Encoder</h3>
-          <p style="font-size:0.8em;">Every token attends to <strong>all</strong> tokens (bidirectional). Good for understanding a whole input.</p>
-        </div>
-        <div class="task-card">
-          <h3>Decoder</h3>
-          <p style="font-size:0.8em;">A token may attend only to <strong>earlier</strong> tokens &mdash; so it can generate the next one without peeking ahead.</p>
-        </div>
+    <div style="flex:1;">
+      <div class="mini-dist">
+        <h3>high T</h3>
+        <div><span>Gradient</span><b style="width:55%;"></b></div>
+        <div><span>It</span><b style="width:38%;"></b></div>
+        <div><span>A</span><b style="width:30%;"></b></div>
       </div>
-      <p class="fragment" style="font-size:0.8em; margin-top:0.3em;">The <strong>causal mask</strong> sets future scores to \(-\infty\) before the softmax, zeroing those weights.</p>
-    </div>
-    <div style="flex:0.85; text-align:center;">
-      <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-height:170px;">
-        <text x="90" y="14" class="axis-label">key position &rarr;</text>
-        <g>
-          <!-- 4x4 mask: allowed (green) lower triangle incl diagonal, masked (gray x) upper -->
-          <rect x="30" y="25" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-          <rect x="64" y="25" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="81" y="44" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
-          <rect x="98" y="25" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="115" y="44" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
-          <rect x="132" y="25" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="149" y="44" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
-          <rect x="30" y="59" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-          <rect x="64" y="59" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-          <rect x="98" y="59" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="115" y="78" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
-          <rect x="132" y="59" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="149" y="78" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
-          <rect x="30" y="93" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-          <rect x="64" y="93" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-          <rect x="98" y="93" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-          <rect x="132" y="93" width="34" height="34" fill="#e5e7eb" stroke="#fff"/><text x="149" y="112" class="attn-txt" style="fill:#9ca3af;">&#215;</text>
-          <rect x="30" y="127" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-          <rect x="64" y="127" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-          <rect x="98" y="127" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-          <rect x="132" y="127" width="34" height="34" fill="#dcfce7" stroke="#fff"/>
-        </g>
-        <text x="12" y="150" class="axis-label" transform="rotate(-90 12 150)">query &rarr;</text>
-      </svg>
     </div>
   </div>
 </section>
 
-<!-- 13. Complexity -->
+<!-- 22. Top-k top-p -->
 <section class="center-slide">
-  <h2>The cost of looking everywhere</h2>
-  <div class="defbox" style="max-width:80%; margin:0.2em auto; text-align:left;">
-    <p style="margin:0; font-size:0.9em;">Every token attends to every token &rarr; the score matrix \(QK^\top\) is \(n\times n\). Cost is</p>
-    <p style="text-align:center; margin:0.3em 0; font-size:1em;">\(O(n^2 d)\)</p>
-    <p style="margin:0; font-size:0.85em;">&mdash; quadratic in sequence length \(n\).</p>
+  <h2>Top-k and top-p trim the tail</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:78%; margin:0.6em auto;">
+    <div class="task-card"><h3>top-k</h3><p style="font-size:0.82em;">sample from the \(k\) most likely tokens</p></div>
+    <div class="task-card fragment"><h3>top-p</h3><p style="font-size:0.82em;">sample from tokens whose cumulative mass reaches \(p\)</p></div>
   </div>
-  <ul style="font-size:0.83em; text-align:left; max-width:80%; margin:0.4em auto 0; ">
-    <li class="fragment">Great trade for RNNs' sequential bottleneck: attention is fully <strong>parallel</strong>.</li>
-    <li class="fragment">But long contexts are expensive &mdash; a very active research area (efficient / sparse attention).</li>
-  </ul>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Keep randomness inside plausible choices.</p>
 </section>
 
-<!-- 14. Why it changed everything -->
+<!-- 23. Prompting -->
+<section>
+  <h2>Prompting is inference-time conditioning</h2>
+  <div class="two-col">
+    <div class="prompt-card" style="flex:1;">
+      <h3>Prompt A</h3>
+      <p>Explain gradient descent.</p>
+    </div>
+    <div class="prompt-card fragment" style="flex:1;">
+      <h3>Prompt B</h3>
+      <p>Explain gradient descent to a 10-year-old.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The context changes. The weights do not.</p>
+</section>
+
+<!-- 24. Few-shot -->
 <section class="center-slide">
-  <h2>Why transformers took over</h2>
+  <h2>Few-shot prompting specifies a pattern</h2>
+  <div class="algo-card" style="max-width:62%; font-family:ui-monospace, Menlo, monospace;">
+    <div>tiny &rarr; small</div>
+    <div>huge &rarr; big</div>
+    <div>rapid &rarr; <span style="color:#166534; font-weight:700;">fast</span></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Examples in the prompt can define a task without training.</p>
+</section>
+
+<!-- 25. CoT -->
+<section>
+  <h2>Chain-of-thought-style prompting</h2>
+  <div class="two-col">
+    <div class="prompt-card" style="flex:1;">
+      <h3>direct</h3>
+      <p>Answer the question.</p>
+    </div>
+    <div class="prompt-card fragment" style="flex:1;">
+      <h3>reasoning style</h3>
+      <p>Think step by step, then answer.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">Reasoning traces can help behavior, but are not guaranteed faithful explanations of internal computation.</p>
+</section>
+
+<!-- 26. Thinking mode -->
+<section class="center-slide">
+  <h2>Some models expose thinking modes</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
+    <div class="task-card"><h3>non-thinking</h3><p style="font-size:0.8em;">answer directly</p></div>
+    <div class="task-card fragment"><h3>thinking</h3><p style="font-size:0.8em;">produce intermediate reasoning text</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">For Qwen-style models, special chat-template controls can change this behavior.</p>
+</section>
+
+<!-- 27. Hallucination -->
+<section class="center-slide">
+  <h2>Failure mode: hallucination</h2>
+  <div class="prompt-box">Who won the 2031 Turing Award?</div>
+  <p class="fragment" style="font-size:0.95em;">A model may answer fluently anyway.</p>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">Next-token likelihood is not truth verification.</p>
+</section>
+
+<!-- 28. Prompt sensitivity -->
+<section>
+  <h2>Failure mode: prompt sensitivity</h2>
+  <div class="two-col">
+    <div class="prompt-card" style="flex:1;">
+      <h3>Prompt 1</h3>
+      <p>Give a concise answer.</p>
+    </div>
+    <div class="prompt-card fragment" style="flex:1;">
+      <h3>Prompt 2</h3>
+      <p>Be creative and speculate.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">The model is conditioned by text; small changes can matter.</p>
+</section>
+
+<!-- 29. Context and cost -->
+<section class="center-slide">
+  <h2>Failure mode: context and cost</h2>
   <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>Parallel</h3><p style="font-size:0.8em;">All positions at once &mdash; trains fast on GPUs/TPUs.</p></div>
-    <div class="task-card fragment"><h3>Long-range</h3><p style="font-size:0.8em;">Any token reaches any other in one hop.</p></div>
-    <div class="task-card fragment"><h3>Scales</h3><p style="font-size:0.8em;">Add data + parameters and it keeps improving.</p></div>
+    <div class="task-card fragment"><h3>context</h3><p style="font-size:0.78em;">long prompts consume the window</p></div>
+    <div class="task-card fragment"><h3>latency</h3><p style="font-size:0.78em;">generation is token-by-token</p></div>
+    <div class="task-card fragment"><h3>browser</h3><p style="font-size:0.78em;">hardware support varies</p></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center; margin-top:0.5em;">The same block powers vision, audio, protein folding &mdash; and every large language model.</p>
 </section>
 
-<!-- 15. Recap + next -->
+<!-- 30. Did not change -->
 <section class="center-slide">
-  <h2>Learning goals (recap) &mdash; Next: LLMs</h2>
-  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:82%; margin-right:auto;">
-    <li>&#10003; &nbsp;Why <strong>RNNs</strong> struggle with long sequences.</li>
-    <li>&#10003; &nbsp;<strong>Scaled dot-product attention</strong> from queries, keys, values.</li>
-    <li>&#10003; &nbsp;<strong>Multi-head attention</strong> and <strong>positional encodings</strong>.</li>
-    <li>&#10003; &nbsp;The <strong>transformer block</strong>; encoder vs decoder (causal masking).</li>
+  <h2>What did not change today?</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>no fine-tuning</h3><p style="font-size:0.78em;">weights unchanged</p></div>
+    <div class="task-card fragment"><h3>no LoRA</h3><p style="font-size:0.78em;">no adapters</p></div>
+    <div class="task-card fragment"><h3>no retrieval</h3><p style="font-size:0.78em;">no external documents</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">We steered behavior only through inputs and decoding.</p>
+</section>
+
+<!-- 31. Bridge -->
+<section class="center-slide">
+  <h2>Next question</h2>
+  <p style="font-size:1.05em; max-width:82%; margin:0.5em auto;">When is prompting not enough, and when do we update weights or add external knowledge?</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">L22: From Prompting to Fine-Tuning and LoRA.</p>
+</section>
+
+<!-- 32. Recap -->
+<section class="center-slide">
+  <h2>Recap</h2>
+  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:84%; margin-right:auto;">
+    <li>&#10003; &nbsp;Loaded tokenizer, config, weights, and generation settings.</li>
+    <li>&#10003; &nbsp;Tokenized a prompt and traced it into embeddings.</li>
+    <li>&#10003; &nbsp;Ran a causal LM to produce logits.</li>
+    <li>&#10003; &nbsp;Decoded one token at a time.</li>
+    <li>&#10003; &nbsp;Used prompting and decoding without updating weights.</li>
+    <li>&#10003; &nbsp;Identified common failure modes.</li>
   </ul>
-  <p class="fragment" style="font-size:0.88em; color:#1d4ed8; text-align:center; margin-top:0.6em;">L22: stack decoder blocks + train at scale &rarr; <strong>Large Language Models</strong>.</p>
 </section>
 
 </div>

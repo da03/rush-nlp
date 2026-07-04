@@ -1,4 +1,96 @@
-/* L22 (Large Language Models & Systems) — styles on top of shared/custom.css. */
+/* L22 (From Prompting to Fine-Tuning and LoRA) styles. */
+
+.reveal .ladder {
+  display: grid;
+  gap: 0.28em;
+  max-width: 62%;
+  margin: 0.55em auto;
+}
+.reveal .ladder div {
+  padding: 0.32em 0.65em;
+  border-radius: 6px;
+  background: #dbeafe;
+  border: 1px solid #1d4ed8;
+  color: #1e3a8a;
+  font-weight: 700;
+  font-size: 0.82em;
+}
+
+.reveal .decision-grid,
+.reveal .eval-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5em;
+  max-width: 84%;
+  margin: 0.55em auto;
+}
+.reveal .decision-grid div,
+.reveal .eval-grid div {
+  padding: 0.55em 0.7em;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-left: 4px solid #1d4ed8;
+  border-radius: 6px;
+  text-align: left;
+}
+.reveal .decision-grid strong,
+.reveal .eval-grid strong {
+  display: block;
+  color: #1d4ed8;
+  font-size: 0.86em;
+  margin-bottom: 0.18em;
+}
+.reveal .decision-grid span,
+.reveal .eval-grid span {
+  display: block;
+  color: #4b5563;
+  font-size: 0.76em;
+}
+
+.reveal .template-list {
+  display: grid;
+  gap: 0.35em;
+  max-width: 76%;
+  margin: 0.5em auto;
+}
+.reveal .template-list div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.8em;
+  align-items: center;
+  padding: 0.42em 0.65em;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+.reveal .template-list strong {
+  color: #1d4ed8;
+  text-align: right;
+  font-size: 0.78em;
+}
+.reveal .template-list span {
+  color: #1f2937;
+  font-size: 0.8em;
+}
+
+.reveal .pipeline {
+  display: block;
+  margin: 0.35em auto;
+  width: 100%;
+  max-height: 260px;
+}
+.reveal .pipeline rect {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.8;
+}
+.reveal .pipeline text {
+  font-size: 14px;
+  font-weight: 700;
+  fill: #1f2937;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
 
 .reveal .algo-card {
   background: #f9fafb;
@@ -17,17 +109,3 @@
   font-size: 0.95em;
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
 }
-
-.reveal .l22-svg { display: block; margin: 0.3em auto; width: 100%; max-height: 300px; }
-.reveal .l22-svg .edge { stroke: #6b7280; stroke-width: 1.4; fill: none; }
-.reveal .l22-svg .axis { stroke: #6b7280; stroke-width: 1; }
-.reveal .l22-svg .axis-label { font-size: 12px; fill: #6b7280; }
-
-/* Token chips for the tokenization slide. */
-.reveal .tok-row { display: flex; flex-wrap: wrap; gap: 0.35em; justify-content: center; margin: 0.4em 0; }
-.reveal .tok {
-  display: inline-block; padding: 0.25em 0.55em; border-radius: 5px;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.9em;
-  background: #eef2ff; border: 1px solid #6366f1; color: #3730a3;
-}
-.reveal .tok.plain { background: #f3f4f6; border-color: #9ca3af; color: #374151; }

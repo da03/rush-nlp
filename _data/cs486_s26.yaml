@@ -323,7 +323,7 @@ schedule:
   - type: lecture
     date: 2026-07-21
     lecture_num: 21
-    topic: "Transformers & Attention"
+    topic: "Dissecting a Small Language Model"
     slides: /slides/CS486/S26/L21/
     deadlines:
       - { kind: due,     chat: 10, label: "Chat 10 due" }
@@ -331,19 +331,19 @@ schedule:
   - type: lecture
     date: 2026-07-23
     lecture_num: 22
-    topic: "Large Language Models & Systems"
+    topic: "From Prompting to Fine-Tuning and LoRA"
     slides: /slides/CS486/S26/L22/
 
   - type: lecture
     date: 2026-07-28
     lecture_num: 23
-    topic: "Generative AI: Diffusion & Multimodal"
+    topic: "Dissecting a Vision-Language Model"
     slides: /slides/CS486/S26/L23/
 
   - type: lecture
     date: 2026-07-30
     lecture_num: 24
-    topic: "Recap, Modern-AI Landscape & Exam Prep"
+    topic: "Dissecting Diffusion and World Models"
     slides: /slides/CS486/S26/L24/
 
   - type: no_class

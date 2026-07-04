@@ -1,22 +1,241 @@
-/* L23 (Generative AI: Diffusion & Multimodal) — on top of shared/custom.css. */
+/* L23 (Dissecting a Vision-Language Model) styles. */
 
-.reveal .algo-card {
-  background: #f9fafb;
-  border: 1px solid #d1d5db;
-  border-left: 4px solid #1d4ed8;
+.reveal .vlm-pipeline {
+  display: block;
+  margin: 0.35em auto;
+  width: 100%;
+  max-height: 280px;
+}
+.reveal .vlm-pipeline rect {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.8;
+}
+.reveal .vlm-pipeline text {
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #1f2937;
+}
+
+.reveal .mock-image {
+  position: relative;
+  width: 310px;
+  height: 200px;
+  margin: 0.25em auto;
+  border-radius: 10px;
+  border: 2px solid #1d4ed8;
+  overflow: hidden;
+  background: #e0f2fe;
+}
+.reveal .mock-image.small {
+  width: 250px;
+  height: 160px;
+}
+.reveal .mock-image .mock-sky {
+  position: absolute;
+  inset: 0 0 40% 0;
+  background: #dbeafe;
+}
+.reveal .mock-image .mock-desk {
+  position: absolute;
+  inset: 58% 0 0 0;
+  background: #fde68a;
+  border-top: 2px solid #d97706;
+}
+.reveal .mock-image .mock-laptop {
+  position: absolute;
+  left: 28%;
+  top: 38%;
+  width: 34%;
+  height: 28%;
   border-radius: 6px;
-  padding: 0.5em 0.9em;
-  font-size: 0.8em;
-  margin: 0.3em auto;
-  max-width: 96%;
+  background: #1f2937;
+  color: #bfdbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-weight: 700;
+  font-size: 0.7em;
 }
-.reveal .algo-card .algo-title {
-  font-weight: 700; color: #1d4ed8; margin-bottom: 0.25em;
-  font-size: 0.95em; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+.reveal .mock-image .mock-cup {
+  position: absolute;
+  right: 20%;
+  top: 49%;
+  width: 34px;
+  height: 42px;
+  border-radius: 0 0 12px 12px;
+  background: #fee2e2;
+  border: 2px solid #dc2626;
+}
+.reveal .mock-image.boxed .mock-cup::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border: 3px solid #16a34a;
+  border-radius: 6px;
 }
 
-.reveal .l23-svg { display: block; margin: 0.3em auto; width: 100%; max-height: 300px; }
-.reveal .l23-svg .edge { stroke: #6b7280; stroke-width: 1.4; fill: none; }
-.reveal .l23-svg .axis-label { font-size: 12px; fill: #6b7280; }
-.reveal .l23-svg .fwd { stroke: #dc2626; stroke-width: 1.6; fill: none; }
-.reveal .l23-svg .rev { stroke: #16a34a; stroke-width: 1.6; fill: none; }
+.reveal .patch-grid {
+  width: 250px;
+  height: 250px;
+  margin: 0.2em auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  border: 2px solid #1d4ed8;
+  background: #dbeafe;
+}
+.reveal .patch-grid span {
+  border: 1px solid #93c5fd;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.reveal .vision-stack {
+  display: block;
+  margin: 0.2em auto;
+  max-height: 320px;
+}
+.reveal .vision-stack rect {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 2;
+}
+.reveal .vision-stack text {
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #1e3a8a;
+}
+
+.reveal .clip-viz {
+  display: block;
+  margin: 0.2em auto;
+  width: 100%;
+  max-height: 230px;
+}
+.reveal .clip-viz rect {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 1.8;
+}
+.reveal .clip-viz circle {
+  fill: #dcfce7;
+  stroke: #16a34a;
+  stroke-width: 2;
+}
+.reveal .clip-viz text {
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #1f2937;
+}
+.reveal .clip-viz line {
+  stroke: #475569;
+  stroke-width: 2;
+}
+
+.reveal .multi-seq {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35em;
+  margin: 0.75em auto;
+  max-width: 86%;
+}
+.reveal .multi-seq span {
+  padding: 0.28em 0.55em;
+  border-radius: 6px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.78em;
+  font-weight: 700;
+}
+.reveal .multi-seq .img {
+  background: #dcfce7;
+  border: 1px solid #16a34a;
+  color: #166534;
+}
+.reveal .multi-seq .txt {
+  background: #dbeafe;
+  border: 1px solid #1d4ed8;
+  color: #1e3a8a;
+}
+.reveal .multi-seq .ans {
+  background: #fef3c7;
+  border: 1px solid #d97706;
+  color: #92400e;
+}
+
+.reveal .doc-card {
+  max-width: 300px;
+  margin: 0.2em auto;
+  padding: 0.7em;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+.reveal .doc-card strong {
+  display: block;
+  color: #1d4ed8;
+  margin-bottom: 0.4em;
+}
+.reveal .doc-card span {
+  display: block;
+  font-size: 0.78em;
+  padding: 0.25em 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.reveal .chart-viz {
+  display: block;
+  margin: 0.2em auto;
+  max-height: 220px;
+}
+.reveal .chart-viz line {
+  stroke: #6b7280;
+  stroke-width: 1.5;
+}
+.reveal .chart-viz rect {
+  fill: #93c5fd;
+  stroke: #1d4ed8;
+}
+.reveal .chart-viz text {
+  font-size: 12px;
+  text-anchor: middle;
+  fill: #4b5563;
+}
+
+.reveal .ui-card {
+  width: 280px;
+  margin: 0.2em auto;
+  padding: 0.75em;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  text-align: center;
+}
+.reveal .ui-card .ui-top {
+  margin-bottom: 0.6em;
+  font-weight: 800;
+  color: #1d4ed8;
+}
+.reveal .ui-card button {
+  border: 1px solid #9ca3af;
+  background: #fff;
+  border-radius: 6px;
+  padding: 0.3em 0.7em;
+  margin: 0 0.25em;
+  font-size: 0.75em;
+}
+.reveal .ui-card button.hot {
+  background: #dbeafe;
+  border-color: #1d4ed8;
+  color: #1e3a8a;
+  font-weight: 800;
+}

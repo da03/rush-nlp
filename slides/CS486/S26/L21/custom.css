@@ -1,42 +1,204 @@
-/* L21 (Transformers & Attention) — styles on top of shared/custom.css. */
+/* L21 (Dissecting a Small Language Model) styles. */
 
-/* Algorithm / definition card (shared decks define their own). */
-.reveal .algo-card {
+.reveal .model-badge {
+  display: inline-block;
+  padding: 0.35em 0.75em;
+  border-radius: 10px;
+  background: #dbeafe;
+  border: 2px solid #1d4ed8;
+  color: #1e3a8a;
+  font-size: 1.35em;
+  font-weight: 800;
+}
+
+.reveal .fact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.55em;
+}
+.reveal .fact-grid div {
+  padding: 0.55em 0.45em;
   background: #f9fafb;
   border: 1px solid #d1d5db;
-  border-left: 4px solid #1d4ed8;
-  border-radius: 6px;
-  padding: 0.5em 0.9em;
-  font-size: 0.8em;
-  margin: 0.3em auto;
-  max-width: 96%;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 7px;
+  text-align: center;
 }
-.reveal .algo-card .algo-title {
-  font-weight: 700;
+.reveal .fact-grid strong {
+  display: block;
+  font-size: 1em;
   color: #1d4ed8;
-  margin-bottom: 0.25em;
-  font-size: 0.95em;
-  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+}
+.reveal .fact-grid span {
+  display: block;
+  font-size: 0.68em;
+  color: #6b7280;
 }
 
-/* Generic inline diagram sizing. */
-.reveal .l21-svg { display: block; margin: 0.3em auto; width: 100%; max-height: 300px; }
-.reveal .l21-svg .edge { stroke: #6b7280; stroke-width: 1.4; fill: none; }
-.reveal .l21-svg .axis-label { font-size: 12px; fill: #6b7280; }
+.reveal .prompt-box {
+  max-width: 76%;
+  margin: 0.6em auto;
+  padding: 0.6em 0.9em;
+  border-radius: 8px;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-left: 5px solid #1d4ed8;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.95em;
+  text-align: left;
+}
 
-/* Attention weight heat-grid cells. */
-.reveal .attn-cell { stroke: #fff; stroke-width: 1.5; }
-.reveal .attn-txt { font-size: 12px; fill: #1f2937; text-anchor: middle; dominant-baseline: middle; }
+.reveal .prompt-card {
+  padding: 0.6em 0.8em;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 7px;
+}
+.reveal .prompt-card h3 {
+  margin: 0 0 0.25em 0;
+  color: #1d4ed8;
+  font-size: 0.9em;
+}
+.reveal .prompt-card p {
+  margin: 0;
+  font-size: 0.82em;
+}
 
-/* Transformer block boxes. */
-.reveal .tb-box { rx: 5; stroke-width: 1.6; }
-.reveal .tb-attn { fill: #dbeafe; stroke: #1d4ed8; }
-.reveal .tb-ffn  { fill: #dcfce7; stroke: #166534; }
-.reveal .tb-norm { fill: #fef3c7; stroke: #b45309; }
-.reveal .tb-add  { fill: #ede9fe; stroke: #6d28d9; }
-.reveal .tb-label { font-size: 12px; fill: #1f2937; text-anchor: middle; dominant-baseline: middle; }
+.reveal .chat-template {
+  max-width: 78%;
+  margin: 0.5em auto;
+  display: grid;
+  gap: 0.35em;
+}
+.reveal .chat-template div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0.7em;
+  align-items: center;
+  padding: 0.45em 0.65em;
+  border-radius: 6px;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+}
+.reveal .chat-template strong {
+  color: #1d4ed8;
+  font-size: 0.78em;
+  text-align: right;
+}
+.reveal .chat-template span {
+  font-size: 0.82em;
+  color: #1f2937;
+}
 
-/* QKV projection tint boxes. */
-.reveal .qkv-q { fill: #fee2e2; stroke: #dc2626; }
-.reveal .qkv-k { fill: #dbeafe; stroke: #1d4ed8; }
-.reveal .qkv-v { fill: #dcfce7; stroke: #166534; }
+.reveal .block-stack {
+  display: block;
+  margin: 0.2em auto;
+  max-height: 320px;
+}
+.reveal .block-stack rect {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 2;
+}
+.reveal .block-stack text {
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #1e3a8a;
+}
+
+.reveal .cache-viz {
+  display: block;
+  margin: 0.2em auto;
+  width: 100%;
+  max-height: 230px;
+}
+.reveal .cache-viz rect {
+  fill: #dbeafe;
+  stroke: #1d4ed8;
+  stroke-width: 2;
+}
+.reveal .cache-viz rect.new {
+  fill: #fef3c7;
+  stroke: #d97706;
+}
+.reveal .cache-viz text {
+  font-size: 14px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  fill: #1f2937;
+}
+
+.reveal .context-bar {
+  display: grid;
+  grid-template-columns: 36% 22% 42%;
+  max-width: 82%;
+  height: 48px;
+  margin: 0.65em auto;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 0.78em;
+  font-weight: 700;
+  text-align: center;
+}
+.reveal .context-bar div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reveal .context-bar .prompt {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+.reveal .context-bar .generated {
+  background: #dcfce7;
+  color: #166534;
+}
+.reveal .context-bar .space {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.reveal .mini-dist {
+  padding: 0.55em 0.8em;
+  border: 1px solid #d1d5db;
+  border-top: 4px solid #1d4ed8;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+.reveal .mini-dist h3 {
+  margin: 0 0 0.35em 0;
+  color: #1d4ed8;
+  font-size: 0.9em;
+}
+.reveal .mini-dist div {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 0.5em;
+  align-items: center;
+  margin: 0.25em 0;
+}
+.reveal .mini-dist span {
+  font-size: 0.72em;
+  color: #334155;
+  text-align: right;
+}
+.reveal .mini-dist b {
+  display: block;
+  height: 15px;
+  border-radius: 4px;
+  background: #93c5fd;
+  border: 1px solid #1d4ed8;
+}
+
+/* L21 uses longer token labels than L20's default probability bars. */
+.reveal .lm-bars {
+  gap: 1.35em;
+}
+.reveal .lm-bar {
+  width: 118px;
+}

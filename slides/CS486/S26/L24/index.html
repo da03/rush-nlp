@@ -2,23 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 24 — Recap, Modern-AI Landscape &amp; Exam Prep</title>
+  <title>CS 486/686 Lecture 24 - Dissecting Diffusion and World Models</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 24: Course recap and exam prep — search, reasoning under uncertainty, decision-making, and the modern learning stack (regression, trees/ensembles, neural nets/CNNs, transformers, LLMs, diffusion), plus the modern-AI landscape. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 24: Dissecting diffusion and world models - diffusion noising and denoising, noise prediction, latent diffusion, classifier-free guidance, text-to-image generation, and NeuralOS-style next-frame world models. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../L2/custom.css">
-  <link rel="stylesheet" href="../L4/custom.css">
-  <link rel="stylesheet" href="../L8/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="../L13/custom.css">
-  <link rel="stylesheet" href="../L16/custom.css">
-  <link rel="stylesheet" href="../L19/custom.css">
-  <link rel="stylesheet" href="../L20/custom.css">
-  <link rel="stylesheet" href="custom.css">
+  <link rel="stylesheet" href="../L17/custom.css?v=3">
+  <link rel="stylesheet" href="../L22/custom.css?v=2">
+  <link rel="stylesheet" href="../L23/custom.css?v=2">
+  <link rel="stylesheet" href="custom.css?v=2">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -41,571 +37,433 @@
 
 <svg width="0" height="0" style="position:absolute;">
   <defs>
-    <marker id="arrow-l22" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+    <marker id="arrow-l24" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#475569"/>
     </marker>
   </defs>
 </svg>
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Recap, Modern-AI Landscape &amp; Exam Prep</div>
+  <div class="course-title">CS 486/686<br>Dissecting Diffusion and World Models</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 24</p>
-  <p class="credit">Putting the term together: search, uncertainty, decisions, learning</p>
+  <p class="credit">From noise to images to interactive worlds</p>
 </section>
 
-<!-- 2. The course in one picture -->
+<!-- 2. Learning goals -->
+<section class="center-slide">
+  <div class="course-breadcrumb">
+    <span class="bc-pill search">Search</span>
+    <span class="bc-arrow">&rsaquo;</span>
+    <span class="bc-pill uncert">Uncertainty</span>
+    <span class="bc-arrow">&rsaquo;</span>
+    <span class="bc-pill decision">Decisions</span>
+    <span class="bc-arrow">&rsaquo;</span>
+    <span class="bc-pill learn current">Learning</span>
+  </div>
+  <h2>Learning goals</h2>
+  <ul style="text-align:left; margin-left:2em;">
+    <li class="fragment">Explain diffusion as <strong>iterative denoising</strong>.</li>
+    <li class="fragment">Trace a <strong>text-to-image</strong> pipeline.</li>
+    <li class="fragment">Explain <strong>latent diffusion</strong> and <strong>guidance</strong>.</li>
+    <li class="fragment">Connect diffusion to <strong>next-frame world models</strong>.</li>
+  </ul>
+</section>
+
+<!-- 3. From L23 to L24 -->
+<section class="center-slide">
+  <h2>From understanding to generation</h2>
+  <div class="two-col" style="max-width:88%; margin:0.5em auto;">
+    <div class="defbox" style="flex:1; text-align:center;">
+      <p style="margin:0.1em 0;">L23</p>
+      <p style="font-size:0.82em; margin:0;">image + text &rarr; answer</p>
+    </div>
+    <div class="defbox fragment" style="flex:1; text-align:center;">
+      <p style="margin:0.1em 0;">L24</p>
+      <p style="font-size:0.82em; margin:0;">text / action / context &rarr; image or frame</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. Big question -->
+<section class="center-slide">
+  <h2>The big question</h2>
+  <div class="prompt-box">a watercolor painting of a robot teaching CS486</div>
+  <p class="fragment" style="font-size:1em;">How can a model turn this sentence into pixels?</p>
+</section>
+
+<!-- 5. Why hard -->
+<section class="center-slide">
+  <h2>Why not generate pixels directly?</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>huge</h3><p style="font-size:0.78em;">many pixel values</p></div>
+    <div class="task-card fragment"><h3>ambiguous</h3><p style="font-size:0.78em;">many valid images</p></div>
+    <div class="task-card fragment"><h3>structured</h3><p style="font-size:0.78em;">global and local details</p></div>
+  </div>
+</section>
+
+<!-- 6. Diffusion picture -->
+<section class="center-slide">
+  <h2>Diffusion in one picture</h2>
+  <div class="denoise-row">
+    <div class="noise n5"></div><div class="noise n4"></div><div class="noise n3"></div><div class="noise n2"></div><div class="noise n1 robot"></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">Start from random noise and repeatedly denoise.</p>
+</section>
+
+<!-- 7. Forward movie -->
+<section class="center-slide">
+  <h2>Training runs the movie backward</h2>
+  <div class="denoise-row">
+    <div class="noise n1 robot"></div><div class="noise n2"></div><div class="noise n3"></div><div class="noise n4"></div><div class="noise n5"></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">Create noisy examples from real images.</p>
+</section>
+
+<!-- 8. Forward noising -->
 <section>
-  <h2>The course in one picture</h2>
-  <svg viewBox="0 0 760 340" xmlns="http://www.w3.org/2000/svg" class="course-map">
-    <!-- Module 1: Search (always visible) -->
-    <g>
-      <rect class="module-box search" x="20" y="40" width="170" height="260"/>
-      <text class="module-title search" x="105" y="65">1. Search</text>
-      <text class="topic" x="105" y="95">Problem formulation</text>
-      <text class="topic" x="105" y="115">DFS / BFS / IDS</text>
-      <text class="topic" x="105" y="135">LCFS, GBFS, A*</text>
-      <text class="topic" x="105" y="155">Admissibility, consistency</text>
-      <text class="topic" x="105" y="180">CSPs</text>
-      <text class="topic" x="105" y="200">Backtracking, AC-3</text>
-      <text class="topic" x="105" y="225">Local search</text>
-      <text class="topic" x="105" y="245">Hill-climbing, SA</text>
-    </g>
+  <h2>The forward noising process</h2>
+  <div class="defbox" style="text-align:center; margin:0.35em auto;">
+    <p style="font-size:1.05em; margin:0;">\(x_t = \sqrt{\alpha_t}\,x_0 + \sqrt{1-\alpha_t}\,\epsilon\)</p>
+  </div>
+  <div class="two-col" style="font-size:0.86em;">
+    <div style="flex:1;">
+      <p><strong>\(x_0\)</strong>: clean image</p>
+      <p><strong>\(\epsilon\)</strong>: Gaussian noise</p>
+    </div>
+    <div style="flex:1;">
+      <p><strong>t</strong>: noise level</p>
+      <p><strong>\(x_t\)</strong>: noisy image</p>
+    </div>
+  </div>
+</section>
 
-    <!-- Module 2: Uncertainty -->
-    <g class="fragment">
-      <line class="flow-arrow" x1="190" y1="170" x2="208" y2="170" marker-end="url(#arrow-l22)"/>
-      <rect class="module-box uncert" x="210" y="40" width="170" height="260"/>
-      <text class="module-title uncert" x="295" y="65">2. Uncertainty</text>
-      <text class="topic" x="295" y="95">Probability rules</text>
-      <text class="topic" x="295" y="115">Independence</text>
-      <text class="topic" x="295" y="135">Bayesian networks</text>
-      <text class="topic" x="295" y="155">D-separation</text>
-      <text class="topic" x="295" y="180">Variable Elimination</text>
-      <text class="topic" x="295" y="200">HMMs</text>
-      <text class="topic" x="295" y="225">Filtering / smoothing</text>
-      <text class="topic" x="295" y="245">Viterbi</text>
-    </g>
+<!-- 9. Denoiser -->
+<section class="center-slide">
+  <h2>The denoiser's job</h2>
+  <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg" class="diff-pipe">
+    <rect x="55" y="50" width="130" height="48" rx="7"/><text x="120" y="80">noisy x_t</text>
+    <rect x="250" y="50" width="140" height="48" rx="7"/><text x="320" y="80">denoiser</text>
+    <rect x="455" y="50" width="140" height="48" rx="7"/><text x="525" y="80">predicted noise</text>
+    <line x1="185" y1="74" x2="245" y2="74" marker-end="url(#arrow-l24)"/>
+    <line x1="390" y1="74" x2="450" y2="74" marker-end="url(#arrow-l24)"/>
+  </svg>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Input: noisy image, timestep, optional condition. Output: noise estimate.</p>
+</section>
 
-    <!-- Module 3: Decisions -->
-    <g class="fragment">
-      <line class="flow-arrow" x1="380" y1="170" x2="398" y2="170" marker-end="url(#arrow-l22)"/>
-      <rect class="module-box decision" x="400" y="40" width="170" height="260"/>
-      <text class="module-title decision" x="485" y="65">3. Decisions</text>
-      <text class="topic" x="485" y="95">Utility, MEU</text>
-      <text class="topic" x="485" y="115">Decision networks</text>
-      <text class="topic" x="485" y="135">VOI</text>
-      <text class="topic" x="485" y="160">MDPs</text>
-      <text class="topic" x="485" y="180">Bellman equation</text>
-      <text class="topic" x="485" y="200">Value / Policy iteration</text>
-      <text class="topic" x="485" y="225">Reinforcement learning</text>
-      <text class="topic" x="485" y="245">Q-learning, SARSA</text>
-    </g>
+<!-- 10. Loss -->
+<section class="center-slide">
+  <h2>Noise-prediction loss</h2>
+  <p style="font-size:1.15em;">\(L = \lVert \epsilon - \hat{\epsilon}_\theta(x_t,t,c)\rVert^2\)</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Diffusion training is supervised learning because we know the noise we added.</p>
+</section>
 
-    <!-- Module 4: Learning -->
-    <g class="fragment">
-      <line class="flow-arrow" x1="570" y1="170" x2="588" y2="170" marker-end="url(#arrow-l22)"/>
-      <rect class="module-box learn" x="590" y="40" width="160" height="260"/>
-      <text class="module-title learn" x="670" y="65">4. Learning</text>
-      <text class="topic" x="670" y="90">Regression, cross-entropy</text>
-      <text class="topic" x="670" y="110">Trees &amp; ensembles</text>
-      <text class="topic" x="670" y="130">k-means, PCA, CLIP</text>
-      <text class="topic" x="670" y="150">Neural nets, CNNs</text>
-      <text class="topic" x="670" y="170">Backprop, Adam</text>
-      <text class="topic" x="670" y="190">Transformers &amp; attention</text>
-      <text class="topic" x="670" y="210">LLMs, RLHF, agents</text>
-      <text class="topic" x="670" y="230">Diffusion, multimodal</text>
-    </g>
+<!-- 11. Reverse -->
+<section class="center-slide">
+  <h2>Reverse process at inference</h2>
+  <div class="denoise-row">
+    <div class="noise n5"></div><div class="noise n4"></div><div class="noise n3"></div><div class="noise n2"></div><div class="noise n1 robot"></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">Apply the denoiser repeatedly from pure noise.</p>
+</section>
 
-    <text x="380" y="325" text-anchor="middle" font-size="11" fill="#6b7280" font-style="italic">deterministic world &rarr; uncertainty &rarr; decisions under uncertainty &rarr; learning from data</text>
+<!-- 12. Sampling loop -->
+<section>
+  <h2>The sampling loop</h2>
+  <pre style="font-size:0.54em; width:82%; margin:0.3em auto;"><code>x = randn(shape)
+for t in scheduler.timesteps:
+    eps = denoiser(x, t, condition)
+    x = scheduler.step(x, eps, t)
+image = decode(x)</code></pre>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">The whole generator is an iterative loop.</p>
+</section>
+
+<!-- 13. Scheduler -->
+<section class="center-slide">
+  <h2>The scheduler decides the steps</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr;">
+    <div class="task-card fragment"><h3>many steps</h3><p style="font-size:0.8em;">slower, often better</p></div>
+    <div class="task-card fragment"><h3>turbo steps</h3><p style="font-size:0.8em;">faster, distilled behavior</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">The denoiser predicts direction; the scheduler decides how to move.</p>
+</section>
+
+<!-- 14. Text-to-image pipeline -->
+<section>
+  <h2>Text-to-image pipeline</h2>
+  <svg viewBox="0 0 900 145" xmlns="http://www.w3.org/2000/svg" class="diff-pipe">
+    <rect x="25" y="50" width="110" height="44" rx="7"/><text x="80" y="77">prompt</text>
+    <rect x="170" y="50" width="135" height="44" rx="7"/><text x="237" y="77">text encoder</text>
+    <rect x="340" y="50" width="130" height="44" rx="7"/><text x="405" y="77">denoiser</text>
+    <rect x="505" y="50" width="125" height="44" rx="7"/><text x="567" y="77">scheduler</text>
+    <rect x="665" y="50" width="115" height="44" rx="7"/><text x="722" y="77">image</text>
+    <line x1="135" y1="72" x2="165" y2="72" marker-end="url(#arrow-l24)"/><line x1="305" y1="72" x2="335" y2="72" marker-end="url(#arrow-l24)"/><line x1="470" y1="72" x2="500" y2="72" marker-end="url(#arrow-l24)"/><line x1="630" y1="72" x2="660" y2="72" marker-end="url(#arrow-l24)"/>
+  </svg>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">Text conditions every denoising step.</p>
+</section>
+
+<!-- 15. Text enters -->
+<section class="center-slide">
+  <h2>Where does text enter?</h2>
+  <p style="font-size:1em;">The denoiser attends to text embeddings while cleaning the image latent.</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:76%; margin:0.6em auto;">
+    <div class="task-card"><h3>image latent</h3><p style="font-size:0.8em;">what is being cleaned</p></div>
+    <div class="task-card fragment"><h3>text embedding</h3><p style="font-size:0.8em;">what it should become</p></div>
+  </div>
+</section>
+
+<!-- 16. Guidance motivation -->
+<section class="center-slide">
+  <h2>Guidance is a prompt-adherence dial</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:80%; margin:0.6em auto;">
+    <div class="task-card fragment"><h3>low guidance</h3><p style="font-size:0.8em;">diverse, may ignore prompt</p></div>
+    <div class="task-card fragment"><h3>high guidance</h3><p style="font-size:0.8em;">faithful, may distort</p></div>
+  </div>
+</section>
+
+<!-- 17. Guidance formula -->
+<section>
+  <h2>Classifier-free guidance</h2>
+  <div class="defbox" style="text-align:center; margin:0.35em auto;">
+    <p style="font-size:1.05em; margin:0;">\(\hat{\epsilon} = \epsilon_{\text{uncond}} + s(\epsilon_{\text{cond}}-\epsilon_{\text{uncond}})\)</p>
+  </div>
+  <div class="two-col" style="font-size:0.84em;">
+    <div style="flex:1;"><p><strong>\(\epsilon_{\text{uncond}}\)</strong>: no prompt</p><p><strong>\(\epsilon_{\text{cond}}\)</strong>: with prompt</p></div>
+    <div style="flex:1;"><p><strong>\(s\)</strong>: guidance scale</p><p>Amplify the prompt direction.</p></div>
+  </div>
+</section>
+
+<!-- 18. Pixel expensive -->
+<section class="center-slide">
+  <h2>Pixel space is expensive</h2>
+  <div class="two-col vcenter" style="max-width:78%; margin:0 auto;">
+    <div style="flex:1;"><div class="big-grid"></div><p style="font-size:0.78em;">pixels</p></div>
+    <div style="flex:1;"><div class="small-grid"></div><p style="font-size:0.78em;">latent</p></div>
+  </div>
+</section>
+
+<!-- 19. Autoencoder -->
+<section class="center-slide">
+  <h2>Autoencoders return</h2>
+  <svg viewBox="0 0 780 140" xmlns="http://www.w3.org/2000/svg" class="diff-pipe">
+    <rect x="55" y="48" width="110" height="44" rx="7"/><text x="110" y="75">image</text>
+    <rect x="230" y="48" width="120" height="44" rx="7"/><text x="290" y="75">encoder</text>
+    <rect x="415" y="48" width="100" height="44" rx="7"/><text x="465" y="75">latent z</text>
+    <rect x="580" y="48" width="120" height="44" rx="7"/><text x="640" y="75">decoder</text>
+    <line x1="165" y1="70" x2="225" y2="70" marker-end="url(#arrow-l24)"/><line x1="350" y1="70" x2="410" y2="70" marker-end="url(#arrow-l24)"/><line x1="515" y1="70" x2="575" y2="70" marker-end="url(#arrow-l24)"/>
+  </svg>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">The compressed latent space is where Stable Diffusion works.</p>
+</section>
+
+<!-- 20. Latent diffusion -->
+<section>
+  <h2>Latent diffusion</h2>
+  <svg viewBox="0 0 900 145" xmlns="http://www.w3.org/2000/svg" class="diff-pipe">
+    <rect x="35" y="50" width="135" height="44" rx="7"/><text x="102" y="77">latent noise</text>
+    <rect x="215" y="50" width="145" height="44" rx="7"/><text x="287" y="77">denoise latent</text>
+    <rect x="405" y="50" width="120" height="44" rx="7"/><text x="465" y="77">decoder</text>
+    <rect x="570" y="50" width="115" height="44" rx="7"/><text x="627" y="77">pixels</text>
+    <line x1="170" y1="72" x2="210" y2="72" marker-end="url(#arrow-l24)"/><line x1="360" y1="72" x2="400" y2="72" marker-end="url(#arrow-l24)"/><line x1="525" y1="72" x2="565" y2="72" marker-end="url(#arrow-l24)"/>
+  </svg>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">Denoise a compressed representation, then decode to an image.</p>
+</section>
+
+<!-- 21. Why latent -->
+<section class="center-slide">
+  <h2>Why latent diffusion matters</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>cheaper</h3><p style="font-size:0.78em;">less compute</p></div>
+    <div class="task-card fragment"><h3>smaller</h3><p style="font-size:0.78em;">smaller tensors</p></div>
+    <div class="task-card fragment"><h3>practical</h3><p style="font-size:0.78em;">higher resolution</p></div>
+  </div>
+</section>
+
+<!-- 22. Components -->
+<section class="center-slide">
+  <h2>Stable-Diffusion-style components</h2>
+  <div class="task-cards" style="grid-template-columns:repeat(4,1fr);">
+    <div class="task-card fragment"><h3>text encoder</h3><p style="font-size:0.76em;">prompt embedding</p></div>
+    <div class="task-card fragment"><h3>denoiser</h3><p style="font-size:0.76em;">predict noise</p></div>
+    <div class="task-card fragment"><h3>scheduler</h3><p style="font-size:0.76em;">step rule</p></div>
+    <div class="task-card fragment"><h3>VAE decoder</h3><p style="font-size:0.76em;">latent to pixels</p></div>
+  </div>
+</section>
+
+<!-- 23. Trace -->
+<section class="center-slide">
+  <h2>Trace: text to image</h2>
+  <p style="font-size:0.9em;">Prompt: <code>a blue robot holding a cup</code></p>
+  <div class="denoise-row">
+    <div class="noise n5"></div><div class="noise n4"></div><div class="noise n3"></div><div class="noise n2"></div><div class="noise n1 robot"></div>
+  </div>
+</section>
+
+<!-- 24. Inpainting -->
+<section class="center-slide">
+  <h2>Image editing is constrained generation</h2>
+  <div class="edit-card">
+    <div class="keep">keep</div>
+    <div class="mask">mask: change this</div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Keep known pixels fixed; denoise only the missing or masked region.</p>
+</section>
+
+<!-- 25. Control -->
+<section class="center-slide">
+  <h2>Text is not the only control signal</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>sketch</h3><p style="font-size:0.76em;">rough shape</p></div>
+    <div class="task-card fragment"><h3>edges</h3><p style="font-size:0.76em;">structure</p></div>
+    <div class="task-card fragment"><h3>depth</h3><p style="font-size:0.76em;">geometry</p></div>
+    <div class="task-card fragment"><h3>pose</h3><p style="font-size:0.76em;">body layout</p></div>
+  </div>
+</section>
+
+<!-- 26. Prompt mismatch -->
+<section class="center-slide">
+  <h2>Failure mode: prompt mismatch</h2>
+  <p style="font-size:1em;">Prompt asks for <strong>three cups</strong>; image shows two.</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Prompts are strong hints, not hard constraints.</p>
+</section>
+
+<!-- 27. Text/details -->
+<section class="center-slide">
+  <h2>Failure mode: text and fine details</h2>
+  <p style="font-size:1em;">Diffusion often struggles with exact words, symbols, fingers, and small objects.</p>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">Local detail requires global consistency.</p>
+</section>
+
+<!-- 28. Artifacts -->
+<section class="center-slide">
+  <h2>Failure mode: artifacts and bias</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>artifacts</h3><p style="font-size:0.78em;">distorted objects</p></div>
+    <div class="task-card fragment"><h3>bias</h3><p style="font-size:0.78em;">training data patterns</p></div>
+    <div class="task-card fragment"><h3>safety</h3><p style="font-size:0.78em;">unsafe generation</p></div>
+  </div>
+</section>
+
+<!-- 29. Video -->
+<section class="center-slide">
+  <h2>From images to video</h2>
+  <div class="frame-row">
+    <div>frame 0</div><div>frame 1</div><div>frame 2</div><div>...</div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Video generation adds temporal consistency.</p>
+</section>
+
+<!-- 30. Next frame -->
+<section class="center-slide">
+  <h2>Next-frame prediction</h2>
+  <p style="font-size:1.05em;">\(P(\text{frame}_t \mid \text{previous frames},\ \text{actions})\)</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Like next-token prediction, but outputs are frames or latents.</p>
+</section>
+
+<!-- 31. Actions -->
+<section class="center-slide">
+  <h2>Actions matter</h2>
+  <p style="font-size:1em;">previous screen + mouse click &rarr; next screen</p>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">An interactive world model must condition on what the user does.</p>
+</section>
+
+<!-- 32. NeuralOS motivation -->
+<section class="center-slide">
+  <h2>NeuralOS motivation</h2>
+  <p style="font-size:1em; max-width:84%; margin:0.5em auto;">Instead of manually programming every UI transition, learn to predict the next screen from prior screens and user inputs.</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">A UI becomes a generative world model.</p>
+</section>
+
+<!-- 33. NeuralOS pipeline -->
+<section>
+  <h2>NeuralOS-style pipeline</h2>
+  <svg viewBox="0 0 900 145" xmlns="http://www.w3.org/2000/svg" class="diff-pipe">
+    <rect x="20" y="50" width="150" height="44" rx="7"/><text x="95" y="77">previous frames</text>
+    <rect x="205" y="50" width="120" height="44" rx="7"/><text x="265" y="77">user input</text>
+    <rect x="360" y="50" width="140" height="44" rx="7"/><text x="430" y="77">state tracker</text>
+    <rect x="535" y="50" width="150" height="44" rx="7"/><text x="610" y="77">diffusion renderer</text>
+    <rect x="720" y="50" width="120" height="44" rx="7"/><text x="780" y="77">next frame</text>
+    <line x1="170" y1="72" x2="200" y2="72" marker-end="url(#arrow-l24)"/><line x1="325" y1="72" x2="355" y2="72" marker-end="url(#arrow-l24)"/><line x1="500" y1="72" x2="530" y2="72" marker-end="url(#arrow-l24)"/><line x1="685" y1="72" x2="715" y2="72" marker-end="url(#arrow-l24)"/>
   </svg>
 </section>
 
-<!-- 3. Search I: uninformed -->
-<section>
-  <h2>Search I &mdash; uninformed</h2>
-  <div class="recap-grid">
-    <div class="recall-card search">
-      <h3>Problem formulation</h3>
-      <ul>
-        <li>States, actions, transition model, initial &amp; goal states, path cost.</li>
-        <li>Search tree explores states by expanding the <strong>frontier</strong>.</li>
-      </ul>
-      <span class="answer fragment">Pick the data structure for the frontier &rarr; pick the algorithm.</span>
-    </div>
-    <div class="recall-card search fragment">
-      <h3>DFS vs BFS vs IDS</h3>
-      <ul>
-        <li><strong>DFS:</strong> stack &rarr; \(O(bm)\) space, not complete.</li>
-        <li><strong>BFS:</strong> queue &rarr; complete, \(O(b^d)\) time and space.</li>
-        <li><strong>IDS:</strong> DFS in increasing depth &rarr; BFS-completeness, DFS-space.</li>
-      </ul>
-      <span class="answer fragment">IDS combines the best of both.</span>
-    </div>
-  </div>
-</section>
-
-<!-- 4. Search II: heuristic + A* -->
-<section>
-  <h2>Search II &mdash; heuristic + A*</h2>
-  <div class="recap-grid">
-    <div class="recall-card search">
-      <h3>The three frontier rules</h3>
-      <ul>
-        <li><strong>LCFS:</strong> min \(\text{cost}(n)\).</li>
-        <li><strong>GBFS:</strong> min \(h(n)\).</li>
-        <li><strong>A*:</strong> min \(f(n) = \text{cost}(n) + h(n)\).</li>
-      </ul>
-    </div>
-    <div class="recall-card search">
-      <h3>Heuristic properties</h3>
-      <ul class="fragment">
-        <li><strong>Admissible</strong> (\(h \le h^*\)) &rArr; A* is optimal with multi-path pruning off.</li>
-        <li><strong>Consistent</strong> (\(h(n) \le c(n,n') + h(n')\)) &rArr; safe to use multi-path pruning.</li>
-        <li>Consistent &rArr; admissible (not the other way around).</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 5. Search strategy summary table -->
-<section>
-  <h2>Search strategy summary</h2>
-  <table class="compare" style="font-size: 0.72em;">
-    <thead>
-      <tr>
-        <th>Strategy</th>
-        <th>Frontier choice</th>
-        <th>Complete?</th>
-        <th>Space</th>
-        <th>Time</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr class="fragment"><td>Depth-first</td><td>Last added</td><td class="no">No</td><td class="ok">Linear</td><td>Exp</td></tr>
-      <tr class="fragment"><td>Breadth-first</td><td>First added</td><td class="ok">Yes</td><td>Exp</td><td>Exp</td></tr>
-      <tr class="fragment"><td>Lowest-cost first</td><td>min \(\text{cost}(n)\)</td><td class="ok">Yes</td><td>Exp</td><td>Exp</td></tr>
-      <tr class="fragment"><td>Greedy best-first</td><td>min \(h(n)\)</td><td class="no">No</td><td>Exp</td><td>Exp</td></tr>
-      <tr class="fragment"><td>A*</td><td>min \(\text{cost}(n) + h(n)\)</td><td class="ok">Yes</td><td>Exp</td><td>Exp</td></tr>
-    </tbody>
-  </table>
-  <p class="fragment" style="font-size: 0.82em; color: #6b7280; margin-top: 0.4em; text-align:center;">
-    A* dominates when the heuristic is informative enough to prune most of the tree.
-  </p>
-</section>
-
-<!-- 6. CSPs + local search -->
-<section>
-  <h2>CSPs + local search</h2>
-  <div class="recap-grid">
-    <div class="recall-card search">
-      <h3>Constraint satisfaction</h3>
-      <ul>
-        <li>Generate-and-test is exponential &mdash; exploit problem structure.</li>
-        <li><strong>Backtracking:</strong> incremental, prune as soon as a constraint fails.</li>
-        <li><strong>Arc consistency / AC-3:</strong> shrink domains before/during search; complexity \(O(cd^3)\).</li>
-      </ul>
-    </div>
-    <div class="recall-card search fragment">
-      <h3>Local search</h3>
-      <ul>
-        <li>Trade completeness for very large state spaces.</li>
-        <li><strong>Greedy descent / hill-climbing:</strong> always move to best neighbour.</li>
-        <li>Beats local minima with <strong>random restarts</strong> + <strong>simulated annealing</strong> (accept worse moves with prob \(e^{-\Delta/T}\)).</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 7. Probability + independence -->
-<section>
-  <h2>Probability + independence</h2>
-  <div class="recap-grid">
-    <div class="recall-card uncert">
-      <h3>The four rules</h3>
-      <ul>
-        <li><strong>Product:</strong> \(P(A,B) = P(A\mid B)\,P(B)\)</li>
-        <li><strong>Sum:</strong> \(P(A) = \sum_b P(A, B{=}b)\)</li>
-        <li><strong>Chain:</strong> \(P(X_1,\ldots,X_n) = \prod_i P(X_i \mid X_{&lt;i})\)</li>
-        <li><strong>Bayes:</strong> \(P(H\mid e) \propto P(e\mid H)\,P(H)\)</li>
-      </ul>
-    </div>
-    <div class="recall-card uncert fragment">
-      <h3>Independence</h3>
-      <ul>
-        <li><strong>Unconditional:</strong> \(P(A,B) = P(A)\,P(B)\).</li>
-        <li><strong>Conditional:</strong> \(P(A,B\mid C) = P(A\mid C)\,P(B\mid C)\).</li>
-        <li>Tells us which terms drop out of the chain rule &mdash; the key to scaling up inference.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 8. Bayesian networks + d-separation -->
-<section>
-  <h2>Bayesian networks + d-separation</h2>
-  <div class="recap-grid">
-    <div class="recall-card uncert">
-      <h3>Construction recipe</h3>
-      <ul>
-        <li>Pick a variable order (causal often works best).</li>
-        <li>Add each node; choose the smallest set of parents that makes it conditionally independent of the rest.</li>
-        <li>Joint factorizes as \(P(X_1,\ldots,X_n) = \prod_i P(X_i \mid \mathrm{pa}(X_i))\).</li>
-      </ul>
-    </div>
-    <div class="recall-card uncert fragment">
-      <h3>3 d-separation patterns</h3>
-      <ul class="dsep-list">
-        <li>
-          <svg viewBox="0 0 100 32" xmlns="http://www.w3.org/2000/svg" class="l22-dsep-glyph" aria-hidden="true">
-            <line x1="18" y1="16" x2="40" y2="16" marker-end="url(#arrow-l22)"/>
-            <line x1="58" y1="16" x2="80" y2="16" marker-end="url(#arrow-l22)"/>
-            <circle cx="12" cy="16" r="6"/><text x="12" y="17">A</text>
-            <circle cx="50" cy="16" r="6"/><text x="50" y="17">B</text>
-            <circle cx="86" cy="16" r="6"/><text x="86" y="17">C</text>
-          </svg>
-          <strong>Chain</strong> \(A \to B \to C\): blocked by observing \(B\).
-        </li>
-        <li>
-          <svg viewBox="0 0 100 38" xmlns="http://www.w3.org/2000/svg" class="l22-dsep-glyph" aria-hidden="true">
-            <line x1="46" y1="14" x2="22" y2="28" marker-end="url(#arrow-l22)"/>
-            <line x1="54" y1="14" x2="78" y2="28" marker-end="url(#arrow-l22)"/>
-            <circle cx="50" cy="8"  r="6"/><text x="50" y="9">B</text>
-            <circle cx="14" cy="30" r="6"/><text x="14" y="31">A</text>
-            <circle cx="86" cy="30" r="6"/><text x="86" y="31">C</text>
-          </svg>
-          <strong>Common cause</strong> \(A \leftarrow B \to C\): blocked by observing \(B\).
-        </li>
-        <li>
-          <svg viewBox="0 0 100 38" xmlns="http://www.w3.org/2000/svg" class="l22-dsep-glyph" aria-hidden="true">
-            <line x1="18" y1="14" x2="44" y2="28" marker-end="url(#arrow-l22)"/>
-            <line x1="82" y1="14" x2="56" y2="28" marker-end="url(#arrow-l22)"/>
-            <circle cx="14" cy="8"  r="6"/><text x="14" y="9">A</text>
-            <circle cx="86" cy="8"  r="6"/><text x="86" y="9">C</text>
-            <circle cx="50" cy="30" r="6"/><text x="50" y="31">B</text>
-          </svg>
-          <strong>Common effect</strong> \(A \to B \leftarrow C\): blocked by <em>not</em> observing \(B\) or descendants.
-        </li>
-      </ul>
-      <span class="answer fragment">A path is blocked &rArr; the endpoints are conditionally independent.</span>
-    </div>
-  </div>
-</section>
-
-<!-- 9. Inference: VE + HMM filtering -->
-<section>
-  <h2>Inference &mdash; VE &amp; HMM filtering</h2>
-  <div class="recap-grid">
-    <div class="recall-card uncert">
-      <h3>Variable elimination</h3>
-      <ul>
-        <li><strong>Define</strong> a factor for each CPT.</li>
-        <li><strong>Restrict</strong> factors to evidence.</li>
-        <li><strong>Multiply</strong> factors sharing a variable; <strong>sum out</strong> the hidden one.</li>
-        <li><strong>Normalize</strong> to get a posterior.</li>
-      </ul>
-    </div>
-    <div class="recall-card uncert fragment">
-      <h3>HMM filtering</h3>
-      <ul>
-        <li>Recursion: \(P(S_t \mid o_{0:t}) \propto P(o_t \mid S_t)\, \sum_{s_{t-1}} P(S_t \mid s_{t-1})\, P(s_{t-1} \mid o_{0:t-1})\)</li>
-        <li>One forward pass: \(O(t \cdot |S|^2)\) time.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 10. HMM decoding: smoothing + Viterbi -->
-<section>
-  <h2>HMM decoding &mdash; smoothing &amp; Viterbi</h2>
-  <div class="two-col" style="margin-top: 0.2em;">
-    <div style="flex: 1;">
-      <div class="recall-card uncert" style="height: auto;">
-        <h3>Forward&times;backward smoothing</h3>
-        <ul>
-          <li>Forward: \(\alpha_k = P(S_k \mid o_{0:k})\).</li>
-          <li>Backward: \(\beta_k = P(o_{k+1:t-1} \mid S_k)\).</li>
-          <li>Posterior: \(P(S_k \mid o_{0:t-1}) \propto \alpha_k\, \beta_k\).</li>
-        </ul>
-      </div>
-      <div class="recall-card uncert" style="margin-top: 0.5em;">
-        <h3>Viterbi</h3>
-        <ul>
-          <li>DP over the trellis, max instead of sum.</li>
-          <li>Backtrack the argmax pointers to recover the MAP sequence.</li>
-        </ul>
-      </div>
-    </div>
-    <div style="flex: 0.9;">
-      <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" class="mini-trellis">
-        <line class="edge" x1="40" y1="50"  x2="140" y2="50"/>
-        <line class="edge" x1="40" y1="50"  x2="140" y2="150"/>
-        <line class="edge" x1="40" y1="150" x2="140" y2="50"/>
-        <line class="edge" x1="40" y1="150" x2="140" y2="150"/>
-        <line class="edge" x1="140" y1="50"  x2="240" y2="50"/>
-        <line class="edge" x1="140" y1="50"  x2="240" y2="150"/>
-        <line class="edge" x1="140" y1="150" x2="240" y2="50"/>
-        <line class="edge" x1="140" y1="150" x2="240" y2="150"/>
-        <line class="edge" x1="240" y1="50"  x2="320" y2="50"/>
-        <line class="edge" x1="240" y1="50"  x2="320" y2="150"/>
-        <line class="edge" x1="240" y1="150" x2="320" y2="50"/>
-        <line class="edge" x1="240" y1="150" x2="320" y2="150"/>
-
-        <!-- Bare trellis nodes (always visible) -->
-        <circle class="node" cx="40" cy="50" r="16"/>
-        <circle class="node" cx="40" cy="150" r="16"/>
-        <circle class="node" cx="140" cy="50" r="16"/>
-        <circle class="node" cx="140" cy="150" r="16"/>
-        <circle class="node" cx="240" cy="50" r="16"/>
-        <circle class="node" cx="240" cy="150" r="16"/>
-        <circle class="node" cx="320" cy="50" r="16"/>
-        <circle class="node" cx="320" cy="150" r="16"/>
-        <!-- MAP path overlay (fragment) -->
-        <g class="fragment">
-          <line class="edge best" x1="40" y1="150" x2="140" y2="50"/>
-          <line class="edge best" x1="140" y1="50"  x2="240" y2="50"/>
-          <line class="edge best" x1="240" y1="50"  x2="320" y2="150"/>
-          <circle class="node best" cx="40" cy="150" r="16"/>
-          <circle class="node best" cx="140" cy="50" r="16"/>
-          <circle class="node best" cx="240" cy="50" r="16"/>
-          <circle class="node best" cx="320" cy="150" r="16"/>
-          <text x="180" y="20" font-size="11" fill="#15803d" font-weight="700">MAP path through the trellis</text>
-        </g>
-        <text x="40" y="50">s\(_1\)</text>
-        <text x="40" y="150">s\(_2\)</text>
-        <text x="140" y="50">s\(_1\)</text>
-        <text x="140" y="150">s\(_2\)</text>
-        <text x="240" y="50">s\(_1\)</text>
-        <text x="240" y="150">s\(_2\)</text>
-        <text x="320" y="50">s\(_1\)</text>
-        <text x="320" y="150">s\(_2\)</text>
-        <text x="40" y="190" font-size="10" fill="#6b7280">t=1</text>
-        <text x="140" y="190" font-size="10" fill="#6b7280">t=2</text>
-        <text x="240" y="190" font-size="10" fill="#6b7280">t=3</text>
-        <text x="320" y="190" font-size="10" fill="#6b7280">t=4</text>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- 11. Decision networks -->
-<section>
-  <h2>Decision networks</h2>
-  <div class="recap-grid">
-    <div class="recall-card decision">
-      <h3>Three node types</h3>
-      <ul>
-        <li><strong>Chance</strong> nodes &mdash; like a Bayes net (CPTs).</li>
-        <li><strong>Decision</strong> nodes &mdash; rectangles, no CPT, chosen by us.</li>
-        <li><strong>Utility</strong> node &mdash; diamond, deterministic function of its parents.</li>
-      </ul>
-    </div>
-    <div class="recall-card decision fragment">
-      <h3>Maximum expected utility</h3>
-      <ul>
-        <li>Policy \(\pi(d \mid \text{parents})\); MEU picks \(\pi^*\) maximizing \(\mathbb{E}[U]\).</li>
-        <li>Evaluate by enumeration or by running VE on the DN.</li>
-        <li><strong>Value of information:</strong> EU gain from observing a variable before deciding.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 12. MDPs -->
-<section>
-  <h2>Markov decision processes</h2>
-  <div class="recap-grid">
-    <div class="recall-card decision">
-      <h3>Setup</h3>
-      <ul>
-        <li>States, actions, transition \(P(s' \mid s, a)\), reward \(R(s)\), discount \(\gamma\).</li>
-        <li>Policy \(\pi : S \to A\); value \(V^\pi(s) = \mathbb{E}[\sum_t \gamma^t R(s_t) \mid \pi]\).</li>
-      </ul>
-    </div>
-    <div class="recall-card decision fragment">
-      <h3>Bellman + the two algorithms</h3>
-      <ul>
-        <li><strong>Bellman optimality:</strong> \(V^*(s) = R(s) + \gamma \max_a \sum_{s'} P(s' \mid s, a)\, V^*(s')\).</li>
-        <li><strong>Value iteration:</strong> apply the Bellman update until convergence.</li>
-        <li><strong>Policy iteration:</strong> evaluate (linear system) &harr; improve (greedy) &mdash; converges fast.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 13. RL -->
-<section>
-  <h2>Reinforcement learning</h2>
-  <div class="recap-grid">
-    <div class="recall-card decision">
-      <h3>Two learning regimes</h3>
-      <ul>
-        <li><strong>Passive ADP:</strong> follow a fixed policy, estimate \(\hat P, \hat R\), solve via PE.</li>
-        <li><strong>Active ADP:</strong> also pick actions &mdash; balance exploration vs exploitation (\(\varepsilon\)-greedy, softmax, optimistic init).</li>
-      </ul>
-    </div>
-    <div class="recall-card decision fragment">
-      <h3>Model-free updates</h3>
-      <ul>
-        <li><strong>Q-learning</strong> (off-policy): \(Q(s,a) \leftarrow Q(s,a) + \alpha\big[R + \gamma \max_{a'} Q(s', a') - Q(s,a)\big]\).</li>
-        <li><strong>SARSA</strong> (on-policy): use the action actually taken instead of \(\max_{a'}\).</li>
-        <li>ADP converges fast but needs a model; Q-learning is slower but model-free.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 14. Supervised + unsupervised -->
-<section>
-  <h2>Supervised + unsupervised learning</h2>
-  <div class="recap-grid">
-    <div class="recall-card learn">
-      <h3>Supervised</h3>
-      <ul>
-        <li><strong>Model + loss + fit:</strong> pick \(h_{\mathbf w}\), minimize a loss by gradient descent.</li>
-        <li><strong>Linear</strong> (squared error) &amp; <strong>logistic</strong> regression (cross-entropy + softmax).</li>
-        <li><strong>Generalization:</strong> over/underfitting, cross-validation, regularization (double descent).</li>
-      </ul>
-    </div>
-    <div class="recall-card learn fragment">
-      <h3>Unsupervised &amp; representations</h3>
-      <ul>
-        <li><strong>k-means:</strong> alternate assign &harr; recompute centroids; pick \(k\) via elbow / silhouette.</li>
-        <li><strong>PCA:</strong> project onto top eigenvectors of the covariance matrix; maximize variance.</li>
-        <li><strong>Autoencoders</strong> and <strong>self-supervised / contrastive</strong> (CLIP) representations.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 15. Decision trees + neural networks -->
-<section>
-  <h2>Decision trees + neural networks</h2>
-  <div class="recap-grid">
-    <div class="recall-card learn">
-      <h3>Trees &amp; ensembles</h3>
-      <ul>
-        <li>Greedy top-down split (<strong>ID3</strong>) maximizing <strong>information gain</strong>; or Gini / <strong>CART</strong>.</li>
-        <li>Control overfitting with <strong>pruning</strong>.</li>
-        <li><strong>Ensembles:</strong> random forests (bagging) &amp; gradient boosting &mdash; the tabular winners.</li>
-        <li>Interpretable, great for small tabular data.</li>
-      </ul>
-    </div>
-    <div class="recall-card learn fragment">
-      <h3>Neural networks</h3>
-      <ul>
-        <li>Weighted sums + non-linear activations (ReLU, GELU); MLPs and <strong>CNNs</strong>.</li>
-        <li><strong>Forward pass</strong> computes loss; <strong>backprop</strong> computes gradients via chain rule (\(\delta\) recursion).</li>
-        <li>Train with <strong>SGD</strong> + momentum / <strong>Adam(W)</strong>; regularize (dropout, norm).</li>
-        <li>Black box but unmatched for images, audio, text.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 15b. Transformers + LLMs recap -->
-<section>
-  <h2>Transformers &amp; large language models</h2>
-  <div class="recap-grid">
-    <div class="recall-card learn">
-      <h3>Attention (L21)</h3>
-      <ul>
-        <li><strong>Scaled dot-product:</strong> \(\operatorname{softmax}\!\big(QK^\top/\sqrt{d_k}\big)V\) &mdash; every token reads every token.</li>
-        <li><strong>Multi-head</strong> + <strong>positional encodings</strong>; a block = attention + FFN + residual + norm.</li>
-        <li>Parallel, long-range, and scales &mdash; it replaced RNNs.</li>
-      </ul>
-    </div>
-    <div class="recall-card learn fragment">
-      <h3>LLMs (L22)</h3>
-      <ul>
-        <li><strong>Autoregressive:</strong> \(\prod_t p(x_t\mid x_{&lt;t})\), next-token cross-entropy, at scale.</li>
-        <li><strong>Fine-tuning</strong> (SFT) then <strong>alignment</strong> (RLHF / DPO &mdash; the RL of L15).</li>
-        <li>In-context learning; systems: <strong>agents, tools, RAG</strong>.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 15c. Generative AI recap -->
-<section>
-  <h2>Generative AI: diffusion &amp; multimodal</h2>
-  <div class="recap-grid">
-    <div class="recall-card learn">
-      <h3>Diffusion (L23)</h3>
-      <ul>
-        <li>Fixed <strong>forward</strong> noising; learned <strong>reverse</strong> denoiser \(\varepsilon_\theta(x_t,t)\).</li>
-        <li>Loss \(\lVert\varepsilon - \varepsilon_\theta(x_t,t)\rVert^2\); sample noise &rarr; image.</li>
-        <li><strong>Latent diffusion</strong> + guidance &rarr; text-to-image.</li>
-      </ul>
-    </div>
-    <div class="recall-card learn fragment">
-      <h3>Families &amp; multimodal</h3>
-      <ul>
-        <li>Autoregressive / VAE / GAN / diffusion &mdash; different ways to model \(p(x)\).</li>
-        <li><strong>VAE:</strong> ELBO + reparameterization.</li>
-        <li><strong>CLIP</strong> ties images and text in one embedding space.</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- 16. Notation cheat sheet -->
-<section>
-  <h2>Notation cheat sheet</h2>
-  <p style="font-size: 0.82em; margin: 0.15em 0;">Symbols that recur across the four modules. Watch for the two collisions on the right.</p>
-  <table class="compare" style="font-size: 0.58em; width: 96%;">
-    <thead>
-      <tr><th>Symbol</th><th>Meaning</th><th>First seen</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>\(\gamma\)</td><td>Discount factor for future rewards</td><td>L13 (MDPs)</td></tr>
-      <tr><td>\(\pi\), \(\pi^\star\)</td><td>Policy / optimal policy</td><td>L12&ndash;L15</td></tr>
-      <tr><td>\(V(s),\ Q(s,a)\)</td><td>State / state-action value functions</td><td>L13&ndash;L15</td></tr>
-      <tr><td>\(H(p),\ IG\)</td><td>Entropy / information gain (\(IG = H_{\text{before}} - H_{\text{after}}\))</td><td>L6 (entropy) &middot; L16 (IG)</td></tr>
-      <tr><td>\(\Sigma\)</td><td>Covariance matrix (PCA)</td><td>L18</td></tr>
-      <tr><td>\(Q,K,V\)</td><td>Query / key / value in attention</td><td>L21</td></tr>
-      <tr><td>\(\varepsilon_\theta\)</td><td>Noise-prediction network (diffusion)</td><td>L23</td></tr>
-      <tr><td style="color:#b91c1c;"><strong>\(\alpha\)</strong></td><td>RL TD step size (L15); learning rate in SGD (L20) &mdash; <em>different meanings</em></td><td>L15 / L20</td></tr>
-      <tr><td style="color:#b91c1c;"><strong>\(\varepsilon\)</strong></td><td>Exploration prob in \(\varepsilon\)-greedy (L15); vs the noise variable \(\varepsilon\) in diffusion (L23)</td><td>L15 / L23</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size: 0.78em; color: #6b7280; text-align: center; margin-top: 0.4em;">
-    Worth a row on your two-sided study sheet.
-  </p>
-</section>
-
-<!-- 16b. Modern-AI landscape + research vision -->
-<section>
-  <h2>How it fits together &mdash; and where it's going</h2>
-  <p style="font-size: 0.85em; margin: 0.1em 0;">Modern AI systems <strong>compose</strong> everything in this course: search + planning, probabilistic reasoning, decision-making under uncertainty, and deep learning &mdash; wrapped around large pretrained models.</p>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>Agents</h3><p style="font-size:0.8em;">LLMs that plan, call tools, and act &mdash; search &amp; decisions, revisited.</p></div>
-    <div class="task-card fragment"><h3>Tool builders</h3><p style="font-size:0.8em;">Turning powerful models into reusable, specialized neural software (my <em>programasweights</em> direction).</p></div>
-    <div class="task-card fragment"><h3>Generative UIs</h3><p style="font-size:0.8em;">Interactive world models like NeuralOS &mdash; systems you generate, not just program.</p></div>
-  </div>
-  <p class="fragment" style="font-size:0.82em; color:#6b7280; text-align:center; margin-top:0.35em;">Want more? CS480/680 (ML) and CS485 go deeper; research is moving fast.</p>
-</section>
-
-<!-- 17. Final exam + thanks -->
+<!-- 34. Capstone -->
 <section class="center-slide">
-  <h2>Final exam &mdash; logistics</h2>
-  <div class="exam-panel">
-    <h3>What to bring</h3>
-    <ul>
-      <li>Non-programmable calculator.</li>
-      <li>One two-sided A4 study sheet (handwritten or typed).</li>
-    </ul>
-    <h3 style="margin-top: 0.4em;">Format (tentative)</h3>
-    <ul>
-      <li>~8 problems across all four modules; ~84 marks (76+ = 100%); pass at 42.</li>
-      <li>L21&ndash;L23 (transformers / LLMs / diffusion) examinable at the <strong>conceptual</strong> level &mdash; no heavy derivations.</li>
-    </ul>
-    <div class="note">Exact details confirmed on the course page before exam day.</div>
+  <h2>NeuralOS as course capstone</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>state</h3><p style="font-size:0.76em;">hidden UI state</p></div>
+    <div class="task-card fragment"><h3>actions</h3><p style="font-size:0.76em;">mouse/keyboard</p></div>
+    <div class="task-card fragment"><h3>prediction</h3><p style="font-size:0.76em;">next frame</p></div>
+    <div class="task-card fragment"><h3>generation</h3><p style="font-size:0.76em;">diffusion renderer</p></div>
   </div>
-  <p class="fragment" style="margin-top: 0.5em; font-size: 0.95em; color: #1d4ed8;">
-    Thanks for a great term &mdash; good luck on the final!
-  </p>
+</section>
+
+<!-- 35. World failures -->
+<section class="center-slide">
+  <h2>World models can drift</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>temporal drift</h3><p style="font-size:0.78em;">state changes incorrectly</p></div>
+    <div class="task-card fragment"><h3>compounding errors</h3><p style="font-size:0.78em;">mistakes feed back</p></div>
+    <div class="task-card fragment"><h3>wrong actions</h3><p style="font-size:0.78em;">input misinterpreted</p></div>
+  </div>
+</section>
+
+<!-- 36. Browser demo -->
+<section>
+  <h2>Optional browser demo path</h2>
+  <pre style="font-size:0.56em; width:84%; margin:0.3em auto;"><code>const pipeline = new SDPipeline({
+  model: "sd-turbo",
+  provider: "webgpu",
+});
+const image = await pipeline.generate({ prompt, steps: 1 });</code></pre>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Small distilled diffusion models can run locally, but hardware support varies.</p>
+</section>
+
+<!-- 37. Dissection trilogy -->
+<section class="center-slide">
+  <h2>What did we dissect?</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card"><h3>L21</h3><p style="font-size:0.78em;">text LM inference</p></div>
+    <div class="task-card fragment"><h3>L23</h3><p style="font-size:0.78em;">VLM understanding</p></div>
+    <div class="task-card fragment"><h3>L24</h3><p style="font-size:0.78em;">diffusion/world generation</p></div>
+  </div>
+</section>
+
+<!-- 38. Landscape -->
+<section class="center-slide">
+  <h2>Modern AI landscape</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>LLMs</h3><p style="font-size:0.78em;">text/code generation</p></div>
+    <div class="task-card fragment"><h3>VLMs</h3><p style="font-size:0.78em;">image understanding</p></div>
+    <div class="task-card fragment"><h3>Diffusion</h3><p style="font-size:0.78em;">image/video generation</p></div>
+    <div class="task-card fragment"><h3>World models</h3><p style="font-size:0.78em;">interactive prediction</p></div>
+    <div class="task-card fragment"><h3>Agents</h3><p style="font-size:0.78em;">models in action loops</p></div>
+    <div class="task-card fragment"><h3>Systems</h3><p style="font-size:0.78em;">retrieval, tools, safety</p></div>
+  </div>
+</section>
+
+<!-- 39. Not covered -->
+<section class="center-slide">
+  <h2>What this does not cover</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr;">
+    <div class="task-card fragment"><h3>math depth</h3><p style="font-size:0.78em;">score matching / SDEs</p></div>
+    <div class="task-card fragment"><h3>production policy</h3><p style="font-size:0.78em;">safety and deployment</p></div>
+    <div class="task-card fragment"><h3>full video training</h3><p style="font-size:0.78em;">large-scale recipes</p></div>
+    <div class="task-card fragment"><h3>all details</h3><p style="font-size:0.78em;">working mental model first</p></div>
+  </div>
+</section>
+
+<!-- 40. Recap -->
+<section class="center-slide">
+  <h2>Recap</h2>
+  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:84%; margin-right:auto;">
+    <li>&#10003; &nbsp;Diffusion learns to predict noise.</li>
+    <li>&#10003; &nbsp;Sampling starts from noise and denoises iteratively.</li>
+    <li>&#10003; &nbsp;Text conditions denoising through embeddings/cross-attention.</li>
+    <li>&#10003; &nbsp;Guidance controls prompt adherence.</li>
+    <li>&#10003; &nbsp;Latent diffusion denoises compressed representations.</li>
+    <li>&#10003; &nbsp;World models predict future frames conditioned on actions.</li>
+  </ul>
 </section>
 
 </div>

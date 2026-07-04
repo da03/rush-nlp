@@ -2,16 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>CS 486/686 Lecture 23 — Generative AI: Diffusion &amp; Multimodal</title>
+  <title>CS 486/686 Lecture 23 - Dissecting a Vision-Language Model</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 23: Generative AI — VAEs and the ELBO, diffusion models (forward/reverse process, noise-prediction loss, sampling), classifier-free guidance, latent diffusion / text-to-image, and multimodal models (CLIP). Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 23: Dissecting a vision-language model - image preprocessing, visual tokens, vision encoders, projectors, multimodal context, VQA, OCR, UI understanding, and VLM failure modes. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="custom.css?v=1">
+  <link rel="stylesheet" href="../L17/custom.css?v=3">
+  <link rel="stylesheet" href="../L21/custom.css?v=2">
+  <link rel="stylesheet" href="../L22/custom.css?v=2">
+  <link rel="stylesheet" href="custom.css?v=2">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -35,23 +38,20 @@
 <svg width="0" height="0" style="position:absolute;">
   <defs>
     <marker id="arrow-l23" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#6b7280"/>
+      <path d="M0,0 L8,4 L0,8 z" fill="#475569"/>
     </marker>
-    <marker id="arrow-l23-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#dc2626"/>
-    </marker>
-    <marker id="arrow-l23-green" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,0 L8,4 L0,8 z" fill="#16a34a"/>
+    <marker id="arrow-l23-blue" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#1d4ed8"/>
     </marker>
   </defs>
 </svg>
 
 <!-- 1. Title -->
 <section class="title-slide center-slide">
-  <div class="course-title">CS 486/686<br>Generative AI: Diffusion &amp; Multimodal</div>
+  <div class="course-title">CS 486/686<br>Dissecting a Vision-Language Model</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 23</p>
-  <p class="credit">VAEs &middot; diffusion &middot; text-to-image &middot; CLIP</p>
+  <p class="credit">How an image becomes language-model context</p>
 </section>
 
 <!-- 2. Learning goals -->
@@ -67,202 +67,437 @@
   </div>
   <h2>Learning goals</h2>
   <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Place the <strong>generative model families</strong> on one map.</li>
-    <li class="fragment">Explain the <strong>VAE</strong>: ELBO and the reparameterization trick.</li>
-    <li class="fragment">Derive the <strong>diffusion</strong> forward/reverse process and its loss.</li>
-    <li class="fragment">Explain <strong>guidance</strong> and <strong>latent diffusion</strong> (text-to-image).</li>
-    <li class="fragment">Describe <strong>multimodal</strong> models (CLIP).</li>
+    <li class="fragment">Trace <strong>image + text</strong> inference end to end.</li>
+    <li class="fragment">Explain <strong>visual tokens</strong> and <strong>vision encoders</strong>.</li>
+    <li class="fragment">Explain how visual features enter a <strong>language decoder</strong>.</li>
+    <li class="fragment">Recognize VLM tasks and failure modes.</li>
   </ul>
 </section>
 
-<!-- 3. Generative families recap -->
+<!-- 3. From L21 to L23 -->
+<section class="center-slide">
+  <h2>From text-only to multimodal</h2>
+  <div class="two-col" style="max-width:88%; margin:0.5em auto;">
+    <div class="defbox" style="flex:1; text-align:center;">
+      <p style="margin:0.1em 0;">L21</p>
+      <p style="font-size:0.82em; margin:0;">text &rarr; tokens &rarr; LM &rarr; answer</p>
+    </div>
+    <div class="defbox fragment" style="flex:1; text-align:center;">
+      <p style="margin:0.1em 0;">L23</p>
+      <p style="font-size:0.82em; margin:0;">image + text &rarr; visual + text tokens &rarr; answer</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8;">A VLM is a language model with extra visual context.</p>
+</section>
+
+<!-- 4. Running example -->
 <section>
-  <h2>Recap: four ways to generate</h2>
+  <h2>Running example</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.95;">
+      <div class="mock-image">
+        <div class="mock-sky"></div>
+        <div class="mock-desk"></div>
+        <div class="mock-laptop">CS486</div>
+        <div class="mock-cup"></div>
+      </div>
+    </div>
+    <div style="flex:1.05;">
+      <div class="prompt-box">What is shown in this image?</div>
+      <p class="fragment" style="font-size:0.9em;">The model must combine visual evidence with language generation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Hardness -->
+<section class="center-slide">
+  <h2>What makes this hard?</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>pixels</h3><p style="font-size:0.78em;">huge arrays</p></div>
+    <div class="task-card fragment"><h3>space</h3><p style="font-size:0.78em;">details have positions</p></div>
+    <div class="task-card fragment"><h3>language</h3><p style="font-size:0.78em;">answer must be text</p></div>
+  </div>
+</section>
+
+<!-- 6. Pipeline -->
+<section>
+  <h2>The VLM pipeline</h2>
+  <svg viewBox="0 0 940 155" xmlns="http://www.w3.org/2000/svg" class="vlm-pipeline">
+    <g>
+      <rect x="20" y="55" width="95" height="44" rx="7"/><text x="68" y="82">image</text>
+      <rect x="145" y="55" width="145" height="44" rx="7"/><text x="218" y="82">vision encoder</text>
+      <rect x="320" y="55" width="125" height="44" rx="7"/><text x="382" y="82">visual tokens</text>
+      <rect x="475" y="55" width="120" height="44" rx="7"/><text x="535" y="82">projector</text>
+      <rect x="625" y="55" width="140" height="44" rx="7"/><text x="695" y="82">LM decoder</text>
+      <rect x="795" y="55" width="95" height="44" rx="7"/><text x="842" y="82">answer</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l23)">
+      <line x1="115" y1="77" x2="140" y2="77"/><line x1="290" y1="77" x2="315" y2="77"/><line x1="445" y1="77" x2="470" y2="77"/><line x1="595" y1="77" x2="620" y2="77"/><line x1="765" y1="77" x2="790" y2="77"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">Image information becomes context the language model can use.</p>
+</section>
+
+<!-- 7. Components -->
+<section class="center-slide">
+  <h2>What gets loaded?</h2>
+  <div class="task-cards" style="grid-template-columns:repeat(4,1fr);">
+    <div class="task-card fragment"><h3>processor</h3><p style="font-size:0.78em;">image preprocessing</p></div>
+    <div class="task-card fragment"><h3>tokenizer</h3><p style="font-size:0.78em;">text tokens</p></div>
+    <div class="task-card fragment"><h3>vision encoder</h3><p style="font-size:0.78em;">visual features</p></div>
+    <div class="task-card fragment"><h3>decoder</h3><p style="font-size:0.78em;">generates text</p></div>
+  </div>
+</section>
+
+<!-- 8. Demo strategy -->
+<section class="center-slide">
+  <h2>Demo path and fallback</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
+    <div class="task-card"><h3>optional live path</h3><p style="font-size:0.8em;">Qwen3-VL + Transformers.js/WebGPU</p></div>
+    <div class="task-card fragment"><h3>reliable path</h3><p style="font-size:0.8em;">precomputed traces in slides</p></div>
+  </div>
+</section>
+
+<!-- 9. Browser code -->
+<section>
+  <h2>Optional browser code sketch</h2>
+  <pre style="font-size:0.48em; width:86%; margin:0.25em auto;"><code>const processor = await AutoProcessor.from_pretrained(model_id);
+const model = await Qwen3VLForConditionalGeneration.from_pretrained(model_id, {
+  device: "webgpu",
+  dtype: { vision_encoder: "fp16", decoder_model_merged: "q4f16" },
+});</code></pre>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">Conceptual code only: live VLM inference depends on browser and GPU support.</p>
+</section>
+
+<!-- 10. Python code -->
+<section>
+  <h2>The same idea in Python</h2>
+  <pre style="font-size:0.52em; width:84%; margin:0.3em auto;"><code>processor = AutoProcessor.from_pretrained("Qwen/Qwen3-VL-2B-Instruct")
+model = Qwen3VLForConditionalGeneration.from_pretrained(
+    "Qwen/Qwen3-VL-2B-Instruct",
+    dtype="auto",
+    device_map="auto",
+)</code></pre>
+</section>
+
+<!-- 11. Preprocess -->
+<section class="center-slide">
+  <h2>Images must become tensors</h2>
+  <svg viewBox="0 0 760 135" xmlns="http://www.w3.org/2000/svg" class="vlm-pipeline">
+    <g>
+      <rect x="60" y="45" width="120" height="44" rx="7"/><text x="120" y="72">image file</text>
+      <rect x="255" y="45" width="140" height="44" rx="7"/><text x="325" y="72">resize / crop</text>
+      <rect x="470" y="45" width="140" height="44" rx="7"/><text x="540" y="72">normalize</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l23)">
+      <line x1="180" y1="67" x2="250" y2="67"/><line x1="395" y1="67" x2="465" y2="67"/>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Raw image files are not what the network consumes.</p>
+</section>
+
+<!-- 12. Patchify -->
+<section>
+  <h2>Patchify the image</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1;">
+      <div class="patch-grid">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <div style="flex:1;">
+      <p style="font-size:0.9em;">A vision transformer treats patches like a sequence.</p>
+      <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">Patch vectors are visual tokens.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13. Vision encoder -->
+<section>
+  <h2>The vision encoder extracts visual features</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.9; text-align:center;">
+      <svg viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg" class="vision-stack">
+        <rect x="45" y="225" width="130" height="34" rx="6"/><text x="110" y="246">patches</text>
+        <rect x="45" y="175" width="130" height="34" rx="6"/><text x="110" y="196">vision block</text>
+        <rect x="45" y="125" width="130" height="34" rx="6"/><text x="110" y="146">vision block</text>
+        <rect x="45" y="75" width="130" height="34" rx="6"/><text x="110" y="96">features</text>
+      </svg>
+    </div>
+    <div style="flex:1.05;">
+      <p style="font-size:0.9em;">The image is processed before it reaches the language model.</p>
+      <p class="fragment" style="font-size:0.86em; color:#6b7280;">Qwen-style VLMs use a dedicated vision encoder and a merger/projector.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 14. CLIP -->
+<section>
+  <h2>Why CLIP matters</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1;">
+      <svg viewBox="0 0 380 180" xmlns="http://www.w3.org/2000/svg" class="clip-viz">
+        <rect x="40" y="40" width="100" height="45" rx="7"/><text x="90" y="68">image</text>
+        <rect x="40" y="110" width="100" height="45" rx="7"/><text x="90" y="138">caption</text>
+        <circle cx="275" cy="70" r="13"/><circle cx="292" cy="100" r="13"/>
+        <line x1="140" y1="62" x2="260" y2="70" marker-end="url(#arrow-l23)"/>
+        <line x1="140" y1="132" x2="278" y2="100" marker-end="url(#arrow-l23)"/>
+      </svg>
+    </div>
+    <div style="flex:1;">
+      <p style="font-size:0.9em;">CLIP-style training aligns image and text embeddings.</p>
+      <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">It is the bridge from visual features to language semantics.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 15. CLIP vs VLM -->
+<section class="center-slide">
+  <h2>CLIP is not a full VLM</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
+    <div class="task-card"><h3>CLIP</h3><p style="font-size:0.8em;">compare image/text embeddings</p></div>
+    <div class="task-card fragment"><h3>VLM</h3><p style="font-size:0.8em;">generate text conditioned on image tokens</p></div>
+  </div>
+</section>
+
+<!-- 16. Projector -->
+<section class="center-slide">
+  <h2>The projector translates vision to LM space</h2>
+  <p style="font-size:1em;">visual features &rarr; MLP merger/projector &rarr; LM-sized visual tokens</p>
+  <svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg" class="vlm-pipeline">
+    <g>
+      <rect x="70" y="45" width="160" height="44" rx="7"/><text x="150" y="72">visual features</text>
+      <rect x="310" y="45" width="130" height="44" rx="7"/><text x="375" y="72">projector</text>
+      <rect x="520" y="45" width="160" height="44" rx="7"/><text x="600" y="72">visual tokens</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l23)">
+      <line x1="230" y1="67" x2="305" y2="67"/><line x1="440" y1="67" x2="515" y2="67"/>
+    </g>
+  </svg>
+</section>
+
+<!-- 17. Multimodal context -->
+<section>
+  <h2>Multimodal context sequence</h2>
+  <div class="multi-seq">
+    <span class="img">img1</span><span class="img">img2</span><span class="img">img3</span><span class="txt">What</span><span class="txt">is</span><span class="txt">shown?</span><span class="ans">A</span><span class="ans">laptop</span>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">The decoder can attend to image tokens and text tokens in the same context.</p>
+</section>
+
+<!-- 18. Chat template -->
+<section>
+  <h2>Chat template with an image placeholder</h2>
+  <div class="chat-template">
+    <div><strong>user</strong><span>[image]</span></div>
+    <div><strong>user</strong><span>Describe this image.</span></div>
+    <div><strong>assistant</strong><span></span></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The prompt is structured multimodal context, not just pixels.</p>
+</section>
+
+<!-- 19. Generate -->
+<section class="center-slide">
+  <h2>Generation is still autoregressive</h2>
+  <svg viewBox="0 0 860 160" xmlns="http://www.w3.org/2000/svg" class="vlm-pipeline">
+    <g>
+      <rect x="35" y="58" width="160" height="44" rx="7"/><text x="115" y="85">multimodal context</text>
+      <rect x="270" y="58" width="120" height="44" rx="7"/><text x="330" y="85">decoder</text>
+      <rect x="465" y="58" width="120" height="44" rx="7"/><text x="525" y="85">next token</text>
+      <rect x="660" y="58" width="120" height="44" rx="7"/><text x="720" y="85">append</text>
+    </g>
+    <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l23)">
+      <line x1="195" y1="80" x2="265" y2="80"/><line x1="390" y1="80" x2="460" y2="80"/><line x1="585" y1="80" x2="655" y2="80"/>
+      <path d="M720 102 C675 145, 160 145, 115 105" fill="none"/>
+    </g>
+  </svg>
+</section>
+
+<!-- 20. Caption trace -->
+<section>
+  <h2>Trace: captioning</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.95;"><div class="mock-image small"><div class="mock-sky"></div><div class="mock-desk"></div><div class="mock-laptop">CS486</div><div class="mock-cup"></div></div></div>
+    <div style="flex:1.05;">
+      <div class="prompt-box">Describe this image.</div>
+      <p class="fragment" style="font-size:0.9em;">A laptop and cup are sitting on a desk.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 21. VQA trace -->
+<section>
+  <h2>Trace: visual question answering</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.95;"><div class="mock-image small"><div class="mock-sky"></div><div class="mock-desk"></div><div class="mock-laptop">CS486</div><div class="mock-cup"></div></div></div>
+    <div style="flex:1.05;">
+      <div class="prompt-box">What object is next to the laptop?</div>
+      <p class="fragment" style="font-size:0.9em;">A cup is next to the laptop.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 22. OCR trace -->
+<section>
+  <h2>Trace: document/OCR understanding</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.95;">
+      <div class="doc-card">
+        <strong>Course Schedule</strong>
+        <span>Assignment 2 due Thu Jul 9</span>
+        <span>Chat 9 out Thu Jul 9</span>
+      </div>
+    </div>
+    <div style="flex:1.05;">
+      <div class="prompt-box">When is Assignment 2 due?</div>
+      <p class="fragment" style="font-size:0.9em;">Assignment 2 is due Thu Jul 9.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 23. Chart trace -->
+<section>
+  <h2>Trace: chart understanding</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.95;">
+      <svg viewBox="0 0 300 190" xmlns="http://www.w3.org/2000/svg" class="chart-viz">
+        <line x1="45" y1="155" x2="260" y2="155"/><line x1="45" y1="35" x2="45" y2="155"/>
+        <rect x="70" y="95" width="35" height="60"/><rect x="130" y="55" width="35" height="100"/><rect x="190" y="115" width="35" height="40"/>
+        <text x="87" y="175">A</text><text x="147" y="175">B</text><text x="207" y="175">C</text>
+      </svg>
+    </div>
+    <div style="flex:1.05;">
+      <div class="prompt-box">Which bar is largest?</div>
+      <p class="fragment" style="font-size:0.9em;">Bar B is largest.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 24. UI trace -->
+<section>
+  <h2>Trace: UI/screenshot understanding</h2>
+  <div class="two-col vcenter">
+    <div style="flex:0.95;">
+      <div class="ui-card">
+        <div class="ui-top">Slides</div>
+        <button>Course page</button>
+        <button class="hot">PDF</button>
+      </div>
+    </div>
+    <div style="flex:1.05;">
+      <div class="prompt-box">Which button downloads the slides?</div>
+      <p class="fragment" style="font-size:0.9em;">Click the PDF button.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 25. Grounding -->
+<section class="center-slide">
+  <h2>Some VLMs can ground answers spatially</h2>
+  <p style="font-size:1em;">Instead of only text, a model may output a box or point.</p>
+  <div class="mock-image small boxed"><div class="mock-sky"></div><div class="mock-desk"></div><div class="mock-laptop">CS486</div><div class="mock-cup"></div></div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Grounding is useful for documents, UI agents, and object localization.</p>
+</section>
+
+<!-- 26. Training components -->
+<section class="center-slide">
+  <h2>What gets trained?</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>vision encoder</h3><p style="font-size:0.78em;">visual features</p></div>
+    <div class="task-card fragment"><h3>projector</h3><p style="font-size:0.78em;">align dimensions</p></div>
+    <div class="task-card fragment"><h3>decoder</h3><p style="font-size:0.78em;">language generation</p></div>
+  </div>
+</section>
+
+<!-- 27. Data -->
+<section class="center-slide">
+  <h2>VLM ability depends on multimodal data</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>captions</h3><p style="font-size:0.78em;">image-text pairs</p></div>
+    <div class="task-card fragment"><h3>documents</h3><p style="font-size:0.78em;">OCR/forms/tables</p></div>
+    <div class="task-card fragment"><h3>screens</h3><p style="font-size:0.78em;">UI/action traces</p></div>
+  </div>
+</section>
+
+<!-- 28. Hallucination -->
+<section class="center-slide">
+  <h2>Failure mode: hallucinated visual details</h2>
+  <p style="font-size:1em;">The model may describe objects that are not present.</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Fluent visual descriptions are not guaranteed faithful.</p>
+</section>
+
+<!-- 29. OCR -->
+<section class="center-slide">
+  <h2>Failure mode: OCR errors</h2>
+  <p style="font-size:1em;">The image says <strong>Jul 9</strong>; the model reads <strong>Jul 8</strong>.</p>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">Reading text in images is powerful but brittle.</p>
+</section>
+
+<!-- 30. Spatial -->
+<section class="center-slide">
+  <h2>Failure mode: spatial reasoning</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
+    <div class="task-card fragment"><h3>left/right</h3><p style="font-size:0.78em;">easy to flip</p></div>
+    <div class="task-card fragment"><h3>counting</h3><p style="font-size:0.78em;">small objects</p></div>
+    <div class="task-card fragment"><h3>relations</h3><p style="font-size:0.78em;">above/below</p></div>
+  </div>
+</section>
+
+<!-- 31. Prompt sensitivity -->
+<section>
+  <h2>Failure mode: prompt sensitivity</h2>
+  <div class="two-col">
+    <div class="prompt-card" style="flex:1;">
+      <h3>describe</h3>
+      <p>Describe what you see.</p>
+    </div>
+    <div class="prompt-card fragment" style="flex:1;">
+      <h3>guess</h3>
+      <p>Guess what is happening.</p>
+    </div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Visual answers can change with linguistic framing.</p>
+</section>
+
+<!-- 32. Visual agents -->
+<section class="center-slide">
+  <h2>VLMs enable visual agents</h2>
+  <p style="font-size:1em;">observe screenshot &rarr; reason &rarr; click/type &rarr; observe again</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Same tool/agent safety concerns from L22 still apply.</p>
+</section>
+
+<!-- 33. Added -->
+<section class="center-slide">
+  <h2>What did we add beyond text LMs?</h2>
   <div class="task-cards" style="grid-template-columns:1fr 1fr;">
-    <div class="task-card">
-      <h3>Autoregressive</h3>
-      <p style="font-size:0.8em;">Next-token \(\prod_t p(x_t\mid x_{&lt;t})\). Powers LLMs (L22); also images/audio.</p>
-    </div>
-    <div class="task-card">
-      <h3>GAN</h3>
-      <p style="font-size:0.8em;">Generator vs discriminator. Sharp but unstable &mdash; now largely legacy.</p>
-    </div>
-    <div class="task-card">
-      <h3>VAE</h3>
-      <p style="font-size:0.8em;">Probabilistic autoencoder; sample a latent code, decode it.</p>
-    </div>
-    <div class="task-card">
-      <h3>Diffusion</h3>
-      <p style="font-size:0.8em;">Learn to denoise. Today's state of the art for images &amp; video.</p>
-    </div>
+    <div class="task-card"><h3>L21</h3><p style="font-size:0.8em;">text tokens only</p></div>
+    <div class="task-card fragment"><h3>L23</h3><p style="font-size:0.8em;">image tokens + text tokens</p></div>
   </div>
-  <p class="fragment" style="font-size:0.84em; color:#1d4ed8; text-align:center; margin-top:0.35em;">L22 did autoregressive text. Today: VAEs &rarr; diffusion &rarr; multimodal.</p>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Both generate text autoregressively.</p>
 </section>
 
-<!-- 4. VAE -->
-<section>
-  <h2>Variational autoencoders (VAEs)</h2>
-  <p style="font-size:0.84em; margin:0.1em 0;">An autoencoder (L18) with a <strong>probabilistic</strong> bottleneck: the encoder outputs a distribution \(q_\phi(z\mid x)\); the decoder \(p_\theta(x\mid z)\) reconstructs. Train by maximizing the <strong>ELBO</strong>:</p>
-  <div class="defbox" style="text-align:center; margin:0.2em auto;">
-    <p style="margin:0; font-size:0.86em;">\(\log p(x) \;\ge\; \underbrace{\mathbb{E}_{q_\phi(z\mid x)}\!\big[\log p_\theta(x\mid z)\big]}_{\text{reconstruction}} \;-\; \underbrace{\mathrm{KL}\!\big(q_\phi(z\mid x)\,\|\,p(z)\big)}_{\text{stay near prior } \mathcal{N}(0,I)}\)</p>
-  </div>
-  <ul style="font-size:0.8em; margin:0.2em 0 0 1.2em;">
-    <li class="fragment"><strong>Reparameterization trick:</strong> sample \(z = \mu_\phi(x) + \sigma_\phi(x)\odot\varepsilon\), \(\varepsilon\sim\mathcal{N}(0,I)\) &mdash; so gradients flow through the sampling.</li>
-    <li class="fragment">Generate by sampling \(z\sim\mathcal{N}(0,I)\) and decoding. Smooth latent space, but samples can be blurry.</li>
-  </ul>
-</section>
-
-<!-- 5. Diffusion intuition -->
-<section>
-  <h2>Diffusion: destroy, then learn to restore</h2>
-  <p style="font-size:0.84em; margin:0.1em 0;">Slowly add Gaussian noise until an image becomes pure static (<span style="color:#dc2626;">forward</span>). Then train a network to <strong>undo</strong> one step of noise (<span style="color:#16a34a;">reverse</span>).</p>
-  <div style="text-align:center;">
-    <svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg" class="l23-svg" style="max-height:170px;">
-      <!-- tiles -->
-      <g>
-        <rect x="20" y="55" width="70" height="60" rx="4" fill="#dcfce7" stroke="#166534" stroke-width="1.3"/>
-        <circle cx="55" cy="85" r="14" fill="#16a34a" opacity="0.7"/>
-        <rect x="140" y="55" width="70" height="60" rx="4" fill="#eef2ff" stroke="#9ca3af" stroke-width="1.3"/>
-        <circle cx="170" cy="80" r="10" fill="#16a34a" opacity="0.5"/><circle cx="185" cy="95" r="2" fill="#6b7280"/><circle cx="160" cy="100" r="2" fill="#6b7280"/>
-        <rect x="260" y="55" width="70" height="60" rx="4" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.3"/>
-        <circle cx="290" cy="82" r="6" fill="#16a34a" opacity="0.35"/><circle cx="275" cy="70" r="2" fill="#6b7280"/><circle cx="305" cy="95" r="2" fill="#6b7280"/><circle cx="285" cy="100" r="2" fill="#6b7280"/><circle cx="310" cy="72" r="2" fill="#6b7280"/>
-        <rect x="380" y="55" width="70" height="60" rx="4" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.3"/>
-        <circle cx="395" cy="70" r="2" fill="#6b7280"/><circle cx="415" cy="80" r="2" fill="#6b7280"/><circle cx="430" cy="95" r="2" fill="#6b7280"/><circle cx="400" cy="100" r="2" fill="#6b7280"/><circle cx="435" cy="68" r="2" fill="#6b7280"/><circle cx="418" cy="105" r="2" fill="#6b7280"/>
-        <rect x="490" y="55" width="60" height="60" rx="4" fill="#e5e7eb" stroke="#9ca3af" stroke-width="1.3"/>
-        <circle cx="505" cy="70" r="2" fill="#6b7280"/><circle cx="525" cy="80" r="2" fill="#6b7280"/><circle cx="538" cy="95" r="2" fill="#6b7280"/><circle cx="510" cy="100" r="2" fill="#6b7280"/><circle cx="535" cy="66" r="2" fill="#6b7280"/><circle cx="520" cy="105" r="2" fill="#6b7280"/><circle cx="500" cy="90" r="2" fill="#6b7280"/>
-      </g>
-      <text x="55" y="130" class="axis-label">x&#8320;</text>
-      <text x="520" y="130" class="axis-label">x_T (noise)</text>
-      <!-- forward arrows on top -->
-      <path class="fwd" d="M 92 45 L 138 45" marker-end="url(#arrow-l23-red)"/>
-      <path class="fwd" d="M 212 45 L 258 45" marker-end="url(#arrow-l23-red)"/>
-      <path class="fwd" d="M 332 45 L 378 45" marker-end="url(#arrow-l23-red)"/>
-      <path class="fwd" d="M 452 45 L 488 45" marker-end="url(#arrow-l23-red)"/>
-      <text x="285" y="30" class="axis-label" style="fill:#dc2626;">add noise (fixed)</text>
-      <!-- reverse arrows on bottom -->
-      <path class="rev" d="M 488 145 L 452 145" marker-end="url(#arrow-l23-green)"/>
-      <path class="rev" d="M 378 145 L 332 145" marker-end="url(#arrow-l23-green)"/>
-      <path class="rev" d="M 258 145 L 212 145" marker-end="url(#arrow-l23-green)"/>
-      <path class="rev" d="M 138 145 L 92 145" marker-end="url(#arrow-l23-green)"/>
-      <text x="285" y="162" class="axis-label" style="fill:#16a34a;">denoise (learned)</text>
-    </svg>
-  </div>
-</section>
-
-<!-- 6. Forward process -->
-<section>
-  <h2>The forward (noising) process</h2>
-  <p style="font-size:0.84em; margin:0.1em 0;">Add a little Gaussian noise at each of \(T\) steps, with a schedule \(\beta_1,\ldots,\beta_T\):</p>
-  <div class="defbox" style="text-align:center; margin:0.2em auto;">
-    <p style="margin:0; font-size:0.88em;">\(q(x_t \mid x_{t-1}) = \mathcal{N}\!\big(x_t;\ \sqrt{1-\beta_t}\,x_{t-1},\ \beta_t I\big)\)</p>
-  </div>
-  <p class="fragment" style="font-size:0.84em; margin:0.3em 0 0.1em;">Conveniently, we can jump to <em>any</em> step in closed form (let \(\bar\alpha_t = \prod_{s\le t}(1-\beta_s)\)):</p>
-  <div class="defbox fragment" style="text-align:center; margin:0.1em auto;">
-    <p style="margin:0; font-size:0.88em;">\(x_t = \sqrt{\bar\alpha_t}\,x_0 + \sqrt{1-\bar\alpha_t}\,\varepsilon, \qquad \varepsilon\sim\mathcal{N}(0,I)\)</p>
-  </div>
-  <p class="fragment" style="font-size:0.8em; color:#6b7280; text-align:center; margin-top:0.25em;">No learning here &mdash; the forward process is fixed. As \(t\to T\), \(x_t\) becomes pure noise.</p>
-</section>
-
-<!-- 7. Reverse process + loss -->
-<section>
-  <h2>The reverse process: learn to denoise</h2>
-  <p style="font-size:0.84em; margin:0.1em 0;">Train a network \(\varepsilon_\theta(x_t, t)\) to <strong>predict the noise</strong> that was added. Since \(x_t = \sqrt{\bar\alpha_t}x_0 + \sqrt{1-\bar\alpha_t}\,\varepsilon\), knowing \(\varepsilon\) lets us step back toward \(x_0\).</p>
-  <div class="defbox" style="text-align:center; margin:0.2em auto;">
-    <p style="margin:0; font-size:0.95em;">\(\mathcal{L} = \mathbb{E}_{x_0,\,\varepsilon,\,t}\Big[\ \big\lVert \varepsilon - \varepsilon_\theta(x_t, t)\big\rVert^2\ \Big]\)</p>
-  </div>
-  <ol style="font-size:0.8em; margin:0.25em 0 0 1.4em;">
-    <li class="fragment">Take a clean \(x_0\), pick a random step \(t\), draw noise \(\varepsilon\).</li>
-    <li class="fragment">Form \(x_t\); ask the network to predict \(\varepsilon\).</li>
-    <li class="fragment">Minimize squared error &mdash; a simple regression, no adversarial game.</li>
-  </ol>
-</section>
-
-<!-- 8. Sampling -->
+<!-- 34. Bridge -->
 <section class="center-slide">
-  <h2>Sampling: noise &rarr; image</h2>
-  <div class="algo-card">
-    <div class="algo-title">sample()</div>
-    <ol style="margin:0.1em 0 0 1.4em;">
-      <li>Start from pure noise \(x_T \sim \mathcal{N}(0, I)\).</li>
-      <li class="fragment">For \(t = T, T{-}1, \ldots, 1\): predict \(\varepsilon_\theta(x_t,t)\), remove a bit of noise to get \(x_{t-1}\).</li>
-      <li class="fragment">Return \(x_0\) &mdash; a fresh sample.</li>
-    </ol>
-  </div>
-  <p class="fragment" style="font-size:0.82em; color:#6b7280; text-align:center; margin-top:0.4em;"><strong>DDPM</strong> takes many steps (slow, high quality); <strong>DDIM</strong> and distillation cut it to a few.</p>
+  <h2>Next question</h2>
+  <p style="font-size:1.05em;">Now models can understand images.</p>
+  <p class="fragment" style="font-size:1.05em; color:#1d4ed8;">How do models generate images or future frames?</p>
+  <p class="fragment" style="font-size:0.9em; color:#6b7280;">L24: Dissecting Diffusion and World Models.</p>
 </section>
 
-<!-- 9. Guidance -->
-<section>
-  <h2>Steering the output: conditioning &amp; guidance</h2>
-  <p style="font-size:0.84em; margin:0.1em 0;">Condition the denoiser on a prompt \(c\) (e.g. text): \(\varepsilon_\theta(x_t, t, c)\). To make it follow the prompt <em>more</em> strongly, use <strong>classifier-free guidance</strong>:</p>
-  <div class="defbox" style="text-align:center; margin:0.2em auto;">
-    <p style="margin:0; font-size:0.84em;">\(\tilde\varepsilon = \varepsilon_\theta(x_t,t,\varnothing) + w\,\big(\varepsilon_\theta(x_t,t,c) - \varepsilon_\theta(x_t,t,\varnothing)\big)\)</p>
-  </div>
-  <ul style="font-size:0.8em; margin:0.2em 0 0 1.2em;">
-    <li class="fragment">Train with the condition sometimes dropped (\(\varnothing\)), so the model learns both conditional and unconditional denoising.</li>
-    <li class="fragment">Guidance weight \(w\): higher = more prompt-faithful (but less diverse).</li>
-  </ul>
-</section>
-
-<!-- 10. Latent diffusion / text-to-image -->
-<section>
-  <h2>Text-to-image: latent diffusion</h2>
-  <p style="font-size:0.84em; margin:0.1em 0;">Pixels are huge, so run diffusion in a compressed <strong>latent</strong> space (a VAE encodes/decodes), conditioned on a text embedding &mdash; this is Stable Diffusion.</p>
-  <div style="text-align:center;">
-    <svg viewBox="0 0 540 130" xmlns="http://www.w3.org/2000/svg" class="l23-svg" style="max-height:130px;">
-      <rect x="10" y="50" width="90" height="34" rx="5" fill="#eef2ff" stroke="#4338ca" stroke-width="1.4"/>
-      <text x="55" y="71" class="axis-label" style="fill:#4338ca;">"a red fox"</text>
-      <line class="edge" x1="100" y1="67" x2="130" y2="67" marker-end="url(#arrow-l23)"/>
-      <rect x="130" y="42" width="120" height="50" rx="5" fill="#f3f4f6" stroke="#6b7280" stroke-width="1.4"/>
-      <text x="190" y="63" class="axis-label">diffusion in</text>
-      <text x="190" y="79" class="axis-label">latent space</text>
-      <line class="edge" x1="250" y1="67" x2="280" y2="67" marker-end="url(#arrow-l23)"/>
-      <rect x="280" y="42" width="90" height="50" rx="5" fill="#fef3c7" stroke="#b45309" stroke-width="1.4"/>
-      <text x="325" y="71" class="axis-label" style="fill:#b45309;">VAE decode</text>
-      <line class="edge" x1="370" y1="67" x2="400" y2="67" marker-end="url(#arrow-l23)"/>
-      <rect x="400" y="40" width="120" height="54" rx="5" fill="#fdf2f8" stroke="#be185d" stroke-width="1.4"/>
-      <text x="460" y="71" class="axis-label" style="fill:#be185d;">image</text>
-    </svg>
-  </div>
-  <p class="fragment" style="font-size:0.8em; color:#6b7280; text-align:center; margin-top:0.2em;">Text conditions the denoiser via cross-attention (L21). Latent space makes it fast enough for one GPU.</p>
-</section>
-
-<!-- 11. Multimodal / CLIP -->
-<section>
-  <h2>Multimodal models: a shared space (CLIP)</h2>
-  <p style="font-size:0.84em; margin:0.1em 0;">To connect <em>text</em> and <em>images</em>, train an image encoder \(f\) and text encoder \(g\) so matching pairs land close together (contrastive objective, L18):</p>
-  <div class="defbox" style="text-align:center; margin:0.2em auto;">
-    <p style="margin:0; font-size:0.84em;">maximize \(f(\text{image})^\top g(\text{text})\) for true pairs, minimize it for mismatched pairs</p>
-  </div>
-  <ul style="font-size:0.8em; margin:0.2em 0 0 1.2em;">
-    <li class="fragment">Enables <strong>zero-shot</strong> classification: score an image against text labels.</li>
-    <li class="fragment">Provides the text understanding that guides text-to-image models.</li>
-    <li class="fragment">Same idea scales to <strong>vision-language models</strong> that chat about images.</li>
-  </ul>
-</section>
-
-<!-- 12. Capstone: NeuralOS -->
+<!-- 35. Recap -->
 <section class="center-slide">
-  <h2>Frontier: generating interfaces (NeuralOS)</h2>
-  <div class="defbox" style="max-width:86%; margin:0.2em auto; text-align:left;">
-    <p style="margin:0; font-size:0.9em;">Push generation further: instead of one image, generate the <strong>next screen</strong> of an operating system given your mouse and keyboard input &mdash; a generative model of an entire UI.</p>
-  </div>
-  <ul style="font-size:0.82em; margin:0.4em 0 0 2em; text-align:left; max-width:82%; margin-left:auto; margin-right:auto;">
-    <li class="fragment">Combines the ideas in this module: sequence modeling + diffusion decoding.</li>
-    <li class="fragment">A glimpse of generative models as <strong>interactive world models</strong>, not just image makers.</li>
-  </ul>
-</section>
-
-<!-- 13. Recap + next -->
-<section class="center-slide">
-  <h2>Learning goals (recap) &mdash; Next: course recap</h2>
+  <h2>Recap</h2>
   <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:84%; margin-right:auto;">
-    <li>&#10003; &nbsp;The <strong>generative model families</strong> on one map.</li>
-    <li>&#10003; &nbsp;<strong>VAE</strong>: ELBO + reparameterization.</li>
-    <li>&#10003; &nbsp;<strong>Diffusion</strong>: forward/reverse process + noise-prediction loss.</li>
-    <li>&#10003; &nbsp;<strong>Guidance</strong>, <strong>latent diffusion</strong>, and <strong>CLIP</strong> / multimodal.</li>
+    <li>&#10003; &nbsp;Images become tensors, patches, and visual tokens.</li>
+    <li>&#10003; &nbsp;A vision encoder extracts visual features.</li>
+    <li>&#10003; &nbsp;A projector maps visual features into LM space.</li>
+    <li>&#10003; &nbsp;The decoder attends to image and text context.</li>
+    <li>&#10003; &nbsp;VLMs can caption, answer, read, and reason visually.</li>
+    <li>&#10003; &nbsp;Failure modes include hallucination, OCR, spatial mistakes, and prompt sensitivity.</li>
   </ul>
-  <p class="fragment" style="font-size:0.88em; color:#1d4ed8; text-align:center; margin-top:0.6em;">L24: tie the whole course together &mdash; recap &amp; exam prep.</p>
 </section>
 
 </div>
