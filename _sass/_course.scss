@@ -277,7 +277,7 @@
 @media (min-width: #{$bp-lg}) {
     .course-toc {
         position: sticky;
-        top: 12px;
+        top: 0;
         z-index: 2;
     }
 }
