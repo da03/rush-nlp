@@ -396,7 +396,7 @@ announcements:
       Chat 9 is released and <strong>Assignment 2 is now due Thu Jul 16</strong>. Post questions on
       <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> &mdash; the TAs are available all week.
   - severity: info
-    show: true
+    show: false
     title: "Assignment 1 deadline extended to Thursday, June 25"
     body: >-
       The Assignment 1 PDF, starter code, and model file have been updated on
@@ -427,7 +427,7 @@ announcements:
       <a href="mailto:h293lin@uwaterloo.ca">h293lin@uwaterloo.ca</a>. His weekly
       Thursday 10-11 AM office hours are <strong>cancelled going forward</strong>.
   - severity: info
-    show: true
+    show: false
     title: "Assignment 1: contact Dake Zhang with all A1 questions"
     body: >-
       <strong>Dake Zhang</strong> is now the point of contact for everything
