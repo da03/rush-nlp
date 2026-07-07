@@ -248,23 +248,34 @@ print(x.grad)  # -12</code></pre>
 </section>
 
 <!-- 12. Regression -->
-<section>
+<section id="reg-slide">
   <h2>Example 1: regression</h2>
   <div class="two-col vcenter">
     <div style="flex:1.1;text-align:center;">
       <svg viewBox="0 0 440 260" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
         <line class="axis" x1="55" y1="220" x2="400" y2="220"/><line class="axis" x1="55" y1="35" x2="55" y2="220"/>
-        <!-- Bad initial line + large errors (fade out on click) -->
-        <g class="fragment fade-out" data-fragment-index="1">
+        <!-- Line + errors gradually improve as steps are revealed (JS shows one). -->
+        <g class="rline" data-step="0">
           <line x1="70" y1="110" x2="380" y2="175" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
           <g stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3 2">
-            <line x1="115" y1="186" x2="115" y2="119"/><line x1="155" y1="158" x2="155" y2="128"/><line x1="245" y1="125" x2="245" y2="147"/><line x1="290" y1="120" x2="290" y2="156"/><line x1="345" y1="92" x2="345" y2="168"/>
+            <line x1="115" y1="186" x2="115" y2="119"/><line x1="245" y1="125" x2="245" y2="147"/><line x1="345" y1="92" x2="345" y2="168"/>
           </g>
         </g>
-        <!-- Good fit + small errors (fade in on click) -->
-        <g class="fragment" data-fragment-index="1">
-          <line class="fit-line" x1="70" y1="200" x2="380" y2="70"/>
+        <g class="rline" data-step="1">
+          <line x1="70" y1="155" x2="380" y2="123" stroke="#f97316" stroke-width="3" stroke-linecap="round"/>
           <g stroke="#d97706" stroke-width="1.5" stroke-dasharray="3 2">
+            <line x1="115" y1="186" x2="115" y2="150"/><line x1="245" y1="125" x2="245" y2="137"/><line x1="345" y1="92" x2="345" y2="127"/>
+          </g>
+        </g>
+        <g class="rline" data-step="2">
+          <line x1="70" y1="178" x2="380" y2="96" stroke="#eab308" stroke-width="3" stroke-linecap="round"/>
+          <g stroke="#d97706" stroke-width="1.5" stroke-dasharray="3 2">
+            <line x1="115" y1="186" x2="115" y2="166"/><line x1="245" y1="125" x2="245" y2="132"/><line x1="345" y1="92" x2="345" y2="105"/>
+          </g>
+        </g>
+        <g class="rline" data-step="3">
+          <line class="fit-line" x1="70" y1="200" x2="380" y2="70"/>
+          <g stroke="#16a34a" stroke-width="1.5" stroke-dasharray="3 2">
             <line x1="115" y1="186" x2="115" y2="181"/><line x1="245" y1="125" x2="245" y2="127"/><line x1="345" y1="92" x2="345" y2="85"/>
           </g>
           <text x="250" y="52" fill="#16a34a" font-weight="700" font-size="15">&#375; = wx + b</text>
@@ -275,10 +286,12 @@ print(x.grad)  # -12</code></pre>
       </svg>
     </div>
     <div style="flex:0.9;">
-      <p style="font-size:0.9em;">Prediction: \(\hat y = wx + b\) &nbsp;(\(w,b\) are the parameters)</p>
-      <p style="font-size:0.9em;text-align:center;">Error: \(L = \frac{1}{m}\sum_i(\hat y_i-y_i)^2\)</p>
-      <p class="fragment fade-out" data-fragment-index="1" style="font-size:0.82em;color:#ef4444;">Start with a bad line &mdash; the errors (dashed) are large.</p>
-      <p class="fragment" data-fragment-index="1" style="font-size:0.86em;color:#1d4ed8;">Measure the error, nudge \(w,b\) to shrink it, repeat &mdash; the fit improves.</p>
+      <p style="font-size:0.88em;">Prediction: \(\hat y = wx + b\) &nbsp;(\(w,b\) are the parameters)</p>
+      <p style="font-size:0.86em;text-align:center;">Error: \(L = \frac{1}{m}\sum_i(\hat y_i-y_i)^2\)</p>
+      <p style="font-size:0.82em;color:#ef4444;">Start with a bad line &mdash; big errors (dashed).</p>
+      <p class="fragment reg-step" style="font-size:0.84em;color:#1d4ed8;margin:0.2em 0;">Measure the error, nudge \(w,b\) to shrink it.</p>
+      <p class="fragment reg-step" style="font-size:0.84em;color:#1d4ed8;margin:0.2em 0;">Repeat &mdash; the errors keep shrinking.</p>
+      <p class="fragment reg-step" style="font-size:0.84em;color:#16a34a;margin:0.2em 0;">Good fit: the errors are small.</p>
     </div>
   </div>
 </section>
@@ -559,6 +572,21 @@ print(x.grad)  # -12</code></pre>
   Reveal.on('fragmenthidden', updateKnobHighlight);
   Reveal.on('slidechanged', updateKnobHighlight);
   Reveal.on('ready', updateKnobHighlight);
+
+  // "Example 1: regression": show the line/errors that match the current step.
+  function updateRegFit() {
+    const slide = document.getElementById('reg-slide');
+    if (!slide) return;
+    let shown = 0;
+    slide.querySelectorAll('.fragment.reg-step').forEach(f => { if (f.classList.contains('visible')) shown++; });
+    slide.querySelectorAll('.rline').forEach(g => {
+      g.style.display = (g.getAttribute('data-step') === String(shown)) ? 'inline' : 'none';
+    });
+  }
+  Reveal.on('fragmentshown', updateRegFit);
+  Reveal.on('fragmenthidden', updateRegFit);
+  Reveal.on('slidechanged', updateRegFit);
+  Reveal.on('ready', updateRegFit);
 
   ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
     document.addEventListener(ev, () => {

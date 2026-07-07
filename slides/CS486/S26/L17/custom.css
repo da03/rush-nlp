@@ -274,6 +274,11 @@
 }
 .reveal #knob-slide pre code .cl.on { background: #fde047; }
 
+/* Gradual bad-line -> good-fit build on the regression slide. The JS in
+   index.html shows the .rline group matching the number of revealed steps. */
+.reveal #reg-slide .rline { display: none; }
+.reveal #reg-slide .rline[data-step="0"] { display: inline; }
+
 /* Step-by-step code with a comment above each line (slides 13, 18). */
 .reveal .code-steps { max-width: 82%; margin: 0.2em auto; text-align: left; }
 .reveal .code-step { margin: 0.16em 0; }
