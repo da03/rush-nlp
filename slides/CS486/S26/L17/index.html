@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="custom.css?v=4">
-  <link rel="stylesheet" href="../shared/demo.css?v=2">
+  <link rel="stylesheet" href="../shared/demo.css?v=4">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -153,6 +153,7 @@
 <!-- 7b. Live demo: gradient descent -->
 <section class="center-slide">
   <h2>Playground: gradient descent<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
   <div class="live-demo" data-demo="grad-descent">
     <div class="demo-fallback">Interactive on the live slides: drag the learning rate \(\eta\) and press Step / Run to watch \(x\) roll down \(L(x)=(x-2)^2\). Small steps crawl; too large and it diverges. Runs instantly in your browser.</div>
   </div>
@@ -223,6 +224,7 @@ print(x.grad)  # -12</code></pre>
 <!-- 10b. Live demo: autograd from scratch -->
 <section class="center-slide">
   <h2>Run it: autograd from scratch<span class="demo-badge">live python</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
   <div class="live-demo" data-demo="autograd">
     <div class="demo-fallback">Interactive on the live slides: a ~20-line reverse-mode autograd (a tiny <code>Value</code> class) builds the graph \(x \to (x-2) \to \text{square} \to L\), runs <code>L.backward()</code>, and prints <code>x.grad == -12</code>. Editable real Python, executed in your browser via Pyodide.</div>
   </div>
@@ -314,6 +316,7 @@ print(x.grad)  # -12</code></pre>
 <!-- 13b. Live demo: train the line -->
 <section class="center-slide">
   <h2>Run it: train the line<span class="demo-badge">live python</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
   <div class="live-demo" data-demo="train-line">
     <div class="demo-fallback">Interactive on the live slides: a real numpy training loop (predict \(\to\) MSE \(\to\) gradients \(\to\) update) fits \(\hat y = wx+b\) to noisy data. Drag the learning rate and steps, press Train, and watch the line snap to the data as the loss drops. Runs in your browser via Pyodide.</div>
   </div>
@@ -348,12 +351,12 @@ print(x.grad)  # -12</code></pre>
         <line class="thresh" x1="45" y1="125" x2="395" y2="125"/><line class="thresh" x1="220" y1="40" x2="220" y2="210"/>
         <path class="sig-curve" d="M55 202 C135 202, 175 192, 220 125 C265 58, 305 48, 385 48"/>
         <text x="392" y="44" text-anchor="end" fill="#7c3aed" font-weight="700" font-size="14">&#963;(z)</text>
-        <text x="218" y="230" text-anchor="middle" fill="#6b7280" font-size="12">score  z = wx + b</text>
+        <text x="218" y="230" text-anchor="middle" fill="#6b7280" font-size="12">score  z = w&#183;x + b</text>
       </svg>
     </div>
     <div style="flex:0.95;">
       <p style="font-size:0.9em;">Compute a score:</p>
-      <p style="text-align:center;">\(z=w^\top x+b\)</p>
+      <p style="text-align:center;">\(z = w\cdot x + b\)</p>
       <p class="fragment" style="font-size:0.9em;">Squash it into a probability:</p>
       <p class="fragment" style="text-align:center;">\(P(\text{spam}\mid x)=\sigma(z)=\frac{1}{1+e^{-z}}\)</p>
     </div>
@@ -390,6 +393,7 @@ print(x.grad)  # -12</code></pre>
 <!-- 17b. Live demo: loss playground -->
 <section class="center-slide">
   <h2>Playground: losses &amp; softmax<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
   <div class="live-demo" data-demo="loss-playground">
     <div class="demo-fallback">Interactive on the live slides: drag the score \(z\) to see the sigmoid probability and cross-entropy loss (confidently wrong is punished hard), and adjust class logits and a temperature slider to watch softmax probabilities sharpen or flatten. Runs instantly in your browser.</div>
   </div>
@@ -399,7 +403,7 @@ print(x.grad)  # -12</code></pre>
 <section>
   <h2>The full loop, annotated</h2>
   <div class="code-steps" style="max-width:86%;">
-    <div class="code-step fragment"><span class="cmt"># grab the next mini-batch</span><code class="line">for x, y in loader:</code></div>
+    <div class="code-step fragment"><span class="cmt"># loop over the training data</span><code class="line">for x, y in loader:</code></div>
     <div class="code-step fragment"><span class="cmt"># forward pass: predict</span><code class="line">    pred = model(x)</code></div>
     <div class="code-step fragment"><span class="cmt"># measure the error</span><code class="line">    loss = loss_fn(pred, y)</code></div>
     <div class="code-step fragment"><span class="cmt"># backward pass: compute gradients</span><code class="line">    loss.backward()</code></div>
@@ -490,6 +494,7 @@ print(x.grad)  # -12</code></pre>
 <!-- 22b. Live demo: overfitting -->
 <section class="center-slide">
   <h2>Playground: overfitting<span class="demo-badge">live python</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
   <div class="live-demo" data-demo="overfitting">
     <div class="demo-fallback">Interactive on the live slides: raise the polynomial degree and watch training loss keep dropping while validation loss turns up - overfitting appears as a U-shaped validation curve. The ridge \(\lambda\) slider pulls it back. Fit with numpy in your browser via Pyodide.</div>
   </div>
@@ -596,6 +601,6 @@ print(x.grad)  # -12</code></pre>
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=4"></script>
+<script type="module" src="../shared/demo.js?v=5"></script>
 </body>
 </html>

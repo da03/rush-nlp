@@ -441,7 +441,7 @@ print(f"loss: {losses[0]:.3f} -> {losses[-1]:.4f}")`;
 register('loss-playground', (api) => {
   // (a) sigmoid + cross-entropy
   const sig = (z) => 1 / (1 + Math.exp(-z));
-  const zCanvas = api.canvasEl(300, 200);
+  const zCanvas = api.canvasEl(300, 176);
   const zCtl = api.slider('score z', { min: -6, max: 6, step: 0.1, value: 2, fmt: (v) => v.toFixed(1) });
   let yTrue = 1;
   const ceOut = el('div', { class: 'demo-readout' });
