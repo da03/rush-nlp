@@ -287,6 +287,7 @@ schedule:
     topic: "Training Models From Scratch"
     slides: /slides/CS486/S26/L17/
     async: true
+    recording: "https://youtu.be/caPvTRLUbqE"
     note: "Asynchronous &mdash; pre-recorded video (instructor at ICML). Watch on your own time."
     deadlines:
       - { kind: due,     chat: 8, label: "Chat 8 due" }

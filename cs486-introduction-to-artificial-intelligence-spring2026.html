@@ -348,6 +348,7 @@ excerpt: "CS 486/686: Introduction to Artificial Intelligence (Spring 2026) at t
                     <a class="badge badge--pdf" href="{{ e.slides }}L{{ e.lecture_num }}.pdf" aria-label="L{{ e.lecture_num }} slides as PDF: {{ e.topic }}">PDF</a>
                   {%- endif -%}
                   {%- if e.async -%}<span class="badge badge--async">Recorded &middot; async</span>{%- endif -%}
+                  {%- if e.recording -%}<a class="badge badge--slides" href="{{ e.recording }}" target="_blank" rel="noopener" aria-label="L{{ e.lecture_num }} recorded lecture video">&#9654; Recording</a>{%- endif -%}
                   {%- for d in e.deadlines -%}
                     <span class="badge badge--{{ d.kind }}"{% if d.chat %} data-deadline="chat-{{ d.chat }}-{{ d.kind }}"{% endif %}>{{ d.label }}</span>
                   {%- endfor -%}
