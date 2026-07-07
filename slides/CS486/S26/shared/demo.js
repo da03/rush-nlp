@@ -502,6 +502,8 @@ register('loss-playground', (api) => {
       ]),
     ]),
   ]);
+  zCtl.input.addEventListener('input', drawCE);
+  tempCtl.input.addEventListener('input', drawSM);
   return { mount, init: () => { drawCE(); drawSM(); } };
 });
 
