@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="custom.css?v=4">
+  <link rel="stylesheet" href="../shared/demo.css?v=1">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -149,6 +150,14 @@
   </div>
 </section>
 
+<!-- 7b. Live demo: gradient descent -->
+<section class="center-slide">
+  <h2>Playground: gradient descent<span class="demo-badge">live</span></h2>
+  <div class="live-demo" data-demo="grad-descent">
+    <div class="demo-fallback">Interactive on the live slides: drag the learning rate \(\eta\) and press Step / Run to watch \(x\) roll down \(L(x)=(x-2)^2\). Small steps crawl; too large and it diverges. Runs instantly in your browser.</div>
+  </div>
+</section>
+
 <!-- 8. Autograd -->
 <section>
   <h2>PyTorch computes gradients for us</h2>
@@ -214,6 +223,14 @@ print(x.grad)  # -12</code></pre>
       <text x="340" y="160" text-anchor="middle" font-size="16" fill="#991b1b">backward pass: multiply local derivatives</text>
     </g>
   </svg>
+</section>
+
+<!-- 10b. Live demo: autograd from scratch -->
+<section class="center-slide">
+  <h2>Run it: autograd from scratch<span class="demo-badge">live python</span></h2>
+  <div class="live-demo" data-demo="autograd">
+    <div class="demo-fallback">Interactive on the live slides: a ~20-line reverse-mode autograd (a tiny <code>Value</code> class) builds the graph \(x \to (x-2) \to \text{square} \to L\), runs <code>L.backward()</code>, and prints <code>x.grad == -12</code>. Editable real Python, executed in your browser via Pyodide.</div>
+  </div>
 </section>
 
 <!-- 11. Model training: one knob to many -->
@@ -282,6 +299,14 @@ print(x.grad)  # -12</code></pre>
   </div>
 </section>
 
+<!-- 13b. Live demo: train the line -->
+<section class="center-slide">
+  <h2>Run it: train the line<span class="demo-badge">live python</span></h2>
+  <div class="live-demo" data-demo="train-line">
+    <div class="demo-fallback">Interactive on the live slides: a real numpy training loop (predict \(\to\) MSE \(\to\) gradients \(\to\) update) fits \(\hat y = wx+b\) to noisy data. Drag the learning rate and steps, press Train, and watch the line snap to the data as the loss drops. Runs in your browser via Pyodide.</div>
+  </div>
+</section>
+
 <!-- 14. Classification: target is a class -->
 <section class="center-slide">
   <h2>Example 2: classification</h2>
@@ -347,6 +372,14 @@ print(x.grad)  # -12</code></pre>
     <div class="sm-bar"><span class="sm-val">0.05</span><div class="sm-fill" style="height:8px;"></div><span class="sm-lab">fish</span></div>
   </div>
   <p class="fragment" style="font-size:0.82em;color:#1d4ed8;text-align:center;">Next-token prediction is exactly this, over a vocabulary.</p>
+</section>
+
+<!-- 17b. Live demo: loss playground -->
+<section class="center-slide">
+  <h2>Playground: losses &amp; softmax<span class="demo-badge">live</span></h2>
+  <div class="live-demo" data-demo="loss-playground">
+    <div class="demo-fallback">Interactive on the live slides: drag the score \(z\) to see the sigmoid probability and cross-entropy loss (confidently wrong is punished hard), and adjust class logits and a temperature slider to watch softmax probabilities sharpen or flatten. Runs instantly in your browser.</div>
+  </div>
 </section>
 
 <!-- 18. Full training loop, line by line -->
@@ -441,6 +474,14 @@ print(x.grad)  # -12</code></pre>
   </div>
 </section>
 
+<!-- 22b. Live demo: overfitting -->
+<section class="center-slide">
+  <h2>Playground: overfitting<span class="demo-badge">live python</span></h2>
+  <div class="live-demo" data-demo="overfitting">
+    <div class="demo-fallback">Interactive on the live slides: raise the polynomial degree and watch training loss keep dropping while validation loss turns up - overfitting appears as a U-shaped validation curve. The ridge \(\lambda\) slider pulls it back. Fit with numpy in your browser via Pyodide.</div>
+  </div>
+</section>
+
 <!-- 23. Regularization -->
 <section class="center-slide">
   <h2>Three ways to fight overfitting</h2>
@@ -510,5 +551,6 @@ print(x.grad)  # -12</code></pre>
     });
   });
 </script>
+<script type="module" src="../shared/demo.js?v=1"></script>
 </body>
 </html>
