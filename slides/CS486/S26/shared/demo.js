@@ -512,7 +512,7 @@ register('loss-playground', (api) => {
  * ===================================================================== */
 register('overfitting', (api) => {
   const degCtl = api.slider('polynomial degree', { min: 1, max: 9, step: 1, value: 1, fmt: (v) => String(v) });
-  const lamCtl = api.slider('ridge \u03bb', { min: 0, max: 2, step: 0.05, value: 0, fmt: (v) => v.toFixed(2) });
+  const lamCtl = api.slider('ridge \u03bb', { min: 0, max: 10, step: 0.25, value: 0, fmt: (v) => v.toFixed(2) });
   const fitCanvas = api.canvasEl(330, 240);
   const curveCanvas = api.canvasEl(300, 240);
   const readout = el('div', { class: 'demo-readout' });
@@ -528,7 +528,8 @@ xv = np.sort(rng.uniform(-3, 3, 12)); yv = f(xv) + rng.normal(0, 0.35, 12)
 
 def fit(deg, lam):
     X = np.vander(xt, deg + 1)
-    A = X.T @ X + lam * np.eye(deg + 1)
+    scale = np.trace(X.T @ X) / (deg + 1)   # keep lam meaningful across degrees
+    A = X.T @ X + lam * scale * np.eye(deg + 1)
     return np.linalg.solve(A, X.T @ yt)
 
 def mse(c, xx, yy):
@@ -585,7 +586,9 @@ xs_l = xs.tolist(); ys_l = ys.tolist()`;
       readout.appendChild(el('span', { html: `degree <b>${deg}</b>` }));
       readout.appendChild(el('span', { html: `<span style="color:#1d4ed8">train</span> = <b>${train[deg - 1].toFixed(3)}</b>` }));
       readout.appendChild(el('span', { html: `<span style="color:#dc2626">val</span> = <b>${val[deg - 1].toFixed(3)}</b>` }));
-      readout.appendChild(el('span', { html: deg >= 7 ? '<b style="color:#b91c1c">overfitting</b>' : (deg <= 1 ? 'underfitting' : 'good fit') }));
+      const tr = train[deg - 1], vl = val[deg - 1];
+      const verdict = tr > 0.4 ? '<b style="color:#b45309">underfitting</b>' : ((vl - tr) > 0.2 ? '<b style="color:#b91c1c">overfitting</b>' : '<b style="color:#166534">good fit</b>');
+      readout.appendChild(el('span', { html: verdict }));
       api.setStatus('Done.', 'ok');
     } catch (e) {
       api.setStatus('Error: ' + String(e), 'err');
