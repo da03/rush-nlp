@@ -254,22 +254,31 @@ print(x.grad)  # -12</code></pre>
     <div style="flex:1.1;text-align:center;">
       <svg viewBox="0 0 440 260" xmlns="http://www.w3.org/2000/svg" class="l16-chart">
         <line class="axis" x1="55" y1="220" x2="400" y2="220"/><line class="axis" x1="55" y1="35" x2="55" y2="220"/>
-        <line class="fit-line" x1="70" y1="200" x2="380" y2="70"/>
-        <g stroke="#d97706" stroke-width="1.6" stroke-dasharray="3 2">
-          <line x1="115" y1="175" x2="115" y2="186"/><line x1="200" y1="155" x2="200" y2="142"/><line x1="290" y1="110" x2="290" y2="120"/>
+        <!-- Bad initial line + large errors (fade out on click) -->
+        <g class="fragment fade-out" data-fragment-index="1">
+          <line x1="70" y1="110" x2="380" y2="175" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
+          <g stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3 2">
+            <line x1="115" y1="186" x2="115" y2="119"/><line x1="155" y1="158" x2="155" y2="128"/><line x1="245" y1="125" x2="245" y2="147"/><line x1="290" y1="120" x2="290" y2="156"/><line x1="345" y1="92" x2="345" y2="168"/>
+          </g>
+        </g>
+        <!-- Good fit + small errors (fade in on click) -->
+        <g class="fragment" data-fragment-index="1">
+          <line class="fit-line" x1="70" y1="200" x2="380" y2="70"/>
+          <g stroke="#d97706" stroke-width="1.5" stroke-dasharray="3 2">
+            <line x1="115" y1="186" x2="115" y2="181"/><line x1="245" y1="125" x2="245" y2="127"/><line x1="345" y1="92" x2="345" y2="85"/>
+          </g>
+          <text x="250" y="52" fill="#16a34a" font-weight="700" font-size="15">&#375; = wx + b</text>
         </g>
         <circle class="point" cx="115" cy="186" r="5"/><circle class="point" cx="155" cy="158" r="5"/><circle class="point" cx="200" cy="142" r="5"/><circle class="point" cx="245" cy="125" r="5"/><circle class="point" cx="290" cy="120" r="5"/><circle class="point" cx="345" cy="92" r="5"/>
-        <text x="250" y="52" fill="#16a34a" font-weight="700" font-size="15">&#375; = wx + b</text>
         <text x="225" y="250" text-anchor="middle" fill="#6b7280" font-size="12">input x</text>
         <text x="22" y="128" text-anchor="middle" fill="#6b7280" font-size="12" transform="rotate(-90 22 128)">target y</text>
       </svg>
     </div>
     <div style="flex:0.9;">
-      <p style="font-size:0.88em;">Prediction is a number:</p>
-      <p style="font-size:1.05em;text-align:center;">\(\hat y = w\,x + b\)</p>
-      <p style="font-size:0.82em;"><strong>\(w\)</strong> is the slope, <strong>\(b\)</strong> the intercept &mdash; the knobs we learn.</p>
-      <p style="font-size:0.9em;text-align:center;">\(L = \frac{1}{m}\sum_i(\hat y_i-y_i)^2\)</p>
-      <p class="fragment" style="font-size:0.8em;color:#6b7280;">Squared error punishes large residuals (dashed).</p>
+      <p style="font-size:0.9em;">Prediction: \(\hat y = wx + b\) &nbsp;(\(w,b\) are the parameters)</p>
+      <p style="font-size:0.9em;text-align:center;">Error: \(L = \frac{1}{m}\sum_i(\hat y_i-y_i)^2\)</p>
+      <p class="fragment fade-out" data-fragment-index="1" style="font-size:0.82em;color:#ef4444;">Start with a bad line &mdash; the errors (dashed) are large.</p>
+      <p class="fragment" data-fragment-index="1" style="font-size:0.86em;color:#1d4ed8;">Measure the error, nudge \(w,b\) to shrink it, repeat &mdash; the fit improves.</p>
     </div>
   </div>
 </section>
@@ -280,7 +289,7 @@ print(x.grad)  # -12</code></pre>
   <div class="code-steps">
     <div class="code-step fragment"><span class="cmt"># the knob: a line  y = wx + b</span><code class="line">model = nn.Linear(1, 1)</code></div>
     <div class="code-step fragment"><span class="cmt"># how we score error: mean squared error</span><code class="line">loss_fn = nn.MSELoss()</code></div>
-    <div class="code-step fragment"><span class="cmt"># how we update the knobs</span><code class="line">optimizer = torch.optim.SGD(model.parameters(), lr=0.1)</code></div>
+    <div class="code-step fragment"><span class="cmt"># how we update the parameters</span><code class="line">optimizer = torch.optim.SGD(model.parameters(), lr=0.1)</code></div>
     <div class="code-step fragment"><span class="cmt"># forward: predict from inputs</span><code class="line">pred = model(x)</code></div>
     <div class="code-step fragment"><span class="cmt"># measure how wrong we are</span><code class="line">loss = loss_fn(pred, y)</code></div>
     <div class="code-step fragment"><span class="cmt"># autograd fills in the gradients</span><code class="line">loss.backward()</code></div>
@@ -309,7 +318,7 @@ print(x.grad)  # -12</code></pre>
     </div>
     <div class="task-card fragment">
       <h3>Classification</h3>
-      <p>\(\hat y = \text{"spam"}\)</p>
+      <p>\(\hat y = \text{``spam''}\)</p>
       <p style="font-size:0.8em;color:#6b7280;">a class</p>
     </div>
   </div>
@@ -343,10 +352,10 @@ print(x.grad)  # -12</code></pre>
   <h2>Loss for classification</h2>
   <p style="font-size:0.92em;">Cross-entropy punishes being confidently wrong.</p>
   <p style="font-size:1.05em; text-align:center;">\(L = -\big[y\log \hat y + (1-y)\log(1-\hat y)\big]\)</p>
-  <p style="font-size:0.82em; text-align:center; color:#6b7280;">True label spam \(\Rightarrow y=1\), so \(L = -\log \hat y\).</p>
+  <p class="fragment" data-fragment-index="1" style="font-size:0.82em; text-align:center; color:#6b7280;">True label spam \(\Rightarrow y=1\), so \(L = -\log \hat y\).</p>
   <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:80%; margin:0.4em auto;">
-    <div class="task-card"><h3>confident &amp; right</h3><p>\(\hat y=0.9\)</p><p>\(L=-\log 0.9 \approx 0.11\)</p></div>
-    <div class="task-card fragment"><h3>confident &amp; wrong</h3><p>\(\hat y=0.1\)</p><p>\(L=-\log 0.1 \approx 2.30\)</p></div>
+    <div class="task-card fragment" data-fragment-index="2"><h3>confident &amp; right</h3><p>\(\hat y=0.9\)</p><p>\(L=-\log 0.9 \approx 0.11\)</p></div>
+    <div class="task-card fragment" data-fragment-index="3"><h3>confident &amp; wrong</h3><p>\(\hat y=0.1\)</p><p>\(L=-\log 0.1 \approx 2.30\)</p></div>
   </div>
 </section>
 
@@ -451,10 +460,10 @@ print(x.grad)  # -12</code></pre>
         <path class="curve-train" d="M70 70 Q190 155, 370 220"/>
         <path class="curve-valid" d="M70 85 Q150 200, 210 140 Q285 80, 370 55"/>
         <circle class="marker fragment" cx="210" cy="140" r="5"/><text class="marker-label fragment" x="210" y="128" text-anchor="middle" fill="#166534">stop here</text>
-        <text x="352" y="222" fill="#1d4ed8" font-weight="700" font-size="13">train</text>
-        <text x="352" y="55" fill="#dc2626" font-weight="700" font-size="13">validation</text>
-        <text x="220" y="270" text-anchor="middle" fill="#6b7280" font-size="12">epochs &rarr;</text>
-        <text x="30" y="135" text-anchor="middle" fill="#6b7280" font-size="12" transform="rotate(-90 30 135)">loss</text>
+        <text x="350" y="222" fill="#1d4ed8" font-weight="700" font-size="15">train</text>
+        <text x="350" y="55" fill="#dc2626" font-weight="700" font-size="15">validation</text>
+        <text x="220" y="272" text-anchor="middle" fill="#6b7280" font-size="17">epochs &rarr;</text>
+        <text x="26" y="135" text-anchor="middle" fill="#6b7280" font-size="17" transform="rotate(-90 26 135)">loss</text>
       </svg>
     </div>
     <div style="flex:0.92;">
