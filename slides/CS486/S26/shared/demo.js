@@ -436,12 +436,11 @@ print(f"loss: {losses[0]:.3f} -> {losses[-1]:.4f}")`;
 });
 
 /* =====================================================================
- *  DEMO 4 - loss playground: sigmoid + cross-entropy, softmax + temp (JS)
+ *  DEMO 4a - cross-entropy playground: sigmoid + cross-entropy (JS)
  * ===================================================================== */
-register('loss-playground', (api) => {
-  // (a) sigmoid + cross-entropy
+register('ce-playground', (api) => {
   const sig = (z) => 1 / (1 + Math.exp(-z));
-  const zCanvas = api.canvasEl(300, 176);
+  const zCanvas = api.canvasEl(380, 240);
   const zCtl = api.slider('score z', { min: -6, max: 6, step: 0.1, value: 2, fmt: (v) => v.toFixed(1) });
   let yTrue = 1;
   const ceOut = el('div', { class: 'demo-readout' });
@@ -461,8 +460,19 @@ register('loss-playground', (api) => {
     ceOut.appendChild(el('span', { html: (loss < 0.3 ? '<b style="color:#166534">confident &amp; right</b>' : (loss > 1.5 ? '<b style="color:#b91c1c">confidently wrong</b>' : 'unsure')) }));
   }
   const flipBtn = api.button('flip true label', () => { yTrue = yTrue === 1 ? 0 : 1; drawCE(); }, 'ghost');
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-controls' }, [zCtl.field, flipBtn]),
+    el('div', { class: 'demo-stage' }, [zCanvas, ceOut]),
+    el('div', { class: 'demo-hint', text: 'Cross-entropy = \u2212log(prob of the true class). Confident and wrong is punished hard.' }),
+  ]);
+  zCtl.input.addEventListener('input', drawCE);
+  return { mount, init: drawCE };
+});
 
-  // (b) softmax + temperature
+/* =====================================================================
+ *  DEMO 4b - softmax playground: softmax + temperature (JS)
+ * ===================================================================== */
+register('softmax-playground', (api) => {
   const labels = ['dog', 'cat', 'bird', 'fish'];
   const logits = [1.0, 3.0, 1.5, 0.5];
   const barsWrap = el('div', { class: 'demo-bars' });
@@ -485,26 +495,14 @@ register('loss-playground', (api) => {
     const best = p.indexOf(Math.max(...p));
     barEls.forEach((b, i) => { b.fill.style.height = (p[i] * 96 + 2) + 'px'; b.val.textContent = p[i].toFixed(2); b.bar.classList.toggle('hot', i === best); });
   }
-
   const mount = el('div', {}, [
-    el('div', { class: 'demo-split' }, [
-      el('div', {}, [
-        el('div', { class: 'demo-controls' }, [zCtl.field, flipBtn]),
-        zCanvas,
-        ceOut,
-        el('div', { class: 'demo-hint', text: 'Cross-entropy = \u2212log(prob of the true class). Confident and wrong is punished hard.' }),
-      ]),
-      el('div', {}, [
-        el('div', { class: 'demo-controls' }, [tempCtl.field]),
-        el('div', { class: 'demo-controls' }, logitCtls.map((c) => c.field)),
-        barsWrap,
-        el('div', { class: 'demo-hint', text: 'Softmax turns scores into probabilities. Low temperature sharpens; high temperature flattens (this is the decoding knob in L20/L21).' }),
-      ]),
-    ]),
+    el('div', { class: 'demo-controls' }, [tempCtl.field]),
+    el('div', { class: 'demo-controls' }, logitCtls.map((c) => c.field)),
+    barsWrap,
+    el('div', { class: 'demo-hint', text: 'Softmax turns scores into probabilities. Low temperature sharpens; high temperature flattens (the decoding knob in L20/L21).' }),
   ]);
-  zCtl.input.addEventListener('input', drawCE);
   tempCtl.input.addEventListener('input', drawSM);
-  return { mount, init: () => { drawCE(); drawSM(); } };
+  return { mount, init: drawSM };
 });
 
 /* =====================================================================
@@ -512,7 +510,6 @@ register('loss-playground', (api) => {
  * ===================================================================== */
 register('overfitting', (api) => {
   const degCtl = api.slider('polynomial degree', { min: 1, max: 9, step: 1, value: 1, fmt: (v) => String(v) });
-  const lamCtl = api.slider('ridge \u03bb', { min: 0, max: 10, step: 0.25, value: 0, fmt: (v) => v.toFixed(2) });
   const fitCanvas = api.canvasEl(330, 240);
   const curveCanvas = api.canvasEl(300, 240);
   const readout = el('div', { class: 'demo-readout' });
@@ -526,11 +523,9 @@ f = lambda t: 0.5*t + np.sin(t)
 xt = np.sort(rng.uniform(-3, 3, 12)); yt = f(xt) + rng.normal(0, 0.35, 12)
 xv = np.sort(rng.uniform(-3, 3, 12)); yv = f(xv) + rng.normal(0, 0.35, 12)
 
-def fit(deg, lam):
+def fit(deg):
     X = np.vander(xt, deg + 1)
-    scale = np.trace(X.T @ X) / (deg + 1)   # keep lam meaningful across degrees
-    A = X.T @ X + lam * scale * np.eye(deg + 1)
-    return np.linalg.solve(A, X.T @ yt)
+    return np.linalg.lstsq(X, yt, rcond=None)[0]
 
 def mse(c, xx, yy):
     return float(np.mean((np.polyval(c, xx) - yy) ** 2))
@@ -538,10 +533,10 @@ def mse(c, xx, yy):
 degs = list(range(1, 10))
 xt_l = xt.tolist(); yt_l = yt.tolist(); xv_l = xv.tolist(); yv_l = yv.tolist()`;
   }
-  function pyForDegree(deg, lam) {
-    return `train = [mse(fit(d, ${lam}), xt, yt) for d in degs]
-val = [mse(fit(d, ${lam}), xv, yv) for d in degs]
-c = fit(${deg}, ${lam})
+  function pyForDegree(deg) {
+    return `train = [mse(fit(d), xt, yt) for d in degs]
+val = [mse(fit(d), xv, yv) for d in degs]
+c = fit(${deg})
 xs = np.linspace(-3.3, 3.3, 140)
 ys = np.clip(np.polyval(c, xs), -8, 8)
 xs_l = xs.tolist(); ys_l = ys.tolist()`;
@@ -562,7 +557,7 @@ xs_l = xs.tolist(); ys_l = ys.tolist()`;
   async function refresh() {
     try {
       await ensure();
-      await api.runPython(py, pyForDegree(degCtl.get(), lamCtl.get()), () => {});
+      await api.runPython(py, pyForDegree(degCtl.get()), () => {});
       const g = py.globals;
       const train = g.get('train').toJs(), val = g.get('val').toJs();
       const xs = g.get('xs_l').toJs(), ys = g.get('ys_l').toJs();
@@ -596,13 +591,12 @@ xs_l = xs.tolist(); ys_l = ys.tolist()`;
   }
 
   degCtl.input.addEventListener('change', () => { if (ready) refresh(); });
-  lamCtl.input.addEventListener('change', () => { if (ready) refresh(); });
   const runBtn = api.button('Fit in Python', refresh);
 
   const mount = el('div', {}, [
-    el('div', { class: 'demo-controls' }, [degCtl.field, lamCtl.field, runBtn]),
+    el('div', { class: 'demo-controls' }, [degCtl.field, runBtn]),
     el('div', { class: 'demo-stage' }, [fitCanvas, curveCanvas, readout]),
-    el('div', { class: 'demo-hint', text: 'Blue = training points, red = validation points. Raise the degree: training loss keeps dropping but validation loss turns up - overfitting. Ridge \u03bb pulls it back.' }),
+    el('div', { class: 'demo-hint', text: 'Blue = training points, red = validation points. Raise the degree: training loss keeps dropping but validation loss turns up \u2014 that gap is overfitting.' }),
   ]);
   const preview = () => {
     const p = api.makePlot(fitCanvas, { xMin: -3.4, xMax: 3.4, yMin: -4, yMax: 4 }); p.clear(); p.axes('x', 'y');

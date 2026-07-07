@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="custom.css?v=4">
+  <link rel="stylesheet" href="custom.css?v=6">
   <link rel="stylesheet" href="../shared/demo.css?v=4">
 </head>
 <body>
@@ -376,6 +376,15 @@ print(x.grad)  # -12</code></pre>
   </div>
 </section>
 
+<!-- 16b. Live demo: cross-entropy -->
+<section class="center-slide">
+  <h2>Playground: cross-entropy loss<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
+  <div class="live-demo" data-demo="ce-playground">
+    <div class="demo-fallback">Interactive on the live slides: drag the score \(z\) to see the sigmoid probability \(\sigma(z)\) and the cross-entropy loss &mdash; being confident and wrong is punished hard. Flip the true label to compare. Runs instantly in your browser.</div>
+  </div>
+</section>
+
 <!-- 17. Softmax -->
 <section>
   <h2>Many classes: softmax</h2>
@@ -390,12 +399,12 @@ print(x.grad)  # -12</code></pre>
   <p class="fragment" style="font-size:0.82em;color:#1d4ed8;text-align:center;">Next-token prediction is exactly this, over a vocabulary.</p>
 </section>
 
-<!-- 17b. Live demo: loss playground -->
+<!-- 17b. Live demo: softmax playground -->
 <section class="center-slide">
-  <h2>Playground: losses &amp; softmax<span class="demo-badge">live</span></h2>
+  <h2>Playground: softmax &amp; temperature<span class="demo-badge">live</span></h2>
   <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
-  <div class="live-demo" data-demo="loss-playground">
-    <div class="demo-fallback">Interactive on the live slides: drag the score \(z\) to see the sigmoid probability and cross-entropy loss (confidently wrong is punished hard), and adjust class logits and a temperature slider to watch softmax probabilities sharpen or flatten. Runs instantly in your browser.</div>
+  <div class="live-demo" data-demo="softmax-playground">
+    <div class="demo-fallback">Interactive on the live slides: adjust the class scores (logits) and a temperature slider and watch the softmax probabilities sharpen or flatten. Runs instantly in your browser.</div>
   </div>
 </section>
 
@@ -404,11 +413,11 @@ print(x.grad)  # -12</code></pre>
   <h2>The full loop, annotated</h2>
   <div class="code-steps" style="max-width:86%;">
     <div class="code-step fragment"><span class="cmt"># loop over the training data</span><code class="line">for x, y in loader:</code></div>
-    <div class="code-step fragment"><span class="cmt"># forward pass: predict</span><code class="line">    pred = model(x)</code></div>
-    <div class="code-step fragment"><span class="cmt"># measure the error</span><code class="line">    loss = loss_fn(pred, y)</code></div>
-    <div class="code-step fragment"><span class="cmt"># backward pass: compute gradients</span><code class="line">    loss.backward()</code></div>
-    <div class="code-step fragment"><span class="cmt"># update the parameters</span><code class="line">    optimizer.step()</code></div>
-    <div class="code-step fragment"><span class="cmt"># reset gradients for the next step</span><code class="line">    optimizer.zero_grad()</code></div>
+    <div class="code-step fragment indent"><span class="cmt"># forward pass: predict</span><code class="line">pred = model(x)</code></div>
+    <div class="code-step fragment indent"><span class="cmt"># measure the error</span><code class="line">loss = loss_fn(pred, y)</code></div>
+    <div class="code-step fragment indent"><span class="cmt"># backward pass: compute gradients</span><code class="line">loss.backward()</code></div>
+    <div class="code-step fragment indent"><span class="cmt"># update the parameters</span><code class="line">optimizer.step()</code></div>
+    <div class="code-step fragment indent"><span class="cmt"># reset gradients for the next step</span><code class="line">optimizer.zero_grad()</code></div>
   </div>
   <p class="fragment" style="font-size:0.82em;color:#6b7280;text-align:center;">This is the pattern to recognize for the rest of the module.</p>
 </section>
@@ -496,7 +505,7 @@ print(x.grad)  # -12</code></pre>
   <h2>Playground: overfitting<span class="demo-badge">live python</span></h2>
   <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
   <div class="live-demo" data-demo="overfitting">
-    <div class="demo-fallback">Interactive on the live slides: raise the polynomial degree and watch training loss keep dropping while validation loss turns up - overfitting appears as a U-shaped validation curve. The ridge \(\lambda\) slider pulls it back. Fit with numpy in your browser via Pyodide.</div>
+    <div class="demo-fallback">Interactive on the live slides: raise the polynomial degree and watch training loss keep dropping while validation loss turns up - overfitting appears as a U-shaped validation curve. Fit with numpy in your browser via Pyodide.</div>
   </div>
 </section>
 
@@ -601,6 +610,6 @@ print(x.grad)  # -12</code></pre>
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=5"></script>
+<script type="module" src="../shared/demo.js?v=6"></script>
 </body>
 </html>
