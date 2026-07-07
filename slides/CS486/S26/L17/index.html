@@ -184,20 +184,15 @@ print(x.grad)  # -12</code></pre>
 <!-- 9. How autograd works (chain rule) -->
 <section class="center-slide">
   <h2>How can gradients be automatic?</h2>
-  <p style="font-size:0.9em;">Every operation is recorded, and each knows its own <strong>local derivative</strong>. The <strong>chain rule</strong> multiplies them backward.</p>
-  <div class="task-cards" style="grid-template-columns:1fr 1.15fr; max-width:84%; margin:0.5em auto;">
-    <div class="task-card">
-      <h3>Forward</h3>
-      <p>\(u = x - 2\)</p>
-      <p>\(L = u^2\)</p>
-    </div>
-    <div class="task-card fragment">
-      <h3>Backward (chain rule)</h3>
-      <p>\(\tfrac{dL}{du} = 2u,\quad \tfrac{du}{dx} = 1\)</p>
-      <p>\(\tfrac{dL}{dx} = 2u \cdot 1 = 2(x-2)\)</p>
-    </div>
+  <p style="font-size:0.84em; margin:0.2em 0;">Every operation records its own <strong>local derivative</strong>; the <strong>chain rule</strong> multiplies them backward.</p>
+  <p style="font-size:0.92em; margin:0.2em 0;">Forward: \(u = x - 2\), then \(L = u^2\).</p>
+  <div style="max-width:78%; margin:0.2em auto; text-align:left; font-size:0.9em; line-height:1.5;">
+    <p class="fragment" data-fragment-index="1"><strong>Chain rule:</strong> \(\tfrac{dL}{dx} = \tfrac{dL}{du}\cdot\tfrac{du}{dx}\)</p>
+    <p class="fragment" data-fragment-index="2"><strong>Local:</strong> \(\tfrac{dL}{du} = 2u\) &nbsp;<span style="color:#6b7280;">(since \(L=u^2\))</span></p>
+    <p class="fragment" data-fragment-index="3"><strong>Local:</strong> \(\tfrac{du}{dx} = 1\) &nbsp;<span style="color:#6b7280;">(since \(u=x-2\))</span></p>
+    <p class="fragment" data-fragment-index="4"><strong>Multiply:</strong> \(\tfrac{dL}{dx} = 2u\cdot 1 = 2(x-2)\)</p>
   </div>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8; text-align:center;">At \(x=-4\): \(\tfrac{dL}{dx} = 2(-6) = -12\) &mdash; exactly <code>x.grad</code>.</p>
+  <p class="fragment" data-fragment-index="5" style="font-size:0.88em; color:#1d4ed8; text-align:center; margin:0.3em 0 0;">At \(x=-4\): \(\tfrac{dL}{dx} = 2(-6) = -12\) &mdash; exactly <code>x.grad</code>.</p>
 </section>
 
 <!-- 10. Computation graph -->
@@ -234,24 +229,19 @@ print(x.grad)  # -12</code></pre>
 </section>
 
 <!-- 11. Model training: one knob to many -->
-<section>
+<section id="knob-slide">
   <h2>From one knob to many</h2>
-  <p style="font-size:0.9em; text-align:center;">A model has many parameters, collected as \(\theta\). The loop does not change.</p>
+  <p style="font-size:0.88em; text-align:center; margin:0.2em 0;">A model has many parameters, collected as \(\theta\). The loop does not change.</p>
+  <p style="text-align:center; font-size:1.1em; margin:0.2em 0;">\(\theta \leftarrow \theta - \eta\,\nabla_\theta L(\theta)\)</p>
   <div class="two-col vcenter">
-    <div style="flex:1.15;">
-      <pre style="font-size:0.52em; margin:0.2em 0;"><code>for x, y in loader:
-    pred = model(x)
-    loss = loss_fn(pred, y)
-<span class="hl">    loss.backward()       # &#8711;&#952; L</span>
-<span class="hl">    optimizer.step()      # &#952; &#8592; &#952; &#8722; &#951;&#8711;&#952; L</span>
-    optimizer.zero_grad()</code></pre>
+    <div style="flex:1.2;">
+      <pre style="font-size:0.48em; margin:0.2em 0;"><code><span class="cl" data-line="params">optimizer = SGD(model.parameters(), lr=0.1)</span><span class="cl">&nbsp;</span><span class="cl">for x, y in loader:</span><span class="cl">    pred = model(x)</span><span class="cl">    loss = loss_fn(pred, y)</span><span class="cl" data-line="back">    loss.backward()</span><span class="cl" data-line="step">    optimizer.step()</span><span class="cl">    optimizer.zero_grad()</span></code></pre>
     </div>
     <div style="flex:0.9;">
-      <p style="text-align:center; font-size:1.05em;">\(\theta \leftarrow \theta - \eta\,\nabla_\theta L(\theta)\)</p>
-      <div class="defbox" style="text-align:left; font-size:0.8em; margin:0.3em 0;">
-        <p style="margin:0.15em 0;"><code>model.parameters()</code> &rarr; \(\theta\)</p>
-        <p style="margin:0.15em 0;"><code>loss.backward()</code> &rarr; \(\nabla_\theta L\)</p>
-        <p style="margin:0.15em 0;"><code>optimizer.step()</code> &rarr; update \(\theta\)</p>
+      <div class="defbox" style="text-align:left; font-size:0.8em; margin:0.2em 0;">
+        <p class="fragment" data-fragment-index="1" data-map="params" style="margin:0.25em 0;"><code>model.parameters()</code> &rarr; the parameters \(\theta\)</p>
+        <p class="fragment" data-fragment-index="2" data-map="back" style="margin:0.25em 0;"><code>loss.backward()</code> &rarr; the gradient \(\nabla_\theta L\)</p>
+        <p class="fragment" data-fragment-index="3" data-map="step" style="margin:0.25em 0;"><code>optimizer.step()</code> &rarr; update \(\theta \leftarrow \theta - \eta\nabla_\theta L\)</p>
       </div>
     </div>
   </div>
@@ -543,6 +533,23 @@ print(x.grad)  # -12</code></pre>
     },
     plugins: (typeof RevealMath !== 'undefined' && RevealMath.KaTeX) ? [ RevealMath.KaTeX ] : []
   });
+
+  // "From one knob to many": highlight the code line for the current step.
+  function updateKnobHighlight() {
+    const slide = document.getElementById('knob-slide');
+    if (!slide) return;
+    slide.querySelectorAll('.cl.on').forEach(x => x.classList.remove('on'));
+    const vis = slide.querySelectorAll('p[data-map].fragment.visible');
+    const last = vis[vis.length - 1];
+    if (last) {
+      const line = slide.querySelector('.cl[data-line="' + last.getAttribute('data-map') + '"]');
+      if (line) line.classList.add('on');
+    }
+  }
+  Reveal.on('fragmentshown', updateKnobHighlight);
+  Reveal.on('fragmenthidden', updateKnobHighlight);
+  Reveal.on('slidechanged', updateKnobHighlight);
+  Reveal.on('ready', updateKnobHighlight);
 
   ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
     document.addEventListener(ev, () => {

@@ -263,6 +263,17 @@
   width: 100%;
 }
 
+/* Step-driven line highlighting on the "From one knob to many" slide. Each
+   code line is a block span; the JS in index.html toggles .on to match the
+   currently revealed mapping fragment. */
+.reveal #knob-slide pre code .cl {
+  display: block;
+  border-radius: 3px;
+  padding: 0 3px;
+  transition: background-color 0.2s ease;
+}
+.reveal #knob-slide pre code .cl.on { background: #fde047; }
+
 /* Step-by-step code with a comment above each line (slides 13, 18). */
 .reveal .code-steps { max-width: 82%; margin: 0.2em auto; text-align: left; }
 .reveal .code-step { margin: 0.16em 0; }
