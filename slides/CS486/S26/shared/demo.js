@@ -702,21 +702,28 @@ register('nonlinearity', (api) => {
 
   const canvas = api.canvasEl(460, 250);
   const readout = el('div', { class: 'demo-readout' });
+  const grid = []; for (let t = -3; t <= 3.0001; t += 0.08) grid.push(t);
+  const gact = (z) => useAct ? Math.tanh(z) : z;
+
+  function initParams() {
+    const r = api.rng32(7);
+    return {
+      W1: new Array(H).fill(0).map(() => (r() * 2 - 1) * 1.6),
+      b1: new Array(H).fill(0).map(() => (r() * 2 - 1) * 1.6),
+      W2: new Array(H).fill(0).map(() => (r() * 2 - 1) * 0.6),
+      b2: 0,
+    };
+  }
+  const curveFor = (W1, b1, W2, b2) => grid.map((x) => { let o = b2; for (let j = 0; j < H; j++) o += W2[j] * gact(W1[j] * x + b1[j]); return o; });
 
   function train() {
-    const r = api.rng32(7);
-    let W1 = new Array(H).fill(0).map(() => (r() * 2 - 1) * 1.6);
-    let b1 = new Array(H).fill(0).map(() => (r() * 2 - 1) * 1.6);
-    let W2 = new Array(H).fill(0).map(() => (r() * 2 - 1) * 0.6);
-    let b2 = 0;
+    const P0 = initParams();
+    let W1 = P0.W1, b1 = P0.b1, W2 = P0.W2, b2 = P0.b2;
     const vW1 = new Array(H).fill(0), vb1 = new Array(H).fill(0), vW2 = new Array(H).fill(0);
     let vb2 = 0;
-    const g = (z) => useAct ? Math.tanh(z) : z;
+    const g = gact;
     const dg = (a) => useAct ? (1 - a * a) : 1;
-    const grid = []; for (let t = -3; t <= 3.0001; t += 0.08) grid.push(t);
-    const curveAt = () => grid.map((x) => {
-      let o = b2; for (let j = 0; j < H; j++) o += W2[j] * g(W1[j] * x + b1[j]); return o;
-    });
+    const curveAt = () => curveFor(W1, b1, W2, b2);
     const lr = 0.05, mom = 0.9, total = 900, capEvery = 20;
     const caps = [];
     for (let step = 0; step <= total; step++) {
@@ -766,11 +773,21 @@ register('nonlinearity', (api) => {
   }, 'ghost');
 
   const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'Model: 1 input &rarr; 12 tanh hidden units &rarr; 1 output &nbsp;&middot;&nbsp; target y = sin(2x) &nbsp;&middot;&nbsp; trained with the L17 loop' }),
     el('div', { class: 'demo-controls' }, [toggle, api.button('Train', run)]),
     el('div', { class: 'demo-stage' }, [canvas, readout]),
     el('div', { class: 'demo-hint', text: 'Same net, same data. Activation OFF: stacked linear layers stay a line. ON: the layer bends to fit the wave. That bend is what nonlinearity buys.' }),
   ]);
-  const preview = () => { const p = api.makePlot(canvas, { xMin: -3.2, xMax: 3.2, yMin: -1.5, yMax: 1.5 }); p.clear(); p.axes('x', 'y'); p.points(xs, ys, { color: '#1f2937', r: 3 }); };
+  const preview = () => {
+    const P = initParams();
+    const p = api.makePlot(canvas, { xMin: -3.2, xMax: 3.2, yMin: -1.5, yMax: 1.5 });
+    p.clear(); p.axes('x', 'y');
+    p.points(xs, ys, { color: '#1f2937', r: 3 });
+    p.line(grid, curveFor(P.W1, P.b1, P.W2, P.b2).map((v) => Math.max(-1.5, Math.min(1.5, v))), { color: '#94a3b8', width: 2.5, dash: [5, 4] });
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `activation: <b>${useAct ? 'ON (tanh)' : 'OFF (linear)'}</b>` }));
+    readout.appendChild(el('span', { html: 'untrained &mdash; press <b>Train</b>' }));
+  };
   return { mount, init: preview, onLeave: () => { if (timer) { clearInterval(timer); timer = null; } } };
 });
 
@@ -781,10 +798,9 @@ register('nonlinearity', (api) => {
  * ===================================================================== */
 register('xor-net', (api) => {
   const HID = 2;
-  // Curated inits that reliably drive the 2-2-1 net to a crisp XOR solution
-  // (verified offline); reseed cycles through them so a live run never stalls.
-  const GOOD_SEEDS = [1, 2, 6, 7, 10, 13, 16, 19, 24, 30];
-  let seedIdx = 0, seed = GOOD_SEEDS[0];
+  // Curated init that reliably drives the 2-2-1 net to a crisp XOR solution.
+  const seed = 1;
+  let useAct = true;
   let pts = [], frames = [], timer = null;
 
   const boundary = api.canvasEl(300, 260);
@@ -809,9 +825,10 @@ register('xor-net', (api) => {
     let W2 = new Array(HID).fill(0).map(() => (r() * 2 - 1) * 1.5);
     let b2 = (r() * 2 - 1) * 0.5;
     const vW1 = W1.map(() => [0, 0]), vb1 = b1.map(() => 0), vW2 = W2.map(() => 0); let vb2 = 0;
+    const act = (t) => useAct ? Math.tanh(t) : t;
     const fwd = (x1, x2) => {
       const a = new Array(HID); let o = b2;
-      for (let j = 0; j < HID; j++) { a[j] = Math.tanh(W1[j][0] * x1 + W1[j][1] * x2 + b1[j]); o += W2[j] * a[j]; }
+      for (let j = 0; j < HID; j++) { a[j] = act(W1[j][0] * x1 + W1[j][1] * x2 + b1[j]); o += W2[j] * a[j]; }
       return { a, p: sig(o) };
     };
     const lr = 0.5, mom = 0.85, total = 1400, capEvery = 28;
@@ -832,7 +849,7 @@ register('xor-net', (api) => {
         gb2 += dO;
         for (let j = 0; j < HID; j++) {
           gW2[j] += dO * a[j];
-          const dz = dO * W2[j] * (1 - a[j] * a[j]);
+          const dz = dO * W2[j] * (useAct ? (1 - a[j] * a[j]) : 1);
           gW1[j][0] += dz * x1; gW1[j][1] += dz * x2; gb1[j] += dz;
         }
       }
@@ -864,7 +881,12 @@ register('xor-net', (api) => {
       ctx.fillRect(ix * cw, iy * ch, cw + 1, ch + 1);
     }
     const sx = (x) => (x + 2) / 4 * W, sy = (y) => (2 - y) / 4 * Ht;
-    for (const [x1, x2, y] of pts) { ctx.beginPath(); ctx.arc(sx(x1), sy(x2), 4, 0, 7); ctx.fillStyle = y ? '#065f46' : '#7f1d1d'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke(); }
+    ctx.lineWidth = 1.6;
+    for (const [x1, x2, y] of pts) {
+      const px = sx(x1), py = sy(x2);
+      if (y) { ctx.fillStyle = '#111827'; ctx.strokeStyle = '#fff'; ctx.beginPath(); ctx.rect(px - 4, py - 4, 8, 8); ctx.fill(); ctx.stroke(); }
+      else { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#111827'; ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 7); ctx.fill(); ctx.stroke(); }
+    }
   }
   function drawLoss(cap) {
     const p = api.makePlot(lossCanvas, { xMin: 0, xMax: Math.max(1, (frames.length - 1) * 28), yMin: 0, yMax: Math.max(0.2, frames[0].loss * 1.05) });
@@ -872,9 +894,11 @@ register('xor-net', (api) => {
     const xs = cap.lossHist.map((_, i) => i), ys = cap.lossHist;
     p.line(xs, ys, { color: '#dc2626', width: 2.5 });
     readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `activation: <b>${useAct ? 'ON' : 'OFF'}</b>` }));
     readout.appendChild(el('span', { html: `loss = <b>${cap.loss.toFixed(3)}</b>` }));
-    readout.appendChild(el('span', { html: `seed <b>${seed}</b>` }));
-    readout.appendChild(el('span', { html: (cap.loss < 0.15 ? '<b style="color:#166534">XOR solved</b>' : (cap.loss < 0.4 ? 'learning...' : '<b style="color:#b45309">still mixing</b>')) }));
+    const verdict = !useAct ? '<b style="color:#b91c1c">linear net can\u2019t separate XOR</b>' : (cap.loss < 0.15 ? '<b style="color:#166534">XOR solved</b>' : (cap.loss < 0.4 ? 'learning...' : '<b style="color:#b45309">still mixing</b>'));
+    readout.appendChild(el('span', { html: verdict }));
+    readout.appendChild(el('span', { html: '<span style="color:#6b7280;">&#9711; class 0 &nbsp; &#9632; class 1</span>' }));
   }
   function run() {
     if (timer) clearInterval(timer);
@@ -882,16 +906,24 @@ register('xor-net', (api) => {
     frames = train(); let f = 0;
     timer = setInterval(() => { drawBoundary(frames[f]); drawLoss(frames[f]); f++; if (f >= frames.length) { clearInterval(timer); timer = null; } }, 45);
   }
+  const actToggle = api.button('activation: ON', () => {
+    useAct = !useAct; actToggle.textContent = 'activation: ' + (useAct ? 'ON' : 'OFF'); run();
+  }, 'ghost');
   const mount = el('div', {}, [
-    el('div', { class: 'demo-controls' }, [api.button('Train', run), api.button('Reseed', () => { seedIdx = (seedIdx + 1) % GOOD_SEEDS.length; seed = GOOD_SEEDS[seedIdx]; run(); }, 'ghost')]),
+    el('div', { class: 'demo-controls' }, [api.button('Train', run), actToggle]),
     el('div', { class: 'demo-stage' }, [boundary, lossCanvas, readout]),
-    el('div', { class: 'demo-hint', text: 'Left: green/red = the net\u2019s decision surface (dots are labels). Right: BCE loss. Two hidden units learn features that bend the space until XOR becomes separable.' }),
+    el('div', { class: 'demo-hint', text: 'Green/red = the net\u2019s decision surface; markers are the true labels. Turn the activation OFF and the 2-2-1 net becomes linear \u2014 it cannot separate XOR no matter how long it trains.' }),
   ]);
   const preview = () => {
     pts = makeData(seed);
     const ctx = boundary.getContext('2d'); ctx.clearRect(0, 0, boundary.width, boundary.height); ctx.fillStyle = '#f1f5f9'; ctx.fillRect(0, 0, boundary.width, boundary.height);
     const sx = (x) => (x + 2) / 4 * boundary.width, sy = (y) => (2 - y) / 4 * boundary.height;
-    for (const [x1, x2, y] of pts) { ctx.beginPath(); ctx.arc(sx(x1), sy(x2), 4, 0, 7); ctx.fillStyle = y ? '#065f46' : '#7f1d1d'; ctx.fill(); }
+    ctx.lineWidth = 1.6;
+    for (const [x1, x2, y] of pts) {
+      const px = sx(x1), py = sy(x2);
+      if (y) { ctx.fillStyle = '#111827'; ctx.strokeStyle = '#fff'; ctx.beginPath(); ctx.rect(px - 4, py - 4, 8, 8); ctx.fill(); ctx.stroke(); }
+      else { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#111827'; ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 7); ctx.fill(); ctx.stroke(); }
+    }
     const q = api.makePlot(lossCanvas, { xMin: 0, xMax: 1, yMin: 0, yMax: 1 }); q.clear(); q.axes('step', 'loss');
   };
   return { mount, init: preview, onLeave: () => { if (timer) { clearInterval(timer); timer = null; } } };

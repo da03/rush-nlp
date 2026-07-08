@@ -176,6 +176,13 @@
   resize: vertical;
 }
 
+/* One-line model description above a demo. */
+.reveal .demo-note {
+  font-size: 0.62em;
+  color: #374151;
+  margin: 0.1em 0 0.3em;
+}
+
 /* Small hint under a demo. */
 .reveal .demo-hint {
   font-size: 0.62em;

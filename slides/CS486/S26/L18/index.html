@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=6">
-  <link rel="stylesheet" href="../shared/demo.css?v=5">
-  <link rel="stylesheet" href="custom.css?v=4">
+  <link rel="stylesheet" href="../shared/demo.css?v=6">
+  <link rel="stylesheet" href="custom.css?v=5">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -102,16 +102,21 @@
           <line x1="70" y1="55" x2="185" y2="105"/><line x1="70" y1="110" x2="185" y2="110"/><line x1="70" y1="165" x2="185" y2="115"/>
         </g>
         <circle cx="220" cy="110" r="34" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
-        <text x="220" y="116" text-anchor="middle" font-size="16" font-weight="700">\(\sum\)</text>
+        <text x="220" y="116" text-anchor="middle" font-size="20" font-weight="700" fill="#92400e">&#931;</text>
         <rect x="295" y="86" width="70" height="48" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
         <text x="330" y="116" text-anchor="middle" font-size="16" font-weight="700">g</text>
         <line x1="254" y1="110" x2="290" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+        <text x="272" y="101" text-anchor="middle" font-size="15" font-weight="700" fill="#92400e">z</text>
+        <g class="fragment" data-fragment-index="2">
+          <line x1="365" y1="110" x2="406" y2="110" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+          <text x="388" y="101" text-anchor="middle" font-size="15" font-weight="700" fill="#166534">a</text>
+        </g>
       </svg>
     </div>
     <div style="flex:0.95;">
-      <p style="text-align:center;">\(z = w^\top x + b\)</p>
-      <p style="text-align:center;">\(a = g(z)\)</p>
-      <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">Weights decide what pattern to detect.</p>
+      <p style="text-align:center;">weighted sum: \(z = w^\top x + b\)</p>
+      <p class="fragment" data-fragment-index="2" style="text-align:center;">activation: \(a = g(z)\)</p>
+      <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">Weights decide what pattern to detect; \(g\) adds the nonlinearity.</p>
     </div>
   </div>
 </section>
@@ -119,13 +124,24 @@
 <!-- 6. Nonlinearity -->
 <section class="center-slide">
   <h2>Why add a nonlinearity?</h2>
-  <p style="font-size:1em;">Stacking linear layers is still linear.</p>
-  <p class="fragment" style="font-size:1.05em;text-align:center;">\(W_2(W_1x)= (W_2W_1)x\)</p>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:76%; margin:0.6em auto;">
-    <div class="task-card fragment"><h3>ReLU</h3><p>\(g(x)=\max(0,x)\)</p></div>
-    <div class="task-card fragment"><h3>GELU / SiLU</h3><p>smooth modern defaults</p></div>
-  </div>
-  <p class="fragment" style="font-size:0.86em;color:#6b7280;">Nonlinearity lets layers bend the representation.</p>
+  <p style="font-size:0.95em;">Stacking linear layers stays linear: &nbsp;\(W_2(W_1x)= (W_2W_1)x\) &mdash; still one line.</p>
+  <p class="fragment" style="font-size:0.86em;color:#6b7280;margin:0.15em 0;">A nonlinearity \(g\) between layers is what lets the network bend.</p>
+  <svg class="fragment act-plots" viewBox="0 0 660 150" xmlns="http://www.w3.org/2000/svg" style="width:88%;max-height:180px;display:block;margin:0.2em auto;">
+    <g stroke="#cbd5e1" stroke-width="1">
+      <line x1="20" y1="112" x2="190" y2="112"/><line x1="95" y1="28" x2="95" y2="122"/>
+      <line x1="245" y1="112" x2="415" y2="112"/><line x1="320" y1="28" x2="320" y2="122"/>
+      <line x1="470" y1="112" x2="640" y2="112"/><line x1="545" y1="28" x2="545" y2="122"/>
+    </g>
+    <polyline points="20,112 95,112 170,32" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+    <polyline points="245,112 270,113 295,116 320,112 345,90 370,60 395,32" fill="none" stroke="#16a34a" stroke-width="3"/>
+    <polyline points="470,114 495,117 520,118 545,112 570,92 595,65 620,35" fill="none" stroke="#7c3aed" stroke-width="3"/>
+    <g font-size="13" text-anchor="middle" fill="#374151">
+      <text x="95" y="140" font-weight="700">ReLU</text><text x="95" y="18" font-size="11" fill="#6b7280">max(0, x)</text>
+      <text x="320" y="140" font-weight="700">GELU</text><text x="320" y="18" font-size="11" fill="#6b7280">x&#183;&#934;(x)</text>
+      <text x="545" y="140" font-weight="700">SiLU</text><text x="545" y="18" font-size="11" fill="#6b7280">x&#183;&#963;(x)</text>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.8em;color:#6b7280;">ReLU is the classic default; GELU and SiLU are smooth, near-ReLU curves used in most modern nets and Transformers.</p>
 </section>
 
 <!-- 6b. Live demo: nonlinearity -->
@@ -263,21 +279,22 @@ optimizer.step()</code></pre>
 <section>
   <h2>CNNs learn visual features</h2>
   <div class="two-col vcenter">
-    <div style="flex:1.05;text-align:center;">
-      <svg viewBox="0 0 380 185" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:220px;">
-        <rect x="25" y="25" width="110" height="110" fill="#eff6ff" stroke="#1d4ed8" stroke-width="2"/>
-        <g stroke="#cbd5e1"><line x1="47" y1="25" x2="47" y2="135"/><line x1="69" y1="25" x2="69" y2="135"/><line x1="91" y1="25" x2="91" y2="135"/><line x1="113" y1="25" x2="113" y2="135"/><line x1="25" y1="47" x2="135" y2="47"/><line x1="25" y1="69" x2="135" y2="69"/><line x1="25" y1="91" x2="135" y2="91"/><line x1="25" y1="113" x2="135" y2="113"/></g>
-        <rect x="25" y="25" width="66" height="66" fill="#fca5a5" fill-opacity="0.55" stroke="#dc2626" stroke-width="2"/>
-        <line x1="150" y1="80" x2="215" y2="80" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
-        <rect x="230" y="45" width="100" height="80" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
-        <text x="80" y="160" text-anchor="middle" font-size="13" fill="#1d4ed8">image</text>
-        <text x="280" y="160" text-anchor="middle" font-size="13" fill="#166534">feature map</text>
-      </svg>
+    <div style="flex:1.2;text-align:center;">
+      <div class="cnn-strip">
+        <figure><img src="images/dist_mixed4a.png" alt="mid-layer feature visualization"><figcaption>shallow: curves</figcaption></figure>
+        <span class="cnn-arrow">&rarr;</span>
+        <figure><img src="images/dist_mixed4e.png" alt="deeper feature visualization"><figcaption>middle: parts</figcaption></figure>
+        <span class="cnn-arrow">&rarr;</span>
+        <figure><img src="images/dist_mixed5a.png" alt="deep-layer feature visualization"><figcaption>deep: objects</figcaption></figure>
+      </div>
+      <figure class="cnn-examples"><img src="images/dist_mixed5a_ex.jpg" alt="images that most activate a deep neuron"><figcaption>one deep neuron = a "ball" detector</figcaption></figure>
+      <p class="ref">Feature visualizations (what each neuron responds to most). Olah et al., "Feature Visualization," Distill 2017 (CC-BY).</p>
     </div>
-    <div style="flex:0.95;">
-      <p style="font-size:0.9em;"><strong>Local filters</strong> detect patterns in patches.</p>
-      <p class="fragment" style="font-size:0.9em;"><strong>Weight sharing</strong> detects the same pattern anywhere.</p>
-      <p class="fragment" style="font-size:0.86em;color:#6b7280;">Later: VLMs use image encoders to turn images into vectors/tokens.</p>
+    <div style="flex:0.8;">
+      <p style="font-size:0.9em;"><strong>Local filters</strong> detect patterns in small patches.</p>
+      <p class="fragment" style="font-size:0.9em;"><strong>Weight sharing</strong> finds the same pattern anywhere.</p>
+      <p class="fragment" style="font-size:0.9em;color:#6b7280;">Depth composes simple parts into whole objects.</p>
+      <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">Later: VLMs reuse image encoders to turn images into vectors/tokens.</p>
     </div>
   </div>
 </section>
@@ -300,24 +317,26 @@ optimizer.step()</code></pre>
 
 <!-- 15. Embedding table -->
 <section>
-  <h2>An embedding table is just parameters</h2>
+  <h2>An embedding table is a learnable lookup</h2>
+  <p style="font-size:0.9em;">It is just a <strong>lookup table</strong> (a dictionary): a token's <strong>id</strong> selects its <strong>row</strong>.</p>
   <div class="two-col vcenter">
-    <div style="flex:1.05;">
-      <table class="factor-table" style="font-size:0.72em;margin:0 auto;">
-        <thead><tr><th>item</th><th>learned vector</th></tr></thead>
+    <div style="flex:1.1;">
+      <table class="factor-table" style="font-size:0.66em;margin:0 auto;">
+        <thead><tr><th>token</th><th>id</th><th>row = learned vector</th></tr></thead>
         <tbody>
-          <tr><td>cat</td><td>[0.22, -0.71, 0.10, ...]</td></tr>
-          <tr><td>dog</td><td>[0.19, -0.66, 0.12, ...]</td></tr>
-          <tr><td>car</td><td>[-0.80, 0.31, -0.40, ...]</td></tr>
+          <tr><td>cat</td><td>17</td><td>[0.22, -0.71, 0.10, ...]</td></tr>
+          <tr><td>dog</td><td>932</td><td>[0.19, -0.66, 0.12, ...]</td></tr>
+          <tr><td>car</td><td>40</td><td>[-0.80, 0.31, -0.40, ...]</td></tr>
         </tbody>
       </table>
+      <p style="font-size:0.8em;text-align:center;color:#6b7280;margin:0.3em 0 0;"><code>emb[17]</code> &rarr; the "cat" row</p>
     </div>
-    <div style="flex:0.95;">
+    <div style="flex:0.9;">
       <pre style="font-size:0.56em;"><code>emb = nn.Embedding(
     num_embeddings=vocab_size,
     embedding_dim=128,
 )</code></pre>
-      <p class="fragment" style="font-size:0.86em;color:#6b7280;">Gradient descent updates these vectors during training.</p>
+      <p class="fragment" style="font-size:0.86em;color:#6b7280;">Unlike a fixed dictionary, the rows are <strong>parameters</strong>: gradient descent updates them during training.</p>
     </div>
   </div>
 </section>
@@ -336,14 +355,47 @@ optimizer.step()</code></pre>
   </svg>
 </section>
 
-<!-- 17. Geometry caveat -->
+<!-- 16c. Vector arithmetic / word2vec history -->
 <section class="center-slide">
-  <h2>Embedding geometry is useful, not magic</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:78%; margin:0.6em auto;">
-    <div class="task-card"><h3>useful</h3><p>nearest neighbors, retrieval, clustering</p></div>
-    <div class="task-card fragment"><h3>dangerous</h3><p>2D plots can overstate structure</p></div>
+  <h2>Directions can carry meaning</h2>
+  <p style="font-size:1.05em;text-align:center;margin:0.1em 0;">king &minus; man + woman &asymp; queen</p>
+  <svg class="fragment" viewBox="0 0 460 210" xmlns="http://www.w3.org/2000/svg" style="width:60%;max-height:210px;">
+    <g stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4 3">
+      <line x1="120" y1="165" x2="330" y2="165"/><line x1="120" y1="70" x2="330" y2="70"/>
+      <line x1="120" y1="165" x2="120" y2="70"/><line x1="330" y1="165" x2="330" y2="70"/>
+    </g>
+    <line x1="132" y1="70" x2="318" y2="70" stroke="#7c3aed" stroke-width="2.5" stroke-dasharray="6 4" marker-end="url(#arrow-l18)"/>
+    <text x="225" y="60" text-anchor="middle" font-size="12" fill="#7c3aed">+ (woman &minus; man)</text>
+    <circle cx="120" cy="165" r="7" fill="#1d4ed8"/><text x="120" y="188" text-anchor="middle" font-size="13">man</text>
+    <circle cx="330" cy="165" r="7" fill="#1d4ed8"/><text x="330" y="188" text-anchor="middle" font-size="13">woman</text>
+    <circle cx="120" cy="70" r="7" fill="#7c3aed"/><text x="112" y="60" text-anchor="end" font-size="13">king</text>
+    <circle cx="330" cy="70" r="7" fill="#16a34a"/><text x="340" y="60" text-anchor="start" font-size="13">queen</text>
+  </svg>
+  <p class="fragment" style="font-size:0.82em;color:#6b7280;margin:0.15em 0;">Standalone embeddings &mdash; word2vec (Mikolov 2013), GloVe (Pennington 2014) &mdash; were trained just to place words, and famously captured such regularities.</p>
+  <p class="fragment" style="font-size:0.82em;color:#1d4ed8;">Today embeddings are mostly learned <strong>implicitly inside LLMs</strong>; modern contextual vectors rarely do clean arithmetic.</p>
+</section>
+
+<!-- 16d. Contextual embeddings / the apple problem -->
+<section class="center-slide">
+  <h2>One word can mean two things</h2>
+  <div class="two-col vcenter" style="max-width:92%;margin:0.2em auto;">
+    <div style="flex:1;">
+      <p style="font-size:0.9em;">"I ate an <strong>apple</strong>" &rarr; <span style="color:#16a34a;">fruit</span></p>
+      <p style="font-size:0.9em;">"<strong>Apple</strong> released a phone" &rarr; <span style="color:#1d4ed8;">company</span></p>
+    </div>
+    <div style="flex:1;text-align:center;">
+      <svg viewBox="0 0 300 170" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:180px;">
+        <circle cx="150" cy="85" r="9" fill="#6b7280"/><text x="150" y="112" text-anchor="middle" font-size="13">apple</text>
+        <line x1="140" y1="78" x2="70" y2="40" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-l18)"/>
+        <line x1="160" y1="92" x2="235" y2="135" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arrow-l18)"/>
+        <circle cx="60" cy="35" r="6" fill="#16a34a"/><text x="60" y="24" text-anchor="middle" font-size="11" fill="#166534">banana</text>
+        <circle cx="245" cy="140" r="6" fill="#1d4ed8"/><text x="245" y="158" text-anchor="middle" font-size="11" fill="#1e3a8a">phone</text>
+      </svg>
+    </div>
   </div>
-  <p class="fragment" style="font-size:0.88em;color:#6b7280;">Distances mean what the training objective made them mean.</p>
+  <p class="fragment" style="font-size:0.88em;">A single fixed vector for "apple" cannot be both.</p>
+  <p class="fragment" style="font-size:0.88em;color:#1d4ed8;">Modern models embed the <strong>whole sentence</strong>, so a word gets a different <strong>contextual</strong> vector each time.</p>
+  <p class="fragment" style="font-size:0.8em;color:#6b7280;">(This is why the live demo embeds free text, not just single words.)</p>
 </section>
 
 <!-- 18. PCA/t-SNE -->
@@ -360,7 +412,7 @@ optimizer.step()</code></pre>
     <div style="flex:0.95;">
       <p style="font-size:0.9em;"><strong>PCA</strong>: linear view of high-dimensional vectors.</p>
       <p class="fragment" style="font-size:0.9em;"><strong>t-SNE/UMAP</strong>: nonlinear visualization.</p>
-      <p class="fragment" style="font-size:0.84em;color:#6b7280;">Use plots to ask questions, not as proof.</p>
+      <p class="fragment" style="font-size:0.84em;color:#6b7280;">Distances mean what the objective made them mean &mdash; a 2D plot can overstate structure, so use it to ask questions, not as proof.</p>
     </div>
   </div>
 </section>
@@ -398,6 +450,19 @@ optimizer.step()</code></pre>
   </div>
 </section>
 
+<!-- 19a. k-means algorithm -->
+<section class="center-slide">
+  <h2>The k-means algorithm</h2>
+  <div class="defbox" style="text-align:left;max-width:78%;margin:0.3em auto;font-size:0.82em;">
+    <p style="margin:0.2em 0;"><strong>1.</strong> Choose \(k\); initialize \(k\) centroids (e.g. random data points).</p>
+    <p style="margin:0.2em 0;"><strong>2.</strong> Repeat until assignments stop changing:</p>
+    <p class="fragment" data-fragment-index="1" style="margin:0.2em 0 0.2em 1.6em;"><strong>a. Assign</strong> &mdash; put each point with its nearest centroid.</p>
+    <p class="fragment" data-fragment-index="2" style="margin:0.2em 0 0.2em 1.6em;"><strong>b. Update</strong> &mdash; move each centroid to the mean of its points.</p>
+  </div>
+  <p class="fragment" data-fragment-index="3" style="font-size:0.86em;">Objective (inertia): \(J=\sum_i \lVert x_i - \mu_{c(i)}\rVert^2\) &mdash; every step lowers it.</p>
+  <p class="fragment" data-fragment-index="4" style="font-size:0.82em;color:#6b7280;">Converges to a <strong>local</strong> optimum, so it depends on initialization &mdash; run a few times and keep the best.</p>
+</section>
+
 <!-- 19b. Live demo: k-means -->
 <section class="center-slide">
   <h2>Playground: k-means, step by step<span class="demo-badge">live</span></h2>
@@ -405,6 +470,18 @@ optimizer.step()</code></pre>
   <div class="live-demo" data-demo="kmeans">
     <div class="demo-fallback">Interactive on the live slides: press Step to run one round of Lloyd's algorithm &mdash; assign each point to its nearest centroid, then move each centroid to the mean of its members. Repeat until the clusters stop changing. Reseed for a fresh layout.</div>
   </div>
+</section>
+
+<!-- 19c. Embeddings for evaluation: FID / MAUVE -->
+<section class="center-slide">
+  <h2>Embeddings let us measure quality</h2>
+  <p style="font-size:0.88em;">Embed real and generated samples, then compare the two <strong>distributions</strong> in embedding space.</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:84%; margin:0.5em auto;">
+    <div class="task-card"><h3>FID &mdash; images</h3><p>distance between Inception-feature distributions of real vs generated images (lower is better)</p></div>
+    <div class="task-card fragment"><h3>MAUVE &mdash; text</h3><p>compares human vs machine text in a language model's embedding space</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.82em;color:#6b7280;">Same idea, two modalities: good generations should look like real data <em>in feature space</em>.</p>
+  <p class="ref">FID: Heusel et al. 2017. &nbsp; MAUVE: Pillutla et al. 2021.</p>
 </section>
 
 <!-- 20. Autoencoder -->
@@ -424,27 +501,83 @@ optimizer.step()</code></pre>
   <p class="fragment" style="font-size:0.88em;text-align:center;color:#6b7280;">Latent diffusion will generate in a compressed latent space.</p>
 </section>
 
-<!-- 21. CLIP -->
+<!-- 20b. Real autoencoder example (NeuralOS) -->
 <section>
-  <h2>Contrastive learning aligns modalities</h2>
-  <div class="two-col vcenter">
-    <div style="flex:1.05;text-align:center;">
-      <svg viewBox="0 0 430 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-height:260px;">
-        <rect x="35" y="50" width="110" height="70" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="90" y="90" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">image</text>
-        <rect x="35" y="145" width="110" height="42" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="90" y="171" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">caption</text>
-        <circle cx="300" cy="80" r="12" fill="#1d4ed8"/><text x="300" y="58" text-anchor="middle" font-size="12">image vec</text>
-        <circle cx="318" cy="105" r="12" fill="#d97706"/><text x="318" y="132" text-anchor="middle" font-size="12">text vec</text>
-        <line x1="145" y1="85" x2="285" y2="80" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
-        <line x1="145" y1="166" x2="305" y2="105" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
-        <path d="M300 80 Q330 92 318 105" fill="none" stroke="#16a34a" stroke-width="3"/>
-      </svg>
+  <h2>A real autoencoder: NeuralOS</h2>
+  <div class="ae-row">
+    <figure class="ae-fig"><img src="images/neuralos_original.png" alt="original screen"><figcaption>input &mdash; 512&times;384&times;3</figcaption></figure>
+    <div class="ae-step">
+      <span class="ae-op">encode &rarr;</span>
+      <div class="latent-strip">
+        <img src="images/neuralos_latent_0.png" alt="latent channel 0"><img src="images/neuralos_latent_5.png" alt="latent channel 5"><img src="images/neuralos_latent_10.png" alt="latent channel 10">
+      </div>
+      <span class="ae-lat-cap">latent &mdash; 64&times;48&times;16<br>(3 of 16 channels)</span>
+      <span class="ae-op">&rarr; decode</span>
     </div>
-    <div style="flex:0.95;">
-      <p style="font-size:0.9em;">Matched image/text pairs are pulled together.</p>
-      <p class="fragment" style="font-size:0.9em;">Mismatched pairs are pushed apart.</p>
-      <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">This is the bridge to VLMs and retrieval.</p>
+    <figure class="ae-fig"><img src="images/neuralos_reconstruction.png" alt="reconstruction"><figcaption>reconstruction</figcaption></figure>
+  </div>
+  <p class="fragment" style="font-size:0.9em;text-align:center;">589,824 numbers &rarr; 49,152 &mdash; a <strong>12&times;</strong> smaller latent, yet the decode looks the same.</p>
+  <p class="ref">Autoencoder from NeuralOS (neural-os.com).</p>
+</section>
+
+<!-- 20c. Why compress -->
+<section>
+  <h2>Why compress? To make generation feasible</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1;text-align:center;">
+      <img src="images/neuralos_demo.gif" alt="NeuralOS live demo" style="width:100%;max-height:300px;border:1px solid #e5e7eb;border-radius:6px;">
+      <p class="ref">neural-os.com</p>
+    </div>
+    <div style="flex:1;">
+      <p style="font-size:0.9em;">Generating in pixel space is expensive &mdash; about 590k numbers <em>per frame</em>.</p>
+      <p class="fragment" style="font-size:0.9em;">Diffusion runs in the <strong>12&times; smaller</strong> latent instead, then decodes once at the end.</p>
+      <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">NeuralOS predicts the next screen frame in latent space &mdash; a neural operating system.</p>
     </div>
   </div>
+</section>
+
+<!-- 20d. SORA: spacetime compression -->
+<section class="center-slide">
+  <h2>Video: compress space and time</h2>
+  <p style="font-size:0.9em;">A video is many frames, so pixel cost explodes &mdash; compress the time axis too.</p>
+  <svg class="fragment" viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg" style="width:88%;max-height:220px;">
+    <g>
+      <rect x="40" y="90" width="130" height="90" rx="4" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+      <rect x="55" y="72" width="130" height="90" rx="4" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+      <rect x="70" y="54" width="130" height="90" rx="4" fill="#dbeafe" stroke="#1d4ed8" stroke-width="1.5"/>
+      <rect x="85" y="36" width="130" height="90" rx="4" fill="#eff6ff" stroke="#1d4ed8" stroke-width="1.5"/>
+      <text x="127" y="196" text-anchor="middle" font-size="13" fill="#1e3a8a">video: T frames &times; H &times; W &times; 3</text>
+    </g>
+    <line x1="230" y1="95" x2="330" y2="95" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow-l18)"/>
+    <text x="280" y="82" text-anchor="middle" font-size="12" fill="#6b7280">compress</text>
+    <text x="280" y="118" text-anchor="middle" font-size="12" fill="#6b7280">space + time</text>
+    <g fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5">
+      <rect x="370" y="60" width="26" height="26"/><rect x="400" y="60" width="26" height="26"/><rect x="430" y="60" width="26" height="26"/>
+      <rect x="370" y="90" width="26" height="26"/><rect x="400" y="90" width="26" height="26"/><rect x="430" y="90" width="26" height="26"/>
+    </g>
+    <text x="413" y="140" text-anchor="middle" font-size="13" fill="#5b21b6">spacetime latent patches</text>
+    <text x="413" y="158" text-anchor="middle" font-size="11" fill="#6b7280">(far fewer numbers)</text>
+  </svg>
+  <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">Sora compresses space and time into spacetime latent patches, then generates there.</p>
+  <p class="ref">OpenAI, "Video generation models as world simulators," 2024.</p>
+</section>
+
+<!-- 21. CLIP (real figure) -->
+<section>
+  <h2>Contrastive learning aligns modalities (CLIP)</h2>
+  <img src="images/clip_overview.png" alt="CLIP: contrastive pre-training and zero-shot prediction" style="width:94%;max-height:400px;display:block;margin:0.2em auto;">
+  <p class="fragment" style="font-size:0.86em;color:#1d4ed8;text-align:center;">Train one shared space: matched image/text pairs are pulled together, mismatched pairs pushed apart.</p>
+  <p class="ref">Radford et al., "Learning Transferable Visual Models From Natural Language Supervision," ICML 2021.</p>
+</section>
+
+<!-- 21b. CLIP in action -->
+<section class="center-slide">
+  <h2>What a shared image-text space unlocks</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:86%; margin:0.5em auto;">
+    <div class="task-card"><h3>zero-shot classification</h3><p>score an image against prompts like <code>"a photo of a {label}"</code> &mdash; no task-specific training</p></div>
+    <div class="task-card fragment"><h3>retrieval</h3><p>search images with text (and vice versa) by nearest vectors in the shared space</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">This shared space is the bridge to vision-language models (L23).</p>
 </section>
 
 <!-- 22. Where next -->
@@ -509,6 +642,6 @@ optimizer.step()</code></pre>
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=10"></script>
+<script type="module" src="../shared/demo.js?v=11"></script>
 </body>
 </html>

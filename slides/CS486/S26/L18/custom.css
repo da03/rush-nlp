@@ -1,5 +1,32 @@
 /* L18-specific styles on top of shared/custom.css, L10/custom.css, L17/custom.css. */
 
+/* ---- Finalize pass: references, figures, CNN feature-viz, autoencoder ---- */
+.reveal .ref {
+  font-size: 0.6em;
+  color: #9ca3af;
+  margin: 0.35em 0 0;
+  text-align: center;
+}
+.reveal figure { margin: 0; }
+.reveal figure img { display: block; }
+.reveal figure figcaption { font-size: 0.62em; color: #6b7280; margin-top: 0.2em; text-align: center; }
+
+/* CNN feature-visualization strip (slide 13). */
+.reveal .cnn-strip { display: flex; align-items: center; justify-content: center; gap: 0.5em; }
+.reveal .cnn-strip img { width: 118px; height: 118px; border: 1px solid #cbd5e1; border-radius: 4px; }
+.reveal .cnn-arrow { color: #475569; font-size: 1.3em; }
+.reveal .cnn-examples { margin: 0.35em auto 0; }
+.reveal .cnn-examples img { width: 150px; height: 150px; border: 1px solid #cbd5e1; border-radius: 4px; }
+
+/* Real autoencoder example row (slide 20b). */
+.reveal .ae-row { display: flex; align-items: center; justify-content: center; gap: 0.8em; }
+.reveal .ae-fig img { width: 250px; height: auto; border: 1px solid #cbd5e1; border-radius: 4px; }
+.reveal .ae-step { display: flex; flex-direction: column; align-items: center; gap: 0.25em; font-size: 0.82em; color: #475569; }
+.reveal .ae-op { font-weight: 600; color: #7c3aed; }
+.reveal .latent-strip { display: flex; gap: 3px; }
+.reveal .latent-strip img { width: 46px; height: 35px; image-rendering: pixelated; border: 1px solid #cbd5e1; background: #000; }
+.reveal .ae-lat-cap { font-size: 0.82em; color: #5b21b6; text-align: center; line-height: 1.2; }
+
 /* Tiny icon for task cards on slide 3. */
 .reveal .task-card .l17-icon {
   display: block;
