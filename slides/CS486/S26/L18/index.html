@@ -11,8 +11,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
-  <link rel="stylesheet" href="../L17/custom.css?v=3">
-  <link rel="stylesheet" href="custom.css?v=3">
+  <link rel="stylesheet" href="../L17/custom.css?v=6">
+  <link rel="stylesheet" href="../shared/demo.css?v=5">
+  <link rel="stylesheet" href="custom.css?v=4">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -54,7 +55,7 @@
   <h2>Recorded lecture (asynchronous)</h2>
   <div class="defbox" style="max-width: 86%; margin: 0.6em auto; text-align: left;">
     <p style="margin: 0 0 0.45em 0;">&#127909; This lecture is <strong>pre-recorded</strong> - I'm away at <strong>ICML</strong> this week, so there's no in-person class today. Watch at your own pace.</p>
-    <p style="margin: 0 0 0.45em 0;">&#128197; <strong>Due today (Thu Jul 9):</strong> Assignment 2. Chat 9 is now out.</p>
+    <p style="margin: 0 0 0.45em 0;">&#128197; <strong>Due today (Thu Jul 9):</strong> CS686 project proposal. <strong>Assignment 2</strong> is now due <strong>Thu Jul 16</strong>. Chat 9 is out and Assignment 3 is released.</p>
     <p style="margin: 0;">&#128172; Questions? Post on <strong>Piazza</strong> - the TAs are available, and I'll follow up when I'm back.</p>
   </div>
 </section>
@@ -127,6 +128,15 @@
   <p class="fragment" style="font-size:0.86em;color:#6b7280;">Nonlinearity lets layers bend the representation.</p>
 </section>
 
+<!-- 6b. Live demo: nonlinearity -->
+<section class="center-slide">
+  <h2>Playground: does nonlinearity matter?<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
+  <div class="live-demo" data-demo="nonlinearity">
+    <div class="demo-fallback">Interactive on the live slides: the same 1-hidden-layer net trains to fit a wavy target. With the activation OFF it can only draw a straight line; turn it ON and the layer bends to follow the curve. Runs instantly in your browser.</div>
+  </div>
+</section>
+
 <!-- 7. One hidden layer -->
 <section>
   <h2>One hidden layer = learned feature map</h2>
@@ -176,6 +186,15 @@
       <p style="font-size:0.9em;">A hidden layer can transform the space.</p>
       <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">Then a simple output layer can solve the task.</p>
     </div>
+  </div>
+</section>
+
+<!-- 8b. Live demo: XOR net -->
+<section class="center-slide">
+  <h2>Playground: train a net on XOR<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
+  <div class="live-demo" data-demo="xor-net">
+    <div class="demo-fallback">Interactive on the live slides: a tiny 2-2-1 network trains on XOR with real forward passes and backprop. Watch the decision surface bend and the loss drop until the two classes separate &mdash; something no straight line can do. Reseed to retrain from scratch.</div>
   </div>
 </section>
 
@@ -346,6 +365,15 @@ optimizer.step()</code></pre>
   </div>
 </section>
 
+<!-- 18b. Live demo: embedding explorer -->
+<section class="center-slide">
+  <h2>Playground: embed real words<span class="demo-badge">live model</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; a real embedding model runs in your browser (open the slides to try it).</p>
+  <div class="live-demo" data-demo="embed-explorer">
+    <div class="demo-fallback">Interactive on the live slides: type any words or short sentences and a real embedding model (MiniLM, via Transformers.js) turns each into a vector; PCA projects them to 2D and you click a point to see its nearest neighbors. Dog lands near puppy, car near truck, king near queen &mdash; geometry the model learned from data.</div>
+  </div>
+</section>
+
 <!-- 19. k-means -->
 <section>
   <h2>Cluster embeddings with k-means</h2>
@@ -367,6 +395,15 @@ optimizer.step()</code></pre>
         <li class="fragment">build codebook intuition</li>
       </ul>
     </div>
+  </div>
+</section>
+
+<!-- 19b. Live demo: k-means -->
+<section class="center-slide">
+  <h2>Playground: k-means, step by step<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
+  <div class="live-demo" data-demo="kmeans">
+    <div class="demo-fallback">Interactive on the live slides: press Step to run one round of Lloyd's algorithm &mdash; assign each point to its nearest centroid, then move each centroid to the mean of its members. Repeat until the clusters stop changing. Reseed for a fresh layout.</div>
   </div>
 </section>
 
@@ -472,5 +509,6 @@ optimizer.step()</code></pre>
     });
   });
 </script>
+<script type="module" src="../shared/demo.js?v=10"></script>
 </body>
 </html>

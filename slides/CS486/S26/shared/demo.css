@@ -167,12 +167,24 @@
 .reveal .demo-bars .db-val { font-size: 0.66em; color: #374151; margin-bottom: 0.2em; }
 .reveal .demo-bars .db-lab { font-size: 0.68em; font-weight: 600; margin-top: 0.25em; }
 
+/* Free-text input (embedding explorer): wraps, slightly larger than the code editor. */
+.reveal .demo-textbox {
+  font-size: 0.62em;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: normal;
+  resize: vertical;
+}
+
 /* Small hint under a demo. */
 .reveal .demo-hint {
   font-size: 0.62em;
   color: #6b7280;
   margin-top: 0.35em;
 }
+
+/* Clickable scatter canvas (embedding explorer). */
+.reveal .demo-canvas.clickable { cursor: pointer; }
 
 /* Persistent one-line caption under a demo-slide title. Stays visible in the
    exported PDF (where the live UI has no results), unlike .demo-fallback. */

@@ -104,6 +104,85 @@ async function runPython(py, code, write) {
   }
 }
 
+/* --------------------------------------------------- Transformers.js ------ */
+/* Lazy, cached embedding model. Only downloads when a student embeds custom
+ * text; WebGPU when available, WASM otherwise; failures are caught so callers
+ * can fall back to precomputed vectors instead of a broken demo. */
+
+const TRANSFORMERS_URL = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1';
+let _embedderPromise = null;
+
+async function getEmbedder(onStatus) {
+  if (!_embedderPromise) {
+    _embedderPromise = (async () => {
+      onStatus && onStatus('Loading embedding model (~23 MB, one time)...');
+      const mod = await import(/* webpackIgnore: true */ TRANSFORMERS_URL);
+      const device = (typeof navigator !== 'undefined' && navigator.gpu) ? 'webgpu' : 'wasm';
+      const extractor = await mod.pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', { device });
+      return extractor;
+    })().catch((e) => { _embedderPromise = null; throw e; });
+  }
+  return _embedderPromise;
+}
+
+async function embedTexts(extractor, texts, onStatus) {
+  const out = [];
+  for (let i = 0; i < texts.length; i++) {
+    onStatus && onStatus(`Embedding ${i + 1}/${texts.length}...`);
+    const r = await extractor(texts[i], { pooling: 'mean', normalize: true });
+    out.push(Array.from(r.data));
+  }
+  return out;
+}
+
+/* ------------------------------------------------------- vector helpers --- */
+
+function cosine(a, b) {
+  let s = 0, na = 0, nb = 0;
+  for (let i = 0; i < a.length; i++) { s += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+  return s / ((Math.sqrt(na) * Math.sqrt(nb)) || 1);
+}
+
+/* Top principal component of mean-centered rows via power iteration. */
+function _topPC(rows, d) {
+  const n = rows.length;
+  const matVec = (u) => {
+    const cu = new Array(n);
+    for (let k = 0; k < n; k++) { let s = 0; const r = rows[k]; for (let i = 0; i < d; i++) s += r[i] * u[i]; cu[k] = s; }
+    const out = new Array(d).fill(0);
+    for (let k = 0; k < n; k++) { const c = cu[k], r = rows[k]; for (let i = 0; i < d; i++) out[i] += r[i] * c; }
+    return out;
+  };
+  const norm = (u) => Math.sqrt(u.reduce((s, x) => s + x * x, 0)) || 1;
+  let u = new Array(d).fill(0).map((_, i) => Math.sin(i * 0.7 + 1)); // deterministic seed
+  let m = norm(u); u = u.map((x) => x / m);
+  for (let it = 0; it < 150; it++) { const v = matVec(u); m = norm(v); u = v.map((x) => x / m); }
+  return u;
+}
+
+/* Project vectors to 2D with mean-centered PCA (top 2 components). */
+function pca2(vectors) {
+  const n = vectors.length, d = vectors[0].length;
+  const mean = new Array(d).fill(0);
+  for (const v of vectors) for (let i = 0; i < d; i++) mean[i] += v[i] / n;
+  const C = vectors.map((v) => v.map((x, i) => x - mean[i]));
+  const pc1 = _topPC(C, d);
+  const C2 = C.map((r) => { let p = 0; for (let i = 0; i < d; i++) p += r[i] * pc1[i]; return r.map((x, i) => x - p * pc1[i]); });
+  const pc2 = _topPC(C2, d);
+  return C.map((r) => { let a = 0, b = 0; for (let i = 0; i < d; i++) { a += r[i] * pc1[i]; b += r[i] * pc2[i]; } return [a, b]; });
+}
+
+/* Small seedable RNG (mulberry32) for reproducible demos. */
+function rng32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 /* ------------------------------------------------------------- registry --- */
 
 const registry = {};
@@ -167,6 +246,9 @@ function upgrade(root) {
     getPyodide: () => getPyodide(setStatus),
     getPyodideWithNumpy: () => getPyodideWithNumpy(setStatus),
     runPython,
+    getEmbedder: () => getEmbedder(setStatus),
+    embedTexts: (ex, texts) => embedTexts(ex, texts, setStatus),
+    cosine, pca2, rng32,
   };
 
   const inst = factory(api) || {};
@@ -603,6 +685,410 @@ xs_l = xs.tolist(); ys_l = ys.tolist()`;
     const q = api.makePlot(curveCanvas, { xMin: 1, xMax: 9, yMin: 0, yMax: 1 }); q.clear(); q.axes('degree', 'loss');
   };
   return { mount, init: preview };
+});
+
+/* =====================================================================
+ *  DEMO 6 - nonlinearity playground (JS): activation ON vs OFF
+ *  Fit a 1-hidden-layer net to a wavy 1D target. OFF (identity) collapses
+ *  to a straight line; ON (tanh) bends to fit. Trains synchronously and
+ *  animates captured frames so the final fit is reliable on stage.
+ * ===================================================================== */
+register('nonlinearity', (api) => {
+  const H = 12, N = 44;
+  const target = (x) => 0.8 * Math.sin(2 * x);
+  const xs = []; for (let i = 0; i < N; i++) xs.push(-3 + 6 * i / (N - 1));
+  const ys = xs.map(target);
+  let useAct = true, frames = [], timer = null;
+
+  const canvas = api.canvasEl(460, 250);
+  const readout = el('div', { class: 'demo-readout' });
+
+  function train() {
+    const r = api.rng32(7);
+    let W1 = new Array(H).fill(0).map(() => (r() * 2 - 1) * 1.6);
+    let b1 = new Array(H).fill(0).map(() => (r() * 2 - 1) * 1.6);
+    let W2 = new Array(H).fill(0).map(() => (r() * 2 - 1) * 0.6);
+    let b2 = 0;
+    const vW1 = new Array(H).fill(0), vb1 = new Array(H).fill(0), vW2 = new Array(H).fill(0);
+    let vb2 = 0;
+    const g = (z) => useAct ? Math.tanh(z) : z;
+    const dg = (a) => useAct ? (1 - a * a) : 1;
+    const grid = []; for (let t = -3; t <= 3.0001; t += 0.08) grid.push(t);
+    const curveAt = () => grid.map((x) => {
+      let o = b2; for (let j = 0; j < H; j++) o += W2[j] * g(W1[j] * x + b1[j]); return o;
+    });
+    const lr = 0.05, mom = 0.9, total = 900, capEvery = 20;
+    const caps = [];
+    for (let step = 0; step <= total; step++) {
+      if (step % capEvery === 0) {
+        let loss = 0; for (let i = 0; i < N; i++) { let o = b2; for (let j = 0; j < H; j++) o += W2[j] * g(W1[j] * xs[i] + b1[j]); loss += (o - ys[i]) ** 2; }
+        caps.push({ ys: curveAt(), loss: loss / N });
+      }
+      const gW1 = new Array(H).fill(0), gb1 = new Array(H).fill(0), gW2 = new Array(H).fill(0); let gb2 = 0;
+      for (let i = 0; i < N; i++) {
+        const x = xs[i]; let o = b2; const a = new Array(H);
+        for (let j = 0; j < H; j++) { a[j] = g(W1[j] * x + b1[j]); o += W2[j] * a[j]; }
+        const err = o - ys[i];
+        gb2 += err;
+        for (let j = 0; j < H; j++) { gW2[j] += err * a[j]; const dz = err * W2[j] * dg(a[j]); gW1[j] += dz * x; gb1[j] += dz; }
+      }
+      const s = lr / N;
+      for (let j = 0; j < H; j++) {
+        vW1[j] = mom * vW1[j] - s * gW1[j]; W1[j] += vW1[j];
+        vb1[j] = mom * vb1[j] - s * gb1[j]; b1[j] += vb1[j];
+        vW2[j] = mom * vW2[j] - s * gW2[j]; W2[j] += vW2[j];
+      }
+      vb2 = mom * vb2 - s * gb2; b2 += vb2;
+    }
+    return { caps, grid };
+  }
+
+  function drawFrame(grid, cap, idx, n) {
+    const p = api.makePlot(canvas, { xMin: -3.2, xMax: 3.2, yMin: -1.5, yMax: 1.5 });
+    p.clear(); p.axes('x', 'y');
+    p.points(xs, ys, { color: '#1f2937', r: 3 });
+    p.line(grid, cap.ys.map((v) => Math.max(-1.5, Math.min(1.5, v))), { color: useAct ? '#16a34a' : '#dc2626', width: 3 });
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `activation: <b>${useAct ? 'ON (tanh)' : 'OFF (linear)'}</b>` }));
+    readout.appendChild(el('span', { html: `step <b>${idx * 20}</b>` }));
+    readout.appendChild(el('span', { html: `loss = <b>${cap.loss.toFixed(4)}</b>` }));
+    if (!useAct) readout.appendChild(el('span', { html: '<b style="color:#b91c1c">stuck as a straight line</b>' }));
+    else if (idx === n - 1) readout.appendChild(el('span', { html: '<b style="color:#166534">bent to fit the curve</b>' }));
+  }
+  function run() {
+    if (timer) clearInterval(timer);
+    const { caps, grid } = train();
+    frames = caps; let f = 0;
+    timer = setInterval(() => { drawFrame(grid, frames[f], f, frames.length); f++; if (f >= frames.length) { clearInterval(timer); timer = null; } }, 55);
+  }
+  const toggle = api.button('activation: ON', () => {
+    useAct = !useAct; toggle.textContent = 'activation: ' + (useAct ? 'ON' : 'OFF'); run();
+  }, 'ghost');
+
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-controls' }, [toggle, api.button('Train', run)]),
+    el('div', { class: 'demo-stage' }, [canvas, readout]),
+    el('div', { class: 'demo-hint', text: 'Same net, same data. Activation OFF: stacked linear layers stay a line. ON: the layer bends to fit the wave. That bend is what nonlinearity buys.' }),
+  ]);
+  const preview = () => { const p = api.makePlot(canvas, { xMin: -3.2, xMax: 3.2, yMin: -1.5, yMax: 1.5 }); p.clear(); p.axes('x', 'y'); p.points(xs, ys, { color: '#1f2937', r: 3 }); };
+  return { mount, init: preview, onLeave: () => { if (timer) { clearInterval(timer); timer = null; } } };
+});
+
+/* =====================================================================
+ *  DEMO 7 - XOR neural-net playground (JS): 2-2-1 MLP trained live
+ *  Forward + backprop in JS on the XOR cloud; animate the decision
+ *  boundary forming. Fixed seed converges; reseed as an escape hatch.
+ * ===================================================================== */
+register('xor-net', (api) => {
+  const HID = 2;
+  // Curated inits that reliably drive the 2-2-1 net to a crisp XOR solution
+  // (verified offline); reseed cycles through them so a live run never stalls.
+  const GOOD_SEEDS = [1, 2, 6, 7, 10, 13, 16, 19, 24, 30];
+  let seedIdx = 0, seed = GOOD_SEEDS[0];
+  let pts = [], frames = [], timer = null;
+
+  const boundary = api.canvasEl(300, 260);
+  const lossCanvas = api.canvasEl(280, 260);
+  const readout = el('div', { class: 'demo-readout' });
+
+  function makeData(s) {
+    const r = api.rng32(s * 101 + 5);
+    const corners = [[-1, -1, 0], [1, 1, 0], [-1, 1, 1], [1, -1, 1]];
+    const out = [];
+    for (const [cx, cy, lab] of corners)
+      for (let k = 0; k < 14; k++) out.push([cx + (r() - 0.5) * 0.7, cy + (r() - 0.5) * 0.7, lab]);
+    return out;
+  }
+  const sig = (z) => 1 / (1 + Math.exp(-z));
+
+  function train() {
+    const r = api.rng32(seed * 2654435761);
+    // 2-HID-1: W1 [HID][2], b1[HID], W2[HID], b2
+    let W1 = new Array(HID).fill(0).map(() => [(r() * 2 - 1) * 1.5, (r() * 2 - 1) * 1.5]);
+    let b1 = new Array(HID).fill(0).map(() => (r() * 2 - 1) * 0.5);
+    let W2 = new Array(HID).fill(0).map(() => (r() * 2 - 1) * 1.5);
+    let b2 = (r() * 2 - 1) * 0.5;
+    const vW1 = W1.map(() => [0, 0]), vb1 = b1.map(() => 0), vW2 = W2.map(() => 0); let vb2 = 0;
+    const fwd = (x1, x2) => {
+      const a = new Array(HID); let o = b2;
+      for (let j = 0; j < HID; j++) { a[j] = Math.tanh(W1[j][0] * x1 + W1[j][1] * x2 + b1[j]); o += W2[j] * a[j]; }
+      return { a, p: sig(o) };
+    };
+    const lr = 0.5, mom = 0.85, total = 1400, capEvery = 28;
+    const caps = [];
+    const snapGrid = () => {
+      const G = 30, vals = [];
+      for (let iy = 0; iy < G; iy++) { const row = []; for (let ix = 0; ix < G; ix++) { const x1 = -2 + 4 * ix / (G - 1), x2 = 2 - 4 * iy / (G - 1); row.push(fwd(x1, x2).p); } vals.push(row); }
+      return { G, vals };
+    };
+    const lossHist = [];
+    for (let step = 0; step <= total; step++) {
+      let loss = 0;
+      const gW1 = W1.map(() => [0, 0]), gb1 = b1.map(() => 0), gW2 = W2.map(() => 0); let gb2 = 0;
+      for (const [x1, x2, y] of pts) {
+        const { a, p } = fwd(x1, x2);
+        loss += -(y * Math.log(p + 1e-9) + (1 - y) * Math.log(1 - p + 1e-9));
+        const dO = p - y;
+        gb2 += dO;
+        for (let j = 0; j < HID; j++) {
+          gW2[j] += dO * a[j];
+          const dz = dO * W2[j] * (1 - a[j] * a[j]);
+          gW1[j][0] += dz * x1; gW1[j][1] += dz * x2; gb1[j] += dz;
+        }
+      }
+      const n = pts.length; loss /= n;
+      if (step % capEvery === 0) { caps.push({ grid: snapGrid(), loss }); }
+      lossHist.push(loss);
+      const s = lr / n;
+      for (let j = 0; j < HID; j++) {
+        vW1[j][0] = mom * vW1[j][0] - s * gW1[j][0]; W1[j][0] += vW1[j][0];
+        vW1[j][1] = mom * vW1[j][1] - s * gW1[j][1]; W1[j][1] += vW1[j][1];
+        vb1[j] = mom * vb1[j] - s * gb1[j]; b1[j] += vb1[j];
+        vW2[j] = mom * vW2[j] - s * gW2[j]; W2[j] += vW2[j];
+      }
+      vb2 = mom * vb2 - s * gb2; b2 += vb2;
+    }
+    caps.forEach((c, i) => c.lossHist = lossHist.slice(0, (i + 1) * capEvery + 1));
+    caps._finalLoss = lossHist[lossHist.length - 1];
+    return caps;
+  }
+
+  function drawBoundary(cap) {
+    const ctx = boundary.getContext('2d'), W = boundary.width, Ht = boundary.height;
+    ctx.clearRect(0, 0, W, Ht);
+    const { G, vals } = cap.grid, cw = W / G, ch = Ht / G;
+    for (let iy = 0; iy < G; iy++) for (let ix = 0; ix < G; ix++) {
+      const p = vals[iy][ix];
+      const g = Math.round(80 + 150 * p), rr = Math.round(80 + 150 * (1 - p));
+      ctx.fillStyle = `rgb(${rr},${g},110)`;
+      ctx.fillRect(ix * cw, iy * ch, cw + 1, ch + 1);
+    }
+    const sx = (x) => (x + 2) / 4 * W, sy = (y) => (2 - y) / 4 * Ht;
+    for (const [x1, x2, y] of pts) { ctx.beginPath(); ctx.arc(sx(x1), sy(x2), 4, 0, 7); ctx.fillStyle = y ? '#065f46' : '#7f1d1d'; ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke(); }
+  }
+  function drawLoss(cap) {
+    const p = api.makePlot(lossCanvas, { xMin: 0, xMax: Math.max(1, (frames.length - 1) * 28), yMin: 0, yMax: Math.max(0.2, frames[0].loss * 1.05) });
+    p.clear(); p.axes('step', 'loss');
+    const xs = cap.lossHist.map((_, i) => i), ys = cap.lossHist;
+    p.line(xs, ys, { color: '#dc2626', width: 2.5 });
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `loss = <b>${cap.loss.toFixed(3)}</b>` }));
+    readout.appendChild(el('span', { html: `seed <b>${seed}</b>` }));
+    readout.appendChild(el('span', { html: (cap.loss < 0.15 ? '<b style="color:#166534">XOR solved</b>' : (cap.loss < 0.4 ? 'learning...' : '<b style="color:#b45309">still mixing</b>')) }));
+  }
+  function run() {
+    if (timer) clearInterval(timer);
+    pts = makeData(seed);
+    frames = train(); let f = 0;
+    timer = setInterval(() => { drawBoundary(frames[f]); drawLoss(frames[f]); f++; if (f >= frames.length) { clearInterval(timer); timer = null; } }, 45);
+  }
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-controls' }, [api.button('Train', run), api.button('Reseed', () => { seedIdx = (seedIdx + 1) % GOOD_SEEDS.length; seed = GOOD_SEEDS[seedIdx]; run(); }, 'ghost')]),
+    el('div', { class: 'demo-stage' }, [boundary, lossCanvas, readout]),
+    el('div', { class: 'demo-hint', text: 'Left: green/red = the net\u2019s decision surface (dots are labels). Right: BCE loss. Two hidden units learn features that bend the space until XOR becomes separable.' }),
+  ]);
+  const preview = () => {
+    pts = makeData(seed);
+    const ctx = boundary.getContext('2d'); ctx.clearRect(0, 0, boundary.width, boundary.height); ctx.fillStyle = '#f1f5f9'; ctx.fillRect(0, 0, boundary.width, boundary.height);
+    const sx = (x) => (x + 2) / 4 * boundary.width, sy = (y) => (2 - y) / 4 * boundary.height;
+    for (const [x1, x2, y] of pts) { ctx.beginPath(); ctx.arc(sx(x1), sy(x2), 4, 0, 7); ctx.fillStyle = y ? '#065f46' : '#7f1d1d'; ctx.fill(); }
+    const q = api.makePlot(lossCanvas, { xMin: 0, xMax: 1, yMin: 0, yMax: 1 }); q.clear(); q.axes('step', 'loss');
+  };
+  return { mount, init: preview, onLeave: () => { if (timer) { clearInterval(timer); timer = null; } } };
+});
+
+/* =====================================================================
+ *  DEMO 8 - embedding explorer (Transformers.js + precomputed fallback)
+ *  init() shows a REAL precomputed scatter (offline/PDF-safe). "Embed"
+ *  runs the live model on whatever the student types, projects with PCA.
+ * ===================================================================== */
+register('embed-explorer', (api) => {
+  // Precomputed with Xenova/all-MiniLM-L6-v2 (mean-pooled, normalized) + 2D PCA.
+  const PRE = [
+    { w: 'dog', x: 0.3471, y: 0.3107, nn: ['puppy (0.80)', 'cat (0.66)', 'horse (0.53)'] },
+    { w: 'puppy', x: 0.2952, y: 0.3596, nn: ['dog (0.80)', 'kitten (0.61)', 'cat (0.53)'] },
+    { w: 'cat', x: 0.2658, y: 0.3648, nn: ['kitten (0.79)', 'dog (0.66)', 'puppy (0.53)'] },
+    { w: 'kitten', x: 0.2455, y: 0.3872, nn: ['cat (0.79)', 'puppy (0.61)', 'dog (0.52)'] },
+    { w: 'horse', x: 0.2605, y: 0.0191, nn: ['dog (0.53)', 'puppy (0.51)', 'kitten (0.44)'] },
+    { w: 'car', x: 0.2513, y: -0.3418, nn: ['truck (0.69)', 'bicycle (0.52)', 'bus (0.50)'] },
+    { w: 'truck', x: 0.1901, y: -0.4078, nn: ['car (0.69)', 'bus (0.51)', 'bicycle (0.51)'] },
+    { w: 'bus', x: 0.0242, y: -0.4499, nn: ['truck (0.51)', 'car (0.50)', 'bicycle (0.44)'] },
+    { w: 'bicycle', x: 0.177, y: -0.517, nn: ['car (0.52)', 'truck (0.51)', 'bus (0.44)'] },
+    { w: 'apple', x: -0.0555, y: -0.0095, nn: ['banana (0.42)', 'car (0.41)', 'kitten (0.39)'] },
+    { w: 'banana', x: -0.2036, y: -0.0148, nn: ['orange (0.52)', 'apple (0.42)', 'kitten (0.41)'] },
+    { w: 'orange', x: -0.1738, y: 0.0294, nn: ['banana (0.52)', 'dog (0.39)', 'apple (0.37)'] },
+    { w: 'king', x: -0.538, y: 0.079, nn: ['queen (0.68)', 'prince (0.59)', 'banana (0.40)'] },
+    { w: 'queen', x: -0.5744, y: 0.0532, nn: ['king (0.68)', 'prince (0.58)', 'banana (0.40)'] },
+    { w: 'prince', x: -0.5113, y: 0.1378, nn: ['king (0.59)', 'queen (0.58)', 'banana (0.37)'] },
+  ];
+  const DEFAULT_TEXT = PRE.map((p) => p.w).join(', ');
+
+  const canvas = api.canvasEl(480, 250);
+  canvas.classList.add('clickable');
+  const neigh = el('div', { class: 'demo-readout' });
+  const box = el('textarea', { class: 'demo-editor demo-textbox', rows: 2, spellcheck: 'false' });
+  box.value = DEFAULT_TEXT;
+  let pts = PRE.map((p) => ({ ...p })), sel = null, layout = [];
+
+  function neighborWords(nnList) { return nnList.map((s) => s.split(' ')[0]); }
+  function draw() {
+    const ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+    let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
+    for (const p of pts) { xMin = Math.min(xMin, p.x); xMax = Math.max(xMax, p.x); yMin = Math.min(yMin, p.y); yMax = Math.max(yMax, p.y); }
+    const padX = (xMax - xMin) * 0.14 + 1e-6, padY = (yMax - yMin) * 0.14 + 1e-6;
+    xMin -= padX; xMax += padX; yMin -= padY; yMax += padY;
+    const sx = (x) => 46 + (x - xMin) / (xMax - xMin) * (W - 60);
+    const sy = (y) => H - 26 - (y - yMin) / (yMax - yMin) * (H - 44);
+    layout = pts.map((p) => ({ ...p, px: sx(p.x), py: sy(p.y) }));
+    const hi = sel != null ? new Set(neighborWords(pts[sel].nn)) : null;
+    ctx.font = '11px ui-monospace, monospace';
+    // dots first
+    layout.forEach((p, i) => {
+      let color = '#94a3b8';
+      if (sel != null) { if (i === sel) color = '#1d4ed8'; else if (hi.has(p.w)) color = '#d97706'; }
+      ctx.beginPath(); ctx.arc(p.px, p.py, i === sel ? 6 : 4.5, 0, 7); ctx.fillStyle = color; ctx.fill();
+    });
+    // declutter labels vertically so tight clusters stay readable
+    const labs = layout.map((p) => ({ p, lx: p.px + 7, ly: p.py + 4, w: ctx.measureText(p.w).width }));
+    labs.sort((a, b) => a.ly - b.ly);
+    for (let pass = 0; pass < 8; pass++) {
+      for (let i = 0; i < labs.length; i++) for (let j = i + 1; j < labs.length; j++) {
+        const a = labs[i], b = labs[j];
+        if (Math.abs(a.ly - b.ly) < 11 && !(a.lx + a.w < b.lx - 2 || b.lx + b.w < a.lx - 2)) {
+          if (a.ly <= b.ly) b.ly += 5; else a.ly += 5;
+        }
+      }
+    }
+    labs.forEach(({ p, lx, ly }, i) => {
+      const idx = layout.indexOf(p);
+      const isHi = sel != null && (idx === sel || hi.has(p.w));
+      if (Math.abs(ly - (p.py + 4)) > 4) { ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 0.6; ctx.beginPath(); ctx.moveTo(p.px, p.py); ctx.lineTo(lx - 1, ly - 3); ctx.stroke(); }
+      ctx.fillStyle = isHi ? '#111827' : '#64748b';
+      ctx.fillText(p.w, lx, Math.min(canvas.height - 2, Math.max(9, ly)));
+    });
+    neigh.innerHTML = '';
+    if (sel != null) {
+      neigh.appendChild(el('span', { html: `nearest to <b>${pts[sel].w}</b>:` }));
+      pts[sel].nn.forEach((s) => neigh.appendChild(el('span', { text: '  ' + s })));
+    } else {
+      neigh.appendChild(el('span', { text: 'click a point to see its' }));
+      neigh.appendChild(el('span', { text: 'nearest neighbors' }));
+    }
+  }
+  canvas.addEventListener('click', (e) => {
+    const r = canvas.getBoundingClientRect();
+    const mx = (e.clientX - r.left) * canvas.width / r.width, my = (e.clientY - r.top) * canvas.height / r.height;
+    let best = -1, bd = 1e9;
+    layout.forEach((p, i) => { const d = (p.px - mx) ** 2 + (p.py - my) ** 2; if (d < bd) { bd = d; best = i; } });
+    if (best >= 0 && bd < 900) { sel = best; draw(); }
+  });
+
+  async function embed() {
+    const words = box.value.split(/[\n,]+/).map((s) => s.trim()).filter(Boolean).slice(0, 40);
+    if (words.length < 3) { api.setStatus('Enter at least 3 words.', 'err'); return; }
+    embedBtn.disabled = true;
+    try {
+      const ex = await api.getEmbedder();
+      const vecs = await api.embedTexts(ex, words);
+      api.setStatus('Projecting...', '');
+      const xy = api.pca2(vecs);
+      pts = words.map((w, i) => {
+        const sims = words.map((w2, j) => ({ w: w2, s: api.cosine(vecs[i], vecs[j]) })).filter((_, j) => j !== i).sort((a, b) => b.s - a.s);
+        return { w, x: xy[i][0], y: xy[i][1], nn: sims.slice(0, 3).map((o) => `${o.w} (${o.s.toFixed(2)})`) };
+      });
+      sel = null; draw();
+      api.setStatus('Done \u2014 real embeddings.', 'ok');
+    } catch (err) {
+      api.setStatus('Model unavailable \u2014 showing precomputed set.', 'err');
+      pts = PRE.map((p) => ({ ...p })); sel = null; draw();
+    } finally { embedBtn.disabled = false; }
+  }
+  const embedBtn = api.button('Embed', embed);
+  const resetBtn = api.button('Reset words', () => { box.value = DEFAULT_TEXT; pts = PRE.map((p) => ({ ...p })); sel = null; draw(); api.setStatus('', ''); }, 'ghost');
+
+  const mount = el('div', {}, [
+    box,
+    el('div', { class: 'demo-controls' }, [embedBtn, resetBtn]),
+    el('div', { class: 'demo-stage' }, [canvas, neigh]),
+    el('div', { class: 'demo-hint', text: 'Type any words or short sentences. MiniLM computes a contextual embedding (not a fixed lookup), then PCA squeezes it to 2D. Similar meanings land near each other.' }),
+  ]);
+  return { mount, init: draw };
+});
+
+/* =====================================================================
+ *  DEMO 9 - k-means playground (JS): step Lloyd's algorithm
+ * ===================================================================== */
+register('kmeans', (api) => {
+  const K = 3;
+  const COLORS = ['#1d4ed8', '#16a34a', '#dc2626'];
+  let seed = 1, data = [], cents = [], assign = [], iter = 0, timer = null;
+  const canvas = api.canvasEl(360, 280);
+  const readout = el('div', { class: 'demo-readout' });
+
+  function makeData(s) {
+    const r = api.rng32(s * 733 + 11);
+    const centers = [[-1.1, 0.9], [1.2, 0.7], [0.1, -1.1]];
+    const out = [];
+    for (const [cx, cy] of centers) for (let k = 0; k < 16; k++) out.push([cx + (r() - 0.5) * 1.1, cy + (r() - 0.5) * 1.1]);
+    return out;
+  }
+  function initCentroids(s) {
+    const r = api.rng32(s * 977 + 3);
+    cents = []; const used = new Set();
+    while (cents.length < K) { const i = Math.floor(r() * data.length); if (!used.has(i)) { used.add(i); cents.push([data[i][0], data[i][1]]); } }
+    assign = data.map(() => -1); iter = 0;
+  }
+  function assignStep() {
+    let changed = 0;
+    assign = data.map(([x, y], i) => {
+      let best = 0, bd = 1e9;
+      cents.forEach(([cx, cy], k) => { const d = (x - cx) ** 2 + (y - cy) ** 2; if (d < bd) { bd = d; best = k; } });
+      if (best !== assign[i]) changed++;
+      return best;
+    });
+    return changed;
+  }
+  function updateStep() {
+    cents = cents.map((c, k) => {
+      const members = data.filter((_, i) => assign[i] === k);
+      if (!members.length) return c;
+      return [members.reduce((s, p) => s + p[0], 0) / members.length, members.reduce((s, p) => s + p[1], 0) / members.length];
+    });
+  }
+  function inertia() {
+    let s = 0; data.forEach(([x, y], i) => { const c = cents[assign[i]] || [0, 0]; s += (x - c[0]) ** 2 + (y - c[1]) ** 2; }); return s;
+  }
+  function draw() {
+    const p = api.makePlot(canvas, { xMin: -2.6, xMax: 2.6, yMin: -2.4, yMax: 2.4 });
+    p.clear(); p.axes('', '');
+    data.forEach(([x, y], i) => p.dot(x, y, { color: assign[i] >= 0 ? COLORS[assign[i]] : '#94a3b8', r: 3.5 }));
+    cents.forEach((c, k) => {
+      const ctx = canvas.getContext('2d'); const px = p.sx(c[0]), py = p.sy(c[1]);
+      ctx.beginPath(); ctx.arc(px, py, 9, 0, 7); ctx.fillStyle = COLORS[k]; ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = '#fff'; ctx.stroke();
+    });
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `iteration <b>${iter}</b>` }));
+    readout.appendChild(el('span', { html: assign[0] >= 0 ? `inertia = <b>${inertia().toFixed(2)}</b>` : 'centroids placed' }));
+  }
+  function step() {
+    const changed = assignStep();   // 1) assign every point to its nearest centroid
+    updateStep();                    // 2) move each centroid to its members' mean
+    iter++; draw();
+    if (changed === 0) { api.setStatus('Converged \u2014 assignments stopped changing.', 'ok'); return true; }
+    return false;
+  }
+  function reseed() { if (timer) { clearInterval(timer); timer = null; } data = makeData(++seed); initCentroids(seed); api.setStatus('', ''); draw(); }
+  function run() { if (timer) clearInterval(timer); timer = setInterval(() => { if (step()) { clearInterval(timer); timer = null; } }, 650); }
+
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-controls' }, [api.button('Step', () => { if (timer) { clearInterval(timer); timer = null; } step(); }), api.button('Run', run), api.button('Reseed', reseed, 'ghost')]),
+    el('div', { class: 'demo-stage' }, [canvas, readout]),
+    el('div', { class: 'demo-hint', text: 'Each step: assign every point to its nearest centroid, then move each centroid to its members\u2019 mean. Repeat until nothing moves.' }),
+  ]);
+  const preview = () => { data = makeData(seed); initCentroids(seed); draw(); };
+  return { mount, init: preview, onLeave: () => { if (timer) { clearInterval(timer); timer = null; } } };
 });
 
 /* --------------------------------------------------------------- boot ----- */
