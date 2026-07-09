@@ -698,7 +698,7 @@ register('nonlinearity', (api) => {
   const target = (x) => 0.8 * Math.sin(2 * x);
   const xs = []; for (let i = 0; i < N; i++) xs.push(-3 + 6 * i / (N - 1));
   const ys = xs.map(target);
-  let useAct = true, frames = [], timer = null;
+  let useAct = false, frames = [], timer = null;
 
   const canvas = api.canvasEl(460, 250);
   const readout = el('div', { class: 'demo-readout' });
@@ -768,8 +768,9 @@ register('nonlinearity', (api) => {
     frames = caps; let f = 0;
     timer = setInterval(() => { drawFrame(grid, frames[f], f, frames.length); f++; if (f >= frames.length) { clearInterval(timer); timer = null; } }, 55);
   }
-  const toggle = api.button('activation: ON', () => {
-    useAct = !useAct; toggle.textContent = 'activation: ' + (useAct ? 'ON' : 'OFF'); run();
+  const toggle = api.button('activation: OFF', () => {
+    if (timer) { clearInterval(timer); timer = null; }
+    useAct = !useAct; toggle.textContent = 'activation: ' + (useAct ? 'ON' : 'OFF'); preview();
   }, 'ghost');
 
   const mount = el('div', {}, [
@@ -800,7 +801,7 @@ register('xor-net', (api) => {
   const HID = 2;
   // Curated init that reliably drives the 2-2-1 net to a crisp XOR solution.
   const seed = 1;
-  let useAct = true;
+  let useAct = false;
   let pts = [], frames = [], timer = null;
 
   const boundary = api.canvasEl(300, 260);
@@ -906,8 +907,9 @@ register('xor-net', (api) => {
     frames = train(); let f = 0;
     timer = setInterval(() => { drawBoundary(frames[f]); drawLoss(frames[f]); f++; if (f >= frames.length) { clearInterval(timer); timer = null; } }, 45);
   }
-  const actToggle = api.button('activation: ON', () => {
-    useAct = !useAct; actToggle.textContent = 'activation: ' + (useAct ? 'ON' : 'OFF'); run();
+  const actToggle = api.button('activation: OFF', () => {
+    if (timer) { clearInterval(timer); timer = null; }
+    useAct = !useAct; actToggle.textContent = 'activation: ' + (useAct ? 'ON' : 'OFF'); preview();
   }, 'ghost');
   const mount = el('div', {}, [
     el('div', { class: 'demo-controls' }, [api.button('Train', run), actToggle]),
@@ -925,6 +927,10 @@ register('xor-net', (api) => {
       else { ctx.fillStyle = '#fff'; ctx.strokeStyle = '#111827'; ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 7); ctx.fill(); ctx.stroke(); }
     }
     const q = api.makePlot(lossCanvas, { xMin: 0, xMax: 1, yMin: 0, yMax: 1 }); q.clear(); q.axes('step', 'loss');
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `activation: <b>${useAct ? 'ON' : 'OFF'}</b>` }));
+    readout.appendChild(el('span', { html: 'untrained &mdash; press <b>Train</b>' }));
+    readout.appendChild(el('span', { html: '<span style="color:#6b7280;">&#9711; class 0 &nbsp; &#9632; class 1</span>' }));
   };
   return { mount, init: preview, onLeave: () => { if (timer) { clearInterval(timer); timer = null; } } };
 });
@@ -1121,6 +1127,168 @@ register('kmeans', (api) => {
   ]);
   const preview = () => { data = makeData(seed); initCentroids(seed); draw(); };
   return { mount, init: preview, onLeave: () => { if (timer) { clearInterval(timer); timer = null; } } };
+});
+
+/* =====================================================================
+ *  DEMO 10 - PCA mechanics: rotatable 3D cloud + its 2D PCA projection
+ *  Points are stored in PC-aligned coords, so "flatten" = drop PC3 and
+ *  face the PC1-PC2 plane, landing exactly on the right-hand 2D panel.
+ * ===================================================================== */
+register('pca-3d', (api) => {
+  const cloudCanvas = api.canvasEl(300, 300);
+  const projCanvas = api.canvasEl(300, 300);
+  cloudCanvas.classList.add('grabbable');
+  let pc = [];                     // points in PC coords [[u,v,w], ...]
+  let seed = 3, yaw = 0.7, pitch = -0.5, flat = 0;
+  let anim = null, dragging = false, lastX = 0, lastY = 0;
+
+  const gaussRand = (r) => { let u = 0, v = 0; while (u === 0) u = r(); while (v === 0) v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+
+  function build(s) {
+    const r = api.rng32((s * 2654435761) >>> 0);
+    const n = 240, raw = [];
+    for (let i = 0; i < n; i++) raw.push([gaussRand(r) * 1.7, gaussRand(r) * 0.95, gaussRand(r) * 0.26]);
+    const m = [0, 0, 0]; for (const p of raw) { m[0] += p[0] / n; m[1] += p[1] / n; m[2] += p[2] / n; }
+    const C = raw.map((p) => [p[0] - m[0], p[1] - m[1], p[2] - m[2]]);
+    const cov = new Array(9).fill(0);
+    for (const p of C) for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) cov[i * 3 + j] += p[i] * p[j] / n;
+    const mv = (M, v) => [M[0] * v[0] + M[1] * v[1] + M[2] * v[2], M[3] * v[0] + M[4] * v[1] + M[5] * v[2], M[6] * v[0] + M[7] * v[1] + M[8] * v[2]];
+    const nrm = (v) => { const L = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / L, v[1] / L, v[2] / L]; };
+    const power = (M) => { let v = nrm([1, 0.3, -0.2]); for (let k = 0; k < 80; k++) v = nrm(mv(M, v)); return v; };
+    const pc1 = power(cov);
+    const t1 = mv(cov, pc1), l1 = t1[0] * pc1[0] + t1[1] * pc1[1] + t1[2] * pc1[2];
+    const cov2 = cov.slice(); for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) cov2[i * 3 + j] -= l1 * pc1[i] * pc1[j];
+    const pc2 = power(cov2);
+    const pc3 = nrm([pc1[1] * pc2[2] - pc1[2] * pc2[1], pc1[2] * pc2[0] - pc1[0] * pc2[2], pc1[0] * pc2[1] - pc1[1] * pc2[0]]);
+    pc = C.map((p) => [p[0] * pc1[0] + p[1] * pc1[1] + p[2] * pc1[2], p[0] * pc2[0] + p[1] * pc2[1] + p[2] * pc2[2], p[0] * pc3[0] + p[1] * pc3[1] + p[2] * pc3[2]]);
+  }
+
+  let umin = -2, uspan = 4;
+  const colorFor = (u) => { const t = Math.max(0, Math.min(1, (u - umin) / uspan)); return `rgb(${Math.round(29 + 191 * t)},${Math.round(78 - 40 * t)},${Math.round(216 - 178 * t)})`; };
+
+  function drawCloud() {
+    const ctx = cloudCanvas.getContext('2d'), W = cloudCanvas.width, H = cloudCanvas.height;
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+    const cyw = Math.cos(yaw), syw = Math.sin(yaw), cxp = Math.cos(pitch), sxp = Math.sin(pitch);
+    const us = pc.map((p) => p[0]); umin = Math.min(...us); uspan = (Math.max(...us) - umin) || 1;
+    const sc = (W * 0.42) / 3.2;
+    const proj = pc.map((p) => {
+      const x = p[0], y = p[1], z = p[2] * (1 - flat);
+      const x1 = cyw * x + syw * z, z1 = -syw * x + cyw * z;
+      const y2 = cxp * y - sxp * z1, z2 = sxp * y + cxp * z1;
+      return { px: W / 2 + x1 * sc, py: H / 2 - y2 * sc, depth: z2, u: p[0] };
+    });
+    proj.sort((a, b) => a.depth - b.depth);
+    for (const q of proj) { const t = Math.max(0, Math.min(1, (q.depth + 2) / 4)); ctx.globalAlpha = 0.5 + 0.45 * t; ctx.fillStyle = colorFor(q.u); ctx.beginPath(); ctx.arc(q.px, q.py, 2.2 + 1.6 * t, 0, 7); ctx.fill(); }
+    ctx.globalAlpha = 1;
+  }
+  function drawProj() {
+    const p = api.makePlot(projCanvas, { xMin: -3.2, xMax: 3.2, yMin: -3.2, yMax: 3.2 }); p.clear(); p.axes('PC1', 'PC2');
+    const ctx = projCanvas.getContext('2d');
+    for (const pp of pc) { ctx.fillStyle = colorFor(pp[0]); ctx.beginPath(); ctx.arc(p.sx(pp[0]), p.sy(pp[1]), 2.6, 0, 7); ctx.fill(); }
+  }
+  const draw = () => { drawCloud(); drawProj(); };
+
+  function flatten() {
+    if (anim) clearInterval(anim);
+    const target = flat < 0.5 ? 1 : 0;
+    anim = setInterval(() => {
+      flat += (target - flat) * 0.14;
+      if (target === 1) { yaw += (0 - yaw) * 0.14; pitch += (0 - pitch) * 0.14; }
+      drawCloud();
+      if (Math.abs(flat - target) < 0.01) { flat = target; if (target === 1) { yaw = 0; pitch = 0; } drawCloud(); clearInterval(anim); anim = null; }
+    }, 30);
+  }
+  function reseed() { if (anim) { clearInterval(anim); anim = null; } seed++; flat = 0; yaw = 0.7; pitch = -0.5; build(seed); draw(); }
+
+  cloudCanvas.addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; cloudCanvas.setPointerCapture(e.pointerId); });
+  cloudCanvas.addEventListener('pointermove', (e) => { if (!dragging) return; yaw += (e.clientX - lastX) * 0.01; pitch += (e.clientY - lastY) * 0.01; pitch = Math.max(-1.4, Math.min(1.4, pitch)); lastX = e.clientX; lastY = e.clientY; drawCloud(); });
+  cloudCanvas.addEventListener('pointerup', () => { dragging = false; });
+  cloudCanvas.addEventListener('pointercancel', () => { dragging = false; });
+
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'Drag the 3D cloud to rotate. PCA finds the flat plane of most spread and drops the thin 3rd direction.' }),
+    el('div', { class: 'demo-controls' }, [api.button('Flatten to 2D', flatten), api.button('Reseed', reseed, 'ghost')]),
+    el('div', { class: 'demo-stage' }, [
+      el('div', { class: 'pca-panel' }, [el('div', { class: 'pca-cap', text: '3D data (drag to rotate)' }), cloudCanvas]),
+      el('div', { class: 'pca-panel' }, [el('div', { class: 'pca-cap', text: 'PCA \u2192 2D' }), projCanvas]),
+    ]),
+  ]);
+  return { mount, init: () => { build(seed); draw(); }, onLeave: () => { if (anim) { clearInterval(anim); anim = null; } } };
+});
+
+/* =====================================================================
+ *  DEMO 11 - WildVis: real WildChat conversation embeddings (1536-d
+ *  OpenAI text-embedding-3-small -> PCA 2D). Hover reads a conversation;
+ *  click opens the real thread on wildvisualizer.com. Data by Deng et al.
+ * ===================================================================== */
+register('wildvis', (api) => {
+  const canvas = api.canvasEl(760, 340);
+  canvas.classList.add('grabbable');
+  const tip = el('div', { class: 'wv-tip' });
+  let data = null, scale = 1, tx = 0, ty = 0, hover = -1;
+  let isDown = false, moved = false, downX = 0, downY = 0, lastX = 0, lastY = 0;
+
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const toXY = (e) => { const r = canvas.getBoundingClientRect(); return { mx: (e.clientX - r.left) * canvas.width / r.width, my: (e.clientY - r.top) * canvas.height / r.height, ox: e.clientX - r.left, oy: e.clientY - r.top }; };
+  const S = (d) => [d.e[0] * scale + tx, -d.e[1] * scale + ty];
+
+  function fit() {
+    const xs = data.map((d) => d.e[0]), ys = data.map((d) => d.e[1]);
+    const xmin = Math.min(...xs), xmax = Math.max(...xs), ymin = Math.min(...ys), ymax = Math.max(...ys);
+    const pad = 26, W = canvas.width, H = canvas.height;
+    scale = Math.min((W - 2 * pad) / (xmax - xmin || 1), (H - 2 * pad) / (ymax - ymin || 1));
+    tx = W / 2 - scale * (xmin + xmax) / 2;
+    ty = H / 2 + scale * (ymin + ymax) / 2;
+  }
+  function draw() {
+    const ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < data.length; i++) {
+      if (i === hover) continue;
+      const [px, py] = S(data[i]); if (px < -4 || px > W + 4 || py < -4 || py > H + 4) continue;
+      ctx.beginPath(); ctx.arc(px, py, 2.2, 0, 7);
+      ctx.fillStyle = data[i].d === 'lmsyschat' ? 'rgba(37,99,235,0.7)' : 'rgba(22,163,74,0.65)'; ctx.fill();
+    }
+    if (hover >= 0) { const [px, py] = S(data[hover]); ctx.beginPath(); ctx.arc(px, py, 5, 0, 7); ctx.fillStyle = '#f59e0b'; ctx.fill(); ctx.lineWidth = 1.6; ctx.strokeStyle = '#111827'; ctx.stroke(); }
+  }
+  function nearest(mx, my) { let best = -1, bd = 90; for (let i = 0; i < data.length; i++) { const [px, py] = S(data[i]); const dd = (px - mx) ** 2 + (py - my) ** 2; if (dd < bd) { bd = dd; best = i; } } return best; }
+
+  canvas.addEventListener('mousemove', (e) => {
+    if (!data) return; const { mx, my, ox, oy } = toXY(e);
+    if (isDown) { tx += (mx - lastX); ty += (my - lastY); lastX = mx; lastY = my; if (Math.abs(mx - downX) + Math.abs(my - downY) > 4) moved = true; draw(); tip.style.display = 'none'; return; }
+    const h = nearest(mx, my);
+    if (h !== hover) { hover = h; draw(); }
+    if (h >= 0) { tip.innerHTML = '<b>' + esc(data[h].d) + '</b><br>' + esc(data[h].c); tip.style.display = 'block'; tip.style.left = Math.min(ox + 14, canvas.clientWidth - 250) + 'px'; tip.style.top = Math.min(oy + 14, canvas.clientHeight - 60) + 'px'; }
+    else tip.style.display = 'none';
+  });
+  canvas.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+  canvas.addEventListener('mousedown', (e) => { const { mx, my } = toXY(e); isDown = true; moved = false; downX = mx; downY = my; lastX = mx; lastY = my; });
+  window.addEventListener('mouseup', (e) => {
+    if (!isDown) return; isDown = false;
+    if (!moved && hover >= 0) window.open('https://wildvisualizer.com/conversation/' + encodeURIComponent(data[hover].d) + '/' + encodeURIComponent(data[hover].i) + '?from=embedding&lang=english', '_blank', 'noopener');
+  });
+  canvas.addEventListener('wheel', (e) => {
+    if (!data) return; e.preventDefault(); const { mx, my } = toXY(e);
+    const wx = (mx - tx) / scale, wy = (ty - my) / scale;
+    scale *= Math.exp(-e.deltaY * 0.0012);
+    tx = mx - wx * scale; ty = my + wy * scale; draw();
+  }, { passive: false });
+
+  async function load() {
+    api.setStatus('Loading real conversation embeddings...');
+    try { const res = await fetch('data/wildchat_embeddings.json'); data = await res.json(); fit(); draw(); api.setStatus(data.length + ' real conversations \u2014 hover to read, click to open.', 'ok'); }
+    catch (e) { api.setStatus('Could not load the embedding data.', 'err'); }
+  }
+
+  const link = el('a', { class: 'wv-link', href: 'https://wildvisualizer.com/embeddings/english?dataset=wildchat', target: '_blank', rel: 'noopener' }, 'Explore it live at wildvisualizer.com \u2197');
+  const wrap = el('div', { class: 'wv-wrap' }, [canvas, tip]);
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'Real WildChat conversations. Each is a 1536-dim vector (OpenAI text-embedding-3-small), projected to 2D with PCA. Hover a dot to read it; click to open it.' }),
+    el('div', { class: 'demo-controls' }, [api.button('Reset view', () => { if (data) { fit(); draw(); } }), link]),
+    wrap,
+  ]);
+  return { mount, init: load, onLeave: () => { tip.style.display = 'none'; hover = -1; } };
 });
 
 /* --------------------------------------------------------------- boot ----- */

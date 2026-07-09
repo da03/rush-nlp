@@ -192,6 +192,39 @@
 
 /* Clickable scatter canvas (embedding explorer). */
 .reveal .demo-canvas.clickable { cursor: pointer; }
+.reveal .demo-canvas.grabbable { cursor: grab; }
+.reveal .demo-canvas.grabbable:active { cursor: grabbing; }
+
+/* PCA 3D->2D demo panels. */
+.reveal .pca-panel { text-align: center; }
+.reveal .pca-panel .pca-cap { font-size: 0.6em; color: #6b7280; margin-bottom: 0.2em; }
+
+/* WildVis scatter + hover tooltip. */
+.reveal .wv-wrap { position: relative; width: max-content; margin: 0 auto; }
+.reveal .wv-tip {
+  position: absolute;
+  display: none;
+  pointer-events: none;
+  max-width: 250px;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  padding: 0.4em 0.55em;
+  font-size: 0.5em;
+  line-height: 1.35;
+  color: #1f2937;
+  z-index: 20;
+}
+.reveal .wv-tip b { color: #166534; text-transform: capitalize; }
+.reveal .wv-link {
+  font-size: 0.7em;
+  font-weight: 600;
+  color: #7c3aed;
+  text-decoration: none;
+  border-bottom: 1px dotted #c4b5fd;
+}
+.reveal .wv-link:hover { color: #5b21b6; }
 
 /* Persistent one-line caption under a demo-slide title. Stays visible in the
    exported PDF (where the live UI has no results), unlike .demo-fallback. */
