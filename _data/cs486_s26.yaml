@@ -298,6 +298,7 @@ schedule:
     topic: "Neural Networks & Learned Embeddings"
     slides: /slides/CS486/S26/L18/
     async: true
+    recording: "https://youtu.be/SqUGpP1uPaA"
     note: "Asynchronous &mdash; pre-recorded video (instructor at ICML). Watch on your own time."
     deadlines:
       - { kind: out,     chat: 9, label: "Chat 9 out" }
