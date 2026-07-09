@@ -60,7 +60,26 @@
   </div>
 </section>
 
-<!-- 3. Setup -->
+<!-- 3. Learning goals -->
+<section class="center-slide">
+  <h2>What you should take away</h2>
+  <p style="font-size:0.9em;color:#6b7280;">One thread runs through the whole lecture: useful vectors can be <strong>learned</strong>.</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:92%; margin:0.55em auto;">
+    <div class="task-card"><h3>build</h3><p>Explain why hidden layers need nonlinearities.</p></div>
+    <div class="task-card fragment"><h3>represent</h3><p>Explain embeddings as learned vectors, including contextual ones.</p></div>
+    <div class="task-card fragment"><h3>inspect</h3><p>Use projection, neighbors, and clusters to reason about embedding spaces.</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.88em;color:#1d4ed8;">The later examples are applications of the same idea: learned spaces become interfaces.</p>
+</section>
+
+<!-- 4. Act 1 bridge -->
+<section class="center-slide">
+  <h2>Act 1: learn the features</h2>
+  <p style="font-size:1.05em;">L17 trained models on fixed input vectors.</p>
+  <p class="fragment" style="font-size:1.05em;color:#1d4ed8;">Today, the model also learns the vector representation.</p>
+</section>
+
+<!-- 5. Setup -->
 <section class="center-slide">
   <h2>The problem with fixed features</h2>
   <p style="font-size:1em;">L17 assumed the useful input vector already exists.</p>
@@ -72,7 +91,7 @@
   <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">Modern ML learns the features too.</p>
 </section>
 
-<!-- 4. Hidden representations -->
+<!-- 6. Hidden representations -->
 <section class="center-slide">
   <h2>Neural nets learn representations</h2>
   <svg viewBox="0 0 800 150" xmlns="http://www.w3.org/2000/svg" style="width:82%; max-height:180px;">
@@ -88,7 +107,7 @@
   <p class="fragment" style="font-size:0.9em;color:#6b7280;">The hidden layer is not just computation: it is a learned view of the input.</p>
 </section>
 
-<!-- 5. Neuron -->
+<!-- 7. Neuron -->
 <section>
   <h2>A neuron is a feature detector</h2>
   <div class="two-col vcenter">
@@ -126,7 +145,7 @@
   </div>
 </section>
 
-<!-- 6. Nonlinearity: linear layers collapse -->
+<!-- 8. Nonlinearity: linear layers collapse -->
 <section class="center-slide">
   <h2>Why add a nonlinearity?</h2>
   <p style="font-size:0.95em;">Two linear layers in a row collapse into one:</p>
@@ -157,7 +176,7 @@
   <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">Depth alone adds nothing &mdash; we need a nonlinearity between the layers.</p>
 </section>
 
-<!-- 6a. The fix: ReLU -->
+<!-- 9. The fix: ReLU -->
 <section class="center-slide">
   <h2>The fix: a nonlinearity</h2>
   <p style="font-size:0.95em;">Insert \(g\) between layers: &nbsp;\(h = g(W_1x),\quad \hat y = W_2 h\).</p>
@@ -172,16 +191,17 @@
   <p class="fragment" style="font-size:0.86em;color:#6b7280;">The bend is what lets stacked layers represent nonlinear functions.</p>
 </section>
 
-<!-- 6b. Live demo: nonlinearity -->
+<!-- 10. Live demo: nonlinearity -->
 <section class="center-slide">
   <h2>Playground: does nonlinearity matter?<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it). Question to test: can the same network fit a curve when the activation is off vs. on?</p>
   <div class="live-demo" data-demo="nonlinearity">
     <div class="demo-fallback">Interactive on the live slides: the same 1-hidden-layer net trains to fit a wavy target. With the activation OFF it can only draw a straight line; turn it ON and the layer bends to follow the curve. Runs instantly in your browser.</div>
   </div>
+  <p class="fragment" style="font-size:0.82em;color:#1d4ed8;">Takeaway: the activation is where hidden layers gain nonlinear expressive power.</p>
 </section>
 
-<!-- 7. One hidden layer -->
+<!-- 11. One hidden layer -->
 <section>
   <h2>One hidden layer = learned feature map</h2>
   <div class="two-col vcenter">
@@ -208,7 +228,7 @@
   </div>
 </section>
 
-<!-- 8. XOR -->
+<!-- 12. XOR -->
 <section>
   <h2>XOR: why hidden features help</h2>
   <div class="two-col vcenter">
@@ -233,24 +253,26 @@
   </div>
 </section>
 
-<!-- 8b. Live demo: XOR net -->
+<!-- 13. Live demo: XOR net -->
 <section class="center-slide">
   <h2>Playground: train a net on XOR<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it). What to watch: the loss drops only after the hidden layer bends the decision surface.</p>
   <div class="live-demo" data-demo="xor-net">
     <div class="demo-fallback">Interactive on the live slides: a tiny 2-2-1 network trains on XOR with real forward passes and backprop. Watch the decision surface bend and the loss drop until the two classes separate &mdash; something no straight line can do. Reseed to retrain from scratch.</div>
   </div>
+  <p class="fragment" style="font-size:0.82em;color:#1d4ed8;">Same training loop as L17; the difference is the learned feature map in the middle.</p>
 </section>
 
-<!-- 9. MLP equations -->
+<!-- 14. MLP equations -->
 <section class="center-slide">
   <h2>An MLP: a bigger model, same loop</h2>
   <p style="font-size:1.05em;">\(h = g(W_1x+b_1)\)</p>
   <p style="font-size:1.05em;">\(\hat y = \mathrm{softmax}(W_2h+b_2)\)</p>
   <p class="fragment" style="font-size:0.9em;color:#6b7280;">Every operation is differentiable, so L17's training loop applies unchanged.</p>
+  <p class="fragment" style="font-size:0.82em;color:#1d4ed8;">Quick check: what changed from logistic regression? Only the function class, not the optimization recipe.</p>
 </section>
 
-<!-- 10. Code -->
+<!-- 15. Code -->
 <section>
   <h2>The code barely changes</h2>
   <pre style="font-size:0.58em; width:78%; margin:0.25em auto;"><code>model = nn.Sequential(
@@ -265,7 +287,7 @@ optimizer.step()</code></pre>
   <p class="fragment" style="font-size:0.86em;color:#1d4ed8;text-align:center;">The function is richer; the training pattern is the same.</p>
 </section>
 
-<!-- 11. Backprop -->
+<!-- 16. Backprop -->
 <section class="center-slide">
   <h2>Backpropagation assigns credit</h2>
   <svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" style="width:82%;max-height:210px;">
@@ -283,9 +305,10 @@ optimizer.step()</code></pre>
     <text x="305" y="38" text-anchor="middle" font-size="16" fill="#1d4ed8">forward: compute prediction</text>
     <text class="fragment" x="305" y="170" text-anchor="middle" font-size="16" fill="#dc2626">backward: how should each weight change?</text>
   </svg>
+  <p class="fragment" style="font-size:0.84em;color:#6b7280;">Mechanically, this is the chain rule applied through the computation graph.</p>
 </section>
 
-<!-- 12. What hidden layers learn -->
+<!-- 17. What hidden layers learn -->
 <section class="center-slide">
   <h2>What do hidden layers learn?</h2>
   <svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg" style="width:86%;max-height:190px;">
@@ -303,7 +326,7 @@ optimizer.step()</code></pre>
   <p class="fragment" style="font-size:0.88em;color:#6b7280;">Deep models compose simple features into useful abstractions.</p>
 </section>
 
-<!-- 13. CNN -->
+<!-- 18. CNN -->
 <section>
   <h2>CNNs learn visual features</h2>
   <div class="two-col vcenter">
@@ -328,7 +351,14 @@ optimizer.step()</code></pre>
   </div>
 </section>
 
-<!-- 14. One-hot to embeddings -->
+<!-- 19. Act 2 bridge -->
+<section class="center-slide">
+  <h2>Act 2: embeddings give symbols geometry</h2>
+  <p style="font-size:1.02em;">The same representation idea applies when the input is not pixels, but tokens.</p>
+  <p class="fragment" style="font-size:0.95em;color:#1d4ed8;">A word ID is just a label; an embedding is a learned location in a vector space.</p>
+</section>
+
+<!-- 20. One-hot to embeddings -->
 <section>
   <h2>Word IDs have no geometry</h2>
   <div class="two-col vcenter">
@@ -349,7 +379,7 @@ optimizer.step()</code></pre>
   <p class="fragment" style="font-size:0.9em;color:#1d4ed8;text-align:center;">Similar meaning &rarr; nearby vectors (cat close to dog; "the" is off on its own).</p>
 </section>
 
-<!-- 15. Embedding table -->
+<!-- 21. Embedding table -->
 <section>
   <h2>An embedding table is a learnable lookup</h2>
   <p style="font-size:0.9em;">It is just a <strong>lookup table</strong> (a dictionary): a token's <strong>id</strong> selects its <strong>row</strong>.</p>
@@ -375,7 +405,7 @@ optimizer.step()</code></pre>
   </div>
 </section>
 
-<!-- 16. How embeddings learn -->
+<!-- 22. How embeddings learn -->
 <section class="center-slide">
   <h2>How does an embedding learn?</h2>
   <p style="font-size:0.98em;">Words that appear in the <strong>same contexts</strong> get pulled together.</p>
@@ -393,9 +423,10 @@ optimizer.step()</code></pre>
     <circle cx="390" cy="70" r="8" fill="#6b7280"/><text x="390" y="94" text-anchor="middle" font-size="12" fill="#6b7280">car</text>
     <text x="230" y="112" text-anchor="middle" font-size="12" fill="#6b7280">shared context &rarr; nearby vectors</text>
   </svg>
+  <p class="fragment" style="font-size:0.8em;color:#6b7280;">Training signal comes from prediction; geometry emerges because similar contexts create similar updates.</p>
 </section>
 
-<!-- 16c. Vector arithmetic / word2vec history -->
+<!-- 23. Vector arithmetic / word2vec history -->
 <section class="center-slide">
   <h2>Directions can carry meaning</h2>
   <p style="font-size:1.05em;text-align:center;margin:0.1em 0;">king &minus; man + woman &asymp; queen</p>
@@ -415,9 +446,10 @@ optimizer.step()</code></pre>
   </svg>
   <p class="fragment" style="font-size:0.82em;color:#6b7280;margin:0.1em 0;">Add the same "royal" direction to <strong>man</strong> and you land <em>near</em> woman (not exactly). Standalone embeddings &mdash; word2vec (Mikolov 2013), GloVe (Pennington 2014) &mdash; famously captured such regularities.</p>
   <p class="fragment" style="font-size:0.82em;color:#1d4ed8;">Today embeddings are mostly learned <strong>implicitly inside LLMs</strong>; modern contextual vectors rarely do clean arithmetic.</p>
+  <p class="fragment" style="font-size:0.78em;color:#6b7280;">Bridge: static embeddings show that geometry can carry meaning; the next slide shows why one fixed point per word is not enough.</p>
 </section>
 
-<!-- 16d. Contextual embeddings / the apple problem -->
+<!-- 24. Contextual embeddings / the apple problem -->
 <section class="center-slide">
   <h2>One word can mean two things</h2>
   <div class="two-col vcenter" style="max-width:92%;margin:0.2em auto;">
@@ -437,36 +469,51 @@ optimizer.step()</code></pre>
   </div>
   <p class="fragment" style="font-size:0.88em;">A single fixed vector for "apple" cannot be both.</p>
   <p class="fragment" style="font-size:0.88em;color:#1d4ed8;">Modern models embed the <strong>whole sentence</strong>, so a word gets a different <strong>contextual</strong> vector each time.</p>
+  <p class="fragment" style="font-size:0.8em;color:#6b7280;">This creates the L19 problem: context has to move information between token vectors.</p>
 </section>
 
-<!-- 18. PCA mechanics: 3D -> 2D live demo -->
+<!-- 25. Act 3 bridge -->
+<section class="center-slide">
+  <h2>Act 3: inspect learned spaces</h2>
+  <p style="font-size:1.02em;">Once inputs become vectors, we can ask geometric questions.</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:88%; margin:0.55em auto;">
+    <div class="task-card"><h3>project</h3><p>Can I see the space?</p></div>
+    <div class="task-card fragment"><h3>neighbors</h3><p>What is close to what?</p></div>
+    <div class="task-card fragment"><h3>cluster</h3><p>What groups exist?</p></div>
+  </div>
+</section>
+
+<!-- 26. PCA mechanics: 3D -> 2D live demo -->
 <section class="center-slide">
   <h2>Inspect embeddings by projecting them<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">PCA squeezes many dimensions to 2D by keeping the directions of most spread. &mdash; drag the cloud on the live slides.</p>
+  <p class="demo-caption">PCA squeezes many dimensions to 2D by keeping the directions of most spread &mdash; drag the cloud on the live slides. Question: which 2D view preserves the most large-scale variation?</p>
   <div class="live-demo" data-demo="pca-3d">
     <div class="demo-fallback">Interactive on the live slides: rotate a real 3D point cloud and watch PCA flatten it onto the 2D plane that captures the most variance (the thin 3rd direction is dropped). PCA is linear; t-SNE/UMAP are nonlinear alternatives. A 2D view can overstate structure, so use it to ask questions, not as proof.</div>
   </div>
+  <p class="fragment" style="font-size:0.8em;color:#6b7280;">PCA is linear; t-SNE and UMAP are nonlinear views that emphasize local neighborhoods.</p>
 </section>
 
-<!-- 18a. WildVis: real embeddings at scale -->
+<!-- 27. WildVis: real embeddings at scale -->
 <section class="center-slide">
   <h2>PCA on real data: a million chats<span class="demo-badge">live data</span></h2>
-  <p class="demo-caption">Real WildChat conversations, 1536-dim embeddings projected to 2D &mdash; hover to read one, click to open it.</p>
+  <p class="demo-caption">Real WildChat conversations, 1536-dim embeddings projected to 2D &mdash; hover to read one, click to open it. Same inspection idea at scale.</p>
   <div class="live-demo" data-demo="wildvis">
     <div class="demo-fallback">Interactive on the live slides: each dot is a real conversation, embedded to 1536 dimensions with OpenAI's text-embedding-3-small and projected to 2D with PCA. Hover a dot to read its first message; click to open the full conversation. From WildVis (Deng et al.), <a href="https://wildvisualizer.com/embeddings/english?dataset=wildchat">wildvisualizer.com</a>.</div>
   </div>
+  <p class="fragment" style="font-size:0.8em;color:#1d4ed8;">Use the map to generate hypotheses about the data, then inspect points to verify them.</p>
 </section>
 
-<!-- 18b. Live demo: embedding explorer -->
+<!-- 28. Live demo: embedding explorer -->
 <section class="center-slide">
   <h2>Playground: embed real words<span class="demo-badge">live model</span></h2>
-  <p class="demo-caption">Interactive demo &mdash; a real embedding model runs in your browser (open the slides to try it).</p>
+  <p class="demo-caption">Interactive demo &mdash; a real embedding model runs in your browser (open the slides to try it). Nearest-neighbor question: after embedding text, which points land nearby?</p>
   <div class="live-demo" data-demo="embed-explorer">
     <div class="demo-fallback">Interactive on the live slides: type any words or short sentences and a real embedding model (MiniLM, via Transformers.js) turns each into a vector; PCA projects them to 2D and you click a point to see its nearest neighbors. Dog lands near puppy, car near truck, king near queen &mdash; geometry the model learned from data.</div>
   </div>
+  <p class="fragment" style="font-size:0.8em;color:#6b7280;">This is the practical payoff of embeddings: similarity search becomes distance search.</p>
 </section>
 
-<!-- 19. k-means -->
+<!-- 29. k-means -->
 <section>
   <h2>Cluster embeddings with k-means</h2>
   <div class="two-col vcenter">
@@ -480,17 +527,17 @@ optimizer.step()</code></pre>
       </svg>
     </div>
     <div style="flex:0.95;">
-      <p style="font-size:0.9em;">After embeddings exist, k-means becomes practical.</p>
+      <p style="font-size:0.9em;">After embeddings exist, k-means becomes a way to summarize the space with prototypes.</p>
       <ul style="font-size:0.82em;">
         <li class="fragment">inspect datasets</li>
         <li class="fragment">find groups or duplicates</li>
-        <li class="fragment">build codebook intuition</li>
+        <li class="fragment">build codebook intuition: replace many vectors with a few representative centers</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- 19a. k-means algorithm -->
+<!-- 30. k-means algorithm -->
 <section>
   <h2>The k-means algorithm</h2>
   <div class="two-col vcenter">
@@ -517,19 +564,28 @@ optimizer.step()</code></pre>
   </div>
 </section>
 
-<!-- 19b. Live demo: k-means -->
+<!-- 31. Live demo: k-means -->
 <section class="center-slide">
   <h2>Playground: k-means, step by step<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it).</p>
+  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it). What to watch: assignment and update alternate until the centers stop moving much.</p>
   <div class="live-demo" data-demo="kmeans">
     <div class="demo-fallback">Interactive on the live slides: press Step to run one round of Lloyd's algorithm &mdash; assign each point to its nearest centroid, then move each centroid to the mean of its members. Repeat until the clusters stop changing. Reseed for a fresh layout.</div>
   </div>
+  <p class="fragment" style="font-size:0.8em;color:#1d4ed8;">The algorithm is simple; the representation determines whether the clusters mean anything.</p>
 </section>
 
-<!-- 19c. FID (images) -->
+<!-- 32. Act 4 bridge -->
+<section class="center-slide">
+  <h2>Act 4: learned spaces become interfaces</h2>
+  <p style="font-size:1em;">So far, we used embeddings for individual points, neighbors, and clusters.</p>
+  <p class="fragment" style="font-size:1em;color:#1d4ed8;">Next: use learned spaces to compare distributions, compress data, and align modalities.</p>
+</section>
+
+<!-- 33. FID (images) -->
 <section class="center-slide">
   <h2>Measuring image quality: FID</h2>
   <p style="font-size:0.9em;">Embed real and generated images with an Inception network, then compare the two <strong>distributions</strong> in feature space.</p>
+  <p style="font-size:0.82em;color:#6b7280;">Bridge from clustering: instead of grouping points, compare whole distributions.</p>
   <svg viewBox="0 0 460 190" xmlns="http://www.w3.org/2000/svg" style="width:74%;max-height:210px;display:block;margin:0.3em auto;">
     <ellipse cx="150" cy="105" rx="60" ry="42" fill="#1d4ed8" fill-opacity="0.08" stroke="#1d4ed8" stroke-opacity="0.5"/>
     <ellipse cx="310" cy="90" rx="60" ry="42" fill="#ea580c" fill-opacity="0.08" stroke="#ea580c" stroke-opacity="0.5"/>
@@ -544,10 +600,11 @@ optimizer.step()</code></pre>
   <p class="ref">Heusel et al. 2017.</p>
 </section>
 
-<!-- 19d. MAUVE (text) -->
+<!-- 34. MAUVE (text) -->
 <section class="center-slide">
   <h2>Measuring text quality: MAUVE</h2>
   <p style="font-size:0.9em;">Same idea for text: embed human and machine text in a language model's space and compare the distributions.</p>
+  <p style="font-size:0.82em;color:#6b7280;">The learned space becomes the measurement interface.</p>
   <svg viewBox="0 0 460 190" xmlns="http://www.w3.org/2000/svg" style="width:74%;max-height:210px;display:block;margin:0.3em auto;">
     <ellipse cx="200" cy="100" rx="66" ry="44" fill="#16a34a" fill-opacity="0.08" stroke="#16a34a" stroke-opacity="0.5"/>
     <ellipse cx="270" cy="95" rx="66" ry="44" fill="#7c3aed" fill-opacity="0.08" stroke="#7c3aed" stroke-opacity="0.5"/>
@@ -561,9 +618,10 @@ optimizer.step()</code></pre>
   <p class="ref">Pillutla et al. 2021.</p>
 </section>
 
-<!-- 20. Autoencoder -->
+<!-- 35. Autoencoder -->
 <section>
   <h2>Autoencoders learn compression</h2>
+  <p style="font-size:0.86em;text-align:center;color:#6b7280;">Another use of learned spaces: store what matters in a smaller latent vector.</p>
   <svg viewBox="0 0 760 170" xmlns="http://www.w3.org/2000/svg" style="width:84%;max-height:200px;display:block;margin:0 auto;">
     <g font-size="18" font-weight="700" text-anchor="middle">
       <rect x="25" y="55" width="110" height="50" rx="7" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="80" y="86" fill="#1e3a8a">input</text>
@@ -578,7 +636,7 @@ optimizer.step()</code></pre>
   <p class="fragment" style="font-size:0.88em;text-align:center;color:#6b7280;">Latent diffusion will generate in a compressed latent space.</p>
 </section>
 
-<!-- 20b. Real autoencoder example (NeuralOS) -->
+<!-- 36. Real autoencoder example (NeuralOS) -->
 <section>
   <h2>A real autoencoder: NeuralOS</h2>
   <div class="ae-flow">
@@ -593,10 +651,11 @@ optimizer.step()</code></pre>
     <figure class="ae-fig"><img src="images/neuralos_reconstruction.png" alt="reconstruction"><figcaption>reconstruction</figcaption></figure>
   </div>
   <p class="fragment" style="font-size:0.9em;text-align:center;">The decode looks the same as the input &mdash; the small latent kept everything that matters.</p>
+  <p class="fragment" style="font-size:0.8em;text-align:center;color:#1d4ed8;">This makes the latent a useful interface: compact enough to model, rich enough to reconstruct.</p>
   <p class="ref">Autoencoder from NeuralOS (neural-os.com).</p>
 </section>
 
-<!-- 20c. Why compress -->
+<!-- 37. Why compress -->
 <section>
   <h2>Why compress? To make generation feasible</h2>
   <div class="two-col vcenter">
@@ -609,11 +668,12 @@ optimizer.step()</code></pre>
       <p class="fragment" style="font-size:0.92em;text-align:center;">\(512\times384 = 196{,}608\) pixels<br>\(\rightarrow 64\times48 = 3{,}072\) pixels</p>
       <p class="fragment" style="font-size:0.95em;color:#1d4ed8;text-align:center;"><strong>&asymp; 64&times; fewer pixels</strong> to generate.</p>
       <p class="fragment" style="font-size:0.86em;color:#6b7280;">NeuralOS predicts the next frame in this small latent &mdash; a neural operating system.</p>
+      <p class="fragment" style="font-size:0.8em;color:#6b7280;">Same story as embeddings: do hard work in the learned space, not the raw space.</p>
     </div>
   </div>
 </section>
 
-<!-- 20d. SORA: spacetime compression -->
+<!-- 38. SORA: spacetime compression -->
 <section class="center-slide">
   <h2>Video: compress space and time</h2>
   <p style="font-size:0.9em;">A video is many frames, so pixel cost explodes &mdash; compress the time axis too.</p>
@@ -636,13 +696,15 @@ optimizer.step()</code></pre>
     <text x="413" y="158" text-anchor="middle" font-size="11" fill="#6b7280">(far fewer numbers)</text>
   </svg>
   <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">Sora compresses space and time into spacetime latent patches, then generates there.</p>
+  <p class="fragment" style="font-size:0.78em;color:#6b7280;">This is not a new principle; it scales the autoencoder idea from one frame to a video volume.</p>
   <p class="ref">OpenAI, "Video generation models as world simulators," 2024.</p>
 </section>
 
-<!-- 21. CLIP idea: pull matched, push mismatched -->
+<!-- 39. CLIP idea: pull matched, push mismatched -->
 <section class="center-slide">
   <h2>Contrastive learning aligns modalities</h2>
   <p style="font-size:0.9em;">Put images and their captions into one shared vector space.</p>
+  <p style="font-size:0.82em;color:#6b7280;">A final interface: two modalities become comparable by distance.</p>
   <svg viewBox="0 0 640 230" xmlns="http://www.w3.org/2000/svg" style="width:82%;max-height:250px;">
     <rect x="20" y="55" width="120" height="46" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="80" y="83" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a8a">image</text>
     <rect x="20" y="130" width="120" height="46" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="80" y="158" text-anchor="middle" font-size="14" font-weight="700" fill="#92400e">caption</text>
@@ -663,15 +725,16 @@ optimizer.step()</code></pre>
   </svg>
 </section>
 
-<!-- 21a. CLIP real figure (panel 1) -->
+<!-- 40. CLIP real figure (panel 1) -->
 <section>
   <h2>CLIP: contrastive pre-training</h2>
-  <img src="images/clip_pretrain.png" alt="CLIP contrastive pre-training: image and text encoders with a similarity matrix" style="max-width:88%;max-height:440px;height:auto;display:block;margin:0.2em auto;">
+  <p style="font-size:0.78em;text-align:center;color:#6b7280;">In each batch, every image is compared with every caption; the correct pairs are the diagonal.</p>
+  <img src="images/clip_pretrain.png" alt="CLIP contrastive pre-training: image and text encoders with a similarity matrix" style="max-width:88%;max-height:390px;height:auto;display:block;margin:0.2em auto;">
   <p class="fragment" style="font-size:0.84em;color:#1d4ed8;text-align:center;">Across a batch, the matching image-text pairs (the diagonal) are trained to score highest.</p>
   <p class="ref">Radford et al., "Learning Transferable Visual Models From Natural Language Supervision," ICML 2021.</p>
 </section>
 
-<!-- 21b. CLIP in action -->
+<!-- 41. CLIP in action -->
 <section class="center-slide">
   <h2>What a shared image-text space unlocks</h2>
   <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:86%; margin:0.5em auto;">
@@ -681,9 +744,10 @@ optimizer.step()</code></pre>
   <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">This shared space is the bridge to vision-language models (L23).</p>
 </section>
 
-<!-- 22. Where next -->
+<!-- 42. Where next -->
 <section class="center-slide">
   <h2>Why this matters for LLMs</h2>
+  <p style="font-size:0.9em;color:#6b7280;">Returning to language: L18 gives the vector objects that L19 will move around.</p>
   <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:90%; margin:0.5em auto;">
     <div class="task-card"><h3>tokens</h3><p>become embeddings</p></div>
     <div class="task-card fragment"><h3>attention</h3><p>moves information between embeddings</p></div>
@@ -691,22 +755,36 @@ optimizer.step()</code></pre>
   </div>
 </section>
 
-<!-- 23. Recap -->
+<!-- 43. Carry forward -->
+<section class="center-slide">
+  <h2>Carry this forward</h2>
+  <table class="factor-table" style="font-size:0.68em;margin:0.45em auto;max-width:86%;">
+    <thead><tr><th>From L17</th><th>L18 adds</th><th>Needed for L19</th></tr></thead>
+    <tbody>
+      <tr><td>gradient training</td><td>hidden representations</td><td>deep sequence models</td></tr>
+      <tr><td>fixed feature vectors</td><td>learned embeddings</td><td>tokens as vectors</td></tr>
+      <tr><td>loss curves</td><td>PCA, neighbors, k-means</td><td>interpreting attention behavior</td></tr>
+    </tbody>
+  </table>
+  <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">The through-line: learn a useful space, then compute inside it.</p>
+</section>
+
+<!-- 44. Recap -->
 <section class="center-slide">
   <h2>Recap</h2>
   <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:82%; margin-right:auto;">
-    <li>&#10003; &nbsp;Neural nets learn <strong>features</strong>, not just predictions.</li>
-    <li>&#10003; &nbsp;Backprop assigns credit through the graph.</li>
-    <li>&#10003; &nbsp;<strong>Embeddings</strong> are learned vectors.</li>
-    <li>&#10003; &nbsp;PCA, t-SNE, and k-means help inspect embeddings.</li>
-    <li>&#10003; &nbsp;Autoencoders and CLIP prepare us for diffusion and VLMs.</li>
+    <li>&#10003; &nbsp;Nonlinear hidden layers let neural nets learn <strong>features</strong>, not just predictions.</li>
+    <li>&#10003; &nbsp;Backprop assigns credit through the graph with the chain rule.</li>
+    <li>&#10003; &nbsp;<strong>Embeddings</strong> are learned vectors; contextual embeddings depend on the sentence.</li>
+    <li>&#10003; &nbsp;PCA, t-SNE/UMAP, neighbors, and k-means help inspect embedding spaces.</li>
+    <li>&#10003; &nbsp;FID, MAUVE, autoencoders, and CLIP show learned spaces acting as interfaces.</li>
   </ul>
 </section>
 
-<!-- 24. Preview -->
+<!-- 45. Preview -->
 <section class="center-slide">
   <h2>Next question</h2>
-  <p style="font-size:1.05em;">A sentence is a sequence of embeddings.</p>
+  <p style="font-size:1.05em;">A sentence is a sequence of contextual embeddings.</p>
   <p class="fragment" style="font-size:1.05em;color:#1d4ed8;">How should each word look at the other words?</p>
   <p class="fragment" style="font-size:0.9em;color:#6b7280;">L19: sequence models, attention, and transformers.</p>
 </section>
