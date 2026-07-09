@@ -12,8 +12,8 @@
   <link rel="stylesheet" href="../shared/custom.css">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=6">
-  <link rel="stylesheet" href="../shared/demo.css?v=7">
-  <link rel="stylesheet" href="custom.css?v=6">
+  <link rel="stylesheet" href="../shared/demo.css?v=8">
+  <link rel="stylesheet" href="custom.css?v=8">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -145,13 +145,22 @@
   </div>
 </section>
 
+<!-- 7b. A real neuron becomes a detector (Karpathy) -->
+<section class="center-slide">
+  <h2>A real learned neuron</h2>
+  <p style="font-size:0.86em;color:#6b7280;">Each character is colored by <strong>one</strong> neuron's activation in a character-level RNN.</p>
+  <img src="images/karpathy_rnn_cell.jpg" alt="RNN cell activations: one neuron lights up inside URLs" style="max-width:88%;max-height:360px;height:auto;display:block;margin:0.25em auto;border:1px solid #e5e7eb;border-radius:4px;">
+  <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">Nobody programmed it &mdash; this neuron learned to fire inside URLs.</p>
+  <p class="ref">Karpathy, "The Unreasonable Effectiveness of Recurrent Neural Networks," 2015.</p>
+</section>
+
 <!-- 8. Nonlinearity: linear layers collapse -->
 <section class="center-slide">
   <h2>Why add a nonlinearity?</h2>
   <p style="font-size:0.95em;">Two linear layers in a row collapse into one:</p>
   <svg viewBox="0 0 780 180" xmlns="http://www.w3.org/2000/svg" style="width:92%;max-height:210px;display:block;margin:0.2em auto;">
     <g font-size="15" fill="#1f2937" text-anchor="middle">
-      <!-- left: two linear layers -->
+      <!-- left: two linear layers (shown first) -->
       <text x="30" y="100">x</text>
       <line x1="44" y1="95" x2="84" y2="95" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
       <circle cx="112" cy="95" r="26" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="112" y="101" font-size="18" font-weight="700" fill="#92400e">&#931;</text><text x="112" y="140" font-size="12" fill="#92400e">W&#8321;</text>
@@ -161,19 +170,20 @@
       <line x1="258" y1="95" x2="300" y2="95" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
       <text x="322" y="100" text-anchor="start">out</text>
       <text x="172" y="162" font-size="12" fill="#6b7280">two linear layers</text>
-      <!-- equals -->
-      <text x="410" y="103" font-size="30" fill="#374151">=</text>
-      <!-- right: one linear layer -->
-      <text x="452" y="100">x</text>
-      <line x1="466" y1="95" x2="512" y2="95" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
-      <circle cx="540" cy="95" r="26" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="540" y="101" font-size="18" font-weight="700" fill="#92400e">&#931;</text><text x="540" y="140" font-size="12" fill="#92400e">W&#8322;W&#8321;</text>
-      <line x1="566" y1="95" x2="608" y2="95" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
-      <text x="630" y="100" text-anchor="start">out</text>
-      <text x="540" y="162" font-size="12" fill="#6b7280">one linear layer</text>
+      <!-- equals + right: one linear layer (revealed on click) -->
+      <g class="fragment" data-fragment-index="1">
+        <text x="410" y="103" font-size="30" fill="#374151">=</text>
+        <text x="452" y="100">x</text>
+        <line x1="466" y1="95" x2="512" y2="95" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+        <circle cx="540" cy="95" r="26" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="540" y="101" font-size="18" font-weight="700" fill="#92400e">&#931;</text><text x="540" y="140" font-size="12" fill="#92400e">W&#8322;W&#8321;</text>
+        <line x1="566" y1="95" x2="608" y2="95" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+        <text x="630" y="100" text-anchor="start">out</text>
+        <text x="540" y="162" font-size="12" fill="#6b7280">one linear layer</text>
+      </g>
     </g>
   </svg>
-  <p class="fragment" style="font-size:1em;text-align:center;margin:0.2em 0;">\(W_2(W_1x)= (W_2W_1)\,x\)</p>
-  <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">Depth alone adds nothing &mdash; we need a nonlinearity between the layers.</p>
+  <p style="font-size:1em;text-align:center;margin:0.2em 0;">\(W_2(W_1x)\)<span class="fragment" data-fragment-index="1">\(\,= (W_2W_1)\,x\)</span></p>
+  <p class="fragment" data-fragment-index="2" style="font-size:0.9em;color:#1d4ed8;">Depth alone adds nothing &mdash; we need a nonlinearity between the layers.</p>
 </section>
 
 <!-- 9. The fix: ReLU -->
@@ -194,11 +204,10 @@
 <!-- 10. Live demo: nonlinearity -->
 <section class="center-slide">
   <h2>Playground: does nonlinearity matter?<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it). Question to test: can the same network fit a curve when the activation is off vs. on?</p>
+  <p class="demo-caption">Same net, activation off vs. on &mdash; try it on the live slides.</p>
   <div class="live-demo" data-demo="nonlinearity">
-    <div class="demo-fallback">Interactive on the live slides: the same 1-hidden-layer net trains to fit a wavy target. With the activation OFF it can only draw a straight line; turn it ON and the layer bends to follow the curve. Runs instantly in your browser.</div>
+    <div class="demo-fallback">Interactive on the live slides: the same 1-hidden-layer net trains to fit a wavy target. With the activation OFF it can only draw a straight line; turn it ON and the layer bends to follow the curve.</div>
   </div>
-  <p class="fragment" style="font-size:0.82em;color:#1d4ed8;">Takeaway: the activation is where hidden layers gain nonlinear expressive power.</p>
 </section>
 
 <!-- 11. One hidden layer -->
@@ -256,11 +265,10 @@
 <!-- 13. Live demo: XOR net -->
 <section class="center-slide">
   <h2>Playground: train a net on XOR<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it). What to watch: the loss drops only after the hidden layer bends the decision surface.</p>
+  <p class="demo-caption">Train a tiny net on XOR &mdash; try it on the live slides.</p>
   <div class="live-demo" data-demo="xor-net">
-    <div class="demo-fallback">Interactive on the live slides: a tiny 2-2-1 network trains on XOR with real forward passes and backprop. Watch the decision surface bend and the loss drop until the two classes separate &mdash; something no straight line can do. Reseed to retrain from scratch.</div>
+    <div class="demo-fallback">Interactive on the live slides: a tiny 2-2-1 network trains on XOR with real forward passes and backprop. Watch the decision surface bend and the loss drop until the two classes separate &mdash; something no straight line can do.</div>
   </div>
-  <p class="fragment" style="font-size:0.82em;color:#1d4ed8;">Same training loop as L17; the difference is the learned feature map in the middle.</p>
 </section>
 
 <!-- 14. MLP equations -->
@@ -408,45 +416,48 @@ optimizer.step()</code></pre>
 <!-- 22. How embeddings learn -->
 <section class="center-slide">
   <h2>How does an embedding learn?</h2>
-  <p style="font-size:0.98em;">Words that appear in the <strong>same contexts</strong> get pulled together.</p>
-  <p style="font-size:0.95em;margin:0.2em 0;"><code>I have a ___ cat</code> &mdash; the blank is almost always a color:</p>
-  <div class="task-cards" style="grid-template-columns:repeat(3,1fr); max-width:56%; margin:0.35em auto;">
-    <div class="task-card"><h3 style="color:#ea580c;">orange</h3></div>
+  <p style="font-size:0.95em;margin:0.15em 0;">Words in the <strong>same contexts</strong> get pulled together: <code>I have a ___ cat</code> is usually a color.</p>
+  <div class="task-cards" style="grid-template-columns:repeat(3,1fr); max-width:54%; margin:0.3em auto;">
+    <div class="task-card"><h3 style="color:#b45309;">brown</h3></div>
     <div class="task-card"><h3 style="color:#111827;">black</h3></div>
     <div class="task-card"><h3 style="color:#64748b;">white</h3></div>
   </div>
-  <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">To fill the same blanks well, the model must give these color words <strong>similar embeddings</strong>.</p>
-  <svg class="fragment" viewBox="0 0 460 120" xmlns="http://www.w3.org/2000/svg" style="width:70%;max-height:140px;">
-    <circle cx="150" cy="55" r="8" fill="#ea580c"/><text x="150" y="42" text-anchor="middle" font-size="12">orange</text>
-    <circle cx="180" cy="70" r="8" fill="#111827"/><text x="197" y="74" text-anchor="start" font-size="12">black</text>
-    <circle cx="140" cy="80" r="8" fill="#94a3b8"/><text x="120" y="95" text-anchor="middle" font-size="12" fill="#64748b">white</text>
-    <circle cx="390" cy="70" r="8" fill="#6b7280"/><text x="390" y="94" text-anchor="middle" font-size="12" fill="#6b7280">car</text>
-    <text x="230" y="112" text-anchor="middle" font-size="12" fill="#6b7280">shared context &rarr; nearby vectors</text>
+  <p class="fragment" style="font-size:0.88em;color:#1d4ed8;">To fill the same blanks, the model gives these color words <strong>similar embeddings</strong>.</p>
+  <svg class="fragment" viewBox="0 0 460 110" xmlns="http://www.w3.org/2000/svg" style="width:66%;max-height:120px;">
+    <circle cx="150" cy="50" r="8" fill="#b45309"/><text x="150" y="37" text-anchor="middle" font-size="12">brown</text>
+    <circle cx="180" cy="66" r="8" fill="#111827"/><text x="197" y="70" text-anchor="start" font-size="12">black</text>
+    <circle cx="140" cy="76" r="8" fill="#94a3b8"/><text x="118" y="90" text-anchor="middle" font-size="12" fill="#64748b">white</text>
+    <circle cx="390" cy="64" r="8" fill="#6b7280"/><text x="390" y="88" text-anchor="middle" font-size="12" fill="#6b7280">car</text>
+    <text x="235" y="106" text-anchor="middle" font-size="12" fill="#6b7280">shared context &rarr; nearby vectors</text>
   </svg>
-  <p class="fragment" style="font-size:0.8em;color:#6b7280;">Training signal comes from prediction; geometry emerges because similar contexts create similar updates.</p>
 </section>
 
 <!-- 23. Vector arithmetic / word2vec history -->
 <section class="center-slide">
   <h2>Directions can carry meaning</h2>
   <p style="font-size:1.05em;text-align:center;margin:0.1em 0;">king &minus; man + woman &asymp; queen</p>
-  <svg class="fragment" viewBox="0 0 470 200" xmlns="http://www.w3.org/2000/svg" style="width:66%;max-height:200px;">
-    <!-- diff vector queen - king -->
-    <line x1="118" y1="146" x2="198" y2="99" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-l18)"/>
-    <text x="120" y="112" text-anchor="start" font-size="12" fill="#7c3aed">queen &minus; king</text>
-    <circle cx="110" cy="150" r="7" fill="#7c3aed"/><text x="102" y="166" text-anchor="end" font-size="13">king</text>
-    <circle cx="205" cy="95" r="7" fill="#16a34a"/><text x="214" y="92" text-anchor="start" font-size="13">queen</text>
-    <!-- same vector copied from man -->
-    <line x1="258" y1="161" x2="336" y2="115" stroke="#7c3aed" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-l18)"/>
-    <text x="262" y="132" text-anchor="start" font-size="11" fill="#7c3aed">+ same direction</text>
-    <circle cx="250" cy="165" r="7" fill="#1d4ed8"/><text x="242" y="181" text-anchor="end" font-size="13">man</text>
-    <circle cx="345" cy="110" r="7" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
-    <circle cx="368" cy="122" r="7" fill="#16a34a"/><text x="378" y="120" text-anchor="start" font-size="13">woman</text>
-    <text x="345" y="150" text-anchor="middle" font-size="10.5" fill="#6b7280">man + (queen &minus; king)</text>
+  <svg viewBox="0 0 470 200" xmlns="http://www.w3.org/2000/svg" style="width:64%;max-height:200px;">
+    <!-- step 1: king, queen and the difference vector -->
+    <g class="fragment" data-fragment-index="1">
+      <line x1="118" y1="146" x2="198" y2="99" stroke="#7c3aed" stroke-width="2.5" marker-end="url(#arrow-l18)"/>
+      <text x="120" y="112" text-anchor="start" font-size="12" fill="#7c3aed">queen &minus; king</text>
+      <circle cx="110" cy="150" r="7" fill="#7c3aed"/><text x="102" y="166" text-anchor="end" font-size="13">king</text>
+      <circle cx="205" cy="95" r="7" fill="#16a34a"/><text x="214" y="92" text-anchor="start" font-size="13">queen</text>
+    </g>
+    <!-- step 2: man -->
+    <g class="fragment" data-fragment-index="2">
+      <circle cx="250" cy="165" r="7" fill="#1d4ed8"/><text x="242" y="181" text-anchor="end" font-size="13">man</text>
+    </g>
+    <!-- step 3: copy the direction -> lands near woman -->
+    <g class="fragment" data-fragment-index="3">
+      <line x1="258" y1="161" x2="336" y2="115" stroke="#7c3aed" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow-l18)"/>
+      <text x="262" y="132" text-anchor="start" font-size="11" fill="#7c3aed">+ same direction</text>
+      <circle cx="345" cy="110" r="7" fill="#fff" stroke="#7c3aed" stroke-width="2"/>
+      <circle cx="368" cy="122" r="7" fill="#16a34a"/><text x="378" y="120" text-anchor="start" font-size="13">woman</text>
+    </g>
   </svg>
-  <p class="fragment" style="font-size:0.82em;color:#6b7280;margin:0.1em 0;">Add the same "royal" direction to <strong>man</strong> and you land <em>near</em> woman (not exactly). Standalone embeddings &mdash; word2vec (Mikolov 2013), GloVe (Pennington 2014) &mdash; famously captured such regularities.</p>
-  <p class="fragment" style="font-size:0.82em;color:#1d4ed8;">Today embeddings are mostly learned <strong>implicitly inside LLMs</strong>; modern contextual vectors rarely do clean arithmetic.</p>
-  <p class="fragment" style="font-size:0.78em;color:#6b7280;">Bridge: static embeddings show that geometry can carry meaning; the next slide shows why one fixed point per word is not enough.</p>
+  <p class="fragment" data-fragment-index="3" style="font-size:0.84em;color:#6b7280;margin:0.1em 0;">Add the "royal" direction to <strong>man</strong> and you land <em>near</em> woman (word2vec, GloVe).</p>
+  <p class="fragment" style="font-size:0.84em;color:#1d4ed8;">Today this is learned <strong>implicitly inside LLMs</strong>; contextual vectors rarely do clean arithmetic.</p>
 </section>
 
 <!-- 24. Contextual embeddings / the apple problem -->
@@ -486,31 +497,28 @@ optimizer.step()</code></pre>
 <!-- 26. PCA mechanics: 3D -> 2D live demo -->
 <section class="center-slide">
   <h2>Inspect embeddings by projecting them<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">PCA squeezes many dimensions to 2D by keeping the directions of most spread &mdash; drag the cloud on the live slides. Question: which 2D view preserves the most large-scale variation?</p>
+  <p class="demo-caption">PCA keeps the directions of most spread &mdash; drag the cloud, then flatten it.</p>
   <div class="live-demo" data-demo="pca-3d">
-    <div class="demo-fallback">Interactive on the live slides: rotate a real 3D point cloud and watch PCA flatten it onto the 2D plane that captures the most variance (the thin 3rd direction is dropped). PCA is linear; t-SNE/UMAP are nonlinear alternatives. A 2D view can overstate structure, so use it to ask questions, not as proof.</div>
+    <div class="demo-fallback">Interactive on the live slides: rotate a real 3D point cloud and watch PCA flatten it onto the 2D plane that captures the most variance (the thin 3rd direction is dropped). PCA is linear; t-SNE/UMAP are nonlinear alternatives.</div>
   </div>
-  <p class="fragment" style="font-size:0.8em;color:#6b7280;">PCA is linear; t-SNE and UMAP are nonlinear views that emphasize local neighborhoods.</p>
 </section>
 
 <!-- 27. WildVis: real embeddings at scale -->
 <section class="center-slide">
   <h2>PCA on real data: a million chats<span class="demo-badge">live data</span></h2>
-  <p class="demo-caption">Real WildChat conversations, 1536-dim embeddings projected to 2D &mdash; hover to read one, click to open it. Same inspection idea at scale.</p>
+  <p class="demo-caption">Real WildChat conversations (1536-dim) projected to 2D &mdash; hover to read, click to open.</p>
   <div class="live-demo" data-demo="wildvis">
     <div class="demo-fallback">Interactive on the live slides: each dot is a real conversation, embedded to 1536 dimensions with OpenAI's text-embedding-3-small and projected to 2D with PCA. Hover a dot to read its first message; click to open the full conversation. From WildVis (Deng et al.), <a href="https://wildvisualizer.com/embeddings/english?dataset=wildchat">wildvisualizer.com</a>.</div>
   </div>
-  <p class="fragment" style="font-size:0.8em;color:#1d4ed8;">Use the map to generate hypotheses about the data, then inspect points to verify them.</p>
 </section>
 
 <!-- 28. Live demo: embedding explorer -->
 <section class="center-slide">
   <h2>Playground: embed real words<span class="demo-badge">live model</span></h2>
-  <p class="demo-caption">Interactive demo &mdash; a real embedding model runs in your browser (open the slides to try it). Nearest-neighbor question: after embedding text, which points land nearby?</p>
+  <p class="demo-caption">Type words or sentences; a real model embeds them &mdash; try it on the live slides.</p>
   <div class="live-demo" data-demo="embed-explorer">
     <div class="demo-fallback">Interactive on the live slides: type any words or short sentences and a real embedding model (MiniLM, via Transformers.js) turns each into a vector; PCA projects them to 2D and you click a point to see its nearest neighbors. Dog lands near puppy, car near truck, king near queen &mdash; geometry the model learned from data.</div>
   </div>
-  <p class="fragment" style="font-size:0.8em;color:#6b7280;">This is the practical payoff of embeddings: similarity search becomes distance search.</p>
 </section>
 
 <!-- 29. k-means -->
@@ -552,13 +560,31 @@ optimizer.step()</code></pre>
     </div>
     <div style="flex:0.95;text-align:center;">
       <svg class="cluster-scatter" viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg" style="max-height:250px;">
-        <circle class="point c1" cx="62" cy="70" r="6"/><circle class="point c1" cx="88" cy="62" r="6"/><circle class="point c1" cx="72" cy="92" r="6"/><circle class="point c1" cx="98" cy="86" r="6"/>
-        <circle class="point c2" cx="212" cy="72" r="6"/><circle class="point c2" cx="238" cy="78" r="6"/><circle class="point c2" cx="224" cy="100" r="6"/><circle class="point c2" cx="248" cy="94" r="6"/>
-        <circle class="point c3" cx="138" cy="182" r="6"/><circle class="point c3" cx="168" cy="186" r="6"/><circle class="point c3" cx="150" cy="208" r="6"/><circle class="point c3" cx="178" cy="202" r="6"/>
-        <line x1="120" y1="45" x2="80" y2="76" stroke="#1d4ed8" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#arrow-l18)"/>
-        <circle cx="120" cy="45" r="8" fill="#fff" stroke="#1d4ed8" stroke-width="2"/>
-        <circle class="centroid c1" cx="80" cy="78" r="10"/><circle class="centroid c2" cx="230" cy="86" r="10"/><circle class="centroid c3" cx="158" cy="194" r="10"/>
-        <text x="150" y="30" text-anchor="middle" font-size="12" fill="#6b7280">assign = color by nearest &middot; update = move to mean</text>
+        <!-- base: unassigned points + initial centroids -->
+        <g fill="#cbd5e1" stroke="#fff" stroke-width="1.2">
+          <circle cx="62" cy="70" r="6"/><circle cx="88" cy="62" r="6"/><circle cx="72" cy="92" r="6"/><circle cx="98" cy="86" r="6"/>
+          <circle cx="212" cy="72" r="6"/><circle cx="238" cy="78" r="6"/><circle cx="224" cy="100" r="6"/><circle cx="248" cy="94" r="6"/>
+          <circle cx="138" cy="182" r="6"/><circle cx="168" cy="186" r="6"/><circle cx="150" cy="208" r="6"/><circle cx="178" cy="202" r="6"/>
+        </g>
+        <circle class="centroid c1" cx="110" cy="52" r="9"/><circle class="centroid c2" cx="248" cy="66" r="9"/><circle class="centroid c3" cx="150" cy="172" r="9"/>
+        <!-- step 1: assign (color by nearest, thin links) -->
+        <g class="fragment" data-fragment-index="1">
+          <g stroke="#cbd5e1" stroke-width="1">
+            <line x1="62" y1="70" x2="110" y2="52"/><line x1="88" y1="62" x2="110" y2="52"/><line x1="72" y1="92" x2="110" y2="52"/><line x1="98" y1="86" x2="110" y2="52"/>
+            <line x1="212" y1="72" x2="248" y2="66"/><line x1="238" y1="78" x2="248" y2="66"/><line x1="224" y1="100" x2="248" y2="66"/><line x1="248" y1="94" x2="248" y2="66"/>
+            <line x1="138" y1="182" x2="150" y2="172"/><line x1="168" y1="186" x2="150" y2="172"/><line x1="150" y1="208" x2="150" y2="172"/><line x1="178" y1="202" x2="150" y2="172"/>
+          </g>
+          <circle class="point c1" cx="62" cy="70" r="6"/><circle class="point c1" cx="88" cy="62" r="6"/><circle class="point c1" cx="72" cy="92" r="6"/><circle class="point c1" cx="98" cy="86" r="6"/>
+          <circle class="point c2" cx="212" cy="72" r="6"/><circle class="point c2" cx="238" cy="78" r="6"/><circle class="point c2" cx="224" cy="100" r="6"/><circle class="point c2" cx="248" cy="94" r="6"/>
+          <circle class="point c3" cx="138" cy="182" r="6"/><circle class="point c3" cx="168" cy="186" r="6"/><circle class="point c3" cx="150" cy="208" r="6"/><circle class="point c3" cx="178" cy="202" r="6"/>
+        </g>
+        <!-- step 2: update (move centroids to means) -->
+        <g class="fragment" data-fragment-index="2">
+          <g stroke="#374151" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-l18)">
+            <line x1="110" y1="52" x2="82" y2="76"/><line x1="248" y1="66" x2="232" y2="84"/><line x1="150" y1="172" x2="159" y2="192"/>
+          </g>
+          <circle class="centroid c1" cx="82" cy="78" r="10"/><circle class="centroid c2" cx="230" cy="86" r="10"/><circle class="centroid c3" cx="159" cy="194" r="10"/>
+        </g>
       </svg>
     </div>
   </div>
@@ -567,11 +593,10 @@ optimizer.step()</code></pre>
 <!-- 31. Live demo: k-means -->
 <section class="center-slide">
   <h2>Playground: k-means, step by step<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Interactive demo &mdash; runs live in your browser (open the slides to try it). What to watch: assignment and update alternate until the centers stop moving much.</p>
+  <p class="demo-caption">Step through assign and update &mdash; try it on the live slides.</p>
   <div class="live-demo" data-demo="kmeans">
     <div class="demo-fallback">Interactive on the live slides: press Step to run one round of Lloyd's algorithm &mdash; assign each point to its nearest centroid, then move each centroid to the mean of its members. Repeat until the clusters stop changing. Reseed for a fresh layout.</div>
   </div>
-  <p class="fragment" style="font-size:0.8em;color:#1d4ed8;">The algorithm is simple; the representation determines whether the clusters mean anything.</p>
 </section>
 
 <!-- 32. Act 4 bridge -->
@@ -581,11 +606,23 @@ optimizer.step()</code></pre>
   <p class="fragment" style="font-size:1em;color:#1d4ed8;">Next: use learned spaces to compare distributions, compress data, and align modalities.</p>
 </section>
 
+<!-- 33a. FID motivation -->
+<section class="center-slide">
+  <h2>How do you grade an image generator?</h2>
+  <p style="font-size:0.95em;">Prompt <code>"a dog"</code> &mdash; every sample is a <strong>different</strong> valid dog.</p>
+  <div class="task-cards" style="grid-template-columns:repeat(3,1fr); max-width:78%; margin:0.5em auto;">
+    <div class="task-card"><h3>dog A</h3><p>fluffy, sitting</p></div>
+    <div class="task-card"><h3>dog B</h3><p>running, brown</p></div>
+    <div class="task-card"><h3>dog C</h3><p>puppy, close-up</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em;">There is no single ground-truth image to compare against.</p>
+  <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">So compare the whole <strong>distribution</strong> of outputs to real images.</p>
+</section>
+
 <!-- 33. FID (images) -->
 <section class="center-slide">
   <h2>Measuring image quality: FID</h2>
   <p style="font-size:0.9em;">Embed real and generated images with an Inception network, then compare the two <strong>distributions</strong> in feature space.</p>
-  <p style="font-size:0.82em;color:#6b7280;">Bridge from clustering: instead of grouping points, compare whole distributions.</p>
   <svg viewBox="0 0 460 190" xmlns="http://www.w3.org/2000/svg" style="width:74%;max-height:210px;display:block;margin:0.3em auto;">
     <ellipse cx="150" cy="105" rx="60" ry="42" fill="#1d4ed8" fill-opacity="0.08" stroke="#1d4ed8" stroke-opacity="0.5"/>
     <ellipse cx="310" cy="90" rx="60" ry="42" fill="#ea580c" fill-opacity="0.08" stroke="#ea580c" stroke-opacity="0.5"/>
@@ -600,11 +637,23 @@ optimizer.step()</code></pre>
   <p class="ref">Heusel et al. 2017.</p>
 </section>
 
+<!-- 33b. MAUVE motivation -->
+<section class="center-slide">
+  <h2>How do you grade a story generator?</h2>
+  <p style="font-size:0.95em;">Ask for a short story &mdash; there are <strong>countless</strong> good ones.</p>
+  <div class="task-cards" style="grid-template-columns:repeat(3,1fr); max-width:78%; margin:0.5em auto;">
+    <div class="task-card"><h3>story A</h3><p>a lost dog finds home</p></div>
+    <div class="task-card"><h3>story B</h3><p>a robot learns to paint</p></div>
+    <div class="task-card"><h3>story C</h3><p>two friends and a map</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em;">No ground-truth story to score against.</p>
+  <p class="fragment" style="font-size:0.9em;color:#1d4ed8;">So compare machine stories to <strong>human</strong> stories as distributions.</p>
+</section>
+
 <!-- 34. MAUVE (text) -->
 <section class="center-slide">
   <h2>Measuring text quality: MAUVE</h2>
-  <p style="font-size:0.9em;">Same idea for text: embed human and machine text in a language model's space and compare the distributions.</p>
-  <p style="font-size:0.82em;color:#6b7280;">The learned space becomes the measurement interface.</p>
+  <p style="font-size:0.9em;">Embed human and machine text in a language model's space and compare the two distributions.</p>
   <svg viewBox="0 0 460 190" xmlns="http://www.w3.org/2000/svg" style="width:74%;max-height:210px;display:block;margin:0.3em auto;">
     <ellipse cx="200" cy="100" rx="66" ry="44" fill="#16a34a" fill-opacity="0.08" stroke="#16a34a" stroke-opacity="0.5"/>
     <ellipse cx="270" cy="95" rx="66" ry="44" fill="#7c3aed" fill-opacity="0.08" stroke="#7c3aed" stroke-opacity="0.5"/>
@@ -660,7 +709,7 @@ optimizer.step()</code></pre>
   <h2>Why compress? To make generation feasible</h2>
   <div class="two-col vcenter">
     <div style="flex:1;text-align:center;">
-      <img src="images/neuralos_demo.gif" alt="NeuralOS live demo" style="max-width:100%;max-height:320px;height:auto;border:1px solid #e5e7eb;border-radius:6px;">
+      <img src="images/neuralos_demo.gif" alt="NeuralOS live demo" width="512" height="384" style="width:100%;max-width:420px;height:auto;border:1px solid #e5e7eb;border-radius:6px;">
       <p class="ref">neural-os.com</p>
     </div>
     <div style="flex:1;">
@@ -696,8 +745,35 @@ optimizer.step()</code></pre>
     <text x="413" y="158" text-anchor="middle" font-size="11" fill="#6b7280">(far fewer numbers)</text>
   </svg>
   <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">Sora compresses space and time into spacetime latent patches, then generates there.</p>
-  <p class="fragment" style="font-size:0.78em;color:#6b7280;">This is not a new principle; it scales the autoencoder idea from one frame to a video volume.</p>
   <p class="ref">OpenAI, "Video generation models as world simulators," 2024.</p>
+</section>
+
+<!-- 38b. Two ways to generate video -->
+<section class="center-slide">
+  <h2>Two ways to generate video</h2>
+  <svg viewBox="0 0 840 300" xmlns="http://www.w3.org/2000/svg" style="width:92%;max-height:340px;display:block;margin:0.2em auto;">
+    <g font-size="13" text-anchor="middle" font-weight="600">
+      <!-- Row 1: caption -> raw video -->
+      <text x="120" y="26" fill="#991b1b" font-size="13">1. caption &rarr; full raw video (expensive)</text>
+      <rect x="30" y="46" width="92" height="46" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="76" y="74" fill="#1e3a8a">caption</text>
+      <line x1="122" y1="69" x2="162" y2="69" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+      <rect x="164" y="40" width="128" height="58" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="228" y="74" fill="#92400e">generator</text>
+      <line x1="292" y1="69" x2="332" y2="69" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+      <rect x="334" y="34" width="188" height="70" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="428" y="64" fill="#166534">raw video</text><text x="428" y="84" fill="#166534" font-size="11">T &times; H &times; W &times; 3</text>
+      <!-- Row 2: caption -> latents -> thin decoder -> video -->
+      <text x="120" y="176" fill="#166534" font-size="13">2. caption &rarr; small latents &rarr; thin decoder (cheaper)</text>
+      <rect x="30" y="196" width="92" height="46" rx="6" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/><text x="76" y="224" fill="#1e3a8a">caption</text>
+      <line x1="122" y1="219" x2="158" y2="219" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+      <rect x="160" y="190" width="118" height="58" rx="6" fill="#fef3c7" stroke="#d97706" stroke-width="2"/><text x="219" y="224" fill="#92400e">generator</text>
+      <line x1="278" y1="219" x2="314" y2="219" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+      <rect x="316" y="200" width="96" height="38" rx="6" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/><text x="364" y="224" fill="#5b21b6">latents</text>
+      <line x1="412" y1="219" x2="448" y2="219" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+      <rect x="450" y="208" width="92" height="22" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="496" y="223" fill="#166534" font-size="11">decoder (thin)</text>
+      <line x1="542" y1="219" x2="578" y2="219" stroke="#475569" stroke-width="2" marker-end="url(#arrow-l18)"/>
+      <rect x="580" y="196" width="110" height="46" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/><text x="635" y="224" fill="#166534">video</text>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.88em;color:#1d4ed8;">Model the small latents, not the pixels; a thin decoder maps them back to video.</p>
 </section>
 
 <!-- 39. CLIP idea: pull matched, push mismatched -->
@@ -723,6 +799,7 @@ optimizer.step()</code></pre>
     <line x1="547" y1="174" x2="520" y2="173" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow-l18)"/>
     <text x="495" y="200" text-anchor="middle" font-size="12" fill="#991b1b">mismatched: push apart</text>
   </svg>
+  <p class="fragment" style="font-size:0.86em;color:#1d4ed8;">A dog photo lands near "a dog" and a car photo near "a car" &mdash; but the dog photo stays far from "a car".</p>
 </section>
 
 <!-- 40. CLIP real figure (panel 1) -->
@@ -821,6 +898,6 @@ optimizer.step()</code></pre>
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=13"></script>
+<script type="module" src="../shared/demo.js?v=14"></script>
 </body>
 </html>

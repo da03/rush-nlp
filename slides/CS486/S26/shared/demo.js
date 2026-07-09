@@ -774,7 +774,7 @@ register('nonlinearity', (api) => {
   }, 'ghost');
 
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'Model: 1 input &rarr; 12 tanh hidden units &rarr; 1 output &nbsp;&middot;&nbsp; target y = sin(2x) &nbsp;&middot;&nbsp; trained with the L17 loop' }),
+    el('div', { class: 'demo-note', html: '<code>nn.Sequential(nn.Linear(1,12), nn.Tanh(), nn.Linear(12,1))</code> &nbsp;&middot;&nbsp; target: y = sin(2x)' }),
     el('div', { class: 'demo-controls' }, [toggle, api.button('Train', run)]),
     el('div', { class: 'demo-stage' }, [canvas, readout]),
     el('div', { class: 'demo-hint', text: 'Same net, same data. Activation OFF: stacked linear layers stay a line. ON: the layer bends to fit the wave. That bend is what nonlinearity buys.' }),
@@ -912,6 +912,7 @@ register('xor-net', (api) => {
     useAct = !useAct; actToggle.textContent = 'activation: ' + (useAct ? 'ON' : 'OFF'); preview();
   }, 'ghost');
   const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: '<code>nn.Sequential(nn.Linear(2,2), nn.Tanh(), nn.Linear(2,1))</code> &nbsp;&middot;&nbsp; task: XOR' }),
     el('div', { class: 'demo-controls' }, [api.button('Train', run), actToggle]),
     el('div', { class: 'demo-stage' }, [boundary, lossCanvas, readout]),
     el('div', { class: 'demo-hint', text: 'Green/red = the net\u2019s decision surface; markers are the true labels. Turn the activation OFF and the 2-2-1 net becomes linear \u2014 it cannot separate XOR no matter how long it trains.' }),
@@ -1281,11 +1282,18 @@ register('wildvis', (api) => {
     catch (e) { api.setStatus('Could not load the embedding data.', 'err'); }
   }
 
+  function zoomBy(f) {
+    if (!data) return;
+    const cx = canvas.width / 2, cy = canvas.height / 2;
+    const wx = (cx - tx) / scale, wy = (ty - cy) / scale;
+    scale *= f; tx = cx - wx * scale; ty = cy + wy * scale; draw();
+  }
+
   const link = el('a', { class: 'wv-link', href: 'https://wildvisualizer.com/embeddings/english?dataset=wildchat', target: '_blank', rel: 'noopener' }, 'Explore it live at wildvisualizer.com \u2197');
   const wrap = el('div', { class: 'wv-wrap' }, [canvas, tip]);
   const mount = el('div', {}, [
     el('div', { class: 'demo-note', html: 'Real WildChat conversations. Each is a 1536-dim vector (OpenAI text-embedding-3-small), projected to 2D with PCA. Hover a dot to read it; click to open it.' }),
-    el('div', { class: 'demo-controls' }, [api.button('Reset view', () => { if (data) { fit(); draw(); } }), link]),
+    el('div', { class: 'demo-controls' }, [api.button('Zoom +', () => zoomBy(1.3)), api.button('Zoom \u2212', () => zoomBy(1 / 1.3)), api.button('Reset view', () => { if (data) { fit(); draw(); } }), link]),
     wrap,
   ]);
   return { mount, init: load, onLeave: () => { tip.style.display = 'none'; hover = -1; } };

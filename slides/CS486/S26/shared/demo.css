@@ -182,6 +182,15 @@
   color: #374151;
   margin: 0.1em 0 0.3em;
 }
+.reveal .demo-note code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.95em;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 0.05em 0.35em;
+  color: #1e293b;
+}
 
 /* Small hint under a demo. */
 .reveal .demo-hint {
