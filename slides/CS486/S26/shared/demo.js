@@ -1292,7 +1292,7 @@ register('wildvis', (api) => {
   const link = el('a', { class: 'wv-link', href: 'https://wildvisualizer.com/embeddings/english?dataset=wildchat', target: '_blank', rel: 'noopener' }, 'Explore it live at wildvisualizer.com \u2197');
   const wrap = el('div', { class: 'wv-wrap' }, [canvas, tip]);
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'Real WildChat conversations. Each is a 1536-dim vector (OpenAI text-embedding-3-small), projected to 2D with PCA. Hover a dot to read it; click to open it.' }),
+    el('div', { class: 'demo-note', html: 'Each dot is a real conversation &mdash; a 1536-dim vector (OpenAI text-embedding-3-small) projected to 2D with PCA.' }),
     el('div', { class: 'demo-controls' }, [api.button('Zoom +', () => zoomBy(1.3)), api.button('Zoom \u2212', () => zoomBy(1 / 1.3)), api.button('Reset view', () => { if (data) { fit(); draw(); } }), link]),
     wrap,
   ]);
