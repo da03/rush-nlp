@@ -125,7 +125,7 @@ chats:
 assignments:
   - { num: 1, out: 2026-06-04, due: 2026-06-25, owner: "Dake Zhang", owner_email: "d346zhan@uwaterloo.ca" }
   - { num: 2, out: 2026-06-25, due: 2026-07-09, owner: "Henry Lin", owner_email: "h293lin@uwaterloo.ca" }
-  - { num: 3, out: 2026-07-09, due: 2026-08-04, owner: "" }
+  - { num: 3, out: 2026-07-09, due: 2026-08-04, owner: "Yuntian Deng", owner_email: "yuntian@uwaterloo.ca" }
 
 # Schedule entries are rendered in array order. Mix any number of types.
 #   type: module        - banner row spanning all columns, opens a new themed block.
@@ -363,6 +363,18 @@ schedule:
 announcements:
   - severity: warning
     show: true
+    title: "Assignment 3 is now available - due Tuesday, August 4"
+    body: >-
+      <strong>Assignment 3</strong> is now posted on
+      <a href="https://learn.uwaterloo.ca/">LEARN</a> (handout and starter code), covering
+      decision trees and neural networks from scratch (plus an optional PyTorch bonus), due
+      <strong>Tuesday, August 4 at 11:59 PM</strong> (Waterloo time). This assignment is longer
+      and more involved than the previous two, so <strong>please start early</strong> to avoid
+      not finishing on time. Post questions on
+      <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> addressed to
+      <strong>Yuntian Deng</strong> (or <a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a>).
+  - severity: warning
+    show: true
     title: "Assignment 2 deadline extended to Thursday, July 16"
     body: >-
       <strong>Assignment 2</strong> is now due <strong>Thursday, July 16 at 11:59 PM</strong>
@@ -371,7 +383,7 @@ announcements:
       <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> addressed to
       <strong>Henry Lin</strong> (or <a href="mailto:h293lin@uwaterloo.ca">h293lin@uwaterloo.ca</a>).
   - severity: event
-    show: true
+    show: false
     title: "CS686 project proposal deadline extended to Thursday, July 9"
     body: >-
       The <strong>CS686 project proposal</strong> is now due <strong>Thursday, July 9 at 11:59 PM</strong>
@@ -387,7 +399,7 @@ announcements:
       <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> addressed to
       <strong>Henry Lin</strong> (or <a href="mailto:h293lin@uwaterloo.ca">h293lin@uwaterloo.ca</a>).
   - severity: event
-    show: true
+    show: false
     title: "Jul 7 &amp; Jul 9 are asynchronous (instructor at ICML)"
     body: >-
       I'll be away at <strong>ICML</strong> the week of July 7, so <strong>L17 (Tue Jul 7, Training
