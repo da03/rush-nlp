@@ -211,6 +211,15 @@
   </svg>
 </section>
 
+<!-- 14b. RAG playground (live) -->
+<section class="center-slide">
+  <h2>RAG on real course facts<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Embed the question, retrieve the nearest course chunks, then ground the answer.</p>
+  <div class="live-demo" data-demo="rag">
+    <div class="demo-fallback">Interactive on the live slides: pick a course question (e.g., "When is Assignment 2 due?") and see the real course chunks ranked by embedding similarity, with the top one assembled into a grounded, cited prompt. Type your own question and a real embedding model (MiniLM) retrieves live. This is L18's embedding geometry doing useful work.</div>
+  </div>
+</section>
+
 <!-- 15. Embeddings reappear -->
 <section class="center-slide">
   <h2>Embeddings reappear</h2>
@@ -277,6 +286,15 @@
     </g>
   </svg>
   <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">The model proposes an action; the environment returns evidence.</p>
+</section>
+
+<!-- 20b. Tool-use loop (live) -->
+<section class="center-slide">
+  <h2>Tool use, step by step<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">The model calls a calculator instead of guessing the arithmetic.</p>
+  <div class="live-demo" data-demo="tool-loop">
+    <div class="demo-fallback">Interactive on the live slides: step through a tool-use loop. The model recognizes it needs exact arithmetic, emits a calculator tool call, the tool actually computes the weighted grade, and the model answers using that result. The model plans the action; the environment does the computation.</div>
+  </div>
 </section>
 
 <!-- 21. Agents -->
@@ -410,6 +428,15 @@
       <p><strong>\(r\)</strong>: adapter rank</p>
       <p><strong>\(\alpha\)</strong>: scaling factor</p>
     </div>
+  </div>
+</section>
+
+<!-- 32b. LoRA low-rank visualizer (live) -->
+<section class="center-slide">
+  <h2>LoRA: a low-rank update<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Drag the rank: a small \(BA\) update, a fraction of the parameters.</p>
+  <div class="live-demo" data-demo="lora-rank">
+    <div class="demo-fallback">Interactive on the live slides: the frozen weight \(W_0\), the low-rank update \(\Delta W = BA\), and the adapted \(W' = W_0 + \Delta W\) shown as heatmaps. Raise the rank \(r\) and the update becomes more expressive but uses more trainable parameters (\(2dr\) vs the full \(d^2\)) &mdash; small \(r\) trains only a few percent of the weights.</div>
   </div>
 </section>
 

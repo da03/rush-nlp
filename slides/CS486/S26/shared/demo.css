@@ -312,6 +312,40 @@
 .reveal .attn-row .attn-fill.mid { background: #1d4ed8; }
 .reveal .attn-row .attn-fill.hi { background: #dc2626; }
 
+/* RAG retrieval playground. */
+.reveal .rag-left { min-width: 400px; max-width: 500px; }
+.reveal .rag-right { min-width: 300px; max-width: 380px; }
+.reveal .rag-chunks { display: flex; flex-direction: column; gap: 0.3em; }
+.reveal .rag-row { display: flex; align-items: center; gap: 0.5em; font-size: 0.55em; opacity: 0.6; }
+.reveal .rag-row.top { opacity: 1; }
+.reveal .rag-src { flex: 0 0 5.2em; text-align: center; font-family: ui-monospace, Menlo, monospace; font-size: 0.85em; color: #6b21a8; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 4px; padding: 0.1em 0.2em; }
+.reveal .rag-txt { flex: 1 1 auto; }
+.reveal .rag-tt { line-height: 1.25; }
+.reveal .rag-bar { height: 5px; background: #eef2ff; border-radius: 3px; margin-top: 0.2em; }
+.reveal .rag-fill { height: 100%; background: #1d4ed8; border-radius: 3px; }
+.reveal .rag-row.top .rag-fill { background: #16a34a; }
+.reveal .rag-score { flex: 0 0 2.2em; text-align: right; font-family: ui-monospace, Menlo, monospace; color: #1d4ed8; font-weight: 600; }
+.reveal .rag-prompt { font-family: ui-monospace, Menlo, monospace; font-size: 0.58em; line-height: 1.4; text-align: left; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.55em 0.7em; max-height: 250px; overflow: auto; }
+.reveal [data-demo="rag"] .demo-controls .demo-btn { font-size: 0.62em; }
+.reveal .rag-prompt .rp-line { margin: 0.15em 0; }
+.reveal .rag-prompt .sys { color: #6b7280; }
+.reveal .rag-prompt .ctx { color: #166534; }
+.reveal .rag-prompt .q { color: #1d4ed8; font-weight: 600; }
+
+/* Tool-use loop transcript. */
+.reveal .tool-loop { display: flex; flex-direction: column; gap: 0.4em; max-width: 80%; margin: 0.3em auto; text-align: left; }
+.reveal .tl-row { display: flex; gap: 0.6em; align-items: flex-start; font-size: 0.66em; }
+.reveal .tl-role { flex: 0 0 5em; text-align: right; font-family: ui-monospace, Menlo, monospace; font-weight: 700; color: #6b7280; }
+.reveal .tl-text { flex: 1 1 auto; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.35em 0.6em; }
+.reveal .tl-row.model .tl-role { color: #1d4ed8; }
+.reveal .tl-row.call .tl-text, .reveal .tl-row.tool .tl-text { font-family: ui-monospace, Menlo, monospace; }
+.reveal .tl-row.call .tl-role, .reveal .tl-row.tool .tl-role { color: #6b21a8; }
+.reveal .tl-row.tool .tl-text { background: #f5f3ff; border-color: #ddd6fe; color: #6b21a8; font-weight: 700; }
+
+/* LoRA low-rank visualizer. */
+.reveal .lora-panel { text-align: center; }
+.reveal .lora-panel .lora-cap { font-size: 0.62em; color: #6b7280; margin-bottom: 0.2em; font-family: ui-monospace, Menlo, monospace; }
+
 /* Chat-template inspector: show the templated model input with special tokens. */
 .reveal .chat-tmpl {
   font-family: ui-monospace, Menlo, monospace; font-size: 0.56em; line-height: 1.5;

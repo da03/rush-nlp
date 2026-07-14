@@ -2016,5 +2016,141 @@ register('lm-attention', (api) => {
   return { mount, init: load };
 });
 
+/* =====================================================================
+ *  DEMO 22 - RAG retrieval playground over REAL CS486 course facts. Preset
+ *  questions use a precomputed ranking (offline); "retrieve" embeds a custom
+ *  query live with MiniLM and re-ranks by cosine. (L22)
+ * ===================================================================== */
+register('rag', (api) => {
+  let data = null;
+  const qRow = el('div', { class: 'demo-controls' });
+  const input = el('input', { class: 'demo-input', type: 'text', value: 'When is Assignment 2 due?' });
+  const chunksBox = el('div', { class: 'rag-chunks' });
+  const promptBox = el('div', { class: 'rag-prompt' });
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  input.addEventListener('keydown', (e) => e.stopPropagation());
+
+  function show(question, ranking) {
+    chunksBox.innerHTML = '';
+    const max = ranking[0].score || 1;
+    ranking.slice(0, 3).forEach((r, idx) => {
+      const c = data.chunks[r.i];
+      chunksBox.appendChild(el('div', { class: 'rag-row' + (idx === 0 ? ' top' : '') }, [
+        el('span', { class: 'rag-src', text: c.source }),
+        el('div', { class: 'rag-txt' }, [el('div', { class: 'rag-tt', text: c.text }), el('div', { class: 'rag-bar' }, [el('div', { class: 'rag-fill', style: `width:${(r.score / max * 100).toFixed(0)}%` })])]),
+        el('span', { class: 'rag-score', text: r.score.toFixed(2) }),
+      ]));
+    });
+    const top = data.chunks[ranking[0].i];
+    promptBox.innerHTML = '';
+    promptBox.appendChild(el('div', { class: 'rp-line sys', text: 'System: answer using only the context; cite the source.' }));
+    promptBox.appendChild(el('div', { class: 'rp-line ctx', html: 'Context [' + esc(top.source) + ']: ' + esc(top.text) }));
+    promptBox.appendChild(el('div', { class: 'rp-line q', html: 'Question: ' + esc(question) }));
+  }
+  async function retrieve() {
+    const q = input.value.trim(); if (!q) return;
+    api.setStatus('Embedding query with MiniLM...');
+    let ex; try { ex = await api.getEmbedder(); } catch (e) { api.setStatus('Embedder unavailable; use a preset question.', 'err'); return; }
+    const [qv] = await api.embedTexts(ex, [q]);
+    const ranking = data.chunks.map((c) => ({ i: c.id, score: api.cosine(qv, c.vec) })).sort((a, b) => b.score - a.score).slice(0, 5);
+    [...qRow.children].forEach((b) => { b.classList.remove('primary'); b.classList.add('ghost'); });
+    show(q, ranking); api.setStatus('Retrieved with live MiniLM embeddings.', 'ok');
+  }
+  const mount = el('div', {}, [
+    qRow,
+    el('div', { class: 'demo-controls' }, [input, api.button('retrieve', retrieve)]),
+    el('div', { class: 'demo-stage' }, [el('div', { class: 'rag-left' }, [chunksBox]), el('div', { class: 'rag-right' }, [promptBox])]),
+  ]);
+  function setQ(k) { const q = data.questions[k]; input.value = q.q; [...qRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); }); show(q.q, q.ranking); }
+  async function load() {
+    try { const r = await fetch('data/rag_chunks.json'); data = await r.json(); }
+    catch (e) { api.setStatus('Could not load the course index.', 'err'); return; }
+    data.questions.forEach((q, k) => qRow.appendChild(api.button('"' + q.q + '"', () => setQ(k), k === 0 ? 'primary' : 'ghost')));
+    setQ(0);
+  }
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 23 - LoRA low-rank update: W' = W0 + BA. Rank slider shows the
+ *  update matrix and the trainable-parameter savings. (L22, pure JS)
+ * ===================================================================== */
+register('lora-rank', (api) => {
+  const D = 24;
+  const rCtl = api.slider('rank r', { min: 1, max: 16, step: 1, value: 4, fmt: (v) => v });
+  const c0 = api.canvasEl(150, 150), cd = api.canvasEl(150, 150), cw = api.canvasEl(150, 150);
+  const readout = el('div', { class: 'demo-readout' });
+  const rnd = api.rng32(7);
+  const gauss = () => { let u = 0, v = 0; while (!u) u = rnd(); while (!v) v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  const W0 = Array.from({ length: D }, () => Array.from({ length: D }, gauss));
+  const Bfull = Array.from({ length: D }, () => Array.from({ length: 16 }, gauss));
+  const Afull = Array.from({ length: 16 }, () => Array.from({ length: D }, gauss));
+
+  function drawMat(canvas, M, scale) {
+    const ctx = canvas.getContext('2d'), cell = canvas.width / D;
+    for (let i = 0; i < D; i++) for (let j = 0; j < D; j++) {
+      let t = Math.max(-1, Math.min(1, M[i][j] / (scale || 1)));
+      const c = t >= 0 ? `rgb(255,${Math.round(255 - t * 160)},${Math.round(255 - t * 190)})` : `rgb(${Math.round(255 + t * 190)},${Math.round(255 + t * 160)},255)`;
+      ctx.fillStyle = c; ctx.fillRect(j * cell, i * cell, cell + 0.5, cell + 0.5);
+    }
+  }
+  const maxAbs = (M) => { let m = 0; for (const row of M) for (const x of row) m = Math.max(m, Math.abs(x)); return m || 1; };
+  function draw() {
+    const r = rCtl.get();
+    const dW = Array.from({ length: D }, (_, i) => Array.from({ length: D }, (_, j) => {
+      let s = 0; for (let k = 0; k < r; k++) s += Bfull[i][k] * Afull[k][j]; return s / Math.sqrt(r) * 0.6;
+    }));
+    const Wp = W0.map((row, i) => row.map((x, j) => x + dW[i][j]));
+    drawMat(c0, W0, maxAbs(W0)); drawMat(cd, dW, maxAbs(dW)); drawMat(cw, Wp, maxAbs(Wp));
+    const train = 2 * D * r, full = D * D;
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `trainable: <b>${train}</b> vs full <b>${full}</b> (rank r=${r}, d=${D})` }));
+    readout.appendChild(el('span', { html: `only <b>${(train / full * 100).toFixed(0)}%</b> of the weights are trained` }));
+  }
+  rCtl.input.addEventListener('input', draw);
+  const panel = (cap, cv) => el('div', { class: 'lora-panel' }, [el('div', { class: 'lora-cap', html: cap }), cv]);
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'Freeze the big weight \\(W_0\\); train only a low-rank update \\(\\Delta W = BA\\). Higher rank = more expressive but more parameters.' }),
+    el('div', { class: 'demo-controls' }, [rCtl.field]),
+    el('div', { class: 'demo-stage' }, [panel('W\u2080 (frozen)', c0), panel('\u0394W = BA', cd), panel("W' = W\u2080+\u0394W", cw)]),
+    readout,
+  ]);
+  return { mount, init: draw };
+});
+
+/* =====================================================================
+ *  DEMO 24 - tool-use loop: the model can't reliably do arithmetic, so it
+ *  calls a calculator tool that really computes the answer. (L22, JS)
+ * ===================================================================== */
+register('tool-loop', (api) => {
+  const expr = '0.30*85 + 0.20*92 + 0.50*78';
+  const result = 0.30 * 85 + 0.20 * 92 + 0.50 * 78;  // computed live by the "tool"
+  const steps = [
+    { role: 'user', text: 'What is my weighted grade? Assignments 85 (30%), chats 92 (20%), final 78 (50%).' },
+    { role: 'model', text: 'This needs exact arithmetic, so I will call a tool instead of guessing.' },
+    { role: 'call', text: 'calc("' + expr + '")' },
+    { role: 'tool', text: '= ' + result.toFixed(1) },
+    { role: 'model', text: 'Your weighted grade is ' + result.toFixed(1) + '%.' },
+  ];
+  const LABEL = { user: 'user', model: 'model', call: 'tool call', tool: 'tool', };
+  let shown = 1;
+  const box = el('div', { class: 'tool-loop' });
+  function render() {
+    box.innerHTML = '';
+    for (let i = 0; i < shown; i++) {
+      const s = steps[i];
+      box.appendChild(el('div', { class: 'tl-row ' + s.role }, [el('span', { class: 'tl-role', text: LABEL[s.role] }), el('span', { class: 'tl-text', text: s.text })]));
+    }
+  }
+  const step = api.button('step', () => { if (shown < steps.length) { shown++; render(); } });
+  const reset = api.button('reset', () => { shown = 1; render(); }, 'ghost');
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'The model proposes an action; the environment (a calculator) returns real evidence; the model uses it.' }),
+    el('div', { class: 'demo-controls' }, [step, reset]),
+    box,
+  ]);
+  return { mount, init: render };
+});
+
 /* --------------------------------------------------------------- boot ----- */
 wireReveal();

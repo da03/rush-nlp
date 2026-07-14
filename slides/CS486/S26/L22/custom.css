@@ -1,5 +1,10 @@
 /* L22 (From Prompting to Fine-Tuning and LoRA) styles. */
 
+/* Avoid one/two-word orphan lines in prose (matches the L17-L21 polish). */
+.reveal .slides section p,
+.reveal .slides section li,
+.reveal .demo-caption { text-wrap: balance; }
+
 .reveal .ladder {
   display: grid;
   gap: 0.28em;
