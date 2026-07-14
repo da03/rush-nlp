@@ -10,10 +10,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../shared/demo.css?v=11">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L19/custom.css?v=5">
-  <link rel="stylesheet" href="custom.css?v=4">
+  <link rel="stylesheet" href="custom.css?v=5">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -140,6 +141,15 @@
     <span class="tok">un</span><span class="tok">believe</span><span class="tok">able</span>
   </div>
   <p class="fragment" style="font-size:0.84em; color:#6b7280;">Exact splits depend on the tokenizer, but the idea is the same: balance vocabulary size and sequence length.</p>
+</section>
+
+<!-- 7b. Tokenizer playground (live) -->
+<section class="center-slide">
+  <h2>Tokenizer playground<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">See how real text splits into subword tokens and IDs.</p>
+  <div class="live-demo" data-demo="tokenizer">
+    <div class="demo-fallback">Interactive on the live slides: type any text and a real tokenizer splits it into subword pieces, each with an integer id. Common words stay whole; rare words break into reusable pieces (unbelievable becomes un / bel / iev / able). The dot marks a leading space.</div>
+  </div>
 </section>
 
 <!-- 8. Token embeddings -->
@@ -286,6 +296,15 @@
   <p class="fragment" style="font-size:0.88em; color:#1d4ed8;">This is multiclass classification over the vocabulary.</p>
 </section>
 
+<!-- 16b. Teacher-forcing loss (live) -->
+<section class="center-slide">
+  <h2>The loss, token by token<span class="demo-badge">live model</span></h2>
+  <p class="demo-caption">Each bar is \(-\log p(\text{actual next token})\) &mdash; one sentence, many signals.</p>
+  <div class="live-demo" data-demo="lm-loss">
+    <div class="demo-fallback">Interactive on the live slides: for a sentence, the model's cross-entropy loss at each position is \(-\log p\) of the token that actually came next. Predictable tokens (like "up" after "picked") score low; surprising tokens score high. Summing these is exactly the pretraining objective, and one sentence supplies a loss at every position.</div>
+  </div>
+</section>
+
 <!-- 17. Pretraining loop -->
 <section>
   <h2>The pretraining loop</h2>
@@ -364,6 +383,15 @@ optimizer.step()</code></pre>
   </div>
 </section>
 
+<!-- 22b. LM next-token + decoding (live model) -->
+<section class="center-slide">
+  <h2>Decoding: from distribution to text<span class="demo-badge">live model</span></h2>
+  <p class="demo-caption">A real next-token distribution; the knobs reshape it, then generate.</p>
+  <div class="live-demo" data-demo="lm-next">
+    <div class="demo-fallback">Interactive on the live slides: a real model's next-token distribution for a prompt (e.g., "To be, or not to" puts about 0.80 on "be"). Temperature, top-k, and top-p reshape the distribution, and the generate button streams a continuation token by token from the live model in your browser.</div>
+  </div>
+</section>
+
 <!-- 23. Greedy -->
 <section>
   <h2>Greedy decoding</h2>
@@ -390,6 +418,15 @@ optimizer.step()</code></pre>
         <div class="task-card fragment"><h3>high \(T\)</h3><p style="font-size:0.8em;">flatter, diverse, risky</p></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- 24b. Softmax temperature playground (live) -->
+<section class="center-slide">
+  <h2>Temperature, hands-on<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Low temperature sharpens onto one token; high temperature flattens toward uniform.</p>
+  <div class="live-demo" data-demo="softmax-playground">
+    <div class="demo-fallback">Interactive on the live slides: drag the temperature and the scores and watch softmax turn them into a probability distribution. Low temperature concentrates probability on the top token (safe, repetitive); high temperature spreads it out (diverse, risky).</div>
   </div>
 </section>
 
@@ -470,5 +507,6 @@ optimizer.step()</code></pre>
     });
   });
 </script>
+<script type="module" src="../shared/demo.js?v=18"></script>
 </body>
 </html>

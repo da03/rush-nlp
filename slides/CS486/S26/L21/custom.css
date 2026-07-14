@@ -1,5 +1,10 @@
 /* L21 (Dissecting a Small Language Model) styles. */
 
+/* Avoid one/two-word orphan lines in prose (matches the L17-L20 polish). */
+.reveal .slides section p,
+.reveal .slides section li,
+.reveal .demo-caption { text-wrap: balance; }
+
 .reveal .model-badge {
   display: inline-block;
   padding: 0.35em 0.75em;

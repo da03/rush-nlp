@@ -276,6 +276,52 @@
 .reveal .attn-row .attn-fill { height: 100%; background: #1d4ed8; border-radius: 3px; transition: width 0.12s ease; }
 .reveal .attn-row .attn-num { flex: 0 0 2.4em; font-family: ui-monospace, Menlo, monospace; color: #1d4ed8; font-weight: 600; }
 
+/* Text input used by the L20 tokenizer / LM demos. */
+.reveal .demo-input {
+  font: inherit; font-size: 0.7em;
+  padding: 0.3em 0.55em; min-width: 20em;
+  border: 1px solid #cbd5e1; border-radius: 6px;
+  font-family: ui-monospace, Menlo, monospace;
+}
+
+/* Tokenizer chips: piece on top, id below, cycled colors. */
+.reveal .tokchips { display: flex; flex-wrap: wrap; gap: 0.35em; justify-content: center; margin: 0.5em auto; max-width: 92%; }
+.reveal .tokchip { display: flex; flex-direction: column; align-items: center; border-radius: 6px; padding: 0.22em 0.5em; border: 1px solid; }
+.reveal .tokchip .tp { font-family: ui-monospace, Menlo, monospace; font-size: 0.8em; font-weight: 700; }
+.reveal .tokchip .ti { font-size: 0.6em; color: #6b7280; }
+.reveal .tokchip.c0 { background: #eff6ff; border-color: #bfdbfe; }
+.reveal .tokchip.c1 { background: #ecfdf5; border-color: #a7f3d0; }
+.reveal .tokchip.c2 { background: #fef3c7; border-color: #fde68a; }
+.reveal .tokchip.c3 { background: #fae8ff; border-color: #f5d0fe; }
+.reveal .tokchip.c4 { background: #ffe4e6; border-color: #fecdd3; }
+
+/* lm-next / lm-loss run smaller so the vocab bars fit within a slide. */
+.reveal [data-demo="lm-next"] .demo-live,
+.reveal [data-demo="lm-loss"] .demo-live { font-size: 0.62em; }
+.reveal [data-demo="lm-loss"] .attn-bars2 { max-width: 360px; margin: 0 auto; }
+.reveal [data-demo="lm-chat"] .lm-next-left { font-size: 0.6em; }
+
+/* lm-next layout + generation output. */
+.reveal .lm-next-left { min-width: 300px; max-width: 380px; }
+.reveal .lm-next-right { min-width: 260px; max-width: 340px; }
+.reveal .lm-prompt { font-size: 0.72em; color: #374151; margin-bottom: 0.4em; }
+.reveal .lm-prompt b { color: #1d4ed8; }
+.reveal .lm-gen { margin-top: 0.5em; font-family: ui-monospace, Menlo, monospace; font-size: 0.66em; line-height: 1.5; color: #1f2937; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 6px; padding: 0.5em 0.7em; min-height: 3.2em; max-height: 300px; overflow: auto; white-space: pre-wrap; }
+.reveal .attn-row.top .attn-fill { background: #16a34a; }
+.reveal .attn-row .attn-fill.lo { background: #16a34a; }
+.reveal .attn-row .attn-fill.mid { background: #1d4ed8; }
+.reveal .attn-row .attn-fill.hi { background: #dc2626; }
+
+/* Chat-template inspector: show the templated model input with special tokens. */
+.reveal .chat-tmpl {
+  font-family: ui-monospace, Menlo, monospace; font-size: 0.56em; line-height: 1.5;
+  text-align: left; white-space: pre-wrap; word-break: break-word;
+  background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 6px;
+  padding: 0.6em 0.8em; max-width: 88%; margin: 0.3em auto; max-height: 340px; overflow: auto;
+}
+.reveal .chat-tmpl .sp { color: #7c3aed; font-weight: 700; }
+.reveal .chat-tmpl .sp.think { color: #b45309; }
+
 /* Permutation demo: two side-by-side sentence groups + a verdict line. */
 .reveal .attn-permute-wrap, .reveal [data-demo="attn-permute"] .demo-live > div > div:last-child { }
 .reveal .permute-grp { display: inline-block; vertical-align: top; width: 46%; margin: 0 1.5% 0.5em; font-size: 0.72em; }

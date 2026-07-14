@@ -10,10 +10,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../shared/demo.css?v=12">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L20/custom.css?v=4">
-  <link rel="stylesheet" href="custom.css?v=2">
+  <link rel="stylesheet" href="custom.css?v=3">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -177,6 +178,15 @@ model = AutoModelForCausalLM.from_pretrained(
   <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The model's actual input is usually not exactly what the user typed.</p>
 </section>
 
+<!-- 10b. Chat-template inspector (live) -->
+<section class="center-slide">
+  <h2>What the model actually receives<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">The chat template wraps your text in roles and special tokens.</p>
+  <div class="live-demo" data-demo="chat-template">
+    <div class="demo-fallback">Interactive on the live slides: pick a user message and see the exact string the model receives after the chat template adds the system/user/assistant structure and special tokens (like the Qwen &lt;|im_start|&gt; markers). Toggling thinking mode inserts a reasoning section the model fills in before answering.</div>
+  </div>
+</section>
+
 <!-- 11. Prompt to tokens -->
 <section>
   <h2>Prompt to tokens</h2>
@@ -230,6 +240,15 @@ model = AutoModelForCausalLM.from_pretrained(
   </div>
 </section>
 
+<!-- 13b. Real attention dissection (live model) -->
+<section>
+  <h2>Inside the blocks: real attention<span class="demo-badge">live model</span></h2>
+  <p class="demo-caption">Actual Qwen3-0.6B attention &mdash; pick a head, click a query token.</p>
+  <div class="live-demo" data-demo="lm-attention">
+    <div class="demo-fallback">Interactive on the live slides: real attention read out from inside Qwen3-0.6B (28 layers, 16 heads). Different layer/head pairs specialize &mdash; one links a pronoun to its referent ("it" attends to "robot"), one tracks the previous token, one spreads broadly. Click a query token to see its attention row.</div>
+  </div>
+</section>
+
 <!-- 14. Last position -->
 <section class="center-slide">
   <h2>The last position predicts next</h2>
@@ -272,6 +291,15 @@ model = AutoModelForCausalLM.from_pretrained(
     <div class="lm-bar"><span>zq</span><div style="height:8px;"></div><b>0.00</b></div>
   </div>
   <p class="fragment" style="font-size:0.86em; text-align:center; color:#1d4ed8;">Decoding turns scores into one actual next token.</p>
+</section>
+
+<!-- 16b. Run the real model (live model) -->
+<section class="center-slide">
+  <h2>Watch it run<span class="demo-badge">live model</span></h2>
+  <p class="demo-caption">A real Qwen3-0.6B answer (precomputed); temperature and thinking are yours to change, then run it live.</p>
+  <div class="live-demo" data-demo="lm-chat">
+    <div class="demo-fallback">Interactive on the live slides: a real Qwen3-0.6B assistant. The next-token distribution (e.g., about 0.99 on "Gradient" for the gradient-descent prompt) and a sample answer are precomputed so this teaches offline; the run button loads the real quantized model and streams a fresh answer in your browser, with temperature and a thinking-mode toggle.</div>
+  </div>
 </section>
 
 <!-- 17. Append loop -->
@@ -516,5 +544,6 @@ model = AutoModelForCausalLM.from_pretrained(
     });
   });
 </script>
+<script type="module" src="../shared/demo.js?v=19"></script>
 </body>
 </html>

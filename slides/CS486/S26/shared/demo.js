@@ -135,6 +135,101 @@ async function embedTexts(extractor, texts, onStatus) {
   return out;
 }
 
+/* --- Real (small) causal language model, lazily loaded & cached. Used by L20
+ * for tokenization, next-token distributions, and teacher-forcing loss. Just
+ * the tokenizer is tiny; the full model is a one-time ~80 MB download. Failures
+ * are caught so demos fall back to precomputed samples. */
+const LM_MODEL = 'Xenova/distilgpt2';
+let _tokPromise = {};
+let _lmPromise = null;
+
+async function getTokenizer(id, onStatus) {
+  id = id || LM_MODEL;
+  if (!_tokPromise[id]) {
+    _tokPromise[id] = (async () => {
+      onStatus && onStatus('Loading tokenizer (one time)...');
+      const mod = await import(/* webpackIgnore: true */ TRANSFORMERS_URL);
+      return mod.AutoTokenizer.from_pretrained(id);
+    })().catch((e) => { _tokPromise[id] = null; throw e; });
+  }
+  return _tokPromise[id];
+}
+
+async function getCausalLM(id, onStatus) {
+  id = id || LM_MODEL;
+  if (!_lmPromise) {
+    _lmPromise = (async () => {
+      onStatus && onStatus('Loading language model (~80 MB, one time)...');
+      const mod = await import(/* webpackIgnore: true */ TRANSFORMERS_URL);
+      const device = (typeof navigator !== 'undefined' && navigator.gpu) ? 'webgpu' : 'wasm';
+      const tokenizer = await mod.AutoTokenizer.from_pretrained(id);
+      const model = await mod.AutoModelForCausalLM.from_pretrained(id, { dtype: 'q8', device });
+      return { tokenizer, model };
+    })().catch((e) => { _lmPromise = null; throw e; });
+  }
+  return _lmPromise;
+}
+
+/* Real chat model (Qwen3-0.6B) via the text-generation pipeline. Bigger, WebGPU
+ * when available; gated behind a button and paired with precomputed samples so
+ * the slide still teaches if the download/hardware is unavailable. (L21) */
+const CHAT_MODEL = 'onnx-community/Qwen3-0.6B-ONNX';
+let _chatPromise = null;
+
+async function getChatLM(id, onStatus) {
+  id = id || CHAT_MODEL;
+  if (!_chatPromise) {
+    _chatPromise = (async () => {
+      onStatus && onStatus('Loading Qwen3-0.6B (~0.5 GB, one time)...');
+      const mod = await import(/* webpackIgnore: true */ TRANSFORMERS_URL);
+      const device = (typeof navigator !== 'undefined' && navigator.gpu) ? 'webgpu' : 'wasm';
+      const generator = await mod.pipeline('text-generation', id, { device, dtype: 'q4f16' });
+      return { generator, mod };
+    })().catch((e) => { _chatPromise = null; throw e; });
+  }
+  return _chatPromise;
+}
+
+/* Stream a chat completion, calling onToken(text) for each new chunk. */
+async function chatStream(lm, messages, opts, onToken) {
+  const streamer = new lm.mod.TextStreamer(lm.generator.tokenizer, {
+    skip_prompt: true, skip_special_tokens: true, callback_function: onToken,
+  });
+  return lm.generator(messages, {
+    max_new_tokens: opts.max || 160,
+    do_sample: !!opts.doSample,
+    temperature: opts.T, top_k: opts.k, top_p: opts.p,
+    streamer,
+  });
+}
+
+/* Full-sequence logits: returns { ids:number[], logits:Float32Array[seq][vocab
+ * as flat], seq, vocab }. logits are the raw scores at every position. */
+async function lmForward(lm, text) {
+  const enc = await lm.tokenizer(text);
+  const out = await lm.model(enc);
+  const L = out.logits;                    // Tensor [1, seq, vocab]
+  const [, seq, vocab] = L.dims;
+  const data = L.data;                     // Float32Array length seq*vocab
+  const ids = Array.from(enc.input_ids.data, (x) => Number(x));
+  return { ids, data, seq, vocab };
+}
+
+function softmaxT(logits, T = 1) {
+  let m = -Infinity; for (const x of logits) if (x > m) m = x;
+  const e = new Array(logits.length); let s = 0;
+  for (let i = 0; i < logits.length; i++) { e[i] = Math.exp((logits[i] - m) / (T || 1)); s += e[i]; }
+  for (let i = 0; i < e.length; i++) e[i] /= s;
+  return e;
+}
+
+/* Indices of the top-k entries of an array (descending by value). */
+function topkIdx(arr, k) {
+  const idx = Array.from(arr.keys());
+  idx.sort((a, b) => arr[b] - arr[a]);
+  return idx.slice(0, k);
+}
+
 /* ------------------------------------------------------- vector helpers --- */
 
 function cosine(a, b) {
@@ -248,6 +343,10 @@ function upgrade(root) {
     runPython,
     getEmbedder: () => getEmbedder(setStatus),
     embedTexts: (ex, texts) => embedTexts(ex, texts, setStatus),
+    getTokenizer: (id) => getTokenizer(id, setStatus),
+    getCausalLM: (id) => getCausalLM(id, setStatus),
+    getChatLM: (id) => getChatLM(id, setStatus),
+    chatStream, lmForward, softmaxT, topkIdx,
     cosine, pca2, rng32,
   };
 
@@ -1593,6 +1692,328 @@ register('attn-permute', (api) => {
     box,
   ]);
   return { mount, init: render };
+});
+
+/* =====================================================================
+ *  DEMO 16 - tokenizer playground: text -> subword tokens + IDs. Presets
+ *  render instantly from precomputed data; "tokenize" runs the real
+ *  tokenizer (tiny download) on your own text. (L20)
+ * ===================================================================== */
+register('tokenizer', (api) => {
+  let samples = null;
+  const input = el('input', { class: 'demo-input', type: 'text', value: 'The robot picked up the cup.' });
+  const presetRow = el('div', { class: 'demo-controls' });
+  const chips = el('div', { class: 'tokchips' });
+  const info = el('div', { class: 'demo-readout' });
+  input.addEventListener('keydown', (e) => e.stopPropagation());
+
+  function renderPieces(text, pieces) {
+    chips.innerHTML = '';
+    pieces.forEach((p, i) => chips.appendChild(el('div', { class: 'tokchip c' + (i % 5) }, [
+      el('span', { class: 'tp', text: p.piece }), el('span', { class: 'ti', text: p.id }),
+    ])));
+    info.innerHTML = '';
+    info.appendChild(el('span', { html: `<b>${text.length}</b> characters` }));
+    info.appendChild(el('span', { html: `<b>${pieces.length}</b> tokens` }));
+  }
+
+  async function tokenizeLive() {
+    try {
+      const tok = await api.getTokenizer();
+      const text = input.value;
+      const ids = tok.encode(text);
+      const pieces = ids.map((id) => { let s = tok.decode([id]); return { piece: s.startsWith(' ') ? '\u00b7' + s.slice(1) : s, id }; });
+      renderPieces(text, pieces);
+      api.setStatus('Tokenized with the real model tokenizer.', 'ok');
+    } catch (e) { api.setStatus('Could not load the tokenizer; showing preset examples.', 'err'); }
+  }
+
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'A tokenizer splits text into <b>subword</b> pieces, each with an integer id. The dot (\u00b7) marks a leading space.' }),
+    presetRow,
+    el('div', { class: 'demo-controls' }, [input, api.button('tokenize', tokenizeLive)]),
+    chips, info,
+    el('div', { class: 'demo-hint', text: 'Common words stay whole; rare words split into reusable pieces (un\u00b7bel\u00b7iev\u00b7able).' }),
+  ]);
+
+  async function load() {
+    try { const res = await fetch('data/lm_samples.json'); samples = await res.json(); }
+    catch (e) { samples = { tokenize: [{ text: 'unbelievable', pieces: [{ piece: 'un', id: 403 }, { piece: 'bel', id: 6667 }, { piece: 'iev', id: 11203 }, { piece: 'able', id: 540 }] }] }; }
+    samples.tokenize.forEach((s, k) => presetRow.appendChild(api.button('"' + s.text + '"', () => { input.value = s.text; renderPieces(s.text, s.pieces); markActive(k); }, k === 0 ? 'primary' : 'ghost')));
+    input.value = samples.tokenize[0].text;
+    renderPieces(samples.tokenize[0].text, samples.tokenize[0].pieces);
+  }
+  const markActive = (k) => [...presetRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 17 - next-token distribution + decoding knobs. Presets show a REAL
+ *  distribution (precomputed); temperature / top-k / top-p reshape it live;
+ *  "generate" streams a continuation from the real model. (L20)
+ * ===================================================================== */
+register('lm-next', (api) => {
+  let samples = null, cur = null;
+  const promptRow = el('div', { class: 'demo-controls' });
+  const bars = el('div', { class: 'attn-bars2' });
+  const genOut = el('div', { class: 'lm-gen' });
+  const tCtl = api.slider('temperature', { min: 0.2, max: 2, step: 0.1, value: 1, fmt: (v) => v.toFixed(1) });
+  const kCtl = api.slider('top-k', { min: 1, max: 10, step: 1, value: 5, fmt: (v) => v });
+  const pCtl = api.slider('top-p', { min: 0.1, max: 1, step: 0.05, value: 1, fmt: (v) => v.toFixed(2) });
+
+  function reshaped() {
+    const base = cur.top;
+    const T = tCtl.get();
+    let items = base.map((t) => ({ piece: t.piece, w: Math.pow(t.p, 1 / T) }));
+    let z = items.reduce((a, b) => a + b.w, 0); items.forEach((it) => (it.w /= z));
+    items.sort((a, b) => b.w - a.w);
+    items = items.slice(0, kCtl.get());               // top-k
+    const P = pCtl.get(); let c = 0; const kept = [];  // top-p
+    for (const it of items) { kept.push(it); c += it.w; if (c >= P) break; }
+    z = kept.reduce((a, b) => a + b.w, 0) || 1; kept.forEach((it) => (it.w /= z));
+    return kept;
+  }
+  function draw() {
+    bars.innerHTML = '';
+    const items = reshaped(); const max = Math.max(...items.map((i) => i.w), 0.01);
+    items.forEach((it, j) => bars.appendChild(el('div', { class: 'attn-row' + (j === 0 ? ' top' : '') }, [
+      el('span', { class: 'attn-lab', text: it.piece }),
+      el('div', { class: 'attn-track' }, [el('div', { class: 'attn-fill', style: `width:${(it.w / max * 100).toFixed(1)}%` })]),
+      el('span', { class: 'attn-num', text: it.w.toFixed(2) }),
+    ])));
+  }
+  [tCtl, kCtl, pCtl].forEach((c) => c.input.addEventListener('input', draw));
+
+  function pickFromLogits(logits) {
+    const cand = api.topkIdx(logits, 50);
+    let probs = api.softmaxT(cand.map((i) => logits[i]), tCtl.get());
+    let items = cand.map((i, j) => ({ i, p: probs[j] }));
+    items = items.slice(0, kCtl.get());
+    const P = pCtl.get(); let c = 0; const kept = []; for (const it of items) { kept.push(it); c += it.p; if (c >= P) break; }
+    const z = kept.reduce((a, b) => a + b.p, 0) || 1; kept.forEach((it) => (it.p /= z));
+    let r = Math.random(), acc = 0; for (const it of kept) { acc += it.p; if (r <= acc) return it.i; } return kept[kept.length - 1].i;
+  }
+  async function generate() {
+    genOut.textContent = ''; api.setStatus('Loading model...');
+    let lm; try { lm = await api.getCausalLM(); } catch (e) { api.setStatus('Model unavailable; the distribution above still works offline.', 'err'); return; }
+    let text = cur.prompt; genOut.textContent = text;
+    api.setStatus('Generating...');
+    for (let step = 0; step < 24; step++) {
+      const { data, seq, vocab } = await api.lmForward(lm, text);
+      const last = data.subarray((seq - 1) * vocab, seq * vocab);
+      const id = pickFromLogits(last);
+      const piece = lm.tokenizer.decode([id]);
+      text += piece; genOut.textContent = text;
+      if (piece.includes('\n')) break;
+    }
+    api.setStatus('Generated with a real model in your browser.', 'ok');
+  }
+
+  const mount = el('div', {}, [
+    promptRow,
+    el('div', { class: 'demo-controls' }, [tCtl.field, kCtl.field, pCtl.field]),
+    el('div', { class: 'demo-stage' }, [el('div', { class: 'lm-next-left' }, [el('div', { class: 'lm-prompt', id: 'lmp' }), bars]), el('div', { class: 'lm-next-right' }, [api.button('generate (real model)', generate), genOut])]),
+  ]);
+
+  function setPrompt(k) {
+    cur = samples.next[k];
+    [...promptRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
+    mount.querySelector('#lmp').innerHTML = 'prompt: <b>' + cur.prompt + '</b> &rarr; ?';
+    genOut.textContent = ''; draw();
+  }
+  async function load() {
+    try { const res = await fetch('data/lm_samples.json'); samples = await res.json(); }
+    catch (e) { samples = { next: [{ prompt: 'To be, or not to', top: [{ piece: '\u00b7be', id: 307, p: 0.8 }, { piece: ',', id: 11, p: 0.01 }] }] }; }
+    samples.next.forEach((s, k) => promptRow.appendChild(api.button('"' + s.prompt + '"', () => setPrompt(k), k === 0 ? 'primary' : 'ghost')));
+    setPrompt(0);
+  }
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 18 - teacher forcing: per-token cross-entropy loss. Precomputed
+ *  losses render instantly; "score my own text" runs the real model. (L20)
+ * ===================================================================== */
+register('lm-loss', (api) => {
+  let samples = null;
+  const input = el('input', { class: 'demo-input', type: 'text', value: 'The robot picked up the cup because it was empty' });
+  const rows = el('div', { class: 'attn-bars2' });
+  const summary = el('div', { class: 'demo-readout' });
+  input.addEventListener('keydown', (e) => e.stopPropagation());
+
+  function render(tokens, losses) {
+    rows.innerHTML = '';
+    const max = Math.max(...losses, 0.01);
+    // losses[t] is the loss predicting tokens[t+1] from tokens[<=t]
+    for (let t = 0; t < losses.length; t++) {
+      const L = losses[t];
+      rows.appendChild(el('div', { class: 'attn-row' }, [
+        el('span', { class: 'attn-lab', text: tokens[t + 1].piece }),
+        el('div', { class: 'attn-track' }, [el('div', { class: 'attn-fill ' + (L < 1 ? 'lo' : L > 5 ? 'hi' : 'mid'), style: `width:${(L / max * 100).toFixed(1)}%` })]),
+        el('span', { class: 'attn-num', text: L.toFixed(1) }),
+      ]));
+    }
+    const avg = losses.reduce((a, b) => a + b, 0) / losses.length;
+    summary.innerHTML = '';
+    summary.appendChild(el('span', { html: `average loss = <b>${avg.toFixed(2)}</b> nats/token` }));
+    summary.appendChild(el('span', { html: `low = predictable (\u201cup\u201d after \u201cpicked\u201d); high = surprising` }));
+  }
+
+  async function scoreLive() {
+    let lm; try { lm = await api.getCausalLM(); } catch (e) { api.setStatus('Model unavailable; showing the precomputed sentence.', 'err'); return; }
+    api.setStatus('Scoring...');
+    const { ids, data, seq, vocab } = await api.lmForward(lm, input.value);
+    const tokens = ids.map((id) => { let s = lm.tokenizer.decode([id]); return { piece: s.startsWith(' ') ? '\u00b7' + s.slice(1) : s, id }; });
+    const losses = [];
+    for (let t = 0; t < seq - 1; t++) {
+      const row = data.subarray(t * vocab, (t + 1) * vocab);
+      const probs = api.softmaxT(row, 1);
+      losses.push(-Math.log(probs[ids[t + 1]] + 1e-12));
+    }
+    render(tokens, losses); api.setStatus('Scored with a real model.', 'ok');
+  }
+
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-controls' }, [input, api.button('score my own text (real model)', scoreLive)]),
+    el('div', { class: 'demo-stage' }, [rows, summary]),
+  ]);
+
+  async function load() {
+    try { const res = await fetch('data/lm_samples.json'); samples = await res.json(); render(samples.loss.tokens, samples.loss.losses); }
+    catch (e) { api.setStatus('Could not load sample losses.', 'err'); }
+  }
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 19 - chat-template inspector: user text vs the templated input the
+ *  model actually receives; thinking on/off changes it. (L21, precomputed)
+ * ===================================================================== */
+register('chat-template', (api) => {
+  let data = null, ui = 0, thinking = false;
+  const userRow = el('div', { class: 'demo-controls' });
+  const pre = el('pre', { class: 'chat-tmpl' });
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  function render() {
+    const c = data.chat[ui];
+    const raw = thinking ? c.think_on : c.think_off;
+    pre.innerHTML = esc(raw)
+      .replace(/&lt;\|[^|]*?\|&gt;/g, (m) => '<span class="sp">' + m + '</span>')
+      .replace(/&lt;\/?think&gt;/g, (m) => '<span class="sp think">' + m + '</span>');
+  }
+  const mark = (row, k) => [...row.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
+  const toggle = api.button('thinking: OFF', () => { thinking = !thinking; toggle.textContent = 'thinking: ' + (thinking ? 'ON' : 'OFF'); toggle.classList.toggle('primary', thinking); toggle.classList.toggle('ghost', !thinking); render(); }, 'ghost');
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'What the user types vs. what the model actually receives: roles and special tokens added by the chat template.' }),
+    userRow,
+    el('div', { class: 'demo-controls' }, [toggle]),
+    pre,
+    el('div', { class: 'demo-hint', text: 'Thinking mode adds a reasoning section the model fills in before its answer.' }),
+  ]);
+  async function load() {
+    try { const r = await fetch('data/qwen_samples.json'); data = await r.json(); }
+    catch (e) { api.setStatus('Could not load samples.', 'err'); return; }
+    data.chat.forEach((c, k) => userRow.appendChild(api.button('"' + c.user + '"', () => { ui = k; mark(userRow, k); render(); }, k === 0 ? 'primary' : 'ghost')));
+    render();
+  }
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 20 - lm-chat: a real Qwen3-0.6B assistant. Precomputed sample answer
+ *  + next-token trace by default; "run" streams live in the browser. (L21)
+ * ===================================================================== */
+register('lm-chat', (api) => {
+  let data = null, pi = 0, thinking = false;
+  const promptRow = el('div', { class: 'demo-controls' });
+  const bars = el('div', { class: 'attn-bars2' });
+  const answer = el('div', { class: 'lm-gen' });
+  const tCtl = api.slider('temperature', { min: 0.1, max: 1.5, step: 0.1, value: 0.7, fmt: (v) => v.toFixed(1) });
+  function drawTrace() {
+    bars.innerHTML = '';
+    if (pi !== 0 || !data.next) return;
+    const top = data.next.top.slice(0, 6); const max = Math.max(...top.map((t) => t.p));
+    top.forEach((t, j) => bars.appendChild(el('div', { class: 'attn-row' + (j === 0 ? ' top' : '') }, [
+      el('span', { class: 'attn-lab', text: t.piece }),
+      el('div', { class: 'attn-track' }, [el('div', { class: 'attn-fill', style: `width:${(t.p / max * 100).toFixed(1)}%` })]),
+      el('span', { class: 'attn-num', text: t.p.toFixed(2) }),
+    ])));
+  }
+  function showPrecomputed() { const g = data.generations[pi]; answer.textContent = g ? g.text : ''; drawTrace(); }
+  async function run() {
+    answer.textContent = ''; api.setStatus('Loading model (~0.5 GB, one time)...');
+    let lm; try { lm = await api.getChatLM(); } catch (e) { api.setStatus('Model unavailable; showing the precomputed answer.', 'err'); showPrecomputed(); return; }
+    const user = data.generations[pi].prompt + (thinking ? ' /think' : ' /no_think');
+    api.setStatus('Generating...'); let acc = '';
+    try { await api.chatStream(lm, [{ role: 'user', content: user }], { doSample: true, T: tCtl.get(), k: 20, p: 0.95, max: 160 }, (t) => { acc += t; answer.textContent = acc; }); api.setStatus('Generated by Qwen3-0.6B in your browser.', 'ok'); }
+    catch (e) { api.setStatus('Generation failed; showing precomputed.', 'err'); showPrecomputed(); }
+  }
+  const toggle = api.button('thinking: OFF', () => { thinking = !thinking; toggle.textContent = 'thinking: ' + (thinking ? 'ON' : 'OFF'); toggle.classList.toggle('primary', thinking); toggle.classList.toggle('ghost', !thinking); }, 'ghost');
+  const mount = el('div', {}, [
+    promptRow,
+    el('div', { class: 'demo-controls' }, [tCtl.field, toggle, api.button('run (real model)', run)]),
+    el('div', { class: 'demo-stage' }, [el('div', { class: 'lm-next-left' }, [el('div', { class: 'lm-prompt', id: 'lcp' }), bars]), el('div', { class: 'lm-next-right' }, [answer])]),
+  ]);
+  function setP(k) { pi = k; [...promptRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); }); mount.querySelector('#lcp').innerHTML = 'prompt: <b>' + data.generations[k].prompt + '</b>'; showPrecomputed(); }
+  async function load() {
+    try { const r = await fetch('data/qwen_samples.json'); data = await r.json(); }
+    catch (e) { api.setStatus('Could not load samples.', 'err'); return; }
+    data.generations.forEach((g, k) => promptRow.appendChild(api.button('"' + g.prompt + '"', () => setP(k), k === 0 ? 'primary' : 'ghost')));
+    setP(0);
+  }
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 21 - lm-attention: REAL Qwen3-0.6B attention. Pick a head, click a
+ *  query token, read where it looks in the actual dissected model. (L21)
+ * ===================================================================== */
+register('lm-attention', (api) => {
+  let data = null, hi = 0, qi = null;
+  const canvas = api.canvasEl(380, 360); canvas.classList.add('clickable');
+  const panel = el('div', { class: 'attn-panel' });
+  const headRow = el('div', { class: 'demo-controls' });
+  const toks = () => data.attention.tokens;
+  const A = () => data.attention.heads[hi].A;
+  function layout() { const W = canvas.width, H = canvas.height, n = toks().length; const padL = 96, padT = 66; const cell = Math.min(30, (W - padL - 8) / n, (H - padT - 8) / n); return { W, H, n, padL, padT, cell }; }
+  function draw() {
+    const ctx = canvas.getContext('2d'); const { W, H, n, padL, padT, cell } = layout(); const M = A(), tk = toks();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); ctx.font = '11px ui-monospace, monospace';
+    ctx.fillStyle = '#374151'; ctx.textAlign = 'left';
+    for (let j = 0; j < n; j++) { ctx.save(); ctx.translate(padL + j * cell + cell / 2 + 4, padT - 8); ctx.rotate(-Math.PI / 4); ctx.fillText(tk[j], 0, 0); ctx.restore(); }
+    ctx.textAlign = 'right';
+    for (let i = 0; i < n; i++) { ctx.fillStyle = i === qi ? '#b91c1c' : '#374151'; ctx.fillText(tk[i], padL - 6, padT + i * cell + cell / 2 + 4); }
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { ctx.fillStyle = `rgba(29,78,216,${Math.pow(M[i][j], 0.7).toFixed(3)})`; ctx.fillRect(padL + j * cell, padT + i * cell, cell - 1, cell - 1); }
+    if (qi != null) { ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 2.5; ctx.strokeRect(padL - 1, padT + qi * cell - 1, n * cell + 1, cell + 1); }
+    drawPanel();
+  }
+  function drawPanel() {
+    panel.innerHTML = ''; const tk = toks();
+    if (qi == null) { panel.appendChild(el('p', { class: 'attn-hint', html: 'Click any <b>row</b> (query token) to see where it looks.' })); return; }
+    const row = A()[qi];
+    panel.appendChild(el('p', { class: 'attn-q', html: `query: <b>${tk[qi]}</b> attends to&hellip;` }));
+    const order = tk.map((t, j) => [t, row[j]]).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    const max = order[0][1] || 1; const b = el('div', { class: 'attn-bars2' });
+    order.forEach(([t, w]) => b.appendChild(el('div', { class: 'attn-row' }, [
+      el('span', { class: 'attn-lab', text: t }), el('div', { class: 'attn-track' }, [el('div', { class: 'attn-fill', style: `width:${(w / max * 100).toFixed(1)}%` })]), el('span', { class: 'attn-num', text: w.toFixed(2) }),
+    ])));
+    panel.appendChild(b);
+  }
+  canvas.addEventListener('click', (e) => { const { padT, cell, n } = layout(); const r = canvas.getBoundingClientRect(); const my = (e.clientY - r.top) * canvas.height / r.height; const i = Math.floor((my - padT) / cell); if (i >= 0 && i < n) { qi = i; draw(); } });
+  function setHead(k) { hi = k; [...headRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); }); draw(); }
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'Real attention from inside <b>Qwen3-0.6B</b> (28 layers, 16 heads). Different layer/head pairs specialize.' }),
+    headRow,
+    el('div', { class: 'demo-stage' }, [canvas, panel]),
+  ]);
+  async function load() {
+    try { const r = await fetch('data/qwen_samples.json'); data = await r.json(); }
+    catch (e) { api.setStatus('Could not load attention data.', 'err'); return; }
+    data.attention.heads.forEach((h, k) => headRow.appendChild(api.button(h.label, () => setHead(k), k === 0 ? 'primary' : 'ghost')));
+    qi = toks().findIndex((t) => t.replace(/\u00b7/g, '').toLowerCase() === 'it'); if (qi < 0) qi = null;
+    draw();
+  }
+  return { mount, init: load };
 });
 
 /* --------------------------------------------------------------- boot ----- */
