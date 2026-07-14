@@ -381,3 +381,16 @@
 .reveal .context-depth strong { color: #1d4ed8; font-size: 0.78em; }
 .reveal .context-depth span { color: #475569; font-size: 0.66em; margin-top: 0.18em; }
 .reveal .context-depth > b { color: #94a3b8; font-size: 1em; }
+.reveal .nope-note {
+  max-width: 92%;
+  margin: 0.45em auto 0;
+  padding: 0.42em 0.65em;
+  border: 1px solid #c4b5fd;
+  border-radius: 8px;
+  background: #f5f3ff;
+  color: #5b21b6;
+  font-size: 0.62em;
+  line-height: 1.35;
+}
+.reveal .nope-note strong { color: #4c1d95; }
+.reveal .nope-note a { color: #1d4ed8; }
