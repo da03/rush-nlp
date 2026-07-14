@@ -1417,7 +1417,88 @@ register('wildvis', (api) => {
 });
 
 /* =====================================================================
- *  DEMO 12 - real Qwen3-0.6B causal attention. Pick a sentence + measured
+ *  DEMO 12 - Image-to-LaTeX fine-attention viewer. Hover an output token
+ *  to display only its pink, fine-grained spatial attention over the image.
+ * ===================================================================== */
+register('im2latex-attention', (api) => {
+  let data = null;
+  let active = -1;
+  const image = el('img', {
+    class: 'im2latex-attn-image',
+    alt: 'Rendered mathematical expression used by the Image-to-LaTeX model',
+  });
+  const overlay = el('div', { class: 'im2latex-attn-overlay', 'aria-hidden': 'true' });
+  const ribbon = el('div', { class: 'im2latex-token-ribbon', role: 'list', 'aria-label': 'Generated LaTeX output tokens' });
+  const readout = el('div', { class: 'im2latex-attn-readout', 'aria-live': 'polite' });
+  const stage = el('div', { class: 'im2latex-attn-stage' }, [image, overlay]);
+
+  function displayToken(token) {
+    if (token === '\\left[') return '[';
+    if (token === '\\right]') return ']';
+    if (token === '\\overline') return '\\bar';
+    return token;
+  }
+
+  function show(index) {
+    if (!data || !data.tokens[index]) return;
+    active = index;
+    const token = data.tokens[index];
+    const max = Math.max(...token.scores, 1e-9);
+    [...overlay.children].forEach((cell, i) => {
+      const score = token.scores[i] || 0;
+      const opacity = score <= 0 ? 0 : 0.08 + 0.78 * Math.pow(score / max, 0.68);
+      cell.style.backgroundColor = `rgba(236,72,153,${opacity.toFixed(3)})`;
+    });
+    [...ribbon.children].forEach((button, i) => button.classList.toggle('active', i === index));
+    readout.innerHTML = `output token <b>${displayToken(token.label)}</b> &rarr; pink cells show where its visual payload is read`;
+  }
+
+  function build() {
+    image.src = data.image;
+    overlay.style.gridTemplateColumns = `repeat(${data.cols}, 1fr)`;
+    overlay.style.gridTemplateRows = `repeat(${data.rows}, 1fr)`;
+    overlay.innerHTML = '';
+    for (let i = 0; i < data.rows * data.cols; i++) overlay.appendChild(el('span'));
+
+    ribbon.innerHTML = '';
+    data.tokens.forEach((token, index) => {
+      const button = el('button', {
+        class: 'im2latex-token',
+        type: 'button',
+        text: displayToken(token.label),
+        'aria-label': `Show fine attention for output token ${displayToken(token.label)}`,
+      });
+      button.addEventListener('mouseenter', () => show(index));
+      button.addEventListener('focus', () => show(index));
+      button.addEventListener('click', () => show(index));
+      ribbon.appendChild(button);
+    });
+    show(Math.min(4, data.tokens.length - 1)); // B: a clear, localized example.
+  }
+
+  async function load() {
+    api.setStatus('Loading the original Image-to-LaTeX fine-attention map...');
+    try {
+      const response = await fetch('data/im2latex_attention.json');
+      data = await response.json();
+      build();
+      api.setStatus('');
+    } catch (error) {
+      api.setStatus('Could not load the Image-to-LaTeX attention data.', 'err');
+    }
+  }
+
+  const mount = el('div', { class: 'im2latex-attn-demo' }, [
+    el('div', { class: 'demo-note', html: 'Hover a generated LaTeX token. The <b>pink</b> map is its spatial attention over the source image.' }),
+    stage,
+    ribbon,
+    readout,
+  ]);
+  return { mount, init: load, onLeave: () => { active = -1; } };
+});
+
+/* =====================================================================
+ *  DEMO 13 - real Qwen3-0.6B causal attention. Pick a sentence + measured
  *  head, click a query word, and inspect its allowed source weights.
  *  Data is precomputed in data/attn_tokens.json for reliable slide/PDF use.
  * ===================================================================== */

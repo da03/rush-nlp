@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L18/custom.css?v=3">
-  <link rel="stylesheet" href="custom.css?v=9">
+  <link rel="stylesheet" href="custom.css?v=12">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -249,8 +249,13 @@
   <h2>A visual example: image &rarr; LaTeX</h2>
   <div class="im2latex-grid">
     <div class="im2latex-visual">
-      <img src="../../../../images/im2latex_cropped.gif" alt="Animated Image-to-LaTeX attention moving across regions of a mathematical expression as markup is generated">
-      <a href="https://im2markup.yuntiandeng.com/" target="_blank" rel="noopener">Open the full alignment demo &nearr;</a>
+      <div class="live-demo" data-demo="im2latex-attention">
+        <div class="demo-fallback">
+          <img src="images/im2latex_attention.png" alt="Mathematical expression processed by the Image-to-LaTeX model">
+          <small>On the live slides, hover a generated LaTeX token to reveal its pink spatial attention.</small>
+        </div>
+      </div>
+      <a href="https://im2markup.yuntiandeng.com/" target="_blank" rel="noopener">Full demo &amp; paper &middot; Deng et al., ICML 2017 &nearr;</a>
     </div>
     <div class="im2latex-roles">
       <div class="fragment"><strong>query</strong><span>decoder state: what LaTeX symbol should come next?</span></div>
@@ -259,7 +264,6 @@
     </div>
   </div>
   <div class="cross-attn-note fragment"><strong>Cross-attention:</strong> \(Q\) comes from the decoder; \(K,V\) come from the image. <strong>Self-attention next:</strong> \(Q,K,V\) all come from the text sequence.</div>
-  <p class="im2latex-ref fragment"><a href="https://im2markup.yuntiandeng.com/" target="_blank" rel="noopener">Deng, Kanervisto, Ling &amp; Rush, “Image-to-Markup Generation with Coarse-to-Fine Attention,” ICML 2017</a> &mdash; coarse attention selects a support region, then fine attention focuses within it.</p>
 </section>
 
 <!-- 12. QKV -->
@@ -604,6 +608,6 @@
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=25"></script>
+<script type="module" src="../shared/demo.js?v=27"></script>
 </body>
 </html>
