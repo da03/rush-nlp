@@ -10,10 +10,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../shared/demo.css?v=10">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L18/custom.css?v=3">
-  <link rel="stylesheet" href="custom.css?v=5">
+  <link rel="stylesheet" href="custom.css?v=6">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -209,6 +210,15 @@
   </svg>
 </section>
 
+<!-- 10b. Path length: RNN vs attention (live) -->
+<section class="center-slide">
+  <h2>Reaching across the sequence<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Drag the sequence length: the RNN path grows, the attention path stays one hop.</p>
+  <div class="live-demo" data-demo="path-length">
+    <div class="demo-fallback">Interactive on the live slides: slide the sequence length and compare how far apart the first and last token are. In an RNN they are \(n-1\) sequential steps apart; with attention every pair is one hop apart, at the cost of \(n^2\) pairwise scores. This is why attention parallelizes and captures long-range dependencies.</div>
+  </div>
+</section>
+
 <!-- 11. Attention retrieval -->
 <section>
   <h2>Attention is content-based lookup</h2>
@@ -299,6 +309,15 @@
   <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">The \(\sqrt{d_k}\) scaling keeps softmax numerically well-behaved.</p>
 </section>
 
+<!-- 16b. Softmax playground (live) -->
+<section class="center-slide">
+  <h2>Scores &rarr; weights<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Softmax turns raw scores into attention weights &mdash; scaling sharpens or flattens them.</p>
+  <div class="live-demo" data-demo="softmax-playground">
+    <div class="demo-fallback">Interactive on the live slides: drag the scores and the temperature and watch softmax turn them into a probability distribution. Low temperature (like large scores, or a small \(\sqrt{d_k}\)) sharpens attention onto one token; high temperature flattens it toward a uniform average.</div>
+  </div>
+</section>
+
 <!-- 17. Heatmap -->
 <section>
   <h2>Attention can be visualized as a heatmap</h2>
@@ -321,6 +340,15 @@
       <p class="fragment" style="font-size:0.88em;">The row for <strong>it</strong> focuses on <strong>cup</strong>.</p>
       <p class="fragment" style="font-size:0.82em; color:#6b7280;">Caveat: attention is inspectable, but not always a faithful explanation.</p>
     </div>
+  </div>
+</section>
+
+<!-- 17b. Attention playground (live, real model) -->
+<section>
+  <h2>Real attention in a transformer<span class="demo-badge">live model</span></h2>
+  <p class="demo-caption">Real BERT attention &mdash; pick a head, click a query word, read where it looks.</p>
+  <div class="live-demo" data-demo="attention">
+    <div class="demo-fallback">Interactive on the live slides: a real transformer (BERT) processes a sentence and we read out its actual attention. Pick a head and click any query word to see its attention row as a heatmap and weight bars. One head links a word to its predicate (for "it was empty", <strong>it</strong> attends to <strong>empty</strong>), another always looks at the previous token, another spreads broadly &mdash; different heads retrieve different relations.</div>
   </div>
 </section>
 
@@ -351,6 +379,15 @@ x = x + position_embedding(positions)</code></pre>
     </div>
   </div>
   <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Position tells the model that “dog bites man” differs from “man bites dog.”</p>
+</section>
+
+<!-- 19b. Permutation demo (live) -->
+<section class="center-slide">
+  <h2>Does word order matter?<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Toggle positions: without them, attention treats the sentence as a bag of words.</p>
+  <div class="live-demo" data-demo="attn-permute">
+    <div class="demo-fallback">Interactive on the live slides: the word <strong>bites</strong> attends to the other words in "dog bites man" and "man bites dog". Without position information the two sentences give identical weights (a set, order ignored); add positions and the weights differ, so the model can finally tell subject from object.</div>
+  </div>
 </section>
 
 <!-- 20. Transformer block -->
@@ -412,6 +449,15 @@ x = x + position_embedding(positions)</code></pre>
       <p class="fragment" style="font-size:0.9em;">So token \(t\) can only attend to positions \(\leq t\).</p>
       <p class="fragment" style="font-size:0.86em; color:#6b7280;">Future scores are set to \(-\infty\) before softmax.</p>
     </div>
+  </div>
+</section>
+
+<!-- 22b. Causal masking playground (live) -->
+<section>
+  <h2>Causal masking, interactively<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Toggle the mask and pick a query word &mdash; watch the weights renormalize over allowed positions.</p>
+  <div class="live-demo" data-demo="causal-mask">
+    <div class="demo-fallback">Interactive on the live slides: toggle the causal mask on and off and click a query word. With the mask on, every future cell is blocked and that token's attention renormalizes over positions \(\leq t\) only; with it off, the token attends both directions. This one switch is what turns a transformer into a left-to-right language generator.</div>
   </div>
 </section>
 
@@ -477,8 +523,8 @@ x = x + position_embedding(positions)</code></pre>
         { left: '\\[', right: '\\]', display: true }
       ]
     },
-    plugins: (typeof RevealMath !== 'undefined' && RevealMath.KaTeX) ? [ RevealMath.KaTeX ] : []
-  });
+      plugins: (typeof RevealMath !== 'undefined' && RevealMath.KaTeX) ? [ RevealMath.KaTeX ] : []
+    });
 
   ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
     document.addEventListener(ev, () => {
@@ -487,5 +533,6 @@ x = x + position_embedding(positions)</code></pre>
     });
   });
 </script>
+<script type="module" src="../shared/demo.js?v=17"></script>
 </body>
 </html>

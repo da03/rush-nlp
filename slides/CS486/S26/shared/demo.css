@@ -259,6 +259,31 @@
   margin-left: 0.4em;
 }
 
+/* Active/selected toggle button (sentence + head selectors, causal toggle). */
+.reveal .demo-btn.primary { background: #1d4ed8; color: #fff; box-shadow: 0 0 0 2px #bfdbfe; }
+.reveal .demo-btn.primary:hover { background: #1e40af; }
+
+/* Attention / causal-mask side panel (query -> weight bars). */
+.reveal .attn-panel { min-width: 220px; max-width: 300px; font-size: 0.72em; color: #374151; }
+.reveal .attn-panel .attn-q { margin: 0.1em 0 0.5em; font-size: 0.95em; }
+.reveal .attn-panel .attn-q b { color: #b91c1c; }
+.reveal .attn-panel .attn-hint { font-size: 0.82em; color: #6b7280; margin-top: 0.5em; }
+.reveal .attn-bars2 { display: flex; flex-direction: column; gap: 0.28em; }
+.reveal .attn-row { display: flex; align-items: center; gap: 0.5em; }
+.reveal .attn-row.muted { opacity: 0.4; }
+.reveal .attn-row .attn-lab { flex: 0 0 4.6em; text-align: right; font-family: ui-monospace, Menlo, monospace; }
+.reveal .attn-row .attn-track { flex: 1 1 auto; height: 12px; background: #eef2ff; border-radius: 3px; overflow: hidden; }
+.reveal .attn-row .attn-fill { height: 100%; background: #1d4ed8; border-radius: 3px; transition: width 0.12s ease; }
+.reveal .attn-row .attn-num { flex: 0 0 2.4em; font-family: ui-monospace, Menlo, monospace; color: #1d4ed8; font-weight: 600; }
+
+/* Permutation demo: two side-by-side sentence groups + a verdict line. */
+.reveal .attn-permute-wrap, .reveal [data-demo="attn-permute"] .demo-live > div > div:last-child { }
+.reveal .permute-grp { display: inline-block; vertical-align: top; width: 46%; margin: 0 1.5% 0.5em; font-size: 0.72em; }
+.reveal .permute-grp .attn-q { margin: 0 0 0.35em; }
+.reveal .permute-verdict { font-size: 0.72em; margin: 0.4em 0 0; padding: 0.4em 0.6em; border-radius: 6px; }
+.reveal .permute-verdict.same { background: #fef3c7; border: 1px solid #f59e0b; color: #92400e; }
+.reveal .permute-verdict.diff { background: #dcfce7; border: 1px solid #16a34a; color: #166534; }
+
 @media print {
   .reveal .live-demo .demo-live { display: none !important; }
   .reveal .live-demo .demo-fallback { display: block !important; }
