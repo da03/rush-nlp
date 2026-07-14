@@ -1,5 +1,10 @@
 /* L24 (Dissecting Diffusion and World Models) styles. */
 
+/* Avoid one/two-word orphan lines in prose (matches the L17-L23 polish). */
+.reveal .slides section p,
+.reveal .slides section li,
+.reveal .demo-caption { text-wrap: balance; }
+
 .reveal .denoise-row {
   display: flex;
   justify-content: center;

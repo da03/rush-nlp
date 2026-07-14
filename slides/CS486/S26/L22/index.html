@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <title>CS 486/686 Lecture 22 - From Prompting to Fine-Tuning and LoRA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 22: From prompting to fine-tuning and LoRA - prompt templates, RAG, tools and agents, supervised fine-tuning, preference tuning, LoRA, and LLM system risks. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 22: From prompting to fine-tuning, LoRA, and Program-as-Weights - prompt templates, RAG, tools, supervised fine-tuning, preference tuning, compiled fuzzy functions, and LLM system risks. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../shared/demo.css?v=13">
+  <link rel="stylesheet" href="../shared/demo.css?v=16">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L21/custom.css?v=2">
-  <link rel="stylesheet" href="custom.css?v=3">
+  <link rel="stylesheet" href="custom.css?v=4">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -70,7 +70,7 @@
     <li class="fragment">Choose the right adaptation strategy.</li>
     <li class="fragment">Explain <strong>RAG</strong> and <strong>tool use</strong>.</li>
     <li class="fragment">Explain <strong>SFT</strong>, preference tuning, and <strong>LoRA</strong>.</li>
-    <li class="fragment">Evaluate risks and failure modes.</li>
+    <li class="fragment">Compile and test a reusable <strong>fuzzy function</strong>.</li>
   </ul>
 </section>
 
@@ -85,12 +85,13 @@
 <!-- 4. Running task -->
 <section class="center-slide">
   <h2>Running task: CS486 course helper</h2>
-  <p style="font-size:1em;">We want an assistant that answers course questions accurately and cites course material.</p>
+  <p style="font-size:1em;">You have used this helper all term. It is <strong>not</strong> one prompt or one monolithic model.</p>
   <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; margin-top:0.6em;">
-    <div class="task-card fragment"><h3>accurate</h3><p style="font-size:0.8em;">uses current course facts</p></div>
-    <div class="task-card fragment"><h3>helpful</h3><p style="font-size:0.8em;">uses the right format</p></div>
-    <div class="task-card fragment"><h3>grounded</h3><p style="font-size:0.8em;">shows its sources</p></div>
+    <div class="task-card fragment"><h3>fresh evidence</h3><p style="font-size:0.8em;">course facts + Piazza</p></div>
+    <div class="task-card fragment"><h3>fuzzy decisions</h3><p style="font-size:0.8em;">route, select, validate</p></div>
+    <div class="task-card fragment"><h3>exact control</h3><p style="font-size:0.8em;">links, branches, caching</p></div>
   </div>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">At the end, we will open the real system.</p>
 </section>
 
 <!-- 5. Adaptation ladder -->
@@ -133,25 +134,20 @@
   <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">A prompt can steer behavior, but cannot add missing knowledge reliably.</p>
 </section>
 
-<!-- 8. System prompt -->
+<!-- 8. Prompt template -->
 <section>
-  <h2>System prompts set behavior defaults</h2>
+  <h2>Prompt templates package behavior</h2>
   <div class="prompt-box">You are a concise CS486 TA. Answer using only course material when possible. Cite the source for deadlines.</div>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">Useful, but still limited by what is in the context.</p>
-</section>
-
-<!-- 9. Prompt template -->
-<section>
-  <h2>A prompt template is a small program</h2>
-  <div class="template-list">
-    <div><strong>role</strong><span>CS486 teaching assistant</span></div>
-    <div><strong>task</strong><span>answer the student question</span></div>
-    <div><strong>constraints</strong><span>cite sources, say if unsure</span></div>
-    <div><strong>format</strong><span>short answer + evidence</span></div>
+  <div class="template-parts fragment">
+    <span><strong>role</strong> CS486 TA</span>
+    <span><strong>task</strong> answer</span>
+    <span><strong>constraint</strong> cite or decline</span>
+    <span><strong>format</strong> short + evidence</span>
   </div>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The template steers behavior, but does not change weights.</p>
 </section>
 
-<!-- 10. Prompt limits -->
+<!-- 9. Prompt limits -->
 <section class="center-slide">
   <h2>When prompting is the wrong fix</h2>
   <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
@@ -362,42 +358,34 @@
   <p class="fragment" style="font-size:0.86em; color:#6b7280;">Use held-out eval and high-quality data.</p>
 </section>
 
-<!-- 27. Preferences -->
+<!-- 26. Preferences -->
 <section class="center-slide">
-  <h2>Preferences, not just demonstrations</h2>
+  <h2>Preferences tell us what “better” means</h2>
   <p style="font-size:1em;">Sometimes two answers are plausible, but one is better.</p>
   <div class="defbox" style="max-width:78%; margin:0.5em auto; text-align:center;">
     <p style="margin:0;"><code>(prompt, preferred answer, rejected answer)</code></p>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Preference data teaches ranking.</p>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Demonstrations teach what to say; preferences teach which answer to favor.</p>
 </section>
 
-<!-- 28. RLHF -->
-<section class="center-slide">
-  <h2>RLHF at high level</h2>
-  <svg viewBox="0 0 880 145" xmlns="http://www.w3.org/2000/svg" class="pipeline">
-    <g>
-      <rect x="35" y="50" width="145" height="44" rx="7"/><text x="108" y="77">preferences</text>
-      <rect x="230" y="50" width="150" height="44" rx="7"/><text x="305" y="77">reward model</text>
-      <rect x="430" y="50" width="155" height="44" rx="7"/><text x="508" y="77">policy update</text>
-      <rect x="635" y="50" width="120" height="44" rx="7"/><text x="695" y="77">KL guard</text>
-    </g>
-    <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l22)">
-      <line x1="180" y1="72" x2="225" y2="72"/><line x1="380" y1="72" x2="425" y2="72"/><line x1="585" y1="72" x2="630" y2="72"/>
-    </g>
-  </svg>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Powerful, but engineering-heavy.</p>
+<!-- 27. RLHF vs DPO -->
+<section>
+  <h2>Two ways to learn from preferences</h2>
+  <div class="two-col" style="align-items:stretch; margin-top:0.65em;">
+    <div class="prompt-card" style="flex:1;">
+      <h3>RLHF</h3>
+      <p>preferences → reward model → policy update</p>
+      <p style="font-size:0.72em; color:#6b7280;">Flexible, engineering-heavy</p>
+    </div>
+    <div class="prompt-card fragment" style="flex:1;">
+      <h3>DPO</h3>
+      <p>increase preferred answer relative to rejected</p>
+      <p style="font-size:0.72em; color:#6b7280;">Simpler, no separate reward-model loop</p>
+    </div>
+  </div>
 </section>
 
-<!-- 29. DPO -->
-<section class="center-slide">
-  <h2>DPO simplifies preference tuning</h2>
-  <p style="font-size:1em;">Direct Preference Optimization skips the reward-model/PPO loop.</p>
-  <p class="fragment" style="font-size:0.95em;">Increase probability of the preferred answer relative to the rejected answer.</p>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">Common in open-model post-training because it is simpler and stable.</p>
-</section>
-
-<!-- 30. Full tune vs LoRA -->
+<!-- 28. Full tune vs LoRA -->
 <section class="center-slide">
   <h2>Full fine-tuning can be expensive</h2>
   <p style="font-size:1em;">A large model contains huge weight matrices.</p>
@@ -459,40 +447,184 @@
 )
 model = get_peft_model(base_model, config)
 train(model, dataset)</code></pre>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">Looks like fine-tuning; only adapter weights update.</p>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">People normally collect the dataset and train each adapter.</p>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8; text-align:center;"><strong>Could another model build the adapter from a description?</strong></p>
 </section>
 
-<!-- 35. Which lever -->
-<section>
-  <h2>Which lever for the course helper?</h2>
-  <table class="factor-table" style="font-size:0.72em; margin:0.35em auto;">
-    <thead><tr><th>failure</th><th>best first lever</th></tr></thead>
-    <tbody>
-      <tr><td>wrong tone / format</td><td>prompt template</td></tr>
-      <tr><td>missing course fact</td><td>RAG</td></tr>
-      <tr><td>grade calculation</td><td>tool</td></tr>
-      <tr><td>repeated rubric behavior</td><td>SFT / LoRA</td></tr>
-    </tbody>
-  </table>
+<!-- 35. Fuzzy functions -->
+<section class="center-slide">
+  <h2>Some functions are fuzzy</h2>
+  <p style="font-size:0.96em;">“Does this message require immediate attention?”</p>
+  <div class="paw-message-grid">
+    <div class="paw-message fragment"><span>Need your signature by EOD.</span><strong>urgent</strong></div>
+    <div class="paw-message fragment"><span>Newsletter: spring picnic details.</span><strong>wait</strong></div>
+    <div class="paw-message fragment"><span>Whenever you have time—the server is acting odd.</span><strong>?</strong></div>
+  </div>
+  <div class="paw-tradeoffs fragment">
+    <span><b>rules</b> become brittle</span>
+    <span><b>large LLM</b> solves every call again</span>
+    <span class="hot"><b>fuzzy function</b> is narrow + reusable</span>
+  </div>
 </section>
 
-<!-- 36. Combined system -->
+<!-- 36. Tool builder philosophy -->
 <section>
-  <h2>A practical LLM system</h2>
-  <svg viewBox="0 0 900 170" xmlns="http://www.w3.org/2000/svg" class="pipeline">
-    <g>
-      <rect x="25" y="60" width="105" height="44" rx="7"/><text x="78" y="87">user</text>
-      <rect x="165" y="60" width="130" height="44" rx="7"/><text x="230" y="87">template</text>
-      <rect x="330" y="60" width="125" height="44" rx="7"/><text x="392" y="87">retriever</text>
-      <rect x="490" y="60" width="105" height="44" rx="7"/><text x="542" y="87">tools</text>
-      <rect x="630" y="60" width="105" height="44" rx="7"/><text x="682" y="87">LLM</text>
-      <rect x="770" y="60" width="105" height="44" rx="7"/><text x="822" y="87">answer</text>
+  <h2>From problem solver to tool builder</h2>
+  <svg class="paw-overview" viewBox="0 0 1080 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Compare solving every input with compiling a reusable neural function">
+    <g class="fragment">
+      <text class="paw-row-label" x="22" y="58">per-input problem solver</text>
+      <rect class="paw-box muted" x="250" y="25" width="190" height="70" rx="10"/><text x="345" y="60">new input</text>
+      <path class="paw-arrow muted-stroke" d="M445 60 H505"/>
+      <rect class="paw-box muted" x="515" y="25" width="220" height="70" rx="10"/><text x="625" y="52">large model API</text><text class="sub" x="625" y="73">call every time</text>
+      <path class="paw-arrow muted-stroke" d="M740 60 H800"/>
+      <rect class="paw-box muted" x="810" y="25" width="190" height="70" rx="10"/><text x="905" y="60">answer</text>
     </g>
-    <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l22)">
-      <line x1="130" y1="82" x2="160" y2="82"/><line x1="295" y1="82" x2="325" y2="82"/><line x1="455" y1="82" x2="485" y2="82"/><line x1="595" y1="82" x2="625" y2="82"/><line x1="735" y1="82" x2="765" y2="82"/>
+    <g class="fragment">
+      <text class="paw-row-label strong" x="22" y="168">per-function tool builder</text>
+      <rect class="paw-box spec" x="250" y="130" width="190" height="70" rx="10"/><text x="345" y="158">description</text><text class="sub" x="345" y="179">compile once</text>
+      <path class="paw-arrow blue-stroke" d="M445 165 H505"/>
+      <rect class="paw-box compiler" x="515" y="130" width="220" height="70" rx="10"/><text x="625" y="158">neural compiler</text><text class="sub" x="625" y="179">builds a program</text>
+      <path class="paw-arrow blue-stroke" d="M740 165 H800"/>
+      <rect class="paw-box program" x="810" y="130" width="190" height="70" rx="10"/><text x="905" y="158">neural program</text><text class="sub" x="905" y="179">save + reuse</text>
+    </g>
+    <g class="fragment">
+      <rect class="paw-box input" x="250" y="225" width="190" height="58" rx="10"/><text x="345" y="254">many inputs</text>
+      <path class="paw-arrow blue-stroke" d="M445 254 H505"/>
+      <rect class="paw-box interpreter" x="515" y="225" width="220" height="58" rx="10"/><text x="625" y="247">frozen 0.6B</text><text class="sub" x="625" y="267">interpreter</text>
+      <path class="paw-arrow blue-stroke" d="M740 254 H800"/>
+      <rect class="paw-box output" x="810" y="225" width="190" height="58" rx="10"/><text x="905" y="254">outputs</text>
     </g>
   </svg>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Fine-tuning or LoRA can live inside the LLM block.</p>
+  <p class="fragment paw-thesis">When a task repeats, build a reusable tool instead of solving it again.</p>
+</section>
+
+<!-- 37. Program anatomy -->
+<section class="center-slide">
+  <h2>A PAW program has two parts</h2>
+  <p class="paw-equation">\(p = (p_{\text{discrete}},\; p_{\text{continuous}})\)</p>
+  <div class="paw-program-parts">
+    <div class="paw-part fragment">
+      <span class="paw-part-tag text">discrete text</span>
+      <h3>pseudo-program</h3>
+      <p>clean description + examples</p>
+      <small>normalizes a noisy spec</small>
+    </div>
+    <div class="paw-plus fragment">+</div>
+    <div class="paw-part fragment">
+      <span class="paw-part-tag weights">continuous weights</span>
+      <h3>task-specific LoRA</h3>
+      <p>small update to the frozen LM</p>
+      <small>fine-grained behavioral control</small>
+    </div>
+  </div>
+  <div class="paw-runtime fragment"><strong>Qwen3-0.6B</strong> from L21 becomes the shared interpreter; programs are hot-swappable.</div>
+</section>
+
+<!-- 38. Compiler mechanism -->
+<section>
+  <h2>How can a model compile weights?</h2>
+  <svg class="paw-compiler-flow" viewBox="0 0 1120 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PAW pseudo compiler and LoRA compiler pipeline">
+    <g>
+      <rect class="paw-box spec" x="20" y="85" width="180" height="74" rx="10"/><text x="110" y="115">raw spec</text><text class="sub" x="110" y="138">natural language</text>
+    </g>
+    <g class="fragment">
+      <path class="paw-arrow blue-stroke" d="M205 122 H255"/>
+      <rect class="paw-box compiler" x="265" y="62" width="205" height="120" rx="10"/><text x="367" y="103">pseudo compiler</text><text class="sub" x="367" y="128">off-the-shelf 4B</text><text class="sub" x="367" y="151">rewrite + examples</text>
+    </g>
+    <g class="fragment">
+      <path class="paw-arrow blue-stroke" d="M475 122 H525"/>
+      <rect class="paw-box compiler" x="535" y="62" width="205" height="120" rx="10"/><text x="637" y="103">LoRA compiler</text><text class="sub" x="637" y="128">trained 4B</text><text class="sub" x="637" y="151">hidden states</text>
+    </g>
+    <g class="fragment">
+      <path class="paw-arrow blue-stroke" d="M745 122 H795"/>
+      <rect class="paw-box program" x="805" y="62" width="285" height="120" rx="10"/><text x="947" y="100">program</text><text class="sub" x="947" y="127">pseudo-program + LoRA</text><text class="sub" x="947" y="151">for frozen 0.6B interpreter</text>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The compiler generates \(A\) and \(B\); the interpreter never trains.</p>
+</section>
+
+<!-- 39. Compiler training -->
+<section>
+  <h2>Train the compiler, freeze the interpreter</h2>
+  <div class="paw-training-flow">
+    <div class="paw-train-node fragment"><strong>FuzzyBench</strong><span>10M triples \((s,x,y)\)</span></div>
+    <div class="paw-train-arrow fragment">&rarr;</div>
+    <div class="paw-train-node fragment"><strong>compiler</strong><span>\(s \mapsto\) LoRA</span></div>
+    <div class="paw-train-arrow fragment">&rarr;</div>
+    <div class="paw-train-node frozen fragment"><strong>frozen 0.6B</strong><span>\((\text{LoRA},x) \mapsto \hat y\)</span></div>
+    <div class="paw-train-arrow fragment">&rarr;</div>
+    <div class="paw-train-node loss fragment"><strong>next-token loss</strong><span>compare \(\hat y\) with \(y\)</span></div>
+  </div>
+  <p class="fragment paw-gradient-note">Gradient flows back through the frozen interpreter into the compiler.</p>
+  <div class="paw-compiler-choices fragment">
+    <span><b>Standard (default)</b> predicts a LoRA in ~5–10 s</span>
+    <span><b>Finetuned Standard</b> synthesizes examples + trains the LoRA</span>
+  </div>
+</section>
+
+<!-- 40. PAW live compile/infer -->
+<section class="center-slide">
+  <h2>Compile your own fuzzy function<span class="demo-badge">live API</span></h2>
+  <p class="demo-caption">Describe once, compile once, then run several inputs with your own program ID.</p>
+  <div class="live-demo" data-demo="paw-compile">
+    <div class="demo-fallback">
+      <div class="paw-fallback-steps"><b>1. describe</b> urgency as low / medium / high &nbsp;&rarr;&nbsp; <b>2. compile</b> to program <code>a6b4…</code> &nbsp;&rarr;&nbsp; <b>3. run many</b></div>
+      <div class="paw-fallback-runs"><span>“App crashes on upload” &rarr; <b>high</b></span><span>“Could you add dark mode?” &rarr; <b>low</b></span></div>
+      <small>Live slides call the hosted PAW compile and infer APIs directly. Each browser keeps its own state.</small>
+    </div>
+  </div>
+</section>
+
+<!-- 41. Evidence -->
+<section class="center-slide">
+  <h2>Can the tiny interpreter actually work?</h2>
+  <div class="paw-benchmark" role="img" aria-label="FuzzyBench exact match: prompted Qwen3 0.6B 9.8 percent, prompted Qwen3 32B 68.7 percent, PAW with Qwen3 0.6B 73.8 percent">
+    <div class="paw-bar-wrap fragment"><div class="paw-bar base" style="height:12%;"><strong>9.8%</strong></div><span>0.6B<br>prompted</span></div>
+    <div class="paw-bar-wrap fragment"><div class="paw-bar large" style="height:84%;"><strong>68.7%</strong></div><span>32B<br>prompted</span></div>
+    <div class="paw-bar-wrap fragment"><div class="paw-bar paw" style="height:90%;"><strong>73.8%</strong></div><span>0.6B<br>+ PAW</span></div>
+  </div>
+  <p class="fragment" style="font-size:0.84em; color:#1d4ed8;"><strong>~50× less bf16 inference memory</strong> than the prompted 32B model.</p>
+  <p class="fragment paw-caveat">Verified FuzzyBench exact match; one shared 0.6B base + about 23 MB per program; ~30 tok/s on an M3 in the reported quantized setup.</p>
+</section>
+
+<!-- 42. Real helper -->
+<section>
+  <h2>The real course helper is hybrid software</h2>
+  <div class="paw-helper-flow">
+    <div class="paw-helper-node input">question</div>
+    <div class="paw-helper-arrow">&rarr;</div>
+    <div class="paw-helper-node neural fragment">PAW<br><small>route + classify</small></div>
+    <div class="paw-helper-arrow fragment">&rarr;</div>
+    <div class="paw-helper-stack fragment">
+      <span class="exact">code: links + branches</span>
+      <span class="retrieve">BM25: recall Piazza threads</span>
+      <span class="exact">facts: runtime injection</span>
+    </div>
+    <div class="paw-helper-arrow fragment">&rarr;</div>
+    <div class="paw-helper-node neural fragment">PAW<br><small>rerank + answer + validate</small></div>
+    <div class="paw-helper-arrow fragment">&rarr;</div>
+    <div class="paw-helper-node output fragment">cited answer</div>
+  </div>
+  <div class="paw-helper-stats fragment"><strong>30 compiled</strong><span>28 serve live</span><span>one frozen 0.6B</span><span>Finetuned Standard</span></div>
+  <div class="paw-app-links fragment">
+    <a href="https://programasweights.readthedocs.io/en/latest/case-studies/log-monitoring/" target="_blank" rel="noopener">log monitoring</a>
+    <a href="https://programasweights.com/avatar" target="_blank" rel="noopener">Avatar Director</a>
+    <a href="https://programasweights.com/alien" target="_blank" rel="noopener">Alien Taboo</a>
+    <a href="https://arxiv.org/abs/2607.02512" target="_blank" rel="noopener">paper</a>
+  </div>
+</section>
+
+<!-- 43. Boundary -->
+<section>
+  <h2>Use PAW at fuzzy seams</h2>
+  <div class="paw-boundary-grid">
+    <div class="fragment"><strong>exact rule</strong><span>ordinary code</span></div>
+    <div class="fragment"><strong>fresh knowledge</strong><span>retrieval / RAG</span></div>
+    <div class="fragment"><strong>external action</strong><span>tool + guardrails</span></div>
+    <div class="fragment hot"><strong>repeated fuzzy text function</strong><span>PAW</span></div>
+    <div class="fragment"><strong>one-off broad reasoning</strong><span>general LLM</span></div>
+  </div>
+  <p class="fragment paw-caveat">PAW functions are stateless text-in/text-out programs with a shared context budget. Neural outputs remain probabilistic: validate high-stakes results.</p>
 </section>
 
 <!-- 37. Safety -->
@@ -521,9 +653,10 @@ train(model, dataset)</code></pre>
     <li>&#10003; &nbsp;RAG adds external knowledge at inference time.</li>
     <li>&#10003; &nbsp;Tools let the model act or compute.</li>
     <li>&#10003; &nbsp;SFT changes weights with demonstrations.</li>
-    <li>&#10003; &nbsp;Preference tuning learns from comparisons.</li>
-    <li>&#10003; &nbsp;LoRA adapts weights efficiently with low-rank updates.</li>
+    <li>&#10003; &nbsp;LoRA makes weight changes small and modular.</li>
+    <li>&#10003; &nbsp;PAW compiles fuzzy functions into reusable neural programs.</li>
   </ul>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;"><strong>Foundation model: per-input problem solver &rarr; per-function tool builder.</strong></p>
 </section>
 
 </div>
@@ -538,6 +671,7 @@ train(model, dataset)</code></pre>
     slideNumber: 'c/t',
     hash: true,
     transition: 'none',
+    pdfSeparateFragments: false,
     center: false,
     width: 1280,
     height: 720,
@@ -558,6 +692,6 @@ train(model, dataset)</code></pre>
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=20"></script>
+<script type="module" src="../shared/demo.js?v=23"></script>
 </body>
 </html>

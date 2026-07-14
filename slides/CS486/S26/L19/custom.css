@@ -342,6 +342,11 @@
   text-anchor: middle;
   dominant-baseline: middle;
 }
+.reveal .decoder-block line {
+  fill: none;
+  stroke: #475569;
+  stroke-width: 2.2;
+}
 .reveal .decoder-block .db-sub { fill: #64748b; font-size: 12px; font-weight: 500; }
 .reveal .decoder-block .db-state { fill: #f8fafc; stroke: #64748b; stroke-width: 1.8; }
 .reveal .decoder-block .db-norm { fill: #fef3c7; stroke: #d97706; stroke-width: 1.8; }

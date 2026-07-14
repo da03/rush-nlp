@@ -496,7 +496,8 @@ model = AutoModelForCausalLM.from_pretrained(
 <section class="center-slide">
   <h2>Next question</h2>
   <p style="font-size:1.05em; max-width:82%; margin:0.5em auto;">When is prompting not enough, and when do we update weights or add external knowledge?</p>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">L22: From Prompting to Fine-Tuning and LoRA.</p>
+  <p class="fragment" style="font-size:0.95em; color:#1d4ed8;">Can another model <strong>build those new weights</strong> for us?</p>
+  <p class="fragment" style="font-size:0.82em; color:#6b7280;">L22: this same Qwen3-0.6B becomes a frozen interpreter for compiled functions.</p>
 </section>
 
 <!-- 32. Recap -->
@@ -524,6 +525,7 @@ model = AutoModelForCausalLM.from_pretrained(
     slideNumber: 'c/t',
     hash: true,
     transition: 'none',
+    pdfSeparateFragments: false,
     center: false,
     width: 1280,
     height: 720,

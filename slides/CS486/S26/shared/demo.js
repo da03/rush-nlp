@@ -1668,12 +1668,12 @@ register('path-length', (api) => {
  * ===================================================================== */
 register('attn-permute', (api) => {
   const dim = 6;
-  const vocab = ['dog', 'bites', 'man', '[query]'];
+  const vocab = ['dog', 'bites', 'man', 'because'];
   const r = api.rng32(11);
   const content = {}; vocab.forEach((w) => { content[w] = Array.from({ length: dim }, () => r() * 2 - 1); });
   const u = Array.from({ length: dim }, () => r() * 2 - 1);  // a shared "position" direction
   const prefixes = [['dog', 'bites', 'man'], ['man', 'bites', 'dog']];
-  const queryWord = '[query]';
+  const queryWord = 'because';
   let usePos = false;
 
   const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
@@ -1695,7 +1695,7 @@ register('attn-permute', (api) => {
     prefixes.forEach((order, si) => {
       const w = rows[si].w;
       const grp = el('div', { class: 'permute-grp' });
-      grp.appendChild(el('p', { class: 'attn-q', html: `&ldquo;${order.join(' ')} <b>[query]</b>&rdquo;<br>fixed final query attends to:` }));
+      grp.appendChild(el('p', { class: 'attn-q', html: `&ldquo;${order.join(' ')} <b>because</b>&rdquo;<br><b>q<sub>because</sub></b> attends backward to:` }));
       const bars = el('div', { class: 'attn-bars2' });
       order.forEach((t, j) => bars.appendChild(el('div', { class: 'attn-row' }, [
         el('span', { class: 'attn-lab', text: t }),
@@ -1710,12 +1710,12 @@ register('attn-permute', (api) => {
     const a = byWord(prefixes[0], rows[0].w), b = byWord(prefixes[1], rows[1].w);
     const same = prefixes[0].every((t) => Math.abs(a[t] - b[t]) < 1e-3);
     box.appendChild(el('p', { class: 'permute-verdict ' + (same ? 'same' : 'diff') , html: same
-      ? 'Same by word &mdash; in layer 1, content-only matching ignores how the same previous vectors were ordered.'
-      : 'Different &mdash; position information changes the source keys, so the same words receive different weights.' }));
+      ? '<b>Failure:</b> same weights by word \u2192 same mixed context, so layer 1 cannot tell who bit whom.'
+      : '<b>Expected:</b> position changes the keys/values \u2192 different context before next-token prediction.' }));
   }
   const toggle = api.button('add positions: OFF', () => { usePos = !usePos; toggle.textContent = 'add positions: ' + (usePos ? 'ON' : 'OFF'); toggle.classList.toggle('primary', usePos); toggle.classList.toggle('ghost', !usePos); render(); }, 'ghost');
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'Same previous words, same final query, same causal source set. Only the order changes.' }),
+    el('div', { class: 'demo-note', html: '<b>Query:</b> q<sub>because</sub> (a learned vector, not an English question) &nbsp; <b>Sources:</b> dog, bites, man &nbsp; <b>Expected:</b> different context because order changes meaning.' }),
     el('div', { class: 'demo-controls' }, [toggle]),
     box,
     el('div', { class: 'demo-hint', html: '<b>Deeper-layer caveat:</b> previous hidden states were built from different causal prefixes, so later keys/values may already differ even without an explicit position embedding.' }),
@@ -2293,6 +2293,389 @@ register('patchify', (api) => {
     el('div', { class: 'demo-stage' }, [canvas, readout]),
   ]);
   return { mount, init: draw };
+});
+
+/* =====================================================================
+ *  DEMO 28 - forward noising: drag the noise level and watch a real image
+ *  turn into noise, x_t = sqrt(a_bar) x0 + sqrt(1-a_bar) eps. (L24, JS)
+ * ===================================================================== */
+register('noise-forward', (api) => {
+  const canvas = api.canvasEl(300, 300);
+  const tCtl = api.slider('noise level t', { min: 0, max: 1, step: 0.05, value: 0.3, fmt: (v) => v.toFixed(2) });
+  const readout = el('div', { class: 'demo-readout' });
+  let base = null; const im = new Image();
+  im.onload = () => {
+    const off = document.createElement('canvas'); off.width = canvas.width; off.height = canvas.height;
+    const s = Math.max(canvas.width / im.width, canvas.height / im.height), dw = im.width * s, dh = im.height * s;
+    const octx = off.getContext('2d'); octx.drawImage(im, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+    base = octx.getImageData(0, 0, canvas.width, canvas.height); draw();
+  };
+  im.src = 'images/traj_24.png';
+  const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+  function draw() {
+    const ctx = canvas.getContext('2d');
+    if (!base) { ctx.fillStyle = '#f1f5f9'; ctx.fillRect(0, 0, canvas.width, canvas.height); return; }
+    const t = tCtl.get(), ab = 1 - t, a = Math.sqrt(ab), b = Math.sqrt(1 - ab);
+    const out = ctx.createImageData(base.width, base.height), d = base.data, o = out.data;
+    for (let i = 0; i < d.length; i += 4) { for (let c = 0; c < 3; c++) { const n = gauss() * 60 + 128; o[i + c] = Math.max(0, Math.min(255, a * d[i + c] + b * n)); } o[i + 3] = 255; }
+    ctx.putImageData(out, 0, 0);
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: 'x\u209c = \u221a\u0101\u00b7x\u2080 + \u221a(1\u2212\u0101)\u00b7\u03b5' }));
+    readout.appendChild(el('span', { text: t < 0.1 ? 'almost the clean image' : t > 0.9 ? 'almost pure noise' : 'partially noised' }));
+  }
+  tCtl.input.addEventListener('input', draw);
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'The forward process mixes a clean image with Gaussian noise; at \\(t\\!\\to\\!1\\) only noise remains.' }),
+    el('div', { class: 'demo-controls' }, [tCtl.field]),
+    el('div', { class: 'demo-stage' }, [canvas, readout]),
+  ]);
+  return { mount, init: draw };
+});
+
+/* ---- shared helper: an image-sequence player (used by denoise/neuralos). */
+function makePlayer(api, { note, caption, srcFor, count, labelFor, playMs = 700 }) {
+  const img = el('img', { class: 'vlm-img', alt: '' });
+  const cap = el('div', { class: 'demo-readout' });
+  const ctl = api.slider('step', { min: 0, max: count - 1, step: 1, value: 0, fmt: (v) => v });
+  let timer = null;
+  function show(k) { img.src = srcFor(k); cap.innerHTML = ''; cap.appendChild(el('span', { html: labelFor(k) })); }
+  ctl.input.addEventListener('input', () => show(ctl.get()));
+  function play() {
+    if (timer) { clearInterval(timer); timer = null; playBtn.textContent = 'play'; return; }
+    playBtn.textContent = 'stop';
+    timer = setInterval(() => {
+      let k = ctl.get() + 1; if (k >= count) k = 0;
+      ctl.input.value = k; ctl.setText(String(k)); show(k);
+    }, playMs);
+  }
+  const playBtn = api.button('play', play);
+  const mount = el('div', {}, [
+    note ? el('div', { class: 'demo-note', html: note }) : null,
+    el('div', { class: 'demo-controls' }, [playBtn, ctl.field]),
+    el('div', { class: 'demo-stage' }, [el('div', {}, [img]), cap]),
+  ]);
+  return { mount, init: () => show(0), onLeave: () => { if (timer) { clearInterval(timer); timer = null; playBtn.textContent = 'play'; } } };
+}
+
+/* =====================================================================
+ *  DEMO 29 - reverse denoising trajectory (real, precomputed). (L24)
+ * ===================================================================== */
+register('denoise', (api) => {
+  let data = null, inst = null;
+  const holder = el('div', {});
+  async function load() {
+    try { const r = await fetch('data/diffusion_samples.json'); data = await r.json(); }
+    catch (e) { api.setStatus('Could not load the trajectory.', 'err'); return; }
+    const frames = data.trajectory.frames, total = data.trajectory.steps;
+    inst = makePlayer(api, {
+      note: 'A real Stable Diffusion run: from pure noise, the denoiser cleans the latent step by step (then it is decoded to pixels).',
+      srcFor: (k) => 'images/' + frames[k].file,
+      count: frames.length,
+      labelFor: (k) => `denoising step <b>${frames[k].step + 1}</b> of ${total}`,
+    });
+    holder.appendChild(inst.mount); inst.init();
+  }
+  return { mount: holder, init: load, onLeave: () => inst && inst.onLeave && inst.onLeave() };
+});
+
+/* =====================================================================
+ *  DEMO 30 - guidance sweep (real, precomputed CFG scales). (L24)
+ * ===================================================================== */
+register('guidance', (api) => {
+  let data = null;
+  const img = el('img', { class: 'vlm-img', alt: '' });
+  const cap = el('div', { class: 'demo-readout' });
+  const ctl = api.slider('guidance scale', { min: 0, max: 3, step: 1, value: 2, fmt: (v) => v });
+  function show(k) { const g = data.guidance[k]; img.src = 'images/' + g.file; cap.innerHTML = ''; cap.appendChild(el('span', { html: `guidance scale = <b>${g.scale}</b>` })); cap.appendChild(el('span', { text: g.scale <= 1.5 ? 'weak: diverse, may ignore the prompt' : g.scale >= 12 ? 'strong: faithful, can look over-saturated' : 'balanced' })); }
+  ctl.input.addEventListener('input', () => show(ctl.get()));
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'Same prompt and seed, different classifier-free guidance scale.' }),
+    el('div', { class: 'demo-controls' }, [ctl.field]),
+    el('div', { class: 'demo-stage' }, [el('div', {}, [img]), cap]),
+  ]);
+  async function load() { try { const r = await fetch('data/diffusion_samples.json'); data = await r.json(); ctl.input.max = data.guidance.length - 1; show(2); } catch (e) { api.setStatus('Could not load guidance images.', 'err'); } }
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 31 - NeuralOS next-frame world model (real frames, precomputed). (L24)
+ * ===================================================================== */
+register('neuralos', (api) => {
+  let data = null, inst = null;
+  const holder = el('div', {});
+  const link = el('a', { class: 'wv-link', href: 'https://neural-os.com', target: '_blank', rel: 'noopener' }, 'Try it live at neural-os.com \u2197');
+  async function load() {
+    try { const r = await fetch('data/diffusion_samples.json'); data = await r.json(); }
+    catch (e) { api.setStatus('Could not load NeuralOS frames.', 'err'); return; }
+    const frames = data.neuralos;
+    inst = makePlayer(api, {
+      note: 'A real <b>NeuralOS</b> rollout: each screen is generated from the previous frames and the user\u2019s input &mdash; a UI as a learned world model.',
+      srcFor: (k) => 'images/' + frames[k],
+      count: frames.length,
+      labelFor: (k) => `predicted frame <b>${k + 1}</b> of ${frames.length}`,
+    });
+    holder.appendChild(inst.mount);
+    holder.appendChild(el('div', { class: 'demo-controls' }, [link]));
+    inst.init();
+  }
+  return { mount: holder, init: load, onLeave: () => inst && inst.onLeave && inst.onLeave() };
+});
+
+/* =====================================================================
+ *  DEMO 32 - compile + run an independent PAW fuzzy function. (L22)
+ *  Uses the documented hosted API directly: default compiler, remote infer.
+ * ===================================================================== */
+register('paw-compile', (api) => {
+  const API = 'https://programasweights.com/api/v1';
+  const DEFAULT_SPEC = `Classify support ticket urgency. Return ONLY one of: low, medium, high.
+
+Input: Can you add dark mode to the settings page?
+Output: low
+
+Input: The app crashes every time I upload a photo.
+Output: high
+
+Input: I was charged twice on my last invoice.
+Output: high`;
+
+  let programId = null;
+  let compiledSpec = '';
+  let compiling = false;
+  let inferring = false;
+
+  const stageDescribe = el('span', { class: 'paw-stage active', text: '1 describe' });
+  const stageCompile = el('span', { class: 'paw-stage', text: '2 compile' });
+  const stageRun = el('span', { class: 'paw-stage', text: '3 run' });
+  const stages = el('div', { class: 'paw-stages', role: 'list', 'aria-label': 'PAW demo stages' }, [
+    stageDescribe, el('span', { class: 'paw-stage-arrow', text: '\u2192' }),
+    stageCompile, el('span', { class: 'paw-stage-arrow', text: '\u2192' }), stageRun,
+  ]);
+
+  const spec = el('textarea', {
+    class: 'demo-editor demo-textbox paw-spec',
+    rows: '10',
+    maxlength: '8000',
+    'aria-label': 'Natural-language fuzzy function specification',
+    spellcheck: 'false',
+  });
+  spec.value = DEFAULT_SPEC;
+
+  const input = el('textarea', {
+    class: 'demo-editor demo-textbox paw-input',
+    rows: '3',
+    maxlength: '8000',
+    'aria-label': 'Input to run through the compiled function',
+    placeholder: 'Type a support ticket...',
+  });
+  input.value = 'The checkout page is down for every customer.';
+
+  const idValue = el('code', { class: 'paw-program-id', text: 'not compiled yet' });
+  const meta = el('div', { class: 'paw-program-meta' }, [
+    el('span', { text: 'program ID ' }), idValue,
+  ]);
+  const output = el('div', {
+    class: 'paw-run-history',
+    role: 'log',
+    'aria-live': 'polite',
+    'aria-label': 'PAW inference results',
+  }, [el('div', { class: 'paw-empty', text: 'Compile the spec, then run more than one input.' })]);
+
+  function setStage(which) {
+    stageDescribe.classList.toggle('active', which === 'describe');
+    stageCompile.classList.toggle('active', which === 'compile');
+    stageRun.classList.toggle('active', which === 'run');
+    stageDescribe.classList.toggle('done', which !== 'describe');
+    stageCompile.classList.toggle('done', which === 'run');
+  }
+
+  function errorMessage(data, fallback) {
+    if (!data) return fallback;
+    if (typeof data.message === 'string') return data.message;
+    if (typeof data.detail === 'string') return data.detail;
+    if (data.detail && typeof data.detail.message === 'string') return data.detail.message;
+    return fallback;
+  }
+
+  async function post(path, body) {
+    const response = await fetch(API + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await response.json().catch(() => null);
+    if (!response.ok) {
+      const retry = response.headers.get('Retry-After');
+      const suffix = retry ? ` Retry after ${retry}s.` : '';
+      const err = new Error(errorMessage(data, `Request failed (${response.status}).`) + suffix);
+      err.status = response.status;
+      throw err;
+    }
+    return data || {};
+  }
+
+  function setCompileBusy(on) {
+    compiling = on;
+    compileBtn.disabled = on || inferring;
+    newBtn.disabled = on || inferring;
+    compileBtn.setAttribute('aria-busy', on ? 'true' : 'false');
+  }
+
+  function setInferBusy(on) {
+    inferring = on;
+    runBtn.disabled = on || compiling || !programId;
+    compileBtn.disabled = on || compiling;
+    newBtn.disabled = on || compiling;
+    runBtn.setAttribute('aria-busy', on ? 'true' : 'false');
+  }
+
+  function invalidateProgram(showStatus = true) {
+    programId = null;
+    compiledSpec = '';
+    idValue.textContent = 'not compiled yet';
+    runBtn.disabled = true;
+    setStage('describe');
+    if (showStatus) api.setStatus('Specification changed. Compile it to create a new program.');
+  }
+
+  async function compile() {
+    const source = spec.value.trim();
+    if (source.length < 10) {
+      api.setStatus('Write at least 10 characters before compiling.', 'err');
+      spec.focus();
+      return;
+    }
+    setCompileBusy(true);
+    setStage('compile');
+    api.setStatus('Compiling with the hosted default Standard compiler...');
+    const t0 = performance.now();
+    try {
+      // Intentionally only {spec}: no explicit compiler, key, credentials,
+      // shared slug, or undocumented request field.
+      const data = await post('/compile', { spec: source });
+      if (!data.program_id) throw new Error('Compile finished without a program ID. Please retry.');
+      programId = data.program_id;
+      compiledSpec = source;
+      idValue.textContent = programId;
+      const ms = data.timings && Number.isFinite(data.timings.total_ms)
+        ? data.timings.total_ms : performance.now() - t0;
+      setStage('run');
+      runBtn.disabled = false;
+      api.setStatus(`Compiled your program in ${(ms / 1000).toFixed(1)}s. Try two different inputs.`, 'ok');
+      input.focus();
+    } catch (e) {
+      invalidateProgram(false);
+      api.setStatus('Compile error: ' + (e && e.message ? e.message : String(e)), 'err');
+    } finally {
+      setCompileBusy(false);
+      runBtn.disabled = inferring || !programId;
+    }
+  }
+
+  function addResult(text, answer, latency) {
+    const empty = output.querySelector('.paw-empty');
+    if (empty) empty.remove();
+    const row = el('div', { class: 'paw-result-row' }, [
+      el('div', { class: 'paw-result-input', text }),
+      el('div', { class: 'paw-result-arrow', text: '\u2192' }),
+      el('div', { class: 'paw-result-output', text: answer }),
+      el('div', { class: 'paw-result-latency', text: `${Math.round(latency)} ms` }),
+    ]);
+    output.prepend(row);
+    while (output.children.length > 4) output.lastElementChild.remove();
+  }
+
+  async function run() {
+    const text = input.value.trim();
+    if (!programId || compiledSpec !== spec.value.trim()) {
+      invalidateProgram(false);
+      api.setStatus('Compile this specification before running it.', 'err');
+      return;
+    }
+    if (!text) {
+      api.setStatus('Enter an input for the compiled function.', 'err');
+      input.focus();
+      return;
+    }
+    setInferBusy(true);
+    api.setStatus('Running hosted inference with your program ID...');
+    const t0 = performance.now();
+    try {
+      const data = await post('/infer', {
+        program_id: programId,
+        input: text,
+        max_tokens: 64,
+        temperature: 0,
+      });
+      const latency = Number.isFinite(data.latency_ms) ? data.latency_ms : performance.now() - t0;
+      addResult(text, String(data.output ?? ''), latency);
+      api.setStatus('Done. Change only the input and run the same program again.', 'ok');
+      input.select();
+    } catch (e) {
+      api.setStatus('Inference error: ' + (e && e.message ? e.message : String(e)), 'err');
+    } finally {
+      setInferBusy(false);
+    }
+  }
+
+  function newFunction() {
+    invalidateProgram(false);
+    output.innerHTML = '';
+    output.appendChild(el('div', { class: 'paw-empty', text: 'Edit the spec, compile it, then test multiple inputs.' }));
+    api.setStatus('Ready for a new fuzzy function.');
+    spec.focus();
+  }
+
+  const compileBtn = api.button('Compile my function', compile);
+  compileBtn.setAttribute('aria-label', 'Compile this fuzzy function specification');
+  const newBtn = api.button('New function', newFunction, 'ghost');
+  const runBtn = api.button('Run this input', run);
+  runBtn.disabled = true;
+  runBtn.setAttribute('aria-label', 'Run hosted inference with this input');
+
+  const presets = [
+    'The app crashes every time I upload a photo.',
+    'Can you add dark mode when you have time?',
+    'The checkout page is down for every customer.',
+  ].map((text, i) => api.button(`Example ${i + 1}`, () => {
+    input.value = text;
+    input.focus();
+  }, 'ghost'));
+
+  spec.addEventListener('input', () => {
+    if (programId && spec.value.trim() !== compiledSpec) invalidateProgram();
+  });
+
+  const specPanel = el('div', { class: 'paw-demo-panel' }, [
+    el('label', { class: 'paw-demo-label', text: 'Describe the function' }),
+    spec,
+    el('div', { class: 'demo-controls' }, [compileBtn, newBtn]),
+    meta,
+  ]);
+  const runPanel = el('div', { class: 'paw-demo-panel' }, [
+    el('label', { class: 'paw-demo-label', text: 'Run your compiled function' }),
+    el('div', { class: 'paw-presets' }, presets),
+    input,
+    el('div', { class: 'demo-controls' }, [runBtn]),
+    output,
+  ]);
+  const note = el('div', {
+    class: 'paw-privacy-note',
+    text: 'Class demo: hosted compile + hosted inference for zero setup. Do not submit private or sensitive text. The resulting program can also be downloaded and run locally.',
+  });
+  const mount = el('div', { class: 'paw-compile-demo' }, [
+    stages,
+    el('div', { class: 'demo-split paw-demo-split' }, [specPanel, runPanel]),
+    note,
+  ]);
+
+  function init() {
+    api.status.setAttribute('aria-live', 'polite');
+    api.status.setAttribute('role', 'status');
+    setStage('describe');
+    api.setStatus('Edit the examples or labels, then compile your own function.');
+  }
+
+  return { mount, init };
 });
 
 /* --------------------------------------------------------------- boot ----- */
