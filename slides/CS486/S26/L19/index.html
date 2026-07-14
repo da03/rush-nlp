@@ -10,11 +10,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../shared/demo.css?v=10">
+  <link rel="stylesheet" href="../shared/demo.css?v=16">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L18/custom.css?v=3">
-  <link rel="stylesheet" href="custom.css?v=6">
+  <link rel="stylesheet" href="custom.css?v=7">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -157,12 +157,12 @@
 <section class="center-slide">
   <h2>RNN inference: update and pass forward</h2>
   <div class="rnn-steps">
-    <div class="step-card"><strong>The</strong><span>state: article</span></div>
-    <div class="step-card fragment"><strong>robot</strong><span>state: entity</span></div>
-    <div class="step-card fragment"><strong>picked</strong><span>state: action</span></div>
-    <div class="step-card fragment"><strong>up</strong><span>state: phrase</span></div>
+    <div class="step-card"><strong>The</strong><span>may encode: determiner</span></div>
+    <div class="step-card fragment"><strong>robot</strong><span>may encode: entity</span></div>
+    <div class="step-card fragment"><strong>picked</strong><span>may encode: action</span></div>
+    <div class="step-card fragment"><strong>up</strong><span>may encode: phrase</span></div>
   </div>
-  <p class="fragment" style="font-size:0.88em; color:#6b7280;">Elegant idea: every new token edits the running summary.</p>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280;">The hidden state is one dense vector, not a literal list; these labels are intuition for what may accumulate.</p>
 </section>
 
 <!-- 8. RNN limits -->
@@ -182,15 +182,15 @@
   <p style="font-size:1.05em;">Structured state updates can be faster and stabler:</p>
   <p style="font-size:1.1em;">\(\text{state}_t = A\,\text{state}_{t-1} + Bx_t\)</p>
   <div class="defbox fragment" style="max-width:76%; margin:0.5em auto;">
-    <p style="margin:0; font-size:0.86em;">State-space models and linear RNNs keep the recurrence idea, but redesign it for modern hardware.</p>
+    <p style="margin:0; font-size:0.86em;"><strong>\(A\)</strong> is a learned state update; <strong>\(B\)</strong> maps the new input into state.</p>
   </div>
-  <p class="fragment" style="font-size:0.84em; color:#6b7280;">Transformers dominate today, but recurrence is not dead.</p>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280;">Modern state-space models keep recurrence, but redesign it for parallel hardware.</p>
 </section>
 
 <!-- 10. Direct lookup -->
 <section>
   <h2>Different idea: let tokens look directly</h2>
-  <p style="font-size:0.86em;">Instead of compressing the past, let a token retrieve the information it needs.</p>
+  <p style="font-size:0.9em;">When processing <strong>it</strong>, which earlier word contains useful information?</p>
   <svg viewBox="0 0 920 230" xmlns="http://www.w3.org/2000/svg" class="seq-svg">
     <g class="token-row" transform="translate(30,110)">
       <rect x="0" y="0" width="78" height="40" rx="7"/><text x="39" y="26">The</text>
@@ -204,60 +204,75 @@
       <rect x="704" y="0" width="78" height="40" rx="7"/><text x="743" y="26">was</text>
       <rect x="792" y="0" width="78" height="40" rx="7"/><text x="831" y="26">empty</text>
     </g>
-    <path d="M685 112 C650 35, 530 35, 510 108" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow-l19-red)"/>
-    <path class="fragment" d="M682 112 C610 70, 205 70, 170 108" fill="none" stroke="#1d4ed8" stroke-width="2.2" stroke-dasharray="5 4" marker-end="url(#arrow-l19-blue)"/>
-    <text x="590" y="43" font-size="16" fill="#991b1b" font-weight="700">mostly cup</text>
+    <text x="685" y="92" font-size="15" fill="#991b1b" font-weight="700">token that needs information</text>
+    <g class="fragment">
+      <path d="M685 108 C650 30, 530 30, 510 106" fill="none" stroke="#dc2626" stroke-width="3" marker-end="url(#arrow-l19-red)"/>
+      <text x="590" y="35" font-size="16" fill="#991b1b" font-weight="700">retrieve from cup</text>
+    </g>
   </svg>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">A decoder can look only at itself and earlier source tokens.</p>
 </section>
 
 <!-- 10b. Path length: RNN vs attention (live) -->
 <section class="center-slide">
   <h2>Reaching across the sequence<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Drag the sequence length: the RNN path grows, the attention path stays one hop.</p>
+  <p class="demo-caption">For an earlier source and a later query, the RNN path grows; attention stays one hop.</p>
   <div class="live-demo" data-demo="path-length">
-    <div class="demo-fallback">Interactive on the live slides: slide the sequence length and compare how far apart the first and last token are. In an RNN they are \(n-1\) sequential steps apart; with attention every pair is one hop apart, at the cost of \(n^2\) pairwise scores. This is why attention parallelizes and captures long-range dependencies.</div>
+    <div class="demo-fallback">Interactive on the live slides: compare an earlier source with a later query. In an RNN, information crosses \(n-1\) sequential updates; causal attention lets the later query reach any earlier source in one hop, while computing \(O(n^2)\) scores for the sequence.</div>
   </div>
 </section>
 
 <!-- 11. Attention retrieval -->
 <section>
   <h2>Attention is content-based lookup</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; margin-top:0.6em;">
-    <div class="task-card"><h3>Query</h3><p style="font-size:0.82em;">What am I looking for?</p></div>
-    <div class="task-card fragment"><h3>Key</h3><p style="font-size:0.82em;">What do I advertise?</p></div>
-    <div class="task-card fragment"><h3>Value</h3><p style="font-size:0.82em;">What information do I provide?</p></div>
+  <div class="lookup-steps">
+    <div class="lookup-step">
+      <span class="lookup-num">1</span>
+      <div><strong>Match</strong><p>Compare what <em>it</em> needs with each earlier source.</p></div>
+    </div>
+    <div class="lookup-arrow fragment">&rarr;</div>
+    <div class="lookup-step fragment">
+      <span class="lookup-num">2</span>
+      <div><strong>Retrieve</strong><p>Bring back a weighted mix of source information.</p></div>
+    </div>
   </div>
-  <p class="fragment" style="font-size:0.88em; color:#1d4ed8; text-align:center; margin-top:0.7em;">A query matches keys, then reads a weighted mix of values.</p>
+  <div class="qkv-roles fragment">
+    <div><b>query</b><span>the token doing the attending</span></div>
+    <div><b>key</b><span>each source token&rsquo;s address</span></div>
+    <div><b>value</b><span>that source token&rsquo;s payload</span></div>
+  </div>
+  <p class="fragment lookup-mnemonic"><strong>Keys decide where to look; values decide what comes back.</strong></p>
 </section>
 
 <!-- 12. QKV -->
 <section class="center-slide">
   <h2>Queries, keys, values are learned projections</h2>
-  <p style="font-size:0.95em;">For token embedding \(\mathbf{x}_i\):</p>
+  <p style="font-size:0.92em;">At the current layer, token \(i\) has hidden state \(\mathbf{h}_i\):</p>
   <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; max-width:84%; margin:0.5em auto;">
-    <div class="task-card"><h3>query</h3><p>\(\mathbf{q}_i = W_Q\mathbf{x}_i\)</p></div>
-    <div class="task-card fragment"><h3>key</h3><p>\(\mathbf{k}_i = W_K\mathbf{x}_i\)</p></div>
-    <div class="task-card fragment"><h3>value</h3><p>\(\mathbf{v}_i = W_V\mathbf{x}_i\)</p></div>
+    <div class="task-card"><h3>need</h3><p>\(\mathbf{q}_i = W_Q\mathbf{h}_i\)</p><small>query</small></div>
+    <div class="task-card fragment"><h3>address</h3><p>\(\mathbf{k}_i = W_K\mathbf{h}_i\)</p><small>key</small></div>
+    <div class="task-card fragment"><h3>payload</h3><p>\(\mathbf{v}_i = W_V\mathbf{h}_i\)</p><small>value</small></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Same embedding, three roles.</p>
+  <p class="fragment" style="font-size:0.84em; color:#6b7280;">Same hidden state, three learned views. In deeper layers, \(\mathbf{h}_i\) already contains context.</p>
 </section>
 
 <!-- 13. Scores -->
 <section>
-  <h2>Score: which token matters?</h2>
+  <h2>One query scores earlier keys</h2>
   <div class="two-col vcenter">
-    <div style="flex:1;">
-      <p style="font-size:0.95em;">For query token <strong>it</strong>:</p>
-      <p style="text-align:center; font-size:1.05em;">\(\text{score}(i,j)=\mathbf{q}_i^\top\mathbf{k}_j\)</p>
+    <div style="flex:1.12;">
+      <p style="font-size:0.92em;"><strong>Current token:</strong> <em>it</em> supplies \(\mathbf{q}_{\text{it}}\).</p>
+      <p class="fragment" style="font-size:0.8em;"><strong>Allowed source \(j\):</strong> \(j\leq i\); it supplies \(\mathbf{k}_j\) now and \(\mathbf{v}_j\) later.</p>
+      <p class="fragment" style="text-align:center; font-size:1.02em;">\(\text{score}(\text{it},j)=\mathbf{q}_{\text{it}}^\top\mathbf{k}_j\)</p>
     </div>
-    <div style="flex:0.95;">
-      <table class="factor-table" style="font-size:0.78em; margin:0 auto;">
-        <thead><tr><th>candidate key</th><th>score</th></tr></thead>
+    <div style="flex:0.88;">
+      <table class="factor-table fragment" style="font-size:0.76em; margin:0 auto;">
+        <thead><tr><th>source key \(k_j\)</th><th>match score</th></tr></thead>
         <tbody>
           <tr><td>robot</td><td>medium</td></tr>
           <tr style="background:#dcfce7;"><td><strong>cup</strong></td><td><strong>high</strong></td></tr>
-          <tr><td>empty</td><td>medium</td></tr>
-          <tr><td>the</td><td>low</td></tr>
+          <tr><td>because</td><td>low</td></tr>
+          <tr><td>it (self)</td><td>low</td></tr>
         </tbody>
       </table>
     </div>
@@ -270,30 +285,27 @@
   <div class="attn-bars">
     <div class="attn-bar"><span>robot</span><div style="height:36px;"></div><b>0.18</b></div>
     <div class="attn-bar hot"><span>cup</span><div style="height:110px;"></div><b>0.62</b></div>
-    <div class="attn-bar"><span>empty</span><div style="height:28px;"></div><b>0.14</b></div>
-    <div class="attn-bar"><span>other</span><div style="height:14px;"></div><b>0.06</b></div>
+    <div class="attn-bar"><span>because</span><div style="height:28px;"></div><b>0.14</b></div>
+    <div class="attn-bar"><span>it</span><div style="height:14px;"></div><b>0.06</b></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Attention weights are a probability distribution over tokens.</p>
+  <p class="fragment" style="font-size:0.86em; color:#6b7280;">The allowed source weights are nonnegative and sum to 1.</p>
 </section>
 
 <!-- 15. Weighted sum -->
 <section class="center-slide">
-  <h2>Then mix the values</h2>
-  <p style="font-size:1.05em;">\(\text{context}_i = \sum_j \alpha_{ij}\mathbf{v}_j\)</p>
-  <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg" class="seq-svg" style="max-height:180px;">
-    <g class="token-mini">
-      <rect x="80" y="50" width="90" height="42" rx="7"/><text x="125" y="77">robot</text>
-      <rect x="235" y="35" width="90" height="58" rx="7" class="hot"/><text x="280" y="70">cup</text>
-      <rect x="390" y="50" width="90" height="42" rx="7"/><text x="435" y="77">empty</text>
-      <rect x="610" y="50" width="90" height="42" rx="7" class="focus"/><text x="655" y="77">it</text>
-    </g>
-    <g stroke="#475569" stroke-width="2" marker-end="url(#arrow-l19)">
-      <line x1="170" y1="72" x2="600" y2="72"/>
-      <line x1="325" y1="64" x2="600" y2="64" stroke="#dc2626" stroke-width="4"/>
-      <line x1="480" y1="72" x2="600" y2="72"/>
-    </g>
-  </svg>
-  <p class="fragment" style="font-size:0.88em; color:#1d4ed8;">The new vector for <strong>it</strong> carries information from <strong>cup</strong>.</p>
+  <h2>Use the weights to mix source values</h2>
+  <p style="font-size:1em;">\(\mathbf{z}_{\text{it}}=\sum_{j\leq i}\alpha_{\text{it},j}\mathbf{v}_j\)</p>
+  <div class="value-mix">
+    <div class="value-terms">
+      <div class="value-term fragment"><span>0.18</span><b>\(\mathbf{v}_{\text{robot}}\)</b></div>
+      <div class="value-term hot fragment"><span>0.62</span><b>\(\mathbf{v}_{\text{cup}}\)</b></div>
+      <div class="value-term fragment"><span>0.14</span><b>\(\mathbf{v}_{\text{because}}\)</b></div>
+      <div class="value-term fragment"><span>0.06</span><b>\(\mathbf{v}_{\text{it}}\)</b></div>
+    </div>
+    <div class="value-merge fragment">&rarr;</div>
+    <div class="value-output fragment"><strong>\(\mathbf{z}_{\text{it}}\)</strong><span>new context vector</span></div>
+  </div>
+  <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">Because <strong>cup</strong> has the largest weight, its payload contributes most.</p>
 </section>
 
 <!-- 16. Formula -->
@@ -306,7 +318,7 @@
     <div class="task-card fragment"><h3>\(QK^\top\)</h3><p style="font-size:0.78em;">all pairwise relevance scores</p></div>
     <div class="task-card fragment"><h3>\(V\)</h3><p style="font-size:0.78em;">the information being mixed</p></div>
   </div>
-  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">The \(\sqrt{d_k}\) scaling keeps softmax numerically well-behaved.</p>
+  <p class="fragment" style="font-size:0.82em; color:#6b7280; text-align:center;">\(d_k\) is the query/key width; dividing by \(\sqrt{d_k}\) keeps large dot products from saturating softmax.</p>
 </section>
 
 <!-- 16b. Softmax playground (live) -->
@@ -318,116 +330,7 @@
   </div>
 </section>
 
-<!-- 17. Heatmap -->
-<section>
-  <h2>Attention can be visualized as a heatmap</h2>
-  <div class="two-col vcenter">
-    <div style="flex:1.05; text-align:center;">
-      <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" class="attn-heat">
-        <text x="120" y="28">robot</text><text x="180" y="28">cup</text><text x="240" y="28">it</text><text x="300" y="28">empty</text>
-        <text x="45" y="72">robot</text><text x="45" y="132">cup</text><text x="45" y="192" class="focus-txt">it</text><text x="45" y="252">empty</text>
-        <g transform="translate(90,45)">
-          <rect x="0" y="0" width="55" height="55" fill="#1d4ed8" fill-opacity=".65"/><rect x="55" y="0" width="55" height="55" fill="#1d4ed8" fill-opacity=".15"/><rect x="110" y="0" width="55" height="55" fill="#1d4ed8" fill-opacity=".1"/><rect x="165" y="0" width="55" height="55" fill="#1d4ed8" fill-opacity=".1"/>
-          <rect x="0" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".2"/><rect x="55" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".55"/><rect x="110" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".1"/><rect x="165" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".15"/>
-          <rect x="0" y="110" width="55" height="55" fill="#1d4ed8" fill-opacity=".18"/><rect x="55" y="110" width="55" height="55" fill="#dc2626" fill-opacity=".7"/><rect x="110" y="110" width="55" height="55" fill="#1d4ed8" fill-opacity=".05"/><rect x="165" y="110" width="55" height="55" fill="#1d4ed8" fill-opacity=".14"/>
-          <rect x="0" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".08"/><rect x="55" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".2"/><rect x="110" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".18"/><rect x="165" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".55"/>
-          <rect x="0" y="110" width="220" height="55" fill="none" stroke="#dc2626" stroke-width="3"/>
-        </g>
-      </svg>
-    </div>
-    <div style="flex:0.95;">
-      <p style="font-size:0.88em;">Rows ask: where does this token attend?</p>
-      <p class="fragment" style="font-size:0.88em;">The row for <strong>it</strong> focuses on <strong>cup</strong>.</p>
-      <p class="fragment" style="font-size:0.82em; color:#6b7280;">Caveat: attention is inspectable, but not always a faithful explanation.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 17b. Attention playground (live, real model) -->
-<section>
-  <h2>Real attention in a transformer<span class="demo-badge">live model</span></h2>
-  <p class="demo-caption">Real BERT attention &mdash; pick a head, click a query word, read where it looks.</p>
-  <div class="live-demo" data-demo="attention">
-    <div class="demo-fallback">Interactive on the live slides: a real transformer (BERT) processes a sentence and we read out its actual attention. Pick a head and click any query word to see its attention row as a heatmap and weight bars. One head links a word to its predicate (for "it was empty", <strong>it</strong> attends to <strong>empty</strong>), another always looks at the previous token, another spreads broadly &mdash; different heads retrieve different relations.</div>
-  </div>
-</section>
-
-<!-- 18. Multi-head -->
-<section class="center-slide">
-  <h2>Multi-head attention</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>syntax</h3><p style="font-size:0.8em;">subject &harr; verb</p></div>
-    <div class="task-card fragment"><h3>coreference</h3><p style="font-size:0.8em;">it &harr; cup</p></div>
-    <div class="task-card fragment"><h3>local</h3><p style="font-size:0.8em;">nearby phrases</p></div>
-  </div>
-  <p class="fragment" style="font-size:0.88em; color:#1d4ed8; margin-top:0.7em;">Different heads can retrieve different kinds of information in parallel.</p>
-</section>
-
-<!-- 19. Position -->
-<section>
-  <h2>Attention still needs position</h2>
-  <p style="font-size:0.86em;">Attention sees a set of vectors unless we tell it where each token is.</p>
-  <div class="two-col vcenter">
-    <div style="flex:1;">
-      <pre style="font-size:0.56em;"><code>x = token_embedding(input_ids)
-x = x + position_embedding(positions)</code></pre>
-    </div>
-    <div style="flex:1;">
-      <div class="defbox">
-        <p style="margin:0; font-size:0.84em;"><strong>Modern note:</strong> many LLMs use relative or rotary position information (RoPE), not just learned absolute positions.</p>
-      </div>
-    </div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Position tells the model that “dog bites man” differs from “man bites dog.”</p>
-</section>
-
-<!-- 19b. Permutation demo (live) -->
-<section class="center-slide">
-  <h2>Does word order matter?<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Toggle positions: without them, attention treats the sentence as a bag of words.</p>
-  <div class="live-demo" data-demo="attn-permute">
-    <div class="demo-fallback">Interactive on the live slides: the word <strong>bites</strong> attends to the other words in "dog bites man" and "man bites dog". Without position information the two sentences give identical weights (a set, order ignored); add positions and the weights differ, so the model can finally tell subject from object.</div>
-  </div>
-</section>
-
-<!-- 20. Transformer block -->
-<section>
-  <h2>The transformer block</h2>
-  <div class="two-col vcenter">
-    <div style="flex:0.9; text-align:center;">
-      <svg viewBox="0 0 230 310" xmlns="http://www.w3.org/2000/svg" class="transformer-block">
-        <line x1="115" y1="292" x2="115" y2="266" marker-end="url(#arrow-l19)"/>
-        <rect class="tb-attn" x="42" y="224" width="146" height="42"/><text x="115" y="249">attention</text>
-        <rect class="tb-norm" x="55" y="180" width="120" height="34"/><text x="115" y="201">add + norm</text>
-        <line x1="115" y1="224" x2="115" y2="214" marker-end="url(#arrow-l19)"/>
-        <rect class="tb-ffn" x="55" y="112" width="120" height="42"/><text x="115" y="137">feed-forward</text>
-        <line x1="115" y1="180" x2="115" y2="154" marker-end="url(#arrow-l19)"/>
-        <rect class="tb-norm" x="55" y="68" width="120" height="34"/><text x="115" y="89">add + norm</text>
-        <line x1="115" y1="112" x2="115" y2="102" marker-end="url(#arrow-l19)"/>
-        <line x1="115" y1="68" x2="115" y2="38" marker-end="url(#arrow-l19)"/>
-        <path d="M38 245 C18 245, 18 197, 54 197" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow-l19)"/>
-        <path d="M50 133 C24 133, 24 85, 54 85" fill="none" stroke="#7c3aed" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow-l19)"/>
-      </svg>
-    </div>
-    <div style="flex:1.05;">
-      <p style="font-size:0.9em;"><strong>Attention:</strong> tokens communicate.</p>
-      <p class="fragment" style="font-size:0.9em;"><strong>Feed-forward:</strong> each token thinks locally.</p>
-      <p class="fragment" style="font-size:0.86em; color:#6b7280;">Residuals and normalization keep deep stacks trainable.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 21. Communication vs computation -->
-<section class="center-slide">
-  <h2>Two jobs inside each block</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:78%; margin:0.6em auto;">
-    <div class="task-card"><h3>attention</h3><p>talk across tokens</p></div>
-    <div class="task-card fragment"><h3>MLP</h3><p>think inside each token</p></div>
-  </div>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Stack this block many times and representations become richer.</p>
-</section>
-
-<!-- 22. Causal masking -->
+<!-- 17. Causal masking -->
 <section>
   <h2>Causal masking prevents peeking</h2>
   <div class="two-col vcenter">
@@ -445,14 +348,17 @@ x = x + position_embedding(positions)</code></pre>
       </svg>
     </div>
     <div style="flex:1.05;">
-      <p style="font-size:0.9em;">A language model predicts the future.</p>
-      <p class="fragment" style="font-size:0.9em;">So token \(t\) can only attend to positions \(\leq t\).</p>
-      <p class="fragment" style="font-size:0.86em; color:#6b7280;">Future scores are set to \(-\infty\) before softmax.</p>
+      <p style="font-size:0.9em;">A decoder predicts the next token from the prefix.</p>
+      <p class="fragment" style="font-size:0.9em;">Query position \(i\) may use keys/values only from \(j\leq i\).</p>
+      <div class="defbox fragment" style="text-align:center; margin:0.35em 0;">
+        <p style="font-size:0.72em; margin:0;">\(\operatorname{softmax}\!\left(\dfrac{QK^\top+M}{\sqrt{d_k}}\right)V\)</p>
+      </div>
+      <p class="fragment" style="font-size:0.73em; color:#6b7280;">\(M_{ij}=0\) when \(j\leq i\)<br>\(M_{ij}=-\infty\) when \(j&gt;i\)</p>
     </div>
   </div>
 </section>
 
-<!-- 22b. Causal masking playground (live) -->
+<!-- 17b. Causal masking playground (live) -->
 <section>
   <h2>Causal masking, interactively<span class="demo-badge">live</span></h2>
   <p class="demo-caption">Toggle the mask and pick a query word &mdash; watch the weights renormalize over allowed positions.</p>
@@ -461,14 +367,155 @@ x = x + position_embedding(positions)</code></pre>
   </div>
 </section>
 
-<!-- 23. Encoder decoder -->
-<section class="center-slide">
-  <h2>Encoder vs decoder</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
-    <div class="task-card"><h3>Encoder</h3><p style="font-size:0.82em;">Every token can look both directions. Good for understanding.</p></div>
-    <div class="task-card fragment"><h3>Decoder</h3><p style="font-size:0.82em;">Tokens look left only. Good for generation.</p></div>
+<!-- 18. Heatmap -->
+<section>
+  <h2>Every row asks where one query looks</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1.05; text-align:center;">
+      <svg viewBox="0 0 390 330" xmlns="http://www.w3.org/2000/svg" class="attn-heat decoder-heat">
+        <text x="126" y="27">robot</text><text x="181" y="27">picked</text><text x="236" y="27">cup</text><text x="291" y="27">because</text><text x="346" y="27">it</text>
+        <text x="58" y="72">robot</text><text x="58" y="127">picked</text><text x="58" y="182">cup</text><text x="58" y="237">because</text><text x="58" y="292" class="focus-txt">it</text>
+        <g transform="translate(98,45)">
+          <rect x="0" y="0" width="55" height="55" fill="#1d4ed8" fill-opacity=".9"/><rect class="masked" x="55" y="0" width="55" height="55"/><text class="mask-x" x="82" y="29">×</text><rect class="masked" x="110" y="0" width="55" height="55"/><text class="mask-x" x="137" y="29">×</text><rect class="masked" x="165" y="0" width="55" height="55"/><text class="mask-x" x="192" y="29">×</text><rect class="masked" x="220" y="0" width="55" height="55"/><text class="mask-x" x="247" y="29">×</text>
+          <rect x="0" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".3"/><rect x="55" y="55" width="55" height="55" fill="#1d4ed8" fill-opacity=".7"/><rect class="masked" x="110" y="55" width="55" height="55"/><text class="mask-x" x="137" y="84">×</text><rect class="masked" x="165" y="55" width="55" height="55"/><text class="mask-x" x="192" y="84">×</text><rect class="masked" x="220" y="55" width="55" height="55"/><text class="mask-x" x="247" y="84">×</text>
+          <rect x="0" y="110" width="55" height="55" fill="#1d4ed8" fill-opacity=".2"/><rect x="55" y="110" width="55" height="55" fill="#1d4ed8" fill-opacity=".2"/><rect x="110" y="110" width="55" height="55" fill="#1d4ed8" fill-opacity=".6"/><rect class="masked" x="165" y="110" width="55" height="55"/><text class="mask-x" x="192" y="139">×</text><rect class="masked" x="220" y="110" width="55" height="55"/><text class="mask-x" x="247" y="139">×</text>
+          <rect x="0" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".1"/><rect x="55" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".2"/><rect x="110" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".2"/><rect x="165" y="165" width="55" height="55" fill="#1d4ed8" fill-opacity=".5"/><rect class="masked" x="220" y="165" width="55" height="55"/><text class="mask-x" x="247" y="194">×</text>
+          <rect x="0" y="220" width="55" height="55" fill="#1d4ed8" fill-opacity=".18"/><rect x="55" y="220" width="55" height="55" fill="#1d4ed8" fill-opacity=".05"/><rect x="110" y="220" width="55" height="55" fill="#dc2626" fill-opacity=".72"/><rect x="165" y="220" width="55" height="55" fill="#1d4ed8" fill-opacity=".14"/><rect x="220" y="220" width="55" height="55" fill="#1d4ed8" fill-opacity=".06"/>
+          <rect x="0" y="220" width="275" height="55" fill="none" stroke="#dc2626" stroke-width="3"/>
+        </g>
+      </svg>
+    </div>
+    <div style="flex:0.95;">
+      <p style="font-size:0.86em;"><strong>Rows:</strong> query positions.</p>
+      <p class="fragment" style="font-size:0.86em;"><strong>Columns:</strong> source keys/values.</p>
+      <p class="fragment" style="font-size:0.86em;">Toy row: query <strong>it</strong> puts its largest weight on <strong>cup</strong>.</p>
+      <p class="fragment" style="font-size:0.78em; color:#6b7280;">Gray cells are future positions blocked by the causal mask.</p>
+    </div>
   </div>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Qwen/GPT-style LLMs are decoder-only causal transformers.</p>
+</section>
+
+<!-- 18b. Attention playground (live, real model) -->
+<section>
+  <h2>Real attention in a decoder<span class="demo-badge">live model</span></h2>
+  <p class="demo-caption">Actual Qwen3-0.6B causal attention &mdash; pick a head, then click a query word.</p>
+  <div class="live-demo" data-demo="attention">
+    <div class="demo-fallback">Interactive on the live slides: real attention from Qwen3-0.6B, the small decoder model dissected in L21. Future cells are causally masked. Pick a measured layer/head pattern and click a query word to inspect its attention row; one selected head gives high weight from <strong>it</strong> to <strong>cup</strong>, another emphasizes the previous token, and another spreads over the allowed prefix. Attention is inspectable, but is not automatically a faithful explanation.</div>
+  </div>
+</section>
+
+<!-- 19. Multi-head -->
+<section class="center-slide">
+  <h2>Multi-head attention repeats the lookup</h2>
+  <p style="font-size:0.92em;">Each head learns different \(W_Q,W_K,W_V\) projections.</p>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; margin-top:0.55em;">
+    <div class="task-card fragment"><h3>source link</h3><p style="font-size:0.78em;">high <em>it</em> &rarr; <em>cup</em></p></div>
+    <div class="task-card fragment"><h3>local pattern</h3><p style="font-size:0.78em;">previous token</p></div>
+    <div class="task-card fragment"><h3>broad pattern</h3><p style="font-size:0.78em;">spread over prefix</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.82em; color:#6b7280;">Heads can emphasize different patterns in parallel; the real demo shows measured examples.</p>
+</section>
+
+<!-- 20. Recurrence vs position -->
+<section>
+  <h2>Transformers dropped recurrence&mdash;where did order go?</h2>
+  <div class="order-compare">
+    <div class="order-card">
+      <h3>RNN</h3>
+      <p>\(h_t=f(h_{t-1},x_t)\)</p>
+      <span>Order is built into sequential updates.</span>
+    </div>
+    <div class="order-card fragment">
+      <h3>Transformer, layer 1</h3>
+      <p>all token vectors processed in parallel</p>
+      <span>Content alone does not label first, second, third&hellip;</span>
+    </div>
+  </div>
+  <p class="fragment order-key">Fix the final query and shuffle the same previous vectors: content-only first-layer attention is unchanged <em>by word</em>.</p>
+</section>
+
+<!-- 21. Position -->
+<section>
+  <h2>Position changes the attention scores</h2>
+  <div class="two-col vcenter">
+    <div style="flex:1;">
+      <div class="defbox" style="text-align:center;">
+        <p style="margin:0; font-size:0.9em;">simple start: \(\mathbf{h}_i^0=\text{token}_i+\text{position}_i\)</p>
+      </div>
+      <p class="fragment" style="font-size:0.82em; color:#6b7280;">Now the projected queries and keys depend on both content and slot.</p>
+    </div>
+    <div style="flex:1;">
+      <div class="defbox fragment">
+        <p style="margin:0; font-size:0.84em;"><strong>Modern decoders:</strong> Qwen/GPT-style models commonly rotate query/key dimensions with RoPE, encoding relative position directly in their match.</p>
+      </div>
+    </div>
+  </div>
+  <p class="fragment position-nuance"><strong>Mask:</strong> earlier vs future. &nbsp; <strong>Position signal:</strong> richer relative/absolute order.</p>
+</section>
+
+<!-- 21b. Permutation demo (live) -->
+<section class="center-slide">
+  <h2>Shuffle the past: what changes?<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Keep the final query fixed; shuffle only the same previous words.</p>
+  <div class="live-demo" data-demo="attn-permute">
+    <div class="demo-fallback">Interactive on the live slides: compare two prefixes containing the same words in different orders, followed by the same final query. In the first layer, content-only attention assigns each word the same weight after the shuffle; adding position information changes the scores. Important deeper-layer caveat: previous hidden states may already differ because each word was contextualized from a different causal prefix, so later-layer keys and values can change even without an explicit position embedding.</div>
+  </div>
+</section>
+
+<!-- 22. Transformer block -->
+<section>
+  <h2>A decoder block: communicate, then compute</h2>
+  <svg viewBox="0 0 980 320" xmlns="http://www.w3.org/2000/svg" class="decoder-block" role="img" aria-label="Pre-norm decoder block with causal attention, MLP, and residual connections">
+    <g>
+      <rect class="db-state" x="25" y="55" width="105" height="52" rx="8"/><text x="77" y="85">h</text>
+    </g>
+    <g class="fragment">
+      <line x1="130" y1="81" x2="180" y2="81" marker-end="url(#arrow-l19)"/>
+      <rect class="db-norm" x="190" y="55" width="130" height="52" rx="8"/><text x="255" y="85">RMSNorm</text>
+      <line x1="320" y1="81" x2="370" y2="81" marker-end="url(#arrow-l19)"/>
+      <rect class="db-attn" x="380" y="45" width="185" height="72" rx="8"/><text x="472" y="73">causal attention</text><text class="db-sub" x="472" y="96">tokens communicate</text>
+      <line x1="565" y1="81" x2="620" y2="81" marker-end="url(#arrow-l19)"/>
+      <circle class="db-add" cx="650" cy="81" r="22"/><text x="650" y="86">+</text>
+      <path class="db-residual" d="M130 81 V20 H650 V57" marker-end="url(#arrow-l19-blue)"/>
+    </g>
+    <g class="fragment">
+      <line x1="672" y1="81" x2="720" y2="81" marker-end="url(#arrow-l19)"/>
+      <rect class="db-state" x="730" y="55" width="105" height="52" rx="8"/><text x="782" y="85">h′</text>
+      <path d="M782 107 V173" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l19)"/>
+      <rect class="db-norm" x="717" y="183" width="130" height="52" rx="8"/><text x="782" y="213">RMSNorm</text>
+      <line x1="717" y1="209" x2="650" y2="209" marker-end="url(#arrow-l19)"/>
+      <rect class="db-mlp" x="430" y="173" width="190" height="72" rx="8"/><text x="525" y="201">MLP</text><text class="db-sub" x="525" y="224">each token computes</text>
+      <line x1="430" y1="209" x2="360" y2="209" marker-end="url(#arrow-l19)"/>
+      <circle class="db-add" cx="330" cy="209" r="22"/><text x="330" y="214">+</text>
+      <path class="db-residual" d="M835 81 H930 V280 H330 V233" marker-end="url(#arrow-l19-blue)"/>
+      <line x1="308" y1="209" x2="245" y2="209" marker-end="url(#arrow-l19)"/>
+      <rect class="db-state" x="130" y="183" width="105" height="52" rx="8"/><text x="182" y="213">h next</text>
+    </g>
+  </svg>
+  <p class="fragment" style="font-size:0.76em; color:#6b7280; text-align:center;">Residual paths preserve the old representation; normalization stabilizes scale. Exact variants differ&mdash;Qwen uses a pre-norm/RMSNorm-style block.</p>
+</section>
+
+<!-- 23. Contextual states -->
+<section class="center-slide">
+  <h2>Keys and values become contextual</h2>
+  <div class="context-depth">
+    <div><strong>input</strong><span>token + position</span></div>
+    <b>&rarr;</b>
+    <div class="fragment"><strong>after block 1</strong><span>token + retrieved prefix</span></div>
+    <b class="fragment">&rarr;</b>
+    <div class="fragment"><strong>deeper blocks</strong><span>richer contextual hidden state</span></div>
+  </div>
+  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Shuffle previous words and their causal histories change&mdash;so deeper-layer \(\mathbf{k}_j,\mathbf{v}_j\) can change too.</p>
+  <p class="fragment" style="font-size:0.78em; color:#6b7280;">This is why the first-layer “same set” result is useful but not the whole transformer story.</p>
+</section>
+
+<!-- 24. Encoder decoder -->
+<section class="center-slide">
+  <h2>Two common attention masks</h2>
+  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
+    <div class="task-card"><h3>Bidirectional encoder</h3><p style="font-size:0.8em;">Every token may use both left and right context. BERT-style.</p></div>
+    <div class="task-card fragment"><h3>Causal decoder</h3><p style="font-size:0.8em;">Position \(i\) uses only \(j\leq i\). Qwen/GPT-style.</p></div>
+  </div>
+  <p class="fragment" style="font-size:0.88em; color:#1d4ed8;">Today&rsquo;s main path is the decoder: its mask enables next-token training and generation.</p>
 </section>
 
 <!-- 24. Why transformers -->
@@ -476,7 +523,7 @@ x = x + position_embedding(positions)</code></pre>
   <h2>Why transformers took over</h2>
   <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
     <div class="task-card fragment"><h3>Parallel</h3><p style="font-size:0.8em;">All positions at once during training.</p></div>
-    <div class="task-card fragment"><h3>Long-range</h3><p style="font-size:0.8em;">Any token reaches any other in one hop.</p></div>
+    <div class="task-card fragment"><h3>Long-range</h3><p style="font-size:0.8em;">Any allowed source is one attention hop away.</p></div>
     <div class="task-card fragment"><h3>Scalable</h3><p style="font-size:0.8em;">Bigger models and data kept improving.</p></div>
   </div>
 </section>
@@ -497,7 +544,7 @@ x = x + position_embedding(positions)</code></pre>
     <li>&#10003; &nbsp;Attention retrieves information directly between <strong>tokens</strong>.</li>
     <li>&#10003; &nbsp;Queries, keys, and values implement learned retrieval.</li>
     <li>&#10003; &nbsp;Transformer blocks stack <strong>attention</strong> and <strong>feed-forward</strong> computation.</li>
-    <li>&#10003; &nbsp;Causal masks turn transformers into language generators.</li>
+    <li>&#10003; &nbsp;Causal masks enable autoregressive training and generation.</li>
   </ul>
 </section>
 
@@ -513,6 +560,7 @@ x = x + position_embedding(positions)</code></pre>
     slideNumber: 'c/t',
     hash: true,
     transition: 'none',
+    pdfSeparateFragments: false,
     center: false,
     width: 1280,
     height: 720,
@@ -523,8 +571,8 @@ x = x + position_embedding(positions)</code></pre>
         { left: '\\[', right: '\\]', display: true }
       ]
     },
-      plugins: (typeof RevealMath !== 'undefined' && RevealMath.KaTeX) ? [ RevealMath.KaTeX ] : []
-    });
+    plugins: (typeof RevealMath !== 'undefined' && RevealMath.KaTeX) ? [ RevealMath.KaTeX ] : []
+  });
 
   ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(ev => {
     document.addEventListener(ev, () => {
@@ -533,6 +581,6 @@ x = x + position_embedding(positions)</code></pre>
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=17"></script>
+<script type="module" src="../shared/demo.js?v=24"></script>
 </body>
 </html>

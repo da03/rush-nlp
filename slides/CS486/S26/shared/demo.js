@@ -1417,14 +1417,12 @@ register('wildvis', (api) => {
 });
 
 /* =====================================================================
- *  DEMO 12 - attention playground: REAL attention from a transformer
- *  (bert-base-uncased). Pick a sentence + head, click a query word, and
- *  read the heatmap / weight bars. Data precomputed in data/attn_tokens.json
- *  so it runs offline and in the PDF build. Different heads = different
- *  relations (coreference vs previous-token vs broad).
+ *  DEMO 12 - real Qwen3-0.6B causal attention. Pick a sentence + measured
+ *  head, click a query word, and inspect its allowed source weights.
+ *  Data is precomputed in data/attn_tokens.json for reliable slide/PDF use.
  * ===================================================================== */
 register('attention', (api) => {
-  const canvas = api.canvasEl(360, 360);
+  const canvas = api.canvasEl(320, 320);
   canvas.classList.add('clickable');
   const panel = el('div', { class: 'attn-panel' });
   const sentRow = el('div', { class: 'demo-controls' });
@@ -1458,11 +1456,20 @@ register('attention', (api) => {
       ctx.fillStyle = (i === qi) ? '#b91c1c' : '#374151';
       ctx.fillText(toks[i], padL - 6, padT + i * cell + cell / 2 + 4);
     }
-    // cells
+    // Cells. A causal decoder has no future weights; render the mask explicitly
+    // instead of making zero-valued future cells look like ordinary white cells.
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
       const w = A[i][j];
-      ctx.fillStyle = `rgba(29,78,216,${Math.pow(w, 0.7).toFixed(3)})`;
-      ctx.fillRect(padL + j * cell, padT + i * cell, cell - 1, cell - 1);
+      const masked = data.causal && j > i;
+      if (masked) {
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillRect(padL + j * cell, padT + i * cell, cell - 1, cell - 1);
+        ctx.fillStyle = '#cbd5e1'; ctx.textAlign = 'center';
+        ctx.fillText('\u00d7', padL + j * cell + cell / 2, padT + i * cell + cell / 2 + 4);
+      } else {
+        ctx.fillStyle = `rgba(29,78,216,${Math.pow(w, 0.7).toFixed(3)})`;
+        ctx.fillRect(padL + j * cell, padT + i * cell, cell - 1, cell - 1);
+      }
     }
     // selected query row outline
     if (qi != null) {
@@ -1470,7 +1477,7 @@ register('attention', (api) => {
       ctx.strokeRect(padL - 1, padT + qi * cell - 1, n * cell + 1, cell + 1);
     }
     ctx.textAlign = 'left'; ctx.fillStyle = '#6b7280'; ctx.font = '11px ui-monospace, monospace';
-    ctx.fillText('key \u2192', padL, padT + n * cell + 16);
+    ctx.fillText('source key \u2192', padL, padT + n * cell + 16);
     drawPanel();
   }
 
@@ -1483,7 +1490,9 @@ register('attention', (api) => {
     }
     const row = headA()[qi];
     panel.appendChild(el('p', { class: 'attn-q', html: `query: <b>${toks[qi]}</b> attends to&hellip;` }));
-    const order = toks.map((t, j) => [t, row[j], j]).sort((a, b) => b[1] - a[1]);
+    const order = toks.map((t, j) => [t, row[j], j])
+      .filter(([, , j]) => !data.causal || j <= qi)
+      .sort((a, b) => b[1] - a[1]);
     const max = order[0][1] || 1;
     const bars = el('div', { class: 'attn-bars2' });
     order.slice(0, 6).forEach(([t, w]) => {
@@ -1509,7 +1518,9 @@ register('attention', (api) => {
   const markActive = (rowEl, k) => [...rowEl.children].forEach((b, idx) => { const a = idx === k; b.classList.toggle('primary', a); b.classList.toggle('ghost', !a); });
   function setHead(k) { hi = k; markActive(headRow, k); draw(); }
   function setSent(k) {
-    si = k; hi = 0; qi = tokens().indexOf('it'); if (qi < 0) qi = null;
+    si = k; hi = 0;
+    qi = tokens().indexOf(data.sentences[si].default_query);
+    if (qi < 0) qi = null;
     markActive(sentRow, k);
     buildHeadRow(); draw();
   }
@@ -1529,10 +1540,12 @@ register('attention', (api) => {
     api.setStatus('Loading real attention weights...');
     try {
       const res = await fetch('data/attn_tokens.json'); data = await res.json();
-      data.sentences.forEach((s, k) => sentRow.appendChild(api.button('"' + s.text + '"', () => setSent(k), k === 0 ? 'primary' : 'ghost')));
-      qi = tokens().indexOf('it'); if (qi < 0) qi = null;
+      data.sentences.forEach((s, k) =>
+        sentRow.appendChild(api.button(s.label || ('"' + s.text + '"'), () => setSent(k), k === 0 ? 'primary' : 'ghost')));
+      qi = tokens().indexOf(data.sentences[si].default_query); if (qi < 0) qi = null;
       buildHeadRow(); draw();
-      api.setStatus('Real BERT attention \u2014 click a row to pick the query word.', 'ok');
+      const modelName = String(data.model || 'decoder').split('/').pop();
+      api.setStatus(`Real ${modelName} causal attention. Click a query row.`, 'ok');
     } catch (e) { api.setStatus('Could not load attention data.', 'err'); }
   }
   return { mount, init: load };
@@ -1545,7 +1558,7 @@ register('attention', (api) => {
 register('causal-mask', (api) => {
   const toks = ['The', 'cat', 'sat', 'on', 'the', 'mat'];
   const n = toks.length;
-  const canvas = api.canvasEl(300, 300);
+  const canvas = api.canvasEl(240, 240);
   canvas.classList.add('clickable');
   const panel = el('div', { class: 'attn-panel' });
   let causal = true, qi = 3;
@@ -1600,10 +1613,8 @@ register('causal-mask', (api) => {
   canvas.addEventListener('click', (e) => { const { padT, cell } = layout(); const r2 = canvas.getBoundingClientRect(); const my = (e.clientY - r2.top) * canvas.height / r2.height; const i = Math.floor((my - padT) / cell); if (i >= 0 && i < n) { qi = i; draw(); } });
   const toggle = api.button('causal mask: ON', () => { causal = !causal; toggle.textContent = 'causal mask: ' + (causal ? 'ON' : 'OFF'); toggle.classList.toggle('primary', causal); toggle.classList.toggle('ghost', !causal); draw(); }, 'primary');
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'A decoder predicts the next word, so a token may only attend to itself and earlier tokens.' }),
     el('div', { class: 'demo-controls' }, [toggle]),
     el('div', { class: 'demo-stage' }, [canvas, panel]),
-    el('div', { class: 'demo-hint', text: 'Click a row to change the query word.' }),
   ]);
   return { mount, init: draw };
 });
@@ -1625,67 +1636,66 @@ register('path-length', (api) => {
     const xs = (i) => padL + (W - padL - padR) * (n <= 1 ? 0 : i / (n - 1));
     ctx.font = '13px ui-monospace, monospace'; ctx.textAlign = 'left'; ctx.fillStyle = '#374151';
     ctx.fillText('RNN: state passed step by step', padL, y1 - 40);
-    ctx.fillText('Attention: every token reaches every other directly', padL, y2 - 40);
+    ctx.fillText('Causal attention: last query reaches every earlier source', padL, y2 - 40);
 
     // RNN chain
     ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 3;
     ctx.beginPath(); for (let i = 0; i < n - 1; i++) { ctx.moveTo(xs(i) + 8, y1); ctx.lineTo(xs(i + 1) - 8, y1); } ctx.stroke();
     for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.arc(xs(i), y1, 7, 0, 7); ctx.fillStyle = (i === 0 || i === n - 1) ? '#dc2626' : '#93c5fd'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#1e3a8a'; ctx.stroke(); }
 
-    // Attention: faint all-pairs arcs + bold direct 0..n-1
+    // Causal attention from the final query to every allowed earlier source.
     ctx.strokeStyle = 'rgba(37,99,235,0.18)'; ctx.lineWidth = 1;
-    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) { const mx = (xs(i) + xs(j)) / 2, h = 10 + (j - i) * 5; ctx.beginPath(); ctx.moveTo(xs(i), y2); ctx.quadraticCurveTo(mx, y2 - h, xs(j), y2); ctx.stroke(); }
+    for (let i = 0; i < n - 1; i++) { const mx = (xs(i) + xs(n - 1)) / 2, h = 10 + (n - 1 - i) * 5; ctx.beginPath(); ctx.moveTo(xs(i), y2); ctx.quadraticCurveTo(mx, y2 - h, xs(n - 1), y2); ctx.stroke(); }
     ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 2.5; { const mx = (xs(0) + xs(n - 1)) / 2; ctx.beginPath(); ctx.moveTo(xs(0), y2); ctx.quadraticCurveTo(mx, y2 - (18 + (n - 1) * 5), xs(n - 1), y2); ctx.stroke(); }
     for (let i = 0; i < n; i++) { ctx.beginPath(); ctx.arc(xs(i), y2, 7, 0, 7); ctx.fillStyle = (i === 0 || i === n - 1) ? '#dc2626' : '#93c5fd'; ctx.fill(); ctx.lineWidth = 1.5; ctx.strokeStyle = '#1e3a8a'; ctx.stroke(); }
 
     readout.innerHTML = '';
     readout.appendChild(el('span', { html: `RNN: first &harr; last token is <b>${n - 1} steps</b> apart (must go one at a time)` }));
-    readout.appendChild(el('span', { html: `Attention: any pair connects in <b>1 hop</b>, at the cost of <b>${n * n}</b> pairwise scores (n\u00b2)` }));
+    readout.appendChild(el('span', { html: `Causal attention: last query reaches any earlier source in <b>1 hop</b>; sequence compute remains <b>O(n\u00b2)</b>` }));
   }
   const mount = el('div', {}, [
     el('div', { class: 'demo-controls' }, [nCtl.field]),
     el('div', { class: 'demo-stage' }, [canvas, readout]),
-    el('div', { class: 'demo-hint', text: 'Longer sequences stretch the RNN path but never the attention path \u2014 that is why attention parallelizes and captures long-range links, at quadratic cost.' }),
   ]);
   nCtl.input.addEventListener('input', draw);
   return { mount, init: draw };
 });
 
 /* =====================================================================
- *  DEMO 15 - permutation: without positions, attention treats a sentence
- *  as a set, so "dog bites man" and "man bites dog" look identical. Add
- *  position info and the two differ. (pure JS)
+ *  DEMO 15 - permutation nuance for a causal decoder. Keep one final query
+ *  fixed and shuffle only the same previous words. First-layer content-only
+ *  attention is invariant by word; position information breaks the tie.
  * ===================================================================== */
 register('attn-permute', (api) => {
   const dim = 6;
-  const vocab = ['dog', 'bites', 'man'];
+  const vocab = ['dog', 'bites', 'man', '[query]'];
   const r = api.rng32(11);
   const content = {}; vocab.forEach((w) => { content[w] = Array.from({ length: dim }, () => r() * 2 - 1); });
   const u = Array.from({ length: dim }, () => r() * 2 - 1);  // a shared "position" direction
-  const sentences = [['dog', 'bites', 'man'], ['man', 'bites', 'dog']];
+  const prefixes = [['dog', 'bites', 'man'], ['man', 'bites', 'dog']];
+  const queryWord = '[query]';
   let usePos = false;
 
   const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
-  // position adds a signal that grows with the slot index; the query does not
-  // attend to itself, so the distribution is over the two OTHER content words.
+  // The final query slot stays fixed. Only the same three source words shuffle.
   const vec = (w, slot) => usePos ? content[w].map((x, i) => x + 0.8 * slot * u[i]) : content[w];
-  function weights(order) {
-    const qslot = order.indexOf('bites');
-    const q = vec('bites', qslot);
-    const sc = order.map((w, slot) => (slot === qslot ? -Infinity : dot(q, vec(w, slot))));
-    const m = Math.max(...sc.filter(isFinite));
-    const ex = sc.map((v) => (isFinite(v) ? Math.exp(v - m) : 0));
+  function weights(prefix) {
+    const qslot = prefix.length;
+    const q = vec(queryWord, qslot);
+    const scores = prefix.map((word, slot) => dot(q, vec(word, slot)));
+    const m = Math.max(...scores);
+    const ex = scores.map((score) => Math.exp(score - m));
     const z = ex.reduce((a, b) => a + b, 0) || 1;
     return ex.map((v) => v / z);
   }
   const box = el('div', {});
   function render() {
     box.innerHTML = '';
-    const rows = sentences.map((order) => ({ order, w: weights(order) }));
-    sentences.forEach((order, si) => {
+    const rows = prefixes.map((order) => ({ order, w: weights(order) }));
+    prefixes.forEach((order, si) => {
       const w = rows[si].w;
       const grp = el('div', { class: 'permute-grp' });
-      grp.appendChild(el('p', { class: 'attn-q', html: `&ldquo;${order.join(' ')}&rdquo; &mdash; query <b>bites</b> attends to:` }));
+      grp.appendChild(el('p', { class: 'attn-q', html: `&ldquo;${order.join(' ')} <b>[query]</b>&rdquo;<br>fixed final query attends to:` }));
       const bars = el('div', { class: 'attn-bars2' });
       order.forEach((t, j) => bars.appendChild(el('div', { class: 'attn-row' }, [
         el('span', { class: 'attn-lab', text: t }),
@@ -1695,19 +1705,20 @@ register('attn-permute', (api) => {
       grp.appendChild(bars);
       box.appendChild(grp);
     });
-    // verdict: are the two sentences' weight *multisets* (by word) equal?
+    // Are the two weight assignments equal after matching each source by word?
     const byWord = (o, w) => Object.fromEntries(o.map((t, j) => [t, w[j]]));
-    const a = byWord(sentences[0], rows[0].w), b = byWord(sentences[1], rows[1].w);
-    const same = vocab.every((t) => Math.abs(a[t] - b[t]) < 1e-3);
+    const a = byWord(prefixes[0], rows[0].w), b = byWord(prefixes[1], rows[1].w);
+    const same = prefixes[0].every((t) => Math.abs(a[t] - b[t]) < 1e-3);
     box.appendChild(el('p', { class: 'permute-verdict ' + (same ? 'same' : 'diff') , html: same
-      ? 'Identical &mdash; without positions the model sees a <b>set</b>, so it cannot tell subject from object.'
-      : 'Different &mdash; position information lets the model tell <b>dog bites man</b> from <b>man bites dog</b>.' }));
+      ? 'Same by word &mdash; in layer 1, content-only matching ignores how the same previous vectors were ordered.'
+      : 'Different &mdash; position information changes the source keys, so the same words receive different weights.' }));
   }
   const toggle = api.button('add positions: OFF', () => { usePos = !usePos; toggle.textContent = 'add positions: ' + (usePos ? 'ON' : 'OFF'); toggle.classList.toggle('primary', usePos); toggle.classList.toggle('ghost', !usePos); render(); }, 'ghost');
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'Same three words, two orders. Watch the attention for <b>bites</b> with and without position information.' }),
+    el('div', { class: 'demo-note', html: 'Same previous words, same final query, same causal source set. Only the order changes.' }),
     el('div', { class: 'demo-controls' }, [toggle]),
     box,
+    el('div', { class: 'demo-hint', html: '<b>Deeper-layer caveat:</b> previous hidden states were built from different causal prefixes, so later keys/values may already differ even without an explicit position embedding.' }),
   ]);
   return { mount, init: render };
 });
