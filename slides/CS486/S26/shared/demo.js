@@ -1773,6 +1773,8 @@ register('attn-permute', (api) => {
   function render() {
     box.innerHTML = '';
     const rows = prefixes.map((order) => ({ order, w: weights(order) }));
+    const byWord = (order, weightsForOrder) =>
+      Object.fromEntries(order.map((token, index) => [token, weightsForOrder[index]]));
     prefixes.forEach((order, si) => {
       const w = rows[si].w;
       const grp = el('div', { class: 'permute-grp' });
@@ -1787,19 +1789,25 @@ register('attn-permute', (api) => {
       box.appendChild(grp);
     });
     // Are the two weight assignments equal after matching each source by word?
-    const byWord = (o, w) => Object.fromEntries(o.map((t, j) => [t, w[j]]));
     const a = byWord(prefixes[0], rows[0].w), b = byWord(prefixes[1], rows[1].w);
     const same = prefixes[0].every((t) => Math.abs(a[t] - b[t]) < 1e-3);
-    box.appendChild(el('p', { class: 'permute-verdict ' + (same ? 'same' : 'diff') , html: same
-      ? '<b>Failure:</b> same weights by word \u2192 same mixed context, so layer 1 cannot tell who bit whom.'
-      : '<b>Expected:</b> position changes the keys/values \u2192 different context before next-token prediction.' }));
+    const equation = (label, values) =>
+      `<i>z</i><sub>${label}</sub> = ${values.dog.toFixed(2)}<i>v</i><sub>dog</sub> + ` +
+      `${values.bites.toFixed(2)}<i>v</i><sub>bites</sub> + ${values.man.toFixed(2)}<i>v</i><sub>man</sub>`;
+    box.appendChild(el('div', {
+      class: 'permute-verdict ' + (same ? 'same' : 'diff'),
+      html:
+        `<div class="permute-sums"><span>${equation('1', a)}</span><b>${same ? '=' : '\u2260'}</b><span>${equation('2', b)}</span></div>` +
+        `<div class="permute-conclusion">${same
+          ? '<b>Same weighted sum \u2192 same context.</b> Layer 1 cannot tell who bit whom.'
+          : '<b>Different weighted sums \u2192 different context</b> before next-token prediction.'}</div>`,
+    }));
   }
   const toggle = api.button('add positions: OFF', () => { usePos = !usePos; toggle.textContent = 'add positions: ' + (usePos ? 'ON' : 'OFF'); toggle.classList.toggle('primary', usePos); toggle.classList.toggle('ghost', !usePos); render(); }, 'ghost');
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: '<b>Query:</b> q<sub>because</sub> (a learned vector, not an English question) &nbsp; <b>Sources:</b> dog, bites, man &nbsp; <b>Expected:</b> different context because order changes meaning.' }),
     el('div', { class: 'demo-controls' }, [toggle]),
     box,
-    el('div', { class: 'demo-hint', html: '<b>Deeper-layer caveat:</b> previous hidden states were built from different causal prefixes, so later keys/values may already differ even without an explicit position embedding.' }),
+    el('div', { class: 'demo-hint', html: '<b>Deeper layers can differ anyway:</b> each source hidden state was built from a different causal prefix.' }),
   ]);
   return { mount, init: render };
 });

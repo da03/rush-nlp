@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L18/custom.css?v=3">
-  <link rel="stylesheet" href="custom.css?v=12">
+  <link rel="stylesheet" href="custom.css?v=14">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -255,7 +255,7 @@
           <small>On the live slides, hover a generated LaTeX token to reveal its pink spatial attention.</small>
         </div>
       </div>
-      <a href="https://im2markup.yuntiandeng.com/" target="_blank" rel="noopener">Full demo &amp; paper &middot; Deng et al., ICML 2017 &nearr;</a>
+      <a href="https://im2markup.yuntiandeng.com/" target="_blank" rel="noopener">Deng, Kanervisto, Ling &amp; Rush &middot; “Image-to-Markup Generation with Coarse-to-Fine Attention” &middot; ICML 2017 &nearr;</a>
     </div>
     <div class="im2latex-roles">
       <div class="fragment"><strong>query</strong><span>decoder state: what LaTeX symbol should come next?</span></div>
@@ -477,7 +477,7 @@
 <!-- 21b. Permutation demo (live) -->
 <section class="center-slide">
   <h2>Can the final token tell who did what?<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">At the final token <strong>because</strong>, the decoder is about to predict what comes next.</p>
+  <p class="demo-caption"><strong>Query:</strong> \(\mathbf q_{\text{because}}\) &nbsp; <strong>Sources:</strong> dog, bites, man &nbsp; <strong>Goal:</strong> different mixed context before predicting next.</p>
   <div class="live-demo" data-demo="attn-permute">
     <div class="demo-fallback">Interactive on the live slides: compare “dog bites man because” with “man bites dog because.” The final token <strong>because</strong> supplies the query vector and attends backward to keys/values from <strong>dog</strong>, <strong>bites</strong>, and <strong>man</strong>. Without positions, first-layer attention gives each word the same weight in both orders, so it builds the same context even though the meanings differ. Adding positions makes the contexts differ before next-token prediction. In deeper layers, source hidden states may also differ because they were built from different causal prefixes.</div>
   </div>
@@ -485,35 +485,35 @@
 
 <!-- 22. Transformer block -->
 <section>
-  <h2>Original Transformer: residual, then LayerNorm</h2>
-  <svg viewBox="0 0 980 320" xmlns="http://www.w3.org/2000/svg" class="decoder-block" role="img" aria-label="Original post-LayerNorm Transformer self-attention and feed-forward sublayers">
+  <h2>A Transformer block: communicate, then compute</h2>
+  <svg viewBox="0 0 980 320" xmlns="http://www.w3.org/2000/svg" class="decoder-block" role="img" aria-label="Pre-LayerNorm Transformer block with causal attention, feed-forward computation, and residual connections">
     <g>
       <rect class="db-state" x="25" y="55" width="105" height="52" rx="8"/><text x="77" y="85">h</text>
     </g>
     <g class="fragment">
       <line x1="130" y1="81" x2="180" y2="81" marker-end="url(#arrow-l19)"/>
-      <rect class="db-attn" x="190" y="45" width="185" height="72" rx="8"/><text x="282" y="73">causal attention</text><text class="db-sub" x="282" y="96">tokens communicate</text>
-      <line x1="375" y1="81" x2="430" y2="81" marker-end="url(#arrow-l19)"/>
-      <circle class="db-add" cx="460" cy="81" r="22"/><text x="460" y="86">+</text>
-      <line x1="482" y1="81" x2="530" y2="81" marker-end="url(#arrow-l19)"/>
-      <rect class="db-norm" x="540" y="55" width="140" height="52" rx="8"/><text x="610" y="85">LayerNorm</text>
-      <line x1="680" y1="81" x2="730" y2="81" marker-end="url(#arrow-l19)"/>
-      <rect class="db-state" x="740" y="55" width="105" height="52" rx="8"/><text x="792" y="85">h′</text>
-      <path class="db-residual" d="M130 81 V20 H460 V57" marker-end="url(#arrow-l19-blue)"/>
+      <rect class="db-norm" x="190" y="55" width="130" height="52" rx="8"/><text x="255" y="85">LayerNorm</text>
+      <line x1="320" y1="81" x2="370" y2="81" marker-end="url(#arrow-l19)"/>
+      <rect class="db-attn" x="380" y="45" width="185" height="72" rx="8"/><text x="472" y="73">causal attention</text><text class="db-sub" x="472" y="96">tokens communicate</text>
+      <line x1="565" y1="81" x2="620" y2="81" marker-end="url(#arrow-l19)"/>
+      <circle class="db-add" cx="650" cy="81" r="22"/><text x="650" y="86">+</text>
+      <line x1="672" y1="81" x2="720" y2="81" marker-end="url(#arrow-l19)"/>
+      <rect class="db-state" x="730" y="55" width="105" height="52" rx="8"/><text x="782" y="85">h′</text>
+      <path class="db-residual" d="M130 81 V20 H650 V57" marker-end="url(#arrow-l19-blue)"/>
     </g>
     <g class="fragment">
-      <path d="M792 107 V173" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l19)"/>
-      <rect class="db-mlp" x="707" y="183" width="170" height="62" rx="8"/><text x="792" y="207">feed-forward</text><text class="db-sub" x="792" y="228">each token computes</text>
-      <line x1="707" y1="214" x2="650" y2="214" marker-end="url(#arrow-l19)"/>
-      <circle class="db-add" cx="620" cy="214" r="22"/><text x="620" y="219">+</text>
-      <line x1="598" y1="214" x2="550" y2="214" marker-end="url(#arrow-l19)"/>
-      <rect class="db-norm" x="400" y="188" width="140" height="52" rx="8"/><text x="470" y="218">LayerNorm</text>
-      <line x1="400" y1="214" x2="350" y2="214" marker-end="url(#arrow-l19)"/>
-      <rect class="db-state" x="225" y="188" width="115" height="52" rx="8"/><text x="282" y="218">h next</text>
-      <path class="db-residual" d="M845 81 H930 V280 H620 V238" marker-end="url(#arrow-l19-blue)"/>
+      <path d="M782 107 V173" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l19)"/>
+      <rect class="db-norm" x="717" y="183" width="130" height="52" rx="8"/><text x="782" y="213">LayerNorm</text>
+      <line x1="717" y1="209" x2="650" y2="209" marker-end="url(#arrow-l19)"/>
+      <rect class="db-mlp" x="430" y="173" width="190" height="72" rx="8"/><text x="525" y="201">feed-forward</text><text class="db-sub" x="525" y="224">each token computes</text>
+      <line x1="430" y1="209" x2="360" y2="209" marker-end="url(#arrow-l19)"/>
+      <circle class="db-add" cx="330" cy="209" r="22"/><text x="330" y="214">+</text>
+      <line x1="308" y1="209" x2="245" y2="209" marker-end="url(#arrow-l19)"/>
+      <rect class="db-state" x="130" y="183" width="105" height="52" rx="8"/><text x="182" y="213">h next</text>
+      <path class="db-residual" d="M835 81 H930 V280 H330 V233" marker-end="url(#arrow-l19-blue)"/>
     </g>
   </svg>
-  <p class="fragment" style="font-size:0.72em; color:#6b7280; text-align:center;"><strong>Original paper:</strong> \(\operatorname{LayerNorm}(x+\operatorname{Sublayer}(x))\) (post-LN). <strong>Annotated Transformer code:</strong> LayerNorm first (pre-LN). <strong>Qwen3:</strong> pre-RMSNorm.</p>
+  <p class="fragment" style="font-size:0.76em; color:#6b7280; text-align:center;">LayerNorm stabilizes each sublayer input; residual paths preserve the previous representation.</p>
 </section>
 
 <!-- 23. Contextual states -->
@@ -608,6 +608,6 @@
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=27"></script>
+<script type="module" src="../shared/demo.js?v=29"></script>
 </body>
 </html>
