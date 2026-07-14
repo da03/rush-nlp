@@ -77,7 +77,7 @@
     <section class="center">
       <div class="kicker">ProgramAsWeights &middot; website helper</div>
       <h1>How the Helper Works</h1>
-      <p class="lead">One shared pipeline serving four websites &mdash; <b>29 PAW programs serve</b> live (30 compiled; the 30th is an offline grader).</p>
+      <p class="lead">One shared pipeline serving four websites &mdash; <b>28 PAW programs serve</b> live (30 compiled; two are evaluation-only or legacy).</p>
       <p><small>yuntiandeng.com &middot; cs&nbsp;486/686 &middot; neural-os.com &middot; programasweights.com</small></p>
     </section>
 
@@ -227,7 +227,7 @@
         <div class="grp">
           <h3>Shared <span class="who">&middot; every site</span></h3>
           <span class="pill">domain_router</span><span class="pill">validator</span>
-          <p class="role">Page-aware routing + the anti-hallucination on-topic check.<br><span class="pill">rubric_checker</span> grades the benchmark <b>offline</b> &mdash; so the widget&rsquo;s &ldquo;29&rdquo; = <b>30 compiled minus this grader</b>.</p>
+          <p class="role">Page-aware routing + the anti-hallucination on-topic check.<br><span class="pill">rubric_checker</span> grades the benchmark <b>offline</b>; it is one of two compiled programs outside live routing.</p>
         </div>
         <div class="grp site">
           <h3>Site <span class="who">&middot; yuntiandeng.com (page=site)</span></h3>
@@ -249,7 +249,7 @@
           <span class="pill">course_classifier</span><span class="pill">course_answerer</span>
           <span class="pill">slide_selector</span><span class="pill">piazza_selector</span>
           <span class="pill">piazza_answerer</span><span class="pill">piazza_merge</span>
-          <p class="role">Deadlines, grading, TAs, slides links + the Piazza RAG branch.<br><span class="pill">piazza_gate</span> <i>legacy &mdash; superseded by the merge judge.</i></p>
+          <p class="role">Deadlines, grading, TAs, slides links + the Piazza RAG branch.<br><span class="pill">piazza_gate</span> is the second non-serving program: <i>legacy, superseded by the merge judge.</i></p>
         </div>
         <div class="grp neural">
           <h3>NeuralOS <span class="who">&middot; neural-os.com (page=site:neuralos)</span></h3>
@@ -307,7 +307,7 @@
     <section class="center">
       <h2>By the numbers</h2>
       <div class="flow" style="gap:2.5rem; margin-top:1rem">
-        <div><div class="num" style="color:var(--paw)">29</div><small>programs serving<br>(30 compiled, 1 offline grader)</small></div>
+        <div><div class="num" style="color:var(--paw)">28</div><small>programs serving<br>(30 compiled, 2 non-serving)</small></div>
         <div><div class="num" style="color:var(--course)">4</div><small>domains</small></div>
         <div><div class="num" style="color:var(--site)">4</div><small>websites, 1 backend</small></div>
         <div><div class="num" style="color:var(--neural)">100%</div><small>outcome suites passing</small></div>

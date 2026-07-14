@@ -43,11 +43,12 @@ router_page_labels:
 # Shared answer validator (checks the answer is on-topic for the question).
 validator: validator
 
-# Offline tools compiled by compile.py but NOT part of the serving pipeline.
-# rubric_checker is the benchmark grader (helper/grader.py); validated against
-# helper/bench/grader_meta.yaml before it is trusted to grade the suite.
+# Offline/evaluation programs compiled by compile.py but NOT part of the serving
+# pipeline. rubric_checker grades benchmarks; piazza_gate is the retained legacy
+# evaluator superseded in production by the question-aware piazza_merge program.
 tools:
   - rubric_checker
+  - piazza_gate
 
 # Hierarchical resource routers: when a domain's classifier emits <label>, a fuzzy
 # selector picks specific deep links from a rule-supplied candidate list (combine
