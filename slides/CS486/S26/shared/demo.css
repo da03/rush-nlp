@@ -346,6 +346,15 @@
 .reveal .lora-panel { text-align: center; }
 .reveal .lora-panel .lora-cap { font-size: 0.62em; color: #6b7280; margin-bottom: 0.2em; font-family: ui-monospace, Menlo, monospace; }
 
+/* VLM demos: image on the left, prompt/answer or CLIP bars on the right. */
+.reveal .vlm-left { flex: 0 0 auto; }
+.reveal .vlm-right { min-width: 300px; max-width: 420px; }
+.reveal .vlm-img { max-width: 300px; max-height: 300px; border: 1px solid #e5e7eb; border-radius: 8px; display: block; }
+.reveal .vlm-prompt { font-size: 0.72em; color: #1d4ed8; font-weight: 600; margin-bottom: 0.5em; }
+.reveal .vlm-answer { font-size: 0.72em; color: #166534; line-height: 1.4; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 0.5em 0.7em; }
+.reveal .clip-lab { flex: 0 0 11em; font-size: 0.9em; }
+.reveal [data-demo="clip-match"] .attn-bars2 { font-size: 0.7em; }
+
 /* Chat-template inspector: show the templated model input with special tokens. */
 .reveal .chat-tmpl {
   font-family: ui-monospace, Menlo, monospace; font-size: 0.56em; line-height: 1.5;

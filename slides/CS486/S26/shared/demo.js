@@ -190,6 +190,23 @@ async function getChatLM(id, onStatus) {
   return _chatPromise;
 }
 
+/* Real CLIP for zero-shot image-text alignment (L23). Small enough to run
+ * live; lazily loaded and cached, fallback-safe. */
+const CLIP_MODEL = 'Xenova/clip-vit-base-patch32';
+let _clipPromise = null;
+
+async function getClip(onStatus) {
+  if (!_clipPromise) {
+    _clipPromise = (async () => {
+      onStatus && onStatus('Loading CLIP (~90 MB, one time)...');
+      const mod = await import(/* webpackIgnore: true */ TRANSFORMERS_URL);
+      const device = (typeof navigator !== 'undefined' && navigator.gpu) ? 'webgpu' : 'wasm';
+      return mod.pipeline('zero-shot-image-classification', CLIP_MODEL, { device });
+    })().catch((e) => { _clipPromise = null; throw e; });
+  }
+  return _clipPromise;
+}
+
 /* Stream a chat completion, calling onToken(text) for each new chunk. */
 async function chatStream(lm, messages, opts, onToken) {
   const streamer = new lm.mod.TextStreamer(lm.generator.tokenizer, {
@@ -346,6 +363,7 @@ function upgrade(root) {
     getTokenizer: (id) => getTokenizer(id, setStatus),
     getCausalLM: (id) => getCausalLM(id, setStatus),
     getChatLM: (id) => getChatLM(id, setStatus),
+    getClip: () => getClip(setStatus),
     chatStream, lmForward, softmaxT, topkIdx,
     cosine, pca2, rng32,
   };
@@ -2150,6 +2168,120 @@ register('tool-loop', (api) => {
     box,
   ]);
   return { mount, init: render };
+});
+
+/* =====================================================================
+ *  DEMO 25 - VLM trace: real Qwen3-VL-2B answers on real images across
+ *  caption / VQA / OCR / chart tasks (precomputed). (L23)
+ * ===================================================================== */
+register('vlm-trace', (api) => {
+  let data = null;
+  const taskRow = el('div', { class: 'demo-controls' });
+  const img = el('img', { class: 'vlm-img', alt: '' });
+  const promptEl = el('div', { class: 'vlm-prompt' });
+  const answerEl = el('div', { class: 'vlm-answer' });
+  const LBL = { caption: 'caption', vqa: 'visual Q&A', ocr: 'read text (OCR)', chart: 'chart' };
+  function show(k) {
+    const t = data.tasks[k];
+    img.src = 'images/' + t.image;
+    promptEl.textContent = 'Q: ' + t.prompt;
+    answerEl.textContent = 'A: ' + t.answer;
+    [...taskRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
+  }
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'Real answers from <b>Qwen3-VL-2B</b> on real images (precomputed).' }),
+    taskRow,
+    el('div', { class: 'demo-stage' }, [el('div', { class: 'vlm-left' }, [img]), el('div', { class: 'vlm-right' }, [promptEl, answerEl])]),
+  ]);
+  async function load() {
+    try { const r = await fetch('data/vlm_samples.json'); data = await r.json(); }
+    catch (e) { api.setStatus('Could not load VLM traces.', 'err'); return; }
+    data.tasks.forEach((t, k) => taskRow.appendChild(api.button(LBL[t.task] || t.task, () => show(k), k === 0 ? 'primary' : 'ghost')));
+    show(0);
+  }
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 26 - CLIP zero-shot image-text alignment. Preset label scores are
+ *  precomputed; "score my label" runs real CLIP live on the image. (L23)
+ * ===================================================================== */
+register('clip-match', (api) => {
+  let data = null, ii = 0;
+  const imgRow = el('div', { class: 'demo-controls' });
+  const img = el('img', { class: 'vlm-img', alt: '' });
+  const bars = el('div', { class: 'attn-bars2' });
+  const custom = el('input', { class: 'demo-input', type: 'text', value: 'a photo of Alan Turing' });
+  custom.addEventListener('keydown', (e) => e.stopPropagation());
+  function renderBars(labels, probs) {
+    bars.innerHTML = '';
+    const order = labels.map((l, j) => [l, probs[j]]).sort((a, b) => b[1] - a[1]);
+    const max = order[0][1] || 1;
+    order.forEach(([l, p], idx) => bars.appendChild(el('div', { class: 'attn-row' + (idx === 0 ? ' top' : '') }, [
+      el('span', { class: 'clip-lab', text: l }),
+      el('div', { class: 'attn-track' }, [el('div', { class: 'attn-fill', style: `width:${(p / max * 100).toFixed(0)}%` })]),
+      el('span', { class: 'attn-num', text: p.toFixed(2) }),
+    ])));
+  }
+  function show(k) {
+    ii = k; img.src = 'images/' + data.images[k].file;
+    renderBars(data.clip.labels, data.clip.scores[k].probs);
+    [...imgRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
+  }
+  async function runCustom() {
+    const lab = custom.value.trim(); if (!lab) return;
+    let clf; try { clf = await api.getClip(); } catch (e) { api.setStatus('CLIP unavailable; showing preset labels.', 'err'); return; }
+    api.setStatus('Scoring with CLIP...');
+    const labels = data.clip.labels.concat([lab]);
+    try {
+      const out = await clf('images/' + data.images[ii].file, labels);
+      const probs = labels.map((l) => { const o = out.find((x) => x.label === l); return o ? o.score : 0; });
+      renderBars(labels, probs); api.setStatus('Zero-shot scored live with CLIP.', 'ok');
+    } catch (e) { api.setStatus('CLIP scoring failed; showing presets.', 'err'); }
+  }
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'CLIP scores how well each caption matches the image, with no task-specific training (zero-shot).' }),
+    imgRow,
+    el('div', { class: 'demo-stage' }, [el('div', { class: 'vlm-left' }, [img]), el('div', { class: 'vlm-right' }, [bars, el('div', { class: 'demo-controls' }, [custom, api.button('score my label', runCustom)])])]),
+  ]);
+  async function load() {
+    try { const r = await fetch('data/vlm_samples.json'); data = await r.json(); }
+    catch (e) { api.setStatus('Could not load CLIP data.', 'err'); return; }
+    data.images.forEach((im, k) => imgRow.appendChild(api.button(im.file.split('.')[0], () => show(k), k === 0 ? 'primary' : 'ghost')));
+    show(0);
+  }
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 27 - patchify: split a real image into a grid of patches; each
+ *  patch is one visual token. (L23, pure JS)
+ * ===================================================================== */
+register('patchify', (api) => {
+  const canvas = api.canvasEl(340, 340);
+  const gCtl = api.slider('grid', { min: 2, max: 16, step: 1, value: 8, fmt: (v) => v + '\u00d7' + v });
+  const readout = el('div', { class: 'demo-readout' });
+  let loaded = false; const im = new Image();
+  im.onload = () => { loaded = true; draw(); };
+  im.src = 'images/portrait.jpg';
+  function draw() {
+    const ctx = canvas.getContext('2d'), W = canvas.width, H = canvas.height, n = gCtl.get();
+    ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#f1f5f9'; ctx.fillRect(0, 0, W, H);
+    if (loaded) { const s = Math.max(W / im.width, H / im.height), dw = im.width * s, dh = im.height * s; ctx.drawImage(im, (W - dw) / 2, (H - dh) / 2, dw, dh); }
+    ctx.strokeStyle = 'rgba(29,78,216,0.85)'; ctx.lineWidth = 1; const cell = W / n;
+    for (let i = 1; i < n; i++) { ctx.beginPath(); ctx.moveTo(i * cell, 0); ctx.lineTo(i * cell, H); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, i * cell); ctx.lineTo(W, i * cell); ctx.stroke(); }
+    ctx.strokeStyle = '#1d4ed8'; ctx.lineWidth = 2; ctx.strokeRect(1, 1, W - 2, H - 2);
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `${n} \u00d7 ${n} = <b>${n * n}</b> patches` }));
+    readout.appendChild(el('span', { html: 'each patch \u2192 one <b>visual token</b>' }));
+  }
+  gCtl.input.addEventListener('input', draw);
+  const mount = el('div', {}, [
+    el('div', { class: 'demo-note', html: 'A vision transformer splits the image into patches; each patch becomes a visual token fed to the model.' }),
+    el('div', { class: 'demo-controls' }, [gCtl.field]),
+    el('div', { class: 'demo-stage' }, [canvas, readout]),
+  ]);
+  return { mount, init: draw };
 });
 
 /* --------------------------------------------------------------- boot ----- */

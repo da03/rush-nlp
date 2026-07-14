@@ -1,5 +1,10 @@
 /* L23 (Dissecting a Vision-Language Model) styles. */
 
+/* Avoid one/two-word orphan lines in prose (matches the L17-L22 polish). */
+.reveal .slides section p,
+.reveal .slides section li,
+.reveal .demo-caption { text-wrap: balance; }
+
 .reveal .vlm-pipeline {
   display: block;
   margin: 0.35em auto;

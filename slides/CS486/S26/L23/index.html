@@ -10,11 +10,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
+  <link rel="stylesheet" href="../shared/demo.css?v=14">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L21/custom.css?v=2">
   <link rel="stylesheet" href="../L22/custom.css?v=2">
-  <link rel="stylesheet" href="custom.css?v=2">
+  <link rel="stylesheet" href="custom.css?v=3">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -215,6 +216,15 @@ model = Qwen3VLForConditionalGeneration.from_pretrained(
   </div>
 </section>
 
+<!-- 12b. Patchify playground (live) -->
+<section class="center-slide">
+  <h2>Patchify a real image<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Drag the grid: each patch becomes one visual token.</p>
+  <div class="live-demo" data-demo="patchify">
+    <div class="demo-fallback">Interactive on the live slides: a real image is split into a grid of patches. A 16x16 grid gives 256 patches, and each patch becomes one visual token fed to the model &mdash; more patches means finer detail but a longer visual-token sequence.</div>
+  </div>
+</section>
+
 <!-- 13. Vision encoder -->
 <section>
   <h2>The vision encoder extracts visual features</h2>
@@ -260,6 +270,15 @@ model = Qwen3VLForConditionalGeneration.from_pretrained(
   <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
     <div class="task-card"><h3>CLIP</h3><p style="font-size:0.8em;">compare image/text embeddings</p></div>
     <div class="task-card fragment"><h3>VLM</h3><p style="font-size:0.8em;">generate text conditioned on image tokens</p></div>
+  </div>
+</section>
+
+<!-- 15b. CLIP zero-shot playground (live model) -->
+<section class="center-slide">
+  <h2>CLIP aligns image and text<span class="demo-badge">live model</span></h2>
+  <p class="demo-caption">Which caption matches the image? CLIP scores them, no training needed.</p>
+  <div class="live-demo" data-demo="clip-match">
+    <div class="demo-fallback">Interactive on the live slides: real CLIP scores how well each caption matches an image. A portrait scores highest on "a portrait of a person", the chart on "a bar chart", the schedule on "a document with a schedule" &mdash; zero-shot, with no task-specific training. Type your own caption and CLIP scores it live in your browser.</div>
   </div>
 </section>
 
@@ -391,6 +410,15 @@ model = Qwen3VLForConditionalGeneration.from_pretrained(
       <div class="prompt-box">Which button downloads the slides?</div>
       <p class="fragment" style="font-size:0.9em;">Click the PDF button.</p>
     </div>
+  </div>
+</section>
+
+<!-- 24b. Real VLM traces (live model) -->
+<section class="center-slide">
+  <h2>The real model, across tasks<span class="demo-badge">live model</span></h2>
+  <p class="demo-caption">Actual Qwen3-VL-2B answers on real images: caption, VQA, OCR, chart.</p>
+  <div class="live-demo" data-demo="vlm-trace">
+    <div class="demo-fallback">Interactive on the live slides: switch between tasks and see a real vision-language model (Qwen3-VL-2B) answer questions about real images &mdash; describing a portrait, reading a schedule (OCR), and identifying the largest bar in a chart. These are the actual precomputed model outputs, not mockups.</div>
   </div>
 </section>
 
@@ -532,5 +560,6 @@ model = Qwen3VLForConditionalGeneration.from_pretrained(
     });
   });
 </script>
+<script type="module" src="../shared/demo.js?v=21"></script>
 </body>
 </html>
