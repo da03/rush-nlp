@@ -354,13 +354,28 @@ schedule:
     deadlines:
       - { kind: due, label: "Assignment 3 due" }
 
+  - type: no_class
+    date: 2026-08-05
+    label: "Last day of classes"
+    deadlines:
+      - { kind: due, label: "CS686 final project report due" }
+
   - type: final_exam
     window: "Saturday, August 8, 2026, 7:30 PM - 10:00 PM"
-    note: "Location: PAC 5. Final project report (CS686) due during the exam period (TBA)."
+    note: "Location: PAC 5."
 
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
+  - severity: event
+    show: true
+    title: "CS686 final project report due Wednesday, August 5"
+    body: >-
+      The <strong>CS686 final project report</strong> is due <strong>Wednesday, August 5 at 11:59 PM</strong>
+      (Waterloo time), the last day of classes. University policy does not allow course deliverables during
+      the pre-exam study day or the final examination period (Aug 6&ndash;20), so August 5 is the latest
+      date the report can be due. Submit on <a href="https://learn.uwaterloo.ca/">LEARN</a> using the
+      standard LaTeX template. CS486 students doing the optional project (10% bonus) use the same deadline.
   - severity: warning
     show: true
     title: "Assignment 3 is now available - due Tuesday, August 4"
