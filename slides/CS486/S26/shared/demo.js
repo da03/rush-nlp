@@ -1813,192 +1813,309 @@ register('attn-permute', (api) => {
 });
 
 /* =====================================================================
- *  DEMO 16 - tokenizer playground: text -> subword tokens + IDs. Presets
- *  render instantly from precomputed data; "tokenize" runs the real
- *  tokenizer (tiny download) on your own text. (L20)
+ *  DEMO 16 - Qwen tokenizer: text -> byte/subword pieces -> integer IDs.
+ *  Presets are precomputed; custom text downloads only the tokenizer.
  * ===================================================================== */
 register('tokenizer', (api) => {
   let samples = null;
-  const input = el('input', { class: 'demo-input', type: 'text', value: 'The robot picked up the cup.' });
+  const input = el('input', { class: 'demo-input', type: 'text', value: 'unbelievable', 'aria-label': 'Text to tokenize' });
   const presetRow = el('div', { class: 'demo-controls' });
   const chips = el('div', { class: 'tokchips' });
-  const info = el('div', { class: 'demo-readout' });
+  const info = el('div', { class: 'demo-readout tokenizer-readout' });
   input.addEventListener('keydown', (e) => e.stopPropagation());
 
-  function renderPieces(text, pieces) {
+  const byteCount = (text) => new TextEncoder().encode(text).length;
+  const presetLabel = (text) => {
+    if (text === "CS486 tokenization isn't trivial") return 'CS486';
+    if (text === 'hello') return 'hello';
+    if (text === ' hello') return '\u00b7hello';
+    if (text.includes('range')) return 'code';
+    return text;
+  };
+
+  function renderPieces(record) {
     chips.innerHTML = '';
-    pieces.forEach((p, i) => chips.appendChild(el('div', { class: 'tokchip c' + (i % 5) }, [
-      el('span', { class: 'tp', text: p.piece }), el('span', { class: 'ti', text: p.id }),
+    record.pieces.forEach((piece, index) => chips.appendChild(el('div', {
+      class: 'tokchip c' + (index % 5),
+      title: `token id ${piece.id}`,
+    }, [
+      el('span', { class: 'tp', text: piece.piece }),
+      el('span', { class: 'ti', text: piece.id }),
     ])));
     info.innerHTML = '';
-    info.appendChild(el('span', { html: `<b>${text.length}</b> characters` }));
-    info.appendChild(el('span', { html: `<b>${pieces.length}</b> tokens` }));
+    info.appendChild(el('span', { html: `<b>${record.characters ?? [...record.text].length}</b> characters` }));
+    info.appendChild(el('span', { html: `<b>${record.bytes ?? byteCount(record.text)}</b> UTF-8 bytes` }));
+    info.appendChild(el('span', { html: `<b>${record.token_count ?? record.pieces.length}</b> tokens` }));
   }
 
   async function tokenizeLive() {
     try {
-      const tok = await api.getTokenizer();
+      const tokenizer = await api.getTokenizer('onnx-community/Qwen3-0.6B-ONNX');
       const text = input.value;
-      const ids = tok.encode(text);
-      const pieces = ids.map((id) => { let s = tok.decode([id]); return { piece: s.startsWith(' ') ? '\u00b7' + s.slice(1) : s, id }; });
-      renderPieces(text, pieces);
-      api.setStatus('Tokenized with the real model tokenizer.', 'ok');
-    } catch (e) { api.setStatus('Could not load the tokenizer; showing preset examples.', 'err'); }
+      const ids = Array.from(tokenizer.encode(text), Number);
+      const pieces = ids.map((id) => {
+        let piece = tokenizer.decode([id]);
+        if (piece.startsWith(' ')) piece = '\u00b7' + piece.slice(1);
+        if (piece === '\n') piece = '\u21b5';
+        else piece = piece.replace(/\n/g, '\u21b5');
+        return { piece, id };
+      });
+      renderPieces({ text, characters: [...text].length, bytes: byteCount(text), token_count: pieces.length, pieces });
+      api.setStatus('Tokenized with the Qwen3 tokenizer.', 'ok');
+    } catch (e) {
+      api.setStatus('Could not load the tokenizer; the preset examples still work.', 'err');
+    }
   }
 
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'A tokenizer splits text into <b>subword</b> pieces, each with an integer id. The dot (\u00b7) marks a leading space.' }),
     presetRow,
-    el('div', { class: 'demo-controls' }, [input, api.button('tokenize', tokenizeLive)]),
-    chips, info,
-    el('div', { class: 'demo-hint', text: 'Common words stay whole; rare words split into reusable pieces (un\u00b7bel\u00b7iev\u00b7able).' }),
+    el('div', { class: 'demo-controls' }, [input, api.button('tokenize custom text', tokenizeLive)]),
+    chips,
+    info,
+    el('div', { class: 'demo-hint', text: 'Separate chips are separate tokens. The \u00b7 symbol is not a separator; it represents one leading blank.' }),
   ]);
 
   async function load() {
-    try { const res = await fetch('data/lm_samples.json'); samples = await res.json(); }
-    catch (e) { samples = { tokenize: [{ text: 'unbelievable', pieces: [{ piece: 'un', id: 403 }, { piece: 'bel', id: 6667 }, { piece: 'iev', id: 11203 }, { piece: 'able', id: 540 }] }] }; }
-    samples.tokenize.forEach((s, k) => presetRow.appendChild(api.button('"' + s.text + '"', () => { input.value = s.text; renderPieces(s.text, s.pieces); markActive(k); }, k === 0 ? 'primary' : 'ghost')));
+    try {
+      const response = await fetch('data/lm_samples.json');
+      samples = await response.json();
+    } catch (e) {
+      samples = {
+        tokenize: [{
+          text: 'unbelievable', characters: 12, bytes: 12, token_count: 3,
+          pieces: [{ piece: 'un', id: 359 }, { piece: 'belie', id: 31798 }, { piece: 'vable', id: 23760 }],
+        }],
+      };
+    }
+    samples.tokenize.forEach((sample, index) => presetRow.appendChild(api.button(presetLabel(sample.text), () => {
+      input.value = sample.text;
+      renderPieces(sample);
+      markActive(index);
+    }, index === 0 ? 'primary' : 'ghost')));
     input.value = samples.tokenize[0].text;
-    renderPieces(samples.tokenize[0].text, samples.tokenize[0].pieces);
+    renderPieces(samples.tokenize[0]);
   }
-  const markActive = (k) => [...presetRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
+  const markActive = (index) => [...presetRow.children].forEach((button, i) => {
+    button.classList.toggle('primary', i === index);
+    button.classList.toggle('ghost', i !== index);
+  });
   return { mount, init: load };
 });
 
 /* =====================================================================
- *  DEMO 17 - next-token distribution + decoding knobs. Presets show a REAL
- *  distribution (precomputed); temperature / top-k / top-p reshape it live;
- *  "generate" streams a continuation from the real model. (L20)
+ *  DEMO 17 - one exact next-token step from Qwen3-0.6B-Base.
+ *  Students choose argmax or cycle deterministic full-vocabulary samples.
  * ===================================================================== */
-register('lm-next', (api) => {
-  let samples = null, cur = null;
+register('lm-step', (api) => {
+  let samples = null;
+  let current = null;
+  let sampleIndex = 0;
   const promptRow = el('div', { class: 'demo-controls' });
-  const bars = el('div', { class: 'attn-bars2' });
-  const genOut = el('div', { class: 'lm-gen' });
-  const tCtl = api.slider('temperature', { min: 0.2, max: 2, step: 0.1, value: 1, fmt: (v) => v.toFixed(1) });
-  const kCtl = api.slider('top-k', { min: 1, max: 10, step: 1, value: 5, fmt: (v) => v });
-  const pCtl = api.slider('top-p', { min: 0.1, max: 1, step: 0.05, value: 1, fmt: (v) => v.toFixed(2) });
+  const bars = el('div', { class: 'lm-step-bars' });
+  const result = el('div', { class: 'lm-step-result' });
+  const promptLabel = (prompt) => {
+    if (prompt.startsWith('To be')) return 'Shakespeare';
+    if (prompt.startsWith('The robot')) return 'robot';
+    return 'story';
+  };
+  const formatProbability = (probability) => probability >= 0.001
+    ? probability.toFixed(3)
+    : probability.toExponential(1);
 
-  function reshaped() {
-    const base = cur.top;
-    const T = tCtl.get();
-    let items = base.map((t) => ({ piece: t.piece, w: Math.pow(t.p, 1 / T) }));
-    let z = items.reduce((a, b) => a + b.w, 0); items.forEach((it) => (it.w /= z));
-    items.sort((a, b) => b.w - a.w);
-    items = items.slice(0, kCtl.get());               // top-k
-    const P = pCtl.get(); let c = 0; const kept = [];  // top-p
-    for (const it of items) { kept.push(it); c += it.w; if (c >= P) break; }
-    z = kept.reduce((a, b) => a + b.w, 0) || 1; kept.forEach((it) => (it.w /= z));
-    return kept;
-  }
-  function draw() {
+  function renderDistribution() {
     bars.innerHTML = '';
-    const items = reshaped(); const max = Math.max(...items.map((i) => i.w), 0.01);
-    items.forEach((it, j) => bars.appendChild(el('div', { class: 'attn-row' + (j === 0 ? ' top' : '') }, [
-      el('span', { class: 'attn-lab', text: it.piece }),
-      el('div', { class: 'attn-track' }, [el('div', { class: 'attn-fill', style: `width:${(it.w / max * 100).toFixed(1)}%` })]),
-      el('span', { class: 'attn-num', text: it.w.toFixed(2) }),
+    const maximum = Math.max(...current.top.map((item) => item.p), 0.001);
+    current.top.slice(0, 6).forEach((item, index) => bars.appendChild(el('div', {
+      class: 'lm-step-row' + (index === 0 ? ' top' : ''),
+    }, [
+      el('span', { class: 'lm-step-token', text: item.piece }),
+      el('div', { class: 'lm-step-track' }, [
+        el('div', { class: 'lm-step-fill', style: `width:${(item.p / maximum * 100).toFixed(1)}%` }),
+      ]),
+      el('span', { class: 'lm-step-prob', text: formatProbability(item.p) }),
     ])));
+    bars.appendChild(el('div', { class: 'lm-step-tail' }, [
+      el('span', { text: 'all other vocabulary tokens' }),
+      el('b', { text: current.tail_mass.toFixed(3) }),
+    ]));
   }
-  [tCtl, kCtl, pCtl].forEach((c) => c.input.addEventListener('input', draw));
 
-  function pickFromLogits(logits) {
-    const cand = api.topkIdx(logits, 50);
-    let probs = api.softmaxT(cand.map((i) => logits[i]), tCtl.get());
-    let items = cand.map((i, j) => ({ i, p: probs[j] }));
-    items = items.slice(0, kCtl.get());
-    const P = pCtl.get(); let c = 0; const kept = []; for (const it of items) { kept.push(it); c += it.p; if (c >= P) break; }
-    const z = kept.reduce((a, b) => a + b.p, 0) || 1; kept.forEach((it) => (it.p /= z));
-    let r = Math.random(), acc = 0; for (const it of kept) { acc += it.p; if (r <= acc) return it.i; } return kept[kept.length - 1].i;
+  function showChoice(choice, method) {
+    const visiblePiece = choice.piece.replace(/^\u00b7/, ' ');
+    result.innerHTML = '';
+    result.appendChild(el('div', { class: 'lm-step-method', html: `<b>${method}</b> selected token <code>${choice.piece}</code> with raw probability ${formatProbability(choice.p)}.` }));
+    result.appendChild(el('div', { class: 'lm-step-context' }, [
+      el('span', { text: current.prompt }),
+      el('mark', { text: visiblePiece }),
+    ]));
   }
-  async function generate() {
-    genOut.textContent = ''; api.setStatus('Loading model...');
-    let lm; try { lm = await api.getCausalLM(); } catch (e) { api.setStatus('Model unavailable; the distribution above still works offline.', 'err'); return; }
-    let text = cur.prompt; genOut.textContent = text;
-    api.setStatus('Generating...');
-    for (let step = 0; step < 24; step++) {
-      const { data, seq, vocab } = await api.lmForward(lm, text);
-      const last = data.subarray((seq - 1) * vocab, seq * vocab);
-      const id = pickFromLogits(last);
-      const piece = lm.tokenizer.decode([id]);
-      text += piece; genOut.textContent = text;
-      if (piece.includes('\n')) break;
-    }
-    api.setStatus('Generated with a real model in your browser.', 'ok');
-  }
+
+  const chooseArgmax = () => showChoice(current.greedy, 'argmax');
+  const chooseSample = () => {
+    const choice = current.samples[sampleIndex % current.samples.length];
+    sampleIndex += 1;
+    showChoice(choice, `sample ${sampleIndex}`);
+  };
+  const reset = () => { sampleIndex = 0; result.innerHTML = '<span class="lm-step-placeholder">Choose a rule: the model weights stay fixed; only token selection changes.</span>'; };
 
   const mount = el('div', {}, [
     promptRow,
-    el('div', { class: 'demo-controls' }, [tCtl.field, kCtl.field, pCtl.field]),
-    el('div', { class: 'demo-stage' }, [el('div', { class: 'lm-next-left' }, [el('div', { class: 'lm-prompt', id: 'lmp' }), bars]), el('div', { class: 'lm-next-right' }, [api.button('generate (real model)', generate), genOut])]),
+    el('div', { class: 'lm-step-layout' }, [
+      el('div', { class: 'lm-step-left' }, [el('div', { class: 'lm-prompt', id: 'lm-step-prompt' }), bars]),
+      el('div', { class: 'lm-step-right' }, [
+        el('div', { class: 'demo-controls' }, [
+          api.button('choose highest (argmax)', chooseArgmax),
+          api.button('draw one sample', chooseSample, 'ghost'),
+          api.button('reset', reset, 'ghost'),
+        ]),
+        result,
+      ]),
+    ]),
+    el('div', { class: 'demo-hint', text: 'Append the selected token, run the model again, and repeat. L21 adds temperature, top-k, and top-p.' }),
   ]);
 
-  function setPrompt(k) {
-    cur = samples.next[k];
-    [...promptRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
-    mount.querySelector('#lmp').innerHTML = 'prompt: <b>' + cur.prompt + '</b> &rarr; ?';
-    genOut.textContent = ''; draw();
+  function setPrompt(index) {
+    current = samples.next[index];
+    sampleIndex = 0;
+    [...promptRow.children].forEach((button, i) => {
+      button.classList.toggle('primary', i === index);
+      button.classList.toggle('ghost', i !== index);
+    });
+    mount.querySelector('#lm-step-prompt').innerHTML = `context: <b>${current.prompt}</b> \u2192 ?`;
+    renderDistribution();
+    reset();
   }
+
   async function load() {
-    try { const res = await fetch('data/lm_samples.json'); samples = await res.json(); }
-    catch (e) { samples = { next: [{ prompt: 'To be, or not to', top: [{ piece: '\u00b7be', id: 307, p: 0.8 }, { piece: ',', id: 11, p: 0.01 }] }] }; }
-    samples.next.forEach((s, k) => promptRow.appendChild(api.button('"' + s.prompt + '"', () => setPrompt(k), k === 0 ? 'primary' : 'ghost')));
+    try {
+      const response = await fetch('data/lm_samples.json');
+      samples = await response.json();
+    } catch (e) {
+      samples = {
+        next: [{
+          prompt: 'To be, or not to',
+          top: [{ piece: '\u00b7be', id: 1, p: 0.8 }, { piece: ',', id: 2, p: 0.05 }],
+          tail_mass: 0.15,
+          greedy: { piece: '\u00b7be', id: 1, p: 0.8 },
+          samples: [{ seed: 3, piece: '\u00b7be', id: 1, p: 0.8 }],
+        }],
+      };
+    }
+    samples.next.forEach((item, index) => promptRow.appendChild(api.button(
+      promptLabel(item.prompt),
+      () => setPrompt(index),
+      index === 0 ? 'primary' : 'ghost',
+    )));
     setPrompt(0);
   }
   return { mount, init: load };
 });
 
 /* =====================================================================
- *  DEMO 18 - teacher forcing: per-token cross-entropy loss. Precomputed
- *  losses render instantly; "score my own text" runs the real model. (L20)
+ *  DEMO 18 - inspect exact teacher-forcing losses from Qwen3-0.6B-Base.
  * ===================================================================== */
 register('lm-loss', (api) => {
   let samples = null;
-  const input = el('input', { class: 'demo-input', type: 'text', value: 'The robot picked up the cup because it was empty' });
-  const rows = el('div', { class: 'attn-bars2' });
-  const summary = el('div', { class: 'demo-readout' });
-  input.addEventListener('keydown', (e) => e.stopPropagation());
+  let current = null;
+  let selected = 0;
+  const exampleRow = el('div', { class: 'demo-controls' });
+  const timeline = el('div', { class: 'loss-timeline' });
+  const inspector = el('div', { class: 'loss-inspector' });
+  const summary = el('div', { class: 'loss-summary' });
 
-  function render(tokens, losses) {
-    rows.innerHTML = '';
-    const max = Math.max(...losses, 0.01);
-    // losses[t] is the loss predicting tokens[t+1] from tokens[<=t]
-    for (let t = 0; t < losses.length; t++) {
-      const L = losses[t];
-      rows.appendChild(el('div', { class: 'attn-row' }, [
-        el('span', { class: 'attn-lab', text: tokens[t + 1].piece }),
-        el('div', { class: 'attn-track' }, [el('div', { class: 'attn-fill ' + (L < 1 ? 'lo' : L > 5 ? 'hi' : 'mid'), style: `width:${(L / max * 100).toFixed(1)}%` })]),
-        el('span', { class: 'attn-num', text: L.toFixed(1) }),
-      ]));
-    }
-    const avg = losses.reduce((a, b) => a + b, 0) / losses.length;
-    summary.innerHTML = '';
-    summary.appendChild(el('span', { html: `average loss = <b>${avg.toFixed(2)}</b> nats/token` }));
-    summary.appendChild(el('span', { html: `low = predictable (\u201cup\u201d after \u201cpicked\u201d); high = surprising` }));
+  const pieceText = (piece) => piece.replace(/^\u00b7/, ' ').replace(/\u21b5/g, '\n');
+  const formatProbability = (probability) => probability >= 0.001
+    ? probability.toFixed(3)
+    : probability.toExponential(1);
+  const lossClass = (loss) => loss < 2 ? 'low' : loss < 5 ? 'mid' : 'high';
+  const visiblePrefix = (prediction) => current.tokens
+    .slice(0, prediction.position + 1)
+    .map((token) => pieceText(token.piece))
+    .join('');
+
+  function renderInspector(index) {
+    selected = index;
+    [...timeline.querySelectorAll('button')].forEach((button, i) => button.classList.toggle('selected', i === index));
+    const prediction = current.predictions[index];
+    inspector.innerHTML = '';
+    inspector.appendChild(el('div', { class: 'loss-prefix' }, [
+      el('span', { text: 'prefix' }),
+      el('code', { text: visiblePrefix(prediction) }),
+    ]));
+    inspector.appendChild(el('div', { class: 'loss-detail' }, [
+      el('span', { html: `target <code>${prediction.target.piece}</code>` }),
+      el('span', { html: `p = <b>${formatProbability(prediction.p)}</b>` }),
+      el('span', { html: `\u2212ln p = <b>${prediction.loss.toFixed(2)}</b>` }),
+    ]));
+    inspector.appendChild(el('div', {
+      class: 'loss-verdict ' + lossClass(prediction.loss),
+      text: prediction.loss < 2 ? 'predictable here \u2192 small gradient signal' : prediction.loss >= 5 ? 'surprising here \u2192 large gradient signal' : 'moderately surprising',
+    }));
   }
 
-  async function scoreLive() {
-    let lm; try { lm = await api.getCausalLM(); } catch (e) { api.setStatus('Model unavailable; showing the precomputed sentence.', 'err'); return; }
-    api.setStatus('Scoring...');
-    const { ids, data, seq, vocab } = await api.lmForward(lm, input.value);
-    const tokens = ids.map((id) => { let s = lm.tokenizer.decode([id]); return { piece: s.startsWith(' ') ? '\u00b7' + s.slice(1) : s, id }; });
-    const losses = [];
-    for (let t = 0; t < seq - 1; t++) {
-      const row = data.subarray(t * vocab, (t + 1) * vocab);
-      const probs = api.softmaxT(row, 1);
-      losses.push(-Math.log(probs[ids[t + 1]] + 1e-12));
-    }
-    render(tokens, losses); api.setStatus('Scored with a real model.', 'ok');
+  function renderExample(exampleIndex) {
+    current = samples.loss[exampleIndex];
+    [...exampleRow.children].forEach((button, index) => {
+      button.classList.toggle('primary', index === exampleIndex);
+      button.classList.toggle('ghost', index !== exampleIndex);
+    });
+    timeline.innerHTML = '';
+    current.predictions.forEach((prediction, index) => {
+      const button = el('button', {
+        class: `loss-token ${lossClass(prediction.loss)}`,
+        type: 'button',
+        title: `loss ${prediction.loss.toFixed(2)}`,
+        'aria-label': `Inspect target token ${prediction.target.piece}`,
+      }, [
+        el('span', { text: prediction.target.piece }),
+        el('small', { text: prediction.loss.toFixed(1) }),
+      ]);
+      button.addEventListener('click', () => renderInspector(index));
+      timeline.appendChild(button);
+    });
+    summary.innerHTML = '';
+    summary.appendChild(el('span', { html: `average NLL <b>${current.average_loss.toFixed(2)}</b>` }));
+    summary.appendChild(el('span', { html: `perplexity <b>${current.perplexity.toFixed(1)}</b>` }));
+    summary.appendChild(el('span', { html: `<b>${current.predictions.length}</b> training signals` }));
+    const easiest = current.predictions.reduce((best, item, index) => item.loss < current.predictions[best].loss ? index : best, 0);
+    renderInspector(easiest);
   }
 
   const mount = el('div', {}, [
-    el('div', { class: 'demo-controls' }, [input, api.button('score my own text (real model)', scoreLive)]),
-    el('div', { class: 'demo-stage' }, [rows, summary]),
+    el('div', { class: 'demo-note', html: '<b>Color encodes target loss:</b> green = lower, amber = medium, red = higher. Numbers are nats.' }),
+    exampleRow,
+    timeline,
+    inspector,
+    summary,
+    el('div', { class: 'demo-hint', text: 'Click any target token. Its prefix is exactly what that position could use under the causal mask.' }),
   ]);
 
   async function load() {
-    try { const res = await fetch('data/lm_samples.json'); samples = await res.json(); render(samples.loss.tokens, samples.loss.losses); }
-    catch (e) { api.setStatus('Could not load sample losses.', 'err'); }
+    try {
+      const response = await fetch('data/lm_samples.json');
+      samples = await response.json();
+    } catch (e) {
+      samples = {
+        loss: [{
+          id: 'fallback',
+          label: 'example',
+          tokens: [{ piece: 'The' }, { piece: '\u00b7robot' }, { piece: '\u00b7picked' }, { piece: '\u00b7up' }],
+          predictions: [
+            { position: 0, target: { piece: '\u00b7robot' }, p: 0.02, loss: 3.91 },
+            { position: 1, target: { piece: '\u00b7picked' }, p: 0.12, loss: 2.12 },
+            { position: 2, target: { piece: '\u00b7up' }, p: 0.68, loss: 0.39 },
+          ],
+          average_loss: 2.14,
+          perplexity: 8.5,
+        }],
+      };
+    }
+    samples.loss.forEach((example, index) => exampleRow.appendChild(api.button(
+      example.label,
+      () => renderExample(index),
+      index === 0 ? 'primary' : 'ghost',
+    )));
+    renderExample(0);
   }
   return { mount, init: load };
 });
