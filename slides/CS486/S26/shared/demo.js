@@ -1924,6 +1924,7 @@ register('lm-step', (api) => {
     ? probability.toFixed(3)
     : probability.toExponential(1);
   const visiblePiece = (piece) => piece.replace(/^\u00b7/, ' ').replace(/\u21b5/g, '\u21b5');
+  const highlightedPiece = (piece) => piece.replace(/^\u00b7/, '\u00a0').replace(/\u21b5/g, '\u21b5');
   const trace = () => current.traces[mode];
   const currentStep = () => trace().steps[stepIndex];
   const contextText = () => current.prompt + appended.map((choice) => visiblePiece(choice.piece)).join('');
@@ -1964,15 +1965,21 @@ register('lm-step', (api) => {
         text: 'Click “append next token” repeatedly. Each click uses the distribution conditioned on the enlarged context.',
       }));
     }
-    const context = el('div', { class: 'lm-step-context' }, [el('span', { text: current.prompt })]);
-    appended.forEach((choice) => context.appendChild(el('mark', { text: visiblePiece(choice.piece) })));
+    const previousText = current.prompt + appended
+      .slice(0, -1)
+      .map((choice) => visiblePiece(choice.piece))
+      .join('');
+    const context = el('div', { class: 'lm-step-context' }, [el('span', { text: previousText })]);
+    if (lastChoice) context.appendChild(el('mark', { text: highlightedPiece(lastChoice.piece) }));
     result.appendChild(context);
   }
 
   function render() {
-    mount.querySelector('#lm-step-prompt').innerHTML = currentStep()
-      ? `step ${stepIndex + 1}: <b>${contextText()}</b> \u2192 ?`
-      : `completed context: <b>${contextText()}</b>`;
+    const prompt = mount.querySelector('#lm-step-prompt');
+    prompt.innerHTML = '';
+    prompt.appendChild(el('span', { text: currentStep() ? `step ${stepIndex + 1}: ` : 'completed context: ' }));
+    prompt.appendChild(el('b', { text: contextText() }));
+    if (currentStep()) prompt.appendChild(document.createTextNode(' \u2192 ?'));
     renderDistribution();
     renderResult(appended.at(-1) || null);
     appendButton.disabled = !currentStep();
@@ -2016,7 +2023,7 @@ register('lm-step', (api) => {
         result,
       ]),
     ]),
-    el('div', { class: 'demo-hint', text: 'After every append, the bars update to the next real conditional distribution. L21 adds temperature, top-k, and top-p.' }),
+    el('div', { class: 'demo-hint', text: 'In candidate labels, \u00b7 means a leading space; the appended context renders the real blank. Every click then updates to the next conditional distribution.' }),
   ]);
 
   function setPrompt(index) {
