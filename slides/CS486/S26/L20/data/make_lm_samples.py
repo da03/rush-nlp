@@ -8,8 +8,8 @@ on demand for custom text.
 Outputs:
   * exact Qwen tokenizer pieces and IDs for curated strings;
   * per-token teacher-forcing target probabilities and negative log-likelihood;
-  * exact raw next-token probabilities, undisplayed tail mass, and deterministic
-    full-vocabulary samples for several prompts.
+  * multi-step greedy and deterministic raw-sampling traces, with the exact
+    next-token distribution and undisplayed tail mass at every step.
 
 Run:
     python make_lm_samples.py
@@ -31,7 +31,7 @@ MODEL_ID = "Qwen/Qwen3-0.6B-Base"
 MODEL_LABEL = "Qwen3-0.6B-Base"
 OUT = os.path.join(os.path.dirname(__file__), "lm_samples.json")
 TOPK = 8
-SAMPLE_SEEDS = (3, 7, 11, 19, 23)
+TRACE_STEPS = 6
 
 TOKENIZE_TEXTS = [
     "unbelievable",
@@ -46,7 +46,7 @@ LOSS_EXAMPLES = [
     {
         "id": "natural",
         "label": "natural continuation",
-        "text": "The robot picked up the cup because it was blue.",
+        "text": "The robot picked up the cup because it was empty.",
     },
     {
         "id": "surprising",
@@ -56,9 +56,9 @@ LOSS_EXAMPLES = [
 ]
 
 NEXT_PROMPTS = [
-    "To be, or not to",
-    "The robot picked up the cup because it was",
-    "Once upon a time, there was a",
+    {"prompt": "To be, or not to", "sample_seed": 3},
+    {"prompt": "The robot picked up the cup because it was", "sample_seed": 7},
+    {"prompt": "Once upon a time, there was a", "sample_seed": 19},
 ]
 
 
@@ -121,8 +121,7 @@ def loss_record(model, tokenizer, text: str, example_id: str, label: str, device
     }
 
 
-def next_record(model, tokenizer, prompt: str, device: str) -> dict:
-    token_ids = tokenizer.encode(prompt, add_special_tokens=False)
+def next_distribution(model, tokenizer, token_ids: list[int], device: str) -> tuple[torch.Tensor, dict]:
     inputs = torch.tensor([token_ids], device=device)
     with torch.inference_mode():
         logits = model(inputs).logits[0, -1].float().cpu()
@@ -136,24 +135,67 @@ def next_record(model, tokenizer, prompt: str, device: str) -> dict:
         for probability, token_id in zip(top.values, top.indices)
     ]
 
-    samples = []
-    for seed in SAMPLE_SEEDS:
-        generator = torch.Generator(device="cpu").manual_seed(seed)
-        sampled_id = int(torch.multinomial(probabilities, 1, generator=generator))
-        samples.append(
-            {
-                "seed": seed,
-                **token_record(tokenizer, sampled_id),
-                "p": round(float(probabilities[sampled_id]), 10),
-            }
-        )
-
-    return {
-        "prompt": prompt,
+    return probabilities, {
         "top": top_items,
         "tail_mass": round(max(0.0, 1.0 - sum(item["p"] for item in top_items)), 10),
-        "greedy": top_items[0],
-        "samples": samples,
+    }
+
+
+def generation_trace(
+    model,
+    tokenizer,
+    prompt: str,
+    device: str,
+    mode: str,
+    sample_seed: int,
+) -> dict:
+    token_ids = tokenizer.encode(prompt, add_special_tokens=False)
+    prompt_length = len(token_ids)
+    generator = torch.Generator(device="cpu").manual_seed(sample_seed)
+    steps = []
+
+    for step_index in range(TRACE_STEPS):
+        probabilities, distribution = next_distribution(model, tokenizer, token_ids, device)
+        if mode == "greedy":
+            chosen_id = int(torch.argmax(probabilities))
+        else:
+            chosen_id = int(torch.multinomial(probabilities, 1, generator=generator))
+        choice = {
+            **token_record(tokenizer, chosen_id),
+            "p": round(float(probabilities[chosen_id]), 10),
+        }
+        steps.append(
+            {
+                "step": step_index + 1,
+                **distribution,
+                "choice": choice,
+            }
+        )
+        token_ids.append(chosen_id)
+        if chosen_id == tokenizer.eos_token_id:
+            break
+
+    return {
+        "mode": mode,
+        "sample_seed": sample_seed if mode == "sample" else None,
+        "steps": steps,
+        "completion": tokenizer.decode(
+            token_ids[prompt_length:],
+            skip_special_tokens=True,
+            clean_up_tokenization_spaces=False,
+        ),
+    }
+
+
+def next_record(model, tokenizer, prompt_spec: dict, device: str) -> dict:
+    prompt = prompt_spec["prompt"]
+    seed = prompt_spec["sample_seed"]
+    return {
+        "prompt": prompt,
+        "traces": {
+            "greedy": generation_trace(model, tokenizer, prompt, device, "greedy", seed),
+            "sample": generation_trace(model, tokenizer, prompt, device, "sample", seed),
+        },
     }
 
 
@@ -167,7 +209,7 @@ def main() -> None:
     ).to(device).eval()
 
     output = {
-        "schema_version": 2,
+        "schema_version": 3,
         "generated": str(date.today()),
         "model": {
             "id": MODEL_ID,
@@ -181,7 +223,7 @@ def main() -> None:
             loss_record(model, tokenizer, item["text"], item["id"], item["label"], device)
             for item in LOSS_EXAMPLES
         ],
-        "next": [next_record(model, tokenizer, prompt, device) for prompt in NEXT_PROMPTS],
+        "next": [next_record(model, tokenizer, prompt_spec, device) for prompt_spec in NEXT_PROMPTS],
     }
 
     with open(OUT, "w", encoding="utf-8") as handle:
@@ -195,8 +237,9 @@ def main() -> None:
             f'perplexity={item["perplexity"]:.1f}'
         )
     for item in output["next"]:
-        candidates = ", ".join(f'{token["piece"]}:{token["p"]:.3f}' for token in item["top"][:4])
-        print(f'  {item["prompt"]!r} -> {candidates}; tail={item["tail_mass"]:.3f}')
+        greedy = "".join(step["choice"]["piece"].replace("\u00b7", " ") for step in item["traces"]["greedy"]["steps"])
+        sampled = "".join(step["choice"]["piece"].replace("\u00b7", " ") for step in item["traces"]["sample"]["steps"])
+        print(f'  {item["prompt"]!r} -> greedy {greedy!r}; sampled {sampled!r}')
 
 
 if __name__ == "__main__":

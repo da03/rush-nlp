@@ -1903,13 +1903,15 @@ register('tokenizer', (api) => {
 });
 
 /* =====================================================================
- *  DEMO 17 - one exact next-token step from Qwen3-0.6B-Base.
- *  Students choose argmax or cycle deterministic full-vocabulary samples.
+ *  DEMO 17 - multi-step autoregressive traces from Qwen3-0.6B-Base.
+ *  Repeated clicks reveal a new, correctly conditioned distribution.
  * ===================================================================== */
 register('lm-step', (api) => {
   let samples = null;
   let current = null;
-  let sampleIndex = 0;
+  let mode = 'greedy';
+  let stepIndex = 0;
+  let appended = [];
   const promptRow = el('div', { class: 'demo-controls' });
   const bars = el('div', { class: 'lm-step-bars' });
   const result = el('div', { class: 'lm-step-result' });
@@ -1921,11 +1923,20 @@ register('lm-step', (api) => {
   const formatProbability = (probability) => probability >= 0.001
     ? probability.toFixed(3)
     : probability.toExponential(1);
+  const visiblePiece = (piece) => piece.replace(/^\u00b7/, ' ').replace(/\u21b5/g, '\u21b5');
+  const trace = () => current.traces[mode];
+  const currentStep = () => trace().steps[stepIndex];
+  const contextText = () => current.prompt + appended.map((choice) => visiblePiece(choice.piece)).join('');
 
   function renderDistribution() {
     bars.innerHTML = '';
-    const maximum = Math.max(...current.top.map((item) => item.p), 0.001);
-    current.top.slice(0, 6).forEach((item, index) => bars.appendChild(el('div', {
+    const step = currentStep();
+    if (!step) {
+      bars.appendChild(el('div', { class: 'lm-step-done', text: `${trace().steps.length} append steps complete. Reset or switch selection rule.` }));
+      return;
+    }
+    const maximum = Math.max(...step.top.map((item) => item.p), 0.001);
+    step.top.slice(0, 6).forEach((item, index) => bars.appendChild(el('div', {
       class: 'lm-step-row' + (index === 0 ? ' top' : ''),
     }, [
       el('span', { class: 'lm-step-token', text: item.piece }),
@@ -1936,55 +1947,86 @@ register('lm-step', (api) => {
     ])));
     bars.appendChild(el('div', { class: 'lm-step-tail' }, [
       el('span', { text: 'all other vocabulary tokens' }),
-      el('b', { text: current.tail_mass.toFixed(3) }),
+      el('b', { text: step.tail_mass.toFixed(3) }),
     ]));
   }
 
-  function showChoice(choice, method) {
-    const visiblePiece = choice.piece.replace(/^\u00b7/, ' ');
+  function renderResult(lastChoice = null) {
     result.innerHTML = '';
-    result.appendChild(el('div', { class: 'lm-step-method', html: `<b>${method}</b> selected token <code>${choice.piece}</code> with raw probability ${formatProbability(choice.p)}.` }));
-    result.appendChild(el('div', { class: 'lm-step-context' }, [
-      el('span', { text: current.prompt }),
-      el('mark', { text: visiblePiece }),
-    ]));
+    if (lastChoice) {
+      result.appendChild(el('div', {
+        class: 'lm-step-method',
+        html: `<b>step ${stepIndex}</b> selected <code>${lastChoice.piece}</code> with raw probability ${formatProbability(lastChoice.p)}.`,
+      }));
+    } else {
+      result.appendChild(el('span', {
+        class: 'lm-step-placeholder',
+        text: 'Click “append next token” repeatedly. Each click uses the distribution conditioned on the enlarged context.',
+      }));
+    }
+    const context = el('div', { class: 'lm-step-context' }, [el('span', { text: current.prompt })]);
+    appended.forEach((choice) => context.appendChild(el('mark', { text: visiblePiece(choice.piece) })));
+    result.appendChild(context);
   }
 
-  const chooseArgmax = () => showChoice(current.greedy, 'argmax');
-  const chooseSample = () => {
-    const choice = current.samples[sampleIndex % current.samples.length];
-    sampleIndex += 1;
-    showChoice(choice, `sample ${sampleIndex}`);
-  };
-  const reset = () => { sampleIndex = 0; result.innerHTML = '<span class="lm-step-placeholder">Choose a rule: the model weights stay fixed; only token selection changes.</span>'; };
+  function render() {
+    mount.querySelector('#lm-step-prompt').innerHTML = currentStep()
+      ? `step ${stepIndex + 1}: <b>${contextText()}</b> \u2192 ?`
+      : `completed context: <b>${contextText()}</b>`;
+    renderDistribution();
+    renderResult(appended.at(-1) || null);
+    appendButton.disabled = !currentStep();
+    greedyButton.classList.toggle('primary', mode === 'greedy');
+    greedyButton.classList.toggle('ghost', mode !== 'greedy');
+    sampleButton.classList.toggle('primary', mode === 'sample');
+    sampleButton.classList.toggle('ghost', mode !== 'sample');
+  }
+
+  function reset() {
+    stepIndex = 0;
+    appended = [];
+    render();
+  }
+
+  function setMode(nextMode) {
+    mode = nextMode;
+    reset();
+  }
+
+  function appendNext() {
+    const step = currentStep();
+    if (!step) return;
+    appended.push(step.choice);
+    stepIndex += 1;
+    render();
+  }
+
+  const greedyButton = api.button('highest each step', () => setMode('greedy'));
+  const sampleButton = api.button('sample each step', () => setMode('sample'), 'ghost');
+  const appendButton = api.button('append next token', appendNext);
+  const resetButton = api.button('reset', reset, 'ghost');
 
   const mount = el('div', {}, [
     promptRow,
     el('div', { class: 'lm-step-layout' }, [
       el('div', { class: 'lm-step-left' }, [el('div', { class: 'lm-prompt', id: 'lm-step-prompt' }), bars]),
       el('div', { class: 'lm-step-right' }, [
-        el('div', { class: 'demo-controls' }, [
-          api.button('choose highest (argmax)', chooseArgmax),
-          api.button('draw one sample', chooseSample, 'ghost'),
-          api.button('reset', reset, 'ghost'),
-        ]),
+        el('div', { class: 'demo-controls lm-step-modes' }, [greedyButton, sampleButton]),
+        el('div', { class: 'demo-controls lm-step-actions' }, [appendButton, resetButton]),
         result,
       ]),
     ]),
-    el('div', { class: 'demo-hint', text: 'Append the selected token, run the model again, and repeat. L21 adds temperature, top-k, and top-p.' }),
+    el('div', { class: 'demo-hint', text: 'After every append, the bars update to the next real conditional distribution. L21 adds temperature, top-k, and top-p.' }),
   ]);
 
   function setPrompt(index) {
     current = samples.next[index];
-    sampleIndex = 0;
     [...promptRow.children].forEach((button, i) => {
       button.classList.toggle('primary', i === index);
       button.classList.toggle('ghost', i !== index);
     });
-    mount.querySelector('#lm-step-prompt').innerHTML = `context: <b>${current.prompt}</b> \u2192 ?`;
-    renderDistribution();
     reset();
-  }
+  };
 
   async function load() {
     try {
@@ -1994,10 +2036,16 @@ register('lm-step', (api) => {
       samples = {
         next: [{
           prompt: 'To be, or not to',
-          top: [{ piece: '\u00b7be', id: 1, p: 0.8 }, { piece: ',', id: 2, p: 0.05 }],
-          tail_mass: 0.15,
-          greedy: { piece: '\u00b7be', id: 1, p: 0.8 },
-          samples: [{ seed: 3, piece: '\u00b7be', id: 1, p: 0.8 }],
+          traces: {
+            greedy: { steps: [
+              { top: [{ piece: '\u00b7be', p: 0.8 }, { piece: ',', p: 0.05 }], tail_mass: 0.15, choice: { piece: '\u00b7be', p: 0.8 } },
+              { top: [{ piece: ',', p: 0.5 }, { piece: '\u00b7or', p: 0.2 }], tail_mass: 0.3, choice: { piece: ',', p: 0.5 } },
+            ] },
+            sample: { steps: [
+              { top: [{ piece: '\u00b7be', p: 0.8 }, { piece: ',', p: 0.05 }], tail_mass: 0.15, choice: { piece: '\u00b7be', p: 0.8 } },
+              { top: [{ piece: ',', p: 0.5 }, { piece: '\u00b7or', p: 0.2 }], tail_mass: 0.3, choice: { piece: '\u00b7or', p: 0.2 } },
+            ] },
+          },
         }],
       };
     }

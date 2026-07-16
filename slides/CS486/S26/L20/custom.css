@@ -205,6 +205,28 @@
   text-align: center;
 }
 .reveal .bpe-row code.mark { background: #eff6ff; border-color: #60a5fa; }
+.reveal .bpe-vocab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  max-width: 950px;
+  margin: 0.45em auto 0;
+  border: 1px solid #86efac;
+  border-radius: 7px;
+  background: #f0fdf4;
+  padding: 0.32em 0.5em;
+  font-size: 0.62em;
+  color: #475569;
+}
+.reveal .bpe-vocab strong { color: #166534; }
+.reveal .bpe-vocab code {
+  border-radius: 4px;
+  background: #fff;
+  color: #1e3a8a;
+  padding: 0.08em 0.25em;
+  font-weight: 700;
+}
 
 .reveal .fallback-title { color: #475569; font-weight: 700; margin-bottom: 0.35em; }
 .reveal .fallback-token-example {

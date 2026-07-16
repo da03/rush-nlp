@@ -262,6 +262,8 @@
 /* Active/selected toggle button (sentence + head selectors, causal toggle). */
 .reveal .demo-btn.primary { background: #1d4ed8; color: #fff; box-shadow: 0 0 0 2px #bfdbfe; }
 .reveal .demo-btn.primary:hover { background: #1e40af; }
+.reveal .demo-btn.primary:disabled,
+.reveal .demo-btn.primary:disabled:hover { background: #9ca3af; color: #fff; box-shadow: none; cursor: default; }
 
 /* Attention / causal-mask side panel (query -> weight bars). */
 .reveal .attn-panel { min-width: 220px; max-width: 300px; font-size: 0.72em; color: #374151; }
@@ -435,6 +437,18 @@
 }
 .reveal .lm-step-tail b { color: #475569; font-family: ui-monospace, Menlo, monospace; }
 .reveal .lm-step-right .demo-controls { margin-top: 0; }
+.reveal .lm-step-modes,
+.reveal .lm-step-actions { justify-content: center; }
+.reveal .lm-step-done {
+  display: grid;
+  place-items: center;
+  min-height: 9em;
+  border: 1px dashed #94a3b8;
+  border-radius: 6px;
+  color: #64748b;
+  font-size: 0.66em;
+  text-align: center;
+}
 .reveal .lm-step-result {
   min-height: 8em;
   border: 1px solid #cbd5e1;

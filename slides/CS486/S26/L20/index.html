@@ -11,11 +11,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../shared/demo.css?v=17">
+  <link rel="stylesheet" href="../shared/demo.css?v=19">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L19/custom.css?v=14">
-  <link rel="stylesheet" href="custom.css?v=9">
+  <link rel="stylesheet" href="custom.css?v=10">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -94,12 +94,12 @@
   <h2>A language model predicts a distribution</h2>
   <div class="sentence-prompt">The robot picked up the cup because it was <span>___</span></div>
   <div class="candidate-grid">
-    <div class="candidate fragment"><strong>empty</strong><span>very plausible</span></div>
-    <div class="candidate fragment target"><strong>blue</strong><span>also plausible</span></div>
+    <div class="candidate fragment target"><strong>empty</strong><span>very plausible</span></div>
+    <div class="candidate fragment"><strong>blue</strong><span>also plausible</span></div>
     <div class="candidate fragment"><strong>broken</strong><span>possible</span></div>
     <div class="candidate fragment muted"><strong>quantum</strong><span>unlikely</span></div>
   </div>
-  <div class="observed-target fragment"><span>training text continues with</span><strong>blue</strong></div>
+  <div class="observed-target fragment"><span>training text continues with</span><strong>empty</strong></div>
   <p class="micro-note fragment">The label is the <em>observed</em> next token—not the only meaningful continuation.</p>
 </section>
 
@@ -135,12 +135,12 @@
 <section>
   <h2>Learn reusable pieces by merging frequent pairs</h2>
   <div class="bpe-story">
-    <div class="bpe-row"><span>start small</span><code>l | o | w | e | r</code><code>l | o | w | e | s | t</code></div>
+    <div class="bpe-row"><span>start with characters</span><code>l | o | w | e | r</code><code>l | o | w | e | s | t</code></div>
     <div class="bpe-row fragment"><span>merge <b>l + o</b></span><code class="mark">lo | w | e | r</code><code class="mark">lo | w | e | s | t</code></div>
-    <div class="bpe-row fragment"><span>merge <b>lo + w</b></span><code class="mark">low | e | r</code><code class="mark">low | e | s | t</code></div>
-    <div class="bpe-row fragment"><span>fixed vocabulary</span><code>low | er | est</code><code>reusable pieces</code></div>
+    <div class="bpe-row fragment"><span>after many merges</span><code class="mark">low | er</code><code class="mark">low | est</code></div>
   </div>
-  <p class="takeaway fragment">Frequent text becomes short; rare text still decomposes into bytes.</p>
+  <div class="bpe-vocab fragment"><strong>Save the learned pieces:</strong><span>the tokenizer can now emit <code>low</code>, <code>er</code>, <code>est</code>, … as individual tokens.</span></div>
+  <p class="takeaway fragment">Freeze this piece list, then use the same tokenizer for every language-model example.</p>
   <p class="citation">Byte-pair encoding intuition; Sennrich, Haddow &amp; Birch, “Neural Machine Translation of Rare Words with Subword Units,” 2016.</p>
 </section>
 
@@ -165,7 +165,7 @@
       <div><strong>token</strong><strong>ID</strong><strong>lookup</strong></div>
       <div class="fragment"><code>The</code><code>785</code><span>\(\mathbf E_{785}\)</span></div>
       <div class="fragment"><code>&middot;robot</code><code>12305</code><span>\(\mathbf E_{12305}\)</span></div>
-      <div class="fragment"><code>&middot;blue</code><code>6303</code><span>\(\mathbf E_{6303}\)</span></div>
+      <div class="fragment"><code>&middot;empty</code><code>4287</code><span>\(\mathbf E_{4287}\)</span></div>
     </div>
     <div class="id-lessons">
       <p class="fragment"><strong>IDs are addresses.</strong><br>Nearby numbers need not mean nearby concepts.</p>
@@ -227,8 +227,8 @@
   <p class="running-context"><span class="toy-badge">toy vocabulary</span> context: <code>The robot picked up the cup because it was</code></p>
   <div class="score-table">
     <div><strong>candidate</strong><strong>logit</strong><strong>meaning</strong></div>
-    <div class="fragment top"><code>empty</code><b>2.0</b><span>most preferred</span></div>
-    <div class="fragment observed"><code>blue</code><b>1.0</b><span>observed target</span></div>
+    <div class="fragment top observed"><code>empty</code><b>2.0</b><span>observed target</span></div>
+    <div class="fragment"><code>blue</code><b>1.0</b><span>second choice</span></div>
     <div class="fragment"><code>broken</code><b>0.0</b><span>less preferred</span></div>
     <div class="fragment"><code>quantum</code><b>−1.0</b><span>least preferred</span></div>
   </div>
@@ -240,8 +240,8 @@
   <h2>Softmax turns those scores into probabilities</h2>
   <div class="softmax-equation">\(\displaystyle p_i=\frac{e^{\ell_i}}{\sum_j e^{\ell_j}}\)</div>
   <div class="prob-bars">
-    <div class="prob-bar fragment top"><span>empty</span><div><i style="width:64.4%"></i></div><b>0.644</b></div>
-    <div class="prob-bar fragment observed"><span>blue</span><div><i style="width:23.7%"></i></div><b>0.237</b></div>
+    <div class="prob-bar fragment top observed"><span>empty</span><div><i style="width:64.4%"></i></div><b>0.644</b></div>
+    <div class="prob-bar fragment"><span>blue</span><div><i style="width:23.7%"></i></div><b>0.237</b></div>
     <div class="prob-bar fragment"><span>broken</span><div><i style="width:8.7%"></i></div><b>0.087</b></div>
     <div class="prob-bar fragment"><span>quantum</span><div><i style="width:3.2%"></i></div><b>0.032</b></div>
   </div>
@@ -252,9 +252,9 @@
 <section class="center-slide">
   <h2>The observed token determines the loss</h2>
   <div class="loss-story">
-    <div class="fragment"><span>observed next token</span><strong>blue</strong></div>
-    <div class="fragment"><span>model assigned</span><strong>\(p(\text{blue})=0.237\)</strong></div>
-    <div class="fragment result"><span>cross-entropy</span><strong>\(-\ln 0.237=1.44\)</strong></div>
+    <div class="fragment"><span>observed next token</span><strong>empty</strong></div>
+    <div class="fragment"><span>model assigned</span><strong>\(p(\text{empty})=0.644\)</strong></div>
+    <div class="fragment result"><span>cross-entropy</span><strong>\(-\ln 0.644=0.44\)</strong></div>
   </div>
   <div class="loss-contrast fragment">
     <span>\(p(\text{target})=0.90 \Rightarrow L=0.11\)</span>
@@ -326,15 +326,15 @@
 <section class="center-slide">
   <h2>The gradient reaches the whole model</h2>
   <div class="gradient-pipeline">
-    <div class="fragment"><strong>embeddings</strong><span>token lookup vectors</span></div>
-    <b class="fragment">&larr;</b>
-    <div class="fragment"><strong>transformer blocks</strong><span>Q/K/V projections, feed-forward layers, norms</span></div>
-    <b class="fragment">&larr;</b>
-    <div class="fragment"><strong>output head</strong><span>hidden state &rarr; logits</span></div>
-    <b class="fragment">&larr;</b>
-    <div class="fragment loss"><strong>loss</strong><span>one scalar</span></div>
+    <div class="fragment" data-fragment-index="6"><strong>embeddings</strong><span>token lookup vectors</span></div>
+    <b class="fragment" data-fragment-index="5">&larr;</b>
+    <div class="fragment" data-fragment-index="4"><strong>transformer blocks</strong><span>Q/K/V projections, feed-forward layers, norms</span></div>
+    <b class="fragment" data-fragment-index="3">&larr;</b>
+    <div class="fragment" data-fragment-index="2"><strong>output head</strong><span>hidden state &rarr; logits</span></div>
+    <b class="fragment" data-fragment-index="1">&larr;</b>
+    <div class="fragment loss" data-fragment-index="0"><strong>loss</strong><span>start the backward pass here</span></div>
   </div>
-  <p class="micro-note fragment"><strong>Important:</strong> attention <em>weights</em> are recomputed for each input; the projection matrices that produce them are learned parameters.</p>
+  <p class="micro-note fragment" data-fragment-index="7"><strong>Important:</strong> attention <em>weights</em> are recomputed for each input; the projection matrices that produce them are learned parameters.</p>
 </section>
 
 <!-- 21. Self supervision -->
@@ -462,11 +462,11 @@
 <!-- 28. One real next-token step -->
 <section class="center-slide">
   <h2>Choose one token, append, repeat<span class="demo-badge">real model data</span></h2>
-  <p class="demo-caption">Qwen3-0.6B-Base &middot; exact raw next-token probabilities, including the undisplayed tail.</p>
+  <p class="demo-caption">Qwen3-0.6B-Base &middot; choose a rule, then click repeatedly to grow the context one token at a time.</p>
   <div class="live-demo" data-demo="lm-step">
     <div class="demo-fallback">
       <div class="fallback-step"><code>To be, or not to</code><b>&rarr;</b><span>a next-token distribution</span><b>&rarr;</b><code>be</code></div>
-      <p>On the live slide, choose argmax or draw one sample; the chosen token is appended to the context.</p>
+      <p>On the live slide, choose argmax or sampling, then append several successive tokens from a real precomputed trace.</p>
     </div>
   </div>
 </section>
@@ -533,6 +533,6 @@
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=31"></script>
+<script type="module" src="../shared/demo.js?v=32"></script>
 </body>
 </html>
