@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8">
   <title>CS 486/686 Lecture 21 - Dissecting a Small Language Model</title>
+  <link rel="icon" href="data:,">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 21: Dissecting a small language model - Qwen3-0.6B, tokenizer/model/config loading, token traces, logits, decoding, prompting, few-shot prompting, thinking mode, and failure modes. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 21: Dissecting Qwen3-0.6B end to end - chat templates, real tokens and configuration, Qwen transformer internals, attention, logits, KV caching, decoding, prompting, thinking mode, and failure analysis. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../shared/demo.css?v=12">
+  <link rel="stylesheet" href="../shared/demo.css?v=20">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
-  <link rel="stylesheet" href="../L20/custom.css?v=4">
-  <link rel="stylesheet" href="custom.css?v=3">
+  <link rel="stylesheet" href="../L20/custom.css?v=10">
+  <link rel="stylesheet" href="custom.css?v=6">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -51,10 +52,10 @@
   <div class="course-title">CS 486/686<br>Dissecting a Small Language Model</div>
   <div class="author"><a href="https://yuntiandeng.com/">Yuntian Deng</a></div>
   <p>Lecture 21</p>
-  <p class="credit">Opening the hood on Qwen3-0.6B</p>
+  <p class="credit">One real Qwen turn, end to end</p>
 </section>
 
-<!-- 2. Learning goals -->
+<!-- 2. Outcomes -->
 <section class="center-slide">
   <div class="course-breadcrumb">
     <span class="bc-pill search">Search</span>
@@ -65,452 +66,454 @@
     <span class="bc-arrow">&rsaquo;</span>
     <span class="bc-pill learn current">Learning</span>
   </div>
-  <h2>Learning goals</h2>
-  <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Load or inspect a <strong>small causal LM</strong>.</li>
-    <li class="fragment">Trace one generated token at a time.</li>
-    <li class="fragment">See how <strong>decoding</strong> and <strong>prompting</strong> change behavior.</li>
-    <li class="fragment">Recognize limitations and failure modes.</li>
+  <h2>By the end, you can dissect one Qwen turn</h2>
+  <ul class="l21-outcomes">
+    <li class="fragment">Run <strong>Qwen3-0.6B</strong> in Python or a browser.</li>
+    <li class="fragment">Trace messages &rarr; template &rarr; tokens &rarr; hidden states &rarr; logits.</li>
+    <li class="fragment">Map real Qwen config fields onto a transformer block.</li>
+    <li class="fragment">Explain <strong>prefill, decode, and the KV cache</strong>.</li>
+    <li class="fragment">Predict how decoding and prompts change behavior.</li>
+    <li class="fragment">Recognize where a fixed model is insufficient.</li>
   </ul>
 </section>
 
-<!-- 3. From L20 to L21 -->
+<!-- 3. Base to assistant -->
 <section class="center-slide">
-  <h2>From L20 to L21</h2>
-  <svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
-    <g class="lm-boxes">
-      <rect x="25" y="55" width="110" height="46" rx="7"/><text x="80" y="83">text</text>
-      <rect x="175" y="55" width="115" height="46" rx="7"/><text x="232" y="83">tokens</text>
-      <rect x="330" y="55" width="190" height="46" rx="7"/><text x="425" y="83">causal transformer</text>
-      <rect x="560" y="55" width="110" height="46" rx="7"/><text x="615" y="83">logits</text>
-      <rect x="710" y="55" width="130" height="46" rx="7" class="question"/><text x="775" y="83">next token</text>
-    </g>
-    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l21)">
-      <line x1="135" y1="78" x2="170" y2="78"/><line x1="290" y1="78" x2="325" y2="78"/><line x1="520" y1="78" x2="555" y2="78"/><line x1="670" y1="78" x2="705" y2="78"/>
-    </g>
-  </svg>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">L20 taught the pipeline. Today we watch it run.</p>
+  <h2>L20 built a base model. Today we run an assistant.</h2>
+  <div class="model-stage-flow">
+    <div><strong>Qwen3-0.6B-Base</strong><span>pretraining: continue text</span></div>
+    <b class="fragment">&rarr;</b>
+    <div class="post fragment"><strong>post-training</strong><span>demonstrations, preferences, distillation</span></div>
+    <b class="fragment">&rarr;</b>
+    <div class="assistant fragment"><strong>Qwen3-0.6B</strong><span>follow instructions + switch thinking mode</span></div>
+  </div>
+  <p class="l21-takeaway fragment">Same causal architecture; new behavior learned after pretraining.</p>
 </section>
 
-<!-- 4. Model card -->
+<!-- 4. Roadmap -->
+<section class="center-slide">
+  <h2>One user turn crosses six boundaries</h2>
+  <div class="turn-roadmap">
+    <div class="fragment"><b>1</b><span>messages</span></div><i class="fragment">&rarr;</i>
+    <div class="fragment"><b>2</b><span>chat template</span></div><i class="fragment">&rarr;</i>
+    <div class="fragment"><b>3</b><span>token IDs</span></div><i class="fragment">&rarr;</i>
+    <div class="fragment"><b>4</b><span>28 blocks</span></div><i class="fragment">&rarr;</i>
+    <div class="fragment"><b>5</b><span>logits</span></div><i class="fragment">&rarr;</i>
+    <div class="fragment"><b>6</b><span>decode loop</span></div>
+  </div>
+  <p class="l21-takeaway fragment">We will inspect the real object at every boundary.</p>
+</section>
+
+<!-- 5. Model card -->
 <section>
-  <h2>The model we will dissect</h2>
-  <div class="two-col vcenter">
-    <div style="flex:0.95;">
-      <div class="model-badge">Qwen3-0.6B</div>
-      <p style="font-size:0.86em; color:#6b7280; text-align:center;">a real small causal language model</p>
-    </div>
-    <div style="flex:1.05;">
-      <div class="fact-grid">
-        <div><strong>0.6B</strong><span>parameters</span></div>
-        <div><strong>28</strong><span>layers</span></div>
-        <div><strong>32k</strong><span>context</span></div>
-        <div><strong>~151k</strong><span>vocab</span></div>
-        <div><strong>GQA</strong><span>16 Q / 8 KV</span></div>
-        <div><strong>BBPE</strong><span>tokenizer</span></div>
-      </div>
+  <h2>The real model we will dissect</h2>
+  <div class="qwen-card">
+    <div class="qwen-name"><strong>Qwen3-0.6B</strong><span>dense, decoder-only, post-trained</span></div>
+    <div class="qwen-facts">
+      <div class="fragment"><strong>28</strong><span>layers</span></div>
+      <div class="fragment"><strong>1024</strong><span>hidden width</span></div>
+      <div class="fragment"><strong>3072</strong><span>FFN width</span></div>
+      <div class="fragment"><strong>16 / 8</strong><span>Q / KV heads</span></div>
+      <div class="fragment"><strong>128</strong><span>head width</span></div>
+      <div class="fragment"><strong>~152k</strong><span>output scores</span></div>
+      <div class="fragment"><strong>32k</strong><span>supported context</span></div>
+      <div class="fragment"><strong>tied</strong><span>input/output matrix</span></div>
     </div>
   </div>
-  <p class="fragment" style="font-size:0.84em; color:#1d4ed8; text-align:center;">A "small" LM is still a serious learned system.</p>
+  <p class="citation">Qwen Team, “Qwen3 Technical Report,” 2025.</p>
 </section>
 
-<!-- 5. What gets loaded -->
-<section class="center-slide">
-  <h2>What gets loaded?</h2>
-  <div class="task-cards" style="grid-template-columns:repeat(4,1fr);">
-    <div class="task-card fragment"><h3>tokenizer</h3><p style="font-size:0.78em;">text &harr; token IDs</p></div>
-    <div class="task-card fragment"><h3>config</h3><p style="font-size:0.78em;">layers, heads, vocab</p></div>
-    <div class="task-card fragment"><h3>weights</h3><p style="font-size:0.78em;">learned parameters</p></div>
-    <div class="task-card fragment"><h3>settings</h3><p style="font-size:0.78em;">temperature, max tokens</p></div>
-  </div>
-</section>
-
-<!-- 6. Demo path -->
-<section class="center-slide">
-  <h2>Demo path and fallback</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
-    <div class="task-card"><h3>optional live path</h3><p style="font-size:0.8em;">Transformers.js + ONNX + WebGPU</p></div>
-    <div class="task-card fragment"><h3>reliable path</h3><p style="font-size:0.8em;">precomputed traces embedded here</p></div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">The concepts do not depend on a live GPU demo working.</p>
-</section>
-
-<!-- 7. JS code -->
+<!-- 6. Config -->
 <section>
-  <h2>Optional browser inference</h2>
-  <pre style="font-size:0.52em; width:84%; margin:0.35em auto;"><code>import { pipeline, TextStreamer } from "@huggingface/transformers";
+  <h2>Config is architecture written as data</h2>
+  <div class="config-map">
+    <pre><code>{
+  "hidden_size": 1024,
+  "intermediate_size": 3072,
+  "num_hidden_layers": 28,
+  "num_attention_heads": 16,
+  "num_key_value_heads": 8,
+  "head_dim": 128,
+  "vocab_size": 151936,
+  "tie_word_embeddings": true
+}</code></pre>
+    <div class="config-meaning">
+      <div class="fragment"><strong>state</strong><span>\([T,1024]\) residual stream</span></div>
+      <div class="fragment"><strong>communicate</strong><span>16 query heads share 8 K/V heads</span></div>
+      <div class="fragment"><strong>compute</strong><span>3072-wide SwiGLU sublayer</span></div>
+      <div class="fragment"><strong>predict</strong><span>151,936 logits; input/output weights tied</span></div>
+    </div>
+  </div>
+</section>
 
-const generator = await pipeline(
+<!-- 7. Messages -->
+<section class="center-slide">
+  <h2>The API receives structured messages</h2>
+  <div class="messages-code">
+    <pre><code>messages = [
+    {
+        "role": "user",
+        "content": "Explain gradient descent in one sentence."
+    }
+]</code></pre>
+  </div>
+  <div class="message-parts">
+    <div class="fragment"><strong>role</strong><span>who is speaking?</span></div>
+    <div class="fragment"><strong>content</strong><span>what did they say?</span></div>
+  </div>
+  <p class="l21-takeaway fragment">The model still consumes tokens—so this structure must become one string.</p>
+</section>
+
+<!-- 8. Template -->
+<section>
+  <h2>The chat template serializes one turn</h2>
+  <div class="template-build">
+    <div class="fragment special">&lt;|im_start|&gt;</div><div class="fragment role">user</div>
+    <div class="fragment content">Explain gradient descent in one sentence.</div>
+    <div class="fragment special">&lt;|im_end|&gt;</div>
+    <div class="fragment special">&lt;|im_start|&gt;</div><div class="fragment role">assistant</div>
+    <div class="fragment generation-cue">generation starts here</div>
+  </div>
+  <p class="l21-takeaway fragment">No system message appears unless we actually supplied one.</p>
+</section>
+
+<!-- 9. Template demo -->
+<section class="center-slide">
+  <h2>Inspect the exact serialized input<span class="demo-badge">live data</span></h2>
+  <p class="demo-caption">Raw messages &rarr; Qwen special tokens &rarr; thinking ON/OFF generation cue.</p>
+  <div class="live-demo" data-demo="chat-template">
+    <div class="demo-fallback">
+      <div class="template-fallback"><code>&lt;|im_start|&gt;user</code><span>message</span><code>&lt;|im_end|&gt;</code><code>&lt;|im_start|&gt;assistant</code></div>
+      <p>Thinking OFF pre-fills an empty think block; thinking ON lets Qwen generate the block.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 10. Tokens -->
+<section>
+  <h2>Tokenization happens after templating</h2>
+  <div class="exact-token-grid">
+    <div class="special fragment"><span>&lt;|im_start|&gt;</span><small>151644</small></div>
+    <div class="role fragment"><span>user</span><small>872</small></div>
+    <div class="special fragment"><span>&crarr;</span><small>198</small></div>
+    <div class="content fragment"><span>Ex</span><small>840</small></div>
+    <div class="content fragment"><span>plain</span><small>20772</small></div>
+    <div class="content fragment"><span>&middot;gradient</span><small>20169</small></div>
+    <div class="content fragment"><span>&middot;descent</span><small>36952</small></div>
+    <div class="content fragment"><span>&middot;in</span><small>304</small></div>
+    <div class="content fragment"><span>&middot;one</span><small>825</small></div>
+    <div class="content fragment"><span>&middot;sentence</span><small>11652</small></div>
+    <div class="content fragment"><span>.</span><small>13</small></div>
+    <div class="more fragment"><span>&hellip; role markers + generation cue</span></div>
+  </div>
+  <p class="l21-note fragment"><strong>&middot;</strong> means a leading space. IDs shown are actual Qwen tokenizer outputs, not illustrative.</p>
+</section>
+
+<!-- 11. Embeddings -->
+<section class="center-slide">
+  <h2>Token IDs become a \([T,1024]\) residual stream</h2>
+  <div class="tensor-flow">
+    <div><strong>IDs</strong><span>\([1,T]\)</span></div><b>&rarr;</b>
+    <div class="fragment"><strong>embedding lookup</strong><span>\(E\in\mathbb R^{151936\times1024}\)</span></div><b class="fragment">&rarr;</b>
+    <div class="fragment"><strong>hidden states</strong><span>\([1,T,1024]\)</span></div>
+  </div>
+  <div class="rope-note fragment"><strong>Qwen position:</strong> RoPE rotates query/key dimensions inside attention; it is not an added position vector.</div>
+  <p class="l21-takeaway fragment">The same matrix \(E\) returns at the end to score output tokens.</p>
+</section>
+
+<!-- 12. Actual Qwen block -->
+<section>
+  <h2>L19’s block, with Qwen’s real component names</h2>
+  <div class="qwen-block-map">
+    <div class="abstract"><strong>communicate</strong><span>attention mixes context</span></div>
+    <b>&rarr;</b>
+    <div class="actual fragment">
+      <span>RMSNorm</span><i>&rarr;</i><span>QK-Norm + RoPE</span><i>&rarr;</i><span>GQA</span><i>&rarr;</i><span>residual add</span>
+    </div>
+    <div class="abstract fragment"><strong>compute</strong><span>each token transforms itself</span></div>
+    <b class="fragment">&rarr;</b>
+    <div class="actual fragment">
+      <span>RMSNorm</span><i>&rarr;</i><span>SwiGLU FFN</span><i>&rarr;</i><span>residual add</span>
+    </div>
+  </div>
+  <p class="l21-note fragment">The abstraction is unchanged; these names specify Qwen’s implementation.</p>
+</section>
+
+<!-- 13. GQA -->
+<section>
+  <h2>Grouped-query attention: 16 Q heads share 8 K/V heads</h2>
+  <div class="gqa-visual">
+    <div class="gqa-queries">
+      <span class="fragment">Q1</span><span class="fragment">Q2</span><span class="fragment">Q3</span><span class="fragment">Q4</span>
+    </div>
+    <div class="gqa-links fragment">
+      <div><b>Q1, Q2</b><i>&darr;</i><strong>K/V 1</strong></div>
+      <div><b>Q3, Q4</b><i>&darr;</i><strong>K/V 2</strong></div>
+    </div>
+  </div>
+  <div class="gqa-why fragment"><strong>Why share?</strong><span>Keep many query views, but store half as many K/V heads in the cache.</span></div>
+  <p class="l21-note fragment">The real model repeats this pattern: 16 query heads grouped over 8 key/value heads.</p>
+</section>
+
+<!-- 14. Stack -->
+<section class="center-slide">
+  <h2>The same residual stream passes through 28 blocks</h2>
+  <div class="residual-stack">
+    <div class="state"><strong>\(\mathbf H^0\)</strong><span>embedded prompt</span></div>
+    <b>&rarr;</b><div class="block fragment">block 1</div>
+    <b class="fragment">&rarr;</b><div class="block fragment">block 2</div>
+    <b class="fragment">&rarr;</b><div class="dots fragment">&hellip;</div>
+    <b class="fragment">&rarr;</b><div class="block fragment">block 28</div>
+    <b class="fragment">&rarr;</b><div class="state final fragment"><strong>\(\mathbf H^{28}\)</strong><span>contextual states</span></div>
+  </div>
+  <p class="l21-takeaway fragment">Every block adds an update; the residual stream carries the evolving \([T,1024]\) representation.</p>
+</section>
+
+<!-- 15. Attention demo -->
+<section>
+  <h2>Inspect one measured attention pattern<span class="demo-badge">real model data</span></h2>
+  <p class="demo-caption">Pick a selected layer/head pattern, then choose a query token and read its exact causal row.</p>
+  <div class="live-demo" data-demo="lm-attention">
+    <div class="demo-fallback">
+      <div class="attention-fallback"><strong>query: it</strong><span>robot 0.74</span><span>cup 0.10</span><span>picked 0.04</span></div>
+      <p>This is one curated head/layer measurement—not a complete explanation of the model.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 16. Attention caveat -->
+<section class="center-slide">
+  <h2>Attention is a measurement—not an explanation</h2>
+  <div class="attention-caveats">
+    <div class="fragment"><strong>one head</strong><span>among 16 heads × 28 layers</span></div>
+    <div class="fragment"><strong>curated</strong><span>selected because its pattern was interpretable</span></div>
+    <div class="fragment"><strong>not causal proof</strong><span>large weight does not prove decisive influence</span></div>
+  </div>
+  <p class="l21-takeaway fragment">Use attention to inspect a computation—not to claim the model’s full reason.</p>
+  <p class="citation">Jain &amp; Wallace, “Attention is not Explanation,” NAACL 2019.</p>
+</section>
+
+<!-- 17. Output -->
+<section>
+  <h2>The final state is scored by the tied embedding matrix</h2>
+  <div class="output-shape-flow">
+    <div><strong>last state</strong><span>\([1024]\)</span></div><b>&rarr;</b>
+    <div class="fragment"><strong>tied \(E\)</strong><span>\([151936,1024]\)</span></div><b class="fragment">&rarr;</b>
+    <div class="fragment"><strong>logits</strong><span>\([151936]\)</span></div><b class="fragment">&rarr;</b>
+    <div class="fragment"><strong>softmax</strong><span>next-token distribution</span></div>
+  </div>
+  <div class="real-next-bars fragment">
+    <div><span>Gradient</span><i style="width:98.5%"></i><b>0.985</b></div>
+    <div><span>The</span><i style="width:0.36%"></i><b>0.004</b></div>
+    <div><span>A</span><i style="width:0.36%"></i><b>0.004</b></div>
+    <div class="tail"><span>all other tokens</span><b>~0.007</b></div>
+  </div>
+  <p class="l21-note fragment">Real Qwen trace after the non-thinking template for “Explain gradient descent in one sentence.”</p>
+</section>
+
+<!-- 18. Real generation trace -->
+<section class="center-slide">
+  <h2>Append one token, then score again<span class="demo-badge">real model data</span></h2>
+  <p class="demo-caption">Step through an exact Qwen continuation; every distribution is conditioned on the enlarged context.</p>
+  <div class="live-demo" data-demo="qwen-trace">
+    <div class="demo-fallback">
+      <div class="trace-fallback"><span>…assistant</span><b>&rarr;</b><mark>Gradient</mark><b>&rarr;</b><mark>&middot;descent</mark><b>&rarr;</b><mark>&middot;is</mark></div>
+      <p>Each appended token becomes part of the next model input.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19. Prefill vs decode -->
+<section class="center-slide">
+  <h2>Inference has two phases</h2>
+  <div class="phase-compare">
+    <div class="prefill">
+      <h3>1. prefill</h3>
+      <div class="phase-tokens"><span>prompt</span><span>tokens</span><span>in parallel</span></div>
+      <p class="fragment">Build hidden states and K/V cache for the whole prompt.</p>
+    </div>
+    <div class="decode fragment">
+      <h3>2. decode</h3>
+      <div class="phase-tokens"><span>one</span><span>new</span><span>token</span></div>
+      <p class="fragment">Generate sequentially, one distribution per step.</p>
+    </div>
+  </div>
+  <p class="l21-takeaway fragment">Parallel prefill; sequential decode.</p>
+</section>
+
+<!-- 20. Cache concept -->
+<section>
+  <h2>KV cache reuses the past at every layer</h2>
+  <div class="cache-concept">
+    <div class="cache-old"><strong>cached K/V</strong><span>prompt + prior generated tokens</span><div class="cache-slots"><i></i><i></i><i></i><i></i><i></i></div></div>
+    <b class="fragment">+</b>
+    <div class="cache-new fragment"><strong>new token</strong><span>compute one new Q, K, V per layer</span><div class="cache-slots"><i></i></div></div>
+    <b class="fragment">&rarr;</b>
+    <div class="cache-next fragment"><strong>next cache</strong><span>append the new K/V</span></div>
+  </div>
+  <p class="l21-note fragment">The new query still attends over every cached source; caching avoids recomputing old K/V and hidden states.</p>
+</section>
+
+<!-- 21. Cache demo -->
+<section class="center-slide">
+  <h2>How much recomputation does the cache avoid?<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Step through prefill and decode; compare token-work with and without cached K/V.</p>
+  <div class="live-demo" data-demo="kv-cache">
+    <div class="demo-fallback">
+      <div class="cache-fallback"><span>without cache: \(4+5+6=15\)</span><span>with cache: \(4+1+1=6\)</span></div>
+      <p>Prefill computes the prompt once; each decode step adds one new cache slot.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 22. Context cost -->
+<section class="center-slide">
+  <h2>Context is working memory—and cache memory</h2>
+  <div class="context-budget">
+    <div class="prompt">prompt tokens</div><div class="generated">generated tokens</div><div class="remaining">remaining window</div>
+  </div>
+  <div class="cost-grid">
+    <div class="fragment"><strong>window</strong><span>prompt + output share Qwen’s 32k context</span></div>
+    <div class="fragment"><strong>cache memory</strong><span>grows with layers × KV heads × length</span></div>
+    <div class="fragment"><strong>latency</strong><span>decode remains token-by-token</span></div>
+  </div>
+  <p class="l21-takeaway fragment">The cache buys speed by spending memory.</p>
+</section>
+
+<!-- 23. Python -->
+<section>
+  <h2>The complete Python inference path</h2>
+  <div class="inference-code">
+    <div class="code-step fragment"><span class="cmt"># 1. load tokenizer + post-trained weights</span><code class="line">from transformers import AutoModelForCausalLM, AutoTokenizer</code><code class="line">tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B")</code><code class="line">model = AutoModelForCausalLM.from_pretrained(</code><code class="line indent">"Qwen/Qwen3-0.6B", torch_dtype="auto", device_map="auto")</code></div>
+    <div class="code-step fragment"><span class="cmt"># 2. serialize the role/content messages</span><code class="line">text = tok.apply_chat_template(messages, tokenize=False,</code><code class="line indent">add_generation_prompt=True, enable_thinking=False)</code></div>
+    <div class="code-step fragment"><span class="cmt"># 3. tokenize and move tensors beside the model</span><code class="line">inputs = tok(text, return_tensors="pt").to(model.device)</code></div>
+    <div class="code-step fragment"><span class="cmt"># 4. autoregressively append new token IDs</span><code class="line">all_ids = model.generate(**inputs, max_new_tokens=64,</code><code class="line indent">do_sample=True, temperature=.7, top_p=.8, top_k=20)</code></div>
+    <div class="code-step fragment"><span class="cmt"># 5. remove the prompt IDs, then decode only the answer</span><code class="line">new_ids = all_ids[0, inputs.input_ids.shape[1]:]</code><code class="line">answer = tok.decode(new_ids, skip_special_tokens=True)</code></div>
+  </div>
+</section>
+
+<!-- 24. Browser -->
+<section>
+  <h2>The same path can run in the browser</h2>
+  <div class="browser-code">
+    <pre><code>import { pipeline } from "@huggingface/transformers";
+
+const qwen = await pipeline(
   "text-generation",
   "onnx-community/Qwen3-0.6B-ONNX",
   { device: "webgpu", dtype: "q4f16" },
-);</code></pre>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">This loads a web-ready tokenizer and quantized model weights.</p>
-</section>
+);
 
-<!-- 8. Python code -->
-<section>
-  <h2>The same pipeline in Python</h2>
-  <pre style="font-size:0.56em; width:82%; margin:0.35em auto;"><code>tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B")
-model = AutoModelForCausalLM.from_pretrained(
-    "Qwen/Qwen3-0.6B",
-    torch_dtype="auto",
-    device_map="auto",
-)</code></pre>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Browser and Python paths expose the same conceptual pieces.</p>
-</section>
-
-<!-- 9. Prompt -->
-<section class="center-slide">
-  <h2>Start with a prompt</h2>
-  <div class="prompt-box">Explain gradient descent in one sentence.</div>
-  <p class="fragment" style="font-size:0.9em; color:#6b7280;">Inference begins as human-readable text.</p>
-</section>
-
-<!-- 10. Chat template -->
-<section>
-  <h2>The model sees a chat template</h2>
-  <div class="chat-template">
-    <div><strong>system</strong><span>You are a helpful assistant.</span></div>
-    <div><strong>user</strong><span>Explain gradient descent in one sentence.</span></div>
-    <div><strong>assistant</strong><span></span></div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The model's actual input is usually not exactly what the user typed.</p>
-</section>
-
-<!-- 10b. Chat-template inspector (live) -->
-<section class="center-slide">
-  <h2>What the model actually receives<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">The chat template wraps your text in roles and special tokens.</p>
-  <div class="live-demo" data-demo="chat-template">
-    <div class="demo-fallback">Interactive on the live slides: pick a user message and see the exact string the model receives after the chat template adds the system/user/assistant structure and special tokens (like the Qwen &lt;|im_start|&gt; markers). Toggling thinking mode inserts a reasoning section the model fills in before answering.</div>
-  </div>
-</section>
-
-<!-- 11. Prompt to tokens -->
-<section>
-  <h2>Prompt to tokens</h2>
-  <div class="tok-row">
-    <span class="tok">Explain</span><span class="tok"> gradient</span><span class="tok"> descent</span><span class="tok"> in</span><span class="tok"> one</span><span class="tok"> sentence</span><span class="tok">.</span>
-  </div>
-  <table class="factor-table" style="font-size:0.72em; margin:0.45em auto;">
-    <thead><tr><th>token</th><th>illustrative id</th></tr></thead>
-    <tbody>
-      <tr><td>Explain</td><td>8493</td></tr>
-      <tr><td> gradient</td><td>33497</td></tr>
-      <tr><td> descent</td><td>41184</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- 12. Embeddings -->
-<section class="center-slide">
-  <h2>Tokens become embeddings</h2>
-  <svg viewBox="0 0 820 145" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
-    <g class="lm-boxes">
-      <rect x="55" y="50" width="130" height="46" rx="7"/><text x="120" y="78">token ID</text>
-      <rect x="265" y="50" width="170" height="46" rx="7"/><text x="350" y="78">embedding row</text>
-      <rect x="515" y="50" width="170" height="46" rx="7"/><text x="600" y="78">vector</text>
-    </g>
-    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l21)">
-      <line x1="185" y1="73" x2="260" y2="73"/><line x1="435" y1="73" x2="510" y2="73"/>
-    </g>
-  </svg>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Each token begins generation as a learned vector.</p>
-</section>
-
-<!-- 13. 28 blocks -->
-<section>
-  <h2>Through 28 transformer blocks</h2>
-  <div class="two-col vcenter">
-    <div style="flex:0.9; text-align:center;">
-      <svg viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg" class="block-stack">
-        <rect x="55" y="225" width="130" height="34" rx="6"/><text x="120" y="246">block 1</text>
-        <rect x="55" y="180" width="130" height="34" rx="6"/><text x="120" y="201">block 2</text>
-        <text x="120" y="158">...</text>
-        <rect x="55" y="98" width="130" height="34" rx="6"/><text x="120" y="119">block 27</text>
-        <rect x="55" y="53" width="130" height="34" rx="6"/><text x="120" y="74">block 28</text>
-      </svg>
+const messages = [{
+  role: "user",
+  content: "Explain gradient descent.",
+}];
+const result = await qwen(messages, {
+  max_new_tokens: 64,
+  do_sample: true, temperature: 0.7, top_p: 0.8, top_k: 20,
+});
+console.log(result[0].generated_text.at(-1).content);</code></pre>
+    <div class="runtime-paths">
+      <div class="fragment"><strong>instant path</strong><span>audited traces embedded in the deck</span></div>
+      <div class="fragment"><strong>optional live path</strong><span>several-hundred-MB download + compatible WebGPU</span></div>
     </div>
-    <div style="flex:1.05;">
-      <p style="font-size:0.9em;"><strong>Attention:</strong> communicate across context.</p>
-      <p class="fragment" style="font-size:0.9em;"><strong>Feed-forward:</strong> per-token computation.</p>
-      <p class="fragment" style="font-size:0.86em; color:#6b7280;">Residuals and normalization keep the deep stack stable.</p>
+  </div>
+  <p class="l21-note fragment">The concepts and default demos never depend on the live download succeeding.</p>
+</section>
+
+<!-- 25. Greedy vs sample -->
+<section>
+  <h2>One distribution, two selection rules</h2>
+  <p class="decode-context">Qwen context: <code>Write a creative name for a friendly blue robot.</code></p>
+  <div class="selection-compare">
+    <div class="distribution">
+      <div><span>**</span><i style="width:100%"></i><b>0.559</b></div>
+      <div><span>Sure</span><i style="width:36.8%"></i><b>0.205</b></div>
+      <div><span>Here</span><i style="width:10.5%"></i><b>0.059</b></div>
+      <div><span>Maybe</span><i style="width:9.3%"></i><b>0.052</b></div>
+    </div>
+    <div class="rules">
+      <div class="fragment"><strong>greedy</strong><span>always choose argmax: <code>**</code></span></div>
+      <div class="fragment"><strong>sampling</strong><span>draw according to probability: varied path</span></div>
+    </div>
+  </div>
+  <p class="l21-takeaway fragment">The weights and distribution are fixed; only the selection rule changes.</p>
+</section>
+
+<!-- 26. Filters -->
+<section>
+  <h2>Temperature reshapes; top-k and top-p trim</h2>
+  <div class="decode-transform">
+    <div class="fragment"><strong>temperature</strong><span>\(T&lt;1\): sharper &nbsp; \(T=1\): unchanged &nbsp; \(T&gt;1\): flatter</span><small>Ranking stays the same.</small></div>
+    <div class="fragment"><strong>top-k = 3</strong><span>keep **, Sure, Here</span><small>Remove every token below rank 3.</small></div>
+    <div class="fragment"><strong>top-p = .8</strong><span>.559 + .205 + .059 = .823</span><small>Keep the smallest prefix reaching 0.8.</small></div>
+    <div class="fragment result"><strong>renormalize</strong><span>sample only from the kept candidates</span></div>
+  </div>
+</section>
+
+<!-- 27. Qwen lab -->
+<section class="center-slide">
+  <h2>Run Qwen with honest decoding presets<span class="demo-badge">real model data</span></h2>
+  <p class="demo-caption">Every preset has its own exact distributions and continuation; append repeatedly or optionally run the same settings live.</p>
+  <div class="live-demo" data-demo="qwen-run">
+    <div class="demo-fallback">
+      <div class="run-fallback"><span>greedy</span><span>recommended non-thinking</span><span>recommended thinking</span></div>
+      <p>On the live slide, each preset changes the displayed distribution, chosen token, and continuation.</p>
     </div>
   </div>
 </section>
 
-<!-- 13b. Real attention dissection (live model) -->
+<!-- 28. Prompting -->
 <section>
-  <h2>Inside the blocks: real attention<span class="demo-badge">live model</span></h2>
-  <p class="demo-caption">Actual Qwen3-0.6B attention &mdash; pick a head, click a query token.</p>
-  <div class="live-demo" data-demo="lm-attention">
-    <div class="demo-fallback">Interactive on the live slides: real attention read out from inside Qwen3-0.6B (28 layers, 16 heads). Different layer/head pairs specialize &mdash; one links a pronoun to its referent ("it" attends to "robot"), one tracks the previous token, one spreads broadly. Click a query token to see its attention row.</div>
+  <h2>Prompting changes tokens in context—not weights</h2>
+  <div class="prompt-anatomy">
+    <div class="fragment"><strong>role</strong><span>You are a patient tutor.</span></div>
+    <div class="fragment"><strong>task</strong><span>Explain gradient descent.</span></div>
+    <div class="fragment"><strong>audience</strong><span>Use language for a 10-year-old.</span></div>
+    <div class="fragment"><strong>examples</strong><span>Input/output pairs specify a pattern.</span></div>
+    <div class="fragment"><strong>format</strong><span>One sentence; no equations.</span></div>
   </div>
+  <div class="prompt-equation fragment"><span>zero-shot</span><b>+</b><span>examples</span><b>=</b><span>few-shot prompt</span></div>
+  <div class="prompt-output-pair fragment">
+    <div><strong>general prompt</strong><span>“Gradient descent is a method used to minimize a function …”</span></div>
+    <div><strong>10-year-old prompt</strong><span>“Gradient descent is like a way to get closer to the best answer …”</span></div>
+  </div>
+  <p class="l21-note fragment">Real greedy Qwen outputs. More instructions and examples are simply more conditioning tokens.</p>
 </section>
 
-<!-- 14. Last position -->
-<section class="center-slide">
-  <h2>The last position predicts next</h2>
-  <svg viewBox="0 0 850 150" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
-    <g class="lm-boxes">
-      <rect x="45" y="55" width="190" height="46" rx="7"/><text x="140" y="83">last hidden vector</text>
-      <rect x="330" y="55" width="130" height="46" rx="7"/><text x="395" y="83">output head</text>
-      <rect x="560" y="55" width="150" height="46" rx="7" class="question"/><text x="635" y="83">next-token logits</text>
-    </g>
-    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l21)">
-      <line x1="235" y1="78" x2="325" y2="78"/><line x1="460" y1="78" x2="555" y2="78"/>
-    </g>
-  </svg>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">For generation, the next distribution comes from the final prompt position.</p>
-</section>
-
-<!-- 15. Logits -->
+<!-- 29. Thinking -->
 <section>
-  <h2>Logits: top candidates</h2>
-  <p style="font-size:0.82em;">Illustrative trace after the prompt: <code>Explain gradient descent in one sentence.</code></p>
-  <table class="factor-table" style="font-size:0.76em; margin:0.35em auto;">
-    <thead><tr><th>candidate token</th><th>logit</th><th>interpretation</th></tr></thead>
-    <tbody>
-      <tr style="background:#dcfce7;"><td>Gradient</td><td>8.4</td><td>high</td></tr>
-      <tr><td>It</td><td>6.8</td><td>medium</td></tr>
-      <tr><td>A</td><td>6.3</td><td>medium</td></tr>
-      <tr><td>zq</td><td>-2.5</td><td>very low</td></tr>
-    </tbody>
-  </table>
-  <p class="fragment" style="font-size:0.8em; color:#6b7280; text-align:center;">The exact values here are a teaching trace, not a live benchmark.</p>
+  <h2>Thinking mode changes the generation protocol</h2>
+  <div class="thinking-compare">
+    <div class="off">
+      <h3>thinking OFF</h3>
+      <code>&lt;think&gt;<br><br>&lt;/think&gt;</code>
+      <p>Template pre-fills an empty block, then Qwen answers.</p>
+      <small>\(T=.7,\;p=.8,\;k=20\)</small>
+    </div>
+    <div class="on fragment">
+      <h3>thinking ON</h3>
+      <code>&lt;|im_start|&gt;assistant<br>…</code>
+      <p>Qwen generates <span class="inline-code">&lt;think&gt;…&lt;/think&gt;</span> before its answer.</p>
+      <small>\(T=.6,\;p=.95,\;k=20\)</small>
+    </div>
+  </div>
+  <p class="l21-note fragment">Reasoning text can help on hard tasks, but costs tokens and is not guaranteed correct or causally faithful.</p>
 </section>
 
-<!-- 16. Softmax -->
+<!-- 30. Failure and bridge -->
 <section>
-  <h2>Softmax and decoding choice</h2>
-  <div class="lm-bars">
-    <div class="lm-bar hot"><span>Gradient</span><div style="height:118px;"></div><b>0.54</b></div>
-    <div class="lm-bar"><span>It</span><div style="height:55px;"></div><b>0.21</b></div>
-    <div class="lm-bar"><span>A</span><div style="height:42px;"></div><b>0.16</b></div>
-    <div class="lm-bar"><span>zq</span><div style="height:8px;"></div><b>0.00</b></div>
+  <h2>A fluent answer can still be fabricated</h2>
+  <div class="failure-evidence">
+    <div class="question"><strong>user</strong><span>Who won the 2031 Turing Award?</span></div>
+    <div class="answer fragment"><strong>real Qwen output</strong><span>“As of the latest information available (2024), the 2031 Turing Award was awarded to …”</span></div>
+    <div class="correct fragment"><strong>correct behavior</strong><span>2031 is in the future; abstain or retrieve current evidence.</span></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; text-align:center; color:#1d4ed8;">Decoding turns scores into one actual next token.</p>
-</section>
-
-<!-- 16b. Run the real model (live model) -->
-<section class="center-slide">
-  <h2>Watch it run<span class="demo-badge">live model</span></h2>
-  <p class="demo-caption">A real Qwen3-0.6B answer (precomputed); temperature and thinking are yours to change, then run it live.</p>
-  <div class="live-demo" data-demo="lm-chat">
-    <div class="demo-fallback">Interactive on the live slides: a real Qwen3-0.6B assistant. The next-token distribution (e.g., about 0.99 on "Gradient" for the gradient-descent prompt) and a sample answer are precomputed so this teaches offline; the run button loads the real quantized model and streams a fresh answer in your browser, with temperature and a thinking-mode toggle.</div>
+  <div class="fixed-boundary fragment">
+    <div><strong>changed today</strong><span>template, context, decoding</span></div>
+    <div><strong>did not change</strong><span>weights, knowledge, available actions</span></div>
   </div>
-</section>
-
-<!-- 17. Append loop -->
-<section class="center-slide">
-  <h2>Append and repeat</h2>
-  <svg viewBox="0 0 860 170" xmlns="http://www.w3.org/2000/svg" class="lm-flow">
-    <g class="lm-boxes">
-      <rect x="35" y="60" width="130" height="46" rx="7"/><text x="100" y="88">context</text>
-      <rect x="230" y="60" width="120" height="46" rx="7"/><text x="290" y="88">model</text>
-      <rect x="415" y="60" width="130" height="46" rx="7"/><text x="480" y="88">next token</text>
-      <rect x="610" y="60" width="135" height="46" rx="7" class="question"/><text x="678" y="88">append</text>
-    </g>
-    <g stroke="#475569" stroke-width="2.4" marker-end="url(#arrow-l21)">
-      <line x1="165" y1="83" x2="225" y2="83"/><line x1="350" y1="83" x2="410" y2="83"/><line x1="545" y1="83" x2="605" y2="83"/>
-      <path d="M678 108 C640 150, 160 150, 105 110" fill="none"/>
-    </g>
-  </svg>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Generation is autoregressive and sequential at inference time.</p>
-</section>
-
-<!-- 18. KV cache -->
-<section>
-  <h2>KV cache: do not recompute everything</h2>
-  <div class="two-col vcenter">
-    <div style="flex:1.05;">
-      <svg viewBox="0 0 470 190" xmlns="http://www.w3.org/2000/svg" class="cache-viz">
-        <rect x="35" y="55" width="180" height="80" rx="8"/><text x="125" y="84">old keys/values</text><text x="125" y="112">stored cache</text>
-        <rect x="285" y="55" width="140" height="80" rx="8" class="new"/><text x="355" y="84">new token</text><text x="355" y="112">new K/V</text>
-        <line x1="215" y1="95" x2="280" y2="95" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l21)"/>
-      </svg>
-    </div>
-    <div style="flex:0.95;">
-      <p style="font-size:0.9em;">Generated tokens keep their keys/values.</p>
-      <p class="fragment" style="font-size:0.9em;">The next step computes only the new token's pieces.</p>
-      <p class="fragment" style="font-size:0.86em; color:#6b7280;">This is why long context costs memory.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 19. Context length -->
-<section class="center-slide">
-  <h2>Context length is working memory</h2>
-  <div class="context-bar">
-    <div class="prompt">prompt tokens</div>
-    <div class="generated">generated tokens</div>
-    <div class="space">remaining window</div>
-  </div>
-  <p style="font-size:0.9em;">For Qwen3-0.6B: up to about <strong>32k tokens</strong>.</p>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">It is not permanent memory; it is the current working context.</p>
-</section>
-
-<!-- 20. Greedy vs sampling -->
-<section class="center-slide">
-  <h2>Decoding changes behavior</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
-    <div class="task-card"><h3>greedy</h3><p style="font-size:0.8em;">deterministic, safe, repetitive</p></div>
-    <div class="task-card fragment"><h3>sampling</h3><p style="font-size:0.8em;">varied, sometimes better, sometimes worse</p></div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Weights stay fixed; only the token selection rule changes.</p>
-</section>
-
-<!-- 21. Temperature -->
-<section>
-  <h2>Temperature controls randomness</h2>
-  <div class="two-col vcenter">
-    <div style="flex:1;">
-      <div class="mini-dist">
-        <h3>low T</h3>
-        <div><span>Gradient</span><b style="width:88%;"></b></div>
-        <div><span>It</span><b style="width:18%;"></b></div>
-        <div><span>A</span><b style="width:10%;"></b></div>
-      </div>
-    </div>
-    <div style="flex:1;">
-      <div class="mini-dist">
-        <h3>high T</h3>
-        <div><span>Gradient</span><b style="width:55%;"></b></div>
-        <div><span>It</span><b style="width:38%;"></b></div>
-        <div><span>A</span><b style="width:30%;"></b></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 22. Top-k top-p -->
-<section class="center-slide">
-  <h2>Top-k and top-p trim the tail</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:78%; margin:0.6em auto;">
-    <div class="task-card"><h3>top-k</h3><p style="font-size:0.82em;">sample from the \(k\) most likely tokens</p></div>
-    <div class="task-card fragment"><h3>top-p</h3><p style="font-size:0.82em;">sample from tokens whose cumulative mass reaches \(p\)</p></div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Keep randomness inside plausible choices.</p>
-</section>
-
-<!-- 23. Prompting -->
-<section>
-  <h2>Prompting is inference-time conditioning</h2>
-  <div class="two-col">
-    <div class="prompt-card" style="flex:1;">
-      <h3>Prompt A</h3>
-      <p>Explain gradient descent.</p>
-    </div>
-    <div class="prompt-card fragment" style="flex:1;">
-      <h3>Prompt B</h3>
-      <p>Explain gradient descent to a 10-year-old.</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The context changes. The weights do not.</p>
-</section>
-
-<!-- 24. Few-shot -->
-<section class="center-slide">
-  <h2>Few-shot prompting specifies a pattern</h2>
-  <div class="algo-card" style="max-width:62%; font-family:ui-monospace, Menlo, monospace;">
-    <div>tiny &rarr; small</div>
-    <div>huge &rarr; big</div>
-    <div>rapid &rarr; <span style="color:#166534; font-weight:700;">fast</span></div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Examples in the prompt can define a task without training.</p>
-</section>
-
-<!-- 25. CoT -->
-<section>
-  <h2>Chain-of-thought-style prompting</h2>
-  <div class="two-col">
-    <div class="prompt-card" style="flex:1;">
-      <h3>direct</h3>
-      <p>Answer the question.</p>
-    </div>
-    <div class="prompt-card fragment" style="flex:1;">
-      <h3>reasoning style</h3>
-      <p>Think step by step, then answer.</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">Reasoning traces can help behavior, but are not guaranteed faithful explanations of internal computation.</p>
-</section>
-
-<!-- 26. Thinking mode -->
-<section class="center-slide">
-  <h2>Some models expose thinking modes</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr; max-width:82%; margin:0.6em auto;">
-    <div class="task-card"><h3>non-thinking</h3><p style="font-size:0.8em;">answer directly</p></div>
-    <div class="task-card fragment"><h3>thinking</h3><p style="font-size:0.8em;">produce intermediate reasoning text</p></div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">For Qwen-style models, special chat-template controls can change this behavior.</p>
-</section>
-
-<!-- 27. Hallucination -->
-<section class="center-slide">
-  <h2>Failure mode: hallucination</h2>
-  <div class="prompt-box">Who won the 2031 Turing Award?</div>
-  <p class="fragment" style="font-size:0.95em;">A model may answer fluently anyway.</p>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">Next-token likelihood is not truth verification.</p>
-</section>
-
-<!-- 28. Prompt sensitivity -->
-<section>
-  <h2>Failure mode: prompt sensitivity</h2>
-  <div class="two-col">
-    <div class="prompt-card" style="flex:1;">
-      <h3>Prompt 1</h3>
-      <p>Give a concise answer.</p>
-    </div>
-    <div class="prompt-card fragment" style="flex:1;">
-      <h3>Prompt 2</h3>
-      <p>Be creative and speculate.</p>
-    </div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">The model is conditioned by text; small changes can matter.</p>
-</section>
-
-<!-- 29. Context and cost -->
-<section class="center-slide">
-  <h2>Failure mode: context and cost</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>context</h3><p style="font-size:0.78em;">long prompts consume the window</p></div>
-    <div class="task-card fragment"><h3>latency</h3><p style="font-size:0.78em;">generation is token-by-token</p></div>
-    <div class="task-card fragment"><h3>browser</h3><p style="font-size:0.78em;">hardware support varies</p></div>
-  </div>
-</section>
-
-<!-- 30. Did not change -->
-<section class="center-slide">
-  <h2>What did not change today?</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>no fine-tuning</h3><p style="font-size:0.78em;">weights unchanged</p></div>
-    <div class="task-card fragment"><h3>no LoRA</h3><p style="font-size:0.78em;">no adapters</p></div>
-    <div class="task-card fragment"><h3>no retrieval</h3><p style="font-size:0.78em;">no external documents</p></div>
-  </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">We steered behavior only through inputs and decoding.</p>
-</section>
-
-<!-- 31. Bridge -->
-<section class="center-slide">
-  <h2>Next question</h2>
-  <p style="font-size:1.05em; max-width:82%; margin:0.5em auto;">When is prompting not enough, and when do we update weights or add external knowledge?</p>
-  <p class="fragment" style="font-size:0.95em; color:#1d4ed8;">Can another model <strong>build those new weights</strong> for us?</p>
-  <p class="fragment" style="font-size:0.82em; color:#6b7280;">L22: this same Qwen3-0.6B becomes a frozen interpreter for compiled functions.</p>
-</section>
-
-<!-- 32. Recap -->
-<section class="center-slide">
-  <h2>Recap</h2>
-  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:84%; margin-right:auto;">
-    <li>&#10003; &nbsp;Loaded tokenizer, config, weights, and generation settings.</li>
-    <li>&#10003; &nbsp;Tokenized a prompt and traced it into embeddings.</li>
-    <li>&#10003; &nbsp;Ran a causal LM to produce logits.</li>
-    <li>&#10003; &nbsp;Decoded one token at a time.</li>
-    <li>&#10003; &nbsp;Used prompting and decoding without updating weights.</li>
-    <li>&#10003; &nbsp;Identified common failure modes.</li>
-  </ul>
+  <div class="l22-bridge fragment"><strong>L22:</strong> choose prompting vs RAG/tools vs SFT/LoRA—and see Qwen become a frozen interpreter for PAW.</div>
 </section>
 
 </div>
@@ -546,6 +549,6 @@ model = AutoModelForCausalLM.from_pretrained(
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=19"></script>
+<script type="module" src="../shared/demo.js?v=38"></script>
 </body>
 </html>

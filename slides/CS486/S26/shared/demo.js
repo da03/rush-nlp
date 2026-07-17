@@ -2176,80 +2176,374 @@ register('lm-loss', (api) => {
 });
 
 /* =====================================================================
- *  DEMO 19 - chat-template inspector: user text vs the templated input the
- *  model actually receives; thinking on/off changes it. (L21, precomputed)
+ *  DEMO 19 - exact Qwen message serialization and thinking protocol.
  * ===================================================================== */
 register('chat-template', (api) => {
-  let data = null, ui = 0, thinking = false;
-  const userRow = el('div', { class: 'demo-controls' });
-  const pre = el('pre', { class: 'chat-tmpl' });
-  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  let data = null;
+  let promptIndex = 0;
+  let thinking = false;
+  const promptRow = el('div', { class: 'demo-controls' });
+  const rawMessage = el('div', { class: 'template-message' });
+  const serialized = el('pre', { class: 'chat-tmpl' });
+  const metadata = el('div', { class: 'template-meta' });
+  const promptLabel = (item) => item.id === 'explain' ? 'explanation' : item.id === 'reason' ? 'reasoning' : 'future fact';
+  const escapeHtml = (text) => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
   function render() {
-    const c = data.chat[ui];
-    const raw = thinking ? c.think_on : c.think_off;
-    pre.innerHTML = esc(raw)
-      .replace(/&lt;\|[^|]*?\|&gt;/g, (m) => '<span class="sp">' + m + '</span>')
-      .replace(/&lt;\/?think&gt;/g, (m) => '<span class="sp think">' + m + '</span>');
+    const item = data.chat[promptIndex];
+    const record = thinking ? item.thinking_on : item.thinking_off;
+    rawMessage.innerHTML = '';
+    rawMessage.appendChild(el('div', { class: 'tm-role', text: item.messages[0].role }));
+    rawMessage.appendChild(el('div', { class: 'tm-content', text: item.messages[0].content }));
+    serialized.innerHTML = escapeHtml(record.text)
+      .replace(/&lt;\|[^|]*?\|&gt;/g, (match) => `<span class="sp">${match}</span>`)
+      .replace(/&lt;\/?think&gt;/g, (match) => `<span class="sp think">${match}</span>`);
+    metadata.innerHTML = '';
+    metadata.appendChild(el('span', { html: `<b>${record.token_count}</b> tokens after serialization` }));
+    metadata.appendChild(el('span', {
+      class: thinking ? 'thinking-on' : 'thinking-off',
+      text: thinking
+        ? 'Template stops at assistant cue; Qwen generates <think>…</think>.'
+        : 'Template pre-fills an empty <think></think>; Qwen starts the answer.',
+    }));
+    [...promptRow.children].forEach((button, index) => {
+      button.classList.toggle('primary', index === promptIndex);
+      button.classList.toggle('ghost', index !== promptIndex);
+    });
+    toggle.textContent = 'thinking: ' + (thinking ? 'ON' : 'OFF');
+    toggle.classList.toggle('primary', thinking);
+    toggle.classList.toggle('ghost', !thinking);
   }
-  const mark = (row, k) => [...row.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
-  const toggle = api.button('thinking: OFF', () => { thinking = !thinking; toggle.textContent = 'thinking: ' + (thinking ? 'ON' : 'OFF'); toggle.classList.toggle('primary', thinking); toggle.classList.toggle('ghost', !thinking); render(); }, 'ghost');
+
+  const toggle = api.button('thinking: OFF', () => { thinking = !thinking; render(); }, 'ghost');
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'What the user types vs. what the model actually receives: roles and special tokens added by the chat template.' }),
-    userRow,
-    el('div', { class: 'demo-controls' }, [toggle]),
-    pre,
-    el('div', { class: 'demo-hint', text: 'Thinking mode adds a reasoning section the model fills in before its answer.' }),
+    promptRow,
+    el('div', { class: 'demo-controls template-toggle' }, [toggle]),
+    el('div', { class: 'template-compare' }, [
+      el('div', { class: 'template-side' }, [el('h4', { text: 'structured message' }), rawMessage]),
+      el('div', { class: 'template-side serialized' }, [el('h4', { text: 'exact string sent to tokenizer' }), serialized]),
+    ]),
+    metadata,
+    el('div', { class: 'demo-hint', text: 'Blue marks chat-control tokens. Green marks the thinking protocol. The user content is unchanged.' }),
   ]);
   async function load() {
-    try { const r = await fetch('data/qwen_samples.json'); data = await r.json(); }
-    catch (e) { api.setStatus('Could not load samples.', 'err'); return; }
-    data.chat.forEach((c, k) => userRow.appendChild(api.button('"' + c.user + '"', () => { ui = k; mark(userRow, k); render(); }, k === 0 ? 'primary' : 'ghost')));
+    try {
+      const response = await fetch('data/qwen_samples.json');
+      data = await response.json();
+    } catch (error) {
+      const user = 'Explain gradient descent in one sentence.';
+      data = { chat: [{
+        id: 'explain',
+        user,
+        messages: [{ role: 'user', content: user }],
+        thinking_off: {
+          text: `<|im_start|>user\n${user}<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n`,
+          token_count: 20,
+        },
+        thinking_on: {
+          text: `<|im_start|>user\n${user}<|im_end|>\n<|im_start|>assistant\n`,
+          token_count: 16,
+        },
+      }] };
+      api.setStatus('Using the embedded template fallback.', 'err');
+    }
+    data.chat.forEach((item, index) => promptRow.appendChild(api.button(
+      promptLabel(item),
+      () => { promptIndex = index; render(); },
+      index === 0 ? 'primary' : 'ghost',
+    )));
     render();
   }
   return { mount, init: load };
 });
 
 /* =====================================================================
- *  DEMO 20 - lm-chat: a real Qwen3-0.6B assistant. Precomputed sample answer
- *  + next-token trace by default; "run" streams live in the browser. (L21)
+ *  DEMO 20 - exact multi-step Qwen generation trace.
  * ===================================================================== */
-register('lm-chat', (api) => {
-  let data = null, pi = 0, thinking = false;
-  const promptRow = el('div', { class: 'demo-controls' });
-  const bars = el('div', { class: 'attn-bars2' });
-  const answer = el('div', { class: 'lm-gen' });
-  const tCtl = api.slider('temperature', { min: 0.1, max: 1.5, step: 0.1, value: 0.7, fmt: (v) => v.toFixed(1) });
-  function drawTrace() {
+register('qwen-trace', (api) => {
+  let data = null;
+  let trace = null;
+  let stepIndex = 0;
+  let appended = [];
+  const bars = el('div', { class: 'qwen-trace-bars' });
+  const context = el('div', { class: 'qwen-trace-context' });
+  const status = el('div', { class: 'qwen-trace-status' });
+  const pieceText = (piece) => piece.replace(/^\u00b7/, ' ').replace(/\u21b5/g, '\n');
+  const highlightedPiece = (piece) => piece.replace(/^\u00b7/, '\u00a0').replace(/\u21b5/g, '\u21b5');
+  const formatP = (probability) => probability >= 0.001 ? probability.toFixed(3) : probability.toExponential(1);
+
+  function render() {
+    const step = trace.steps[stepIndex];
     bars.innerHTML = '';
-    if (pi !== 0 || !data.next) return;
-    const top = data.next.top.slice(0, 6); const max = Math.max(...top.map((t) => t.p));
-    top.forEach((t, j) => bars.appendChild(el('div', { class: 'attn-row' + (j === 0 ? ' top' : '') }, [
-      el('span', { class: 'attn-lab', text: t.piece }),
-      el('div', { class: 'attn-track' }, [el('div', { class: 'attn-fill', style: `width:${(t.p / max * 100).toFixed(1)}%` })]),
-      el('span', { class: 'attn-num', text: t.p.toFixed(2) }),
-    ])));
+    if (step) {
+      const maximum = Math.max(...step.top.map((item) => item.p), 0.001);
+      step.top.slice(0, 6).forEach((item, index) => bars.appendChild(el('div', { class: 'qt-row' + (index === 0 ? ' top' : '') }, [
+        el('span', { text: item.piece }),
+        el('i', {}, [el('b', { style: `width:${(item.p / maximum * 100).toFixed(1)}%` })]),
+        el('code', { text: formatP(item.p) }),
+      ])));
+      bars.appendChild(el('div', { class: 'qt-tail' }, [el('span', { text: 'all other tokens' }), el('code', { text: step.tail_mass.toFixed(3) })]));
+      status.textContent = `next distribution: step ${stepIndex + 1} of ${trace.steps.length}`;
+    } else {
+      bars.appendChild(el('div', { class: 'qt-done', text: `${trace.steps.length} real generation steps complete.` }));
+      status.textContent = 'trace complete';
+    }
+    context.innerHTML = '';
+    const prior = `user: ${trace.prompt}\nassistant: ` + appended.slice(0, -1).map((item) => pieceText(item.piece)).join('');
+    context.appendChild(el('span', { text: prior }));
+    if (appended.length) context.appendChild(el('mark', { text: highlightedPiece(appended.at(-1).piece) }));
+    nextButton.disabled = !step;
   }
-  function showPrecomputed() { const g = data.generations[pi]; answer.textContent = g ? g.text : ''; drawTrace(); }
-  async function run() {
-    answer.textContent = ''; api.setStatus('Loading model (~0.5 GB, one time)...');
-    let lm; try { lm = await api.getChatLM(); } catch (e) { api.setStatus('Model unavailable; showing the precomputed answer.', 'err'); showPrecomputed(); return; }
-    const user = data.generations[pi].prompt + (thinking ? ' /think' : ' /no_think');
-    api.setStatus('Generating...'); let acc = '';
-    try { await api.chatStream(lm, [{ role: 'user', content: user }], { doSample: true, T: tCtl.get(), k: 20, p: 0.95, max: 160 }, (t) => { acc += t; answer.textContent = acc; }); api.setStatus('Generated by Qwen3-0.6B in your browser.', 'ok'); }
-    catch (e) { api.setStatus('Generation failed; showing precomputed.', 'err'); showPrecomputed(); }
+
+  function next() {
+    const step = trace.steps[stepIndex];
+    if (!step) return;
+    appended.push(step.choice);
+    stepIndex += 1;
+    render();
   }
-  const toggle = api.button('thinking: OFF', () => { thinking = !thinking; toggle.textContent = 'thinking: ' + (thinking ? 'ON' : 'OFF'); toggle.classList.toggle('primary', thinking); toggle.classList.toggle('ghost', !thinking); }, 'ghost');
+  function reset() {
+    stepIndex = 0;
+    appended = [];
+    render();
+  }
+  const nextButton = api.button('append next token', next);
   const mount = el('div', {}, [
-    promptRow,
-    el('div', { class: 'demo-controls' }, [tCtl.field, toggle, api.button('run (real model)', run)]),
-    el('div', { class: 'demo-stage' }, [el('div', { class: 'lm-next-left' }, [el('div', { class: 'lm-prompt', id: 'lcp' }), bars]), el('div', { class: 'lm-next-right' }, [answer])]),
+    el('div', { class: 'demo-note', text: 'Qwen3-0.6B post-trained assistant \u00b7 non-thinking prompt \u00b7 greedy trace.' }),
+    status,
+    el('div', { class: 'qwen-trace-layout' }, [bars, context]),
+    el('div', { class: 'demo-controls qwen-trace-controls' }, [nextButton, api.button('reset', reset, 'ghost')]),
+    el('div', { class: 'demo-hint', text: 'Candidate labels use \u00b7 for a leading space. Every click reads a newly conditioned distribution.' }),
   ]);
-  function setP(k) { pi = k; [...promptRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); }); mount.querySelector('#lcp').innerHTML = 'prompt: <b>' + data.generations[k].prompt + '</b>'; showPrecomputed(); }
   async function load() {
-    try { const r = await fetch('data/qwen_samples.json'); data = await r.json(); }
-    catch (e) { api.setStatus('Could not load samples.', 'err'); return; }
-    data.generations.forEach((g, k) => promptRow.appendChild(api.button('"' + g.prompt + '"', () => setP(k), k === 0 ? 'primary' : 'ghost')));
-    setP(0);
+    try {
+      const response = await fetch('data/qwen_samples.json');
+      data = await response.json();
+      trace = data.main_trace;
+    } catch (error) {
+      data = {};
+      trace = {
+        prompt: 'Explain gradient descent in one sentence.',
+        steps: [
+          { top: [{ piece: 'Gradient', p: 0.985 }, { piece: 'The', p: 0.004 }], tail_mass: 0.011, choice: { piece: 'Gradient', p: 0.985 } },
+          { top: [{ piece: '\u00b7descent', p: 0.62 }, { piece: '\u00b7is', p: 0.11 }], tail_mass: 0.27, choice: { piece: '\u00b7descent', p: 0.62 } },
+        ],
+      };
+      api.setStatus('Using the embedded generation fallback.', 'err');
+    }
+    render();
+  }
+  return { mount, init: load };
+});
+
+/* =====================================================================
+ *  DEMO 20b - prefill/decode KV-cache work comparison.
+ * ===================================================================== */
+register('kv-cache', (api) => {
+  const prompt = ['The', 'robot', 'picked', 'up'];
+  const generated = ['the', 'cup', '.'];
+  let phase = 1;
+  const tokens = el('div', { class: 'kvc-tokens' });
+  const cache = el('div', { class: 'kvc-cache' });
+  const meters = el('div', { class: 'kvc-meters' });
+  const explanation = el('div', { class: 'kvc-explanation' });
+
+  function totals() {
+    if (phase === 0) return { noCache: 0, withCache: 0, slots: 0 };
+    let noCache = prompt.length;
+    let withCache = prompt.length;
+    for (let step = 1; step < phase; step++) {
+      noCache += prompt.length + step;
+      withCache += 1;
+    }
+    return { noCache, withCache, slots: prompt.length + Math.max(0, phase - 1) };
+  }
+
+  function render() {
+    const { noCache, withCache, slots } = totals();
+    tokens.innerHTML = '';
+    [...prompt, ...generated.slice(0, Math.max(0, phase))].forEach((token, index) => tokens.appendChild(el('span', {
+      class: index < prompt.length ? 'prompt' : 'generated',
+      text: token,
+    })));
+    cache.innerHTML = '';
+    for (let index = 0; index < slots; index++) cache.appendChild(el('i', { title: `cached K/V slot ${index + 1}` }));
+    meters.innerHTML = '';
+    meters.appendChild(el('div', { class: 'no-cache' }, [el('strong', { text: String(noCache) }), el('span', { text: 'token positions computed without cache' })]));
+    meters.appendChild(el('div', { class: 'with-cache' }, [el('strong', { text: String(withCache) }), el('span', { text: 'token positions computed with cache' })]));
+    explanation.textContent = phase === 0
+      ? 'Start with a four-token prompt.'
+      : phase === 1
+        ? 'Prefill processes all four prompt tokens and builds four K/V slots.'
+        : `Decode step ${phase - 1}: process one new token; append one K/V slot.`;
+    nextButton.textContent = phase === 0 ? 'run prefill' : phase < 3 ? 'decode next token' : 'complete';
+    nextButton.disabled = phase >= 3;
+  }
+  function next() { if (phase < 3) { phase += 1; render(); } }
+  function reset() { phase = 0; render(); }
+  const nextButton = api.button('run prefill', next);
+  const mount = el('div', {}, [
+    explanation,
+    tokens,
+    el('div', { class: 'kvc-cache-wrap' }, [el('strong', { text: 'cached K/V slots' }), cache]),
+    meters,
+    el('div', { class: 'demo-controls kvc-controls' }, [nextButton, api.button('reset', reset, 'ghost')]),
+    el('div', { class: 'demo-hint', text: 'For three output tokens: without cache 4 + 5 + 6 = 15 token positions; with cache 4 + 1 + 1 = 6.' }),
+  ]);
+  return { mount, init: render };
+});
+
+/* =====================================================================
+ *  DEMO 20c - honest Qwen decoding presets + optional live inference.
+ * ===================================================================== */
+register('qwen-run', (api) => {
+  let data = null;
+  let presetId = 'greedy';
+  let trace = null;
+  let stepIndex = 0;
+  let appended = [];
+  const presetRow = el('div', { class: 'demo-controls' });
+  const bars = el('div', { class: 'qrun-bars' });
+  const context = el('div', { class: 'qrun-context' });
+  const settings = el('div', { class: 'qrun-settings' });
+  const liveOutput = el('div', { class: 'lm-gen qrun-live' });
+  const pieceText = (piece) => piece.replace(/^\u00b7/, ' ').replace(/\u21b5/g, '\n');
+  const highlightedPiece = (piece) => piece.replace(/^\u00b7/, '\u00a0').replace(/\u21b5/g, '\u21b5');
+  const formatP = (probability) => probability >= 0.001 ? probability.toFixed(3) : probability.toExponential(1);
+
+  function render() {
+    const step = trace.steps[stepIndex];
+    const preset = trace.settings;
+    settings.innerHTML = '';
+    settings.appendChild(el('span', { text: preset.do_sample ? `T=${preset.temperature}` : 'argmax' }));
+    if (preset.do_sample) {
+      settings.appendChild(el('span', { text: `top-k=${preset.top_k}` }));
+      settings.appendChild(el('span', { text: `top-p=${preset.top_p}` }));
+    }
+    settings.appendChild(el('span', { text: preset.thinking ? 'thinking ON' : 'thinking OFF' }));
+    bars.innerHTML = '';
+    if (step) {
+      const distribution = preset.do_sample ? step.sample_top : step.top;
+      const maximum = Math.max(...distribution.map((item) => item.p), 0.001);
+      distribution.slice(0, 6).forEach((item, index) => bars.appendChild(el('div', { class: 'qr-row' + (index === 0 ? ' top' : '') }, [
+        el('span', { text: item.piece }),
+        el('i', {}, [el('b', { style: `width:${(item.p / maximum * 100).toFixed(1)}%` })]),
+        el('code', { text: formatP(item.p) }),
+      ])));
+      bars.appendChild(el('div', { class: 'qr-kept', text: preset.do_sample ? `${step.kept} tokens kept, then renormalized` : 'full distribution; choose argmax' }));
+    } else {
+      bars.appendChild(el('div', { class: 'qr-done', text: `${trace.steps.length} precomputed steps complete.` }));
+    }
+    context.innerHTML = '';
+    const prior = `user: ${data.decode.prompt}\nassistant: ` + appended.slice(0, -1).map((item) => pieceText(item.piece)).join('');
+    context.appendChild(el('span', { text: prior }));
+    if (appended.length) context.appendChild(el('mark', { text: highlightedPiece(appended.at(-1).piece) }));
+    nextButton.disabled = !step;
+    [...presetRow.children].forEach((button) => {
+      const active = button.dataset.preset === presetId;
+      button.classList.toggle('primary', active);
+      button.classList.toggle('ghost', !active);
+    });
+  }
+
+  function setPreset(id) {
+    presetId = id;
+    trace = data.decode.traces[id];
+    stepIndex = 0;
+    appended = [];
+    liveOutput.textContent = '';
+    render();
+  }
+  function next() {
+    const step = trace.steps[stepIndex];
+    if (!step) return;
+    appended.push(step.choice);
+    stepIndex += 1;
+    render();
+  }
+  function reset() { setPreset(presetId); }
+
+  async function runLive() {
+    liveOutput.textContent = '';
+    api.setStatus('Loading optional Qwen model (several hundred MB)...');
+    let lm;
+    try {
+      lm = await api.getChatLM();
+    } catch (error) {
+      api.setStatus('Live model unavailable; the audited trace above still works.', 'err');
+      return;
+    }
+    const preset = trace.settings;
+    const user = data.decode.prompt + (preset.thinking ? ' /think' : ' /no_think');
+    let accumulated = '';
+    try {
+      await api.chatStream(
+        lm,
+        [{ role: 'user', content: user }],
+        {
+          doSample: preset.do_sample,
+          T: preset.temperature,
+          k: preset.top_k || 0,
+          p: preset.top_p,
+          max: 96,
+        },
+        (text) => { accumulated += text; liveOutput.textContent = accumulated; },
+      );
+      api.setStatus('Generated with the selected settings in your browser.', 'ok');
+    } catch (error) {
+      api.setStatus('Live generation failed; use the audited trace above.', 'err');
+    }
+  }
+
+  const nextButton = api.button('append next token', next);
+  const mount = el('div', {}, [
+    presetRow,
+    settings,
+    el('div', { class: 'qrun-layout' }, [bars, context]),
+    el('div', { class: 'demo-controls qrun-controls' }, [
+      nextButton,
+      api.button('reset', reset, 'ghost'),
+      api.button('optional: run live', runLive, 'ghost'),
+    ]),
+    liveOutput,
+    el('div', { class: 'demo-hint', text: 'Precomputed controls are exact. Candidate labels use \u00b7 for a leading space; thinking traces begin with <think>.' }),
+  ]);
+
+  async function load() {
+    try {
+      const response = await fetch('data/qwen_samples.json');
+      data = await response.json();
+    } catch (error) {
+      const rawStep = {
+        top: [{ piece: '**', p: 0.56 }, { piece: 'Sure', p: 0.21 }, { piece: 'Here', p: 0.06 }],
+        sample_top: [{ piece: '**', p: 0.73 }, { piece: 'Sure', p: 0.27 }],
+        tail_mass: 0.17,
+        kept: 2,
+        choice: { piece: '**', raw_p: 0.56, sample_p: 0.73 },
+      };
+      const traceFor = (settings, choice = rawStep.choice) => ({
+        settings,
+        steps: [{ ...rawStep, choice }],
+      });
+      data = { decode: {
+        prompt: 'Write a creative name for a friendly blue robot.',
+        traces: {
+          greedy: traceFor({ label: 'greedy', thinking: false, do_sample: false, temperature: 1, top_k: 0, top_p: 1 }),
+          nonthink: traceFor({ label: 'recommended non-thinking', thinking: false, do_sample: true, temperature: 0.7, top_k: 20, top_p: 0.8 }),
+          thinking: traceFor(
+            { label: 'recommended thinking', thinking: true, do_sample: true, temperature: 0.6, top_k: 20, top_p: 0.95 },
+            { piece: '<think>', raw_p: 0.99, sample_p: 1 },
+          ),
+        },
+      } };
+      api.setStatus('Using the embedded decoding fallback.', 'err');
+    }
+    Object.entries(data.decode.traces).forEach(([id, item], index) => {
+      const button = api.button(item.settings.label, () => setPreset(id), index === 0 ? 'primary' : 'ghost');
+      button.dataset.preset = id;
+      presetRow.appendChild(button);
+    });
+    setPreset('greedy');
   }
   return { mount, init: load };
 });
@@ -2260,12 +2554,14 @@ register('lm-chat', (api) => {
  * ===================================================================== */
 register('lm-attention', (api) => {
   let data = null, hi = 0, qi = null;
-  const canvas = api.canvasEl(380, 360); canvas.classList.add('clickable');
+  const canvas = api.canvasEl(360, 310); canvas.classList.add('clickable');
   const panel = el('div', { class: 'attn-panel' });
   const headRow = el('div', { class: 'demo-controls' });
+  const queryRow = el('div', { class: 'attention-query-row' });
+  const provenance = el('div', { class: 'attention-provenance' });
   const toks = () => data.attention.tokens;
   const A = () => data.attention.heads[hi].A;
-  function layout() { const W = canvas.width, H = canvas.height, n = toks().length; const padL = 96, padT = 66; const cell = Math.min(30, (W - padL - 8) / n, (H - padT - 8) / n); return { W, H, n, padL, padT, cell }; }
+  function layout() { const W = canvas.width, H = canvas.height, n = toks().length; const padL = 88, padT = 58; const cell = Math.min(25, (W - padL - 8) / n, (H - padT - 8) / n); return { W, H, n, padL, padT, cell }; }
   function draw() {
     const ctx = canvas.getContext('2d'); const { W, H, n, padL, padT, cell } = layout(); const M = A(), tk = toks();
     ctx.clearRect(0, 0, W, H); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); ctx.font = '11px ui-monospace, monospace';
@@ -2275,6 +2571,12 @@ register('lm-attention', (api) => {
     for (let i = 0; i < n; i++) { ctx.fillStyle = i === qi ? '#b91c1c' : '#374151'; ctx.fillText(tk[i], padL - 6, padT + i * cell + cell / 2 + 4); }
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { ctx.fillStyle = `rgba(29,78,216,${Math.pow(M[i][j], 0.7).toFixed(3)})`; ctx.fillRect(padL + j * cell, padT + i * cell, cell - 1, cell - 1); }
     if (qi != null) { ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 2.5; ctx.strokeRect(padL - 1, padT + qi * cell - 1, n * cell + 1, cell + 1); }
+    [...queryRow.children].forEach((button, index) => {
+      button.classList.toggle('selected', index === qi);
+      button.setAttribute('aria-pressed', String(index === qi));
+    });
+    const head = data.attention.heads[hi];
+    provenance.innerHTML = `<b>layer ${head.layer}, head ${head.head}</b> \u00b7 selected by: ${head.criterion}`;
     drawPanel();
   }
   function drawPanel() {
@@ -2290,17 +2592,47 @@ register('lm-attention', (api) => {
     panel.appendChild(b);
   }
   canvas.addEventListener('click', (e) => { const { padT, cell, n } = layout(); const r = canvas.getBoundingClientRect(); const my = (e.clientY - r.top) * canvas.height / r.height; const i = Math.floor((my - padT) / cell); if (i >= 0 && i < n) { qi = i; draw(); } });
-  function setHead(k) { hi = k; [...headRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); }); draw(); }
+  function setHead(k) {
+    hi = k;
+    [...headRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
+    draw();
+  }
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'Real attention from inside <b>Qwen3-0.6B</b> (28 layers, 16 heads). Different layer/head pairs specialize.' }),
     headRow,
+    provenance,
+    queryRow,
     el('div', { class: 'demo-stage' }, [canvas, panel]),
+    el('div', { class: 'demo-hint', text: 'Every row sums to approximately 1 and has zero future mass. Selected patterns are curated measurements, not causal explanations.' }),
   ]);
   async function load() {
     try { const r = await fetch('data/qwen_samples.json'); data = await r.json(); }
-    catch (e) { api.setStatus('Could not load attention data.', 'err'); return; }
+    catch (e) {
+      data = { attention: {
+        tokens: ['The', '\u00b7robot', '\u00b7it'],
+        query_default: 2,
+        heads: [{
+          label: 'embedded fallback: it \u2192 robot',
+          criterion: 'classroom fallback pattern',
+          layer: 11,
+          head: 1,
+          A: [[1, 0, 0], [0.7, 0.3, 0], [0.1, 0.75, 0.15]],
+        }],
+        audit: { max_future_mass: 0, max_row_sum_error: 0 },
+      } };
+      api.setStatus('Using the embedded attention fallback.', 'err');
+    }
     data.attention.heads.forEach((h, k) => headRow.appendChild(api.button(h.label, () => setHead(k), k === 0 ? 'primary' : 'ghost')));
-    qi = toks().findIndex((t) => t.replace(/\u00b7/g, '').toLowerCase() === 'it'); if (qi < 0) qi = null;
+    toks().forEach((token, index) => {
+      const button = el('button', {
+        class: 'attention-query-token',
+        type: 'button',
+        text: token,
+        'aria-label': `Inspect attention for query token ${token}`,
+      });
+      button.addEventListener('click', () => { qi = index; draw(); });
+      queryRow.appendChild(button);
+    });
+    qi = data.attention.query_default;
     draw();
   }
   return { mount, init: load };
