@@ -11,11 +11,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../shared/demo.css?v=22">
+  <link rel="stylesheet" href="../shared/demo.css?v=23">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L20/custom.css?v=10">
-  <link rel="stylesheet" href="custom.css?v=9">
+  <link rel="stylesheet" href="custom.css?v=10">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -311,20 +311,29 @@
     <div class="fragment"><strong>not causal proof</strong><span>large weight does not prove decisive influence</span></div>
   </div>
   <p class="l21-takeaway fragment">Use attention to inspect a computation—not to claim the model’s full reason.</p>
-  <p class="citation">Jain &amp; Wallace, “Attention is not Explanation,” NAACL 2019; &nbsp; Wiegreffe &amp; Pinter, “Attention is not not Explanation,” EMNLP 2019.</p>
+  <p class="citation">Jain &amp; Wallace, “Attention is not Explanation,” NAACL 2019.</p>
+  <p class="citation">Wiegreffe &amp; Pinter, “Attention is not not Explanation,” EMNLP 2019.</p>
 </section>
 
 <!-- 16b. Weight tying -->
 <section class="center-slide">
   <h2>One matrix does input and output</h2>
   <div class="tying-flow">
-    <div class="tying-side"><strong>input embedding</strong><span>\(E:\;[151936 \times 1024]\)</span><small>token ID &rarr; vector</small></div>
+    <div class="tying-side">
+      <strong>input embedding \(E\)</strong>
+      <span class="tying-shape">[ <em>vocab</em> 151,936 &times; <em>hidden</em> 1024 ]</span>
+      <small>token ID &rarr; vector</small>
+    </div>
     <div class="tying-shared fragment"><strong>same weights</strong><span>tied</span></div>
-    <div class="tying-side fragment"><strong>output projection</strong><span>\(E^\top:\;[1024 \times 151936]\)</span><small>vector &rarr; logits</small></div>
+    <div class="tying-side fragment">
+      <strong>output projection \(E^\top\)</strong>
+      <span class="tying-shape">[ <em>hidden</em> 1024 &times; <em>vocab</em> 151,936 ]</span>
+      <small>vector &rarr; one logit per vocab token</small>
+    </div>
   </div>
   <div class="tying-cost fragment">
-    <span>\(151{,}936 \times 1024 \approx\) <strong>156M parameters</strong> (~0.3&nbsp;GB)</span>
-    <span>that is a quarter of a 0.6B model, so Qwen <strong>shares one matrix</strong> instead of two.</span>
+    <span>Each is <strong>vocab &times; hidden = 151,936 &times; 1024 &asymp; 156M parameters</strong> (~0.3&nbsp;GB).</span>
+    <span>That is about a quarter of a 0.6B model, so Qwen stores <strong>one shared matrix</strong>, not two.</span>
   </div>
 </section>
 
@@ -384,51 +393,31 @@
     <div class="prefill-tokens">
       <span>&lt;|im_start|&gt;</span><span>user</span><span>Ex</span><span>plain</span><span>&middot;gradient</span><span>&middot;descent</span><span>&hellip;</span><span>assistant</span>
     </div>
-    <div class="prefill-arrow fragment">one parallel forward pass &rarr; hidden states + K/V for all positions</div>
-    <div class="prefill-result fragment">first next-token distribution: <code>Gradient</code> \(\approx 0.985\)</div>
+    <div class="prefill-arrow fragment">one parallel forward pass &rarr; hidden states + K/V for all prompt positions</div>
   </div>
-  <p class="l21-takeaway fragment">Prefill = the single forward pass over the known prompt we traced earlier.</p>
+  <p class="l21-takeaway fragment">Prefill = the single forward pass over the known prompt, done in parallel.</p>
 </section>
 
-<!-- 20. Cache concept -->
-<section>
-  <h2>KV cache reuses the past at every layer</h2>
-  <div class="cache-concept">
-    <div class="cache-old"><strong>cached K/V</strong><span>prompt + prior generated tokens</span><div class="cache-slots"><i></i><i></i><i></i><i></i><i></i></div></div>
-    <b class="fragment">+</b>
-    <div class="cache-new fragment"><strong>new token</strong><span>compute one new Q, K, V per layer</span><div class="cache-slots"><i></i></div></div>
-    <b class="fragment">&rarr;</b>
-    <div class="cache-next fragment"><strong>next cache</strong><span>append the new K/V</span></div>
-  </div>
-  <p class="l21-note fragment">The new query still attends over every cached source; caching avoids recomputing old K/V and hidden states.</p>
-</section>
-
-<!-- 20b. What can be reused -->
+<!-- 20. KV cache: reuse animation -->
 <section class="center-slide">
-  <h2>Causality freezes the past, so we reuse it</h2>
-  <div class="reuse-grid">
-    <div class="reuse-col frozen">
-      <div class="reuse-head">already computed</div>
-      <div class="reuse-cells"><span>Gradient</span><span>&middot;descent</span><span>&middot;is</span><span>&middot;a</span></div>
-      <div class="reuse-label fragment">hidden states + K/V never change (each token only sees earlier tokens)</div>
-    </div>
-    <div class="reuse-col newcol fragment">
-      <div class="reuse-head">new token</div>
-      <div class="reuse-cells"><span>&middot;method</span></div>
-      <div class="reuse-label">only this column is computed this step</div>
+  <h2>The KV cache reuses the past, one word at a time<span class="demo-badge">live</span></h2>
+  <p class="demo-caption">Generate word by word: earlier hidden states and K/V are reused from cache, never recomputed.</p>
+  <div class="live-demo" data-demo="kv-reuse">
+    <div class="demo-fallback">
+      <div class="cache-fallback"><span>prefill: compute all prompt states</span><span>each new word: reuse the past, compute 1 new column</span></div>
+      <p>Because attention is causal, earlier states never change, so decoding reuses them from the cache.</p>
     </div>
   </div>
-  <p class="l21-takeaway fragment">Generating token \(t\) reuses all \(t-1\) cached K/V; it recomputes nothing behind it.</p>
 </section>
 
-<!-- 21. Cache demo -->
+<!-- 21. KV cache: work per step -->
 <section class="center-slide">
   <h2>How much recomputation does the cache avoid?<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Step through prefill and decode; compare token-work with and without cached K/V.</p>
+  <p class="demo-caption">One row per forward pass: with the cache each decode step adds a single new column.</p>
   <div class="live-demo" data-demo="kv-cache">
     <div class="demo-fallback">
-      <div class="cache-fallback"><span>without cache: \(4+5+6=15\)</span><span>with cache: \(4+1+1=6\)</span></div>
-      <p>Prefill computes the prompt once; each decode step adds one new cache slot.</p>
+      <div class="cache-fallback"><span>with cache: \(4+1+1+1=7\)</span><span>without cache: \(4+5+6+7=22\)</span></div>
+      <p>Prefill computes the prompt once; each decode step then adds only one new cache column.</p>
     </div>
   </div>
 </section>
@@ -437,7 +426,12 @@
 <section class="center-slide">
   <h2>Context is working memory—and cache memory</h2>
   <div class="context-budget">
-    <div class="prompt">prompt</div><div class="generated">generated</div><div class="remaining">free window</div>
+    <div class="prompt"></div><div class="generated"></div><div class="remaining"></div>
+  </div>
+  <div class="context-legend">
+    <span><i class="prompt"></i> prompt tokens</span>
+    <span><i class="generated"></i> generated tokens</span>
+    <span><i class="remaining"></i> free context window</span>
   </div>
   <div class="cost-grid">
     <div class="fragment"><strong>window</strong><span>prompt + output share Qwen’s 32k context</span></div>
@@ -451,12 +445,11 @@
 <section>
   <h2>The complete Python inference path</h2>
   <div class="inference-code">
-    <div class="code-step fragment"><span class="cmt"># 1. load tokenizer + post-trained weights</span><code class="line">from transformers import AutoModelForCausalLM, AutoTokenizer</code><code class="line">tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B")</code><code class="line">model = AutoModelForCausalLM.from_pretrained(</code><code class="line indent">"Qwen/Qwen3-0.6B", torch_dtype="auto", device_map="auto")</code></div>
-    <div class="code-step fragment"><span class="cmt"># 2. serialize the role/content messages</span><code class="line">text = tok.apply_chat_template(messages, tokenize=False,</code><code class="line indent">add_generation_prompt=True, enable_thinking=False)</code></div>
-    <div class="code-step fragment"><span class="cmt"># 3. tokenize and move tensors beside the model</span><code class="line">inputs = tok(text, return_tensors="pt").to(model.device)</code></div>
-    <div class="code-step fragment"><span class="cmt"># 4. autoregressively append new token IDs</span><code class="line">all_ids = model.generate(**inputs, max_new_tokens=64,</code><code class="line indent">do_sample=True, temperature=.7, top_p=.8, top_k=20)</code></div>
-    <div class="code-step fragment"><span class="cmt"># 5. remove the prompt IDs, then decode only the answer</span><code class="line">new_ids = all_ids[0, inputs.input_ids.shape[1]:]</code><code class="line">answer = tok.decode(new_ids, skip_special_tokens=True)</code></div>
-    <div class="code-step fragment"><span class="cmt"># real greedy output for this prompt:</span><code class="line comment-out"># "Gradient descent is a method used to minimize a function</code><code class="line comment-out">#  by iteratively adjusting the parameters ... negative gradient."</code></div>
+    <div class="code-step fragment"><span class="cmt"># 1. load tokenizer + post-trained weights</span><code class="line">tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B")</code><code class="line">model = AutoModelForCausalLM.from_pretrained("Qwen/Qwen3-0.6B", device_map="auto")</code></div>
+    <div class="code-step fragment"><span class="cmt"># 2. serialize the role/content messages</span><code class="line">text = tok.apply_chat_template(messages, add_generation_prompt=True, enable_thinking=False)</code><code class="line out">&rarr; text[:34] = '&lt;|im_start|&gt;user\nExplain gradient…'</code></div>
+    <div class="code-step fragment"><span class="cmt"># 3. tokenize and move tensors beside the model</span><code class="line">inputs = tok(text, return_tensors="pt").to(model.device)</code><code class="line out">&rarr; inputs.input_ids.shape = [1, 20]</code><code class="line out">&rarr; input_ids[0,:6] = [151644, 872, 198, 840, 20772, 20169]</code></div>
+    <div class="code-step fragment"><span class="cmt"># 4. autoregressively append new token IDs</span><code class="line">all_ids = model.generate(**inputs, max_new_tokens=64)</code><code class="line out">&rarr; all_ids.shape = [1, 48]&nbsp;&nbsp;# 20 prompt + 28 new</code></div>
+    <div class="code-step fragment"><span class="cmt"># 5. drop the prompt IDs, then decode only the answer</span><code class="line">answer = tok.decode(all_ids[0, 20:], skip_special_tokens=True)</code><code class="line out">&rarr; answer = "Gradient descent is a method used to minimize a function…"</code></div>
   </div>
 </section>
 
@@ -534,11 +527,11 @@ console.log(result[0].generated_text.at(-1).content);</code></pre>
 <!-- 27b. GSM8K longer generation -->
 <section class="center-slide">
   <h2>Longer generation: a math word problem<span class="demo-badge">real model data</span></h2>
-  <p class="demo-caption">Thinking mode reasons for many tokens before answering — step through it or reveal the full generation.</p>
+  <p class="demo-caption">Non-thinking Qwen still lays out the steps over many tokens — step through it or reveal the full generation.</p>
   <div class="live-demo" data-demo="qwen-gsm8k">
     <div class="demo-fallback">
       <div class="run-fallback"><span>48 clips in April</span><b>+</b><span>24 in May</span><b>=</b><span>72</span></div>
-      <p>Qwen writes a long &lt;think&gt; trace, computes 48 + 24, and answers 72.</p>
+      <p>Qwen writes out 48 &divide; 2 = 24, then 48 + 24, and answers 72 clips.</p>
     </div>
   </div>
 </section>
@@ -567,15 +560,13 @@ console.log(result[0].generated_text.at(-1).content);</code></pre>
   <div class="thinking-compare">
     <div class="off">
       <h3>thinking OFF</h3>
-      <code>&lt;think&gt;<br><br>&lt;/think&gt;</code>
-      <p>Template pre-fills an empty block, then Qwen answers.</p>
-      <small>\(T=.7,\;p=.8,\;k=20\)</small>
+      <code>&lt;|im_start|&gt;assistant<br>&lt;think&gt;<br><br>&lt;/think&gt;</code>
+      <p>Template pre-fills an empty <span class="inline-code">&lt;think&gt;&lt;/think&gt;</span> block, so Qwen goes straight to the answer.</p>
     </div>
     <div class="on fragment">
       <h3>thinking ON</h3>
-      <code>&lt;|im_start|&gt;assistant<br>…</code>
-      <p>Qwen generates <span class="inline-code">&lt;think&gt;…&lt;/think&gt;</span> before its answer.</p>
-      <small>\(T=.6,\;p=.95,\;k=20\)</small>
+      <code>&lt;|im_start|&gt;assistant</code>
+      <p>Template stops at the cue, so Qwen generates <span class="inline-code">&lt;think&gt;…&lt;/think&gt;</span> before the answer.</p>
     </div>
   </div>
   <p class="l21-note fragment">Reasoning text can help on hard tasks, but costs tokens and is not guaranteed correct or causally faithful.</p>
@@ -584,10 +575,10 @@ console.log(result[0].generated_text.at(-1).content);</code></pre>
 <!-- 30. Failure: fabrication (live) -->
 <section class="center-slide">
   <h2>A fluent answer can still be fabricated<span class="demo-badge">real model data</span></h2>
-  <p class="demo-caption">Ask about the future and watch a confident, invented answer generate token by token.</p>
+  <p class="demo-caption">Ask about the future and watch a confident, invented answer generate token by token — then reveal the full fabricated name.</p>
   <div class="live-demo" data-demo="qwen-fail">
     <div class="demo-fallback">
-      <div class="run-fallback"><span>Who won the 2031 Turing Award?</span><b>&rarr;</b><span>“…the 2031 Turing Award was awarded to Dr. A. R. S. …”</span></div>
+      <div class="run-fallback"><span>Who won the 2031 Turing Award?</span><b>&rarr;</b><span>“…the 2031 Turing Award was awarded to <b>Amitabh Patel</b> for his work in machine learning.”</span></div>
       <p>2031 is in the future; the correct behavior is to abstain or retrieve current evidence.</p>
     </div>
   </div>
@@ -649,6 +640,6 @@ console.log(result[0].generated_text.at(-1).content);</code></pre>
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=43"></script>
+<script type="module" src="../shared/demo.js?v=44"></script>
 </body>
 </html>

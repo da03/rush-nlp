@@ -2339,58 +2339,95 @@ register('qwen-trace', (api) => {
 });
 
 /* =====================================================================
- *  DEMO 20b - prefill/decode KV-cache work comparison.
+ *  DEMO 20a - kv-reuse: animate decoding word by word, showing that earlier
+ *  hidden states / K/V are reused from cache instead of recomputed. (L21)
  * ===================================================================== */
-register('kv-cache', (api) => {
-  const prompt = ['The', 'robot', 'picked', 'up'];
-  const generated = ['the', 'cup', '.'];
-  let phase = 1;
-  const tokens = el('div', { class: 'kvc-tokens' });
-  const cache = el('div', { class: 'kvc-cache' });
-  const meters = el('div', { class: 'kvc-meters' });
-  const explanation = el('div', { class: 'kvc-explanation' });
-
-  function totals() {
-    if (phase === 0) return { noCache: 0, withCache: 0, slots: 0 };
-    let noCache = prompt.length;
-    let withCache = prompt.length;
-    for (let step = 1; step < phase; step++) {
-      noCache += prompt.length + step;
-      withCache += 1;
-    }
-    return { noCache, withCache, slots: prompt.length + Math.max(0, phase - 1) };
-  }
+register('kv-reuse', (api) => {
+  const prefill = ['\u2039prompt\u203a', 'Explain', '\u00b7gradient', '\u00b7descent', '\u2026'];
+  const generated = ['Gradient', '\u00b7descent', '\u00b7is', '\u00b7a'];
+  let step = 0; // 0 = prefill; k = after generating k words
+  const track = el('div', { class: 'kvr-track' });
+  const status = el('div', { class: 'kvr-status' });
+  const disp = (t) => t.replace(/^\u00b7/, ' ');
 
   function render() {
-    const { noCache, withCache, slots } = totals();
-    tokens.innerHTML = '';
-    [...prompt, ...generated.slice(0, Math.max(0, phase))].forEach((token, index) => tokens.appendChild(el('span', {
-      class: index < prompt.length ? 'prompt' : 'generated',
-      text: token,
-    })));
-    cache.innerHTML = '';
-    for (let index = 0; index < slots; index++) cache.appendChild(el('i', { title: `cached K/V slot ${index + 1}` }));
-    meters.innerHTML = '';
-    meters.appendChild(el('div', { class: 'no-cache' }, [el('strong', { text: String(noCache) }), el('span', { text: 'token positions computed without cache' })]));
-    meters.appendChild(el('div', { class: 'with-cache' }, [el('strong', { text: String(withCache) }), el('span', { text: 'token positions computed with cache' })]));
-    explanation.textContent = phase === 0
-      ? 'Start with a four-token prompt.'
-      : phase === 1
-        ? 'Prefill processes all four prompt tokens and builds four K/V slots.'
-        : `Decode step ${phase - 1}: process one new token; append one K/V slot.`;
-    nextButton.textContent = phase === 0 ? 'run prefill' : phase < 3 ? 'decode next token' : 'complete';
-    nextButton.disabled = phase >= 3;
+    const positions = [...prefill, ...generated.slice(0, step)];
+    const newIndex = step === 0 ? -1 : positions.length - 1; // only the last position is fresh after prefill
+    track.innerHTML = '';
+    positions.forEach((token, index) => {
+      const fresh = step === 0 ? true : index === newIndex;
+      track.appendChild(el('div', { class: 'kvr-col ' + (fresh ? 'fresh' : 'reused') }, [
+        el('div', { class: 'kvr-chip', text: fresh ? 'compute' : 'reuse' }),
+        el('div', { class: 'kvr-box' }),
+        el('div', { class: 'kvr-tok', text: disp(token) }),
+      ]));
+    });
+    if (step === 0) {
+      status.innerHTML = `<b>prefill:</b> compute hidden states + K/V for all ${prefill.length} prompt positions in parallel.`;
+    } else {
+      status.innerHTML = `<b>decode step ${step}:</b> reuse ${positions.length - 1} cached states, compute only <b>1</b> new column.`;
+    }
+    nextButton.textContent = step === 0 ? 'generate first word' : step < generated.length ? 'generate next word' : 'done';
+    nextButton.disabled = step >= generated.length;
   }
-  function next() { if (phase < 3) { phase += 1; render(); } }
-  function reset() { phase = 0; render(); }
-  const nextButton = api.button('run prefill', next);
+  function next() { if (step < generated.length) { step += 1; render(); } }
+  function reset() { step = 0; render(); }
+  const nextButton = api.button('generate first word', next);
   const mount = el('div', {}, [
-    explanation,
-    tokens,
-    el('div', { class: 'kvc-cache-wrap' }, [el('strong', { text: 'cached K/V slots' }), cache]),
-    meters,
-    el('div', { class: 'demo-controls kvc-controls' }, [nextButton, api.button('reset', reset, 'ghost')]),
-    el('div', { class: 'demo-hint', text: 'For three output tokens: without cache 4 + 5 + 6 = 15 token positions; with cache 4 + 1 + 1 = 6.' }),
+    status,
+    track,
+    el('div', { class: 'demo-controls' }, [nextButton, api.button('reset', reset, 'ghost')]),
+    el('div', { class: 'demo-hint', text: 'Green = computed this step, gray = reused from the KV cache. Because attention is causal, earlier states never change, so each decode step computes just one new column.' }),
+  ]);
+  return { mount, init: render };
+});
+
+/* =====================================================================
+ *  DEMO 20b - kv-cache: one row per forward pass, showing that each decode
+ *  step adds only one new column with the cache, versus recomputing all. (L21)
+ * ===================================================================== */
+register('kv-cache', (api) => {
+  const P = 4;              // prompt length
+  const maxSteps = 4;       // decode steps to reveal
+  let shown = 1;            // rows revealed (1 = prefill only)
+  const rows = el('div', { class: 'kvw-rows' });
+  const totals = el('div', { class: 'kvw-totals' });
+
+  function render() {
+    rows.innerHTML = '';
+    let withCache = 0, without = 0;
+    for (let r = 0; r < shown; r++) {
+      const cached = r === 0 ? 0 : P + (r - 1);   // gray, reused
+      const fresh = r === 0 ? P : 1;              // colored, computed now
+      withCache += fresh;
+      without += P + r;                           // naive recompute of the whole context
+      const cells = el('div', { class: 'kvw-cells' });
+      for (let c = 0; c < cached; c++) cells.appendChild(el('i', { class: 'kvw-cell reused' }));
+      for (let c = 0; c < fresh; c++) cells.appendChild(el('i', { class: 'kvw-cell fresh' }));
+      rows.appendChild(el('div', { class: 'kvw-row' }, [
+        el('span', { class: 'kvw-label', text: r === 0 ? 'prefill' : `decode ${r}` }),
+        cells,
+        el('b', { class: 'kvw-add', text: r === 0 ? `compute ${P}` : 'compute 1' }),
+      ]));
+    }
+    totals.innerHTML = '';
+    totals.appendChild(el('div', { class: 'with' }, [el('strong', { text: String(withCache) }), el('span', { text: 'columns computed with cache' })]));
+    totals.appendChild(el('div', { class: 'without' }, [el('strong', { text: String(without) }), el('span', { text: 'columns if we recomputed everything' })]));
+    nextButton.textContent = shown <= maxSteps ? 'add decode step' : 'done';
+    nextButton.disabled = shown > maxSteps;
+  }
+  function next() { if (shown <= maxSteps) { shown += 1; render(); } }
+  function reset() { shown = 1; render(); }
+  const nextButton = api.button('add decode step', next);
+  const mount = el('div', {}, [
+    el('div', { class: 'kvw-legend' }, [
+      el('span', { class: 'fresh', text: 'computed now' }),
+      el('span', { class: 'reused', text: 'reused from cache' }),
+    ]),
+    rows,
+    totals,
+    el('div', { class: 'demo-controls' }, [nextButton, api.button('reset', reset, 'ghost')]),
+    el('div', { class: 'demo-hint', text: 'Each decode row adds just one new column with the cache; without a cache every step would recompute the whole growing context.' }),
   ]);
   return { mount, init: render };
 });
@@ -2635,19 +2672,20 @@ function steppedTraceDemo(api, options) {
 }
 
 register('qwen-gsm8k', (api) => steppedTraceDemo(api, {
-  note: 'Qwen3-0.6B \u00b7 thinking mode \u00b7 a grade-school math word problem.',
+  note: 'Qwen3-0.6B \u00b7 non-thinking \u00b7 a grade-school math word problem.',
   select: (data) => data.gsm8k.trace,
   fullFrom: (data) => data.gsm8k.output.text,
-  live: { thinking: true, T: 0.6, k: 20, p: 0.95, max: 320 },
-  hint: 'Thinking mode writes a long <think> trace before the answer. Append tokens, or reveal the full generation.',
-  fallback: { prompt: 'Natalia sold clips\u2026', steps: [{ top: [{ piece: '<think>', p: 1 }], tail_mass: 0, choice: { piece: '<think>', p: 1 } }] },
+  live: { thinking: false, T: 0.7, k: 20, p: 0.8, max: 384 },
+  hint: 'Non-thinking mode still lays out the steps. Append tokens one at a time, or reveal the full generation ending in 72.',
+  fallback: { prompt: 'Natalia sold clips\u2026', steps: [{ top: [{ piece: 'Natalia', p: 1 }], tail_mass: 0, choice: { piece: 'Natalia', p: 1 } }] },
 }));
 
 register('qwen-fail', (api) => steppedTraceDemo(api, {
-  note: 'Qwen3-0.6B \u00b7 greedy \u00b7 a question about the future.',
+  note: 'Qwen3-0.6B \u00b7 a question about the future.',
   select: (data) => data.future_trace,
+  fullFrom: (data) => data.future_trace.completion,
   live: { thinking: false, T: 0.7, k: 20, p: 0.8, max: 96 },
-  hint: 'The model has no post-2024 knowledge, yet it still produces a confident, fabricated name.',
+  hint: 'The model has no post-2024 knowledge, yet it names a confident, fabricated winner. Reveal the full answer to see the invented name.',
   fallback: { prompt: 'Who won the 2031 Turing Award?', steps: [{ top: [{ piece: 'As', p: 0.5 }], tail_mass: 0.5, choice: { piece: 'As', p: 0.5 } }] },
 }));
 

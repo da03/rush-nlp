@@ -24,7 +24,7 @@ MODEL_ID = "Qwen/Qwen3-0.6B"
 BASE_MODEL_ID = "Qwen/Qwen3-0.6B-Base"
 OUT = os.path.join(os.path.dirname(__file__), "qwen_samples.json")
 TOPK = 8
-TRACE_STEPS = 16
+TRACE_STEPS = 32
 ATTN_TEXT = "The robot picked up the cup because it was empty"
 ATTN_TEXT_B = "The farmers loaded the truck because it was empty"
 
@@ -186,6 +186,45 @@ def generation_trace(model, tokenizer, user: str, preset: dict, device: str) -> 
             skip_special_tokens=False,
             clean_up_tokenization_spaces=False,
         ),
+    }
+
+
+def teacher_forced_trace(model, tokenizer, user: str, preset: dict, device: str, max_new_tokens: int, steps_cap: int) -> dict:
+    """Generate the full clean answer with model.generate, then step through the
+    exact produced tokens showing the real distribution at each position. This
+    keeps the stepped trace and the full completion perfectly consistent (used
+    for sampled generations where a raw multinomial replay would diverge)."""
+    serialized = serialize_record(tokenizer, user, preset["thinking"])
+    prompt_ids = [item["id"] for item in serialized["tokens"]]
+    inputs = torch.tensor([prompt_ids], device=device)
+    if device == "mps":
+        torch.mps.manual_seed(preset["seed"])
+    torch.manual_seed(preset["seed"])
+    kwargs = {"max_new_tokens": max_new_tokens, "do_sample": preset["do_sample"], "pad_token_id": tokenizer.eos_token_id}
+    if preset["do_sample"]:
+        kwargs.update(temperature=preset["temperature"], top_k=preset["top_k"], top_p=preset["top_p"])
+    with torch.inference_mode():
+        generated = model.generate(inputs, **kwargs)
+    new_ids = generated[0, inputs.shape[1]:].tolist()
+
+    steps = []
+    token_ids = list(prompt_ids)
+    for step_index, chosen_id in enumerate(new_ids[:steps_cap]):
+        raw_logits, raw = raw_distribution(model, tokenizer, token_ids, device)
+        choice = {
+            **token_record(tokenizer, chosen_id),
+            "raw_p": round(float(F.softmax(raw_logits, dim=-1)[chosen_id]), 10),
+        }
+        steps.append({"step": step_index + 1, **raw, "choice": choice})
+        token_ids.append(chosen_id)
+        if chosen_id == tokenizer.eos_token_id:
+            break
+    return {
+        "prompt": user,
+        "settings": preset,
+        "template_token_count": len(prompt_ids),
+        "steps": steps,
+        "completion": tokenizer.decode(new_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False),
     }
 
 
@@ -372,11 +411,15 @@ def main() -> None:
 
     gsm8k = {
         "prompt": PROMPTS["gsm8k"],
-        "trace": generation_trace(model, tokenizer, PROMPTS["gsm8k"], DECODE_PRESETS["thinking"], device),
-        "output": generation_output(model, tokenizer, PROMPTS["gsm8k"], DECODE_PRESETS["thinking"], device, 320),
+        "trace": generation_trace(model, tokenizer, PROMPTS["gsm8k"], DECODE_PRESETS["greedy"], device),
+        "output": generation_output(model, tokenizer, PROMPTS["gsm8k"], DECODE_PRESETS["greedy"], device, 384),
     }
 
-    future_trace = generation_trace(model, tokenizer, PROMPTS["future"], DECODE_PRESETS["greedy"], device)
+    # Sampling (not greedy) so the fabricated name stays fluent instead of
+    # collapsing into a repeated token; seed 21 gives a clean invented name.
+    # Teacher-force the exact generated tokens so stepping matches the answer.
+    future_preset = {**DECODE_PRESETS["nonthink"], "seed": 21}
+    future_trace = teacher_forced_trace(model, tokenizer, PROMPTS["future"], future_preset, device, 96, TRACE_STEPS)
 
     outputs = [
         {
@@ -397,7 +440,7 @@ def main() -> None:
         },
         {
             "id": "future",
-            **generation_output(model, tokenizer, PROMPTS["future"], DECODE_PRESETS["greedy"], device, 64),
+            **generation_output(model, tokenizer, PROMPTS["future"], DECODE_PRESETS["greedy"], device, 96),
         },
     ]
 
