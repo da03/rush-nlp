@@ -389,7 +389,7 @@ announcements:
       <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> addressed to
       <strong>Yuntian Deng</strong> (or <a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a>).
   - severity: warning
-    show: true
+    show: false
     title: "Assignment 2 deadline extended to Thursday, July 16"
     body: >-
       <strong>Assignment 2</strong> is now due <strong>Thursday, July 16 at 11:59 PM</strong>

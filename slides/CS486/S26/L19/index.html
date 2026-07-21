@@ -417,6 +417,11 @@
 </section>
 
 <!-- 18b. Attention playground (live, real model) -->
+<!-- TODO(next year): this L19 attention demo (shared `attention`) selects a
+     different layer/head per sentence. L21's `lm-attention` demo now fixes one
+     layer/head and shows it behaves consistently ACROSS sentences, which is the
+     clearer pedagogy. Rework this L19 demo to reuse the same head across
+     sentences (guess -> reveal -> second sentence), matching L21. -->
 <section>
   <h2>Real attention in a decoder<span class="demo-badge">live model</span></h2>
   <p class="demo-caption">Actual Qwen3-0.6B causal attention &mdash; pick a head, then click a query word.</p>

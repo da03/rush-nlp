@@ -21,17 +21,28 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 MODEL_ID = "Qwen/Qwen3-0.6B"
+BASE_MODEL_ID = "Qwen/Qwen3-0.6B-Base"
 OUT = os.path.join(os.path.dirname(__file__), "qwen_samples.json")
 TOPK = 8
-TRACE_STEPS = 8
+TRACE_STEPS = 16
 ATTN_TEXT = "The robot picked up the cup because it was empty"
+ATTN_TEXT_B = "The dog chased the cat until it got tired"
 
 PROMPTS = {
     "explain": "Explain gradient descent in one sentence.",
     "child": "Explain gradient descent to a 10-year-old in one sentence.",
-    "decode": "Write a creative name for a friendly blue robot.",
+    "decode": "Explain gradient descent in one sentence.",
     "reason": "Which is larger, 9.11 or 9.9? Explain briefly.",
     "future": "Who won the 2031 Turing Award?",
+    "contrast": "What is gradient descent?",
+    "multi_user": "Explain gradient descent in one sentence.",
+    "multi_assistant": "It iteratively steps the parameters downhill along the negative gradient.",
+    "multi_followup": "Now give a one-line real-world example.",
+    "gsm8k": (
+        "Natalia sold clips to 48 of her friends in April, and then she sold "
+        "half as many clips in May. How many clips did she sell altogether in "
+        "April and May?"
+    ),
 }
 
 DECODE_PRESETS = {
@@ -78,8 +89,7 @@ def token_record(tokenizer, token_id: int) -> dict:
     return {"piece": display_piece(tokenizer, token_id), "id": int(token_id)}
 
 
-def serialize_record(tokenizer, user: str, thinking: bool) -> dict:
-    messages = [{"role": "user", "content": user}]
+def serialize_messages(tokenizer, messages: list[dict], thinking: bool) -> dict:
     text = tokenizer.apply_chat_template(
         messages,
         tokenize=False,
@@ -92,6 +102,10 @@ def serialize_record(tokenizer, user: str, thinking: bool) -> dict:
         "token_count": len(token_ids),
         "tokens": [token_record(tokenizer, token_id) for token_id in token_ids],
     }
+
+
+def serialize_record(tokenizer, user: str, thinking: bool) -> dict:
+    return serialize_messages(tokenizer, [{"role": "user", "content": user}], thinking)
 
 
 def raw_distribution(model, tokenizer, token_ids: list[int], device: str) -> tuple[torch.Tensor, dict]:
@@ -205,71 +219,66 @@ def generation_output(model, tokenizer, user: str, preset: dict, device: str, ma
     }
 
 
-def curate_attention(tokenizer, model, device: str) -> dict:
-    ids = tokenizer(ATTN_TEXT, return_tensors="pt").input_ids.to(device)
+def attention_for(tokenizer, model, text: str, device: str):
+    ids = tokenizer(text, return_tensors="pt").input_ids.to(device)
     with torch.inference_mode():
         attention = model(ids, output_attentions=True).attentions
     tokens = [display_piece(tokenizer, int(token_id)) for token_id in ids[0]]
-    layers = len(attention)
-    heads = attention[0].shape[1]
-    matrices = np.stack([attention[layer][0].float().cpu().numpy() for layer in range(layers)])
-    query_it = next(
-        (index for index, token in enumerate(tokens) if token.lstrip("\u00b7").lower() == "it"),
+    matrices = np.stack([attention[layer][0].float().cpu().numpy() for layer in range(len(attention))])
+    return tokens, matrices
+
+
+def query_index(tokens: list[str], word: str) -> int:
+    return next(
+        (index for index, token in enumerate(tokens) if token.lstrip("\u00b7").lower() == word),
         len(tokens) - 1,
     )
+
+
+def sentence_payload(tokens, matrices, heads):
+    it_index = query_index(tokens, "it")
+    return {
+        "tokens": tokens,
+        "query_default": it_index,
+        "heads": [
+            {**meta, "A": matrices[meta["layer"], meta["head"]].round(4).tolist()}
+            for meta in heads
+        ],
+    }
+
+
+def curate_attention(tokenizer, model, device: str) -> dict:
+    tokens, matrices = attention_for(tokenizer, model, ATTN_TEXT, device)
+    layers, heads = matrices.shape[0], matrices.shape[1]
+    it_index = query_index(tokens, "it")
     content = [
         index for index, token in enumerate(tokens)
         if token.lstrip("\u00b7").lower() not in ("the", "it", "was", "because", "up")
     ]
-    selected = []
 
-    best = max(
+    _, coref_layer, coref_head, coref_source = max(
         (
-            (matrices[layer, head, query_it, source], layer, head, source)
+            (matrices[layer, head, it_index, source], layer, head, source)
             for layer in range(layers)
             for head in range(heads)
             for source in content
         ),
         key=lambda item: item[0],
     )
-    _, layer, head, source = best
-    selected.append(
-        {
-            "label": f"selected: it \u2192 {tokens[source].lstrip(chr(183))}",
-            "criterion": "largest measured attention from query 'it' to a content token",
-            "layer": int(layer),
-            "head": int(head),
-            "A": matrices[layer, head].round(4).tolist(),
-        }
-    )
-
-    _, layer, head = max(
+    _, prev_layer, prev_head = max(
         (
-            (
-                float(np.mean([matrices[layer, head, index, index - 1] for index in range(1, len(tokens))])),
-                layer,
-                head,
-            )
+            (float(np.mean([matrices[layer, head, i, i - 1] for i in range(1, len(tokens))])), layer, head)
             for layer in range(layers)
             for head in range(heads)
         ),
         key=lambda item: item[0],
-    )
-    selected.append(
-        {
-            "label": "selected: previous-token pattern",
-            "criterion": "largest mean weight on the immediately previous token",
-            "layer": int(layer),
-            "head": int(head),
-            "A": matrices[layer, head].round(4).tolist(),
-        }
     )
 
     def entropy(matrix):
         probabilities = np.clip(matrix, 1e-9, 1)
         return float(-(probabilities * np.log(probabilities)).sum(1).mean())
 
-    _, layer, head = max(
+    _, broad_layer, broad_head = max(
         (
             (entropy(matrices[layer, head]), layer, head)
             for layer in range(layers)
@@ -277,15 +286,32 @@ def curate_attention(tokenizer, model, device: str) -> dict:
         ),
         key=lambda item: item[0],
     )
-    selected.append(
+
+    head_meta = [
         {
-            "label": "selected: broad-context pattern",
+            "label": f"coreference: it \u2192 {tokens[coref_source].lstrip(chr(183))}",
+            "criterion": "largest measured attention from query 'it' to a content token",
+            "guess": "cup",
+            "layer": int(coref_layer),
+            "head": int(coref_head),
+        },
+        {
+            "label": "previous-token pattern",
+            "criterion": "largest mean weight on the immediately previous token",
+            "guess": None,
+            "layer": int(prev_layer),
+            "head": int(prev_head),
+        },
+        {
+            "label": "broad-context pattern",
             "criterion": "largest mean row entropy",
-            "layer": int(layer),
-            "head": int(head),
-            "A": matrices[layer, head].round(4).tolist(),
-        }
-    )
+            "guess": None,
+            "layer": int(broad_layer),
+            "head": int(broad_head),
+        },
+    ]
+
+    tokens_b, matrices_b = attention_for(tokenizer, model, ATTN_TEXT_B, device)
 
     max_future_mass = max(
         float(np.triu(matrices[layer, head], 1).sum(axis=1).max())
@@ -298,15 +324,25 @@ def curate_attention(tokenizer, model, device: str) -> dict:
         for head in range(heads)
     )
     return {
-        "text": ATTN_TEXT,
-        "tokens": tokens,
-        "query_default": query_it,
-        "heads": selected,
+        "sentences": [
+            {"text": ATTN_TEXT, **sentence_payload(tokens, matrices, head_meta)},
+            {"text": ATTN_TEXT_B, **sentence_payload(tokens_b, matrices_b, head_meta)},
+        ],
         "audit": {
             "max_future_mass": max_future_mass,
             "max_row_sum_error": max_row_error,
         },
     }
+
+
+def base_continuation(base_model, tokenizer, prompt: str, device: str, max_new_tokens: int) -> str:
+    ids = tokenizer(prompt, return_tensors="pt").input_ids.to(device)
+    with torch.inference_mode():
+        generated = base_model.generate(
+            ids, max_new_tokens=max_new_tokens, do_sample=False,
+            pad_token_id=tokenizer.eos_token_id,
+        )
+    return tokenizer.decode(generated[0, ids.shape[1]:], skip_special_tokens=True, clean_up_tokenization_spaces=False)
 
 
 def main() -> None:
@@ -334,6 +370,21 @@ def main() -> None:
             }
         )
 
+    multi_messages = [
+        {"role": "user", "content": PROMPTS["multi_user"]},
+        {"role": "assistant", "content": PROMPTS["multi_assistant"]},
+        {"role": "user", "content": PROMPTS["multi_followup"]},
+    ]
+    chat.append(
+        {
+            "id": "multi",
+            "user": PROMPTS["multi_followup"],
+            "messages": multi_messages,
+            "thinking_off": serialize_messages(tokenizer, multi_messages, False),
+            "thinking_on": serialize_messages(tokenizer, multi_messages, True),
+        }
+    )
+
     prompt_tokens = chat[0]["thinking_off"]
     explain_ids = [item["id"] for item in prompt_tokens["tokens"]]
     _, explain_next = raw_distribution(model, tokenizer, explain_ids, device)
@@ -346,22 +397,30 @@ def main() -> None:
         },
     }
 
+    gsm8k = {
+        "prompt": PROMPTS["gsm8k"],
+        "trace": generation_trace(model, tokenizer, PROMPTS["gsm8k"], DECODE_PRESETS["thinking"], device),
+        "output": generation_output(model, tokenizer, PROMPTS["gsm8k"], DECODE_PRESETS["thinking"], device, 320),
+    }
+
+    future_trace = generation_trace(model, tokenizer, PROMPTS["future"], DECODE_PRESETS["greedy"], device)
+
     outputs = [
         {
             "id": "explain",
-            **generation_output(model, tokenizer, PROMPTS["explain"], DECODE_PRESETS["greedy"], device, 56),
+            **generation_output(model, tokenizer, PROMPTS["explain"], DECODE_PRESETS["greedy"], device, 96),
         },
         {
             "id": "child",
-            **generation_output(model, tokenizer, PROMPTS["child"], DECODE_PRESETS["greedy"], device, 56),
+            **generation_output(model, tokenizer, PROMPTS["child"], DECODE_PRESETS["greedy"], device, 96),
         },
         {
             "id": "reason_off",
-            **generation_output(model, tokenizer, PROMPTS["reason"], DECODE_PRESETS["nonthink"], device, 80),
+            **generation_output(model, tokenizer, PROMPTS["reason"], DECODE_PRESETS["nonthink"], device, 96),
         },
         {
             "id": "reason_on",
-            **generation_output(model, tokenizer, PROMPTS["reason"], DECODE_PRESETS["thinking"], device, 128),
+            **generation_output(model, tokenizer, PROMPTS["reason"], DECODE_PRESETS["thinking"], device, 160),
         },
         {
             "id": "future",
@@ -369,8 +428,29 @@ def main() -> None:
         },
     ]
 
+    attention = curate_attention(tokenizer, model, device)
+    main_trace = generation_trace(model, tokenizer, PROMPTS["explain"], DECODE_PRESETS["greedy"], device)
+    contrast_answer = generation_output(model, tokenizer, PROMPTS["contrast"], DECODE_PRESETS["greedy"], device, 60)
+
+    # Base model (pretraining only) vs post-trained assistant on the same prompt.
+    del model
+    if device == "mps":
+        torch.mps.empty_cache()
+    base_model = AutoModelForCausalLM.from_pretrained(
+        BASE_MODEL_ID,
+        torch_dtype="auto",
+        low_cpu_mem_usage=True,
+        local_files_only=True,
+    ).to(device).eval()
+    contrast = {
+        "prompt": PROMPTS["contrast"],
+        "base_continuation": base_continuation(base_model, tokenizer, PROMPTS["contrast"], device, 40),
+        "assistant_answer": contrast_answer["text"],
+    }
+    del base_model
+
     output = {
-        "schema_version": 2,
+        "schema_version": 3,
         "generated": str(date.today()),
         "model": {
             "id": MODEL_ID,
@@ -393,12 +473,13 @@ def main() -> None:
         "chat": chat,
         "prompt_tokens": prompt_tokens,
         "next": {"prompt": PROMPTS["explain"], **explain_next},
-        "main_trace": generation_trace(
-            model, tokenizer, PROMPTS["explain"], DECODE_PRESETS["greedy"], device
-        ),
+        "main_trace": main_trace,
         "decode": decode,
+        "gsm8k": gsm8k,
+        "future_trace": future_trace,
+        "contrast": contrast,
         "outputs": outputs,
-        "attention": curate_attention(tokenizer, model, device),
+        "attention": attention,
     }
 
     with open(OUT, "w", encoding="utf-8") as handle:
@@ -410,6 +491,9 @@ def main() -> None:
         print("trace", preset_id, "->", trace["completion"].replace("\n", "\u21b5"))
     for item in outputs:
         print("output", item["id"], "->", item["text"][:100].replace("\n", " "))
+    print("gsm8k ->", gsm8k["output"]["text"][:120].replace("\n", " "))
+    print("base   ->", contrast["base_continuation"][:120].replace("\n", " "))
+    print("assist ->", contrast["assistant_answer"][:120].replace("\n", " "))
     print("attention audit:", output["attention"]["audit"])
 
 

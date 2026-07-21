@@ -2186,15 +2186,17 @@ register('chat-template', (api) => {
   const rawMessage = el('div', { class: 'template-message' });
   const serialized = el('pre', { class: 'chat-tmpl' });
   const metadata = el('div', { class: 'template-meta' });
-  const promptLabel = (item) => item.id === 'explain' ? 'explanation' : item.id === 'reason' ? 'reasoning' : 'future fact';
+  const promptLabel = (item) => ({ explain: 'single turn', reason: 'reasoning', future: 'future fact', multi: 'multi-turn' }[item.id] || item.id);
   const escapeHtml = (text) => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
   function render() {
     const item = data.chat[promptIndex];
     const record = thinking ? item.thinking_on : item.thinking_off;
     rawMessage.innerHTML = '';
-    rawMessage.appendChild(el('div', { class: 'tm-role', text: item.messages[0].role }));
-    rawMessage.appendChild(el('div', { class: 'tm-content', text: item.messages[0].content }));
+    item.messages.forEach((message) => {
+      rawMessage.appendChild(el('div', { class: 'tm-role', text: message.role }));
+      rawMessage.appendChild(el('div', { class: 'tm-content', text: message.content }));
+    });
     serialized.innerHTML = escapeHtml(record.text)
       .replace(/&lt;\|[^|]*?\|&gt;/g, (match) => `<span class="sp">${match}</span>`)
       .replace(/&lt;\/?think&gt;/g, (match) => `<span class="sp think">${match}</span>`);
@@ -2549,18 +2551,126 @@ register('qwen-run', (api) => {
 });
 
 /* =====================================================================
- *  DEMO 21 - lm-attention: REAL Qwen3-0.6B attention. Pick a head, click a
- *  query token, read where it looks in the actual dissected model. (L21)
+ *  Shared stepped-trace demo: append exact precomputed tokens one at a time,
+ *  optionally reveal a full precomputed answer, optionally run live. (L21)
+ * ===================================================================== */
+function steppedTraceDemo(api, options) {
+  let trace = options.fallback;
+  let fullAnswer = '';
+  let stepIndex = 0;
+  let appended = [];
+  const status = el('div', { class: 'qwen-trace-status' });
+  const bars = el('div', { class: 'qwen-trace-bars' });
+  const context = el('div', { class: 'qwen-trace-context' });
+  const pieceText = (piece) => piece.replace(/^\u00b7/, ' ').replace(/\u21b5/g, '\n');
+  const highlightedPiece = (piece) => piece.replace(/^\u00b7/, '\u00a0').replace(/\u21b5/g, '\u21b5');
+  const formatP = (probability) => probability >= 0.001 ? probability.toFixed(3) : probability.toExponential(1);
+
+  function render(showFull) {
+    const step = trace.steps[stepIndex];
+    bars.innerHTML = '';
+    if (step) {
+      const maximum = Math.max(...step.top.map((item) => item.p), 0.001);
+      step.top.slice(0, 6).forEach((item, index) => bars.appendChild(el('div', { class: 'qt-row' + (index === 0 ? ' top' : '') }, [
+        el('span', { text: item.piece }),
+        el('i', {}, [el('b', { style: `width:${(item.p / maximum * 100).toFixed(1)}%` })]),
+        el('code', { text: formatP(item.p) }),
+      ])));
+      bars.appendChild(el('div', { class: 'qt-tail' }, [el('span', { text: 'all other tokens' }), el('code', { text: step.tail_mass.toFixed(3) })]));
+      status.textContent = `next distribution: step ${stepIndex + 1} of ${trace.steps.length}`;
+    } else {
+      bars.appendChild(el('div', { class: 'qt-done', text: `${trace.steps.length} real generation steps shown.` }));
+      status.textContent = 'trace complete';
+    }
+    context.innerHTML = '';
+    if (showFull && fullAnswer) {
+      context.appendChild(el('span', { text: `user: ${trace.prompt}\nassistant: ${fullAnswer}` }));
+    } else {
+      const prior = `user: ${trace.prompt}\nassistant: ` + appended.slice(0, -1).map((item) => pieceText(item.piece)).join('');
+      context.appendChild(el('span', { text: prior }));
+      if (appended.length) context.appendChild(el('mark', { text: highlightedPiece(appended.at(-1).piece) }));
+    }
+    nextButton.disabled = !step;
+  }
+  function next() { const step = trace.steps[stepIndex]; if (!step) return; appended.push(step.choice); stepIndex += 1; render(false); }
+  function reset() { stepIndex = 0; appended = []; render(false); }
+
+  const nextButton = api.button(options.nextLabel || 'append next token', next);
+  const controls = [nextButton, api.button('reset', reset, 'ghost')];
+  if (options.fullFrom) controls.push(api.button('show full answer', () => render(true), 'ghost'));
+  if (options.live) {
+    controls.push(api.button('optional: run live', async () => {
+      let lm;
+      try { api.setStatus('Loading optional Qwen model (several hundred MB)...'); lm = await api.getChatLM(); }
+      catch (err) { api.setStatus('Live model unavailable; the audited trace still works.', 'err'); return; }
+      context.innerHTML = ''; const out = el('span', { text: `user: ${trace.prompt}\nassistant: ` }); context.appendChild(out);
+      let acc = '';
+      try {
+        await api.chatStream(lm, [{ role: 'user', content: trace.prompt + (options.live.thinking ? ' /think' : ' /no_think') }],
+          { doSample: true, T: options.live.T, k: options.live.k, p: options.live.p, max: options.live.max || 128 },
+          (t) => { acc += t; out.textContent = `user: ${trace.prompt}\nassistant: ${acc}`; });
+        api.setStatus('Generated live in your browser.', 'ok');
+      } catch (err) { api.setStatus('Live generation failed; use the audited trace.', 'err'); }
+    }, 'ghost'));
+  }
+
+  const mount = el('div', {}, [
+    options.note ? el('div', { class: 'demo-note', text: options.note }) : el('div', {}),
+    status,
+    el('div', { class: 'qwen-trace-layout' }, [bars, context]),
+    el('div', { class: 'demo-controls qwen-trace-controls' }, controls),
+    el('div', { class: 'demo-hint', text: options.hint || 'Candidate labels use \u00b7 for a leading space. Every click reads a newly conditioned distribution.' }),
+  ]);
+  async function load() {
+    try {
+      const r = await fetch('data/qwen_samples.json');
+      const data = await r.json();
+      trace = options.select(data);
+      if (options.fullFrom) fullAnswer = options.fullFrom(data);
+    }
+    catch (err) { api.setStatus('Using the embedded fallback trace.', 'err'); }
+    render(false);
+  }
+  return { mount, init: load };
+}
+
+register('qwen-gsm8k', (api) => steppedTraceDemo(api, {
+  note: 'Qwen3-0.6B \u00b7 thinking mode \u00b7 a grade-school math word problem.',
+  select: (data) => data.gsm8k.trace,
+  fullFrom: (data) => data.gsm8k.output.text,
+  live: { thinking: true, T: 0.6, k: 20, p: 0.95, max: 320 },
+  hint: 'Thinking mode writes a long <think> trace before the answer. Append tokens, or reveal the full generation.',
+  fallback: { prompt: 'Natalia sold clips\u2026', steps: [{ top: [{ piece: '<think>', p: 1 }], tail_mass: 0, choice: { piece: '<think>', p: 1 } }] },
+}));
+
+register('qwen-fail', (api) => steppedTraceDemo(api, {
+  note: 'Qwen3-0.6B \u00b7 greedy \u00b7 a question about the future.',
+  select: (data) => data.future_trace,
+  live: { thinking: false, T: 0.7, k: 20, p: 0.8, max: 96 },
+  hint: 'The model has no post-2024 knowledge, yet it still produces a confident, fabricated name.',
+  fallback: { prompt: 'Who won the 2031 Turing Award?', steps: [{ top: [{ piece: 'As', p: 0.5 }], tail_mass: 0.5, choice: { piece: 'As', p: 0.5 } }] },
+}));
+
+/* =====================================================================
+ *  DEMO 21 - lm-attention: REAL Qwen3-0.6B attention. Guess where a query
+ *  looks, reveal the measured row, then confirm the same head/layer behaves
+ *  consistently on a second sentence. (L21)
  * ===================================================================== */
 register('lm-attention', (api) => {
-  let data = null, hi = 0, qi = null;
-  const canvas = api.canvasEl(360, 310); canvas.classList.add('clickable');
+  let data = null, si = 0, hi = 0, qi = null, revealed = false;
+  const canvas = api.canvasEl(360, 300); canvas.classList.add('clickable');
   const panel = el('div', { class: 'attn-panel' });
+  const sentenceRow = el('div', { class: 'demo-controls' });
   const headRow = el('div', { class: 'demo-controls' });
   const queryRow = el('div', { class: 'attention-query-row' });
   const provenance = el('div', { class: 'attention-provenance' });
-  const toks = () => data.attention.tokens;
-  const A = () => data.attention.heads[hi].A;
+  const sentences = () => data.attention.sentences;
+  const sentence = () => sentences()[si];
+  const toks = () => sentence().tokens;
+  const head = () => sentence().heads[hi];
+  const A = () => head().A;
+  const isGuessable = () => si === 0 && head().guess != null && qi === sentence().query_default;
+
   function layout() { const W = canvas.width, H = canvas.height, n = toks().length; const padL = 88, padT = 58; const cell = Math.min(25, (W - padL - 8) / n, (H - padT - 8) / n); return { W, H, n, padL, padT, cell }; }
   function draw() {
     const ctx = canvas.getContext('2d'); const { W, H, n, padL, padT, cell } = layout(); const M = A(), tk = toks();
@@ -2569,70 +2679,80 @@ register('lm-attention', (api) => {
     for (let j = 0; j < n; j++) { ctx.save(); ctx.translate(padL + j * cell + cell / 2 + 4, padT - 8); ctx.rotate(-Math.PI / 4); ctx.fillText(tk[j], 0, 0); ctx.restore(); }
     ctx.textAlign = 'right';
     for (let i = 0; i < n; i++) { ctx.fillStyle = i === qi ? '#b91c1c' : '#374151'; ctx.fillText(tk[i], padL - 6, padT + i * cell + cell / 2 + 4); }
-    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { ctx.fillStyle = `rgba(29,78,216,${Math.pow(M[i][j], 0.7).toFixed(3)})`; ctx.fillRect(padL + j * cell, padT + i * cell, cell - 1, cell - 1); }
+    const hideRow = isGuessable() && !revealed;
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      const value = (hideRow && i === qi) ? 0 : M[i][j];
+      ctx.fillStyle = `rgba(29,78,216,${Math.pow(value, 0.7).toFixed(3)})`;
+      ctx.fillRect(padL + j * cell, padT + i * cell, cell - 1, cell - 1);
+    }
     if (qi != null) { ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 2.5; ctx.strokeRect(padL - 1, padT + qi * cell - 1, n * cell + 1, cell + 1); }
     [...queryRow.children].forEach((button, index) => {
       button.classList.toggle('selected', index === qi);
       button.setAttribute('aria-pressed', String(index === qi));
     });
-    const head = data.attention.heads[hi];
-    provenance.innerHTML = `<b>layer ${head.layer}, head ${head.head}</b> \u00b7 selected by: ${head.criterion}`;
+    provenance.innerHTML = `<b>layer ${head().layer}, head ${head().head}</b> \u00b7 ${head().criterion}`;
     drawPanel();
   }
   function drawPanel() {
     panel.innerHTML = ''; const tk = toks();
     if (qi == null) { panel.appendChild(el('p', { class: 'attn-hint', html: 'Click any <b>row</b> (query token) to see where it looks.' })); return; }
-    const row = A()[qi];
     panel.appendChild(el('p', { class: 'attn-q', html: `query: <b>${tk[qi]}</b> attends to&hellip;` }));
-    const order = tk.map((t, j) => [t, row[j]]).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    if (isGuessable() && !revealed) {
+      panel.appendChild(el('p', { class: 'attn-guess', html: `Guess: does <b>it</b> point to the nearest noun (<b>${head().guess}</b>)?` }));
+      panel.appendChild(api.button('reveal measured row', () => { revealed = true; draw(); }));
+      return;
+    }
+    const row = A();
+    const order = tk.map((t, j) => [t, row[qi][j]]).sort((a, b) => b[1] - a[1]).slice(0, 6);
     const max = order[0][1] || 1; const b = el('div', { class: 'attn-bars2' });
     order.forEach(([t, w]) => b.appendChild(el('div', { class: 'attn-row' }, [
       el('span', { class: 'attn-lab', text: t }), el('div', { class: 'attn-track' }, [el('div', { class: 'attn-fill', style: `width:${(w / max * 100).toFixed(1)}%` })]), el('span', { class: 'attn-num', text: w.toFixed(2) }),
     ])));
     panel.appendChild(b);
   }
-  canvas.addEventListener('click', (e) => { const { padT, cell, n } = layout(); const r = canvas.getBoundingClientRect(); const my = (e.clientY - r.top) * canvas.height / r.height; const i = Math.floor((my - padT) / cell); if (i >= 0 && i < n) { qi = i; draw(); } });
+  canvas.addEventListener('click', (e) => { const { padT, cell, n } = layout(); const r = canvas.getBoundingClientRect(); const my = (e.clientY - r.top) * canvas.height / r.height; const i = Math.floor((my - padT) / cell); if (i >= 0 && i < n) { qi = i; revealed = qi !== sentence().query_default; draw(); } });
+
+  function buildQueryRow() {
+    queryRow.innerHTML = '';
+    toks().forEach((token, index) => {
+      const button = el('button', { class: 'attention-query-token', type: 'button', text: token, 'aria-label': `Inspect attention for query token ${token}` });
+      button.addEventListener('click', () => { qi = index; revealed = qi !== sentence().query_default; draw(); });
+      queryRow.appendChild(button);
+    });
+  }
+  function setSentence(k) {
+    si = k; qi = sentence().query_default; revealed = false;
+    [...sentenceRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
+    buildQueryRow(); draw();
+  }
   function setHead(k) {
-    hi = k;
+    hi = k; qi = sentence().query_default; revealed = false;
     [...headRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
     draw();
   }
   const mount = el('div', {}, [
+    sentenceRow,
     headRow,
     provenance,
     queryRow,
     el('div', { class: 'demo-stage' }, [canvas, panel]),
-    el('div', { class: 'demo-hint', text: 'Every row sums to approximately 1 and has zero future mass. Selected patterns are curated measurements, not causal explanations.' }),
+    el('div', { class: 'demo-hint', text: 'Same layer/head across two sentences: the coreference head links "it" to the earlier noun both times. Rows sum to ~1 with zero future mass; a curated head is a measurement, not a full explanation.' }),
   ]);
   async function load() {
     try { const r = await fetch('data/qwen_samples.json'); data = await r.json(); }
     catch (e) {
-      data = { attention: {
-        tokens: ['The', '\u00b7robot', '\u00b7it'],
-        query_default: 2,
-        heads: [{
-          label: 'embedded fallback: it \u2192 robot',
-          criterion: 'classroom fallback pattern',
-          layer: 11,
-          head: 1,
-          A: [[1, 0, 0], [0.7, 0.3, 0], [0.1, 0.75, 0.15]],
-        }],
-        audit: { max_future_mass: 0, max_row_sum_error: 0 },
-      } };
+      data = { attention: { sentences: [{
+        text: 'The robot picked up the cup because it was empty',
+        tokens: ['The', '\u00b7robot', '\u00b7cup', '\u00b7it'],
+        query_default: 3,
+        heads: [{ label: 'coreference', criterion: 'it \u2192 earlier noun', guess: 'cup', layer: 11, head: 1, A: [[1, 0, 0, 0], [0.6, 0.4, 0, 0], [0.3, 0.3, 0.4, 0], [0.1, 0.75, 0.1, 0.05]] }],
+      }] } };
       api.setStatus('Using the embedded attention fallback.', 'err');
     }
-    data.attention.heads.forEach((h, k) => headRow.appendChild(api.button(h.label, () => setHead(k), k === 0 ? 'primary' : 'ghost')));
-    toks().forEach((token, index) => {
-      const button = el('button', {
-        class: 'attention-query-token',
-        type: 'button',
-        text: token,
-        'aria-label': `Inspect attention for query token ${token}`,
-      });
-      button.addEventListener('click', () => { qi = index; draw(); });
-      queryRow.appendChild(button);
-    });
-    qi = data.attention.query_default;
+    sentences().forEach((s, k) => sentenceRow.appendChild(api.button(`"${s.text.slice(0, 22)}\u2026"`, () => setSentence(k), k === 0 ? 'primary' : 'ghost')));
+    sentence().heads.forEach((h, k) => headRow.appendChild(api.button(h.label, () => setHead(k), k === 0 ? 'primary' : 'ghost')));
+    buildQueryRow();
+    qi = sentence().query_default; revealed = false;
     draw();
   }
   return { mount, init: load };
