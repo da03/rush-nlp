@@ -2652,13 +2652,13 @@ register('qwen-fail', (api) => steppedTraceDemo(api, {
 }));
 
 /* =====================================================================
- *  DEMO 21 - lm-attention: REAL Qwen3-0.6B attention. Guess where a query
- *  looks, reveal the measured row, then confirm the same head/layer behaves
- *  consistently on a second sentence. (L21)
+ *  DEMO 21 - lm-attention: REAL Qwen3-0.6B attention. On an ambiguous sentence
+ *  two heads send the query "it" to two different words (cup vs robot). Switch
+ *  to an unambiguous control sentence to see what each head really tracks. (L21)
  * ===================================================================== */
 register('lm-attention', (api) => {
-  let data = null, si = 0, hi = 0, qi = null, revealed = false;
-  const canvas = api.canvasEl(360, 300); canvas.classList.add('clickable');
+  let data = null, si = 0, hi = 0, qi = null;
+  const canvas = api.canvasEl(360, 284); canvas.classList.add('clickable');
   const panel = el('div', { class: 'attn-panel' });
   const sentenceRow = el('div', { class: 'demo-controls' });
   const headRow = el('div', { class: 'demo-controls' });
@@ -2669,7 +2669,6 @@ register('lm-attention', (api) => {
   const toks = () => sentence().tokens;
   const head = () => sentence().heads[hi];
   const A = () => head().A;
-  const isGuessable = () => si === 0 && head().guess != null && qi === sentence().query_default;
 
   function layout() { const W = canvas.width, H = canvas.height, n = toks().length; const padL = 88, padT = 58; const cell = Math.min(25, (W - padL - 8) / n, (H - padT - 8) / n); return { W, H, n, padL, padT, cell }; }
   function draw() {
@@ -2679,10 +2678,8 @@ register('lm-attention', (api) => {
     for (let j = 0; j < n; j++) { ctx.save(); ctx.translate(padL + j * cell + cell / 2 + 4, padT - 8); ctx.rotate(-Math.PI / 4); ctx.fillText(tk[j], 0, 0); ctx.restore(); }
     ctx.textAlign = 'right';
     for (let i = 0; i < n; i++) { ctx.fillStyle = i === qi ? '#b91c1c' : '#374151'; ctx.fillText(tk[i], padL - 6, padT + i * cell + cell / 2 + 4); }
-    const hideRow = isGuessable() && !revealed;
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
-      const value = (hideRow && i === qi) ? 0 : M[i][j];
-      ctx.fillStyle = `rgba(29,78,216,${Math.pow(value, 0.7).toFixed(3)})`;
+      ctx.fillStyle = `rgba(29,78,216,${Math.pow(M[i][j], 0.7).toFixed(3)})`;
       ctx.fillRect(padL + j * cell, padT + i * cell, cell - 1, cell - 1);
     }
     if (qi != null) { ctx.strokeStyle = '#dc2626'; ctx.lineWidth = 2.5; ctx.strokeRect(padL - 1, padT + qi * cell - 1, n * cell + 1, cell + 1); }
@@ -2697,11 +2694,6 @@ register('lm-attention', (api) => {
     panel.innerHTML = ''; const tk = toks();
     if (qi == null) { panel.appendChild(el('p', { class: 'attn-hint', html: 'Click any <b>row</b> (query token) to see where it looks.' })); return; }
     panel.appendChild(el('p', { class: 'attn-q', html: `query: <b>${tk[qi]}</b> attends to&hellip;` }));
-    if (isGuessable() && !revealed) {
-      panel.appendChild(el('p', { class: 'attn-guess', html: `Guess: does <b>it</b> point to the nearest noun (<b>${head().guess}</b>)?` }));
-      panel.appendChild(api.button('reveal measured row', () => { revealed = true; draw(); }));
-      return;
-    }
     const row = A();
     const order = tk.map((t, j) => [t, row[qi][j]]).sort((a, b) => b[1] - a[1]).slice(0, 6);
     const max = order[0][1] || 1; const b = el('div', { class: 'attn-bars2' });
@@ -2710,23 +2702,23 @@ register('lm-attention', (api) => {
     ])));
     panel.appendChild(b);
   }
-  canvas.addEventListener('click', (e) => { const { padT, cell, n } = layout(); const r = canvas.getBoundingClientRect(); const my = (e.clientY - r.top) * canvas.height / r.height; const i = Math.floor((my - padT) / cell); if (i >= 0 && i < n) { qi = i; revealed = qi !== sentence().query_default; draw(); } });
+  canvas.addEventListener('click', (e) => { const { padT, cell, n } = layout(); const r = canvas.getBoundingClientRect(); const my = (e.clientY - r.top) * canvas.height / r.height; const i = Math.floor((my - padT) / cell); if (i >= 0 && i < n) { qi = i; draw(); } });
 
   function buildQueryRow() {
     queryRow.innerHTML = '';
     toks().forEach((token, index) => {
       const button = el('button', { class: 'attention-query-token', type: 'button', text: token, 'aria-label': `Inspect attention for query token ${token}` });
-      button.addEventListener('click', () => { qi = index; revealed = qi !== sentence().query_default; draw(); });
+      button.addEventListener('click', () => { qi = index; draw(); });
       queryRow.appendChild(button);
     });
   }
   function setSentence(k) {
-    si = k; qi = sentence().query_default; revealed = false;
+    si = k; qi = sentence().query_default;
     [...sentenceRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
     buildQueryRow(); draw();
   }
   function setHead(k) {
-    hi = k; qi = sentence().query_default; revealed = false;
+    hi = k; qi = sentence().query_default;
     [...headRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); });
     draw();
   }
@@ -2736,7 +2728,7 @@ register('lm-attention', (api) => {
     provenance,
     queryRow,
     el('div', { class: 'demo-stage' }, [canvas, panel]),
-    el('div', { class: 'demo-hint', text: 'Same layer/head across two sentences: the coreference head links "it" to the earlier noun both times. Rows sum to ~1 with zero future mass; a curated head is a measurement, not a full explanation.' }),
+    el('div', { class: 'demo-hint', text: 'Two heads disagree about "it". On the control, head B still finds the object while head A drifts to the start token.' }),
   ]);
   async function load() {
     try { const r = await fetch('data/qwen_samples.json'); data = await r.json(); }
@@ -2745,14 +2737,17 @@ register('lm-attention', (api) => {
         text: 'The robot picked up the cup because it was empty',
         tokens: ['The', '\u00b7robot', '\u00b7cup', '\u00b7it'],
         query_default: 3,
-        heads: [{ label: 'coreference', criterion: 'it \u2192 earlier noun', guess: 'cup', layer: 11, head: 1, A: [[1, 0, 0, 0], [0.6, 0.4, 0, 0], [0.3, 0.3, 0.4, 0], [0.1, 0.75, 0.1, 0.05]] }],
+        heads: [
+          { label: 'head A: it \u2192 cup', criterion: 'strongest it\u2192cup', layer: 12, head: 13, A: [[1, 0, 0, 0], [0.6, 0.4, 0, 0], [0.3, 0.3, 0.4, 0], [0.27, 0.1, 0.61, 0.02]] },
+          { label: 'head B: it \u2192 robot', criterion: 'strongest it\u2192robot', layer: 11, head: 1, A: [[1, 0, 0, 0], [0.6, 0.4, 0, 0], [0.3, 0.3, 0.4, 0], [0.1, 0.75, 0.1, 0.05]] },
+        ],
       }] } };
       api.setStatus('Using the embedded attention fallback.', 'err');
     }
-    sentences().forEach((s, k) => sentenceRow.appendChild(api.button(`"${s.text.slice(0, 22)}\u2026"`, () => setSentence(k), k === 0 ? 'primary' : 'ghost')));
+    sentences().forEach((s, k) => sentenceRow.appendChild(api.button(`"${s.text.slice(0, 24)}\u2026"`, () => setSentence(k), k === 0 ? 'primary' : 'ghost')));
     sentence().heads.forEach((h, k) => headRow.appendChild(api.button(h.label, () => setHead(k), k === 0 ? 'primary' : 'ghost')));
     buildQueryRow();
-    qi = sentence().query_default; revealed = false;
+    qi = sentence().query_default;
     draw();
   }
   return { mount, init: load };

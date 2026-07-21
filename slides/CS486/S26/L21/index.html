@@ -11,11 +11,11 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../shared/demo.css?v=21">
+  <link rel="stylesheet" href="../shared/demo.css?v=22">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L20/custom.css?v=10">
-  <link rel="stylesheet" href="custom.css?v=8">
+  <link rel="stylesheet" href="custom.css?v=9">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -129,17 +129,17 @@
   <div class="qwen-card">
     <div class="qwen-name"><strong>Qwen3-0.6B</strong><span>dense, decoder-only, post-trained</span></div>
     <div class="qwen-facts">
-      <div class="fragment"><strong>28</strong><span>layers</span></div>
-      <div class="fragment"><strong>1024</strong><span>hidden width</span></div>
-      <div class="fragment"><strong>3072</strong><span>FFN width</span></div>
-      <div class="fragment"><strong>16 / 8</strong><span>query / KV heads*</span></div>
-      <div class="fragment"><strong>128</strong><span>head width</span></div>
-      <div class="fragment"><strong>151,936</strong><span>vocabulary size</span></div>
-      <div class="fragment"><strong>32K</strong><span>max training context</span></div>
-      <div class="fragment"><strong>tied</strong><span>input/output matrix</span></div>
+      <div class="fragment" data-fragment-index="0"><strong>28</strong><span>layers</span></div>
+      <div class="fragment" data-fragment-index="1"><strong>1024</strong><span>hidden width</span></div>
+      <div class="fragment" data-fragment-index="2"><strong>3072</strong><span>FFN width</span></div>
+      <div class="fragment" data-fragment-index="3"><strong>16 / 8</strong><span>query / KV heads*</span></div>
+      <div class="fragment" data-fragment-index="4"><strong>128</strong><span>head width</span></div>
+      <div class="fragment" data-fragment-index="5"><strong>151,936</strong><span>vocabulary size</span></div>
+      <div class="fragment" data-fragment-index="6"><strong>32K</strong><span>max training context</span></div>
+      <div class="fragment" data-fragment-index="7"><strong>tied</strong><span>input/output matrix</span></div>
     </div>
   </div>
-  <p class="citation">* grouped-query attention &mdash; explained in a few slides. &nbsp; Qwen Team, “Qwen3 Technical Report,” 2025.</p>
+  <p class="citation fragment" data-fragment-index="3">* grouped-query attention &mdash; explained in a few slides. &nbsp; Qwen Team, “Qwen3 Technical Report,” 2025.</p>
 </section>
 
 <!-- 6. Config -->
@@ -264,11 +264,12 @@
   <h2>Grouped-query attention: 16 Q heads share 8 K/V heads</h2>
   <div class="gqa-visual">
     <div class="gqa-queries">
-      <span class="fragment">Q1</span><span class="fragment">Q2</span><span class="fragment">Q3</span><span class="fragment">Q4</span>
+      <span class="fragment">Q1</span><span class="fragment">Q2</span><span class="fragment">Q3</span><span class="fragment">Q4</span><span class="fragment gqa-ellipsis">&hellip; Q16</span>
     </div>
     <div class="gqa-links fragment">
       <div><b>Q1, Q2</b><i>&darr;</i><strong>K/V 1</strong></div>
       <div><b>Q3, Q4</b><i>&darr;</i><strong>K/V 2</strong></div>
+      <div class="gqa-ellipsis-links"><b>&hellip;</b><i>&darr;</i><strong>&hellip; K/V 8</strong></div>
     </div>
   </div>
   <div class="gqa-why fragment"><strong>Why share?</strong><span>Keep many query views, but store half as many K/V heads in the cache.</span></div>
@@ -291,12 +292,12 @@
 
 <!-- 15. Attention demo -->
 <section>
-  <h2>Guess where “it” looks, then check<span class="demo-badge">real model data</span></h2>
-  <p class="demo-caption">Guess, reveal the measured row, then switch sentences: the same layer/head behaves consistently.</p>
+  <h2>Two heads read the same “it” differently<span class="demo-badge">real model data</span></h2>
+  <p class="demo-caption">Head A sends <code>it&rarr;cup</code>, head B sends <code>it&rarr;robot</code>. Switch to the unambiguous control to see what each head really tracks.</p>
   <div class="live-demo" data-demo="lm-attention">
     <div class="demo-fallback">
-      <div class="attention-fallback"><strong>query: it</strong><span>guess: cup?</span><b>&rarr;</b><span>measured: robot 0.75</span></div>
-      <p>The same coreference head links “it” to the earlier noun in a second sentence too. One curated head is a measurement, not a full explanation.</p>
+      <div class="attention-fallback"><strong>query: it</strong><span>head A &rarr; cup 0.61</span><span>head B &rarr; robot 0.75</span></div>
+      <p>On “The farmers loaded the truck because it was empty,” head B still finds the object (truck 0.84) while head A drifts to the start token. A curated head is a measurement, not an explanation.</p>
     </div>
   </div>
 </section>
@@ -648,6 +649,6 @@ console.log(result[0].generated_text.at(-1).content);</code></pre>
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=41"></script>
+<script type="module" src="../shared/demo.js?v=43"></script>
 </body>
 </html>

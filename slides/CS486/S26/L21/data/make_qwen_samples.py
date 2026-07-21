@@ -26,7 +26,7 @@ OUT = os.path.join(os.path.dirname(__file__), "qwen_samples.json")
 TOPK = 8
 TRACE_STEPS = 16
 ATTN_TEXT = "The robot picked up the cup because it was empty"
-ATTN_TEXT_B = "The dog chased the cat until it got tired"
+ATTN_TEXT_B = "The farmers loaded the truck because it was empty"
 
 PROMPTS = {
     "explain": "Explain gradient descent in one sentence.",
@@ -248,66 +248,39 @@ def sentence_payload(tokens, matrices, heads):
 
 
 def curate_attention(tokenizer, model, device: str) -> dict:
+    """Two heads disagree about the ambiguous 'it', then we check them on a
+    grammatically unambiguous control sentence."""
     tokens, matrices = attention_for(tokenizer, model, ATTN_TEXT, device)
     layers, heads = matrices.shape[0], matrices.shape[1]
     it_index = query_index(tokens, "it")
-    content = [
-        index for index, token in enumerate(tokens)
-        if token.lstrip("\u00b7").lower() not in ("the", "it", "was", "because", "up")
-    ]
+    cup_index = query_index(tokens, "cup")
+    robot_index = query_index(tokens, "robot")
 
-    _, coref_layer, coref_head, coref_source = max(
-        (
-            (matrices[layer, head, it_index, source], layer, head, source)
-            for layer in range(layers)
-            for head in range(heads)
-            for source in content
-        ),
-        key=lambda item: item[0],
-    )
-    _, prev_layer, prev_head = max(
-        (
-            (float(np.mean([matrices[layer, head, i, i - 1] for i in range(1, len(tokens))])), layer, head)
-            for layer in range(layers)
-            for head in range(heads)
-        ),
-        key=lambda item: item[0],
-    )
+    def best_head_for(target_index):
+        return max(
+            (
+                (matrices[layer, head, it_index, target_index], layer, head)
+                for layer in range(layers)
+                for head in range(heads)
+            ),
+            key=lambda item: item[0],
+        )
 
-    def entropy(matrix):
-        probabilities = np.clip(matrix, 1e-9, 1)
-        return float(-(probabilities * np.log(probabilities)).sum(1).mean())
-
-    _, broad_layer, broad_head = max(
-        (
-            (entropy(matrices[layer, head]), layer, head)
-            for layer in range(layers)
-            for head in range(heads)
-        ),
-        key=lambda item: item[0],
-    )
+    cup_weight, cup_layer, cup_head = best_head_for(cup_index)
+    robot_weight, robot_layer, robot_head = best_head_for(robot_index)
 
     head_meta = [
         {
-            "label": f"coreference: it \u2192 {tokens[coref_source].lstrip(chr(183))}",
-            "criterion": "largest measured attention from query 'it' to a content token",
-            "guess": "cup",
-            "layer": int(coref_layer),
-            "head": int(coref_head),
+            "label": "head A: it \u2192 cup",
+            "criterion": f"strongest it\u2192cup on the ambiguous sentence ({cup_weight:.2f})",
+            "layer": int(cup_layer),
+            "head": int(cup_head),
         },
         {
-            "label": "previous-token pattern",
-            "criterion": "largest mean weight on the immediately previous token",
-            "guess": None,
-            "layer": int(prev_layer),
-            "head": int(prev_head),
-        },
-        {
-            "label": "broad-context pattern",
-            "criterion": "largest mean row entropy",
-            "guess": None,
-            "layer": int(broad_layer),
-            "head": int(broad_head),
+            "label": "head B: it \u2192 robot",
+            "criterion": f"strongest it\u2192robot on the ambiguous sentence ({robot_weight:.2f})",
+            "layer": int(robot_layer),
+            "head": int(robot_head),
         },
     ]
 
@@ -325,8 +298,8 @@ def curate_attention(tokenizer, model, device: str) -> dict:
     )
     return {
         "sentences": [
-            {"text": ATTN_TEXT, **sentence_payload(tokens, matrices, head_meta)},
-            {"text": ATTN_TEXT_B, **sentence_payload(tokens_b, matrices_b, head_meta)},
+            {"text": ATTN_TEXT, "kind": "ambiguous", **sentence_payload(tokens, matrices, head_meta)},
+            {"text": ATTN_TEXT_B, "kind": "control", **sentence_payload(tokens_b, matrices_b, head_meta)},
         ],
         "audit": {
             "max_future_mass": max_future_mass,
