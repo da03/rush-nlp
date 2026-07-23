@@ -4,17 +4,18 @@
   <meta charset="utf-8">
   <title>CS 486/686 Lecture 22 - From Prompting to Fine-Tuning and LoRA</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 22: From prompting to fine-tuning, LoRA, and Program-as-Weights - prompt templates, RAG, tools, supervised fine-tuning, preference tuning, compiled fuzzy functions, and LLM system risks. Yuntian Deng, University of Waterloo.">
+  <meta name="description" content="CS 486/686 (Spring 2026) Lecture 22: adapting and augmenting language models with prompting, RAG, tools, fine-tuning, LoRA, preference learning, and compiler-generated adapters. Yuntian Deng, University of Waterloo.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
   <link rel="stylesheet" href="../shared/custom.css">
-  <link rel="stylesheet" href="../shared/demo.css?v=16">
+  <link rel="stylesheet" href="../shared/demo.css?v=17">
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L21/custom.css?v=2">
-  <link rel="stylesheet" href="custom.css?v=4">
+  <link rel="stylesheet" href="custom.css?v=9">
+  <link rel="icon" href="data:,">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -66,597 +67,568 @@
     <span class="bc-pill learn current">Learning</span>
   </div>
   <h2>Learning goals</h2>
-  <ul style="text-align:left; margin-left:2em;">
-    <li class="fragment">Choose the right adaptation strategy.</li>
-    <li class="fragment">Explain <strong>RAG</strong> and <strong>tool use</strong>.</li>
-    <li class="fragment">Explain <strong>SFT</strong>, preference tuning, and <strong>LoRA</strong>.</li>
-    <li class="fragment">Compile and test a reusable <strong>fuzzy function</strong>.</li>
+  <ul class="l22-goals">
+    <li class="fragment">Choose among <strong>prompting, RAG, tools, and fine-tuning</strong>.</li>
+    <li class="fragment">Explain how <strong>RLHF and DPO</strong> learn from preferences.</li>
+    <li class="fragment">Derive the shapes and parameter savings of <strong>LoRA</strong>.</li>
+    <li class="fragment">Explain how a large compiler can generate an adapter for a small model.</li>
   </ul>
 </section>
 
 <!-- 3. From L21 to L22 -->
 <section class="center-slide">
   <h2>From L21 to L22</h2>
-  <p style="font-size:1em;">A fixed model plus a prompt can do a lot.</p>
-  <div class="prompt-box">CS486 helper: Is Assignment 2 due before or after Chat 9?</div>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">What if the answer needs fresh course facts, a calculation, or a durable behavior change?</p>
+  <p class="l22-lead">L21 showed how to run one fixed Qwen model.</p>
+  <div class="four-levers">
+    <div class="fragment"><strong>instructions</strong><span>change the prompt</span></div>
+    <div class="fragment"><strong>knowledge</strong><span>retrieve evidence</span></div>
+    <div class="fragment"><strong>actions</strong><span>call a tool</span></div>
+    <div class="fragment"><strong>behavior</strong><span>fine-tune weights</span></div>
+  </div>
+  <p class="l22-takeaway fragment">Diagnose what is missing, then choose the smallest useful lever.</p>
 </section>
 
 <!-- 4. Running task -->
 <section class="center-slide">
-  <h2>Running task: CS486 course helper</h2>
-  <p style="font-size:1em;">You have used this helper all term. It is <strong>not</strong> one prompt or one monolithic model.</p>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr; margin-top:0.6em;">
-    <div class="task-card fragment"><h3>fresh evidence</h3><p style="font-size:0.8em;">course facts + Piazza</p></div>
-    <div class="task-card fragment"><h3>fuzzy decisions</h3><p style="font-size:0.8em;">route, select, validate</p></div>
-    <div class="task-card fragment"><h3>exact control</h3><p style="font-size:0.8em;">links, branches, caching</p></div>
+  <h2>Suppose we are building a CS486 course helper</h2>
+  <div class="helper-chat">
+    <div class="helper-user"><strong>student</strong><span>When and where is the final exam?</span></div>
+    <div class="helper-answer fragment"><strong>helper</strong><span>Saturday, August 8, 7:30–10:00 PM in PAC 5. <em>Source: course schedule.</em></span></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">At the end, we will open the real system.</p>
+  <p class="l22-takeaway fragment">The answer must be current, correct, and grounded—not merely fluent.</p>
 </section>
 
 <!-- 5. Adaptation ladder -->
 <section class="center-slide">
-  <h2>The adaptation ladder</h2>
-  <div class="ladder">
-    <div>1. better prompt</div>
-    <div class="fragment">2. retrieved context (RAG)</div>
-    <div class="fragment">3. tools / actions</div>
-    <div class="fragment">4. supervised fine-tuning</div>
-    <div class="fragment">5. LoRA / adapters</div>
+  <h2>How should the helper answer?</h2>
+  <div class="helper-trace">
+    <div><strong>1</strong><span>Find the relevant schedule entry.</span></div>
+    <div class="fragment"><strong>2</strong><span>Place that evidence beside the question.</span></div>
+    <div class="fragment"><strong>3</strong><span>Generate the answer and cite the source.</span></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Use the cheapest lever that solves the problem.</p>
+  <p class="l22-takeaway fragment">This question needs external knowledge at inference time: RAG.</p>
 </section>
 
 <!-- 6. Decision rule -->
 <section class="center-slide">
-  <h2>Diagnose before choosing the method</h2>
-  <div class="decision-grid">
-    <div><strong>Need style?</strong><span>prompt or SFT</span></div>
-    <div><strong>Need fresh/private facts?</strong><span>RAG</span></div>
-    <div><strong>Need calculation/action?</strong><span>tools</span></div>
-    <div><strong>Need durable behavior?</strong><span>SFT or LoRA</span></div>
+  <h2>The adaptation ladder</h2>
+  <div class="ladder corrected">
+    <div><strong>1</strong><span>prompt</span><small>change instructions</small></div>
+    <div class="fragment"><strong>2</strong><span>RAG</span><small>add knowledge</small></div>
+    <div class="fragment"><strong>3</strong><span>tools</span><small>add actions</small></div>
+    <div class="fragment"><strong>4</strong><span>fine-tuning</span><small>change weights: full or LoRA</small></div>
   </div>
+  <p class="l22-note fragment">LoRA is a parameter-efficient way to fine-tune—not a separate adaptation goal.</p>
 </section>
 
 <!-- 7. Prompting recap -->
 <section>
   <h2>Prompting changes context, not weights</h2>
-  <div class="two-col">
-    <div class="prompt-card" style="flex:1;">
-      <h3>general</h3>
-      <p>Explain gradient descent.</p>
-    </div>
-    <div class="prompt-card fragment" style="flex:1;">
-      <h3>targeted</h3>
-      <p>Explain gradient descent to a 10-year-old.</p>
-    </div>
+  <div class="prompt-rewrite">
+    <div><strong>before</strong><span>Answer the student.</span></div>
+    <div class="fragment arrow">&darr;</div>
+    <div class="fragment after"><strong>after</strong><span>Answer in two sentences. Quote the date and cite the course schedule.</span></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">A prompt can steer behavior, but cannot add missing knowledge reliably.</p>
+  <p class="l22-takeaway fragment">The prompt controls how to answer; it still does not contain the date.</p>
 </section>
 
 <!-- 8. Prompt template -->
 <section>
   <h2>Prompt templates package behavior</h2>
-  <div class="prompt-box">You are a concise CS486 TA. Answer using only course material when possible. Cite the source for deadlines.</div>
-  <div class="template-parts fragment">
-    <span><strong>role</strong> CS486 TA</span>
-    <span><strong>task</strong> answer</span>
-    <span><strong>constraint</strong> cite or decline</span>
-    <span><strong>format</strong> short + evidence</span>
+  <div class="template-build">
+    <div><strong>role</strong><span>You are a concise CS486 course assistant.</span></div>
+    <div class="fragment"><strong>evidence</strong><span>Use only supplied course context; otherwise say “I don't know.”</span></div>
+    <div class="fragment"><strong>format</strong><span>Answer briefly and cite the source.</span></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The template steers behavior, but does not change weights.</p>
+  <p class="l22-takeaway fragment">A reusable template standardizes behavior across questions.</p>
 </section>
 
 <!-- 9. Prompt limits -->
 <section class="center-slide">
-  <h2>When prompting is the wrong fix</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>missing facts</h3><p style="font-size:0.78em;">not in context</p></div>
-    <div class="task-card fragment"><h3>tool needs</h3><p style="font-size:0.78em;">must calculate or act</p></div>
-    <div class="task-card fragment"><h3>brittleness</h3><p style="font-size:0.78em;">phrasing changes behavior</p></div>
+  <h2>A better prompt cannot invent a missing fact</h2>
+  <div class="single-diagnosis">
+    <span class="question">When and where is the final exam?</span>
+    <span class="fragment missing">no course schedule in context</span>
+    <span class="fragment method">retrieve the schedule first</span>
   </div>
 </section>
 
-<!-- 11. RAG motivation -->
-<section class="center-slide">
-  <h2>RAG motivation</h2>
-  <p style="font-size:1em;">Question: <strong>When is Assignment 2 due?</strong></p>
-  <p class="fragment" style="font-size:0.95em;">A base model does not know this course webpage.</p>
-  <p class="fragment" style="font-size:0.95em; color:#1d4ed8;">Retrieve evidence first, then answer.</p>
+<!-- 10. RAG transition -->
+<section class="center-slide section-divider">
+  <span class="section-kicker">adaptation 1</span>
+  <h2>Add current knowledge</h2>
+  <p>Retrieval-augmented generation (RAG)</p>
 </section>
 
-<!-- 12. RAG sentence -->
+<!-- 11. RAG example -->
 <section class="center-slide">
-  <h2>RAG in one sentence</h2>
-  <p style="font-size:1em; max-width:84%; margin:0.5em auto;">Retrieve relevant documents at inference time, insert them into the prompt, then generate an answer grounded in those documents.</p>
-  <p class="fragment" style="font-size:0.88em; color:#6b7280;">RAG changes the context, not the model weights.</p>
+  <h2>RAG puts evidence beside the question</h2>
+  <div class="rag-example">
+    <div><strong>question</strong><span>When and where is the final exam?</span></div>
+    <div class="fragment"><strong>retrieved evidence</strong><span>Final exam: Sat Aug 8, 7:30–10:00 PM, PAC 5.</span></div>
+    <div class="fragment"><strong>grounded answer</strong><span>Saturday, August 8 in PAC 5. <em>[course schedule]</em></span></div>
+  </div>
+  <p class="l22-takeaway fragment">RAG changes the context at inference time—not the weights.</p>
 </section>
 
-<!-- 13. Offline indexing -->
+<!-- 12. Offline indexing -->
 <section>
-  <h2>RAG: offline indexing</h2>
-  <svg viewBox="0 0 900 145" xmlns="http://www.w3.org/2000/svg" class="pipeline">
+  <h2>Before questions arrive: store document embeddings</h2>
+  <svg viewBox="0 0 900 180" xmlns="http://www.w3.org/2000/svg" class="pipeline rag-simple">
     <g>
-      <rect x="25" y="50" width="120" height="44" rx="7"/><text x="85" y="77">documents</text>
-      <rect x="185" y="50" width="130" height="44" rx="7"/><text x="250" y="77">parse / clean</text>
-      <rect x="355" y="50" width="115" height="44" rx="7"/><text x="412" y="77">chunks</text>
-      <rect x="510" y="50" width="130" height="44" rx="7"/><text x="575" y="77">embeddings</text>
-      <rect x="680" y="50" width="140" height="44" rx="7"/><text x="750" y="77">vector index</text>
+      <rect x="105" y="55" width="250" height="62" rx="10"/><text x="230" y="92">course document</text>
+      <rect class="fragment" x="545" y="55" width="250" height="62" rx="10"/><text class="fragment" x="670" y="92">embedding vector</text>
     </g>
-    <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l22)">
-      <line x1="145" y1="72" x2="180" y2="72"/><line x1="315" y1="72" x2="350" y2="72"/><line x1="470" y1="72" x2="505" y2="72"/><line x1="640" y1="72" x2="675" y2="72"/>
+    <g class="fragment" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow-l22)">
+      <line x1="355" y1="86" x2="535" y2="86"/>
     </g>
   </svg>
-  <p class="fragment" style="font-size:0.84em; color:#6b7280; text-align:center;">RAG quality starts before the user asks a question.</p>
+  <p class="l22-note fragment">Compute once; store the vector with the original text and its source.</p>
 </section>
 
-<!-- 14. Online RAG -->
+<!-- 13. Online RAG -->
 <section>
-  <h2>RAG: online query path</h2>
-  <svg viewBox="0 0 900 145" xmlns="http://www.w3.org/2000/svg" class="pipeline">
+  <h2>When a question arrives: retrieve, then answer</h2>
+  <svg viewBox="0 0 930 170" xmlns="http://www.w3.org/2000/svg" class="pipeline rag-online">
     <g>
-      <rect x="20" y="50" width="110" height="44" rx="7"/><text x="75" y="77">query</text>
-      <rect x="165" y="50" width="135" height="44" rx="7"/><text x="232" y="77">embed query</text>
-      <rect x="335" y="50" width="125" height="44" rx="7"/><text x="397" y="77">retrieve</text>
-      <rect x="495" y="50" width="130" height="44" rx="7"/><text x="560" y="77">assemble</text>
-      <rect x="660" y="50" width="155" height="44" rx="7"/><text x="737" y="77">answer + cite</text>
+      <rect x="15" y="55" width="150" height="54" rx="9"/><text x="90" y="88">question</text>
+      <rect class="fragment" x="205" y="55" width="155" height="54" rx="9"/><text class="fragment" x="282" y="88">embedding</text>
+      <rect class="fragment" x="400" y="55" width="215" height="54" rx="9"/><text class="fragment" x="507" y="79">nearest</text><text class="fragment" x="507" y="99">document</text>
+      <rect class="fragment" x="655" y="55" width="245" height="54" rx="9"/><text class="fragment" x="777" y="79">answer with</text><text class="fragment" x="777" y="99">context</text>
     </g>
     <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l22)">
-      <line x1="130" y1="72" x2="160" y2="72"/><line x1="300" y1="72" x2="330" y2="72"/><line x1="460" y1="72" x2="490" y2="72"/><line x1="625" y1="72" x2="655" y2="72"/>
+      <line class="fragment" x1="165" y1="82" x2="195" y2="82"/>
+      <line class="fragment" x1="360" y1="82" x2="390" y2="82"/>
+      <line class="fragment" x1="615" y1="82" x2="645" y2="82"/>
     </g>
   </svg>
+  <p class="l22-note fragment">“Nearest” is the embedding geometry from L18.</p>
 </section>
 
 <!-- 14b. RAG playground (live) -->
 <section class="center-slide">
   <h2>RAG on real course facts<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Embed the question, retrieve the nearest course chunks, then ground the answer.</p>
+  <p class="demo-caption">Try the Assignment 3 deadline or final-exam question; inspect the two nearest chunks.</p>
   <div class="live-demo" data-demo="rag">
-    <div class="demo-fallback">Interactive on the live slides: pick a course question (e.g., "When is Assignment 2 due?") and see the real course chunks ranked by embedding similarity, with the top one assembled into a grounded, cited prompt. Type your own question and a real embedding model (MiniLM) retrieves live. This is L18's embedding geometry doing useful work.</div>
+    <div class="demo-fallback">Interactive on the live slides: choose “When is Assignment 3 due?” or “When and where is the final exam?” The demo embeds the question, ranks real course chunks, and forms a grounded prompt from the best evidence.</div>
   </div>
 </section>
 
-<!-- 15. Embeddings reappear -->
+<!-- 15. Hybrid retrieval -->
 <section class="center-slide">
-  <h2>Embeddings reappear</h2>
-  <p style="font-size:1em;">Documents and queries become vectors.</p>
-  <p class="fragment" style="font-size:1em;">Nearest vectors are retrieved.</p>
-  <p class="fragment" style="font-size:0.88em; color:#1d4ed8;">This is L18's embedding geometry doing useful work.</p>
-</section>
-
-<!-- 16. Hybrid retrieval -->
-<section class="center-slide">
-  <h2>Production RAG is usually hybrid</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>vector</h3><p style="font-size:0.78em;">semantic matches</p></div>
-    <div class="task-card fragment"><h3>keyword</h3><p style="font-size:0.78em;">exact terms</p></div>
-    <div class="task-card fragment"><h3>reranker</h3><p style="font-size:0.78em;">precision boost</p></div>
+  <h2>One query benefits from two kinds of match</h2>
+  <div class="hybrid-example">
+    <div class="query">“Is the exam in <strong>PAC 5</strong>?”</div>
+    <div class="fragment"><strong>keyword match</strong><span>finds the exact room code “PAC 5”</span></div>
+    <div class="fragment"><strong>embedding match</strong><span>connects “exam” with “final examination”</span></div>
+    <div class="fragment"><strong>reranker</strong><span>chooses the strongest evidence</span></div>
   </div>
 </section>
 
-<!-- 17. RAG failures -->
+<!-- 16. RAG evaluation -->
 <section class="center-slide">
-  <h2>RAG can still fail</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>wrong chunk</h3><p style="font-size:0.78em;">bad retrieval</p></div>
-    <div class="task-card fragment"><h3>missing chunk</h3><p style="font-size:0.78em;">low recall</p></div>
-    <div class="task-card fragment"><h3>ignored evidence</h3><p style="font-size:0.78em;">bad generation</p></div>
+  <h2>Debug RAG in two checkpoints</h2>
+  <div class="rag-checkpoints">
+    <div>
+      <strong>1</strong>
+      <span><b>Did retrieval find the right source?</b><small>If not, fix documents, embeddings, or ranking.</small></span>
+    </div>
+    <div class="fragment">
+      <strong>2</strong>
+      <span><b>Is every answer claim supported?</b><small>If not, fix the prompt or generation.</small></span>
+    </div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">RAG reduces hallucination; it does not eliminate it.</p>
+  <p class="l22-takeaway fragment">RAG reduces unsupported answers; it does not guarantee truth.</p>
 </section>
 
-<!-- 18. RAG eval -->
-<section class="center-slide">
-  <h2>Evaluate retrieval and generation separately</h2>
-  <div class="eval-grid">
-    <div><strong>context precision</strong><span>were retrieved chunks relevant?</span></div>
-    <div><strong>context recall</strong><span>did we retrieve enough?</span></div>
-    <div><strong>faithfulness</strong><span>is answer supported?</span></div>
-    <div><strong>answer relevance</strong><span>did it answer?</span></div>
-  </div>
+<!-- 17. Tool transition -->
+<section class="center-slide section-divider">
+  <span class="section-kicker">adaptation 2</span>
+  <h2>Add actions</h2>
+  <p>Some questions require computation—not more text.</p>
 </section>
 
-<!-- 19. Tool motivation -->
+<!-- 18. Tool motivation -->
 <section class="center-slide">
-  <h2>Some tasks need actions</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>calculate</h3><p style="font-size:0.78em;">weighted grade</p></div>
-    <div class="task-card fragment"><h3>execute</h3><p style="font-size:0.78em;">run code</p></div>
-    <div class="task-card fragment"><h3>lookup</h3><p style="font-size:0.78em;">calendar/API</p></div>
+  <h2>Language models should not guess exact arithmetic</h2>
+  <div class="grade-question">My scores are 82, 74, and 91 with weights 20%, 30%, and 50%. What is my weighted grade?</div>
+  <div class="grade-choice">
+    <div class="fragment bad"><strong>model alone</strong><span>may produce plausible but wrong arithmetic</span></div>
+    <div class="fragment good"><strong>calculator</strong><span>\(0.2(82)+0.3(74)+0.5(91)=84.1\)</span></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8;">If the model needs to act, give it a tool.</p>
+  <p class="l22-takeaway fragment">Let the model choose the operation; let a deterministic tool execute it.</p>
 </section>
 
-<!-- 20. Tool loop -->
+<!-- 19. Tool loop -->
 <section>
-  <h2>Tool use loop</h2>
-  <svg viewBox="0 0 760 185" xmlns="http://www.w3.org/2000/svg" class="pipeline">
-    <g>
-      <rect x="55" y="65" width="120" height="48" rx="7"/><text x="115" y="94">model</text>
-      <rect x="260" y="65" width="120" height="48" rx="7"/><text x="320" y="94">tool</text>
-      <rect x="465" y="65" width="140" height="48" rx="7"/><text x="535" y="94">observation</text>
-    </g>
-    <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l22)">
-      <line x1="175" y1="89" x2="255" y2="89"/><line x1="380" y1="89" x2="460" y2="89"/>
-      <path d="M535 115 C500 165, 145 165, 115 116" fill="none"/>
-    </g>
-  </svg>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">The model proposes an action; the environment returns evidence.</p>
+  <h2>A tool call becomes new evidence</h2>
+  <div class="tool-trace">
+    <div><strong>1 · propose</strong><span><code>calculator("0.2*82 + 0.3*74 + 0.5*91")</code></span></div>
+    <div class="fragment"><strong>2 · execute</strong><span>The calculator runs outside the language model.</span></div>
+    <div class="fragment"><strong>3 · observe</strong><span><code>84.1</code> returns to the model.</span></div>
+    <div class="fragment"><strong>4 · answer</strong><span>Your weighted grade is 84.1%.</span></div>
+  </div>
 </section>
 
-<!-- 20b. Tool-use loop (live) -->
+<!-- 20. Tool-use loop (live) -->
 <section class="center-slide">
   <h2>Tool use, step by step<span class="demo-badge">live</span></h2>
   <p class="demo-caption">The model calls a calculator instead of guessing the arithmetic.</p>
   <div class="live-demo" data-demo="tool-loop">
-    <div class="demo-fallback">Interactive on the live slides: step through a tool-use loop. The model recognizes it needs exact arithmetic, emits a calculator tool call, the tool actually computes the weighted grade, and the model answers using that result. The model plans the action; the environment does the computation.</div>
+    <div class="demo-fallback">Interactive on the live slides: step through the weighted-grade tool loop. The model emits a calculator call, the calculator returns 84.1, and the model answers from that observation.</div>
   </div>
 </section>
 
 <!-- 21. Agents -->
 <section class="center-slide">
-  <h2>Agents are loops, not magic</h2>
-  <div class="ladder">
-    <div>plan</div>
-    <div class="fragment">act</div>
-    <div class="fragment">observe</div>
-    <div class="fragment">continue or stop</div>
+  <h2>Agents repeat the same loop</h2>
+  <div class="agent-loop">
+    <div><strong>plan</strong></div>
+    <span class="fragment">&rarr;</span>
+    <div class="fragment"><strong>act</strong></div>
+    <span class="fragment">&rarr;</span>
+    <div class="fragment"><strong>observe</strong></div>
+    <span class="fragment">&rarr;</span>
+    <div class="fragment"><strong>stop or continue</strong></div>
   </div>
+  <p class="l22-note fragment">For consequential actions, permissions and human confirmation belong around the loop.</p>
 </section>
 
-<!-- 22. Tool risks -->
-<section class="center-slide">
-  <h2>Tool use needs guardrails</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>wrong call</h3><p style="font-size:0.78em;">bad action</p></div>
-    <div class="task-card fragment"><h3>prompt injection</h3><p style="font-size:0.78em;">tool output attacks prompt</p></div>
-    <div class="task-card fragment"><h3>destructive action</h3><p style="font-size:0.78em;">needs approval</p></div>
-  </div>
+<!-- 22. Fine-tuning transition -->
+<section class="center-slide section-divider">
+  <span class="section-kicker">adaptation 3</span>
+  <h2>Change behavior</h2>
+  <p>When the same behavior must hold across many inputs, change the weights.</p>
 </section>
 
 <!-- 23. Fine-tuning motivation -->
 <section class="center-slide">
-  <h2>When should we fine-tune?</h2>
-  <p style="font-size:1em;">Prompting, RAG, and tools change inputs.</p>
-  <p class="fragment" style="font-size:1em;">Fine-tuning changes weights.</p>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Use it when behavior must change consistently across many examples.</p>
+  <h2>A prompt can be brittle across phrasings</h2>
+  <div class="behavior-variants">
+    <span>“When is A3 due?”</span>
+    <span class="fragment">“Deadline for the third assignment?”</span>
+    <span class="fragment">“How long do I have for Assignment 3?”</span>
+  </div>
+  <div class="behavior-rule fragment">Always answer briefly, cite the evidence, and decline if evidence is missing.</div>
+  <p class="l22-takeaway fragment">Fine-tuning teaches a durable response pattern through examples.</p>
 </section>
 
 <!-- 24. SFT -->
 <section>
-  <h2>Supervised fine-tuning</h2>
-  <p style="font-size:0.9em;">Train on curated instruction-response examples.</p>
-  <table class="factor-table" style="font-size:0.74em; margin:0.4em auto;">
-    <thead><tr><th>instruction</th><th>ideal response</th></tr></thead>
-    <tbody>
-      <tr><td>Answer with citation.</td><td>Assignment 2 is due Thu Jul 9 [schedule].</td></tr>
-      <tr><td>Be concise.</td><td>Chat 9 is released Thu Jul 9.</td></tr>
-    </tbody>
-  </table>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">Same next-token loss, targeted dataset.</p>
-</section>
-
-<!-- 25. SFT code -->
-<section>
-  <h2>SFT code sketch</h2>
-  <pre style="font-size:0.54em; width:84%; margin:0.3em auto;"><code>for prompt, response in dataset:
-    text = chat_template(prompt, response)
-    loss = next_token_loss(model, text)
-    loss.backward()
-    optimizer.step()</code></pre>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">Pretraining's loss, but on curated behavior examples.</p>
-</section>
-
-<!-- 26. Fine-tune risks -->
-<section class="center-slide">
-  <h2>Fine-tuning risks</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>overfit</h3><p style="font-size:0.78em;">small dataset</p></div>
-    <div class="task-card fragment"><h3>forget</h3><p style="font-size:0.78em;">lose general behavior</p></div>
-    <div class="task-card fragment"><h3>artifacts</h3><p style="font-size:0.78em;">learn quirks</p></div>
+  <h2>Supervised fine-tuning learns from ideal responses</h2>
+  <div class="sft-examples">
+    <div>
+      <strong>instruction</strong><span>When is Assignment 3 due?</span>
+      <strong>ideal response</strong><span>Tuesday, August 4 at 11:59 PM. <em>[course schedule]</em></span>
+    </div>
+    <div class="fragment">
+      <strong>instruction</strong><span>Which textbook is required?</span>
+      <strong>ideal response</strong><span>I do not have supporting evidence in the supplied context.</span>
+    </div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Use held-out eval and high-quality data.</p>
+  <p class="l22-takeaway fragment">Training still minimizes next-token loss—on curated behavior examples.</p>
+</section>
+
+<!-- 25. SFT workflow -->
+<section class="center-slide">
+  <h2>Train on examples; evaluate on new phrasings</h2>
+  <div class="training-workflow">
+    <div><strong>curate</strong><span>instruction → ideal response</span></div>
+    <span class="fragment">&rarr;</span>
+    <div class="fragment"><strong>train</strong><span>update model weights</span></div>
+    <span class="fragment">&rarr;</span>
+    <div class="fragment"><strong>evaluate</strong><span>held-out phrasings</span></div>
+  </div>
+  <div class="overfit-example fragment"><strong>warning:</strong> success on memorized wording does not imply robust behavior.</div>
 </section>
 
 <!-- 26. Preferences -->
 <section class="center-slide">
-  <h2>Preferences tell us what “better” means</h2>
-  <p style="font-size:1em;">Sometimes two answers are plausible, but one is better.</p>
-  <div class="defbox" style="max-width:78%; margin:0.5em auto; text-align:center;">
-    <p style="margin:0;"><code>(prompt, preferred answer, rejected answer)</code></p>
+  <h2>Preference data compares two answers</h2>
+  <div class="preference-example">
+    <div class="prompt">When and where is the final exam?</div>
+    <div class="chosen fragment"><strong>preferred</strong><span>Aug 8, 7:30–10:00 PM in PAC 5. <em>[schedule]</em></span></div>
+    <div class="rejected fragment"><strong>rejected</strong><span>It is probably during exam week in August.</span></div>
   </div>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280;">Demonstrations teach what to say; preferences teach which answer to favor.</p>
+  <p class="l22-note fragment">Preferences say which answer is better without writing one perfect target token by token.</p>
 </section>
 
-<!-- 27. RLHF vs DPO -->
-<section>
-  <h2>Two ways to learn from preferences</h2>
-  <div class="two-col" style="align-items:stretch; margin-top:0.65em;">
-    <div class="prompt-card" style="flex:1;">
-      <h3>RLHF</h3>
-      <p>preferences → reward model → policy update</p>
-      <p style="font-size:0.72em; color:#6b7280;">Flexible, engineering-heavy</p>
-    </div>
-    <div class="prompt-card fragment" style="flex:1;">
-      <h3>DPO</h3>
-      <p>increase preferred answer relative to rejected</p>
-      <p style="font-size:0.72em; color:#6b7280;">Simpler, no separate reward-model loop</p>
-    </div>
+<!-- 27. RLHF -->
+<section class="center-slide">
+  <h2>RLHF learns a separate reward model</h2>
+  <div class="rlhf-flow">
+    <div><strong>preferences</strong><span>chosen &gt; rejected</span></div>
+    <span class="fragment">&rarr;</span>
+    <div class="fragment reward"><strong>reward model</strong><span>generation → scalar score</span></div>
+    <span class="fragment">&rarr;</span>
+    <div class="fragment"><strong>policy update</strong><span>increase expected reward</span></div>
   </div>
+  <p class="l22-note fragment">Like a learned utility signal from our decision-making unit—but not literally a state-value critic.</p>
 </section>
 
-<!-- 28. Full tune vs LoRA -->
+<!-- 28. DPO -->
 <section class="center-slide">
-  <h2>Full fine-tuning can be expensive</h2>
-  <p style="font-size:1em;">A large model contains huge weight matrices.</p>
-  <p class="fragment" style="font-size:1em;">Updating all of them is costly.</p>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;">Can we learn a small update instead?</p>
+  <h2>DPO optimizes the preference directly</h2>
+  <div class="dpo-flow">
+    <div><strong>chosen answer</strong><span>raise its relative log-probability</span></div>
+    <div class="fragment"><strong>rejected answer</strong><span>lower its relative log-probability</span></div>
+    <div class="fragment result"><strong>direct policy loss</strong><span>no standalone reward model; no PPO loop</span></div>
+  </div>
+  <p class="l22-note fragment">The policy/reference log-ratio acts as an implicit reward score.</p>
+  <p class="l22-ref">Rafailov et al., <em>Direct Preference Optimization</em>, NeurIPS 2023.</p>
 </section>
 
-<!-- 31. LoRA intuition -->
+<!-- 29. LoRA transition -->
+<section class="center-slide section-divider">
+  <span class="section-kicker">parameter-efficient fine-tuning</span>
+  <h2>LoRA: fine-tune fewer parameters</h2>
+  <p>Keep the base weights frozen; learn a compact update.</p>
+</section>
+
+<!-- 30. Full fine-tuning cost -->
 <section class="center-slide">
-  <h2>LoRA learns a low-rank update</h2>
-  <p style="font-size:1.08em;">\(W' = W_0 + \Delta W\)</p>
-  <p class="fragment" style="font-size:1.08em;">\(\Delta W = BA,\quad r \ll d\)</p>
-  <p class="fragment" style="font-size:0.88em; color:#6b7280;">Freeze \(W_0\); train the small matrices \(A\) and \(B\).</p>
+  <h2>Full fine-tuning stores more than the weights</h2>
+  <div class="memory-stack">
+    <div><strong>weights</strong><span>\(W\)</span></div>
+    <div class="fragment"><strong>gradients</strong><span>\(\nabla W\)</span></div>
+    <div class="fragment adam"><strong>AdamW state</strong><span>first moment \(m\)</span></div>
+    <div class="fragment adam"><strong>AdamW state</strong><span>second moment \(v\)</span></div>
+  </div>
+  <p class="l22-takeaway fragment">Roughly four parameter-sized tensors before activations.</p>
+  <p class="l22-ref">Mixed-precision training may also keep an FP32 master-weight copy.</p>
+</section>
+
+<!-- 31. LoRA shapes -->
+<section class="center-slide">
+  <h2>LoRA factorizes a weight update</h2>
+  <div class="lora-shapes">
+    <div class="lora-matrix w"><strong>\(W_0\)</strong><span>\(d_{\text{out}}\times d_{\text{in}}\)</span><small>frozen</small></div>
+    <span class="fragment plus">+</span>
+    <div class="lora-matrix b fragment"><strong>\(B\)</strong><span>\(d_{\text{out}}\times r\)</span><small>train</small></div>
+    <span class="fragment times">&times;</span>
+    <div class="lora-matrix a fragment"><strong>\(A\)</strong><span>\(r\times d_{\text{in}}\)</span><small>train</small></div>
+  </div>
+  <p class="lora-equation fragment">\(\Delta W=BA,\qquad W'=W_0+\Delta W\)</p>
+  <div class="shape-defs fragment">
+    <span>\(d_{\text{in}}\): input width</span>
+    <span>\(d_{\text{out}}\): output width</span>
+    <span>\(r\): adapter rank</span>
+  </div>
+  <p class="l22-note fragment">For a square \(d\times d\) matrix, choose \(r\ll d\).</p>
 </section>
 
 <!-- 32. LoRA forward -->
 <section>
-  <h2>LoRA forward pass</h2>
-  <div class="defbox" style="text-align:center; margin:0.4em auto;">
-    <p style="font-size:1.05em; margin:0;">\(h = W_0x + \frac{\alpha}{r}BAx\)</p>
+  <h2>The base stays frozen; only \(A,B\) are learned</h2>
+  <div class="lora-forward-equation">
+    \(h = W_0x + \frac{\alpha}{r}BAx\)
   </div>
-  <div class="two-col" style="font-size:0.85em;">
-    <div style="flex:1;">
-      <p><strong>\(W_0\)</strong>: frozen base weight</p>
-      <p><strong>\(A,B\)</strong>: trainable adapter matrices</p>
-    </div>
-    <div style="flex:1;">
-      <p><strong>\(r\)</strong>: adapter rank</p>
-      <p><strong>\(\alpha\)</strong>: scaling factor</p>
-    </div>
+  <div class="parameter-saving">
+    <div class="fragment"><strong>full square matrix</strong><span>\(d^2\) trainable parameters</span></div>
+    <div class="fragment"><strong>LoRA matrices</strong><span>\(dr+rd=2dr\) trainable parameters</span></div>
   </div>
+  <p class="l22-takeaway fragment">Gradients and AdamW states are needed for \(A,B\), not \(W_0\).</p>
+  <p class="l22-ref">\(\alpha/r\) controls the update scale.</p>
 </section>
 
 <!-- 32b. LoRA low-rank visualizer (live) -->
 <section class="center-slide">
   <h2>LoRA: a low-rank update<span class="demo-badge">live</span></h2>
-  <p class="demo-caption">Drag the rank: a small \(BA\) update, a fraction of the parameters.</p>
+  <p class="demo-caption">Raise \(r\) from 1 to 24: expressivity grows, but parameter savings eventually disappear.</p>
   <div class="live-demo" data-demo="lora-rank">
-    <div class="demo-fallback">Interactive on the live slides: the frozen weight \(W_0\), the low-rank update \(\Delta W = BA\), and the adapted \(W' = W_0 + \Delta W\) shown as heatmaps. Raise the rank \(r\) and the update becomes more expressive but uses more trainable parameters (\(2dr\) vs the full \(d^2\)) &mdash; small \(r\) trains only a few percent of the weights.</div>
+    <div class="demo-fallback">Interactive on the live slides: compare frozen \(W_0\), \(\Delta W=BA\), and \(W'\) as heatmaps while changing \(r\) from 1 to 24. The readout reports \(2dr\) versus \(d^2\), including ranks that are no longer parameter-efficient.</div>
   </div>
 </section>
 
-<!-- 33. Why LoRA -->
+<!-- 34. Interchangeable adapters -->
 <section class="center-slide">
-  <h2>Why LoRA is practical</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>small</h3><p style="font-size:0.78em;">few trainable parameters</p></div>
-    <div class="task-card fragment"><h3>cheap</h3><p style="font-size:0.78em;">less memory/storage</p></div>
-    <div class="task-card fragment"><h3>modular</h3><p style="font-size:0.78em;">swap or merge adapters</p></div>
-  </div>
-</section>
-
-<!-- 34. LoRA code -->
-<section>
-  <h2>LoRA code sketch</h2>
-  <pre style="font-size:0.54em; width:84%; margin:0.3em auto;"><code>config = LoraConfig(
-    r=8,
-    target_modules=["q_proj", "v_proj"],
-)
-model = get_peft_model(base_model, config)
-train(model, dataset)</code></pre>
-  <p class="fragment" style="font-size:0.86em; color:#6b7280; text-align:center;">People normally collect the dataset and train each adapter.</p>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8; text-align:center;"><strong>Could another model build the adapter from a description?</strong></p>
-</section>
-
-<!-- 35. Fuzzy functions -->
-<section class="center-slide">
-  <h2>Some functions are fuzzy</h2>
-  <p style="font-size:0.96em;">“Does this message require immediate attention?”</p>
-  <div class="paw-message-grid">
-    <div class="paw-message fragment"><span>Need your signature by EOD.</span><strong>urgent</strong></div>
-    <div class="paw-message fragment"><span>Newsletter: spring picnic details.</span><strong>wait</strong></div>
-    <div class="paw-message fragment"><span>Whenever you have time—the server is acting odd.</span><strong>?</strong></div>
-  </div>
-  <div class="paw-tradeoffs fragment">
-    <span><b>rules</b> become brittle</span>
-    <span><b>large LLM</b> solves every call again</span>
-    <span class="hot"><b>fuzzy function</b> is narrow + reusable</span>
-  </div>
-</section>
-
-<!-- 36. Tool builder philosophy -->
-<section>
-  <h2>From problem solver to tool builder</h2>
-  <svg class="paw-overview" viewBox="0 0 1080 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Compare solving every input with compiling a reusable neural function">
-    <g class="fragment">
-      <text class="paw-row-label" x="22" y="58">per-input problem solver</text>
-      <rect class="paw-box muted" x="250" y="25" width="190" height="70" rx="10"/><text x="345" y="60">new input</text>
-      <path class="paw-arrow muted-stroke" d="M445 60 H505"/>
-      <rect class="paw-box muted" x="515" y="25" width="220" height="70" rx="10"/><text x="625" y="52">large model API</text><text class="sub" x="625" y="73">call every time</text>
-      <path class="paw-arrow muted-stroke" d="M740 60 H800"/>
-      <rect class="paw-box muted" x="810" y="25" width="190" height="70" rx="10"/><text x="905" y="60">answer</text>
-    </g>
-    <g class="fragment">
-      <text class="paw-row-label strong" x="22" y="168">per-function tool builder</text>
-      <rect class="paw-box spec" x="250" y="130" width="190" height="70" rx="10"/><text x="345" y="158">description</text><text class="sub" x="345" y="179">compile once</text>
-      <path class="paw-arrow blue-stroke" d="M445 165 H505"/>
-      <rect class="paw-box compiler" x="515" y="130" width="220" height="70" rx="10"/><text x="625" y="158">neural compiler</text><text class="sub" x="625" y="179">builds a program</text>
-      <path class="paw-arrow blue-stroke" d="M740 165 H800"/>
-      <rect class="paw-box program" x="810" y="130" width="190" height="70" rx="10"/><text x="905" y="158">neural program</text><text class="sub" x="905" y="179">save + reuse</text>
-    </g>
-    <g class="fragment">
-      <rect class="paw-box input" x="250" y="225" width="190" height="58" rx="10"/><text x="345" y="254">many inputs</text>
-      <path class="paw-arrow blue-stroke" d="M445 254 H505"/>
-      <rect class="paw-box interpreter" x="515" y="225" width="220" height="58" rx="10"/><text x="625" y="247">frozen 0.6B</text><text class="sub" x="625" y="267">interpreter</text>
-      <path class="paw-arrow blue-stroke" d="M740 254 H800"/>
-      <rect class="paw-box output" x="810" y="225" width="190" height="58" rx="10"/><text x="905" y="254">outputs</text>
-    </g>
-  </svg>
-  <p class="fragment paw-thesis">When a task repeats, build a reusable tool instead of solving it again.</p>
-</section>
-
-<!-- 37. Program anatomy -->
-<section class="center-slide">
-  <h2>A PAW program has two parts</h2>
-  <p class="paw-equation">\(p = (p_{\text{discrete}},\; p_{\text{continuous}})\)</p>
-  <div class="paw-program-parts">
-    <div class="paw-part fragment">
-      <span class="paw-part-tag text">discrete text</span>
-      <h3>pseudo-program</h3>
-      <p>clean description + examples</p>
-      <small>normalizes a noisy spec</small>
-    </div>
-    <div class="paw-plus fragment">+</div>
-    <div class="paw-part fragment">
-      <span class="paw-part-tag weights">continuous weights</span>
-      <h3>task-specific LoRA</h3>
-      <p>small update to the frozen LM</p>
-      <small>fine-grained behavioral control</small>
+  <h2>One frozen base can host many adapters</h2>
+  <div class="adapter-swap">
+    <div class="base"><strong>frozen base model</strong><span>shared weights</span></div>
+    <div class="adapter-list">
+      <div class="fragment">course-helper adapter</div>
+      <div class="fragment">urgency adapter</div>
+      <div class="fragment">sentiment adapter</div>
     </div>
   </div>
-  <div class="paw-runtime fragment"><strong>Qwen3-0.6B</strong> from L21 becomes the shared interpreter; programs are hot-swappable.</div>
+  <p class="l22-takeaway fragment">Save and swap small task-specific \(A,B\) matrices instead of duplicating the base.</p>
 </section>
 
-<!-- 38. Compiler mechanism -->
-<section>
-  <h2>How can a model compile weights?</h2>
-  <svg class="paw-compiler-flow" viewBox="0 0 1120 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PAW pseudo compiler and LoRA compiler pipeline">
-    <g>
-      <rect class="paw-box spec" x="20" y="85" width="180" height="74" rx="10"/><text x="110" y="115">raw spec</text><text class="sub" x="110" y="138">natural language</text>
-    </g>
-    <g class="fragment">
-      <path class="paw-arrow blue-stroke" d="M205 122 H255"/>
-      <rect class="paw-box compiler" x="265" y="62" width="205" height="120" rx="10"/><text x="367" y="103">pseudo compiler</text><text class="sub" x="367" y="128">off-the-shelf 4B</text><text class="sub" x="367" y="151">rewrite + examples</text>
-    </g>
-    <g class="fragment">
-      <path class="paw-arrow blue-stroke" d="M475 122 H525"/>
-      <rect class="paw-box compiler" x="535" y="62" width="205" height="120" rx="10"/><text x="637" y="103">LoRA compiler</text><text class="sub" x="637" y="128">trained 4B</text><text class="sub" x="637" y="151">hidden states</text>
-    </g>
-    <g class="fragment">
-      <path class="paw-arrow blue-stroke" d="M745 122 H795"/>
-      <rect class="paw-box program" x="805" y="62" width="285" height="120" rx="10"/><text x="947" y="100">program</text><text class="sub" x="947" y="127">pseudo-program + LoRA</text><text class="sub" x="947" y="151">for frozen 0.6B interpreter</text>
-    </g>
-  </svg>
-  <p class="fragment" style="font-size:0.86em; color:#1d4ed8; text-align:center;">The compiler generates \(A\) and \(B\); the interpreter never trains.</p>
+<!-- 35. LoRA workflow -->
+<section class="center-slide">
+  <h2>Fine-tune an urgency classifier with LoRA</h2>
+  <div class="urgency-workflow">
+    <div><strong>1 · define</strong><span>labels: <code>immediate</code> / <code>wait</code></span></div>
+    <div class="fragment"><strong>2 · collect</strong><span>message → label examples</span></div>
+    <div class="fragment"><strong>3 · attach</strong><span>LoRA matrices \(A,B\)</span></div>
+    <div class="fragment"><strong>4 · train</strong><span>update only \(A,B\)</span></div>
+    <div class="fragment"><strong>5 · evaluate</strong><span>held-out messages; save adapter</span></div>
+  </div>
+  <p class="l22-takeaway fragment">Ordinary LoRA still needs a dataset and a training run for each task.</p>
 </section>
 
-<!-- 39. Compiler training -->
+<!-- 36. PAW transition -->
+<section class="center-slide section-divider">
+  <span class="section-kicker">Program-as-Weights</span>
+  <h2>Automatic adaptation per task</h2>
+  <p>Can a model build the adapter for us?</p>
+</section>
+
+<!-- 37. From manual to automatic adapters -->
+<section class="center-slide">
+  <h2>Ordinary LoRA repeats training for every task</h2>
+  <div class="manual-vs-compile">
+    <div>
+      <strong>manual adaptation</strong>
+      <span>collect examples</span><span>train LoRA</span><span>save adapter</span>
+    </div>
+    <div class="fragment question">
+      <strong>new possibility</strong>
+      <span>describe the task</span><span class="big">large model generates LoRA</span>
+    </div>
+  </div>
+  <p class="l22-takeaway fragment">Use a large model once to build a reusable tool for a small model.</p>
+</section>
+
+<!-- 38. PAW mechanism -->
+<section class="center-slide">
+  <h2>Program-as-Weights compiles a task into an adapter</h2>
+  <div class="paw-core-flow">
+    <div class="spec"><strong>task description</strong><span>“immediate or wait?”</span></div>
+    <span class="fragment">&rarr;</span>
+    <div class="compiler fragment"><strong>4B compiler</strong><span>generates weights</span></div>
+    <span class="fragment">&rarr;</span>
+    <div class="lora fragment"><strong>LoRA</strong><span>task specialization</span></div>
+    <span class="fragment">&rarr;</span>
+    <div class="interpreter fragment"><strong>frozen 0.6B</strong><span>runs many inputs</span></div>
+  </div>
+  <p class="l22-takeaway fragment">The expensive model builds the function; the small interpreter executes it repeatedly.</p>
+  <aside class="notes">Implementation note: a complete PAW program also includes a short compiler-generated pseudo-program; this diagram isolates the LoRA specialization path.</aside>
+</section>
+
+<!-- 39. Compiler training data -->
+<section class="center-slide">
+  <h2>What trains the compiler?</h2>
+  <p class="l22-lead">Many tasks, each written as triples \((s,x,y)\).</p>
+  <div class="paw-triples">
+    <div>
+      <strong>task \(s\)</strong><span>Classify immediate vs. wait</span>
+      <strong>input \(x\)</strong><span>Need your signature today.</span>
+      <strong>target \(y\)</strong><span><code>immediate</code></span>
+    </div>
+    <div class="fragment">
+      <strong>task \(s\)</strong><span>Classify sentiment</span>
+      <strong>input \(x\)</strong><span>The update works beautifully.</span>
+      <strong>target \(y\)</strong><span><code>positive</code></span>
+    </div>
+  </div>
+  <p class="l22-takeaway fragment">Across many tasks, the compiler learns how descriptions map to useful weights.</p>
+</section>
+
+<!-- 40. Compiler training -->
 <section>
-  <h2>Train the compiler, freeze the interpreter</h2>
+  <h2>Train end to end through the frozen interpreter</h2>
   <div class="paw-training-flow">
-    <div class="paw-train-node fragment"><strong>FuzzyBench</strong><span>10M triples \((s,x,y)\)</span></div>
+    <div class="paw-train-node"><strong>task \(s\)</strong><span>description</span></div>
     <div class="paw-train-arrow fragment">&rarr;</div>
-    <div class="paw-train-node fragment"><strong>compiler</strong><span>\(s \mapsto\) LoRA</span></div>
+    <div class="paw-train-node compiler fragment"><strong>compiler</strong><span>\(s\mapsto \text{LoRA}(s)\)</span></div>
     <div class="paw-train-arrow fragment">&rarr;</div>
-    <div class="paw-train-node frozen fragment"><strong>frozen 0.6B</strong><span>\((\text{LoRA},x) \mapsto \hat y\)</span></div>
+    <div class="paw-train-node frozen fragment"><strong>frozen interpreter</strong><span>\(x\mapsto \hat y\)</span></div>
     <div class="paw-train-arrow fragment">&rarr;</div>
-    <div class="paw-train-node loss fragment"><strong>next-token loss</strong><span>compare \(\hat y\) with \(y\)</span></div>
+    <div class="paw-train-node loss fragment"><strong>compare</strong><span>\(\hat y\) with target \(y\)</span></div>
   </div>
-  <p class="fragment paw-gradient-note">Gradient flows back through the frozen interpreter into the compiler.</p>
-  <div class="paw-compiler-choices fragment">
-    <span><b>Standard (default)</b> predicts a LoRA in ~5–10 s</span>
-    <span><b>Finetuned Standard</b> synthesizes examples + trains the LoRA</span>
-  </div>
+  <p class="paw-objective fragment">\(\mathcal{L}=-\log P\!\left(y\mid x,\text{LoRA}(s)\right)\)</p>
+  <p class="fragment paw-gradient-note">Backpropagate through the frozen interpreter into the compiler.</p>
+  <p class="l22-ref">Deng et al., <em>Program-as-Weights</em>, 2026.</p>
 </section>
 
-<!-- 40. PAW live compile/infer -->
+<!-- 41. PAW live compile/infer -->
 <section class="center-slide">
-  <h2>Compile your own fuzzy function<span class="demo-badge">live API</span></h2>
-  <p class="demo-caption">Describe once, compile once, then run several inputs with your own program ID.</p>
+  <h2>Compile an urgency adapter<span class="demo-badge">live API</span></h2>
+  <p class="demo-caption">Describe <code>immediate</code> vs. <code>wait</code>, compile remotely once, then infer remotely on new messages.</p>
   <div class="live-demo" data-demo="paw-compile">
     <div class="demo-fallback">
-      <div class="paw-fallback-steps"><b>1. describe</b> urgency as low / medium / high &nbsp;&rarr;&nbsp; <b>2. compile</b> to program <code>a6b4…</code> &nbsp;&rarr;&nbsp; <b>3. run many</b></div>
-      <div class="paw-fallback-runs"><span>“App crashes on upload” &rarr; <b>high</b></span><span>“Could you add dark mode?” &rarr; <b>low</b></span></div>
-      <small>Live slides call the hosted PAW compile and infer APIs directly. Each browser keeps its own state.</small>
+      <div class="paw-fallback-steps"><b>describe</b> immediate / wait &nbsp;&rarr;&nbsp; <b>compile remotely</b> &nbsp;&rarr;&nbsp; <b>infer remotely</b></div>
+      <div class="paw-fallback-runs"><span>“Need your signature today” &rarr; <b>immediate</b></span><span>“Newsletter for next month” &rarr; <b>wait</b></span></div>
+      <small>The live demo uses the hosted PAW Standard compiler and infer endpoint.</small>
     </div>
   </div>
 </section>
 
-<!-- 41. Evidence -->
+<!-- 42. Evidence -->
 <section class="center-slide">
-  <h2>Can the tiny interpreter actually work?</h2>
-  <div class="paw-benchmark" role="img" aria-label="FuzzyBench exact match: prompted Qwen3 0.6B 9.8 percent, prompted Qwen3 32B 68.7 percent, PAW with Qwen3 0.6B 73.8 percent">
-    <div class="paw-bar-wrap fragment"><div class="paw-bar base" style="height:12%;"><strong>9.8%</strong></div><span>0.6B<br>prompted</span></div>
-    <div class="paw-bar-wrap fragment"><div class="paw-bar large" style="height:84%;"><strong>68.7%</strong></div><span>32B<br>prompted</span></div>
-    <div class="paw-bar-wrap fragment"><div class="paw-bar paw" style="height:90%;"><strong>73.8%</strong></div><span>0.6B<br>+ PAW</span></div>
-  </div>
-  <p class="fragment" style="font-size:0.84em; color:#1d4ed8;"><strong>~50× less bf16 inference memory</strong> than the prompted 32B model.</p>
-  <p class="fragment paw-caveat">Verified FuzzyBench exact match; one shared 0.6B base + about 23 MB per program; ~30 tok/s on an M3 in the reported quantized setup.</p>
+  <h2>Compiler-generated LoRA can beat a much larger prompt</h2>
+  <figure class="paw-benchmark-figure">
+    <img src="images/paw_benchmark.png" alt="FuzzyBench exact match benchmark comparing prompted language models and Program-as-Weights">
+    <figcaption>Verified FuzzyBench exact match: PAW reaches <strong>73.8%</strong> with a frozen 0.6B interpreter, above prompting a 32B model.</figcaption>
+  </figure>
+  <p class="l22-ref">Final paper result: 73.78%, rounded to 73.8%.</p>
 </section>
 
-<!-- 42. Real helper -->
+<!-- 43. Real helper -->
+<section class="center-slide">
+  <h2>The course helper is a neural decision tree</h2>
+  <div class="helper-tree-media">
+    <img class="helper-tree-animated" src="../../../../paw_helper_tree.gif" alt="Animated execution tree of the CS486 course helper">
+    <img class="helper-tree-static" src="images/paw_helper_tree_final.png" alt="Final execution tree of the CS486 course helper">
+  </div>
+  <p class="l22-takeaway">Ordinary software controls the branches; PAW neural programs implement semantic branch tests and features.</p>
+</section>
+
+<!-- 44. Developer API -->
 <section>
-  <h2>The real course helper is hybrid software</h2>
-  <div class="paw-helper-flow">
-    <div class="paw-helper-node input">question</div>
-    <div class="paw-helper-arrow">&rarr;</div>
-    <div class="paw-helper-node neural fragment">PAW<br><small>route + classify</small></div>
-    <div class="paw-helper-arrow fragment">&rarr;</div>
-    <div class="paw-helper-stack fragment">
-      <span class="exact">code: links + branches</span>
-      <span class="retrieve">BM25: recall Piazza threads</span>
-      <span class="exact">facts: runtime injection</span>
+  <h2>Compile once; call locally like a Python function</h2>
+  <div class="paw-terminal">
+    <div class="terminal-bar"><span></span><span></span><span></span><strong>urgency.py</strong></div>
+    <pre><code><span class="code-dim">import</span> programasweights <span class="code-dim">as</span> paw
+
+<span class="code-comment"># Compile English into a local function.</span>
+fn = paw.compile_and_load(
+    <span class="code-string">"Classify if a message needs immediate attention or can wait"</span>
+)
+
+<span class="code-comment"># Runs locally — no internet, no API call from here on.</span>
+fn(<span class="code-string">"Thesis defense moved to 3pm, need your signature today"</span>)
+<span class="code-comment"># Returns "immediate"</span></code></pre>
+  </div>
+  <div class="compile-run-legend">
+    <span><strong>compile once</strong> build the adapter</span>
+    <span><strong>run repeatedly</strong> use the frozen local interpreter</span>
+  </div>
+</section>
+
+<!-- 45. Fuzzy functions -->
+<section class="center-slide">
+  <h2>Semantic functions are awkward to hand-code</h2>
+  <div class="verb-example">
+    <p>Count the verbs in: <strong>“I can can the can.”</strong></p>
+    <div class="fragment tokens">
+      <span class="verb">can <small>modal verb</small></span>
+      <span class="verb">can <small>main verb</small></span>
+      <span class="noun">can <small>noun</small></span>
     </div>
-    <div class="paw-helper-arrow fragment">&rarr;</div>
-    <div class="paw-helper-node neural fragment">PAW<br><small>rerank + answer + validate</small></div>
-    <div class="paw-helper-arrow fragment">&rarr;</div>
-    <div class="paw-helper-node output fragment">cited answer</div>
+    <div class="fragment answer">answer: <strong>2</strong></div>
   </div>
-  <div class="paw-helper-stats fragment"><strong>30 compiled</strong><span>28 serve live</span><span>one frozen 0.6B</span><span>Finetuned Standard</span></div>
-  <div class="paw-app-links fragment">
-    <a href="https://programasweights.readthedocs.io/en/latest/case-studies/log-monitoring/" target="_blank" rel="noopener">log monitoring</a>
-    <a href="https://programasweights.com/avatar" target="_blank" rel="noopener">Avatar Director</a>
-    <a href="https://programasweights.com/alien" target="_blank" rel="noopener">Alien Taboo</a>
-    <a href="https://arxiv.org/abs/2607.02512" target="_blank" rel="noopener">paper</a>
-  </div>
+  <p class="l22-takeaway fragment">Python can express any rule—but learned programs are convenient when meaning, not spelling, determines behavior.</p>
 </section>
 
-<!-- 43. Boundary -->
-<section>
-  <h2>Use PAW at fuzzy seams</h2>
-  <div class="paw-boundary-grid">
-    <div class="fragment"><strong>exact rule</strong><span>ordinary code</span></div>
-    <div class="fragment"><strong>fresh knowledge</strong><span>retrieval / RAG</span></div>
-    <div class="fragment"><strong>external action</strong><span>tool + guardrails</span></div>
-    <div class="fragment hot"><strong>repeated fuzzy text function</strong><span>PAW</span></div>
-    <div class="fragment"><strong>one-off broad reasoning</strong><span>general LLM</span></div>
-  </div>
-  <p class="fragment paw-caveat">PAW functions are stateless text-in/text-out programs with a shared context budget. Neural outputs remain probabilistic: validate high-stakes results.</p>
-</section>
-
-<!-- 37. Safety -->
+<!-- 46. PAW recap -->
 <section class="center-slide">
-  <h2>System safety checklist</h2>
-  <div class="task-cards" style="grid-template-columns:1fr 1fr 1fr;">
-    <div class="task-card fragment"><h3>verify context</h3><p style="font-size:0.78em;">do not trust retrieved text blindly</p></div>
-    <div class="task-card fragment"><h3>cite sources</h3><p style="font-size:0.78em;">show uncertainty</p></div>
-    <div class="task-card fragment"><h3>approve actions</h3><p style="font-size:0.78em;">human for irreversible steps</p></div>
-  </div>
+  <h2>Program-as-Weights: compile once, run repeatedly</h2>
+  <figure class="paw-overview-figure">
+    <img src="../../../../paw_overview.png" alt="Program-as-Weights overview: a compiler creates reusable weights for a frozen interpreter">
+    <figcaption>The generated LoRA is the reusable task specialization for a shared frozen interpreter.</figcaption>
+  </figure>
 </section>
 
-<!-- 38. Next -->
-<section class="center-slide">
-  <h2>What comes next?</h2>
-  <p style="font-size:1.05em;">Text-only LMs are one kind of model.</p>
-  <p class="fragment" style="font-size:1.05em; color:#1d4ed8;">How do models answer questions about images?</p>
-  <p class="fragment" style="font-size:0.9em; color:#6b7280;">L23: Dissecting a Vision-Language Model.</p>
-</section>
-
-<!-- 39. Recap -->
-<section class="center-slide">
-  <h2>Recap</h2>
-  <ul style="text-align:left; margin-left:2em; list-style:none; padding-left:0; max-width:84%; margin-right:auto;">
-    <li>&#10003; &nbsp;Prompting changes input, not weights.</li>
-    <li>&#10003; &nbsp;RAG adds external knowledge at inference time.</li>
-    <li>&#10003; &nbsp;Tools let the model act or compute.</li>
-    <li>&#10003; &nbsp;SFT changes weights with demonstrations.</li>
-    <li>&#10003; &nbsp;LoRA makes weight changes small and modular.</li>
-    <li>&#10003; &nbsp;PAW compiles fuzzy functions into reusable neural programs.</li>
-  </ul>
-  <p class="fragment" style="font-size:0.9em; color:#1d4ed8;"><strong>Foundation model: per-input problem solver &rarr; per-function tool builder.</strong></p>
+<!-- 47. Final thesis -->
+<section class="center-slide final-thesis">
+  <span class="section-kicker">the shift</span>
+  <h2>From AI as per-input problem solvers</h2>
+  <div class="fragment thesis-arrow">&darr;</div>
+  <h2 class="fragment">to AI as per-function tool builders</h2>
+  <p class="fragment">A large model compiles reusable specialization; a small model runs it repeatedly.</p>
+  <div class="l23-bridge fragment">Next: L23 dissects a vision-language model.</div>
 </section>
 
 </div>
@@ -692,6 +664,6 @@ train(model, dataset)</code></pre>
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=23"></script>
+<script type="module" src="../shared/demo.js?v=27"></script>
 </body>
 </html>

@@ -2799,16 +2799,25 @@ register('lm-attention', (api) => {
 register('rag', (api) => {
   let data = null;
   const qRow = el('div', { class: 'demo-controls' });
-  const input = el('input', { class: 'demo-input', type: 'text', value: 'When is Assignment 2 due?' });
+  const input = el('input', { class: 'demo-input', type: 'text', value: 'When is Assignment 3 due?' });
   const chunksBox = el('div', { class: 'rag-chunks' });
   const promptBox = el('div', { class: 'rag-prompt' });
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   input.addEventListener('keydown', (e) => e.stopPropagation());
 
+  function embeddedFallback(question) {
+    const examFirst = /\b(exam|room|where|PAC)\b/i.test(question);
+    const assignment = data.chunks.find((c) => /Assignment 3 is .*due/i.test(c.text)) || data.chunks[0];
+    const exam = data.chunks.find((c) => /final exam is on/i.test(c.text)) || data.chunks[1] || data.chunks[0];
+    const first = examFirst ? exam : assignment;
+    const second = examFirst ? assignment : exam;
+    return [{ i: first.id, score: 1 }, { i: second.id, score: 0.35 }];
+  }
+
   function show(question, ranking) {
     chunksBox.innerHTML = '';
     const max = ranking[0].score || 1;
-    ranking.slice(0, 3).forEach((r, idx) => {
+    ranking.slice(0, 2).forEach((r, idx) => {
       const c = data.chunks[r.i];
       chunksBox.appendChild(el('div', { class: 'rag-row' + (idx === 0 ? ' top' : '') }, [
         el('span', { class: 'rag-src', text: c.source }),
@@ -2818,16 +2827,31 @@ register('rag', (api) => {
     });
     const top = data.chunks[ranking[0].i];
     promptBox.innerHTML = '';
-    promptBox.appendChild(el('div', { class: 'rp-line sys', text: 'System: answer using only the context; cite the source.' }));
-    promptBox.appendChild(el('div', { class: 'rp-line ctx', html: 'Context [' + esc(top.source) + ']: ' + esc(top.text) }));
+    promptBox.appendChild(el('div', { class: 'rp-line sys', text: 'System: use only the context and cite the source.' }));
+    promptBox.appendChild(el('div', { class: 'rp-line ctx', html: 'Context: ' + esc(top.text) }));
     promptBox.appendChild(el('div', { class: 'rp-line q', html: 'Question: ' + esc(question) }));
   }
   async function retrieve() {
     const q = input.value.trim(); if (!q) return;
+    if (data.fallback) {
+      show(q, embeddedFallback(q));
+      api.setStatus('Using the embedded two-document fallback.', 'err');
+      return;
+    }
     api.setStatus('Embedding query with MiniLM...');
-    let ex; try { ex = await api.getEmbedder(); } catch (e) { api.setStatus('Embedder unavailable; use a preset question.', 'err'); return; }
+    let ex;
+    try {
+      ex = await Promise.race([
+        api.getEmbedder(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('embedding model timeout')), 15000)),
+      ]);
+    } catch (e) {
+      show(q, embeddedFallback(q));
+      api.setStatus('MiniLM unavailable; used the embedded course-fact fallback.', 'err');
+      return;
+    }
     const [qv] = await api.embedTexts(ex, [q]);
-    const ranking = data.chunks.map((c) => ({ i: c.id, score: api.cosine(qv, c.vec) })).sort((a, b) => b.score - a.score).slice(0, 5);
+    const ranking = data.chunks.map((c) => ({ i: c.id, score: api.cosine(qv, c.vec) })).sort((a, b) => b.score - a.score).slice(0, 2);
     [...qRow.children].forEach((b) => { b.classList.remove('primary'); b.classList.add('ghost'); });
     show(q, ranking); api.setStatus('Retrieved with live MiniLM embeddings.', 'ok');
   }
@@ -2838,8 +2862,21 @@ register('rag', (api) => {
   ]);
   function setQ(k) { const q = data.questions[k]; input.value = q.q; [...qRow.children].forEach((b, i) => { b.classList.toggle('primary', i === k); b.classList.toggle('ghost', i !== k); }); show(q.q, q.ranking); }
   async function load() {
-    try { const r = await fetch('data/rag_chunks.json'); data = await r.json(); }
-    catch (e) { api.setStatus('Could not load the course index.', 'err'); return; }
+    try { const r = await fetch('data/rag_chunks.json?v=2'); data = await r.json(); }
+    catch (e) {
+      data = {
+        fallback: true,
+        chunks: [
+          { id: 0, source: 'assignments', text: 'Assignment 3 is due Tuesday, August 4, 2026 at 11:59 PM.' },
+          { id: 1, source: 'schedule', text: 'The final exam is Saturday, August 8, 2026, 7:30–10:00 PM in PAC 5.' },
+        ],
+        questions: [
+          { q: 'When is Assignment 3 due?', ranking: [{ i: 0, score: 1 }, { i: 1, score: 0.35 }] },
+          { q: 'When and where is the final exam?', ranking: [{ i: 1, score: 1 }, { i: 0, score: 0.35 }] },
+        ],
+      };
+      api.setStatus('Using the embedded course-fact fallback.', 'err');
+    }
     data.questions.forEach((q, k) => qRow.appendChild(api.button('"' + q.q + '"', () => setQ(k), k === 0 ? 'primary' : 'ghost')));
     setQ(0);
   }
@@ -2852,14 +2889,14 @@ register('rag', (api) => {
  * ===================================================================== */
 register('lora-rank', (api) => {
   const D = 24;
-  const rCtl = api.slider('rank r', { min: 1, max: 16, step: 1, value: 4, fmt: (v) => v });
+  const rCtl = api.slider('rank r', { min: 1, max: 24, step: 1, value: 4, fmt: (v) => v });
   const c0 = api.canvasEl(150, 150), cd = api.canvasEl(150, 150), cw = api.canvasEl(150, 150);
   const readout = el('div', { class: 'demo-readout' });
   const rnd = api.rng32(7);
   const gauss = () => { let u = 0, v = 0; while (!u) u = rnd(); while (!v) v = rnd(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
   const W0 = Array.from({ length: D }, () => Array.from({ length: D }, gauss));
-  const Bfull = Array.from({ length: D }, () => Array.from({ length: 16 }, gauss));
-  const Afull = Array.from({ length: 16 }, () => Array.from({ length: D }, gauss));
+  const Bfull = Array.from({ length: D }, () => Array.from({ length: 24 }, gauss));
+  const Afull = Array.from({ length: 24 }, () => Array.from({ length: D }, gauss));
 
   function drawMat(canvas, M, scale) {
     const ctx = canvas.getContext('2d'), cell = canvas.width / D;
@@ -2878,14 +2915,20 @@ register('lora-rank', (api) => {
     const Wp = W0.map((row, i) => row.map((x, j) => x + dW[i][j]));
     drawMat(c0, W0, maxAbs(W0)); drawMat(cd, dW, maxAbs(dW)); drawMat(cw, Wp, maxAbs(Wp));
     const train = 2 * D * r, full = D * D;
+    const ratio = train / full;
     readout.innerHTML = '';
     readout.appendChild(el('span', { html: `trainable: <b>${train}</b> vs full <b>${full}</b> (rank r=${r}, d=${D})` }));
-    readout.appendChild(el('span', { html: `only <b>${(train / full * 100).toFixed(0)}%</b> of the weights are trained` }));
+    const comparison = ratio < 1
+      ? `<b>${((1 - ratio) * 100).toFixed(0)}% fewer</b> trainable parameters`
+      : ratio === 1
+        ? '<b>no parameter saving</b> at this rank'
+        : `<b>${ratio.toFixed(1)}\u00d7 as many</b> trainable parameters as the full matrix`;
+    readout.appendChild(el('span', { html: comparison }));
   }
   rCtl.input.addEventListener('input', draw);
   const panel = (cap, cv) => el('div', { class: 'lora-panel' }, [el('div', { class: 'lora-cap', html: cap }), cv]);
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'Freeze the big weight \\(W_0\\); train only a low-rank update \\(\\Delta W = BA\\). Higher rank = more expressive but more parameters.' }),
+    el('div', { class: 'demo-note', html: 'Freeze \\(W_0\\); train \\(\\Delta W=BA\\). For this square matrix, LoRA saves parameters only while \\(r&lt;d/2\\).' }),
     el('div', { class: 'demo-controls' }, [rCtl.field]),
     el('div', { class: 'demo-stage' }, [panel('W\u2080 (frozen)', c0), panel('\u0394W = BA', cd), panel("W' = W\u2080+\u0394W", cw)]),
     readout,
@@ -2898,10 +2941,10 @@ register('lora-rank', (api) => {
  *  calls a calculator tool that really computes the answer. (L22, JS)
  * ===================================================================== */
 register('tool-loop', (api) => {
-  const expr = '0.30*85 + 0.20*92 + 0.50*78';
-  const result = 0.30 * 85 + 0.20 * 92 + 0.50 * 78;  // computed live by the "tool"
+  const expr = '0.20*82 + 0.30*74 + 0.50*91';
+  const result = 0.20 * 82 + 0.30 * 74 + 0.50 * 91;  // computed live by the "tool"
   const steps = [
-    { role: 'user', text: 'What is my weighted grade? Assignments 85 (30%), chats 92 (20%), final 78 (50%).' },
+    { role: 'user', text: 'What is my weighted grade? Scores: 82 (20%), 74 (30%), 91 (50%).' },
     { role: 'model', text: 'This needs exact arithmetic, so I will call a tool instead of guessing.' },
     { role: 'call', text: 'calc("' + expr + '")' },
     { role: 'tool', text: '= ' + result.toFixed(1) },
@@ -3173,16 +3216,16 @@ register('neuralos', (api) => {
  * ===================================================================== */
 register('paw-compile', (api) => {
   const API = 'https://programasweights.com/api/v1';
-  const DEFAULT_SPEC = `Classify support ticket urgency. Return ONLY one of: low, medium, high.
+  const DEFAULT_SPEC = `Classify whether a message needs immediate attention or can wait. Return ONLY one of: immediate, wait.
 
-Input: Can you add dark mode to the settings page?
-Output: low
+Input: Thesis defense moved to 3pm; I need your signature today.
+Output: immediate
 
-Input: The app crashes every time I upload a photo.
-Output: high
+Input: Newsletter with events for next month.
+Output: wait
 
-Input: I was charged twice on my last invoice.
-Output: high`;
+Input: Production is down for every customer.
+Output: immediate`;
 
   let programId = null;
   let compiledSpec = '';
@@ -3211,9 +3254,9 @@ Output: high`;
     rows: '3',
     maxlength: '8000',
     'aria-label': 'Input to run through the compiled function',
-    placeholder: 'Type a support ticket...',
+    placeholder: 'Type a message...',
   });
-  input.value = 'The checkout page is down for every customer.';
+  input.value = 'Please review this whenever you have time next week.';
 
   const idValue = el('code', { class: 'paw-program-id', text: 'not compiled yet' });
   const meta = el('div', { class: 'paw-program-meta' }, [
@@ -3367,20 +3410,20 @@ Output: high`;
     invalidateProgram(false);
     output.innerHTML = '';
     output.appendChild(el('div', { class: 'paw-empty', text: 'Edit the spec, compile it, then test multiple inputs.' }));
-    api.setStatus('Ready for a new fuzzy function.');
+    api.setStatus('Ready for a new task.');
     spec.focus();
   }
 
-  const compileBtn = api.button('Compile my function', compile);
-  compileBtn.setAttribute('aria-label', 'Compile this fuzzy function specification');
-  const newBtn = api.button('New function', newFunction, 'ghost');
+  const compileBtn = api.button('Compile adapter', compile);
+  compileBtn.setAttribute('aria-label', 'Compile this task specification into an adapter');
+  const newBtn = api.button('New task', newFunction, 'ghost');
   const runBtn = api.button('Run this input', run);
   runBtn.disabled = true;
   runBtn.setAttribute('aria-label', 'Run hosted inference with this input');
 
   const presets = [
-    'The app crashes every time I upload a photo.',
-    'Can you add dark mode when you have time?',
+    'Thesis defense moved to 3pm; I need your signature today.',
+    'Newsletter with events for next month.',
     'The checkout page is down for every customer.',
   ].map((text, i) => api.button(`Example ${i + 1}`, () => {
     input.value = text;
@@ -3418,7 +3461,7 @@ Output: high`;
     api.status.setAttribute('aria-live', 'polite');
     api.status.setAttribute('role', 'status');
     setStage('describe');
-    api.setStatus('Edit the examples or labels, then compile your own function.');
+    api.setStatus('Edit the task or examples, then compile an adapter.');
   }
 
   return { mount, init };

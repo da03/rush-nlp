@@ -2,9 +2,8 @@
 
 Embeds each course "chunk" with the same model the in-browser demo uses
 (all-MiniLM-L6-v2, mean-pooled + L2-normalized) so the live query embedding
-(Transformers.js) is comparable to these precomputed vectors. Also stores a few
-preset questions with their retrieval ranking so the demo teaches offline / in
-the PDF build.
+(Transformers.js) is comparable to these precomputed vectors. Stores the two
+current questions used in the lecture as offline/PDF presets.
 
 Run:  python make_rag_chunks.py
 """
@@ -42,10 +41,8 @@ CHUNKS = [
 ]
 
 QUESTIONS = [
-    "When is Assignment 2 due?",
+    "When is Assignment 3 due?",
     "When and where is the final exam?",
-    "How much is each chat assignment worth?",
-    "What is the primary textbook for the course?",
 ]
 
 
@@ -74,7 +71,7 @@ def main():
     questions = []
     for qi, q in enumerate(QUESTIONS):
         sims = cvec @ qvec[qi]
-        order = np.argsort(-sims)[:5]
+        order = np.argsort(-sims)[:2]
         questions.append({"q": q, "ranking": [{"i": int(i), "score": round(float(sims[i]), 4)} for i in order]})
 
     with open(OUT, "w") as f:
