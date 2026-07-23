@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="../L10/custom.css">
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L21/custom.css?v=2">
-  <link rel="stylesheet" href="custom.css?v=9">
+  <link rel="stylesheet" href="custom.css?v=11">
   <link rel="icon" href="data:,">
 </head>
 <body>
@@ -428,10 +428,18 @@
     \(h = W_0x + \frac{\alpha}{r}BAx\)
   </div>
   <div class="parameter-saving">
-    <div class="fragment"><strong>full square matrix</strong><span>\(d^2\) trainable parameters</span></div>
-    <div class="fragment"><strong>LoRA matrices</strong><span>\(dr+rd=2dr\) trainable parameters</span></div>
+    <div class="fragment" data-fragment-index="0">
+      <strong>full square matrix</strong>
+      <span class="parameter-count">\(d^2\)</span>
+      <small>trainable parameters</small>
+    </div>
+    <div class="fragment" data-fragment-index="0">
+      <strong>LoRA matrices</strong>
+      <span class="parameter-count">\(dr+rd=2dr\)</span>
+      <small>trainable parameters</small>
+    </div>
   </div>
-  <p class="l22-takeaway fragment">Gradients and AdamW states are needed for \(A,B\), not \(W_0\).</p>
+  <p class="l22-takeaway fragment" data-fragment-index="1">Gradients and AdamW states are needed for \(A,B\), not \(W_0\).</p>
   <p class="l22-ref">\(\alpha/r\) controls the update scale.</p>
 </section>
 
@@ -458,9 +466,34 @@
   <p class="l22-takeaway fragment">Save and swap small task-specific \(A,B\) matrices instead of duplicating the base.</p>
 </section>
 
-<!-- 35. LoRA workflow -->
+<!-- 35. Urgency examples -->
 <section class="center-slide">
-  <h2>Fine-tune an urgency classifier with LoRA</h2>
+  <h2>Example: fine-tune an urgency classifier with LoRA</h2>
+  <p class="l22-lead">Collect examples of the behavior we want the adapter to learn.</p>
+  <div class="urgency-examples">
+    <div>
+      <span>“Thesis defense moved to 3 PM; need your signature today.”</span>
+      <strong class="immediate">immediate</strong>
+    </div>
+    <div class="fragment">
+      <span>“The submission server is down right now.”</span>
+      <strong class="immediate">immediate</strong>
+    </div>
+    <div class="fragment">
+      <span>“Please review this whenever you have time next week.”</span>
+      <strong class="wait">wait</strong>
+    </div>
+    <div class="fragment">
+      <span>“Newsletter draft for next month.”</span>
+      <strong class="wait">wait</strong>
+    </div>
+  </div>
+  <p class="l22-takeaway fragment">The labels define the task; LoRA learns the mapping while \(W_0\) stays frozen.</p>
+</section>
+
+<!-- 36. LoRA workflow -->
+<section class="center-slide">
+  <h2>Then train and save the LoRA adapter</h2>
   <div class="urgency-workflow">
     <div><strong>1 · define</strong><span>labels: <code>immediate</code> / <code>wait</code></span></div>
     <div class="fragment"><strong>2 · collect</strong><span>message → label examples</span></div>
@@ -471,14 +504,14 @@
   <p class="l22-takeaway fragment">Ordinary LoRA still needs a dataset and a training run for each task.</p>
 </section>
 
-<!-- 36. PAW transition -->
+<!-- 37. PAW transition -->
 <section class="center-slide section-divider">
   <span class="section-kicker">Program-as-Weights</span>
   <h2>Automatic adaptation per task</h2>
   <p>Can a model build the adapter for us?</p>
 </section>
 
-<!-- 37. From manual to automatic adapters -->
+<!-- 38. From manual to automatic adapters -->
 <section class="center-slide">
   <h2>Ordinary LoRA repeats training for every task</h2>
   <div class="manual-vs-compile">
@@ -494,7 +527,7 @@
   <p class="l22-takeaway fragment">Use a large model once to build a reusable tool for a small model.</p>
 </section>
 
-<!-- 38. PAW mechanism -->
+<!-- 39. PAW mechanism -->
 <section class="center-slide">
   <h2>Program-as-Weights compiles a task into an adapter</h2>
   <div class="paw-core-flow">
@@ -510,7 +543,16 @@
   <aside class="notes">Implementation note: a complete PAW program also includes a short compiler-generated pseudo-program; this diagram isolates the LoRA specialization path.</aside>
 </section>
 
-<!-- 39. Compiler training data -->
+<!-- 40. PAW overview -->
+<section class="center-slide">
+  <h2>Program-as-Weights: compile once, run repeatedly</h2>
+  <figure class="paw-overview-figure">
+    <img src="../../../../paw_overview.png" alt="Program-as-Weights overview: a compiler creates reusable weights for a frozen interpreter">
+    <figcaption>The compiler builds a reusable neural program once; the interpreter then runs it on many inputs.</figcaption>
+  </figure>
+</section>
+
+<!-- 41. Compiler training data -->
 <section class="center-slide">
   <h2>What trains the compiler?</h2>
   <p class="l22-lead">Many tasks, each written as triples \((s,x,y)\).</p>
@@ -529,7 +571,7 @@
   <p class="l22-takeaway fragment">Across many tasks, the compiler learns how descriptions map to useful weights.</p>
 </section>
 
-<!-- 40. Compiler training -->
+<!-- 42. Compiler training -->
 <section>
   <h2>Train end to end through the frozen interpreter</h2>
   <div class="paw-training-flow">
@@ -543,10 +585,10 @@
   </div>
   <p class="paw-objective fragment" data-fragment-index="3">\(\mathcal{L}=-\log P\!\left(y\mid x,\text{LoRA}(s)\right)\)</p>
   <p class="fragment paw-gradient-note" data-fragment-index="4">Backpropagate through the frozen interpreter into the compiler.</p>
-  <p class="l22-ref">Deng et al., <em>Program-as-Weights</em>, 2026.</p>
+  <p class="l22-ref">Zhang et al., <em>Program-as-Weights</em>, 2026.</p>
 </section>
 
-<!-- 41. PAW live compile/infer -->
+<!-- 43. PAW live compile/infer -->
 <section class="center-slide">
   <h2>Compile an urgency adapter<span class="demo-badge">live API</span></h2>
   <p class="demo-caption">Describe <code>immediate</code> vs. <code>wait</code>, compile remotely once, then infer remotely on new messages.</p>
@@ -559,7 +601,7 @@
   </div>
 </section>
 
-<!-- 42. Evidence -->
+<!-- 44. Evidence -->
 <section class="center-slide">
   <h2>Compiler-generated LoRA can beat a much larger prompt</h2>
   <figure class="paw-benchmark-figure">
@@ -569,7 +611,7 @@
   <p class="l22-ref">Final paper result: 73.78%, rounded to 73.8%.</p>
 </section>
 
-<!-- 43. Real helper -->
+<!-- 45. Real helper -->
 <section class="center-slide">
   <h2>The course helper is a neural decision tree</h2>
   <div class="helper-tree-media">
@@ -579,7 +621,7 @@
   <p class="l22-takeaway">Ordinary software controls the branches; PAW neural programs implement semantic branch tests and features.</p>
 </section>
 
-<!-- 44. Developer API -->
+<!-- 46. Developer API -->
 <section>
   <h2>Compile once; call locally like a Python function</h2>
   <div class="paw-terminal">
@@ -601,9 +643,9 @@ fn(<span class="code-string">"Thesis defense moved to 3pm, need your signature t
   </div>
 </section>
 
-<!-- 45. Fuzzy functions -->
+<!-- 47. Why neural programs -->
 <section class="center-slide">
-  <h2>Semantic functions are awkward to hand-code</h2>
+  <h2>Why neural programs?</h2>
   <div class="verb-example">
     <p>Count the verbs in: <strong>“I can can the can.”</strong></p>
     <div class="fragment tokens">
@@ -613,26 +655,29 @@ fn(<span class="code-string">"Thesis defense moved to 3pm, need your signature t
     </div>
     <div class="fragment answer">answer: <strong>2</strong></div>
   </div>
-  <p class="l22-takeaway fragment">Python can express any rule—but learned programs are convenient when meaning, not spelling, determines behavior.</p>
+  <p class="l22-takeaway fragment">Learned programs are useful when behavior depends on meaning rather than brittle surface rules.</p>
 </section>
 
-<!-- 46. PAW recap -->
-<section class="center-slide">
-  <h2>Program-as-Weights: compile once, run repeatedly</h2>
-  <figure class="paw-overview-figure">
-    <img src="../../../../paw_overview.png" alt="Program-as-Weights overview: a compiler creates reusable weights for a frozen interpreter">
-    <figcaption>The generated LoRA is the reusable task specialization for a shared frozen interpreter.</figcaption>
-  </figure>
-</section>
-
-<!-- 47. Final thesis -->
+<!-- 48. Final thesis -->
 <section class="center-slide final-thesis">
   <span class="section-kicker">the shift</span>
   <h2>From AI as per-input problem solvers</h2>
   <div class="fragment thesis-arrow" data-fragment-index="0">&darr;</div>
   <h2 class="fragment" data-fragment-index="0">to AI as per-function tool builders</h2>
   <p class="fragment" data-fragment-index="1">A large model compiles reusable specialization; a small model runs it repeatedly.</p>
-  <div class="l23-bridge fragment" data-fragment-index="2">Next: L23 dissects a vision-language model.</div>
+</section>
+
+<!-- 49. Recap -->
+<section class="center-slide">
+  <h2>Recap</h2>
+  <ul class="l22-recap">
+    <li><span class="recap-check">&#10003;</span> Prompting changes instructions; RAG retrieves evidence; tools execute actions.</li>
+    <li><span class="recap-check">&#10003;</span> Fine-tuning changes model behavior through examples or preferences.</li>
+    <li><span class="recap-check">&#10003;</span> LoRA freezes \(W_0\) and learns the low-rank matrices \(A,B\).</li>
+    <li><span class="recap-check">&#10003;</span> Program-as-Weights compiles a task description into a reusable neural program.</li>
+    <li><span class="recap-check">&#10003;</span> Diagnose what is missing, then choose the smallest useful adaptation.</li>
+  </ul>
+  <p class="l23-bridge fragment"><strong>L23:</strong> extend language models from text tokens to image tokens.</p>
 </section>
 
 </div>
