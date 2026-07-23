@@ -1,4 +1,4 @@
-"""Capture every L22 slide in initial and fully revealed states via CDP."""
+"""Capture every L22 slide and every coherent fragment step via CDP."""
 
 import asyncio
 import base64
@@ -99,6 +99,56 @@ STATE_JS = """
 })(%d, %s)
 """
 
+STEP_STATE_JS = """
+((index, step) => {
+  Reveal.slide(index, 0, -1);
+  const slide = Reveal.getCurrentSlide();
+  const fragments = [...slide.querySelectorAll('.fragment')];
+  for (const node of fragments) {
+    const nodeStep = Number(node.dataset.fragmentIndex);
+    node.classList.toggle('visible', nodeStep <= step);
+    node.classList.toggle('current-fragment', nodeStep === step);
+  }
+  Reveal.layout();
+  return { index, step };
+})(%d, %d)
+"""
+
+FRAGMENT_GROUPS_JS = """
+(() => {
+  const slide = Reveal.getCurrentSlide();
+  const groups = new Map();
+  for (const node of slide.querySelectorAll('.fragment')) {
+    const index = Number(node.dataset.fragmentIndex);
+    if (!groups.has(index)) groups.set(index, []);
+    const text = String(node.textContent || '').trim().replace(/\\s+/g, ' ');
+    const cls = String(node.getAttribute('class') || '');
+    groups.get(index).push({
+      tag: node.tagName.toLowerCase(),
+      cls,
+      text: text.slice(0, 120),
+      connector: /(?:^|\\s)(?:arrow|plus|times)(?:\\s|$)/.test(cls) ||
+        /^[→←↑↓+×]+$/.test(text),
+      svgPrimitive: /^(?:line|path|polygon|polyline|rect|text)$/.test(
+        node.tagName.toLowerCase()
+      ),
+    });
+  }
+  return [...groups.entries()].sort((a, b) => a[0] - b[0]).map(([index, nodes]) => ({
+    index,
+    nodes,
+    issues: [
+      ...(nodes.some((node) => node.svgPrimitive)
+        ? ['SVG shape or label is fragmented separately from its visual unit']
+        : []),
+      ...(nodes.some((node) => node.connector) && nodes.every((node) => node.connector)
+        ? ['connector is a click by itself']
+        : []),
+    ],
+  }));
+})()
+"""
+
 METRICS_JS = """
 (() => {
   const slide = Reveal.getCurrentSlide();
@@ -161,14 +211,16 @@ def contact_sheets(paths, prefix):
             image.thumbnail(thumb_size)
             x, y = col * 320, row * 190
             sheet.paste(image, (x, y))
-            draw.rectangle((x, y, x + 42, y + 18), fill="white")
-            draw.text((x + 4, y + 3), f"{start + j + 1:02d}", fill="black", font=font)
+            label = path.stem
+            label_width = max(42, 10 + len(label) * 7)
+            draw.rectangle((x, y, x + label_width, y + 18), fill="white")
+            draw.text((x + 4, y + 3), label, fill="black", font=font)
         sheet.save(OUT / f"{prefix}-{start + 1:02d}-{start + len(batch):02d}.jpg", quality=90)
 
 
 async def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    for state in ("initial", "full"):
+    for state in ("initial", "full", "steps"):
         (OUT / state).mkdir(exist_ok=True)
 
     websocket_url = wait_for_target()
@@ -200,6 +252,17 @@ async def main():
                 await asyncio.sleep(0.22)
                 item[state] = await cdp.evaluate(METRICS_JS)
                 await screenshot(cdp, OUT / state / f"{index + 1:02d}.png")
+
+            await cdp.evaluate(STATE_JS % (index, "false"))
+            groups = await cdp.evaluate(FRAGMENT_GROUPS_JS)
+            item["fragmentGroups"] = groups
+            for group in groups:
+                step = group["index"]
+                await cdp.evaluate(STEP_STATE_JS % (index, step))
+                await asyncio.sleep(0.22)
+                await screenshot(
+                    cdp, OUT / "steps" / f"{index + 1:02d}-{step:02d}.png"
+                )
             report["slides"].append(item)
             print(f"captured {index + 1:02d}/{total}")
 
@@ -215,6 +278,19 @@ async def main():
     (OUT / "report.json").write_text(json.dumps(report, indent=2))
     contact_sheets(sorted((OUT / "initial").glob("*.png")), "initial")
     contact_sheets(sorted((OUT / "full").glob("*.png")), "full")
+    contact_sheets(sorted((OUT / "steps").glob("*.png")), "steps")
+
+    fragment_issues = [
+        {"slide": slide["index"], "group": group["index"], "issues": group["issues"]}
+        for slide in report["slides"]
+        for group in slide["fragmentGroups"]
+        if group["issues"]
+    ]
+    if fragment_issues:
+        raise RuntimeError(
+            "Incoherent fragment groups detected:\n"
+            + json.dumps(fragment_issues, indent=2)
+        )
     print(f"Wrote report and contact sheets to {OUT}")
 
 

@@ -126,10 +126,10 @@
   <h2>Prompting changes context, not weights</h2>
   <div class="prompt-rewrite">
     <div><strong>before</strong><span>Answer the student.</span></div>
-    <div class="fragment arrow">&darr;</div>
-    <div class="fragment after"><strong>after</strong><span>Answer in two sentences. Quote the date and cite the course schedule.</span></div>
+    <div class="fragment arrow" data-fragment-index="0">&darr;</div>
+    <div class="fragment after" data-fragment-index="0"><strong>after</strong><span>Answer in two sentences. Quote the date and cite the course schedule.</span></div>
   </div>
-  <p class="l22-takeaway fragment">The prompt controls how to answer; it still does not contain the date.</p>
+  <p class="l22-takeaway fragment" data-fragment-index="1">The prompt controls how to answer; it still does not contain the date.</p>
 </section>
 
 <!-- 8. Prompt template -->
@@ -177,10 +177,10 @@
   <svg viewBox="0 0 900 180" xmlns="http://www.w3.org/2000/svg" class="pipeline rag-simple">
     <g>
       <rect x="105" y="55" width="250" height="62" rx="10"/><text x="230" y="92">course document</text>
-      <rect class="fragment" x="545" y="55" width="250" height="62" rx="10"/><text class="fragment" x="670" y="92">embedding vector</text>
     </g>
-    <g class="fragment" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow-l22)">
-      <line x1="355" y1="86" x2="535" y2="86"/>
+    <g class="fragment">
+      <line x1="355" y1="86" x2="535" y2="86" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow-l22)"/>
+      <rect x="545" y="55" width="250" height="62" rx="10"/><text x="670" y="92">embedding vector</text>
     </g>
   </svg>
   <p class="l22-note fragment">Compute once; store the vector with the original text and its source.</p>
@@ -192,14 +192,18 @@
   <svg viewBox="0 0 930 170" xmlns="http://www.w3.org/2000/svg" class="pipeline rag-online">
     <g>
       <rect x="15" y="55" width="150" height="54" rx="9"/><text x="90" y="88">question</text>
-      <rect class="fragment" x="205" y="55" width="155" height="54" rx="9"/><text class="fragment" x="282" y="88">embedding</text>
-      <rect class="fragment" x="400" y="55" width="215" height="54" rx="9"/><text class="fragment" x="507" y="79">nearest</text><text class="fragment" x="507" y="99">document</text>
-      <rect class="fragment" x="655" y="55" width="245" height="54" rx="9"/><text class="fragment" x="777" y="79">answer with</text><text class="fragment" x="777" y="99">context</text>
     </g>
-    <g stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l22)">
-      <line class="fragment" x1="165" y1="82" x2="195" y2="82"/>
-      <line class="fragment" x1="360" y1="82" x2="390" y2="82"/>
-      <line class="fragment" x1="615" y1="82" x2="645" y2="82"/>
+    <g class="fragment">
+      <line x1="165" y1="82" x2="195" y2="82" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l22)"/>
+      <rect x="205" y="55" width="155" height="54" rx="9"/><text x="282" y="88">embedding</text>
+    </g>
+    <g class="fragment">
+      <line x1="360" y1="82" x2="390" y2="82" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l22)"/>
+      <rect x="400" y="55" width="215" height="54" rx="9"/><text x="507" y="79">nearest</text><text x="507" y="99">document</text>
+    </g>
+    <g class="fragment">
+      <line x1="615" y1="82" x2="645" y2="82" stroke="#475569" stroke-width="2.2" marker-end="url(#arrow-l22)"/>
+      <rect x="655" y="55" width="245" height="54" rx="9"/><text x="777" y="79">answer with</text><text x="777" y="99">context</text>
     </g>
   </svg>
   <p class="l22-note fragment">“Nearest” is the embedding geometry from L18.</p>
@@ -284,14 +288,14 @@
   <h2>Agents repeat the same loop</h2>
   <div class="agent-loop">
     <div><strong>plan</strong></div>
-    <span class="fragment">&rarr;</span>
-    <div class="fragment"><strong>act</strong></div>
-    <span class="fragment">&rarr;</span>
-    <div class="fragment"><strong>observe</strong></div>
-    <span class="fragment">&rarr;</span>
-    <div class="fragment"><strong>stop or continue</strong></div>
+    <span class="fragment" data-fragment-index="0">&rarr;</span>
+    <div class="fragment" data-fragment-index="0"><strong>act</strong></div>
+    <span class="fragment" data-fragment-index="1">&rarr;</span>
+    <div class="fragment" data-fragment-index="1"><strong>observe</strong></div>
+    <span class="fragment" data-fragment-index="2">&rarr;</span>
+    <div class="fragment" data-fragment-index="2"><strong>stop or continue</strong></div>
   </div>
-  <p class="l22-note fragment">For consequential actions, permissions and human confirmation belong around the loop.</p>
+  <p class="l22-note fragment" data-fragment-index="3">For consequential actions, permissions and human confirmation belong around the loop.</p>
 </section>
 
 <!-- 22. Fine-tuning transition -->
@@ -334,12 +338,12 @@
   <h2>Train on examples; evaluate on new phrasings</h2>
   <div class="training-workflow">
     <div><strong>curate</strong><span>instruction → ideal response</span></div>
-    <span class="fragment">&rarr;</span>
-    <div class="fragment"><strong>train</strong><span>update model weights</span></div>
-    <span class="fragment">&rarr;</span>
-    <div class="fragment"><strong>evaluate</strong><span>held-out phrasings</span></div>
+    <span class="fragment" data-fragment-index="0">&rarr;</span>
+    <div class="fragment" data-fragment-index="0"><strong>train</strong><span>update model weights</span></div>
+    <span class="fragment" data-fragment-index="1">&rarr;</span>
+    <div class="fragment" data-fragment-index="1"><strong>evaluate</strong><span>held-out phrasings</span></div>
   </div>
-  <div class="overfit-example fragment"><strong>warning:</strong> success on memorized wording does not imply robust behavior.</div>
+  <div class="overfit-example fragment" data-fragment-index="2"><strong>warning:</strong> success on memorized wording does not imply robust behavior.</div>
 </section>
 
 <!-- 26. Preferences -->
@@ -358,12 +362,12 @@
   <h2>RLHF learns a separate reward model</h2>
   <div class="rlhf-flow">
     <div><strong>preferences</strong><span>chosen &gt; rejected</span></div>
-    <span class="fragment">&rarr;</span>
-    <div class="fragment reward"><strong>reward model</strong><span>generation → scalar score</span></div>
-    <span class="fragment">&rarr;</span>
-    <div class="fragment"><strong>policy update</strong><span>increase expected reward</span></div>
+    <span class="fragment" data-fragment-index="0">&rarr;</span>
+    <div class="fragment reward" data-fragment-index="0"><strong>reward model</strong><span>generation → scalar score</span></div>
+    <span class="fragment" data-fragment-index="1">&rarr;</span>
+    <div class="fragment" data-fragment-index="1"><strong>policy update</strong><span>increase expected reward</span></div>
   </div>
-  <p class="l22-note fragment">Like a learned utility signal from our decision-making unit—but not literally a state-value critic.</p>
+  <p class="l22-note fragment" data-fragment-index="2">Like a learned utility signal from our decision-making unit—but not literally a state-value critic.</p>
 </section>
 
 <!-- 28. DPO -->
@@ -403,18 +407,18 @@
   <h2>LoRA factorizes a weight update</h2>
   <div class="lora-shapes">
     <div class="lora-matrix w"><strong>\(W_0\)</strong><span>\(d_{\text{out}}\times d_{\text{in}}\)</span><small>frozen</small></div>
-    <span class="fragment plus">+</span>
-    <div class="lora-matrix b fragment"><strong>\(B\)</strong><span>\(d_{\text{out}}\times r\)</span><small>train</small></div>
-    <span class="fragment times">&times;</span>
-    <div class="lora-matrix a fragment"><strong>\(A\)</strong><span>\(r\times d_{\text{in}}\)</span><small>train</small></div>
+    <span class="fragment plus" data-fragment-index="0">+</span>
+    <div class="lora-matrix b fragment" data-fragment-index="0"><strong>\(B\)</strong><span>\(d_{\text{out}}\times r\)</span><small>train</small></div>
+    <span class="fragment times" data-fragment-index="0">&times;</span>
+    <div class="lora-matrix a fragment" data-fragment-index="0"><strong>\(A\)</strong><span>\(r\times d_{\text{in}}\)</span><small>train</small></div>
   </div>
-  <p class="lora-equation fragment">\(\Delta W=BA,\qquad W'=W_0+\Delta W\)</p>
-  <div class="shape-defs fragment">
+  <p class="lora-equation fragment" data-fragment-index="1">\(\Delta W=BA,\qquad W'=W_0+\Delta W\)</p>
+  <div class="shape-defs fragment" data-fragment-index="2">
     <span>\(d_{\text{in}}\): input width</span>
     <span>\(d_{\text{out}}\): output width</span>
     <span>\(r\): adapter rank</span>
   </div>
-  <p class="l22-note fragment">For a square \(d\times d\) matrix, choose \(r\ll d\).</p>
+  <p class="l22-note fragment" data-fragment-index="3">For a square \(d\times d\) matrix, choose \(r\ll d\).</p>
 </section>
 
 <!-- 32. LoRA forward -->
@@ -495,14 +499,14 @@
   <h2>Program-as-Weights compiles a task into an adapter</h2>
   <div class="paw-core-flow">
     <div class="spec"><strong>task description</strong><span>“immediate or wait?”</span></div>
-    <span class="fragment">&rarr;</span>
-    <div class="compiler fragment"><strong>4B compiler</strong><span>generates weights</span></div>
-    <span class="fragment">&rarr;</span>
-    <div class="lora fragment"><strong>LoRA</strong><span>task specialization</span></div>
-    <span class="fragment">&rarr;</span>
-    <div class="interpreter fragment"><strong>frozen 0.6B</strong><span>runs many inputs</span></div>
+    <span class="fragment" data-fragment-index="0">&rarr;</span>
+    <div class="compiler fragment" data-fragment-index="0"><strong>4B compiler</strong><span>generates weights</span></div>
+    <span class="fragment" data-fragment-index="1">&rarr;</span>
+    <div class="lora fragment" data-fragment-index="1"><strong>LoRA</strong><span>task specialization</span></div>
+    <span class="fragment" data-fragment-index="2">&rarr;</span>
+    <div class="interpreter fragment" data-fragment-index="2"><strong>frozen 0.6B</strong><span>runs many inputs</span></div>
   </div>
-  <p class="l22-takeaway fragment">The expensive model builds the function; the small interpreter executes it repeatedly.</p>
+  <p class="l22-takeaway fragment" data-fragment-index="3">The expensive model builds the function; the small interpreter executes it repeatedly.</p>
   <aside class="notes">Implementation note: a complete PAW program also includes a short compiler-generated pseudo-program; this diagram isolates the LoRA specialization path.</aside>
 </section>
 
@@ -530,15 +534,15 @@
   <h2>Train end to end through the frozen interpreter</h2>
   <div class="paw-training-flow">
     <div class="paw-train-node"><strong>task \(s\)</strong><span>description</span></div>
-    <div class="paw-train-arrow fragment">&rarr;</div>
-    <div class="paw-train-node compiler fragment"><strong>compiler</strong><span>\(s\mapsto \text{LoRA}(s)\)</span></div>
-    <div class="paw-train-arrow fragment">&rarr;</div>
-    <div class="paw-train-node frozen fragment"><strong>frozen interpreter</strong><span>\(x\mapsto \hat y\)</span></div>
-    <div class="paw-train-arrow fragment">&rarr;</div>
-    <div class="paw-train-node loss fragment"><strong>compare</strong><span>\(\hat y\) with target \(y\)</span></div>
+    <div class="paw-train-arrow fragment" data-fragment-index="0">&rarr;</div>
+    <div class="paw-train-node compiler fragment" data-fragment-index="0"><strong>compiler</strong><span>\(s\mapsto \text{LoRA}(s)\)</span></div>
+    <div class="paw-train-arrow fragment" data-fragment-index="1">&rarr;</div>
+    <div class="paw-train-node frozen fragment" data-fragment-index="1"><strong>frozen interpreter</strong><span>\(x\mapsto \hat y\)</span></div>
+    <div class="paw-train-arrow fragment" data-fragment-index="2">&rarr;</div>
+    <div class="paw-train-node loss fragment" data-fragment-index="2"><strong>compare</strong><span>\(\hat y\) with target \(y\)</span></div>
   </div>
-  <p class="paw-objective fragment">\(\mathcal{L}=-\log P\!\left(y\mid x,\text{LoRA}(s)\right)\)</p>
-  <p class="fragment paw-gradient-note">Backpropagate through the frozen interpreter into the compiler.</p>
+  <p class="paw-objective fragment" data-fragment-index="3">\(\mathcal{L}=-\log P\!\left(y\mid x,\text{LoRA}(s)\right)\)</p>
+  <p class="fragment paw-gradient-note" data-fragment-index="4">Backpropagate through the frozen interpreter into the compiler.</p>
   <p class="l22-ref">Deng et al., <em>Program-as-Weights</em>, 2026.</p>
 </section>
 
@@ -625,10 +629,10 @@ fn(<span class="code-string">"Thesis defense moved to 3pm, need your signature t
 <section class="center-slide final-thesis">
   <span class="section-kicker">the shift</span>
   <h2>From AI as per-input problem solvers</h2>
-  <div class="fragment thesis-arrow">&darr;</div>
-  <h2 class="fragment">to AI as per-function tool builders</h2>
-  <p class="fragment">A large model compiles reusable specialization; a small model runs it repeatedly.</p>
-  <div class="l23-bridge fragment">Next: L23 dissects a vision-language model.</div>
+  <div class="fragment thesis-arrow" data-fragment-index="0">&darr;</div>
+  <h2 class="fragment" data-fragment-index="0">to AI as per-function tool builders</h2>
+  <p class="fragment" data-fragment-index="1">A large model compiles reusable specialization; a small model runs it repeatedly.</p>
+  <div class="l23-bridge fragment" data-fragment-index="2">Next: L23 dissects a vision-language model.</div>
 </section>
 
 </div>
