@@ -3180,12 +3180,16 @@ function makeQwen35Demo(api, mode) {
   const defaultPrompt = isOCR
     ? 'Where and when are the Wednesday office hours? Answer in one sentence.'
     : 'Is the person wearing a suit? Briefly describe what they are wearing.';
+  const runLabel = isOCR ? 'read document live' : 'answer live';
 
   let samples = null;
   let selectedTask = null;
   let imageURL = '';
   let objectURL = null;
   let running = false;
+  let activeStoppingCriteria = null;
+  let stopRequested = false;
+  let stopReason = '';
 
   const previewImage = el('img', {
     alt: isOCR
@@ -3333,8 +3337,23 @@ function makeQwen35Demo(api, mode) {
     }
   }
 
+  function requestStop(reason = 'user') {
+    if (!running || !activeStoppingCriteria || stopRequested) return;
+    stopRequested = true;
+    stopReason = reason;
+    activeStoppingCriteria.interrupt();
+    runButton.disabled = true;
+    localStatus.textContent = reason === 'timeout'
+      ? 'The 150-second safety limit was reached. Stopping after the current token...'
+      : 'Stopping after the current token...';
+  }
+
   async function runLive() {
-    if (running || !imageURL) return;
+    if (running) {
+      requestStop();
+      return;
+    }
+    if (!imageURL) return;
     const question = prompt.value.trim();
     if (!question) {
       localStatus.textContent = 'Type a question before running.';
@@ -3342,9 +3361,13 @@ function makeQwen35Demo(api, mode) {
       return;
     }
     running = true;
+    stopRequested = false;
+    stopReason = '';
     runButton.disabled = true;
     runButton.setAttribute('aria-busy', 'true');
     const started = performance.now();
+    let generationTicker = null;
+    let generationTimeout = null;
     try {
       const { mod, processor, model } = await ensureModel();
       localStatus.textContent = 'Preparing image patches and prompt...';
@@ -3378,47 +3401,99 @@ function makeQwen35Demo(api, mode) {
       };
       renderStats(trace);
 
-      answer.innerHTML = '';
-      answer.appendChild(el('span', {
-        class: 'recorded-label',
-        text: 'live local Qwen3.5 output',
-      }));
-      const answerText = el('span', { text: '' });
-      answer.appendChild(answerText);
+      let answerText = null;
       let streamed = '';
+      let streamStarted = false;
+      const generationStarted = performance.now();
+      const ensureLiveAnswer = () => {
+        if (answerText) return answerText;
+        answer.innerHTML = '';
+        answer.appendChild(el('span', {
+          class: 'recorded-label',
+          text: 'live local Qwen3.5 output',
+        }));
+        answerText = el('span', { text: '' });
+        answer.appendChild(answerText);
+        return answerText;
+      };
+      const updateGenerationStatus = () => {
+        if (stopRequested) return;
+        const seconds = Math.floor((performance.now() - generationStarted) / 1000);
+        const phase = streamStarted ? 'Streaming the answer' : 'Running vision prefill';
+        const stopHint = activeStoppingCriteria ? ' Click “stop generation” to cancel.' : '';
+        localStatus.textContent = `${phase} locally… ${seconds} s elapsed.${stopHint}`;
+      };
       const streamer = new mod.TextStreamer(processor.tokenizer, {
         skip_prompt: true,
         skip_special_tokens: true,
         callback_function: (chunk) => {
+          streamStarted = true;
           streamed += chunk;
-          answerText.textContent = streamed;
+          ensureLiveAnswer().textContent = streamed;
+          updateGenerationStatus();
         },
       });
-      localStatus.textContent = 'Generating deterministic non-thinking output...';
-      const outputs = await model.generate({
+      activeStoppingCriteria = typeof mod.InterruptableStoppingCriteria === 'function'
+        ? new mod.InterruptableStoppingCriteria()
+        : null;
+      runButton.disabled = !activeStoppingCriteria;
+      runButton.textContent = activeStoppingCriteria ? 'stop generation' : 'generating...';
+      updateGenerationStatus();
+      generationTicker = window.setInterval(updateGenerationStatus, 5000);
+      if (activeStoppingCriteria) {
+        generationTimeout = window.setTimeout(() => requestStop('timeout'), 150000);
+      }
+      api.setStatus('Local Qwen3.5 generation is running on this device.');
+      const generationOptions = {
         ...inputs,
-        max_new_tokens: 96,
+        max_new_tokens: 64,
         do_sample: false,
         streamer,
-      });
+      };
+      if (activeStoppingCriteria) {
+        generationOptions.stopping_criteria = activeStoppingCriteria;
+      }
+      const outputs = await model.generate(generationOptions);
+      const elapsed = (performance.now() - started) / 1000;
+      if (stopRequested) {
+        if (streamed.trim()) {
+          ensureLiveAnswer().textContent = streamed.trim();
+        } else if (selectedTask) {
+          showRecorded(selectedTask);
+        } else {
+          answer.textContent = 'Generation stopped before an answer was produced.';
+        }
+        renderStats(trace, elapsed);
+        localStatus.textContent = stopReason === 'timeout'
+          ? 'Generation exceeded 150 seconds and was stopped; the recorded result remains available.'
+          : 'Generation stopped. Change the question or run the cached model again.';
+        api.setStatus('Local Qwen3.5 generation stopped safely.', 'ok');
+        return;
+      }
       const promptLength = inputs.input_ids.dims.at(-1);
       const decoded = processor.batch_decode(
         outputs.slice(null, [promptLength, null]),
         { skip_special_tokens: true },
       )[0].trim();
-      answerText.textContent = decoded || streamed.trim();
-      const elapsed = (performance.now() - started) / 1000;
+      ensureLiveAnswer().textContent = decoded || streamed.trim() || 'No text was generated.';
       renderStats(trace, elapsed);
       localStatus.textContent = 'Done. Change the question and run the same cached model again.';
       api.setStatus('Live Qwen3.5 inference completed locally.', 'ok');
     } catch (error) {
+      const message = error && error.message ? error.message : String(error);
       if (selectedTask) showRecorded(selectedTask);
       else {
         answer.textContent = 'The uploaded image needs live WebGPU inference; no recorded answer exists for it.';
       }
+      localStatus.textContent = `Live generation failed: ${message} The recorded result remains available.`;
+      api.setStatus('Live Qwen3.5 generation failed; restored the recorded result.', 'err');
     } finally {
+      if (generationTicker != null) window.clearInterval(generationTicker);
+      if (generationTimeout != null) window.clearTimeout(generationTimeout);
+      activeStoppingCriteria = null;
       running = false;
       runButton.disabled = false;
+      runButton.textContent = runLabel;
       runButton.setAttribute('aria-busy', 'false');
     }
   }
@@ -3431,7 +3506,7 @@ function makeQwen35Demo(api, mode) {
   const runButton = el('button', {
     class: 'qwen-run',
     type: 'button',
-    text: isOCR ? 'read document live' : 'answer live',
+    text: runLabel,
     onclick: runLive,
   });
   window.addEventListener('qwen35-ready', markModelReady);

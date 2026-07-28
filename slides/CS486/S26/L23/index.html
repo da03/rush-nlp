@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="../L17/custom.css?v=3">
   <link rel="stylesheet" href="../L21/custom.css?v=2">
   <link rel="stylesheet" href="../L22/custom.css?v=2">
-  <link rel="stylesheet" href="custom.css?v=5">
+  <link rel="stylesheet" href="custom.css?v=6">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -70,15 +70,15 @@
 <section>
   <h2>Without an image, Qwen is the LM you already know</h2>
   <div class="known-path" aria-label="Text passes through tokenization, embeddings, the Qwen language model, and a next-token output">
-    <div class="known-stage text-stage"><strong>text</strong><span>Explain gradient descent</span></div>
-    <div class="known-arrow">&rarr;</div>
-    <div class="known-stage"><strong>token embeddings</strong><span>\([T,1024]\)</span></div>
-    <div class="known-arrow">&rarr;</div>
-    <div class="known-stage"><strong>causal LM</strong><span>24 blocks</span></div>
-    <div class="known-arrow">&rarr;</div>
-    <div class="known-stage output-stage"><strong>next token</strong><span>repeat</span></div>
+    <div class="known-stage text-stage fragment" data-fragment-index="0"><strong>text</strong><span>Explain gradient descent</span></div>
+    <div class="known-arrow fragment" data-fragment-index="1">&rarr;</div>
+    <div class="known-stage fragment" data-fragment-index="1"><strong>token embeddings</strong><span>\([T,1024]\)</span></div>
+    <div class="known-arrow fragment" data-fragment-index="2">&rarr;</div>
+    <div class="known-stage fragment" data-fragment-index="2"><strong>causal LM</strong><span>24 blocks</span></div>
+    <div class="known-arrow fragment" data-fragment-index="3">&rarr;</div>
+    <div class="known-stage output-stage fragment" data-fragment-index="3"><strong>next token</strong><span>repeat</span></div>
   </div>
-  <p class="l23-takeaway fragment">L21 already explained this path. Today we change the input, not the output loop.</p>
+  <p class="l23-takeaway fragment" data-fragment-index="4">L21 already explained this path. Today we change the input, not the output loop.</p>
 </section>
 
 <!-- 4. Exact checkpoint -->
@@ -105,6 +105,7 @@
   <h2>One twist: most blocks carry a recurrent state</h2>
   <div class="hybrid-layout">
     <div class="hybrid-cycle">
+      <div class="hybrid-frame fragment" data-fragment-index="2" aria-hidden="true"></div>
       <div class="hybrid-layer recurrent fragment" data-fragment-index="0">Gated DeltaNet<span>recurrent-style linear attention</span></div>
       <div class="hybrid-layer recurrent fragment" data-fragment-index="0">Gated DeltaNet<span>recurrent-style linear attention</span></div>
       <div class="hybrid-layer recurrent fragment" data-fragment-index="0">Gated DeltaNet<span>recurrent-style linear attention</span></div>
@@ -270,21 +271,25 @@
 <!-- 17. CLIP callback -->
 <section>
   <h2>Recall CLIP: put matching images and text nearby</h2>
-  <div class="clip-dual">
-    <div class="clip-side">
+  <div class="clip-dual" aria-label="The blue image encoder connects to the blue image point; the purple text encoder connects to the purple text point in their shared embedding space">
+    <div class="clip-side image-side">
       <img src="images/portrait.jpg" alt="Portrait used as a CLIP image input">
       <strong>image encoder</strong>
-      <span>\(f_I(I)\)</span>
+      <span>\(f_I(I)\) &rarr; blue point</span>
     </div>
     <div class="clip-space">
-      <span class="image-point"></span>
-      <span class="text-point fragment"></span>
+      <svg class="clip-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <line class="image-link" x1="0" y1="50" x2="50" y2="43"></line>
+        <line class="text-link" x1="100" y1="50" x2="55" y2="49"></line>
+      </svg>
+      <span class="image-point"><em>image</em></span>
+      <span class="text-point"><em>text</em></span>
       <b class="fragment">similar vectors</b>
     </div>
     <div class="clip-side text-side">
       <blockquote>“a person wearing a suit”</blockquote>
       <strong>text encoder</strong>
-      <span>\(f_T(T)\)</span>
+      <span>purple point &larr; \(f_T(T)\)</span>
     </div>
   </div>
   <p class="citation">Radford et al., “Learning Transferable Visual Models From Natural Language Supervision,” 2021. Callback to L18.</p>
@@ -391,19 +396,21 @@
 <!-- 25. Multimodal context -->
 <section>
   <h2>The image and question become one context</h2>
-  <div class="multimodal-sequence" aria-label="Vision start token, a run of image embeddings, vision end token, and text embeddings form one input sequence">
+  <div class="multimodal-sequence" aria-label="Text embeddings, an image span, and more text embeddings form one interleaved input sequence">
+    <span class="text-embed">Which</span>
+    <span class="text-embed">room</span>
+    <span class="text-embed">in</span>
     <span class="boundary">&lt;vision_start&gt;</span>
     <span class="image-embed">\(v_1\)</span>
     <span class="image-embed">\(v_2\)</span>
     <span class="image-embed">…</span>
     <span class="image-embed">\(v_V\)</span>
     <span class="boundary">&lt;vision_end&gt;</span>
-    <span class="text-embed">Where</span>
-    <span class="text-embed">are</span>
+    <span class="text-embed">hosts</span>
     <span class="text-embed">Wednesday</span>
     <span class="text-embed">hours?</span>
   </div>
-  <p class="l23-takeaway fragment">The image embeddings are context before the answer—just like earlier words.</p>
+  <p class="l23-takeaway fragment">Image spans can appear wherever the prompt places them. After embedding, every position uses the same 1024-D interface.</p>
 </section>
 
 <!-- 26. Generation unchanged -->
@@ -466,7 +473,7 @@ const prompt = processor.apply_chat_template(messages, {
   enable_thinking: false,
 });
 const inputs = await processor(prompt, [image]);
-const output = await model.generate({ ...inputs, max_new_tokens: 80 });</code></pre>
+const output = await model.generate({ ...inputs, max_new_tokens: 64 });</code></pre>
     <div class="code-map">
       <div><strong>processor</strong><span>patch + serialize</span></div>
       <div><strong>model</strong><span>encode + adapt + reuse LM</span></div>
@@ -571,6 +578,6 @@ const output = await model.generate({ ...inputs, max_new_tokens: 80 });</code></
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=25"></script>
+<script type="module" src="../shared/demo.js?v=26"></script>
 </body>
 </html>

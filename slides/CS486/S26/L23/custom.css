@@ -204,17 +204,28 @@
 }
 
 .reveal .hybrid-cycle {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.35em;
   width: 900px;
-  border: 2px dashed #cbd5e1;
-  border-radius: 14px;
-  background: #f8fafc;
   padding: 0.45em;
 }
 
+.reveal .hybrid-frame {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  box-sizing: border-box;
+  border: 2px dashed #cbd5e1;
+  border-radius: 14px;
+  background: #f8fafc;
+  pointer-events: none;
+}
+
 .reveal .hybrid-layer {
+  position: relative;
+  z-index: 1;
   display: flex;
   min-height: 125px;
   flex-direction: column;
@@ -733,6 +744,11 @@
   padding: 0.35em;
 }
 
+.reveal .clip-side.image-side {
+  border-color: #93c5fd;
+  background: var(--l23-blue-soft);
+}
+
 .reveal .clip-side img {
   width: 155px;
   height: 155px;
@@ -753,6 +769,10 @@
   font-size: 0.5em;
 }
 
+.reveal .clip-side.image-side strong {
+  color: var(--l23-blue-dark);
+}
+
 .reveal .clip-side > span {
   color: var(--l23-muted);
   font-size: 0.45em;
@@ -764,6 +784,31 @@
   border: 1px solid #cbd5e1;
   border-radius: 50%;
   background: radial-gradient(circle, #fff 0%, #eff6ff 75%, #dbeafe 100%);
+}
+
+.reveal .clip-links {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.reveal .clip-links line {
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.reveal .clip-links .image-link {
+  stroke: var(--l23-blue);
+}
+
+.reveal .clip-links .text-link {
+  stroke: var(--l23-violet);
 }
 
 .reveal .clip-space::before,
@@ -805,6 +850,25 @@
   left: 52%;
   background: var(--l23-violet);
   box-shadow: 0 0 0 5px rgb(124 58 237 / 15%);
+}
+
+.reveal .clip-space .image-point em,
+.reveal .clip-space .text-point em {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--l23-blue-dark);
+  font-size: 0.37em;
+  font-style: normal;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.reveal .clip-space .text-point em {
+  top: auto;
+  bottom: calc(100% + 7px);
+  color: #6d28d9;
 }
 
 .reveal .clip-space b {
@@ -928,7 +992,7 @@
 
 .reveal .vision-stack {
   display: grid;
-  gap: 0.35em;
+  gap: 0.5em;
 }
 
 .reveal .vision-stack > div {
@@ -945,10 +1009,13 @@
 
 .reveal .vision-stack > div:not(:first-child)::before {
   position: absolute;
-  top: -0.63em;
+  top: -1.05em;
   left: 50%;
+  transform: translateX(-50%);
   color: #94a3b8;
   content: "↓";
+  font-size: 0.72em;
+  line-height: 1;
 }
 
 .reveal .vision-facts {
