@@ -1,1 +1,387 @@
-{"vlm_model": "Qwen/Qwen3-VL-2B-Instruct", "clip_model": "openai/clip-vit-base-patch32", "images": [{"file": "portrait.jpg", "w": 675, "h": 919}, {"file": "schedule.png", "w": 640, "h": 400}, {"file": "chart.png", "w": 550, "h": 374}], "tasks": [{"image": "portrait.jpg", "task": "caption", "prompt": "Describe this image in one sentence.", "answer": "A black and white portrait of a young man, identified as Alan Turing, dressed in a formal suit and tie, looking directly at the camera with a serious expression."}, {"image": "portrait.jpg", "task": "vqa", "prompt": "Is the person wearing a suit? What are they wearing?", "answer": "Based on the image provided, the person is wearing a formal suit.\n\nThe suit consists of the following items:\n- A dark, single-breasted jacket with notched lapels.\n- A white collared shirt.\n- A dark tie with a subtle pattern.\n\nThe person also has a dark vest worn underneath the jacket."}, {"image": "schedule.png", "task": "ocr", "prompt": "According to this schedule, when is Assignment 2 due?", "answer": "Based on the provided schedule for CS 486/686, Assignment 2 is due on Thursday, July 16."}, {"image": "chart.png", "task": "chart", "prompt": "Which bar is the largest: A, B, or C? Answer in one short sentence.", "answer": "B"}], "clip": {"labels": ["a portrait of a person", "a bar chart", "a document with a schedule", "a photo of a landscape", "a screenshot of a phone app"], "scores": [{"image": "portrait.jpg", "probs": [0.9815, 0.0004, 0.0044, 0.008, 0.0058]}, {"image": "schedule.png", "probs": [0.0, 0.0, 0.9997, 0.0, 0.0002]}, {"image": "chart.png", "probs": [0.0, 0.9969, 0.0003, 0.0, 0.0028]}]}}
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-07-28T01:16:54.431520+00:00",
+  "generator": {
+    "script": "data/make_vlm_samples.py",
+    "seed": 486,
+    "python": "3.14.4",
+    "torch": "2.13.0+cu130",
+    "torchvision": "0.28.0+cu130",
+    "transformers": "5.13.1",
+    "huggingface_hub": "1.25.1",
+    "pillow": "12.0.0",
+    "numpy": "2.3.3"
+  },
+  "model": {
+    "checkpoint": "Qwen/Qwen3.5-0.8B",
+    "checkpoint_revision": "2fc06364715b967f1860aea9cf38778875588b17",
+    "load_seconds": 1.591,
+    "device": "cpu",
+    "dtype": "float32",
+    "architecture": {
+      "language": {
+        "hidden_size": 1024,
+        "num_hidden_layers": 24,
+        "vocab_size": 248320,
+        "layer_types": [
+          "linear_attention",
+          "linear_attention",
+          "linear_attention",
+          "full_attention",
+          "linear_attention",
+          "linear_attention",
+          "linear_attention",
+          "full_attention",
+          "linear_attention",
+          "linear_attention",
+          "linear_attention",
+          "full_attention",
+          "linear_attention",
+          "linear_attention",
+          "linear_attention",
+          "full_attention",
+          "linear_attention",
+          "linear_attention",
+          "linear_attention",
+          "full_attention",
+          "linear_attention",
+          "linear_attention",
+          "linear_attention",
+          "full_attention"
+        ],
+        "linear_attention_layers": 18,
+        "full_attention_layers": 6,
+        "full_attention_interval": 4,
+        "tied_word_embeddings": true
+      },
+      "vision": {
+        "depth": 12,
+        "hidden_size": 768,
+        "num_heads": 12,
+        "patch_size": 16,
+        "temporal_patch_size": 2,
+        "spatial_merge_size": 2,
+        "out_hidden_size": 1024
+      },
+      "special_token_ids": {
+        "image": 248056,
+        "vision_start": 248053,
+        "vision_end": 248054
+      }
+    }
+  },
+  "decoding": {
+    "enable_thinking": false,
+    "do_sample": false,
+    "max_new_tokens": 96,
+    "use_cache": true
+  },
+  "assets": {
+    "office-hours.png": {
+      "size": [
+        640,
+        384
+      ],
+      "sha256": "65779f541d4f246efbf26f1a53c0fc5b4f0962e6fc977915aefca666b19e5586"
+    },
+    "office-hours-clip224.png": {
+      "size": [
+        224,
+        224
+      ],
+      "sha256": "e13b0565ecf36b9fd05a6008c89f6af732ac5104c54164d40c6ce3bd78591793"
+    },
+    "office-hours-lowres.png": {
+      "size": [
+        80,
+        48
+      ],
+      "sha256": "f4ee5a1f3b0e7a5a737f7d75dc8c601568488ed42090d93f2cd876e26463a335"
+    },
+    "portrait.jpg": {
+      "size": [
+        675,
+        919
+      ],
+      "sha256": "f31e84277a693f53010dfee0a47dfee3e56cf4f2403049c5d5d138b756cb5412"
+    },
+    "chart.png": {
+      "size": [
+        550,
+        374
+      ],
+      "sha256": "f53f03d61e4618432c5c99f9d6a48ec81ad147fc7eacbcd74e292bdd361264ca"
+    },
+    "landscape.png": {
+      "size": [
+        640,
+        384
+      ],
+      "sha256": "85aa431a8142e92026e316e33d8babcbbfddeffd1769a9865582b25a3946ee2a"
+    },
+    "diagram.png": {
+      "size": [
+        640,
+        384
+      ],
+      "sha256": "cba53d4dc1391ef6126b2ba0726b39d58b849cbf872c161a3a18b302dad650c4"
+    }
+  },
+  "tasks": [
+    {
+      "id": "vqa_portrait",
+      "task": "visual_question_answering",
+      "image": "images/portrait.jpg",
+      "input_sha256": "788b5d037f29135a4494d3e66911ba47679f4c3a53e92dd4cd9d4100c0de81d4",
+      "prompt": "Is the person wearing a suit? Briefly describe what they are wearing. Answer in one or two sentences.",
+      "answer": "Yes, the person is wearing a suit. They are dressed in a dark suit jacket, a white collared shirt, and a dark tie.",
+      "trace": {
+        "original_size": {
+          "width": 675,
+          "height": 919
+        },
+        "processor_resized_size": {
+          "width": 672,
+          "height": 928
+        },
+        "image_grid_thw": [
+          1,
+          58,
+          42
+        ],
+        "raw_patch_features": 2436,
+        "merged_image_embeddings": 609,
+        "image_placeholder_tokens": 609,
+        "total_serialized_input_tokens": 645,
+        "generated_tokens": 32
+      },
+      "runtime": {
+        "latency_seconds": 7.76,
+        "process_peak_rss_mb": 6018.7
+      },
+      "expected_answer_check": {
+        "required_all": [],
+        "required_any": [
+          "suit",
+          "tie"
+        ],
+        "passed": true
+      }
+    },
+    {
+      "id": "ocr_office_hours",
+      "task": "optical_character_recognition",
+      "image": "images/office-hours.png",
+      "input_sha256": "f8fd3dc069e36ef9d65f3f6dcde087df14438610bb36c427c0cc5738f07e6e56",
+      "prompt": "Read the announcement. Where and when are the Wednesday office hours? Answer in one sentence.",
+      "answer": "Wednesday 3-4 PM at DC 2633",
+      "trace": {
+        "original_size": {
+          "width": 640,
+          "height": 384
+        },
+        "processor_resized_size": {
+          "width": 640,
+          "height": 384
+        },
+        "image_grid_thw": [
+          1,
+          24,
+          40
+        ],
+        "raw_patch_features": 960,
+        "merged_image_embeddings": 240,
+        "image_placeholder_tokens": 240,
+        "total_serialized_input_tokens": 272,
+        "generated_tokens": 16
+      },
+      "runtime": {
+        "latency_seconds": 3.165,
+        "process_peak_rss_mb": 6018.7
+      },
+      "expected_answer_check": {
+        "required_all": [
+          "DC 2633"
+        ],
+        "required_any": [
+          "3–4",
+          "3-4",
+          "3 to 4",
+          "3:00"
+        ],
+        "passed": true
+      }
+    },
+    {
+      "id": "ocr_office_hours_lowres",
+      "task": "resolution_stress_test",
+      "image": "images/office-hours-lowres.png",
+      "input_sha256": "40b49559a98a7f9e3b675fafc3bf1f623a14164032584cbbe6ba15f018d7c16d",
+      "prompt": "Read the announcement. Where and when are the Wednesday office hours? Answer in one sentence. If the text is unreadable, say so.",
+      "answer": "Wednesday 3:00 PM",
+      "trace": {
+        "original_size": {
+          "width": 80,
+          "height": 48
+        },
+        "processor_resized_size": {
+          "width": 352,
+          "height": 224
+        },
+        "image_grid_thw": [
+          1,
+          14,
+          22
+        ],
+        "raw_patch_features": 308,
+        "merged_image_embeddings": 77,
+        "image_placeholder_tokens": 77,
+        "total_serialized_input_tokens": 119,
+        "generated_tokens": 10
+      },
+      "runtime": {
+        "latency_seconds": 1.66,
+        "process_peak_rss_mb": 6018.7
+      },
+      "expected_answer_check": {
+        "required_all": [],
+        "required_any": [],
+        "passed": true
+      }
+    },
+    {
+      "id": "vqa_chart",
+      "task": "chart_question_answering",
+      "image": "images/chart.png",
+      "input_sha256": "8cfb3a82dd958f1cd4045519081502945ae8b2780c95ed8e39b13fb31f544fd4",
+      "prompt": "Which bar is the largest: A, B, or C? Answer in one short sentence.",
+      "answer": "B",
+      "trace": {
+        "original_size": {
+          "width": 550,
+          "height": 374
+        },
+        "processor_resized_size": {
+          "width": 544,
+          "height": 384
+        },
+        "image_grid_thw": [
+          1,
+          24,
+          34
+        ],
+        "raw_patch_features": 816,
+        "merged_image_embeddings": 204,
+        "image_placeholder_tokens": 204,
+        "total_serialized_input_tokens": 237,
+        "generated_tokens": 4
+      },
+      "runtime": {
+        "latency_seconds": 1.684,
+        "process_peak_rss_mb": 6018.7
+      },
+      "expected_answer_check": {
+        "required_all": [],
+        "required_any": [
+          "B",
+          "bar B"
+        ],
+        "passed": true
+      }
+    }
+  ],
+  "clip": {
+    "checkpoint": "openai/clip-vit-base-patch32",
+    "checkpoint_revision": "3d74acf9a28c67741b2f4f2ea7635f0aaf6f0268",
+    "images": [
+      "images/portrait.jpg",
+      "images/landscape.png",
+      "images/chart.png",
+      "images/diagram.png"
+    ],
+    "captions": [
+      "a black and white portrait of a person",
+      "a mountain landscape reflected in a lake",
+      "a bar chart comparing A, B, and C",
+      "a flow diagram with connected boxes"
+    ],
+    "cosine_similarity": [
+      [
+        0.2713080048561096,
+        0.09535499662160873,
+        0.16258400678634644,
+        0.16423499584197998
+      ],
+      [
+        0.1294959932565689,
+        0.27769601345062256,
+        0.21563200652599335,
+        0.21373599767684937
+      ],
+      [
+        0.11794400215148926,
+        0.11641799658536911,
+        0.3194560110569,
+        0.19166000187397003
+      ],
+      [
+        0.09662199765443802,
+        0.09252600371837616,
+        0.2063010036945343,
+        0.2910360097885132
+      ]
+    ],
+    "image_to_text_probability": [
+      [
+        0.9999589920043945,
+        0.0,
+        1.8999999156221747e-05,
+        2.2000000171829015e-05
+      ],
+      [
+        0.0,
+        0.9963290095329285,
+        0.0020089999306946993,
+        0.001661999966017902
+      ],
+      [
+        0.0,
+        0.0,
+        0.9999970197677612,
+        3.000000106112566e-06
+      ],
+      [
+        0.0,
+        0.0,
+        0.00020900000527035445,
+        0.9997910261154175
+      ]
+    ],
+    "text_to_image_probability": [
+      [
+        0.9999989867210388,
+        9.999999974752427e-07,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        3.099999958067201e-05,
+        0.9999570250511169,
+        1.2000000424450263e-05
+      ],
+      [
+        3.000000106112566e-06,
+        0.00043899999582208693,
+        4.8000001697801054e-05,
+        0.9995089769363403
+      ]
+    ]
+  }
+}

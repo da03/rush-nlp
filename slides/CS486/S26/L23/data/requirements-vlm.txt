@@ -1,0 +1,9 @@
+# Reproducible environment for make_vlm_samples.py (generated 2026-07-27).
+torch==2.13.0
+torchvision==0.28.0
+transformers==5.13.1
+accelerate==1.14.0
+huggingface-hub==1.25.1
+safetensors==0.8.0
+numpy==2.3.3
+Pillow==12.0.0

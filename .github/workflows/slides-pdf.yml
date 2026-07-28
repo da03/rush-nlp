@@ -10,8 +10,8 @@ name: Render slide PDFs
 # the deck slide-by-slide, and captures each step with the browser's print pipeline.
 # It is used here instead of `chrome --print-to-pdf ?print-pdf` because reveal.js 5's
 # print view renders blank under Chrome's paged-media export. Because DeckTape
-# captures with print media, the on-screen overlay buttons (Course page / Download),
-# which are hidden via `@media print`, do not appear in the generated handout.
+# captures the screen-rendered slide viewport. The render step therefore injects
+# a temporary hide-only rule for course links and reveal.js controls.
 
 on:
   push:
@@ -22,6 +22,14 @@ on:
     paths:
       - 'slides/CS486/S26/**/index.html'
       - 'slides/CS486/S26/**/*.css'
+      - 'slides/CS486/S26/**/*.js'
+      - 'slides/CS486/S26/**/*.json'
+      - 'slides/CS486/S26/**/*.png'
+      - 'slides/CS486/S26/**/*.jpg'
+      - 'slides/CS486/S26/**/*.jpeg'
+      - 'slides/CS486/S26/**/*.gif'
+      - 'slides/CS486/S26/**/*.webp'
+      - 'slides/CS486/S26/**/*.svg'
   workflow_dispatch: {}
 
 permissions:
@@ -69,7 +77,7 @@ jobs:
             npx --yes decktape@3 reveal \
               --chrome-arg=--no-sandbox \
               --size 1280x720 \
-              "http://localhost:8000/${dir}index.html" \
+              "http://localhost:8000/${dir}index.html?static-demos=1" \
               "${dir}${name}.pdf"
           done
           # Restore the source HTML so only PDFs are committed.

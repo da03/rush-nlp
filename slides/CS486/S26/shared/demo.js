@@ -110,6 +110,7 @@ async function runPython(py, code, write) {
  * can fall back to precomputed vectors instead of a broken demo. */
 
 const TRANSFORMERS_URL = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1';
+const TRANSFORMERS_V4_URL = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.2.0';
 let _embedderPromise = null;
 
 async function getEmbedder(onStatus) {
@@ -205,6 +206,50 @@ async function getClip(onStatus) {
     })().catch((e) => { _clipPromise = null; throw e; });
   }
   return _clipPromise;
+}
+
+/* Qwen3.5's multimodal architecture requires Transformers.js v4. Keep this
+ * loader separate so the v3 models used by earlier lectures do not change.
+ * The model is intentionally WebGPU-only: unsupported browsers retain the
+ * real, precomputed Qwen3.5 answer instead of attempting an unusably slow
+ * multi-gigabyte CPU download. The promise is shared by both L23 demos. */
+const QWEN35_MODEL = 'onnx-community/Qwen3.5-0.8B-ONNX';
+let _qwen35Promise = null;
+let _qwen35Ready = null;
+
+async function getQwen35(onStatus, onProgress) {
+  if (_qwen35Ready) return _qwen35Ready;
+  if (!_qwen35Promise) {
+    _qwen35Promise = (async () => {
+      if (typeof navigator === 'undefined' || !navigator.gpu) {
+        throw new Error('WebGPU is unavailable in this browser.');
+      }
+      onStatus && onStatus('Loading Qwen3.5-0.8B (~850 MB, one time)...');
+      const mod = await import(/* webpackIgnore: true */ TRANSFORMERS_V4_URL);
+      const progress_callback = (event) => {
+        if (onProgress) onProgress(event);
+      };
+      const processor = await mod.AutoProcessor.from_pretrained(QWEN35_MODEL, {
+        progress_callback,
+      });
+      const model = await mod.Qwen3_5ForConditionalGeneration.from_pretrained(QWEN35_MODEL, {
+        device: 'webgpu',
+        dtype: {
+          embed_tokens: 'q4',
+          vision_encoder: 'fp16',
+          decoder_model_merged: 'q4',
+        },
+        progress_callback,
+      });
+      _qwen35Ready = { mod, processor, model };
+      window.dispatchEvent(new CustomEvent('qwen35-ready'));
+      return _qwen35Ready;
+    })().catch((error) => {
+      _qwen35Promise = null;
+      throw error;
+    });
+  }
+  return _qwen35Promise;
 }
 
 /* Stream a chat completion, calling onToken(text) for each new chunk. */
@@ -364,6 +409,7 @@ function upgrade(root) {
     getCausalLM: (id) => getCausalLM(id, setStatus),
     getChatLM: (id) => getChatLM(id, setStatus),
     getClip: () => getClip(setStatus),
+    getQwen35: (onProgress) => getQwen35(setStatus, onProgress),
     chatStream, lmForward, softmaxT, topkIdx,
     cosine, pca2, rng32,
   };
@@ -376,7 +422,17 @@ function upgrade(root) {
   root.classList.add('is-live');
 }
 
-function upgradeAll() { document.querySelectorAll('.live-demo').forEach(upgrade); }
+function staticDemoMode() {
+  return new URLSearchParams(window.location.search).get('static-demos') === '1';
+}
+
+function upgradeAll() {
+  if (staticDemoMode()) {
+    document.body.classList.add('static-demos');
+    return;
+  }
+  document.querySelectorAll('.live-demo').forEach(upgrade);
+}
 
 /* ---------------------------------------------------------- reveal hooks --- */
 
@@ -3082,6 +3138,541 @@ register('patchify', (api) => {
     el('div', { class: 'demo-stage' }, [canvas, readout]),
   ]);
   return { mount, init: draw };
+});
+
+/* =====================================================================
+ *  L23 Qwen3.5 demos. These consume the schema-v2 recorded traces and share
+ *  one optional WebGPU model instance across opening VQA and closing OCR.
+ * ===================================================================== */
+let _l23SamplesPromise = null;
+
+function getL23Samples() {
+  if (!_l23SamplesPromise) {
+    _l23SamplesPromise = fetch('data/vlm_samples.json?v=3', { cache: 'no-store' })
+      .then((response) => {
+        if (!response.ok) throw new Error(`Trace request failed (${response.status}).`);
+        return response.json();
+      })
+      .then((data) => {
+        if (data.schema_version !== 2) throw new Error('Expected L23 trace schema version 2.');
+        return data;
+      })
+      .catch((error) => {
+        _l23SamplesPromise = null;
+        throw error;
+      });
+  }
+  return _l23SamplesPromise;
+}
+
+function qwen35Task(data, id) {
+  return data.tasks.find((task) => task.id === id);
+}
+
+function makeQwen35Demo(api, mode) {
+  const isOCR = mode === 'ocr';
+  const presetIds = isOCR
+    ? ['ocr_office_hours', 'ocr_office_hours_lowres']
+    : ['vqa_portrait', 'vqa_chart'];
+  const presetLabels = isOCR
+    ? ['office-hours document', 'low-resolution stress test']
+    : ['portrait', 'chart'];
+  const defaultPrompt = isOCR
+    ? 'Where and when are the Wednesday office hours? Answer in one sentence.'
+    : 'Is the person wearing a suit? Briefly describe what they are wearing.';
+
+  let samples = null;
+  let selectedTask = null;
+  let imageURL = '';
+  let objectURL = null;
+  let running = false;
+
+  const previewImage = el('img', {
+    alt: isOCR
+      ? 'Selected document for Qwen3.5 optical character recognition'
+      : 'Selected image for Qwen3.5 visual question answering',
+  });
+  const preview = el('div', { class: 'qwen35-preview' }, [previewImage]);
+  const presetRow = el('div', { class: 'qwen35-presets', role: 'group', 'aria-label': 'Preset images' });
+  const prompt = el('textarea', {
+    rows: '2',
+    maxlength: '500',
+    'aria-label': isOCR ? 'Question about the document' : 'Question about the image',
+    spellcheck: 'true',
+  });
+  prompt.value = defaultPrompt;
+
+  const fileInput = el('input', {
+    type: 'file',
+    accept: 'image/png,image/jpeg,image/webp',
+    'aria-label': 'Upload an image from this computer',
+  });
+  const upload = el('label', {
+    class: 'qwen-upload',
+    tabindex: '0',
+    role: 'button',
+    'aria-label': 'Upload an image',
+  }, ['upload image', fileInput]);
+  upload.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      fileInput.click();
+    }
+  });
+
+  const progressFill = el('span');
+  const progress = el('div', {
+    class: 'qwen35-progress',
+    role: 'progressbar',
+    'aria-label': 'Qwen3.5 model loading progress',
+    'aria-valuemin': '0',
+    'aria-valuemax': '100',
+    'aria-valuenow': '0',
+  }, [progressFill]);
+  const localStatus = el('div', {
+    class: 'qwen35-status',
+    role: 'status',
+    'aria-live': 'polite',
+    text: 'Showing a recorded Qwen3.5 result. Load once to run locally with WebGPU.',
+  });
+  const answer = el('div', {
+    class: 'qwen35-answer',
+    role: 'log',
+    'aria-live': 'polite',
+  });
+  const stats = el('div', { class: 'qwen35-stats', 'aria-label': 'Image token trace' });
+
+  function releaseObjectURL() {
+    if (objectURL) {
+      URL.revokeObjectURL(objectURL);
+      objectURL = null;
+    }
+  }
+
+  function renderStats(trace, elapsed = null) {
+    stats.innerHTML = '';
+    if (!trace) return;
+    const grid = trace.image_grid_thw;
+    const labels = [
+      `${grid[2]}×${grid[1]} patch grid`,
+      `${trace.merged_image_embeddings} image embeddings`,
+    ];
+    if (elapsed != null) labels.push(`${elapsed.toFixed(1)} s`);
+    labels.forEach((text) => stats.appendChild(el('span', { text })));
+  }
+
+  function showRecorded(task) {
+    answer.innerHTML = '';
+    answer.appendChild(el('span', {
+      class: 'recorded-label',
+      text: 'recorded Qwen3.5 output',
+    }));
+    answer.appendChild(document.createTextNode(task.answer));
+    renderStats(task.trace);
+  }
+
+  function markPreset(index) {
+    [...presetRow.querySelectorAll('button')].forEach((control, i) => {
+      control.classList.toggle('selected', i === index);
+    });
+  }
+
+  function selectPreset(index) {
+    releaseObjectURL();
+    selectedTask = qwen35Task(samples, presetIds[index]);
+    if (!selectedTask) return;
+    imageURL = selectedTask.image;
+    previewImage.src = imageURL;
+    previewImage.alt = isOCR
+      ? `Preset document: ${presetLabels[index]}`
+      : `Preset visual question image: ${presetLabels[index]}`;
+    prompt.value = selectedTask.prompt;
+    showRecorded(selectedTask);
+    markPreset(index);
+    localStatus.textContent = 'Recorded Qwen3.5 output is ready; live inference is optional.';
+  }
+
+  function updateProgress(event) {
+    let value = Number(event && event.progress);
+    if (!Number.isFinite(value) && event && event.loaded && event.total) {
+      value = 100 * event.loaded / event.total;
+    }
+    if (Number.isFinite(value) && value <= 1) value *= 100;
+    value = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+    progress.style.setProperty('--qwen-progress', `${value.toFixed(1)}%`);
+    progress.setAttribute('aria-valuenow', String(Math.round(value)));
+    const file = event && event.file ? String(event.file).split('/').pop() : '';
+    if (file && value > 0) localStatus.textContent = `Loading ${file}: ${Math.round(value)}%`;
+  }
+
+  function markModelReady() {
+    progress.style.setProperty('--qwen-progress', '100%');
+    progress.setAttribute('aria-valuenow', '100');
+    loadButton.textContent = 'Qwen3.5 loaded';
+    loadButton.disabled = true;
+    localStatus.textContent = 'Qwen3.5 is loaded in this tab and shared by both demos.';
+  }
+
+  async function ensureModel() {
+    loadButton.disabled = true;
+    loadButton.setAttribute('aria-busy', 'true');
+    try {
+      const loaded = await api.getQwen35(updateProgress);
+      markModelReady();
+      api.setStatus('Qwen3.5 is ready. Inference remains on this device.', 'ok');
+      return loaded;
+    } catch (error) {
+      loadButton.disabled = false;
+      loadButton.textContent = 'retry model load';
+      const message = error && error.message ? error.message : String(error);
+      localStatus.textContent = `${message} The genuine recorded preset remains available.`;
+      api.setStatus('Live Qwen unavailable; using the recorded Qwen3.5 result.', 'err');
+      throw error;
+    } finally {
+      loadButton.setAttribute('aria-busy', 'false');
+    }
+  }
+
+  async function runLive() {
+    if (running || !imageURL) return;
+    const question = prompt.value.trim();
+    if (!question) {
+      localStatus.textContent = 'Type a question before running.';
+      prompt.focus();
+      return;
+    }
+    running = true;
+    runButton.disabled = true;
+    runButton.setAttribute('aria-busy', 'true');
+    const started = performance.now();
+    try {
+      const { mod, processor, model } = await ensureModel();
+      localStatus.textContent = 'Preparing image patches and prompt...';
+      let image = await mod.RawImage.read(imageURL);
+      const originalWidth = image.width;
+      const originalHeight = image.height;
+      const scale = Math.min(1, 640 / Math.max(originalWidth, originalHeight));
+      const width = Math.max(32, Math.round(originalWidth * scale / 32) * 32);
+      const height = Math.max(32, Math.round(originalHeight * scale / 32) * 32);
+      if (width !== originalWidth || height !== originalHeight) {
+        image = await image.resize(width, height);
+      }
+      const conversation = [{
+        role: 'user',
+        content: [
+          { type: 'image' },
+          { type: 'text', text: question },
+        ],
+      }];
+      const serialized = processor.apply_chat_template(conversation, {
+        add_generation_prompt: true,
+        enable_thinking: false,
+      });
+      const inputs = await processor(serialized, image);
+      const grid = Array.from(inputs.image_grid_thw.data, Number);
+      const rawPatches = grid.reduce((product, value) => product * value, 1);
+      const trace = {
+        image_grid_thw: grid,
+        raw_patch_features: rawPatches,
+        merged_image_embeddings: rawPatches / 4,
+      };
+      renderStats(trace);
+
+      answer.innerHTML = '';
+      answer.appendChild(el('span', {
+        class: 'recorded-label',
+        text: 'live local Qwen3.5 output',
+      }));
+      const answerText = el('span', { text: '' });
+      answer.appendChild(answerText);
+      let streamed = '';
+      const streamer = new mod.TextStreamer(processor.tokenizer, {
+        skip_prompt: true,
+        skip_special_tokens: true,
+        callback_function: (chunk) => {
+          streamed += chunk;
+          answerText.textContent = streamed;
+        },
+      });
+      localStatus.textContent = 'Generating deterministic non-thinking output...';
+      const outputs = await model.generate({
+        ...inputs,
+        max_new_tokens: 96,
+        do_sample: false,
+        streamer,
+      });
+      const promptLength = inputs.input_ids.dims.at(-1);
+      const decoded = processor.batch_decode(
+        outputs.slice(null, [promptLength, null]),
+        { skip_special_tokens: true },
+      )[0].trim();
+      answerText.textContent = decoded || streamed.trim();
+      const elapsed = (performance.now() - started) / 1000;
+      renderStats(trace, elapsed);
+      localStatus.textContent = 'Done. Change the question and run the same cached model again.';
+      api.setStatus('Live Qwen3.5 inference completed locally.', 'ok');
+    } catch (error) {
+      if (selectedTask) showRecorded(selectedTask);
+      else {
+        answer.textContent = 'The uploaded image needs live WebGPU inference; no recorded answer exists for it.';
+      }
+    } finally {
+      running = false;
+      runButton.disabled = false;
+      runButton.setAttribute('aria-busy', 'false');
+    }
+  }
+
+  const loadButton = el('button', {
+    type: 'button',
+    text: 'load Qwen3.5 (~850 MB)',
+    onclick: () => ensureModel().catch(() => {}),
+  });
+  const runButton = el('button', {
+    class: 'qwen-run',
+    type: 'button',
+    text: isOCR ? 'read document live' : 'answer live',
+    onclick: runLive,
+  });
+  window.addEventListener('qwen35-ready', markModelReady);
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (!file) return;
+    releaseObjectURL();
+    objectURL = URL.createObjectURL(file);
+    imageURL = objectURL;
+    selectedTask = null;
+    previewImage.src = imageURL;
+    previewImage.alt = `Uploaded image: ${file.name}`;
+    markPreset(-1);
+    answer.textContent = 'Uploaded image ready. Run live inference to answer this custom input.';
+    stats.innerHTML = '';
+    localStatus.textContent = 'Custom images are never uploaded by this slide; inference stays in this browser.';
+  });
+  window.addEventListener('beforeunload', releaseObjectURL, { once: true });
+
+  const panel = el('div', { class: 'qwen35-panel' }, [
+    presetRow,
+    el('div', { class: 'qwen35-actions' }, [upload, loadButton, runButton]),
+    prompt,
+    progress,
+    localStatus,
+    answer,
+    stats,
+  ]);
+  const mount = el('div', { class: 'qwen35-demo' }, [preview, panel]);
+
+  async function init() {
+    try {
+      samples = await getL23Samples();
+      presetLabels.forEach((label, index) => {
+        presetRow.appendChild(el('button', {
+          type: 'button',
+          text: label,
+          onclick: () => selectPreset(index),
+        }));
+      });
+      selectPreset(0);
+      if (_qwen35Ready) markModelReady();
+    } catch (error) {
+      localStatus.textContent = 'Could not load the recorded Qwen3.5 trace.';
+      answer.textContent = 'See the static slide fallback for the recorded result.';
+      runButton.disabled = true;
+      api.setStatus('Could not load L23 trace data.', 'err');
+    }
+  }
+
+  return { mount, init };
+}
+
+register('qwen35-vqa', (api) => makeQwen35Demo(api, 'vqa'));
+register('qwen35-ocr', (api) => makeQwen35Demo(api, 'ocr'));
+
+/* =====================================================================
+ *  L23 patchify: preserve aspect ratio and expose Qwen's exact 2-D grid.
+ *  Pure JavaScript; no network dependency beyond the local slide image.
+ * ===================================================================== */
+register('qwen-patchify', (api) => {
+  const canvas = api.canvasEl(560, 336);
+  const image = new Image();
+  image.src = 'images/office-hours.png';
+  let imageReady = false;
+  const widthControl = api.slider('retained width', {
+    min: 256,
+    max: 1024,
+    step: 32,
+    value: 640,
+    fmt: (value) => `${value} px`,
+  });
+  const counts = el('div', { class: 'patchify-counts' });
+
+  function targetShape() {
+    const width = Math.round(widthControl.get() / 32) * 32;
+    const height = Math.max(32, Math.round((width * 384 / 640) / 32) * 32);
+    return { width, height };
+  }
+
+  function countCard(value, label) {
+    return el('div', {}, [
+      el('strong', { text: String(value) }),
+      el('span', { text: label }),
+    ]);
+  }
+
+  function draw() {
+    const context = canvas.getContext('2d');
+    const { width, height } = targetShape();
+    const patchColumns = width / 16;
+    const patchRows = height / 16;
+    const mergedColumns = width / 32;
+    const mergedRows = height / 32;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = '#f8fafc';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    if (imageReady) context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    context.strokeStyle = 'rgba(37,99,235,0.65)';
+    context.lineWidth = 0.75;
+    for (let column = 1; column < patchColumns; column++) {
+      const x = column * canvas.width / patchColumns;
+      context.beginPath(); context.moveTo(x, 0); context.lineTo(x, canvas.height); context.stroke();
+    }
+    for (let row = 1; row < patchRows; row++) {
+      const y = row * canvas.height / patchRows;
+      context.beginPath(); context.moveTo(0, y); context.lineTo(canvas.width, y); context.stroke();
+    }
+    context.strokeStyle = '#1d4ed8';
+    context.lineWidth = 2;
+    context.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+
+    counts.innerHTML = '';
+    counts.appendChild(countCard(`${width}×${height}`, 'retained pixels'));
+    counts.appendChild(countCard(`${patchColumns}×${patchRows}`, '16×16 patch grid'));
+    counts.appendChild(countCard(patchColumns * patchRows, 'raw patch features'));
+    counts.appendChild(countCard(`${mergedColumns}×${mergedRows} = ${mergedColumns * mergedRows}`, 'image embeddings after 2×2 merge'));
+  }
+
+  image.onload = () => { imageReady = true; draw(); };
+  widthControl.input.addEventListener('input', draw);
+  const presetButtons = [256, 512, 640].map((value) => el('button', {
+    type: 'button',
+    text: `${value}px`,
+    onclick: () => {
+      widthControl.input.value = String(value);
+      widthControl.setText(`${value} px`);
+      draw();
+    },
+  }));
+  const controls = el('div', { class: 'patchify-controls' }, [
+    widthControl.field,
+    el('div', { class: 'qwen35-actions' }, presetButtons),
+    counts,
+  ]);
+  const mount = el('div', { class: 'patchify-demo' }, [
+    el('div', { class: 'patchify-canvas-wrap' }, [canvas]),
+    controls,
+  ]);
+  return { mount, init: draw };
+});
+
+/* =====================================================================
+ *  L23 CLIP batch objective: recorded real similarities, no model download.
+ *  Toggle the normalization direction to see both retrieval objectives.
+ * ===================================================================== */
+register('clip-batch', (api) => {
+  let samples = null;
+  let direction = 'image';
+  const pairs = el('div', { class: 'clip-pair-list' });
+  const matrix = el('div', { class: 'clip-live-matrix', role: 'grid', 'aria-label': 'CLIP image and caption similarity matrix' });
+
+  const shortCaption = (caption) => {
+    if (caption.includes('portrait')) return 'person';
+    if (caption.includes('mountain')) return 'landscape';
+    if (caption.includes('bar chart')) return 'chart';
+    return 'diagram';
+  };
+  const imageLabel = (path) => path.split('/').pop().split('.')[0];
+
+  function render() {
+    if (!samples) return;
+    const clip = samples.clip;
+    const captions = clip.captions.map(shortCaption);
+    const images = clip.images.map(imageLabel);
+    const probabilities = direction === 'image'
+      ? clip.image_to_text_probability
+      : images.map((_, imageIndex) =>
+          captions.map((__, captionIndex) =>
+            clip.text_to_image_probability[captionIndex][imageIndex]));
+    matrix.innerHTML = '';
+    matrix.appendChild(el('div', { class: 'matrix-label', text: direction === 'image' ? 'image ↓ / caption →' : 'image ↓ / caption query →' }));
+    captions.forEach((caption) => matrix.appendChild(el('div', {
+      class: 'matrix-label',
+      text: caption,
+      role: 'columnheader',
+    })));
+    images.forEach((imageName, row) => {
+      matrix.appendChild(el('div', {
+        class: 'matrix-label',
+        text: imageName,
+        role: 'rowheader',
+      }));
+      captions.forEach((_, column) => {
+        const score = probabilities[row][column];
+        matrix.appendChild(el('div', {
+          class: `matrix-cell${row === column ? ' diagonal' : ''}`,
+          style: `--score:${Math.round(score * 100)}%`,
+          text: `${Math.round(score * 100)}%`,
+          role: 'gridcell',
+          'aria-label': `${imageName} and ${captions[column]}: ${(score * 100).toFixed(1)} percent`,
+        }));
+      });
+    });
+    imageButton.classList.toggle('primary', direction === 'image');
+    imageButton.classList.toggle('ghost', direction !== 'image');
+    textButton.classList.toggle('primary', direction === 'text');
+    textButton.classList.toggle('ghost', direction !== 'text');
+    api.setStatus(
+      direction === 'image'
+        ? 'Each row asks: which caption matches this image?'
+        : 'Each column asks: which image matches this caption?',
+      'ok',
+    );
+  }
+
+  const imageButton = api.button('image → caption', () => {
+    direction = 'image';
+    render();
+  }, 'primary');
+  const textButton = api.button('caption → image', () => {
+    direction = 'text';
+    render();
+  }, 'ghost');
+  const mount = el('div', { class: 'clip-matrix-demo' }, [
+    pairs,
+    el('div', {}, [
+      el('div', { class: 'demo-controls' }, [imageButton, textButton]),
+      matrix,
+    ]),
+  ]);
+
+  async function init() {
+    try {
+      samples = await getL23Samples();
+      samples.clip.images.forEach((path, index) => {
+        pairs.appendChild(el('div', {}, [
+          el('img', {
+            src: path,
+            alt: `CLIP pair ${index + 1}: ${samples.clip.captions[index]}`,
+          }),
+          el('span', { text: samples.clip.captions[index] }),
+        ]));
+      });
+      render();
+    } catch (error) {
+      api.setStatus('Could not load recorded CLIP similarities.', 'err');
+    }
+  }
+  return { mount, init };
 });
 
 /* =====================================================================
