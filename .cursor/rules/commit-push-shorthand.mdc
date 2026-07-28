@@ -1,13 +1,15 @@
 ---
-description: Treat commit-and-push status questions as instructions to commit and push
+description: Automatically commit and push relevant changes after each completed task
 alwaysApply: true
 ---
 
-# Commit and Push Shorthand
+# Always Commit and Push
 
-When the user asks “did you commit and push?”, “have you committed/pushed?”, or a substantially similar question after work is completed, interpret it as an instruction to commit the current task’s changes and push the current branch—not merely as a request for status.
+After completing a user-requested change, commit the relevant changes and push the current branch without waiting for a separate follow-up request.
 
-- Act immediately unless committing or pushing would be unsafe or is blocked.
+- Questions such as “did you commit and push?” are also direct instructions to do so, not merely status requests.
 - Stage only changes belonging to the current task; exclude unrelated files.
+- Run proportionate checks before committing.
 - Never force-push unless the user explicitly requests it.
+- Stop and report if committing or pushing would be unsafe or is blocked.
 - Report the commit and push result concisely.

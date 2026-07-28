@@ -3189,7 +3189,6 @@ function makeQwen35Demo(api, mode) {
   let running = false;
   let activeStoppingCriteria = null;
   let stopRequested = false;
-  let stopReason = '';
 
   const previewImage = el('img', {
     alt: isOCR
@@ -3337,15 +3336,12 @@ function makeQwen35Demo(api, mode) {
     }
   }
 
-  function requestStop(reason = 'user') {
+  function requestStop() {
     if (!running || !activeStoppingCriteria || stopRequested) return;
     stopRequested = true;
-    stopReason = reason;
     activeStoppingCriteria.interrupt();
     runButton.disabled = true;
-    localStatus.textContent = reason === 'timeout'
-      ? 'The 150-second safety limit was reached. Stopping after the current token...'
-      : 'Stopping after the current token...';
+    localStatus.textContent = 'Stopping after the current token...';
   }
 
   async function runLive() {
@@ -3362,12 +3358,10 @@ function makeQwen35Demo(api, mode) {
     }
     running = true;
     stopRequested = false;
-    stopReason = '';
     runButton.disabled = true;
     runButton.setAttribute('aria-busy', 'true');
     const started = performance.now();
     let generationTicker = null;
-    let generationTimeout = null;
     try {
       const { mod, processor, model } = await ensureModel();
       localStatus.textContent = 'Preparing image patches and prompt...';
@@ -3440,9 +3434,6 @@ function makeQwen35Demo(api, mode) {
       runButton.textContent = activeStoppingCriteria ? 'stop generation' : 'generating...';
       updateGenerationStatus();
       generationTicker = window.setInterval(updateGenerationStatus, 5000);
-      if (activeStoppingCriteria) {
-        generationTimeout = window.setTimeout(() => requestStop('timeout'), 150000);
-      }
       api.setStatus('Local Qwen3.5 generation is running on this device.');
       const generationOptions = {
         ...inputs,
@@ -3464,9 +3455,7 @@ function makeQwen35Demo(api, mode) {
           answer.textContent = 'Generation stopped before an answer was produced.';
         }
         renderStats(trace, elapsed);
-        localStatus.textContent = stopReason === 'timeout'
-          ? 'Generation exceeded 150 seconds and was stopped; the recorded result remains available.'
-          : 'Generation stopped. Change the question or run the cached model again.';
+        localStatus.textContent = 'Generation stopped. Change the question or run the cached model again.';
         api.setStatus('Local Qwen3.5 generation stopped safely.', 'ok');
         return;
       }
@@ -3489,7 +3478,6 @@ function makeQwen35Demo(api, mode) {
       api.setStatus('Live Qwen3.5 generation failed; restored the recorded result.', 'err');
     } finally {
       if (generationTicker != null) window.clearInterval(generationTicker);
-      if (generationTimeout != null) window.clearTimeout(generationTimeout);
       activeStoppingCriteria = null;
       running = false;
       runButton.disabled = false;

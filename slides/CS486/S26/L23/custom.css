@@ -388,6 +388,22 @@
   font-size: 0.58em;
 }
 
+.reveal .l23-runtime-warning {
+  display: inline-block;
+  margin: -0.08em auto 0.28em;
+  border: 1px solid #f59e0b;
+  border-radius: 7px;
+  background: var(--l23-amber-soft);
+  color: #92400e;
+  padding: 0.18em 0.55em;
+  font-size: 0.4em;
+  line-height: 1.25;
+}
+
+.reveal .l23-runtime-warning strong {
+  color: #78350f;
+}
+
 .reveal .live-demo {
   max-width: 1120px;
   margin: 0.1em auto;
