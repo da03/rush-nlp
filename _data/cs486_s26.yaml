@@ -124,7 +124,7 @@ chats:
 # Leave owner blank ("") to render "TBA".
 assignments:
   - { num: 1, out: 2026-06-04, due: 2026-06-25, owner: "Dake Zhang", owner_email: "d346zhan@uwaterloo.ca" }
-  - { num: 2, out: 2026-06-25, due: 2026-07-09, owner: "Henry Lin", owner_email: "h293lin@uwaterloo.ca" }
+  - { num: 2, out: 2026-06-25, due: 2026-07-16, owner: "Henry Lin", owner_email: "h293lin@uwaterloo.ca" }
   - { num: 3, out: 2026-07-09, due: 2026-08-04, owner: "Yuntian Deng", owner_email: "yuntian@uwaterloo.ca" }
 
 # Schedule entries are rendered in array order. Mix any number of types.
@@ -369,13 +369,31 @@ schedule:
 announcements:
   - severity: event
     show: true
-    title: "CS686 final project report due Wednesday, August 5"
+    title: "Additional office hours this week - July 29 and 30"
     body: >-
-      The <strong>CS686 final project report</strong> is due <strong>Wednesday, August 5 at 11:59 PM</strong>
-      (Waterloo time), the last day of classes. University policy does not allow course deliverables during
-      the pre-exam study day or the final examination period (Aug 6&ndash;20), so August 5 is the latest
-      date the report can be due. Submit on <a href="https://learn.uwaterloo.ca/">LEARN</a> using the
-      standard LaTeX template. CS486 students doing the optional project (10% bonus) use the same deadline.
+      Two additional in-person office-hour sessions are available:
+      <strong>Wednesday, July 29, 3:00&ndash;4:00 PM in DC 2633</strong> and
+      <strong>Thursday, July 30, 4:00&ndash;5:00 PM in the regular classroom (MC 4021)</strong>.
+      Bring any course, assignment, project, or final-exam questions.
+  - severity: warning
+    show: true
+    title: "Final exam: permitted aids and sample exams"
+    body: >-
+      The final is <strong>Saturday, August 8, 7:30&ndash;10:00 PM in PAC 5</strong>.
+      Bring one <strong>non-programmable calculator</strong>; you may also use one
+      <strong>double-sided, letter-size (8.5 &times; 11-inch) sheet of notes</strong>.
+      The five questions cover A*, decision trees, SARSA, decision networks, and Bayesian networks.
+      Two sample exams are now on <a href="https://learn.uwaterloo.ca/">LEARN</a> under
+      <strong>Final Exam</strong>; their exact coverage, format, and mark distribution differ from this exam.
+  - severity: info
+    show: true
+    title: "A1/A2 solutions and Assignment 2 grades are available"
+    body: >-
+      Solutions for <strong>Assignments 1 and 2</strong> are posted on
+      <a href="https://learn.uwaterloo.ca/">LEARN</a> under <strong>Assignments</strong>
+      to support final-exam review. Grading for both assignments is now complete.
+      Direct Assignment 2 grading questions to <strong>Henry Lin</strong> at
+      <a href="mailto:h293lin@uwaterloo.ca">h293lin@uwaterloo.ca</a>.
   - severity: warning
     show: true
     title: "Assignment 3 is now available - due Tuesday, August 4"
@@ -388,6 +406,15 @@ announcements:
       not finishing on time. Post questions on
       <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> addressed to
       <strong>Yuntian Deng</strong> (or <a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a>).
+  - severity: event
+    show: true
+    title: "CS686 final project report due Wednesday, August 5"
+    body: >-
+      The <strong>CS686 final project report</strong> is due <strong>Wednesday, August 5 at 11:59 PM</strong>
+      (Waterloo time), the last day of classes. University policy does not allow course deliverables on
+      the pre-exam study day (Aug 6) or during the final examination period (Aug 7&ndash;19), so August 5
+      is the latest date the report can be due. Submit on <a href="https://learn.uwaterloo.ca/">LEARN</a> using the
+      standard LaTeX template. CS486 students doing the optional project (10% bonus) use the same deadline.
   - severity: warning
     show: false
     title: "Assignment 2 deadline extended to Thursday, July 16"

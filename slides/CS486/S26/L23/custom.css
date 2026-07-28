@@ -22,6 +22,98 @@
   text-wrap: balance;
 }
 
+/* End-of-term logistics. */
+.reveal .l23-updates-slide h2 {
+  margin-bottom: 0.38em;
+}
+
+.reveal .l23-update-grid {
+  display: grid;
+  width: 1080px;
+  max-width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.42em;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.reveal .l23-update-card {
+  display: flex;
+  min-height: 142px;
+  box-sizing: border-box;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.13em;
+  border: 2px solid #93c5fd;
+  border-left-width: 7px;
+  border-radius: 12px;
+  background: var(--l23-blue-soft);
+  box-shadow: 0 5px 14px rgb(15 23 42 / 6%);
+  padding: 0.42em 0.58em;
+}
+
+.reveal .l23-update-card.office {
+  border-color: #f59e0b;
+  background: var(--l23-amber-soft);
+}
+
+.reveal .l23-update-card.exam {
+  border-color: var(--l23-violet);
+  background: var(--l23-violet-soft);
+}
+
+.reveal .l23-update-card.review {
+  border-color: var(--l23-emerald);
+  background: var(--l23-emerald-soft);
+}
+
+.reveal .l23-update-card.deadlines {
+  border-color: var(--l23-blue);
+}
+
+.reveal .l23-update-card strong {
+  color: var(--l23-ink);
+  font-size: 0.57em;
+  line-height: 1.2;
+}
+
+.reveal .l23-update-card > span:not(.l23-update-label) {
+  color: #475569;
+  font-size: 0.43em;
+  line-height: 1.24;
+}
+
+.reveal .l23-update-card .l23-update-label {
+  color: var(--l23-blue-dark);
+  font-size: 0.39em;
+  font-weight: 850;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.reveal .l23-update-card.office .l23-update-label {
+  color: #92400e;
+}
+
+.reveal .l23-update-card.exam .l23-update-label {
+  color: #5b21b6;
+}
+
+.reveal .l23-update-card.review .l23-update-label {
+  color: #065f46;
+}
+
+.reveal .l23-update-source {
+  margin: 0.48em auto 0;
+  color: var(--l23-muted);
+  font-size: 0.48em;
+}
+
+.reveal .l23-update-source a {
+  color: var(--l23-blue);
+  font-weight: 750;
+}
+
 .reveal .l23-outcomes {
   max-width: 900px;
   margin: 0.35em auto 0;
