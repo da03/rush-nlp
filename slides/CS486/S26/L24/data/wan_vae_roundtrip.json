@@ -5,6 +5,10 @@
       "sha256": "2ca8915a7c106dbf3765d07c4d39618e0e7be8b33038523d72ab28234170c585",
       "size_bytes": 291715
     },
+    "wan-vae-latent-channels.png": {
+      "sha256": "954af4ce6327be1bbe99688a57facebd40a20c2a7d5ab42ba54789173a3fed7b",
+      "size_bytes": 55345
+    },
     "wan-vae-reconstruction.png": {
       "sha256": "9c397e9ff17d4d1b854632fedc3d6dfff8b84725210db03a2da855d08ea88940",
       "size_bytes": 380656

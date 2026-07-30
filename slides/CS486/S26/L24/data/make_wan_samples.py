@@ -253,6 +253,36 @@ def make_vae_roundtrip(
     with torch.inference_mode():
         latent = vae.encode(sample).latent_dist.mode()
         reconstruction = vae.decode(latent).sample
+
+    channel_panels: list[Image.Image] = []
+    for channel_index in (0, 3, 7, 12):
+        channel = latent[0, channel_index, 0].float().cpu().numpy()
+        low, high = np.percentile(channel, (2, 98))
+        normalized = np.clip((channel - low) / max(high - low, 1e-6), 0, 1)
+        colored = np.stack(
+            [
+                40 + 100 * normalized,
+                70 + 150 * normalized,
+                180 + 70 * (1 - normalized),
+            ],
+            axis=-1,
+        ).astype(np.uint8)
+        channel_image = Image.fromarray(colored, mode="RGB").resize(
+            (312, 180), Image.Resampling.NEAREST
+        )
+        panel = Image.new("RGB", (328, 212), "white")
+        panel.paste(channel_image, (8, 8))
+        ImageDraw.Draw(panel).text(
+            (110, 190), f"latent channel {channel_index}", fill=(51, 65, 85)
+        )
+        channel_panels.append(panel)
+
+    latent_grid = Image.new("RGB", (656, 424), "#f5f3ff")
+    for index, panel in enumerate(channel_panels):
+        latent_grid.paste(panel, ((index % 2) * 328, (index // 2) * 212))
+    latent_path = images / "wan-vae-latent-channels.png"
+    latent_grid.save(latent_path, optimize=True)
+
     output = (
         reconstruction[0, :, 0]
         .float()
@@ -269,7 +299,7 @@ def make_vae_roundtrip(
 
     files = {
         path.name: {"sha256": sha256(path), "size_bytes": path.stat().st_size}
-        for path in (source_path, reconstruction_path)
+        for path in (source_path, latent_path, reconstruction_path)
     }
     save_json(
         data / "wan_vae_roundtrip.json",

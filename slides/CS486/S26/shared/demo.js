@@ -3830,7 +3830,6 @@ function makeRecordedVideo(api, { sources, poster, label, note }) {
     playButton.textContent = video.paused ? 'play' : 'pause';
     readout.innerHTML = '';
     readout.appendChild(el('span', { text: `${formatTime(video.currentTime)} / ${formatTime(video.duration)}` }));
-    readout.appendChild(el('span', { text: 'local recorded model output; no generation or network request' }));
   }
   ['loadedmetadata', 'timeupdate', 'play', 'pause', 'ended'].forEach((eventName) => {
     video.addEventListener(eventName, update);
@@ -3856,7 +3855,7 @@ register('wan-recorded', (api) => makeRecordedVideo(api, {
   ],
   poster: 'images/wan-robot-classroom-poster.jpg',
   label: 'Wan2.1 generated video of a blue robot writing on a classroom blackboard and waving',
-  note: 'Official <b>Wan2.1-T2V-1.3B</b> checkpoint, fixed prompt and seed. The scene and motion work; the requested equation does not &mdash; exact text remains a real failure mode.',
+  note: '',
 }));
 
 /* ---- shared L24 helper: a short, action-labelled image rollout. */
@@ -3906,40 +3905,29 @@ register('neuralos-actions', (api) => makeLabeledRollout(api, [
   {
     src: 'images/neuralos-action-home.png',
     alt: 'Generated NeuralOS desktop before double-clicking Home',
-    action: 'action: double-click Home',
-    result: 'current observation enters the recurrent state tracker',
+    action: 'double-click Home',
+    result: 'current screen',
   },
   {
     src: 'images/neuralos-action-open.png',
     alt: 'Generated NeuralOS file manager after the double click',
-    action: 'prediction: file manager opens',
-    result: 'the generated screen becomes the next observation',
+    action: 'generated',
+    result: 'file manager opens',
   },
   {
     src: 'images/neuralos-action-close.png',
     alt: 'Generated NeuralOS desktop after closing the file manager',
-    action: 'action: click close',
-    result: 'the model predicts a return to the desktop',
+    action: 'click × → generated',
+    result: 'desktop returns',
   },
 ]));
 
-register('neuralos-video', (api) => {
-  const player = makeRecordedVideo(api, {
-    sources: [{ src: 'media/neuralos-demo.mp4', type: 'video/mp4' }],
-    poster: 'images/neuralos-demo-poster.jpg',
-    label: 'Recorded NeuralOS rollout interacting with a generated browser and file manager',
-    note: 'A recorded <b>NeuralOS</b> rollout. Every displayed screen is generated; the live research demo is linked below.',
-  });
-  player.mount.appendChild(el('div', { class: 'demo-controls' }, [
-    el('a', {
-      class: 'wv-link',
-      href: 'https://neural-os.com',
-      target: '_blank',
-      rel: 'noopener',
-    }, 'Try neural-os.com \u2197'),
-  ]));
-  return player;
-});
+register('neuralos-video', (api) => makeRecordedVideo(api, {
+  sources: [{ src: 'media/neuralos-demo.mp4', type: 'video/mp4' }],
+  poster: 'images/neuralos-demo-poster.jpg',
+  label: 'Recorded NeuralOS rollout interacting with a generated browser and file manager',
+  note: '',
+}));
 
 /* =====================================================================
  *  DEMO 32 - compile + run an independent PAW fuzzy function. (L22)
