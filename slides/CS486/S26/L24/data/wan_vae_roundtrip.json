@@ -1,0 +1,15 @@
+{
+  "description": "One-frame encode/decode through the official Wan-VAE.",
+  "files": {
+    "wan-vae-input.png": {
+      "sha256": "2ca8915a7c106dbf3765d07c4d39618e0e7be8b33038523d72ab28234170c585",
+      "size_bytes": 291715
+    },
+    "wan-vae-reconstruction.png": {
+      "sha256": "9c397e9ff17d4d1b854632fedc3d6dfff8b84725210db03a2da855d08ea88940",
+      "size_bytes": 380656
+    }
+  },
+  "model": "Wan-AI/Wan2.1-T2V-1.3B-Diffusers",
+  "revision": "0fad780a534b6463e45facd96134c9f345acfa5b"
+}

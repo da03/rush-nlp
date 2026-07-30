@@ -30,6 +30,8 @@ on:
       - 'slides/CS486/S26/**/*.gif'
       - 'slides/CS486/S26/**/*.webp'
       - 'slides/CS486/S26/**/*.svg'
+      - 'slides/CS486/S26/**/*.mp4'
+      - 'slides/CS486/S26/**/*.webm'
   workflow_dispatch: {}
 
 permissions:
@@ -74,6 +76,8 @@ jobs:
             # served to students stays untouched.
             perl -0pi -e 's#</head>#<style>.course-home-link,.slide-download-link,.reveal .controls,.reveal .progress,.reveal .slide-number{display:none !important}</style>\n</head>#' "${dir}index.html"
             echo "Rendering ${name} ..."
+            # `static-demos=1` keeps interactive/video mounts disabled so
+            # each deck prints its deterministic poster or filmstrip fallback.
             npx --yes decktape@3 reveal \
               --chrome-arg=--no-sandbox \
               --size 1280x720 \

@@ -3739,129 +3739,206 @@ register('clip-batch', (api) => {
 });
 
 /* =====================================================================
- *  DEMO 28 - forward noising: drag the noise level and watch a real image
- *  turn into noise, x_t = sqrt(a_bar) x0 + sqrt(1-a_bar) eps. (L24, JS)
+ *  L24 - deterministic flow path between fixed noise and fixed data.
  * ===================================================================== */
-register('noise-forward', (api) => {
-  const canvas = api.canvasEl(300, 300);
-  const tCtl = api.slider('noise level t', { min: 0, max: 1, step: 0.05, value: 0.3, fmt: (v) => v.toFixed(2) });
-  const readout = el('div', { class: 'demo-readout' });
-  let base = null; const im = new Image();
-  im.onload = () => {
-    const off = document.createElement('canvas'); off.width = canvas.width; off.height = canvas.height;
-    const s = Math.max(canvas.width / im.width, canvas.height / im.height), dw = im.width * s, dh = im.height * s;
-    const octx = off.getContext('2d'); octx.drawImage(im, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
-    base = octx.getImageData(0, 0, canvas.width, canvas.height); draw();
-  };
-  im.src = 'images/traj_24.png';
-  const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
-  function draw() {
-    const ctx = canvas.getContext('2d');
-    if (!base) { ctx.fillStyle = '#f1f5f9'; ctx.fillRect(0, 0, canvas.width, canvas.height); return; }
-    const t = tCtl.get(), ab = 1 - t, a = Math.sqrt(ab), b = Math.sqrt(1 - ab);
-    const out = ctx.createImageData(base.width, base.height), d = base.data, o = out.data;
-    for (let i = 0; i < d.length; i += 4) { for (let c = 0; c < 3; c++) { const n = gauss() * 60 + 128; o[i + c] = Math.max(0, Math.min(255, a * d[i + c] + b * n)); } o[i + 3] = 255; }
-    ctx.putImageData(out, 0, 0);
-    readout.innerHTML = '';
-    readout.appendChild(el('span', { html: 'x\u209c = \u221a\u0101\u00b7x\u2080 + \u221a(1\u2212\u0101)\u00b7\u03b5' }));
-    readout.appendChild(el('span', { text: t < 0.1 ? 'almost the clean image' : t > 0.9 ? 'almost pure noise' : 'partially noised' }));
+register('wan-flow', (api) => {
+  const canvas = api.canvasEl(960, 320);
+  canvas.className = 'demo-canvas l24-flow-canvas';
+  canvas.setAttribute('role', 'img');
+  canvas.setAttribute('aria-label', 'Interpolation from fixed noise at t equals zero to a clean equation at t equals one');
+  const time = api.slider('transport time t', {
+    min: 0, max: 1, step: 0.01, value: 0.5, fmt: (value) => value.toFixed(2),
+  });
+  const readout = el('div', { class: 'demo-readout', 'aria-live': 'polite' });
+  let noiseImage = null;
+  let dataImage = null;
+
+  function loadImage(src) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => resolve(image);
+      image.onerror = () => reject(new Error(`Could not load ${src}`));
+      image.src = src;
+    });
   }
-  tCtl.input.addEventListener('input', draw);
+
+  function draw() {
+    if (!noiseImage || !dataImage) return;
+    const t = time.get();
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.globalAlpha = 1;
+    context.drawImage(noiseImage, 0, 0, canvas.width, canvas.height);
+    context.globalAlpha = t;
+    context.drawImage(dataImage, 0, 0, canvas.width, canvas.height);
+    context.globalAlpha = 1;
+
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `z<sub>t</sub> = <b>${(1 - t).toFixed(2)}</b> z<sub>noise</sub> + <b>${t.toFixed(2)}</b> z<sub>data</sub>` }));
+    readout.appendChild(el('span', {
+      text: t < 0.05 ? 'noise endpoint' : t > 0.95 ? 'data endpoint' : 'an intermediate state on the same fixed path',
+    }));
+  }
+
+  time.input.addEventListener('input', draw);
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'The forward process mixes a clean image with Gaussian noise; at \\(t\\!\\to\\!1\\) only noise remains.' }),
-    el('div', { class: 'demo-controls' }, [tCtl.field]),
+    el('div', { class: 'demo-controls' }, [time.field]),
     el('div', { class: 'demo-stage' }, [canvas, readout]),
   ]);
-  return { mount, init: draw };
+  async function init() {
+    try {
+      [noiseImage, dataImage] = await Promise.all([
+        loadImage('images/flow-noise.png'),
+        loadImage('images/flow-data.png'),
+      ]);
+      draw();
+      api.setStatus('Fixed endpoints loaded. Drag t from noise to data.', 'ok');
+    } catch (error) {
+      api.setStatus(error.message || 'Could not load flow endpoints.', 'err');
+    }
+  }
+  return { mount, init };
 });
 
-/* ---- shared helper: an image-sequence player (used by denoise/neuralos). */
-function makePlayer(api, { note, caption, srcFor, count, labelFor, playMs = 700 }) {
-  const img = el('img', { class: 'vlm-img', alt: '' });
-  const cap = el('div', { class: 'demo-readout' });
-  const ctl = api.slider('step', { min: 0, max: count - 1, step: 1, value: 0, fmt: (v) => v });
-  let timer = null;
-  function show(k) { img.src = srcFor(k); cap.innerHTML = ''; cap.appendChild(el('span', { html: labelFor(k) })); }
-  ctl.input.addEventListener('input', () => show(ctl.get()));
-  function play() {
-    if (timer) { clearInterval(timer); timer = null; playBtn.textContent = 'play'; return; }
-    playBtn.textContent = 'stop';
-    timer = setInterval(() => {
-      let k = ctl.get() + 1; if (k >= count) k = 0;
-      ctl.input.value = k; ctl.setText(String(k)); show(k);
-    }, playMs);
+/* ---- shared L24 helper: accessible local recorded-video player. */
+function makeRecordedVideo(api, { sources, poster, label, note }) {
+  const video = el('video', {
+    class: 'l24-video-player',
+    controls: '',
+    playsinline: '',
+    preload: 'metadata',
+    poster,
+    'aria-label': label,
+  });
+  sources.forEach(({ src, type }) => video.appendChild(el('source', { src, type })));
+  const readout = el('div', { class: 'demo-readout', 'aria-live': 'polite' });
+  const playButton = api.button('play', () => {
+    if (video.paused) video.play().catch((error) => api.setStatus(error.message, 'err'));
+    else video.pause();
+  });
+  const restartButton = api.button('restart', () => {
+    video.currentTime = 0;
+    video.play().catch((error) => api.setStatus(error.message, 'err'));
+  }, 'secondary');
+
+  function formatTime(seconds) {
+    if (!Number.isFinite(seconds)) return '0:00';
+    const minutes = Math.floor(seconds / 60);
+    return `${minutes}:${Math.floor(seconds % 60).toString().padStart(2, '0')}`;
   }
-  const playBtn = api.button('play', play);
+  function update() {
+    playButton.textContent = video.paused ? 'play' : 'pause';
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { text: `${formatTime(video.currentTime)} / ${formatTime(video.duration)}` }));
+    readout.appendChild(el('span', { text: 'local recorded model output; no generation or network request' }));
+  }
+  ['loadedmetadata', 'timeupdate', 'play', 'pause', 'ended'].forEach((eventName) => {
+    video.addEventListener(eventName, update);
+  });
+  video.addEventListener('error', () => api.setStatus('Could not load the recorded video. The PDF filmstrip remains available.', 'err'));
+
   const mount = el('div', {}, [
     note ? el('div', { class: 'demo-note', html: note }) : null,
-    el('div', { class: 'demo-controls' }, [playBtn, ctl.field]),
-    el('div', { class: 'demo-stage' }, [el('div', {}, [img]), cap]),
+    el('div', { class: 'demo-controls' }, [playButton, restartButton]),
+    el('div', { class: 'demo-stage' }, [video, readout]),
   ]);
-  return { mount, init: () => show(0), onLeave: () => { if (timer) { clearInterval(timer); timer = null; playBtn.textContent = 'play'; } } };
+  return {
+    mount,
+    init: update,
+    onLeave: () => video.pause(),
+  };
 }
 
-/* =====================================================================
- *  DEMO 29 - reverse denoising trajectory (real, precomputed). (L24)
- * ===================================================================== */
-register('denoise', (api) => {
-  let data = null, inst = null;
-  const holder = el('div', {});
-  async function load() {
-    try { const r = await fetch('data/diffusion_samples.json'); data = await r.json(); }
-    catch (e) { api.setStatus('Could not load the trajectory.', 'err'); return; }
-    const frames = data.trajectory.frames, total = data.trajectory.steps;
-    inst = makePlayer(api, {
-      note: 'A real Stable Diffusion run: from pure noise, the denoiser cleans the latent step by step (then it is decoded to pixels).',
-      srcFor: (k) => 'images/' + frames[k].file,
-      count: frames.length,
-      labelFor: (k) => `denoising step <b>${frames[k].step + 1}</b> of ${total}`,
-    });
-    holder.appendChild(inst.mount); inst.init();
-  }
-  return { mount: holder, init: load, onLeave: () => inst && inst.onLeave && inst.onLeave() };
-});
+register('wan-recorded', (api) => makeRecordedVideo(api, {
+  sources: [
+    { src: 'media/wan-robot-classroom.webm', type: 'video/webm' },
+    { src: 'media/wan-robot-classroom.mp4', type: 'video/mp4' },
+  ],
+  poster: 'images/wan-robot-classroom-poster.jpg',
+  label: 'Wan2.1 generated video of a blue robot writing on a classroom blackboard and waving',
+  note: 'Official <b>Wan2.1-T2V-1.3B</b> checkpoint, fixed prompt and seed. The scene and motion work; the requested equation does not &mdash; exact text remains a real failure mode.',
+}));
 
-/* =====================================================================
- *  DEMO 30 - guidance sweep (real, precomputed CFG scales). (L24)
- * ===================================================================== */
-register('guidance', (api) => {
-  let data = null;
-  const img = el('img', { class: 'vlm-img', alt: '' });
-  const cap = el('div', { class: 'demo-readout' });
-  const ctl = api.slider('guidance scale', { min: 0, max: 3, step: 1, value: 2, fmt: (v) => v });
-  function show(k) { const g = data.guidance[k]; img.src = 'images/' + g.file; cap.innerHTML = ''; cap.appendChild(el('span', { html: `guidance scale = <b>${g.scale}</b>` })); cap.appendChild(el('span', { text: g.scale <= 1.5 ? 'weak: diverse, may ignore the prompt' : g.scale >= 12 ? 'strong: faithful, can look over-saturated' : 'balanced' })); }
-  ctl.input.addEventListener('input', () => show(ctl.get()));
+/* ---- shared L24 helper: a short, action-labelled image rollout. */
+function makeLabeledRollout(api, frames) {
+  const image = el('img', { class: 'l24-action-image', alt: frames[0].alt });
+  const readout = el('div', { class: 'demo-readout', 'aria-live': 'polite' });
+  const step = api.slider('rollout step', {
+    min: 0, max: frames.length - 1, step: 1, value: 0,
+    fmt: (value) => `${value + 1}/${frames.length}`,
+  });
+  let timer = null;
+
+  function show(index) {
+    const frame = frames[index];
+    image.src = frame.src;
+    image.alt = frame.alt;
+    readout.innerHTML = '';
+    readout.appendChild(el('span', { html: `<b>${frame.action}</b>` }));
+    readout.appendChild(el('span', { text: frame.result }));
+  }
+  function stop() {
+    if (!timer) return;
+    window.clearInterval(timer);
+    timer = null;
+    playButton.textContent = 'play';
+  }
+  function play() {
+    if (timer) { stop(); return; }
+    playButton.textContent = 'stop';
+    timer = window.setInterval(() => {
+      const next = (step.get() + 1) % frames.length;
+      step.input.value = next;
+      step.setText(`${next + 1}/${frames.length}`);
+      show(next);
+    }, 1500);
+  }
+  const playButton = api.button('play', play);
+  step.input.addEventListener('input', () => show(step.get()));
   const mount = el('div', {}, [
-    el('div', { class: 'demo-note', html: 'Same prompt and seed, different classifier-free guidance scale.' }),
-    el('div', { class: 'demo-controls' }, [ctl.field]),
-    el('div', { class: 'demo-stage' }, [el('div', {}, [img]), cap]),
+    el('div', { class: 'demo-controls' }, [playButton, step.field]),
+    el('div', { class: 'demo-stage' }, [image, readout]),
   ]);
-  async function load() { try { const r = await fetch('data/diffusion_samples.json'); data = await r.json(); ctl.input.max = data.guidance.length - 1; show(2); } catch (e) { api.setStatus('Could not load guidance images.', 'err'); } }
-  return { mount, init: load };
-});
+  return { mount, init: () => show(0), onLeave: stop };
+}
 
-/* =====================================================================
- *  DEMO 31 - NeuralOS next-frame world model (real frames, precomputed). (L24)
- * ===================================================================== */
-register('neuralos', (api) => {
-  let data = null, inst = null;
-  const holder = el('div', {});
-  const link = el('a', { class: 'wv-link', href: 'https://neural-os.com', target: '_blank', rel: 'noopener' }, 'Try it live at neural-os.com \u2197');
-  async function load() {
-    try { const r = await fetch('data/diffusion_samples.json'); data = await r.json(); }
-    catch (e) { api.setStatus('Could not load NeuralOS frames.', 'err'); return; }
-    const frames = data.neuralos;
-    inst = makePlayer(api, {
-      note: 'A real <b>NeuralOS</b> rollout: each screen is generated from the previous frames and the user\u2019s input &mdash; a UI as a learned world model.',
-      srcFor: (k) => 'images/' + frames[k],
-      count: frames.length,
-      labelFor: (k) => `predicted frame <b>${k + 1}</b> of ${frames.length}`,
-    });
-    holder.appendChild(inst.mount);
-    holder.appendChild(el('div', { class: 'demo-controls' }, [link]));
-    inst.init();
-  }
-  return { mount: holder, init: load, onLeave: () => inst && inst.onLeave && inst.onLeave() };
+register('neuralos-actions', (api) => makeLabeledRollout(api, [
+  {
+    src: 'images/neuralos-action-home.png',
+    alt: 'Generated NeuralOS desktop before double-clicking Home',
+    action: 'action: double-click Home',
+    result: 'current observation enters the recurrent state tracker',
+  },
+  {
+    src: 'images/neuralos-action-open.png',
+    alt: 'Generated NeuralOS file manager after the double click',
+    action: 'prediction: file manager opens',
+    result: 'the generated screen becomes the next observation',
+  },
+  {
+    src: 'images/neuralos-action-close.png',
+    alt: 'Generated NeuralOS desktop after closing the file manager',
+    action: 'action: click close',
+    result: 'the model predicts a return to the desktop',
+  },
+]));
+
+register('neuralos-video', (api) => {
+  const player = makeRecordedVideo(api, {
+    sources: [{ src: 'media/neuralos-demo.mp4', type: 'video/mp4' }],
+    poster: 'images/neuralos-demo-poster.jpg',
+    label: 'Recorded NeuralOS rollout interacting with a generated browser and file manager',
+    note: 'A recorded <b>NeuralOS</b> rollout. Every displayed screen is generated; the live research demo is linked below.',
+  });
+  player.mount.appendChild(el('div', { class: 'demo-controls' }, [
+    el('a', {
+      class: 'wv-link',
+      href: 'https://neural-os.com',
+      target: '_blank',
+      rel: 'noopener',
+    }, 'Try neural-os.com \u2197'),
+  ]));
+  return player;
 });
 
 /* =====================================================================

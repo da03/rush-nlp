@@ -1,0 +1,46 @@
+{
+  "device": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "dtype": "bfloat16",
+  "duration_seconds": 5.0625,
+  "files": {
+    "wan-robot-classroom-filmstrip.jpg": {
+      "sha256": "fab6018ad1fe83de7f04c984c26bf37cec5350841068df62bed4aef3916c2aef",
+      "size_bytes": 70000
+    },
+    "wan-robot-classroom-poster.jpg": {
+      "sha256": "859271dcf143b254eddd0fef61f7e92f818f93e853828bdee12d396bbc7bd14e",
+      "size_bytes": 61436
+    },
+    "wan-robot-classroom.mp4": {
+      "sha256": "168d2ece3f6ade2e586f9082e9b24b59284f7b5610a981e366e6081552a30115",
+      "size_bytes": 159580
+    },
+    "wan-robot-classroom.webm": {
+      "sha256": "cccbf3f8974a24754a0d1312aef1af9cede3588fa9103e6cc049af386437b596",
+      "size_bytes": 145945
+    }
+  },
+  "flow_shift": 3.0,
+  "fps": 16,
+  "generated_at": "2026-07-30T14:42:40.480615+00:00",
+  "guidance_scale": 5.0,
+  "height": 480,
+  "model": "Wan-AI/Wan2.1-T2V-1.3B-Diffusers",
+  "model_source": "https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B-Diffusers",
+  "negative_prompt": "bright colors, overexposed, static, blurred details, subtitles, watermark, text artifacts, deformed hands, extra limbs, camera shake",
+  "num_frames": 81,
+  "num_inference_steps": 30,
+  "prediction_type": "flow_prediction",
+  "prompt": "A small blue robot writes E = mc^2 on a blackboard in a sunlit university classroom, then turns toward the camera and waves, fixed camera, coherent motion, clean cinematic lighting",
+  "revision": "0fad780a534b6463e45facd96134c9f345acfa5b",
+  "runtime_seconds": 517.786,
+  "scheduler": "UniPCMultistepScheduler",
+  "seed": 486,
+  "software": {
+    "diffusers": "0.39.0",
+    "python": "3.14.4",
+    "torch": "2.13.0+cu130",
+    "transformers": "5.13.1"
+  },
+  "width": 832
+}

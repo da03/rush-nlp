@@ -1,0 +1,23 @@
+{
+  "description": "Fixed pixel-space visualization of z_t=(1-t)z_noise+t z_data. Wan applies this transport in compressed video-latent space.",
+  "files": {
+    "flow-data.png": {
+      "sha256": "e4f0f46095f36d3e2387aec06f095c8bf168dc8e5d68df661f7060a1befabaf5",
+      "size_bytes": 16111
+    },
+    "flow-filmstrip.png": {
+      "sha256": "2f4d4cd789b0f15e24871dcefdfc4dabd9ef7c79320f7f51b38258fad729aa94",
+      "size_bytes": 264799
+    },
+    "flow-noise.png": {
+      "sha256": "9e42dc64591f305060ebc420c4b01c83f17112c3eb73f0ee0ad38c3cb316b7bf",
+      "size_bytes": 842543
+    },
+    "markup2im-equation.png": {
+      "sha256": "4e702452fe59acedee472280065a43eb06ff90fce45fb54ca4622eb6a30a55f4",
+      "size_bytes": 2884
+    }
+  },
+  "seed": 486,
+  "source": "https://raw.githubusercontent.com/da03/markup2im/main/imgs/433d71b530.png"
+}

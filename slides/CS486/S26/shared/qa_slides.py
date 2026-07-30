@@ -192,6 +192,10 @@ METRICS_JS = """
   const slide = Reveal.getCurrentSlide();
   const sr = slide.getBoundingClientRect();
   const visible = [...slide.querySelectorAll('*')].filter((node) => {
+    // KaTeX keeps an off-screen/clipped MathML accessibility tree beside its
+    // visible HTML rendering. Its descendants have large geometry even though
+    // they cannot overflow visually, so inspect only the rendered KaTeX layer.
+    if (node.closest('.katex-mathml')) return false;
     const style = getComputedStyle(node);
     const rect = node.getBoundingClientRect();
     return style.display !== 'none' && style.visibility !== 'hidden' &&
