@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="../L21/custom.css?v=2">
   <link rel="stylesheet" href="../L22/custom.css?v=2">
   <link rel="stylesheet" href="../L23/custom.css?v=8">
-  <link rel="stylesheet" href="custom.css?v=2">
+  <link rel="stylesheet" href="custom.css?v=3">
 </head>
 <body>
 <a class="course-home-link" href="/teaching/spring2026/cs486-introduction-to-artificial-intelligence/" aria-label="Back to CS 486/686 course page" title="Back to CS 486/686 (Spring 2026) course page">
@@ -54,7 +54,7 @@
     <img class="l24-opening-motion" src="media/markup2im-generation.gif" alt="Recorded generation trajectory that transforms noise into a mathematical equation">
     <img class="l24-opening-print" src="images/flow-filmstrip.png" alt="Static filmstrip showing noise transformed into a mathematical equation">
   </div>
-  <p class="citation"><a href="https://github.com/da03/markup2im">Deng et al., “Latent Alignment and Variational Attention,” 2017</a>.</p>
+  <p class="citation"><a href="https://openreview.net/forum?id=81VJDmOE2ol">Deng, Kojima &amp; Rush, “Markup-to-Image Diffusion Models with Scheduled Sampling,” ICLR 2023</a>.</p>
 </section>
 
 <!-- 3. Lecture map -->
@@ -67,7 +67,13 @@
     <div class="known-arrow fragment" data-fragment-index="2">&rarr;</div>
     <div class="known-stage output-stage fragment" data-fragment-index="2"><strong>world model</strong><span>add actions + feedback</span></div>
   </div>
-  <p class="l23-thesis fragment" data-fragment-index="3">Turn each unfamiliar problem into one we already know how to solve.</p>
+</section>
+
+<!-- Image-generation boundary -->
+<section class="section-divider">
+  <span class="section-kicker">Part I</span>
+  <h2>Image generation</h2>
+  <p>Learn a path from noise to data.</p>
 </section>
 
 <!-- 4. Endpoints -->
@@ -112,10 +118,6 @@
       v^\star=\frac{dz_t}{dt}=z_{\text{data}}-z_{\text{noise}}
     \]</div>
   </div>
-  <div class="l24-distance-note fragment" data-fragment-index="1">
-    <span>distance left: \(z_{\text{data}}-z_t\)</span>
-    <strong>slope: \(\dfrac{z_{\text{data}}-z_t}{1-t}=z_{\text{data}}-z_{\text{noise}}\)</strong>
-  </div>
 </section>
 
 <!-- 7. Repeated generation -->
@@ -127,6 +129,46 @@
     <div class="fragment" data-fragment-index="2"><strong>update + repeat</strong><span>\(z_{t+\Delta t}\)</span></div>
   </div>
   <p class="l23-takeaway fragment" data-fragment-index="3">Many small moves turn an easy random sample into a structured output.</p>
+</section>
+
+<!-- One path, two views -->
+<section>
+  <h2>Each velocity prediction advances the sample</h2>
+  <div class="l24-path-views">
+    <figure class="l24-latent-path">
+      <svg viewBox="0 0 560 330" role="img" aria-label="A curved path from a noise latent to a data latent with a tangent velocity arrow">
+        <defs>
+          <marker id="l24VelocityHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z"></path>
+          </marker>
+        </defs>
+        <path class="l24-path-curve" d="M70,270 C165,235 195,85 300,115 C385,140 400,55 500,65"></path>
+        <circle class="l24-path-point noise" cx="70" cy="270" r="13"></circle>
+        <circle class="l24-path-point" cx="193" cy="157" r="10"></circle>
+        <circle class="l24-path-point current" cx="300" cy="115" r="13"></circle>
+        <circle class="l24-path-point" cx="407" cy="91" r="10"></circle>
+        <circle class="l24-path-point data" cx="500" cy="65" r="13"></circle>
+        <g class="fragment" data-fragment-index="0">
+          <line class="l24-tangent" x1="260" y1="122" x2="385" y2="104" marker-end="url(#l24VelocityHead)"></line>
+          <text class="l24-velocity-label" x="315" y="90">predicted velocity</text>
+        </g>
+        <text x="43" y="307">noise</text>
+        <text x="474" y="43">data</text>
+      </svg>
+      <figcaption>one path through latent space</figcaption>
+    </figure>
+    <figure class="l24-image-trajectory fragment" data-fragment-index="1">
+      <img src="images/flow-progression.png" alt="Noise gradually becoming a clean equation over five generation states">
+      <figcaption>the corresponding output becomes cleaner</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- Video-generation boundary -->
+<section class="section-divider">
+  <span class="section-kicker">Part II</span>
+  <h2>Video generation</h2>
+  <p>Generate many consistent frames—not just one image.</p>
 </section>
 
 <!-- 8. Image as video -->
@@ -161,14 +203,32 @@
 <section class="center-slide">
   <h2>Five seconds is about 80 frames</h2>
   <div class="l24-math-hero">\[
-    5\ \text{seconds}\times16\ \text{frames/second}=80\ \text{frame intervals}
+    5\ \text{seconds}\times16\ \text{frames/second}\approx80\ \text{frames}
   \]</div>
-  <p class="l23-takeaway">This is the right scale for intuition. Wan’s exact default has one extra endpoint frame.</p>
 </section>
 
-<!-- 11. Exact frame count -->
+<!-- Pixel-space motivation -->
+<section class="center-slide">
+  <h2>Five seconds already means 96 million values</h2>
+  <div class="l24-pixel-count">\[
+    80\times480\times832\times3=95{,}846{,}400
+  \]</div>
+  <div class="l24-pixel-factors">
+    <span>80 frames</span><b>&times;</b><span>480 × 832 pixels</span><b>&times;</b><span>RGB</span>
+  </div>
+  <p class="l23-thesis fragment">Compress first; run the expensive transformer in a smaller space.</p>
+</section>
+
+<!-- Wan case-study boundary -->
+<section class="section-divider">
+  <span class="section-kicker">Case study</span>
+  <h2>Wan2.1-T2V-1.3B</h2>
+  <p>An open text-to-video model built from a video VAE, a DiT, and a text encoder.</p>
+</section>
+
+<!-- Exact Wan frame count -->
 <section>
-  <h2>Wan generates 81 frames by default</h2>
+  <h2>Wan’s default clip has 81 frames</h2>
   <div class="l24-frame-timeline">
     <div class="l24-time-end"><strong>frame 0</strong><span>\(t=0\)</span></div>
     <div class="l24-time-span"><strong>80 intervals</strong><span>\(80/16=5\) seconds</span></div>
@@ -179,7 +239,7 @@
     <b>&rarr;</b>
     <span>21 latent time steps</span>
   </div>
-  <p class="l23-note fragment" data-fragment-index="1">Other valid lengths follow \(4k+1\), such as 33, 49, or 81 frames.</p>
+  <p class="l23-note fragment" data-fragment-index="1">Other supported lengths follow \(4k+1\), such as 33, 49, or 81 frames.</p>
 </section>
 
 <!-- 12. VAE -->
@@ -201,42 +261,73 @@
       <figcaption><strong>reconstructed video</strong><code>[3, 81, 480, 832]</code></figcaption>
     </figure>
   </div>
-  <p class="citation">Real Wan-VAE encode/decode example; <a href="data/wan_vae_roundtrip.json">provenance and hashes</a>.</p>
+  <div class="l24-vae-reductions fragment" data-fragment-index="2">
+    <span><strong>time</strong>81 → 21 <b>≈ ÷4</b></span>
+    <span><strong>height</strong>480 → 60 <b>÷8</b></span>
+    <span><strong>width</strong>832 → 104 <b>÷8</b></span>
+    <span><strong>channels</strong>3 → 16 <b>expand</b></span>
+  </div>
+  <p class="citation">Team Wan et al., <a href="https://arxiv.org/abs/2503.20314">“Wan: Open and Advanced Large-Scale Video Generative Models,” 2025</a>; <a href="data/wan_vae_roundtrip.json">example provenance</a>.</p>
 </section>
 
 <!-- 13. 4D latent -->
 <section>
-  <h2>The latent is a 4D array</h2>
-  <div class="l24-array-wrap">
-    <div class="l24-array-stack" aria-label="Stylized stack of real-valued matrices representing channels, time, height, and width">
-      <div class="l24-array-slice back"><span>−.3</span><span>.8</span><span>.1</span><span>−.6</span><span>.4</span><span>.9</span><span>.2</span><span>−.1</span><span>.7</span><span>.3</span><span>−.8</span><span>.5</span></div>
-      <div class="l24-array-slice middle"><span>.6</span><span>−.2</span><span>.4</span><span>.8</span><span>−.5</span><span>.1</span><span>.9</span><span>.3</span><span>−.7</span><span>.2</span><span>.5</span><span>−.4</span></div>
-      <div class="l24-array-slice front"><span>.2</span><span>.7</span><span>−.1</span><span>.5</span><span>.9</span><span>−.3</span><span>.4</span><span>−.8</span><span>.6</span><span>.1</span><span>−.5</span><span>.3</span></div>
+  <h2>A latent video is a nested array</h2>
+  <div class="l24-latent-nesting">
+    <div class="l24-latent-dimension channels">
+      <div class="l24-channel-stack" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <strong>16 channels</strong>
+      <span>different learned features</span>
     </div>
-    <div class="l24-array-labels">
-      <strong>\([16,\ 21,\ 60,\ 104]\)</strong>
-      <span>channels</span><span>time</span><span>height</span><span>width</span>
+    <div class="known-arrow" aria-hidden="true">&rarr;</div>
+    <div class="l24-latent-dimension time">
+      <div class="l24-time-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <strong>21 time steps</strong>
+      <span>inside every channel</span>
+    </div>
+    <div class="known-arrow" aria-hidden="true">&rarr;</div>
+    <div class="l24-latent-dimension matrix">
+      <div class="l24-number-matrix" aria-hidden="true">
+        <i>−.3</i><i>.8</i><i>.1</i><i>…</i>
+        <i>.6</i><i>−.2</i><i>.4</i><i>…</i>
+        <i>⋮</i><i>⋮</i><i>⋮</i><i>⋱</i>
+      </div>
+      <strong>60 × 104 matrix</strong>
+      <span>of real numbers</span>
     </div>
   </div>
-  <p class="l23-takeaway">No vocabulary and no token IDs—just a compact multi-dimensional array of real numbers.</p>
+  <p class="l24-latent-index">\([16,21,60,104]\quad=\quad z[\text{channel},\text{time},\text{row},\text{column}]\)</p>
 </section>
 
 <!-- 14. Patchify -->
 <section>
-  <h2>Split the latent grid into patches</h2>
-  <div class="l24-patch-layout">
-    <div class="l24-patch-grid" aria-label="Stylized grid of space-time latent patches">
-      <span></span><span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span><span></span>
+  <h2>Patchify the latent—just like an image encoder</h2>
+  <div class="l24-shape-trace">
+    <div class="l24-shape-stage pixels">
+      <strong>RGB video</strong>
+      <code>[3, 81, 480, 832]</code>
+      <span>≈ 97 million values</span>
     </div>
-    <div class="l24-patch-math">
-      <div class="fragment" data-fragment-index="0"><strong>patch size</strong><span>\((1,2,2)\) in latent time, height, width</span></div>
-      <div class="fragment" data-fragment-index="1"><strong>sequence length</strong><span>\(21\times30\times52=32{,}760\)</span></div>
-      <div class="fragment" data-fragment-index="2"><strong>token width</strong><span>each patch projects to 1536 numbers</span></div>
+    <div class="l24-shape-arrow" aria-hidden="true">&rarr;<small>Wan-VAE</small></div>
+    <div class="l24-shape-stage latent fragment" data-fragment-index="0">
+      <strong>latent grid</strong>
+      <code>[16, 21, 60, 104]</code>
+      <span>continuous features</span>
+    </div>
+    <div class="l24-shape-arrow fragment" data-fragment-index="1" aria-hidden="true">&rarr;<small>1×2×2 patches</small></div>
+    <div class="l24-shape-stage patches fragment" data-fragment-index="1">
+      <strong>patch sequence</strong>
+      <code>[32,760, 64]</code>
+      <span>\(21\times30\times52\) patches</span>
+    </div>
+    <div class="l24-shape-arrow fragment" data-fragment-index="2" aria-hidden="true">&rarr;<small>linear projection</small></div>
+    <div class="l24-shape-stage tokens fragment" data-fragment-index="2">
+      <strong>DiT tokens</strong>
+      <code>[32,760, 1536]</code>
+      <span>transformer input</span>
     </div>
   </div>
+  <p class="l23-note fragment" data-fragment-index="3">One token begins as \(16\) channels × \(1\) time step × \(2\times2\) spatial cells \(=64\) values.</p>
 </section>
 
 <!-- 15. DiT introduction -->
@@ -249,7 +340,7 @@
     <div class="known-arrow fragment" data-fragment-index="1">&rarr;</div>
     <div class="known-stage output-stage fragment" data-fragment-index="1"><strong>velocity patches</strong><span>same sequence shape</span></div>
   </div>
-  <p class="citation">Peebles &amp; Xie, <a href="https://arxiv.org/abs/2212.09748">“Scalable Diffusion Models with Transformers”</a>, ICCV 2023.</p>
+  <p class="citation">Peebles &amp; Xie, <a href="https://openaccess.thecvf.com/content/ICCV2023/html/Peebles_Scalable_Diffusion_Models_with_Transformers_ICCV_2023_paper.html">“Scalable Diffusion Models with Transformers,” ICCV 2023</a>.</p>
 </section>
 
 <!-- 16. Wan checkpoint -->
@@ -268,37 +359,48 @@
       <div><strong>480p</strong><span>target resolution</span></div>
     </div>
   </div>
-  <p class="citation"><a href="https://arxiv.org/abs/2503.20314">Wan technical report</a> and official checkpoint configuration.</p>
+  <p class="citation">Team Wan et al., <a href="https://arxiv.org/abs/2503.20314">“Wan: Open and Advanced Large-Scale Video Generative Models,” 2025</a>; official checkpoint configuration.</p>
 </section>
 
 <!-- 17. umT5 -->
 <section>
-  <h2>umT5 turns the prompt into vectors</h2>
+  <h2>Wan uses only the umT5-XXL encoder</h2>
+  <p class="l24-umt5-definition">umT5-XXL is a ~13B encoder–decoder Transformer; Wan keeps the 5.68B encoder and discards the decoder.</p>
   <div class="known-path l24-text-path">
     <div class="known-stage text-stage fragment" data-fragment-index="0"><strong>prompt tokens</strong><span>“a blue robot …”</span></div>
     <div class="known-arrow fragment" data-fragment-index="1">&rarr;</div>
-    <div class="known-stage fragment" data-fragment-index="1"><strong>umT5 encoder</strong><span>contextualizes every token</span></div>
+    <div class="known-stage fragment" data-fragment-index="1"><strong>5.68B encoder</strong><span>24 Transformer layers</span></div>
     <div class="known-arrow fragment" data-fragment-index="2">&rarr;</div>
-    <div class="known-stage output-stage fragment" data-fragment-index="2"><strong>hidden states</strong><span>\([T,4096]\)</span></div>
+    <div class="known-stage output-stage fragment" data-fragment-index="2"><strong>contextual states</strong><span>\([T,4096]\)</span></div>
   </div>
-  <p class="l23-takeaway fragment" data-fragment-index="3">The DiT reads contextual vectors—not raw words.</p>
+  <p class="citation">Chung et al., <a href="https://arxiv.org/abs/2304.09151">“UniMax: Fairer and More Effective Language Sampling for Large-Scale Multilingual Pretraining,” 2023</a>.</p>
 </section>
 
 <!-- 18. Whole pipeline -->
 <section>
   <h2>Prompt in; video out</h2>
-  <div class="l24-full-pipeline">
-    <div class="l24-text-condition fragment" data-fragment-index="0">
-      <span>prompt</span><b>&rarr;</b><span>umT5 hidden states</span><b>&darr;</b>
+  <div class="l24-two-row-pipeline">
+    <div class="l24-flow-generation">
+      <div class="l24-text-condition fragment" data-fragment-index="0">
+        <span>prompt &rarr; umT5 hidden states</span>
+        <b>&darr;</b>
+      </div>
+      <div class="l24-flow-unit noise fragment" data-fragment-index="1"><strong>latent noise</strong><span>\(z_0\)</span></div>
+      <div class="known-arrow fragment" data-fragment-index="2">&rarr;</div>
+      <div class="l24-flow-unit dit fragment" data-fragment-index="2"><strong>Wan DiT</strong><span>predict velocity</span></div>
+      <div class="known-arrow fragment" data-fragment-index="3">&rarr;</div>
+      <div class="l24-flow-unit update fragment" data-fragment-index="3"><strong>updated latent</strong><span>repeat until clean ↺</span></div>
     </div>
-    <div class="qwen-pipeline l24-generation-pipeline">
-      <div class="pipeline-unit fragment" data-fragment-index="1"><strong>latent noise</strong><span>\([16,21,60,104]\)</span></div>
-      <div class="pipeline-unit fragment" data-fragment-index="2"><strong>Wan DiT</strong><span>repeated velocity updates</span></div>
-      <div class="pipeline-unit fragment" data-fragment-index="3"><strong>clean latent</strong><span>same shape</span></div>
-      <div class="pipeline-unit known fragment" data-fragment-index="4"><strong>Wan-VAE</strong><span>decode once</span></div>
-      <div class="pipeline-unit output fragment" data-fragment-index="5"><strong>video</strong><span>81 RGB frames</span></div>
+    <div class="l24-cheap-decode fragment" data-fragment-index="4">
+      <span class="l24-row-label">decode once</span>
+      <div class="l24-flow-unit clean"><strong>clean latent</strong><span>\([16,21,60,104]\)</span></div>
+      <div class="known-arrow">&rarr;</div>
+      <div class="l24-flow-unit vae"><strong>Wan-VAE</strong><span>cheap decoder</span></div>
+      <div class="known-arrow">&rarr;</div>
+      <div class="l24-flow-unit video"><strong>RGB video</strong><span>81 frames</span></div>
     </div>
   </div>
+  <p class="l23-note fragment" data-fragment-index="5">Text conditions the DiT—not the VAE decoder.</p>
 </section>
 
 <!-- 19. DiT block -->
@@ -333,18 +435,6 @@
   <p class="l23-note fragment" data-fragment-index="5">Train the DiT. Keep umT5 and the Wan-VAE fixed.</p>
 </section>
 
-<!-- 21. Generation -->
-<section>
-  <h2>Generate by following the predicted velocity</h2>
-  <div class="qwen-pipeline l24-inference-pipeline">
-    <div class="pipeline-unit fragment" data-fragment-index="0"><strong>sample noise</strong><span>\(z_0\)</span></div>
-    <div class="pipeline-unit fragment" data-fragment-index="1"><strong>predict velocity</strong><span>Wan DiT</span></div>
-    <div class="pipeline-unit fragment" data-fragment-index="2"><strong>update latent</strong><span>repeat many steps</span></div>
-    <div class="pipeline-unit known fragment" data-fragment-index="3"><strong>decode</strong><span>Wan-VAE</span></div>
-    <div class="pipeline-unit output fragment" data-fragment-index="4"><strong>play video</strong><span>16 fps</span></div>
-  </div>
-</section>
-
 <!-- 22. Wan output -->
 <section class="center-slide l24-video-slide">
   <h2>The generated result<span class="demo-badge">recorded model output</span></h2>
@@ -360,6 +450,13 @@
     </div>
   </div>
   <p class="citation">Generated with <a href="https://huggingface.co/Wan-AI/Wan2.1-T2V-1.3B-Diffusers">Wan2.1-T2V-1.3B</a>; <a href="data/wan_samples.json">reproducibility record</a>.</p>
+</section>
+
+<!-- World-modeling boundary -->
+<section class="section-divider">
+  <span class="section-kicker">Part III</span>
+  <h2>From video generation to world modeling</h2>
+  <p>A fixed video cannot react. A world model observes actions and generates what happens next.</p>
 </section>
 
 <!-- 23. NeuralOS hook -->
@@ -379,7 +476,7 @@
       <a href="https://neural-os.com/">neural-os.com ↗</a>
     </div>
   </div>
-  <p class="citation"><a href="https://arxiv.org/abs/2507.08800">Deng et al., “NeuralOS,” 2025</a>.</p>
+  <p class="citation">Rivard et al., <a href="https://openreview.net/forum?id=TE2Vu7WJki">“NeuralOS: Towards Simulating Operating Systems via Neural Generative Models,” ICLR 2026</a>.</p>
 </section>
 
 <!-- 24. Video versus world model -->
@@ -421,34 +518,44 @@
 
 <!-- 26. Rollout -->
 <section class="center-slide l24-video-slide">
-  <h2>Feed the prediction back and repeat<span class="demo-badge">step through</span></h2>
+  <h2>A new action generates a new frame<span class="demo-badge">interactive</span></h2>
+  <p class="demo-caption">Click an action. The model generates the next screen—there is no autoplay.</p>
   <div class="live-demo" data-demo="neuralos-actions">
     <div class="demo-fallback">
-      <div class="l24-rollout-grid">
-        <div class="l24-rollout-frame"><img src="images/neuralos-action-home.png" alt="Generated desktop before double-clicking Home"><strong>double-click Home</strong></div>
-        <div class="l24-rollout-frame"><img src="images/neuralos-action-open.png" alt="Generated file manager after the double click"><strong>generated</strong></div>
-        <div class="l24-rollout-frame"><img src="images/neuralos-action-close.png" alt="Generated desktop after closing the file manager"><strong>click × → generated</strong></div>
+      <div class="l24-action-sequence">
+        <div class="l24-rollout-frame"><img src="images/neuralos-action-home.png" alt="Generated desktop before double-clicking Home"><strong>current frame</strong></div>
+        <div class="l24-action-arrow"><span>new action</span><strong>double-click Home</strong>&rarr;</div>
+        <div class="l24-rollout-frame"><img src="images/neuralos-action-open.png" alt="Generated file manager after the double click"><strong>generated frame</strong></div>
+        <div class="l24-action-arrow"><span>new action</span><strong>click ×</strong>&rarr;</div>
+        <div class="l24-rollout-frame"><img src="images/neuralos-action-close.png" alt="Generated desktop after closing the file manager"><strong>generated frame</strong></div>
       </div>
     </div>
   </div>
-  <p class="l23-takeaway">The user can choose a new action between predictions.</p>
 </section>
 
 <!-- 27. Autoregressive analogy -->
 <section>
   <h2>Next word prediction → next frame prediction</h2>
-  <div class="l24-analogy">
-    <div class="known-path">
+  <div class="l24-feedback-examples">
+    <div class="l24-feedback-row">
       <div class="known-stage text-stage"><strong>words so far</strong><span>“the robot”</span></div>
       <div class="known-arrow">&rarr;</div>
       <div class="known-stage output-stage"><strong>next word</strong><span>“waves”</span></div>
-      <div class="l24-loop-mark">↺</div>
+      <svg class="l24-feedback-arrow" viewBox="0 0 820 105" aria-label="The next word is appended to words so far">
+        <defs><marker id="wordFeedbackHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z"></path></marker></defs>
+        <path d="M680,18 C680,88 150,88 150,48" marker-end="url(#wordFeedbackHead)"></path>
+        <text x="370" y="99">append prediction to “so far”</text>
+      </svg>
     </div>
-    <div class="known-path fragment" data-fragment-index="0">
+    <div class="l24-feedback-row fragment" data-fragment-index="0">
       <div class="known-stage"><strong>screens so far + action</strong><span>desktop + double-click</span></div>
       <div class="known-arrow">&rarr;</div>
       <div class="known-stage output-stage"><strong>next frame</strong><span>file manager</span></div>
-      <div class="l24-loop-mark">↺</div>
+      <svg class="l24-feedback-arrow" viewBox="0 0 820 105" aria-label="The next frame is appended to screens so far">
+        <defs><marker id="frameFeedbackHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z"></path></marker></defs>
+        <path d="M680,18 C680,88 150,88 150,48" marker-end="url(#frameFeedbackHead)"></path>
+        <text x="370" y="99">append prediction to “so far”</text>
+      </svg>
     </div>
   </div>
 </section>
@@ -456,14 +563,21 @@
 <!-- 28. Back to Wan -->
 <section>
   <h2>Wan can be adapted to predict what happens next</h2>
-  <div class="connector-flow l24-wan-world">
-    <div class="fragment" data-fragment-index="0"><strong>history</strong><span>previous frames</span></div>
-    <div class="fragment" data-fragment-index="1"><strong>action</strong><span>mouse, keyboard, control</span></div>
-    <div class="fragment" data-fragment-index="2"><strong>Wan backbone</strong><span>condition the DiT</span></div>
-    <div class="final fragment" data-fragment-index="3"><strong>next frame or chunk</strong><span>feed back ↺</span></div>
+  <p class="l24-prior-motivation">Why reuse Wan? Video pretraining has already learned useful priors about appearance, motion, and dynamics.</p>
+  <div class="l24-wan-feedback fragment" data-fragment-index="0">
+    <div class="known-stage"><strong>history + new action</strong><span>frames, mouse, keyboard</span></div>
+    <div class="known-arrow">&rarr;</div>
+    <div class="known-stage text-stage"><strong>Wan backbone</strong><span>adapt the pretrained DiT</span></div>
+    <div class="known-arrow">&rarr;</div>
+    <div class="known-stage output-stage"><strong>next frame or chunk</strong><span>generated response</span></div>
+    <svg class="l24-feedback-arrow" viewBox="0 0 1100 105" aria-label="The generated frame is fed back into history">
+      <defs><marker id="wanFeedbackHead" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z"></path></marker></defs>
+      <path d="M960,18 C960,90 145,90 145,48" marker-end="url(#wanFeedbackHead)"></path>
+      <text x="505" y="100">feed the generated result back into history</text>
+    </svg>
   </div>
-  <p class="l23-note fragment" data-fragment-index="4">NeuralOS uses a different backbone. The shared formulation is repeated next-frame prediction.</p>
-  <p class="citation"><a href="https://github.com/shengshu-ai/minWM">minWM</a> adapts Wan2.1 directly; <a href="https://matrix-game-v2.github.io/">Matrix-Game 2.0</a> uses the Wan architecture lineage.</p>
+  <p class="l23-note fragment" data-fragment-index="1">NeuralOS uses a different backbone. The shared formulation is repeated next-frame prediction.</p>
+  <p class="citation">Zhao et al., <a href="https://arxiv.org/abs/2605.30263">“minWM,” 2026</a>; He et al., <a href="https://arxiv.org/abs/2508.13009">“Matrix-Game 2.0,” 2025</a>.</p>
 </section>
 
 <!-- 29. Deadlines -->
@@ -539,6 +653,6 @@
     });
   });
 </script>
-<script type="module" src="../shared/demo.js?v=24"></script>
+<script type="module" src="../shared/demo.js?v=25"></script>
 </body>
 </html>

@@ -154,6 +154,7 @@ body.static-demos .reveal .l24-opening-print {
   border-color: #86efac;
   background: var(--l24-emerald-soft);
   color: #166534;
+  padding-bottom: 0.38em;
 }
 
 .reveal .l24-path-equation .katex-display,
@@ -856,7 +857,8 @@ body.static-demos .reveal .l24-opening-print {
   width: 100%;
   height: 225px;
   border-radius: 6px;
-  object-fit: cover;
+  background: #fff;
+  object-fit: contain;
 }
 
 .reveal .l24-neural-setup figcaption {
@@ -962,8 +964,564 @@ body.static-demos .reveal .l24-opening-print {
   font-weight: 900;
 }
 
-.reveal .l24-wan-world > div {
-  min-width: 0;
+/* One generation trajectory, shown in latent and image space. */
+.reveal .l24-path-views {
+  display: grid;
+  width: 1140px;
+  max-width: 100%;
+  grid-template-columns: 0.9fr 1.25fr;
+  gap: 0.55em;
+  margin: 0.42em auto 0;
+}
+
+.reveal .l24-path-views figure {
+  display: flex;
+  min-height: 350px;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  border: 2px solid #c4b5fd;
+  border-radius: 12px;
+  background: var(--l24-violet-soft);
+  padding: 0.28em;
+}
+
+.reveal .l24-path-views figure:last-child {
+  border-color: #93c5fd;
+  background: var(--l24-blue-soft);
+}
+
+.reveal .l24-latent-path svg {
+  display: block;
+  width: 100%;
+  height: 285px;
+}
+
+.reveal .l24-latent-path text {
+  fill: #475569;
+  font-family: system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 750;
+}
+
+.reveal .l24-path-curve {
+  fill: none;
+  stroke: var(--l24-violet);
+  stroke-linecap: round;
+  stroke-width: 7;
+}
+
+.reveal .l24-path-point {
+  fill: #a78bfa;
+  stroke: #fff;
+  stroke-width: 4;
+}
+
+.reveal .l24-path-point.noise { fill: #64748b; }
+.reveal .l24-path-point.current { fill: var(--l24-blue); }
+.reveal .l24-path-point.data { fill: var(--l24-emerald); }
+
+.reveal .l24-tangent {
+  stroke: var(--l24-emerald);
+  stroke-linecap: round;
+  stroke-width: 8;
+}
+
+.reveal #l24VelocityHead path {
+  fill: var(--l24-emerald);
+}
+
+.reveal .l24-velocity-label {
+  fill: #047857 !important;
+}
+
+.reveal .l24-image-trajectory img {
+  display: block;
+  width: 100%;
+  max-height: 285px;
+  border-radius: 7px;
+  object-fit: contain;
+}
+
+.reveal .l24-path-views figcaption {
+  margin-top: 0.15em;
+  color: var(--l24-ink);
+  font-size: 0.46em;
+  font-weight: 800;
+}
+
+/* Raw-pixel motivation. */
+.reveal .l24-pixel-count {
+  margin: 0.55em auto 0;
+  color: var(--l24-blue-dark);
+  font-size: 1.12em;
+  font-weight: 850;
+}
+
+.reveal .l24-pixel-count .katex-display {
+  margin: 0;
+}
+
+.reveal .l24-pixel-factors {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  margin: 0.45em auto 0;
+}
+
+.reveal .l24-pixel-factors span {
+  border: 2px solid #93c5fd;
+  border-radius: 10px;
+  background: var(--l24-blue-soft);
+  color: var(--l24-blue-dark);
+  padding: 0.3em 0.5em;
+  font-size: 0.53em;
+  font-weight: 800;
+}
+
+.reveal .l24-pixel-factors b {
+  color: #94a3b8;
+  font-size: 0.72em;
+}
+
+/* Make every VAE dimension change explicit. */
+.reveal .l24-vae-reductions {
+  display: grid;
+  width: 1040px;
+  max-width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.3em;
+  margin: 0.28em auto 0;
+}
+
+.reveal .l24-vae-reductions span {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.15em;
+  border: 1px solid #c4b5fd;
+  border-radius: 8px;
+  background: var(--l24-violet-soft);
+  color: #475569;
+  padding: 0.18em 0.28em;
+  font-size: 0.37em;
+}
+
+.reveal .l24-vae-reductions strong {
+  color: #5b21b6;
+  text-transform: uppercase;
+}
+
+.reveal .l24-vae-reductions b {
+  color: var(--l24-violet);
+}
+
+/* Clear nested-array view of [channels, time, height, width]. */
+.reveal .l24-latent-nesting {
+  display: grid;
+  width: 1100px;
+  max-width: 100%;
+  grid-template-columns: 1fr 65px 1fr 65px 1.2fr;
+  align-items: center;
+  gap: 0.28em;
+  margin: 0.65em auto 0;
+}
+
+.reveal .l24-latent-dimension {
+  display: flex;
+  min-height: 250px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.18em;
+  border: 2px solid #c4b5fd;
+  border-radius: 12px;
+  background: var(--l24-violet-soft);
+  padding: 0.3em;
+}
+
+.reveal .l24-latent-dimension strong {
+  color: #5b21b6;
+  font-size: 0.65em;
+}
+
+.reveal .l24-latent-dimension > span {
+  color: var(--l24-muted);
+  font-size: 0.43em;
+}
+
+.reveal .l24-channel-stack {
+  position: relative;
+  width: 150px;
+  height: 115px;
+}
+
+.reveal .l24-channel-stack i {
+  position: absolute;
+  display: block;
+  width: 115px;
+  height: 72px;
+  border: 2px solid #8b5cf6;
+  border-radius: 7px;
+  background: rgb(221 214 254 / 86%);
+}
+
+.reveal .l24-channel-stack i:nth-child(1) { top: 0; left: 30px; }
+.reveal .l24-channel-stack i:nth-child(2) { top: 12px; left: 20px; }
+.reveal .l24-channel-stack i:nth-child(3) { top: 24px; left: 10px; }
+.reveal .l24-channel-stack i:nth-child(4) { top: 36px; left: 0; }
+
+.reveal .l24-time-dots {
+  display: flex;
+  width: 185px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5em 0;
+  border-top: 5px solid #93c5fd;
+}
+
+.reveal .l24-time-dots i {
+  display: block;
+  width: 17px;
+  height: 17px;
+  transform: translateY(-11px);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--l24-blue);
+}
+
+.reveal .l24-number-matrix {
+  display: grid;
+  width: 225px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin-bottom: 0.2em;
+  border: 2px solid #a78bfa;
+  border-radius: 8px;
+  background: #ddd6fe;
+  padding: 5px;
+}
+
+.reveal .l24-number-matrix i {
+  display: grid;
+  min-height: 38px;
+  place-items: center;
+  border-radius: 3px;
+  background: #fff;
+  color: #5b21b6;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.31em;
+  font-style: normal;
+}
+
+.reveal .l24-latent-index {
+  max-width: 950px;
+  margin: 0.45em auto 0;
+  border: 2px solid #93c5fd;
+  border-radius: 9px;
+  background: var(--l24-blue-soft);
+  color: var(--l24-blue-dark);
+  padding: 0.23em 0.45em;
+  font-size: 0.6em;
+  font-weight: 750;
+}
+
+/* End-to-end patchification and tensor shapes. */
+.reveal .l24-shape-trace {
+  display: grid;
+  width: 1190px;
+  max-width: 100%;
+  grid-template-columns: 1.08fr 72px 1.08fr 72px 1.08fr 72px 1.08fr;
+  align-items: center;
+  gap: 0.16em;
+  margin: 0.75em auto 0;
+}
+
+.reveal .l24-shape-stage {
+  display: flex;
+  min-height: 185px;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2em;
+  border: 2px solid #93c5fd;
+  border-radius: 11px;
+  background: var(--l24-blue-soft);
+  padding: 0.25em;
+}
+
+.reveal .l24-shape-stage.latent,
+.reveal .l24-shape-stage.patches {
+  border-color: #c4b5fd;
+  background: var(--l24-violet-soft);
+}
+
+.reveal .l24-shape-stage.tokens {
+  border-color: #86efac;
+  background: var(--l24-emerald-soft);
+}
+
+.reveal .l24-shape-stage strong {
+  color: var(--l24-ink);
+  font-size: 0.51em;
+}
+
+.reveal .l24-shape-stage code {
+  border-radius: 5px;
+  background: #fff;
+  color: #5b21b6;
+  padding: 0.12em 0.2em;
+  font-size: 0.36em;
+}
+
+.reveal .l24-shape-stage span {
+  color: var(--l24-muted);
+  font-size: 0.35em;
+  text-align: center;
+}
+
+.reveal .l24-shape-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #94a3b8;
+  font-size: 0.76em;
+  font-weight: 800;
+  text-align: center;
+}
+
+.reveal .l24-shape-arrow small {
+  color: var(--l24-muted);
+  font-size: 0.42em;
+  line-height: 1.15;
+}
+
+/* umT5 and the two-stage Wan inference pipeline. */
+.reveal .l24-umt5-definition {
+  max-width: 1050px;
+  margin: 0.42em auto 0;
+  border: 2px solid #c4b5fd;
+  border-radius: 10px;
+  background: var(--l24-violet-soft);
+  color: #5b21b6;
+  padding: 0.28em 0.5em;
+  font-size: 0.61em;
+  font-weight: 750;
+  text-align: center;
+}
+
+.reveal .l24-text-path {
+  margin-top: 0.55em;
+}
+
+.reveal .l24-two-row-pipeline {
+  width: 1080px;
+  max-width: 100%;
+  margin: 0.35em auto 0;
+}
+
+.reveal .l24-flow-generation,
+.reveal .l24-cheap-decode {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 70px 1fr 70px 1fr;
+  align-items: center;
+  gap: 0.18em;
+}
+
+.reveal .l24-flow-generation {
+  padding-top: 1.2em;
+}
+
+.reveal .l24-flow-unit {
+  display: flex;
+  min-height: 105px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #c4b5fd;
+  border-radius: 10px;
+  background: var(--l24-violet-soft);
+  padding: 0.24em;
+}
+
+.reveal .l24-flow-unit.clean,
+.reveal .l24-flow-unit.vae {
+  border-color: #93c5fd;
+  background: var(--l24-blue-soft);
+}
+
+.reveal .l24-flow-unit.video {
+  border-color: #86efac;
+  background: var(--l24-emerald-soft);
+}
+
+.reveal .l24-flow-unit strong {
+  color: var(--l24-blue-dark);
+  font-size: 0.55em;
+}
+
+.reveal .l24-flow-unit span {
+  color: #475569;
+  font-size: 0.4em;
+}
+
+.reveal .l24-flow-generation .l24-text-condition {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.38em;
+}
+
+.reveal .l24-flow-generation .l24-text-condition b {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  color: var(--l24-violet);
+  font-size: 1.55em;
+}
+
+.reveal .l24-cheap-decode {
+  margin-top: 0.42em;
+  border-top: 2px solid #e2e8f0;
+  padding-top: 0.42em;
+}
+
+.reveal .l24-row-label {
+  position: absolute;
+  top: -0.6em;
+  left: 0;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: var(--l24-muted);
+  padding: 0.1em 0.32em;
+  font-size: 0.32em;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Each NeuralOS action generates exactly one next frame. */
+.reveal .l24-action-sequence {
+  display: grid;
+  width: 1160px;
+  max-width: 100%;
+  grid-template-columns: 1fr 140px 1fr 120px 1fr;
+  align-items: center;
+  gap: 0.2em;
+  margin: 0 auto;
+}
+
+.reveal .l24-action-sequence .l24-rollout-frame img {
+  height: 210px;
+  object-fit: contain;
+}
+
+.reveal .l24-action-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #94a3b8;
+  font-size: 0.7em;
+  font-weight: 850;
+  text-align: center;
+}
+
+.reveal .l24-action-arrow span {
+  color: #9a3412;
+  font-size: 0.42em;
+  text-transform: uppercase;
+}
+
+.reveal .l24-action-arrow strong {
+  color: #9a3412;
+  font-size: 0.43em;
+  line-height: 1.15;
+}
+
+/* Explicit feedback arrows point back to the accumulated history. */
+.reveal .l24-feedback-examples {
+  display: grid;
+  width: 900px;
+  max-width: 100%;
+  gap: 0.35em;
+  margin: 0.38em auto 0;
+}
+
+.reveal .l24-feedback-row,
+.reveal .l24-wan-feedback {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr;
+  align-items: start;
+  gap: 0.25em;
+  padding-bottom: 1.25em;
+}
+
+.reveal .l24-feedback-row .known-stage {
+  min-height: 92px;
+}
+
+.reveal .l24-feedback-arrow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 100%;
+  height: 105px;
+  transform: translateX(-50%);
+  overflow: visible;
+}
+
+.reveal .l24-feedback-arrow path {
+  fill: none;
+  stroke: var(--l24-emerald);
+  stroke-linecap: round;
+  stroke-width: 4;
+}
+
+.reveal .l24-feedback-arrow marker path {
+  fill: var(--l24-emerald);
+  stroke: none;
+}
+
+.reveal .l24-feedback-arrow text {
+  fill: var(--l24-muted);
+  font-family: system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 750;
+  text-anchor: middle;
+}
+
+.reveal .l24-prior-motivation {
+  max-width: 1020px;
+  margin: 0.35em auto 0;
+  border: 2px solid #c4b5fd;
+  border-radius: 10px;
+  background: var(--l24-violet-soft);
+  color: #5b21b6;
+  padding: 0.27em 0.5em;
+  font-size: 0.58em;
+  font-weight: 750;
+  text-align: center;
+}
+
+.reveal .l24-wan-feedback {
+  width: 1100px;
+  max-width: 100%;
+  grid-template-columns: 1fr 65px 1fr 65px 1fr;
+  margin: 0.38em auto 0;
+}
+
+.reveal .l24-wan-feedback .known-stage {
+  min-height: 115px;
+}
+
+.reveal .l24-wan-feedback .l24-feedback-arrow {
+  width: 1100px;
 }
 
 /* Final logistics reuse L23 cards. */

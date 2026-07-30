@@ -134,6 +134,14 @@ def make_flow_assets(root: Path) -> dict[str, Any]:
     strip_path = images / "flow-filmstrip.png"
     strip.save(strip_path, optimize=True)
 
+    progression = Image.new("RGB", (912, 264), "#eef2ff")
+    for index, panel in enumerate(panels):
+        column = index if index < 3 else index - 3
+        row = 0 if index < 3 else 1
+        progression.paste(panel, (column * 304, row * 132))
+    progression_path = images / "flow-progression.png"
+    progression.save(progression_path, optimize=True)
+
     manifest = {
         "description": (
             "Fixed pixel-space visualization of z_t=(1-t)z_noise+t z_data. "
@@ -143,7 +151,7 @@ def make_flow_assets(root: Path) -> dict[str, Any]:
         "source": MARKUP_SOURCE,
         "files": {
             path.name: {"sha256": sha256(path), "size_bytes": path.stat().st_size}
-            for path in (source, clean_path, noise_path, strip_path)
+            for path in (source, clean_path, noise_path, strip_path, progression_path)
         },
     }
     save_json(data / "flow_assets.json", manifest)

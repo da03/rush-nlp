@@ -3858,67 +3858,66 @@ register('wan-recorded', (api) => makeRecordedVideo(api, {
   note: '',
 }));
 
-/* ---- shared L24 helper: a short, action-labelled image rollout. */
-function makeLabeledRollout(api, frames) {
+/* ---- shared L24 helper: each user action explicitly generates one frame. */
+function makeActionRollout(api, frames) {
   const image = el('img', { class: 'l24-action-image', alt: frames[0].alt });
   const readout = el('div', { class: 'demo-readout', 'aria-live': 'polite' });
-  const step = api.slider('rollout step', {
-    min: 0, max: frames.length - 1, step: 1, value: 0,
-    fmt: (value) => `${value + 1}/${frames.length}`,
-  });
-  let timer = null;
+  let index = 0;
 
-  function show(index) {
-    const frame = frames[index];
+  const actionButton = api.button('generate next frame', () => {
+    if (index >= frames.length - 1) return;
+    index += 1;
+    show(index);
+  });
+  const restartButton = api.button('restart', () => {
+    index = 0;
+    show(index);
+  }, 'secondary');
+
+  function show(nextIndex) {
+    const frame = frames[nextIndex];
     image.src = frame.src;
     image.alt = frame.alt;
+    actionButton.disabled = !frame.nextAction;
+    actionButton.textContent = frame.nextAction
+      ? `${frame.nextAction} \u2192 generate next frame`
+      : 'rollout complete';
     readout.innerHTML = '';
-    readout.appendChild(el('span', { html: `<b>${frame.action}</b>` }));
-    readout.appendChild(el('span', { text: frame.result }));
+    readout.appendChild(el('span', { html: `<b>${frame.state}</b>` }));
+    readout.appendChild(el('span', {
+      text: frame.arrivedFrom
+        ? `new action: ${frame.arrivedFrom} \u2192 generated frame`
+        : 'choose an action to generate what happens next',
+    }));
   }
-  function stop() {
-    if (!timer) return;
-    window.clearInterval(timer);
-    timer = null;
-    playButton.textContent = 'play';
-  }
-  function play() {
-    if (timer) { stop(); return; }
-    playButton.textContent = 'stop';
-    timer = window.setInterval(() => {
-      const next = (step.get() + 1) % frames.length;
-      step.input.value = next;
-      step.setText(`${next + 1}/${frames.length}`);
-      show(next);
-    }, 1500);
-  }
-  const playButton = api.button('play', play);
-  step.input.addEventListener('input', () => show(step.get()));
+
   const mount = el('div', {}, [
-    el('div', { class: 'demo-controls' }, [playButton, step.field]),
+    el('div', { class: 'demo-controls' }, [actionButton, restartButton]),
     el('div', { class: 'demo-stage' }, [image, readout]),
   ]);
-  return { mount, init: () => show(0), onLeave: stop };
+  return { mount, init: () => show(0) };
 }
 
-register('neuralos-actions', (api) => makeLabeledRollout(api, [
+register('neuralos-actions', (api) => makeActionRollout(api, [
   {
     src: 'images/neuralos-action-home.png',
     alt: 'Generated NeuralOS desktop before double-clicking Home',
-    action: 'double-click Home',
-    result: 'current screen',
+    state: 'current frame',
+    nextAction: 'double-click Home',
   },
   {
     src: 'images/neuralos-action-open.png',
     alt: 'Generated NeuralOS file manager after the double click',
-    action: 'generated',
-    result: 'file manager opens',
+    state: 'generated next frame',
+    arrivedFrom: 'double-click Home',
+    nextAction: 'click \u00d7',
   },
   {
     src: 'images/neuralos-action-close.png',
     alt: 'Generated NeuralOS desktop after closing the file manager',
-    action: 'click × → generated',
-    result: 'desktop returns',
+    state: 'generated next frame',
+    arrivedFrom: 'click \u00d7',
+    nextAction: '',
   },
 ]));
 

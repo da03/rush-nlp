@@ -13,6 +13,10 @@
       "sha256": "9e42dc64591f305060ebc420c4b01c83f17112c3eb73f0ee0ad38c3cb316b7bf",
       "size_bytes": 842543
     },
+    "flow-progression.png": {
+      "sha256": "d04cd3be819f784bd9b9b56c36f6b91c5e75afcf9dfaf82f1090bb55489821d7",
+      "size_bytes": 260712
+    },
     "markup2im-equation.png": {
       "sha256": "4e702452fe59acedee472280065a43eb06ff90fce45fb54ca4622eb6a30a55f4",
       "size_bytes": 2884
