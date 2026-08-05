@@ -369,6 +369,14 @@ schedule:
 announcements:
   - severity: event
     show: true
+    title: "Additional office hours - August 5 and 6"
+    body: >-
+      I will hold two additional in-person office-hour sessions:
+      <strong>Wednesday, August 5, 3:00&ndash;4:00 PM</strong> and
+      <strong>Thursday, August 6, 3:00&ndash;4:00 PM</strong>, both in
+      <strong>DC 2633</strong>. Bring any course or final-exam questions.
+  - severity: event
+    show: false
     title: "Additional office hours this week - July 29 and 30"
     body: >-
       Two additional in-person office-hour sessions are available:
