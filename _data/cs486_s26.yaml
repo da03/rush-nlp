@@ -368,7 +368,7 @@ schedule:
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
   - severity: event
-    show: true
+    show: false
     title: "Additional office hours - August 5 and 6"
     body: >-
       I will hold two additional in-person office-hour sessions:
@@ -403,7 +403,7 @@ announcements:
       Direct Assignment 2 grading questions to <strong>Henry Lin</strong> at
       <a href="mailto:h293lin@uwaterloo.ca">h293lin@uwaterloo.ca</a>.
   - severity: warning
-    show: true
+    show: false
     title: "Assignment 3 is now available - due Tuesday, August 4"
     body: >-
       <strong>Assignment 3</strong> is now posted on
@@ -415,7 +415,7 @@ announcements:
       <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">Piazza</a> addressed to
       <strong>Yuntian Deng</strong> (or <a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a>).
   - severity: event
-    show: true
+    show: false
     title: "CS686 final project report due Wednesday, August 5"
     body: >-
       The <strong>CS686 final project report</strong> is due <strong>Wednesday, August 5 at 11:59 PM</strong>
