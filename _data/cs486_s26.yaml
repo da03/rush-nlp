@@ -367,6 +367,15 @@ schedule:
 # Announcements at the top of the page. Each gets a severity (info / warning / event).
 # Order matters: top to bottom. Mark with show:false to hide without deleting.
 announcements:
+  - severity: info
+    show: true
+    title: "All coursework grades are available on LEARN"
+    body: >-
+      All grade items other than the upcoming final exam are now available on
+      <a href="https://learn.uwaterloo.ca/">LEARN</a>. This includes
+      <strong>Assignment 3, the chat assignments, and project grades</strong>
+      for everyone who completed a project. Please review your grades and
+      <a href="mailto:yuntian@uwaterloo.ca">email me</a> if anything appears incorrect.
   - severity: event
     show: false
     title: "Additional office hours - August 5 and 6"
