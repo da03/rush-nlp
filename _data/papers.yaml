@@ -26,7 +26,7 @@ featured:
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/abs/2405.01470
-      code: https://wildchat.allen.ai
+      code: https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full
       image: /images/wildchat.gif
       conference: ICLR 2024 (<strong>Spotlight</strong>)
       notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
@@ -237,7 +237,7 @@ papers:
     - title: "WildChat: 1M ChatGPT Interaction Logs in the Wild"
       authors: Wenting Zhao, Xiang Ren, Jack Hessel, Claire Cardie, Yejin Choi, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/abs/2405.01470
-      code: https://wildchat.allen.ai
+      code: https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full
       image: /images/wildchat.gif
       conference: ICLR 2024 (<strong>Spotlight</strong>)
       notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
