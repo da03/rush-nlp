@@ -3,13 +3,15 @@ A visitor to Yuntian Deng's academic website asked a question. Decide which spec
 - paw: specifically about ProgramAsWeights (PAW) - what it is, how it works, its compilers, how to use it, its design or runtime.
 - neuralos: specifically about NeuralOS - what it is, how it works, its architecture, training, data, or demo.
 - students: about Yuntian's STUDENTS (who he supervises, who is in his group, how many students) OR about whether he is taking/recruiting students or accepting applications (PhD or undergrad).
-- bio: about YUNTIAN HIMSELF - his role/title/position, his education (undergrad, master's, PhD), his OWN advisors/mentors, his internships, his awards, or where he is based (city/institution).
+- bio: about YUNTIAN HIMSELF - his role/title/position, professional-service leadership (such as ARR, TACL, or AAAI), his education (undergrad, master's, PhD), his OWN advisors/mentors, his internships, his awards, or where he is based (city/institution).
 - general: anything else - his research and other projects (Implicit Chain of Thought, WildChat, OpenNMT, demos), what he is working on, his favorite work, how to interact with or contact him, news/media, or broad questions that just mention projects in passing.
 
 Rules:
 - "Who do you supervise / your students / how many students" -> students. "Who are your advisors / mentors" -> bio (those are HIS advisors, not his students).
 - "Are you taking/recruiting students", "can I apply", "joining your lab/group" -> students.
 - Whether a specific named person is/was your student or worked with you -> students.
+- Questions about Yuntian's role in an organization or professional-service activity -> bio.
+- Any question mentioning ARR, ACL Rolling Review, TACL, Action Editor, or the AAAI Undergraduate Consortium -> bio, including questions about submission scale or infrastructure.
 - "What are you working on", "your research", "favorite project", and his other projects (ICoT, WildChat, OpenNMT, demos) -> general.
 - Social-media or contact questions (twitter/X, LinkedIn, email, how to reach him) -> general.
 - When in doubt, return general.
@@ -66,6 +68,21 @@ Input: which city is Yuntian in
 Output: bio
 
 Input: what awards has he won
+Output: bio
+
+Input: what does Yuntian do at ARR
+Output: bio
+
+Input: how many submissions did ARR infrastructure support
+Output: bio
+
+Input: ARR submission count
+Output: bio
+
+Input: how many submissions did ACL Rolling Review handle
+Output: bio
+
+Input: what is Yuntian's role in TACL
 Output: bio
 
 Input: what are you working on these days

@@ -10,7 +10,8 @@ in a list here.
 ## Identity and roles
 - Yuntian Deng is an Assistant Professor of Computer Science at the University of Waterloo.
 - He is also an Associate at Harvard SEAS and a Faculty Affiliate at the Vector Institute.
-- He is Co-Chief Technical Officer (Co-CTO) of ACL Rolling Review (ARR).
+- He is Co-Chief Technical Officer (Co-CTO) of ACL Rolling Review (ARR), whose technical infrastructure supported 17,087 submissions in the May 2026 cycle.
+- He served as an Action Editor for TACL from 2025 to 2026 and is a Co-Chair of the AAAI 2027 Undergraduate Consortium.
 
 ## Education
 - Harvard University - PhD in Computer Science, 2023; advisors Alexander Rush and Stuart Shieber.
@@ -31,6 +32,7 @@ in a list here.
 
 ## Awards
 - Laude Institute Slingshots (for NeuralOS), 2026.
+- Google Research Award (co-PI), 2026.
 - Argonne National Lab Impact Award, 2023.
 - University of Chicago Rising Stars in Data Science, 2022.
 - ACM Gordon Bell Special Prize, 2022.
@@ -48,8 +50,8 @@ in a list here.
 - Undergraduate students: Yifan Zong, Austing Dong, and Akira Kudo.
 
 ## Research themes and best works
-- [ProgramAsWeights](https://programasweights.com) - his favorite current direction. It shifts powerful LLMs from problem solvers to tool builders: models that generate reusable, specialized small (local) models, i.e. neural software, by compiling natural language specifications into tiny neural functions.
-- [NeuralOS](https://neural-os.com) - a neural world model and his vision for the most flexible UI: a neural model that simulates an entire computing environment with no software boundaries and no fixed menus or icons, fully customizable - the final form of chatbots.
+- [ProgramAsWeights](https://programasweights.com) - his favorite current direction. It shifts powerful LLMs from problem solvers to tool builders: models that generate reusable, specialized small (local) models, i.e. neural software, by compiling natural language specifications into tiny neural functions. Its public [Hub](https://programasweights.com/hub) contains 3,856 community-built neural programs.
+- [NeuralOS](https://neural-os.com) - a neural world model and his vision for the most flexible UI: a neural model that simulates an entire computing environment with no software boundaries and no fixed menus or icons, fully customizable - the final form of chatbots. Its public demo has received more than 50,000 visits.
 - [Implicit Chain of Thought](https://arxiv.org/abs/2405.14838) - internalizing reasoning into a model's hidden computation instead of spelling out every step.
 - [WildChat](https://wildvisualizer.com) - a million-scale dataset of real user-chatbot conversations for studying how people actually use LLMs; the dataset is on [Hugging Face](https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full). It was featured in the Washington Post and has been used by OpenAI (o1) and Anthropic (Claude 3) for safety evaluation.
 - He has built several widely used open-source projects and demos, including [OpenNMT](https://opennmt.net) (neural machine translation), [Neural Linguistic Steganography](https://steganography.live), and [im2markup](https://im2markup.yuntiandeng.com) (image-to-LaTeX).
@@ -66,9 +68,12 @@ in a list here.
 - NZZ (Nov 2024): on what people really ask ChatGPT - [article](https://www.nzz.ch/technologie/schreibe-eine-erotische-kurzgeschichte-warum-sollte-man-in-wollishofen-wohnen-wieso-versteht-mich-meine-frau-nicht-was-leute-chat-gpt-wirklich-fragen-ld.1858229).
 - TechCrunch (Oct 2024): on LLMs and math - [article](https://techcrunch.com/2024/10/02/why-is-chatgpt-so-bad-at-math).
 - The Washington Post (Aug 2024): on what people ask chatbots, featuring WildChat - [article](https://wapo.st/3A6e4me).
+- Coverage of coauthored research includes [Tech Xplore](https://techxplore.com/news/2025-12-ai-stumble-basic-multiplication-special.html) (Dec 2025) and the [Harvard Business School AI Institute](https://d3.harvard.edu/when-giants-stumble-what-multiplication-reveals-about-ais-capabilities/) (Oct 2025) on the multiplication study, and [Computerworld](https://www.computerworld.com/article/3976355/leaderboard-illusion-how-big-tech-skewed-ai-rankings-on-chatbot-arena.html) (May 2025) on The Leaderboard Illusion.
 
 ## Recent news
 - Organizing the Latent & Implicit Thinking workshop at ICLR 2026, in line with his work on [Implicit Chain of Thought](https://arxiv.org/abs/2405.14838).
+- NeuralOS was selected for the Laude Institute Slingshots program in June 2026.
+- He received a Google Research Award as co-PI in April 2026.
 
 ## About this helper
 - This "Ask about Yuntian" assistant is itself built with [ProgramAsWeights](https://programasweights.com): a pipeline of three small neural programs - a page classifier (routes to a link), a freeform answerer (writes these replies), and a validator (checks the answer) - each compiled from a short natural-language spec and run on the server.

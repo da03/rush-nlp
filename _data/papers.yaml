@@ -44,7 +44,7 @@ notable:
       conference: EMNLP 2025 Demo
     - title: "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild"
       authors: <strong>Yuntian Deng</strong>, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
-      pdf: https://openreview.net/pdf?id=uVyk82wsr4
+      pdf: https://arxiv.org/abs/2409.03753
       code: https://github.com/da03/WildVisualizer
       image: /images/wildvisualizer.gif
       conference: EMNLP 2024 Demo
@@ -111,12 +111,54 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "Interactive Training 2: Auditable Control Plane for Live Model Training"
+      authors: Wentao Zhang*, Xuanhe Pan*, Han Zhou*, Yang Lu†, <strong>Yuntian Deng</strong>†
+      pdf: https://arxiv.org/pdf/2607.18314
+      conference: arXiv 2026
+      year: 2026
+    - title: "Program-as-Weights: A Programming Paradigm for Fuzzy Functions"
+      authors: Wentao Zhang*, Liliana Hotsko*, Woojeong Kim*, Pengyu Nie, Stuart Shieber, <strong>Yuntian Deng</strong>
+      pdf: https://arxiv.org/pdf/2607.02512
+      code: https://programasweights.com
+      image: /images/paw.png
+      conference: arXiv 2026
+      year: 2026
     - title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
       authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, <strong>Yuntian Deng</strong>
       pdf: https://neural-os.com
       code: https://neural-os.com
       image: /images/neural-os.gif
       conference: ICLR 2026
+      year: 2026
+    - title: "Code2LoRA: Hypernetwork-Generated Adapters for Code Language Models under Software Evolution"
+      authors: Liliana Hotsko, Yinxi Li, <strong>Yuntian Deng</strong>, Pengyu Nie
+      pdf: https://arxiv.org/abs/2606.06492
+      conference: arXiv 2026
+      year: 2026
+    - title: "DetectZoo: A Unified Toolkit for AI-Generated Content Detection Across Text, Audio, and Image Modalities"
+      authors: Sajad Ebrahimi, Nima Jamali, Bardia Shirsalimian, Kelly McConvey, Wentao Zhang, Jalehsadat Mahdavimoghaddam, Maksym Taranukhin, Maura R. Grossman, Vered Shwartz, <strong>Yuntian Deng</strong>, Ebrahim Bagheri
+      pdf: https://arxiv.org/abs/2606.04205
+      conference: arXiv 2026
+      year: 2026
+    - title: "The CIFAR Synthetic Evidence Corpus for Detecting AI-Generated Evidence"
+      authors: Kelly McConvey, Jalehsadat Mahdavimoghaddam, Nima Jamali, Maksym Taranukhin, Sajad Ebrahimi, Wentao Zhang, Karen Eltis, <strong>Yuntian Deng</strong>, Maura R. Grossman, Vered Shwartz, Ebrahim Bagheri
+      pdf: https://arxiv.org/abs/2606.07916
+      conference: arXiv 2026
+      year: 2026
+    - title: "The AI Observatory: A Public Measure of Real-World AI Use"
+      authors: Shayne Longpre, Anka Reuel, Dayeon Ki, Zhiping Zhang, Cathy Mengying Fang, Chuanyang Jin, Jennifer Mickel, Cedric Deslandes Whitney, Niloofar Mireshghallah, Victor Ojewale, Megan Richards, Ariel N. Lee, Alex Pentland, Tianshi Li, <strong>Yuntian Deng</strong>, Sara Hooker, Mykel Kochenderfer, Sanmi Koyejo
+      pdf: https://openreview.net/forum?id=o5j63mCxIq
+      conference: Preprint
+      year: 2026
+    - title: "Long Grounded Thoughts: Synthesizing Visual Problems and Reasoning Chains at Scale"
+      authors: David Acuna, Chao-Han Huck Yang, <strong>Yuntian Deng</strong>, Jaehun Jung, Ximing Lu, Prithviraj Ammanabrolu, Hyunwoo Kim, Yuan-Hong Liao, Yejin Choi
+      pdf: https://arxiv.org/abs/2511.05705
+      conference: ICML 2026
+      year: 2026
+    - title: "TokDrift: When LLM Speaks in Subwords but Code Speaks in Grammar"
+      authors: Yinxi Li, <strong>Yuntian Deng</strong>, Pengyu Nie
+      pdf: https://arxiv.org/abs/2510.14972
+      conference: ACL 2026
       year: 2026
     - title: "Learn to Reason Efficiently with Adaptive Length-based Reward Shaping"
       authors: Wei Liu, Ruochen Zhou, Yiyun Deng, Yuzhen Huang, Junteng Liu, <strong>Yuntian Deng</strong>, Yizhe Zhang, Junxian He
@@ -135,6 +177,21 @@ papers:
       pdf: https://arxiv.org/pdf/2505.23765
       image: /images/aggregation.png
       conference: EMNLP 2025 (<strong>Oral</strong>)
+      year: 2025
+    - title: "Why Can't Transformers Learn Multiplication? Reverse-Engineering Reveals Long-Range Dependency Pitfalls"
+      authors: Xiaoyan Bai, Itamar Pres, <strong>Yuntian Deng</strong>, Chenhao Tan, Stuart Shieber, Fernanda Viégas, Martin Wattenberg, Andrew Lee
+      pdf: https://arxiv.org/abs/2510.00184
+      conference: arXiv 2025
+      year: 2025
+    - title: "The Leaderboard Illusion"
+      authors: Shivalika Singh, Yiyang Nan, Alex Wang, Daniel D'Souza, Sayash Kapoor, Ahmet Üstün, Sanmi Koyejo, <strong>Yuntian Deng</strong>, Shayne Longpre, Noah A. Smith, Beyza Ermis, Marzieh Fadaee, Sara Hooker
+      pdf: https://arxiv.org/abs/2504.20879
+      conference: NeurIPS D&amp;B 2025
+      year: 2025
+    - title: "Mix-of-Language-Experts Architecture for Multilingual Programming"
+      authors: Yifan Zong, <strong>Yuntian Deng</strong>, Pengyu Nie
+      pdf: https://arxiv.org/abs/2506.18923
+      conference: LLM4Code 2025
       year: 2025
     - title: "Magpie: Alignment Data Synthesis from Scratch by Prompting Aligned LLMs with Nothing"
       authors: Zhangchen Xu, Fengqing Jiang, Luyao Niu, <strong>Yuntian Deng</strong>, Radha Poovendran, Yejin Choi, Bill Yuchen Lin
@@ -163,7 +220,7 @@ papers:
       code: https://github.com/da03/implicit_chain_of_thought
       image: /images/implicit_cot_large_cropped_2x.gif
       conference: arXiv 2023
-      year: 2024
+      year: 2023
     - title: "WildHallucinations: Evaluating Long-form Factuality in LLMs with Real-World Entity Queries"
       authors: Wenting Zhao, Tanya Goyal, Yu Ying Chiu, Liwei Jiang, Benjamin Newman, Abhilasha Ravichander, Khyathi Chandu, Ronan Le Bras, Claire Cardie, <strong>Yuntian Deng</strong>, Yejin Choi
       pdf: https://arxiv.org/pdf/2407.17468
@@ -172,7 +229,7 @@ papers:
       year: 2024
     - title: "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild"
       authors: <strong>Yuntian Deng</strong>, Wenting Zhao, Jack Hessel, Xiang Ren, Claire Cardie, Yejin Choi
-      pdf: https://openreview.net/pdf?id=uVyk82wsr4
+      pdf: https://arxiv.org/abs/2409.03753
       code: https://github.com/da03/WildVisualizer
       image: /images/wildvisualizer.gif
       conference: EMNLP 2024 Demo
@@ -205,7 +262,7 @@ papers:
       image: /images/molecules_rendering_cropped.gif
       conference: ICLR 2023
       year: 2023
-    - title: "Semi Parametric Inducing Point Networks"
+    - title: "Semi-Parametric Inducing Point Networks and Neural Processes"
       authors: Richa Rastogi, Yair Schiff, Alon Hacohen, Zhaozhi Li, Ian Lee, <strong>Yuntian Deng</strong>, Mert R. Sabuncu, Volodymyr Kuleshov
       pdf: https://openreview.net/pdf?id=FE99-fDrWd5
       image: /images/genome_imputation_full.png
@@ -218,11 +275,11 @@ papers:
       conference: EMNLP 2022
       year: 2022
     - title: "GenSLMs: Genome-scale language models reveal SARS-CoV-2 evolutionary dynamics"
-      authors: Maxim Zvyagin*, Alexander Brace*, Kyle Hippe*, <strong>Yuntian Deng</strong>*, Bin Zhang, Cindy Orozco Bohorquez, Austin Clyde, Bharat Kale, Danilo Perez-Rivera, Heng Ma, Carla M. Mann, Michael Irvin, J. Gregory Pauloski, Logan Ward, Valerie Hayot, Murali Emani, Sam Foreman, Zhen Xie, Diangen Lin, Maulik Shukla, Weili Nie, Josh Romero, Christian Dallago, Arash Vahdat, Chaowei Xiao, Thomas Gibbs, Ian Foster, James J. Davis, Michael E. Papka, Thomas Brettin, Rick Stevens, Anima Anandkumar, Venkatram Vishwanath, Arvind Ramanathan
-      pdf: https://www.biorxiv.org/content/biorxiv/early/2022/10/11/2022.10.10.511571.full.pdf
+      authors: Maxim Zvyagin*, Alexander Brace*, Kyle Hippe*, <strong>Yuntian Deng</strong>*, Bin Zhang, Cindy Orozco Bohorquez, Austin Clyde, Bharat Kale, Danilo Perez-Rivera, Heng Ma, Carla M. Mann, Michael Irvin, J. Gregory Pauloski, Logan Ward, Valerie Hayot-Sasson, Murali Emani, Sam Foreman, Zhen Xie, Diangen Lin, Maulik Shukla, Weili Nie, Josh Romero, Christian Dallago, Arash Vahdat, Chaowei Xiao, Thomas Gibbs, Ian Foster, James J. Davis, Michael E. Papka, Thomas Brettin, Rick Stevens, Anima Anandkumar, Venkatram Vishwanath, Arvind Ramanathan
+      pdf: https://doi.org/10.1177/10943420231201154
       image: /images/phylogeny_with_generated_sequence.jpg
-      conference: <strong>ACM Gordon Bell Special Prize for Covid Research</strong>
-      year: 2022
+      conference: International Journal of High Performance Computing Applications, 2023 (<strong>ACM Gordon Bell Special Prize for COVID-19 Research</strong>)
+      year: 2023
     - title: "Low-Rank Constraints for Fast Inference in Structured Models"
       authors: Justin Chiu*, <strong>Yuntian Deng</strong>*, Alexander M. Rush
       pdf: https://openreview.net/pdf?id=9Zi7t3c5CuF
@@ -232,7 +289,7 @@ papers:
       year: 2021
     - title: "Sequence-to-Lattice Models for Fast Translation"
       authors: <strong>Yuntian Deng</strong>, Alexander M. Rush
-      pdf: 
+      pdf: https://aclanthology.org/2021.findings-emnlp.318.pdf
       image: /images/emnlp21_seq2lattice.png
       slides: /slides/emnlp21_seq2lattice.pdf
       conference: EMNLP 2021 Findings
@@ -266,12 +323,17 @@ papers:
       image: /images/ICLR20_REBM.png
       notes: <strong>Referenced by <a href="https://arxiv.org/pdf/2307.09288">Meta's Llama 2</a></strong><br><strong>Referenced by the <a href="https://proceedings.neurips.cc/paper/2020/file/4c5bcfec8584af0d967f1ab10179ca4b-Paper.pdf">diffusion paper (DDPM)</a></strong>
       year: 2020
-    - title: "AdaptivFloat: A Floating-point based Data Type for Resilient Deep Learning Inference"
+    - title: "Algorithm-Hardware Co-Design of Adaptive Floating-Point Encodings for Resilient Deep Learning Inference"
       authors: Thierry Tambe, En-Yu Yang, Zishen Wan, <strong>Yuntian Deng</strong>, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
-      pdf: https://arxiv.org/pdf/1909.13271
+      pdf: https://ieeexplore.ieee.org/document/9218516
       image: /images/adapt.png
       conference: DAC 2020 (<strong>Best Paper</strong>)
       year: 2020
+    - title: "Real or Fake? Learning to Discriminate Machine from Human Generated Text"
+      authors: Anton Bakhtin, Sam Gross, Myle Ott, <strong>Yuntian Deng</strong>, Marc'Aurelio Ranzato, Arthur Szlam
+      pdf: https://arxiv.org/abs/1906.03351
+      conference: arXiv 2019
+      year: 2019
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       pdf: https://steganography.live

@@ -634,6 +634,14 @@ pre code {
 /**
  * Media highlights
  */
+.media-group-title {
+    margin-top: 16px;
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--fg-strong);
+}
+
 .media-highlights {
     display: flex;
     flex-wrap: wrap;
@@ -665,6 +673,39 @@ pre code {
     span {
         font-size: 13px;
         color: $grey-color;
+    }
+}
+
+/**
+ * Selected recognition
+ */
+.recognition-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px 16px;
+    margin: 12px 0 0;
+    list-style: none;
+
+    @include media-query($on-palm) {
+        grid-template-columns: 1fr;
+    }
+
+    li {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0;
+        padding: 10px 12px;
+        border-left: 3px solid var(--brand);
+        border-radius: 4px;
+        background: var(--bg-elevated);
+    }
+
+    time {
+        flex-shrink: 0;
+        color: $grey-color;
+        font-size: 13px;
     }
 }
 

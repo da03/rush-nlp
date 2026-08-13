@@ -1,6 +1,53 @@
 talks:
+  - year: 2026
+    title: "NeuralOS"
+    venue: "Apple MLR Internal Reading Group (Remote)"
+    date: "Aug 2026"
+    url: "/talks/neuralos/"
+  - year: 2026
+    title: "NeuralOS"
+    venue: "Vector Endless Summer School (Remote)"
+    date: "Jun 2026"
+    url: "/talks/neuralos/"
+  - year: 2026
+    title: "NeuralOS"
+    venue: "NSERC CREATE Responsible AI Consortium (Remote)"
+    date: "Mar 2026"
+    url: "/talks/neuralos/"
+  - year: 2025
+    title: "Implicit Reasoning in Language Models"
+    venue: "Mila/McGill NLP Reading Group (Remote)"
+    date: "Oct 2025"
+  - year: 2025
+    title: "Implicit Chain-of-Thought: Internalizing Reasoning in Language Models"
+    venue: "University of Cambridge Language Technology Lab (Remote)"
+    date: "Oct 2025"
+  - year: 2025
+    title: "Implicit Reasoning in Language Models"
+    venue: "Google DeepMind (Remote)"
+    date: "May 2025"
+  - year: 2025
+    title: "Implicit Reasoning in Language Models"
+    venue: "Colin Raffel Group (Toronto)"
+    date: "Mar 2025"
+  - year: 2025
+    title: "Implicit Chain of Thought Reasoning"
+    venue: "University of Oklahoma (Remote)"
+    date: "Jan 2025"
   - year: 2024
     title: "Implicit Chain of Thought Reasoning"
-    venue: "NYU CILVR Seminar Series"
+    venue: "NYU CILVR Seminar Series (New York, NY)"
     date: "Nov 20, 2024"
     url: "https://cims.nyu.edu/ai/seminars/cilvr-seminar-series/56/"
+  - year: 2024
+    title: "Implicit Chain of Thought Reasoning"
+    venue: "Google DeepMind (Remote)"
+    date: "Jul 2024"
+  - year: 2024
+    title: "Implicit Chain of Thought Reasoning"
+    venue: "Queen's University (Remote)"
+    date: "Feb 2024"
+  - year: 2024
+    title: "Implicit Chain of Thought Reasoning"
+    venue: "University of British Columbia (Vancouver, Canada)"
+    date: "Jan 2024"

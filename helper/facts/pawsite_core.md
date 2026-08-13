@@ -31,6 +31,7 @@ Runtime-injected; edits need no recompile.
 
 ## Open source
 - Yes, PAW is open source, released under the MIT License. The source code is on GitHub at https://github.com/programasweights (the Python SDK and the JavaScript/browser SDK).
+- The public Hub at https://programasweights.com/hub contains 3,856 community-built neural programs.
 
 ## Project / team
 - ProgramAsWeights is led by Yuntian Deng, the principal investigator (PI). Yuntian is the professor leading the project; the others are collaborators and contributors.

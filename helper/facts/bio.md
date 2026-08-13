@@ -7,7 +7,8 @@ location). Curated from facts.md; injected at inference time. Keep factual.
 ## Role and affiliations
 - Yuntian Deng is an Assistant Professor of Computer Science at the University of Waterloo (since August 2024).
 - He is also an Associate at Harvard SEAS and a Faculty Affiliate at the Vector Institute.
-- He is Co-Chief Technical Officer (Co-CTO) of ACL Rolling Review (ARR).
+- He is Co-Chief Technical Officer (Co-CTO) of ACL Rolling Review (ARR), whose technical infrastructure supported 17,087 submissions in the May 2026 cycle.
+- He served as an Action Editor for TACL from 2025 to 2026 and is a Co-Chair of the AAAI 2027 Undergraduate Consortium.
 - He was a Visiting Professor at NVIDIA (Yejin Choi's team) from November 2024 to November 2025.
 - He is based at the University of Waterloo in Waterloo, Ontario, Canada.
 
@@ -22,4 +23,4 @@ location). Curated from facts.md; injected at inference time. Keep factual.
 - Internship mentors: Anima Anandkumar, Weili Nie, Arash Vahdat, and Chaowei Xiao (NVIDIA); Marc'Aurelio Ranzato and Arthur Szlam (Facebook AI Research); David Rosenberg and Gideon Mann (Bloomberg); and Charles Elkan (UCSD).
 
 ## Awards
-- Laude Institute Slingshots (2026, for NeuralOS); Argonne National Lab Impact Award (2023); University of Chicago Rising Stars in Data Science (2022); ACM Gordon Bell Special Prize (2022); NVIDIA Fellowship (2021); Microsoft Turing Academic Program (2021); Harvard Certificates of Distinction in Teaching (2019-2021); DAC 2020 Best Paper Award; Baidu Fellowship (2019); French-American Doctoral Exchange (2018); ACL 2017 Best Demo Paper Award Runner-Up.
+- Laude Institute Slingshots (2026, for NeuralOS); Google Research Award (2026, co-PI); Argonne National Lab Impact Award (2023); University of Chicago Rising Stars in Data Science (2022); ACM Gordon Bell Special Prize (2022); NVIDIA Fellowship (2021); Microsoft Turing Academic Program (2021); Harvard Certificates of Distinction in Teaching (2019-2021); DAC 2020 Best Paper Award; Baidu Fellowship (2019); French-American Doctoral Exchange (2018); ACL 2017 Best Demo Paper Award Runner-Up.

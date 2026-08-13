@@ -1,11 +1,27 @@
 demos:
+    - link: https://programasweights.com
+      title: "Program-as-Weights: A Programming Paradigm for Fuzzy Functions"
+      authors: Wentao Zhang, Liliana Hotsko, Woojeong Kim, Pengyu Nie, Stuart Shieber, Yuntian Deng
+      abstract: Compile natural-language specifications into small, reusable neural programs that run locally; explore <a href="https://programasweights.com/hub">3,856 community-built programs</a>.
+      image: /images/paw.png
+      demo: https://programasweights.com
+      code: https://github.com/programasweights
+      paper: https://arxiv.org/pdf/2607.02512
     - link: https://neural-os.com
       title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
       authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, Yuntian Deng
-      abstract: An operating system entirely powered by neural networks.
+      abstract: A neural generative model that simulates an interactive operating system, with 50,000+ public-demo visits.
       image: /images/neural-os.gif
       demo: https://neural-os.com
       code: https://github.com/yuntian-group/neural-os
+    - link: https://interactivetraining.ai
+      title: "Interactive Training: Feedback-Driven Neural Network Optimization"
+      authors: Wentao Zhang, Yang Young Lu, Yuntian Deng
+      abstract: A live interface for steering neural network training with human feedback and auditable, reversible controls.
+      image: /images/interactive_training.png
+      demo: https://interactivetraining.ai
+      code: https://github.com/yuntian-group/interactive-training
+      paper: https://arxiv.org/pdf/2510.02297
     - link: https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication
       title: Predicting Multiplication without Intermediate Reasoning Steps
       authors: Yuntian Deng, Yejin Choi, Stuart Shieber
