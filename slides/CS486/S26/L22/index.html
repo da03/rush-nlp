@@ -506,7 +506,7 @@
 
 <!-- 37. PAW transition -->
 <section class="center-slide section-divider">
-  <span class="section-kicker">Program-as-Weights</span>
+  <span class="section-kicker">ProgramAsWeights (PAW)</span>
   <h2>Automatic adaptation per task</h2>
   <p>Can a model build the adapter for us?</p>
 </section>
@@ -529,7 +529,7 @@
 
 <!-- 39. PAW mechanism -->
 <section class="center-slide">
-  <h2>Program-as-Weights compiles a task into an adapter</h2>
+  <h2>ProgramAsWeights compiles a task into an adapter</h2>
   <div class="paw-core-flow">
     <div class="spec"><strong>task description</strong><span>“immediate or wait?”</span></div>
     <span class="fragment" data-fragment-index="0">&rarr;</span>
@@ -545,9 +545,9 @@
 
 <!-- 40. PAW overview -->
 <section class="center-slide">
-  <h2>Program-as-Weights: compile once, run repeatedly</h2>
+  <h2>ProgramAsWeights: compile once, run repeatedly</h2>
   <figure class="paw-overview-figure">
-    <img src="../../../../paw_overview.png" alt="Program-as-Weights overview: a compiler creates reusable weights for a frozen interpreter">
+    <img src="../../../../paw_overview.png" alt="ProgramAsWeights overview: a compiler creates reusable weights for a frozen interpreter">
     <figcaption>The compiler builds a reusable neural program once; the interpreter then runs it on many inputs.</figcaption>
   </figure>
 </section>
@@ -605,7 +605,7 @@
 <section class="center-slide">
   <h2>Compiler-generated LoRA can beat a much larger prompt</h2>
   <figure class="paw-benchmark-figure">
-    <img src="images/paw_benchmark.png" alt="FuzzyBench exact match benchmark comparing prompted language models and Program-as-Weights">
+    <img src="images/paw_benchmark.png" alt="FuzzyBench exact match benchmark comparing prompted language models and ProgramAsWeights">
     <figcaption>Verified FuzzyBench exact match: PAW reaches <strong>73.8%</strong> with a frozen 0.6B interpreter, above prompting a 32B model.</figcaption>
   </figure>
   <p class="l22-ref">Final paper result: 73.78%, rounded to 73.8%.</p>
@@ -674,7 +674,7 @@ fn(<span class="code-string">"Thesis defense moved to 3pm, need your signature t
     <li><span class="recap-check">&#10003;</span> Prompting changes instructions; RAG retrieves evidence; tools execute actions.</li>
     <li><span class="recap-check">&#10003;</span> Fine-tuning changes model behavior through examples or preferences.</li>
     <li><span class="recap-check">&#10003;</span> LoRA freezes \(W_0\) and learns the low-rank matrices \(A,B\).</li>
-    <li><span class="recap-check">&#10003;</span> Program-as-Weights compiles a task description into a reusable neural program.</li>
+    <li><span class="recap-check">&#10003;</span> ProgramAsWeights compiles a task description into a reusable neural program.</li>
     <li><span class="recap-check">&#10003;</span> Diagnose what is missing, then choose the smallest useful adaptation.</li>
   </ul>
   <p class="l23-bridge fragment"><strong>L23:</strong> extend language models from text tokens to image tokens.</p>
