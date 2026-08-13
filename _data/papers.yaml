@@ -31,11 +31,6 @@ featured:
       conference: ICLR 2024 (<strong>Spotlight</strong>)
       notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
 notable:
-    - title: "From Chat Logs to Collective Insights: Aggregative Question Answering"
-      authors: Wentao Zhang, Woojeong Kim, <strong>Yuntian Deng</strong>
-      pdf: https://arxiv.org/pdf/2505.23765
-      image: /images/aggregation.png
-      conference: EMNLP 2025 (<strong>Oral</strong>)
     - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
       authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
       pdf: https://arxiv.org/pdf/2510.02297
