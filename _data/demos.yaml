@@ -48,7 +48,7 @@ demos:
       abstract: An interactive tool for searching and visualizing million-scale chat datasets such as WildChat and LMSYS-Chat.
       image: /images/wildvisualizer.gif
       demo: https://wildvisualizer.com/
-      data: https://huggingface.co/datasets/allenai/WildChat-1M
+      data: https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full
     - link: https://huggingface.co/spaces/yuntian-deng/AKSelectionPredictor
       title: AK Hugging Face Paper Selection Predictor
       authors: Yuntian Deng

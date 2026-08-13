@@ -1,9 +1,9 @@
 {
   "compiler": "paw-ft-bs48",
-  "compiled_at": "2026-08-13T05:44:16.408239+00:00",
+  "compiled_at": "2026-08-13T05:56:52.253468+00:00",
   "programs": {
     "page_classifier": "9c14703e7fc1db1bf0fd",
-    "answerer": "8f9536fd8bee18b07d4a",
+    "answerer": "d98da3cd316bfb8db9b6",
     "validator": "ae1d51dd17d296dc747f",
     "domain_router": "fb61c6aa55594627f276",
     "course_classifier": "733540b45208edfbc7d0",

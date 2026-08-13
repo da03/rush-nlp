@@ -11,7 +11,7 @@ in a list here.
 - Yuntian Deng is an Assistant Professor of Computer Science at the University of Waterloo.
 - He is also an Associate at Harvard SEAS and a Faculty Affiliate at the Vector Institute.
 - He is Co-Chief Technical Officer (Co-CTO) of ACL Rolling Review (ARR), whose technical infrastructure supported 17,087 submissions in the May 2026 cycle.
-- He served as an Action Editor for TACL from 2025 to 2026 and is a Co-Chair of the AAAI 2027 Undergraduate Consortium.
+- He is an Action Editor for TACL (2025-present) and a Co-Chair of the AAAI 2027 Undergraduate Consortium.
 
 ## Education
 - Harvard University - PhD in Computer Science, 2023; advisors Alexander Rush and Stuart Shieber.
