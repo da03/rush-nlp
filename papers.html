@@ -18,13 +18,11 @@ My full list of papers can be found at my <a href="https://scholar.google.com/ci
 <div class="papers-list">
 {% for paper in year_group.items %}
 <div class="paper-card">
+  {% if paper.image %}
   <div class="paper-card-image">
-    {% if paper.image %}
     <a href="{{paper.pdf}}"><img src="{{paper.image}}" alt="Figure from {{paper.title}}"></a>
-    {% else %}
-    <a href="{{paper.pdf}}"><img src="https://avatar.tobi.sh/{{paper.title}}" alt="Figure from {{paper.title}}"></a>
-    {% endif %}
   </div>
+  {% endif %}
   <div class="paper-card-body">
     <a class="paper" href="{{paper.pdf}}">{{paper.title}}</a><br>
     {{paper.authors}}.<br>

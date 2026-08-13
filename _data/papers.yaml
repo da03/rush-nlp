@@ -128,36 +128,43 @@ papers:
     - title: "Code2LoRA: Hypernetwork-Generated Adapters for Code Language Models under Software Evolution"
       authors: Liliana Hotsko, Yinxi Li, <strong>Yuntian Deng</strong>, Pengyu Nie
       pdf: https://arxiv.org/abs/2606.06492
+      image: /images/code2lora.png
       conference: arXiv 2026
       year: 2026
     - title: "DetectZoo: A Unified Toolkit for AI-Generated Content Detection Across Text, Audio, and Image Modalities"
       authors: Sajad Ebrahimi, Nima Jamali, Bardia Shirsalimian, Kelly McConvey, Wentao Zhang, Jalehsadat Mahdavimoghaddam, Maksym Taranukhin, Maura R. Grossman, Vered Shwartz, <strong>Yuntian Deng</strong>, Ebrahim Bagheri
       pdf: https://arxiv.org/abs/2606.04205
+      image: /images/detectzoo.png
       conference: arXiv 2026
       year: 2026
     - title: "The CIFAR Synthetic Evidence Corpus for Detecting AI-Generated Evidence"
       authors: Kelly McConvey, Jalehsadat Mahdavimoghaddam, Nima Jamali, Maksym Taranukhin, Sajad Ebrahimi, Wentao Zhang, Karen Eltis, <strong>Yuntian Deng</strong>, Maura R. Grossman, Vered Shwartz, Ebrahim Bagheri
       pdf: https://arxiv.org/abs/2606.07916
+      image: /images/cifar-synthetic-evidence.png
       conference: arXiv 2026
       year: 2026
     - title: "The AI Observatory: A Public Measure of Real-World AI Use"
       authors: Shayne Longpre, Anka Reuel, Dayeon Ki, Zhiping Zhang, Cathy Mengying Fang, Chuanyang Jin, Jennifer Mickel, Cedric Deslandes Whitney, Niloofar Mireshghallah, Victor Ojewale, Megan Richards, Ariel N. Lee, Alex Pentland, Tianshi Li, <strong>Yuntian Deng</strong>, Sara Hooker, Mykel Kochenderfer, Sanmi Koyejo
       pdf: https://openreview.net/forum?id=o5j63mCxIq
+      image: /images/ai-observatory.png
       conference: Preprint
       year: 2026
     - title: "Long Grounded Thoughts: Synthesizing Visual Problems and Reasoning Chains at Scale"
       authors: David Acuna, Chao-Han Huck Yang, <strong>Yuntian Deng</strong>, Jaehun Jung, Ximing Lu, Prithviraj Ammanabrolu, Hyunwoo Kim, Yuan-Hong Liao, Yejin Choi
       pdf: https://arxiv.org/abs/2511.05705
+      image: /images/long-grounded-thoughts.png
       conference: ICML 2026
       year: 2026
     - title: "TokDrift: When LLM Speaks in Subwords but Code Speaks in Grammar"
       authors: Yinxi Li, <strong>Yuntian Deng</strong>, Pengyu Nie
       pdf: https://arxiv.org/abs/2510.14972
+      image: /images/tokdrift.png
       conference: ACL 2026
       year: 2026
     - title: "Learn to Reason Efficiently with Adaptive Length-based Reward Shaping"
       authors: Wei Liu, Ruochen Zhou, Yiyun Deng, Yuzhen Huang, Junteng Liu, <strong>Yuntian Deng</strong>, Yizhe Zhang, Junxian He
       pdf: https://arxiv.org/pdf/2505.15612
+      image: /images/adaptive-length-reward.png
       conference: ICLR 2026
       year: 2026
     - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
@@ -176,16 +183,19 @@ papers:
     - title: "Why Can't Transformers Learn Multiplication? Reverse-Engineering Reveals Long-Range Dependency Pitfalls"
       authors: Xiaoyan Bai, Itamar Pres, <strong>Yuntian Deng</strong>, Chenhao Tan, Stuart Shieber, Fernanda Viégas, Martin Wattenberg, Andrew Lee
       pdf: https://arxiv.org/abs/2510.00184
+      image: /images/multiplication-transformers.png
       conference: arXiv 2025
       year: 2025
     - title: "The Leaderboard Illusion"
       authors: Shivalika Singh, Yiyang Nan, Alex Wang, Daniel D'Souza, Sayash Kapoor, Ahmet Üstün, Sanmi Koyejo, <strong>Yuntian Deng</strong>, Shayne Longpre, Noah A. Smith, Beyza Ermis, Marzieh Fadaee, Sara Hooker
       pdf: https://arxiv.org/abs/2504.20879
+      image: /images/leaderboard-illusion.png
       conference: NeurIPS D&amp;B 2025
       year: 2025
     - title: "Mix-of-Language-Experts Architecture for Multilingual Programming"
       authors: Yifan Zong, <strong>Yuntian Deng</strong>, Pengyu Nie
       pdf: https://arxiv.org/abs/2506.18923
+      image: /images/mix-of-language-experts.png
       conference: LLM4Code 2025
       year: 2025
     - title: "Magpie: Alignment Data Synthesis from Scratch by Prompting Aligned LLMs with Nothing"
@@ -327,6 +337,7 @@ papers:
     - title: "Real or Fake? Learning to Discriminate Machine from Human Generated Text"
       authors: Anton Bakhtin, Sam Gross, Myle Ott, <strong>Yuntian Deng</strong>, Marc'Aurelio Ranzato, Arthur Szlam
       pdf: https://arxiv.org/abs/1906.03351
+      image: /images/real-or-fake.png
       conference: arXiv 2019
       year: 2019
     - title: "Neural Linguistic Steganography"
