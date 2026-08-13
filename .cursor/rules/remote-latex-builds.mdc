@@ -1,0 +1,15 @@
+---
+description: Compile all LaTeX exclusively on the designated remote host
+alwaysApply: true
+---
+
+# Remote-Only LaTeX Builds
+
+- Run every LaTeX compilation exclusively over SSH on `ubuntu@neural-os.com`.
+- The TeX process itself must execute on that host.
+- Never compile LaTeX locally. Do not use local Tectonic, pdfLaTeX, XeLaTeX,
+  LuaLaTeX, LaTeXmk, Docker, or another local container.
+- Synchronize the required sources to the remote host, compile there, and
+  download the generated artifacts.
+- If the remote path, required dependencies, or build command is unclear, ask
+  the user. Never fall back to local compilation.

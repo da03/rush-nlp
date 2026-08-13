@@ -13,7 +13,7 @@
 # Inline hyperlinks the freeform answerer emits live in facts.md (intentionally).
 
 cv:
-  url: "https://yuntiandeng.com/cv/cv.comp.pdf"
+  url: "https://yuntiandeng.com/cv.pdf"
   name: "CV"
   label: "Curriculum Vitae (PDF)"
   description: "Yuntian's CV"
@@ -65,7 +65,7 @@ linkedin:
   purpose: "The user wants Yuntian's LinkedIn profile."
 
 semantic_scholar:
-  url: "https://www.semanticscholar.org/author/Yuntian-Deng/47346830"
+  url: "https://www.semanticscholar.org/author/Yuntian-Deng/2268298457"
   name: "Semantic Scholar"
   label: "Semantic Scholar"
   description: "Yuntian's Semantic Scholar author page"

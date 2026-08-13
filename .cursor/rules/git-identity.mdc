@@ -1,0 +1,17 @@
+---
+description: Use Yuntian's identity for all Git and GitHub operations
+alwaysApply: true
+---
+
+# Git and GitHub Identity
+
+- Every commit must use author and committer identity
+  `da03 <dengyuntian@gmail.com>`.
+- Verify the effective identity before committing. Use per-command Git
+  configuration or environment variables if a repository override would use
+  another identity.
+- Never use `Cursor Agent`, `cursoragent`, or another AI identity as author,
+  committer, or co-author.
+- Never add Cursor attribution or AI co-author trailers to commit messages.
+- Use only GitHub account `da03` for pushes, pull requests, and other GitHub
+  writes. If authentication resolves to another account, stop and ask the user.
