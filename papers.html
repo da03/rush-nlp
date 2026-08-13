@@ -11,7 +11,6 @@ show: 1
 <p>
 My full list of papers can be found at my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.
 </p>
-<p><small>* Equal contribution. &dagger; Equal advising.</small></p>
 
 {% assign papers_by_year = site.data.papers.papers | group_by: "year" | sort: "name" | reverse %}
 {% for year_group in papers_by_year %}
