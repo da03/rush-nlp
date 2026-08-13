@@ -369,13 +369,26 @@ schedule:
 announcements:
   - severity: info
     show: true
-    title: "All coursework grades are available on LEARN"
+    title: "Coursework grades released; final-exam grading in progress"
     body: >-
-      All grade items other than the upcoming final exam are now available on
-      <a href="https://learn.uwaterloo.ca/">LEARN</a>. This includes
+      All coursework grade items are now available on
+      <a href="https://learn.uwaterloo.ca/">LEARN</a>, including
       <strong>Assignment 3, the chat assignments, and project grades</strong>
-      for everyone who completed a project. Please review your grades and
+      for everyone who completed a project. The TAs are currently grading the final exam,
+      and we are aiming to release final-exam grades by <strong>Saturday, August 15</strong>.
+      Please review your coursework grades and
       <a href="mailto:yuntian@uwaterloo.ca">email me</a> if anything appears incorrect.
+  - severity: info
+    show: true
+    title: '<a href="https://aaai.org/conference/aaai/aaai-27/undergraduate-consortium-call-for-participation/">AAAI-27 Undergraduate Consortium</a>'
+    body: >-
+      <strong>Posted August 13, 2026.</strong> Undergraduate students interested in AI research
+      can apply to this optional two-day program at AAAI-27 in Montr&eacute;al to develop and
+      present an AI research proposal, receive mentorship, and meet researchers and peers.
+      Accepted students receive travel funding. Applications are due
+      <strong>Monday, October 5, 2026 at 11:59 PM AoE</strong>. This external opportunity is
+      not part of CS486/686 coursework.
+      <a href="https://aaai.org/conference/aaai/aaai-27/undergraduate-consortium-call-for-participation/">More information and application details.</a>
   - severity: event
     show: false
     title: "Additional office hours - August 5 and 6"
@@ -393,7 +406,7 @@ announcements:
       <strong>Thursday, July 30, 4:00&ndash;5:00 PM in the regular classroom (MC 4021)</strong>.
       Bring any course, assignment, project, or final-exam questions.
   - severity: warning
-    show: true
+    show: false
     title: "Final exam: permitted aids and sample exams"
     body: >-
       The final is <strong>Saturday, August 8, 7:30&ndash;10:00 PM in PAC 5</strong>.
@@ -403,7 +416,7 @@ announcements:
       Two sample exams are now on <a href="https://learn.uwaterloo.ca/">LEARN</a> under
       <strong>Final Exam</strong>; their exact coverage, format, and mark distribution differ from this exam.
   - severity: info
-    show: true
+    show: false
     title: "A1/A2 solutions and Assignment 2 grades are available"
     body: >-
       Solutions for <strong>Assignments 1 and 2</strong> are posted on
