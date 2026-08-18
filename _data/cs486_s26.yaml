@@ -369,15 +369,14 @@ schedule:
 announcements:
   - severity: info
     show: true
-    title: "Coursework grades released; final-exam grading in progress"
+    title: "Final exam grading complete - exams will be released August 20"
     body: >-
-      All coursework grade items are now available on
-      <a href="https://learn.uwaterloo.ca/">LEARN</a>, including
-      <strong>Assignment 3, the chat assignments, and project grades</strong>
-      for everyone who completed a project. The TAs are currently grading the final exam,
-      and we are aiming to release final-exam grades by <strong>Saturday, August 15</strong>.
-      Please review your coursework grades and
-      <a href="mailto:yuntian@uwaterloo.ca">email me</a> if anything appears incorrect.
+      <strong>Posted August 18, 2026.</strong> Final-exam grading and course-grade
+      entry are complete. Under University Policy 46, final examination grades
+      cannot be released before the final examination period ends on August 19.
+      Graded exams will therefore be returned through <strong>Crowdmark on
+      August 20</strong>. Regrade requests will be due <strong>August 22</strong>;
+      instructions will be posted when the exams are released. Thank you for your patience.
   - severity: info
     show: true
     title: '<a href="https://aaai.org/conference/aaai/aaai-27/undergraduate-consortium-call-for-participation/">AAAI-27 Undergraduate Consortium</a>'
