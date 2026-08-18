@@ -143,6 +143,7 @@ papers:
       pdf: https://openreview.net/forum?id=o5j63mCxIq
       image: /images/ai-observatory.png
       conference: Preprint
+      notes: <strong>Featured on <a href="https://www.washingtonpost.com/business/2026/08/18/ai-observatory-tries-reveal-how-people-really-use-technology/">The Washington Post homepage</a></strong><br>Long-form coverage in <strong><a href="https://www.technologyreview.com/2026/08/18/1142226/how-people-use-ai/">MIT Technology Review</a></strong>
       year: 2026
     - title: "Long Grounded Thoughts: Synthesizing Visual Problems and Reasoning Chains at Scale"
       authors: David Acuna, Chao-Han Huck Yang, <strong>Yuntian Deng</strong>, Jaehun Jung, Ximing Lu, Prithviraj Ammanabrolu, Hyunwoo Kim, Yuan-Hong Liao, Yejin Choi
