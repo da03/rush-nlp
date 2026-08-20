@@ -369,14 +369,14 @@ schedule:
 announcements:
   - severity: info
     show: true
-    title: "Final exam grading complete - exams will be released August 20"
+    title: "Final exam grades released - regrade requests due August 22"
     body: >-
-      <strong>Posted August 18, 2026.</strong> Final-exam grading and course-grade
-      entry are complete. Under University Policy 46, final examination grades
-      cannot be released before the final examination period ends on August 19.
-      Graded exams will therefore be returned through <strong>Crowdmark on
-      August 20</strong>. Regrade requests will be due <strong>August 22</strong>;
-      instructions will be posted when the exams are released. Thank you for your patience.
+      <strong>Posted August 20, 2026.</strong> Graded final exams are now available
+      on <strong>Crowdmark</strong>. The exam had 120 points available, including
+      20 bonus points, so a score of 50 or above satisfies the final-exam passing
+      requirement. To request reconsideration of a specific grading error, submit
+      a <a href="https://piazza.com/uwaterloo.ca/spring2026/cs486686">private Piazza post</a>
+      by <strong>August 22 at 11:59 PM</strong> with the question number and a brief explanation.
   - severity: info
     show: true
     title: '<a href="https://aaai.org/conference/aaai/aaai-27/undergraduate-consortium-call-for-participation/">AAAI-27 Undergraduate Consortium</a>'
