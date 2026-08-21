@@ -96,11 +96,11 @@ notable:
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       pdf: https://steganography.live
-      conference: EMNLP 2019 (Oral)
+      conference: EMNLP 2019 (<strong>Oral</strong>)
       image: /images/emnlp19_arithmetic.png
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, <strong>Yuntian Deng</strong>, Jean Senellart, Alexander M. Rush
-      conference: ACL 2017 Demo (<strong>Best Demo Runner-up</strong>)
+      conference: ACL 2017 Demo (<strong>Best Demonstration Paper Runner-Up</strong>)
       pdf : https://aclanthology.org/P17-4012.pdf
       code : https://github.com/OpenNMT/OpenNMT-py
       image: /images/overview.png
@@ -109,7 +109,7 @@ papers:
     - title: "Control-Data Flow Separation: Stable Prompt Optimization in Multi-Agent LLMs"
       authors: Wentao Zhang, Shariyar Murtaza, Junaid Bhatti, Utkarsh Soni, Yifan Nie, Eugene Wen, <strong>Yuntian Deng</strong>
       pdf: https://openreview.net/forum?id=CH0jT7nyjR
-      conference: Findings of EMNLP 2026
+      conference: EMNLP 2026 Findings
       year: 2026
     - title: "Program-as-Weights: A Programming Paradigm for Fuzzy Functions"
       authors: Wentao Zhang*, Liliana Hotsko*, Woojeong Kim*, Pengyu Nie, Stuart Shieber, <strong>Yuntian Deng</strong>
@@ -191,7 +191,7 @@ papers:
       authors: Shivalika Singh, Yiyang Nan, Alex Wang, Daniel D'Souza, Sayash Kapoor, Ahmet Üstün, Sanmi Koyejo, <strong>Yuntian Deng</strong>, Shayne Longpre, Noah A. Smith, Beyza Ermis, Marzieh Fadaee, Sara Hooker
       pdf: https://arxiv.org/abs/2504.20879
       image: /images/leaderboard-illusion.png
-      conference: NeurIPS D&amp;B 2025
+      conference: NeurIPS 2025 Datasets &amp; Benchmarks Track
       year: 2025
     - title: "Mix-of-Language-Experts Architecture for Multilingual Programming"
       authors: Yifan Zong, <strong>Yuntian Deng</strong>, Pengyu Nie
@@ -284,7 +284,7 @@ papers:
       authors: Maxim Zvyagin*, Alexander Brace*, Kyle Hippe*, <strong>Yuntian Deng</strong>*, Bin Zhang, Cindy Orozco Bohorquez, Austin Clyde, Bharat Kale, Danilo Perez-Rivera, Heng Ma, Carla M. Mann, Michael Irvin, J. Gregory Pauloski, Logan Ward, Valerie Hayot-Sasson, Murali Emani, Sam Foreman, Zhen Xie, Diangen Lin, Maulik Shukla, Weili Nie, Josh Romero, Christian Dallago, Arash Vahdat, Chaowei Xiao, Thomas Gibbs, Ian Foster, James J. Davis, Michael E. Papka, Thomas Brettin, Rick Stevens, Anima Anandkumar, Venkatram Vishwanath, Arvind Ramanathan
       pdf: https://doi.org/10.1177/10943420231201154
       image: /images/phylogeny_with_generated_sequence.jpg
-      conference: International Journal of High Performance Computing Applications, 2023 (<strong>ACM Gordon Bell Special Prize for COVID-19 Research</strong>)
+      conference: The International Journal of High Performance Computing Applications 2023 (<strong>ACM Gordon Bell Special Prize for COVID-19 Research</strong>)
       year: 2023
     - title: "Low-Rank Constraints for Fast Inference in Structured Models"
       authors: Justin Chiu*, <strong>Yuntian Deng</strong>*, Alexander M. Rush
@@ -305,7 +305,7 @@ papers:
       pdf: https://arxiv.org/pdf/2109.06387.pdf
       image: /images/emnlp21_rationale.png
       slides: 
-      conference: EMNLP 2021 (oral)
+      conference: EMNLP 2021 (<strong>Oral</strong>)
       year: 2021
     - title: "Residual Energy-Based Models for Text"
       authors: Anton Bakhtin*, <strong>Yuntian Deng</strong>*, Sam Gross, Myle Ott, Marc'Aurelio Ranzato, Arthur Szlam
@@ -333,7 +333,7 @@ papers:
       authors: Thierry Tambe, En-Yu Yang, Zishen Wan, <strong>Yuntian Deng</strong>, Vijay Janapa Reddi, Alexander Rush, David Brooks, Gu-Yeon Wei
       pdf: https://ieeexplore.ieee.org/document/9218516
       image: /images/adapt.png
-      conference: DAC 2020 (<strong>Best Paper</strong>)
+      conference: DAC 2020 (<strong>Best Paper Award</strong>)
       year: 2020
     - title: "Real or Fake? Learning to Discriminate Machine from Human Generated Text"
       authors: Anton Bakhtin, Sam Gross, Myle Ott, <strong>Yuntian Deng</strong>, Marc'Aurelio Ranzato, Arthur Szlam
@@ -345,7 +345,7 @@ papers:
       authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       pdf: https://steganography.live
       image: /images/emnlp19_arithmetic.png
-      conference: EMNLP 2019 (oral)
+      conference: EMNLP 2019 (<strong>Oral</strong>)
       year: 2019
     - title: "Challenges in end-to-end neural scientific table recognition"
       authors: <strong>Yuntian Deng</strong>, David Rosenberg, Gideon Mann
@@ -377,7 +377,7 @@ papers:
       year: 2017
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, <strong>Yuntian Deng</strong>, Jean Senellart, Alexander M. Rush
-      conference: ACL 2017 Demo (<strong>Best Demo Runner-up</strong>)
+      conference: ACL 2017 Demo (<strong>Best Demonstration Paper Runner-Up</strong>)
       pdf : https://aclanthology.org/P17-4012.pdf
       code : https://github.com/OpenNMT/OpenNMT-py
       image: /images/overview.png

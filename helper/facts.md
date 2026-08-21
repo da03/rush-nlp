@@ -42,7 +42,7 @@ in a list here.
 - DAC 2020 Best Paper Award.
 - Baidu Fellowship, 2019.
 - French-American Doctoral Exchange Program, 2018.
-- ACL 2017 Best Demo Paper Award Runner-Up.
+- ACL 2017 Best Demonstration Paper Runner-Up.
 
 ## Students
 - PhD students: Wentao Zhang (ProgramAsWeights), Max Ku, and Yubo Wang. Ziwei Tang was offered a spot but could not join (visa).
