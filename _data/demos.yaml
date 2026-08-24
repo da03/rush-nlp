@@ -1,4 +1,11 @@
 demos:
+    - link: https://programasweights.com/claudish
+      title: "English ↔ Claudish"
+      authors: Yuntian Deng
+      abstract: Translate bidirectionally between plain English and deliberately over-engineered “Claudish” with two tiny ProgramAsWeights neural functions that download once and run locally; the <a href="https://x.com/yuntiandeng/status/2091201867737145472">launch reached <strong>1 million+ views and 17,000+ likes on X</strong></a>.
+      image: /images/claudish.png
+      demo: https://programasweights.com/claudish
+      code: https://github.com/programasweights/claudish
     - link: https://programasweights.com
       title: "Program-as-Weights: A Programming Paradigm for Fuzzy Functions"
       authors: Wentao Zhang, Liliana Hotsko, Woojeong Kim, Pengyu Nie, Stuart Shieber, Yuntian Deng
