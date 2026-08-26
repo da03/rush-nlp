@@ -2,7 +2,7 @@ demos:
     - link: https://programasweights.com/claudish
       title: "English ↔ Claudish"
       authors: Yuntian Deng
-      abstract: Translate bidirectionally between plain English and deliberately over-engineered “Claudish” with two tiny ProgramAsWeights neural functions that download once and run locally; the <a href="https://x.com/yuntiandeng/status/2091201867737145472">launch reached <strong>1 million+ views and 17,000+ likes on X</strong></a>.
+      abstract: Translate bidirectionally between plain English and deliberately over-engineered “Claudish” with two tiny ProgramAsWeights neural functions that download once and run locally; the <a href="https://x.com/yuntiandeng/status/2091201867737145472">launch reached <strong>1 million+ views and 17,000+ likes on X</strong></a>, and the demo was <a href="https://www.usermag.co/p/vibe-coders-now-have-their-own-language">featured by Taylor Lorenz in <em>User Mag</em></a>.
       image: /images/claudish.png
       demo: https://programasweights.com/claudish
       code: https://github.com/programasweights/claudish
