@@ -142,11 +142,10 @@ papers:
       image: /images/detectzoo.png
       conference: arXiv 2026
       year: 2026
-    - title: "The CIFAR Synthetic Evidence Corpus for Detecting AI-Generated Evidence"
-      authors: Kelly McConvey, Jalehsadat Mahdavimoghaddam, Nima Jamali, Maksym Taranukhin, Sajad Ebrahimi, Wentao Zhang, Karen Eltis, <strong>Yuntian Deng</strong>, Maura R. Grossman, Vered Shwartz, Ebrahim Bagheri
-      pdf: https://arxiv.org/abs/2606.07916
+    - title: "A Benchmark &amp; Dataset for Detecting AI-Manipulated Visual Evidence in the Court System"
+      authors: Kelly McConvey, Sajad Ebrahimi, Nima Jamali, Jalehsadat Mahdavimoghaddam, Matina Mahdizadeh Sani, Maksym Taranukhin, Wentao Zhang, Jaquelyn Burkell, <strong>Yuntian Deng</strong>, Karen Eltis, Maura Grossman, Vered Shwartz, Ebrahim Bagheri
       image: /images/cifar-synthetic-evidence.png
-      conference: arXiv 2026
+      conference: CIKM 2026
       year: 2026
     - title: "The AI Observatory: A Public Measure of Real-World AI Use"
       authors: Shayne Longpre, Anka Reuel, Dayeon Ki, Zhiping Zhang, Cathy Mengying Fang, Chuanyang Jin, Jennifer Mickel, Cedric Deslandes Whitney, Niloofar Mireshghallah, Victor Ojewale, Megan Richards, Ariel N. Lee, Alex Pentland, Tianshi Li, <strong>Yuntian Deng</strong>, Sara Hooker, Mykel Kochenderfer, Sanmi Koyejo

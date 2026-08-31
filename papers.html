@@ -20,11 +20,19 @@ My full list of papers can be found at my <a href="https://scholar.google.com/ci
 <div class="paper-card">
   {% if paper.image %}
   <div class="paper-card-image">
+    {% if paper.pdf %}
     <a href="{{paper.pdf}}"><img src="{{paper.image}}" alt="Figure from {{paper.title}}"></a>
+    {% else %}
+    <img src="{{paper.image}}" alt="Figure from {{paper.title}}">
+    {% endif %}
   </div>
   {% endif %}
   <div class="paper-card-body">
+    {% if paper.pdf %}
     <a class="paper" href="{{paper.pdf}}">{{paper.title}}</a><br>
+    {% else %}
+    <span class="paper">{{paper.title}}</span><br>
+    {% endif %}
     {{paper.authors}}.<br>
     {{paper.conference}}
     {% if paper.code %} <a class="tag tag-code" href="{{paper.code}}">code</a>{% endif %}
