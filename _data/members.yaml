@@ -6,22 +6,11 @@
       github : wtzhang99
       githubid : 168630001
       research : "LLM reasoning, aggregative question answering, interactive training"
-    - name : Luke Rivard
-      email : jlrivard@uwaterloo.ca
-      url : "https://luke-rivard.com/"
-      github : EnronMusk
-      githubid : 142634045
-      research : "Neural world models, NeuralOS"
     - name : Liliana Hotsko
       email : lhotsko@uwaterloo.ca
       url : "https://lilianahotsko.github.io/"
       github : lilianahotsko
       githubid: 91615473
-    - name : Henry Lin
-      email: h293lin@uwaterloo.ca
-      url : "https://github.com/Seoulsim2"
-      github : Seoulsim2
-      githubid : 239438559
     - name : Austing Dong
       url : "https://github.com/AustingDong"
       github : AustingDong
@@ -30,6 +19,20 @@
       url : "https://github.com/akirakudo901"
       github : akirakudo901
       githubid : 76494218
+
+- group : MMath Alumni
+  people :
+    - name : Luke Rivard
+      email : jlrivard@uwaterloo.ca
+      url : "https://luke-rivard.com/"
+      github : EnronMusk
+      githubid : 142634045
+      research : "Neural world models, NeuralOS"
+    - name : Henry Lin
+      email: h293lin@uwaterloo.ca
+      url : "https://github.com/Seoulsim2"
+      github : Seoulsim2
+      githubid : 239438559
 
 - group : Undergrad Alumni
   people :
@@ -48,5 +51,4 @@
       url : "https://www.ziwei-tang.com/"
       github: tzw2698
       githubid: 68865752
-
 
