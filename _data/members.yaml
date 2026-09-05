@@ -5,12 +5,13 @@
       url : "https://wentao-zhang.me/"
       github : wtzhang99
       githubid : 168630001
-      research : "LLM reasoning, aggregative question answering, interactive training"
+      research : "ProgramAsWeights"
     - name : Liliana Hotsko
       email : lhotsko@uwaterloo.ca
       url : "https://lilianahotsko.github.io/"
       github : lilianahotsko
       githubid: 91615473
+      research : "ProgramAsWeights"
     - name : Austing Dong
       url : "https://github.com/AustingDong"
       github : AustingDong
@@ -27,7 +28,7 @@
       url : "https://luke-rivard.com/"
       github : EnronMusk
       githubid : 142634045
-      research : "Neural world models, NeuralOS"
+      research : "NeuralOS"
     - name : Henry Lin
       email: h293lin@uwaterloo.ca
       url : "https://github.com/Seoulsim2"
@@ -51,4 +52,3 @@
       url : "https://www.ziwei-tang.com/"
       github: tzw2698
       githubid: 68865752
-
