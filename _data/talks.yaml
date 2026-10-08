@@ -1,5 +1,9 @@
 talks:
   - year: 2026
+    title: "ProgramAsWeights"
+    venue: "University of Waterloo AI Reading Group"
+    date: "Oct 2026"
+  - year: 2026
     title: "NeuralOS"
     venue: "Apple MLR Internal Reading Group (Remote)"
     date: "Aug 2026"
