@@ -1,11 +1,13 @@
 ---
 layout: page
 title: Demos
+seo_title: Research Demos | Yuntian Deng
+description: "Explore open-source research demos from Yuntian Deng and collaborators, including ProgramAsWeights, NeuralOS, implicit chain of thought, and WildVis."
 weight: 2
 permalink: /demos/
 show: 1
 ---
-<h3>Demos</h3>
+<h1 class="page-heading">Demos</h1>
 
 
 <p>
@@ -16,9 +18,9 @@ show: 1
 
 <div class="papers-list">
 {% for demo in site.data.demos.demos %}
-<div class="paper-card">
+<div class="paper-card" id="{{ demo.title | slugify }}">
   <div class="paper-card-image">
-    {% if demo.image %}<a href="{{demo.link}}"><img src="{{demo.image}}" alt="Screenshot of {{demo.title}}"></a>{% endif %}
+    {% if demo.image %}<a href="{{demo.link}}">{% assign figure_alt = demo.title | prepend: "Screenshot of " %}{% include responsive-image.html src=demo.image alt=figure_alt %}</a>{% endif %}
   </div>
   <div class="paper-card-body">
     <a class="paper" href="{{demo.link}}">{{demo.title}}</a><br>
@@ -32,5 +34,3 @@ show: 1
 </div>
 {% endfor %}
 </div>
-
-

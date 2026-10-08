@@ -1,12 +1,13 @@
 ---
 layout: page
 title: Publications
+description: "Publications and preprints by Yuntian Deng and collaborators on neural programs, neural world models, implicit chain of thought, and language models."
 permalink: /publications/
 weight: 5
 show: 1
 ---
 
-<h3>Papers</h3>
+<h1 class="page-heading">Papers</h1>
 
 <p>
 My full list of papers can be found at my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.
@@ -14,16 +15,16 @@ My full list of papers can be found at my <a href="https://scholar.google.com/ci
 
 {% assign papers_by_year = site.data.papers.papers | group_by: "year" | sort: "name" | reverse %}
 {% for year_group in papers_by_year %}
-<h4 class="year-header">{{ year_group.name }}</h4>
+<h2 class="year-header" id="publications-{{ year_group.name }}">{{ year_group.name }}</h2>
 <div class="papers-list">
 {% for paper in year_group.items %}
-<div class="paper-card">
+<div class="paper-card" id="{{ paper.title | slugify }}">
   {% if paper.image %}
   <div class="paper-card-image">
     {% if paper.pdf %}
-    <a href="{{paper.pdf}}"><img src="{{paper.image}}" alt="Figure from {{paper.title}}"></a>
+    <a href="{{paper.pdf}}">{% assign figure_alt = paper.title | prepend: "Figure from " %}{% include responsive-image.html src=paper.image alt=figure_alt %}</a>
     {% else %}
-    <img src="{{paper.image}}" alt="Figure from {{paper.title}}">
+    {% assign figure_alt = paper.title | prepend: "Figure from " %}{% include responsive-image.html src=paper.image alt=figure_alt %}
     {% endif %}
   </div>
   {% endif %}

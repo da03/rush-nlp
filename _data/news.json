@@ -1,0 +1,254 @@
+[
+  {
+    "id": "news-2026-09-24",
+    "date": "2026-09-24",
+    "display_date": "Sep 24, 2026",
+    "content": "Our paper, <a href=\"https://arxiv.org/abs/2607.02512\">Program-as-Weights: A Programming Paradigm for Fuzzy Functions</a>, has been accepted to NeurIPS 2026!",
+    "title": "Our paper, Program-as-Weights: A Programming Paradigm for Fuzzy Functions, has been accepted to NeurIPS 2026!"
+  },
+  {
+    "id": "news-2026-09-22",
+    "date": "2026-09-22",
+    "display_date": "Sep 22, 2026",
+    "content": "Quoted in <a href=\"https://www.sciencenews.org/article/ai-model-reason-logic-words-efficient\"><em>Science News</em></a> on reasoning without words and the efficiency and interpretability of AI models.",
+    "title": "Quoted in Science News on reasoning without words and the efficiency and interpretability of AI models."
+  },
+  {
+    "id": "news-2026-09-08",
+    "date": "2026-09-08",
+    "display_date": "Sep 8, 2026",
+    "content": "Discussed Claudish, how coding agents are influencing human language, and our <a href=\"https://programasweights.com/claudish\">ProgramAsWeights translator</a> in a <a href=\"https://uwaterloo.ca/news/media/q-and-experts-what-claudish\">University of Waterloo expert Q&amp;A</a>.",
+    "title": "Discussed Claudish, how coding agents are influencing human language, and our ProgramAsWeights translator in a University of Waterloo expert Q&A."
+  },
+  {
+    "id": "news-2026-08-26",
+    "date": "2026-08-26",
+    "display_date": "Aug 26, 2026",
+    "content": "Interviewed by Taylor Lorenz for her <em>User Mag</em> article, <a href=\"https://www.usermag.co/p/vibe-coders-now-have-their-own-language\">\"Vibe Coders Now Have Their Own Language,\"</a> about <a href=\"https://programasweights.com/claudish\">English &harr; Claudish</a>, how coding agents are shaping software developers' language, and whether humans are adapting to machine-generated dialects.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/taylorlorenz/status/2092682840651743406\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Interviewed by Taylor Lorenz for her User Mag article, \"Vibe Coders Now Have Their Own Language,\" about English ↔ Claudish, how coding agents are shaping software developers' language, and whether humans are adapting to machine-generated dialects."
+  },
+  {
+    "id": "news-2026-08-22",
+    "date": "2026-08-22",
+    "display_date": "Aug 22, 2026",
+    "content": "Built <a href=\"https://programasweights.com/claudish\">English &harr; Claudish</a>, a bidirectional translator implemented as two local neural programs compiled with <a href=\"https://programasweights.com\">ProgramAsWeights</a>. The <a href=\"https://x.com/yuntiandeng/status/2091201867737145472\">launch post</a> reached <strong>1 million+ views and 17,000+ likes</strong>. <a href=\"https://github.com/programasweights/claudish\">Code</a>.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/yuntiandeng/status/2091201867737145472\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Built English ↔ Claudish, a bidirectional translator implemented as two local neural programs compiled with ProgramAsWeights. The launch post reached 1 million+ views and 17,000+ likes. Code."
+  },
+  {
+    "id": "news-2026-08-18",
+    "date": "2026-08-18",
+    "display_date": "Aug 18, 2026",
+    "content": "Our team launched <a href=\"https://openreview.net/forum?id=o5j63mCxIq\">the AI Observatory</a>, an independent public resource for measuring real-world AI use, with a feature on <a href=\"https://www.washingtonpost.com/business/2026/08/18/ai-observatory-tries-reveal-how-people-really-use-technology/\">The Washington Post homepage</a> and a long-form article in <a href=\"https://www.technologyreview.com/2026/08/18/1142226/how-people-use-ai/\">MIT Technology Review</a>. The Technology Review article highlights <a href=\"https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full\">WildChat</a> as one of the Observatory's largest and most detailed datasets.",
+    "title": "Our team launched the AI Observatory, an independent public resource for measuring real-world AI use, with a feature on The Washington Post homepage and a long-form article in MIT Technology Review. The Technology Review article highlights WildChat as one of the Observatory's largest and most detailed datasets."
+  },
+  {
+    "id": "news-2026-06-05",
+    "date": "2026-06-05",
+    "display_date": "Jun 5, 2026",
+    "content": "Wrote an article, <a href=\"https://x.com/i/article/2062944042996936704\">\"From AI as Problem Solver to AI as Tool Builder\"</a>, on my view that pretraining models to compile repeated tasks into small reusable neural programs (<a href=\"https://programasweights.com\">ProgramAsWeights</a>) is one of the most exciting future directions in AI.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/yuntiandeng/status/2063024515899105333\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Wrote an article, \"From AI as Problem Solver to AI as Tool Builder\", on my view that pretraining models to compile repeated tasks into small reusable neural programs (ProgramAsWeights) is one of the most exciting future directions in AI."
+  },
+  {
+    "id": "news-2026-06-03",
+    "date": "2026-06-03",
+    "display_date": "Jun 3, 2026",
+    "content": "Built a <a href=\"https://programasweights.com/avatar\">3D character you can control with language</a> instead of predefined buttons - a <a href=\"https://programasweights.com\">ProgramAsWeights</a> neural program turns instructions like \"act excited, wave, dance, then sit proudly\" into movements.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/yuntiandeng/status/2062209625399656637\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Built a 3D character you can control with language instead of predefined buttons - a ProgramAsWeights neural program turns instructions like \"act excited, wave, dance, then sit proudly\" into movements."
+  },
+  {
+    "id": "news-2026-06-02",
+    "date": "2026-06-02",
+    "display_date": "Jun 2, 2026",
+    "content": "Built an <a href=\"#ask\">\"Ask me anything\" website helper</a> powered by <a href=\"https://programasweights.com\">ProgramAsWeights</a>, using its new Finetune compiler that trades compile time for accuracy (synthesizes ~3.6K examples and finetunes in about a minute).\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/yuntiandeng/status/2061846160294158814\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Built an \"Ask me anything\" website helper powered by ProgramAsWeights, using its new Finetune compiler that trades compile time for accuracy (synthesizes ~3.6K examples and finetunes in about a minute)."
+  },
+  {
+    "id": "news-2025-12-24",
+    "date": "2025-12-24",
+    "display_date": "Dec 24, 2025",
+    "content": "Organizing the <a href=\"https://latent-implicit-thinking.github.io/\">Latent & Implicit Thinking - Going Beyond CoT Reasoning Workshop</a> at ICLR 2026.",
+    "title": "Organizing the Latent & Implicit Thinking - Going Beyond CoT Reasoning Workshop at ICLR 2026."
+  },
+  {
+    "id": "news-2025-12-19",
+    "date": "2025-12-19",
+    "display_date": "Dec 19, 2025",
+    "content": "My PhD student <a href=\"https://wentao-zhang.me/\">Wentao Zhang</a> was selected as one of two University of Waterloo nominees advancing to the proposal round of the <a href=\"https://www.qualcomm.com/research/university-relations/innovation-fellowship/2026-north-america\">2026 Qualcomm Innovation Fellowship</a>.",
+    "title": "My PhD student Wentao Zhang was selected as one of two University of Waterloo nominees advancing to the proposal round of the 2026 Qualcomm Innovation Fellowship."
+  },
+  {
+    "id": "news-2025-12-16",
+    "date": "2025-12-16",
+    "display_date": "Dec 16, 2025",
+    "content": "Became Co-Chief Technical Officer (Co-CTO) for <a href=\"https://aclrollingreview.org/organization\">ACL Rolling Review (ARR)</a>.",
+    "title": "Became Co-Chief Technical Officer (Co-CTO) for ACL Rolling Review (ARR)."
+  },
+  {
+    "id": "news-2025-12-05",
+    "date": "2025-12-05",
+    "display_date": "Dec 5, 2025",
+    "content": "Featured in a <a href=\"https://www.ctvnews.ca/sci-tech/article/real-or-fake-researchers-to-develop-tool-that-would-help-courts-spot-ai-evidence/\">Canadian Press article</a> about developing a tool to help courts spot AI-generated evidence.",
+    "title": "Featured in a Canadian Press article about developing a tool to help courts spot AI-generated evidence."
+  },
+  {
+    "id": "news-2025-08-11",
+    "date": "2025-08-11",
+    "display_date": "Aug 11, 2025",
+    "content": "Released <a href=\"https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full\">WildChat-4.8M-Full</a>, a dataset of 4.8M real user-ChatGPT conversations collected from our public chatbots (o1-preview and o1-mini).\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/yuntiandeng/status/1954929005305414062\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Released WildChat-4.8M-Full, a dataset of 4.8M real user-ChatGPT conversations collected from our public chatbots (o1-preview and o1-mini)."
+  },
+  {
+    "id": "news-2025-07-14",
+    "date": "2025-07-14",
+    "display_date": "Jul 14, 2025",
+    "content": "We built a demo, <a href=\"https://neural-os.com\">NeuralOS</a>, an operating system entirely powered by neural networks. Check out our <a href=\"https://huggingface.co/papers/2507.08800\">paper</a> for more details!\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/yuntiandeng/status/1944802154314916331\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "We built a demo, NeuralOS, an operating system entirely powered by neural networks. Check out our paper for more details!"
+  },
+  {
+    "id": "news-2024-11-30",
+    "date": "2024-11-30",
+    "display_date": "Nov 30, 2024",
+    "content": "Featured in an <a href=\"https://www.nzz.ch/technologie/schreibe-eine-erotische-kurzgeschichte-warum-sollte-man-in-wollishofen-wohnen-wieso-versteht-mich-meine-frau-nicht-was-leute-chat-gpt-wirklich-fragen-ld.1858229\">NZZ article</a> about <a href=\"https://wildvisualizer.com/\">WildChat</a>.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/NZZTech/status/1862724482768490827\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Featured in an NZZ article about WildChat."
+  },
+  {
+    "id": "news-2024-11-20",
+    "date": "2024-11-20",
+    "display_date": "Nov 20, 2024",
+    "content": "Gave a talk at <a href=\"https://cims.nyu.edu/ai/seminars/cilvr-seminar-series/56/\">NYU CILVR</a> on <a href=\"https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication\">implicit chain of thought reasoning</a>.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/NYUDataScience/status/1864402586427670752\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Gave a talk at NYU CILVR on implicit chain of thought reasoning."
+  },
+  {
+    "id": "news-2024-10-02",
+    "date": "2024-10-02",
+    "display_date": "Oct 2, 2024",
+    "content": "Interviewed by <a href=\"https://techcrunch.com/2024/10/02/why-is-chatgpt-so-bad-at-math\">TechCrunch</a> to discuss the challenges of using LLMs to solve basic math problems.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/yuntiandeng/status/1836114401213989366\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Interviewed by TechCrunch to discuss the challenges of using LLMs to solve basic math problems."
+  },
+  {
+    "id": "news-2024-08-04",
+    "date": "2024-08-04",
+    "display_date": "Aug 4, 2024",
+    "content": "<a href=\"https://huggingface.co/datasets/yuntian-deng/WildChat-1M-Full-with-parameters-internal\">WildChat</a> was featured in the <a href=\"https://wapo.st/3A6e4me\">Washington Post</a>! This work collected 1M real-world user-ChatGPT conversations. You can explore all data at <a href=\"https://wildvisualizer.com\">wildvisualizer.com</a>, or try our data-collecting chatbot at <a href=\"https://huggingface.co/spaces/yuntian-deng/ChatGPT4\">huggingface.co/spaces/yuntian-deng/ChatGPT4</a>.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://x.com/washingtonpost/status/1820111621101936692\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "WildChat was featured in the Washington Post! This work collected 1M real-world user-ChatGPT conversations. You can explore all data at wildvisualizer.com, or try our data-collecting chatbot at huggingface.co/spaces/yuntian-deng/ChatGPT4."
+  },
+  {
+    "id": "news-2024-07-19",
+    "date": "2024-07-19",
+    "display_date": "Jul 19, 2024",
+    "content": "I built a <a href=\"https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication\">demo</a> using GPT-2 to directly produce the product of two numbers without chain-of-thought (CoT). CoT is internalized using the approach in <a href=\"https://arxiv.org/pdf/2405.14838\">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>. A 12-layer GPT-2 can solve <strong>20-digit multiplication</strong> with 99.5% accuracy!\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1814319104448467137\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "I built a demo using GPT-2 to directly produce the product of two numbers without chain-of-thought (CoT). CoT is internalized using the approach in From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step. A 12-layer GPT-2 can solve 20-digit multiplication with 99.5% accuracy!"
+  },
+  {
+    "id": "news-2024-07-11",
+    "date": "2024-07-11",
+    "display_date": "Jul 11, 2024",
+    "content": "I built a <a href=\"https://huggingface.co/spaces/yuntian-deng/implicit-cot-math\">demo</a> to solve grade school math problems (GSM8K)  without chain-of-thought (CoT) at 52% accuracy. CoT is internalized using the approach in <a href=\"https://arxiv.org/pdf/2405.14838\">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1811448907161043224\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "I built a demo to solve grade school math problems (GSM8K) without chain-of-thought (CoT) at 52% accuracy. CoT is internalized using the approach in From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step."
+  },
+  {
+    "id": "news-2024-06-19",
+    "date": "2024-06-19",
+    "display_date": "Jun 19, 2024",
+    "content": "I built a website, <a href=\"https://wildvisualizer.com\">wildvisualizer.com</a>, for interactive search of WildChat, allowing keyword, toxicity, IP, language, and country-based searches of 1M WildChat conversations.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1803496908259991963\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "I built a website, wildvisualizer.com, for interactive search of WildChat, allowing keyword, toxicity, IP, language, and country-based searches of 1M WildChat conversations."
+  },
+  {
+    "id": "news-2024-05-29",
+    "date": "2024-05-29",
+    "display_date": "May 29, 2024",
+    "content": "Our paper, <a href=\"https://arxiv.org/pdf/2405.14838\">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>, is now publicly available! This paper proposes a simple yet effective method to teach language models to internalize chain-of-thought reasoning by gradually removing intermediate steps and finetuning.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1795854740879774036\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Our paper, From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step, is now publicly available! This paper proposes a simple yet effective method to teach language models to internalize chain-of-thought reasoning by gradually removing intermediate steps and finetuning."
+  },
+  {
+    "id": "news-2024-04-26",
+    "date": "2024-04-26",
+    "display_date": "Apr 26, 2024",
+    "content": "I built a demo, <a href=\"https://huggingface.co/spaces/yuntian-deng/AKSelectionPredictor\">AKSelectionPredictor</a>, to predict whether a paper will be selected by <a href=\"https://twitter.com/_akhaliq\">@_akhaliq</a> into Hugging Face papers based on its title, abstract, and authors.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1783888775950561673\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "I built a demo, AKSelectionPredictor, to predict whether a paper will be selected by @_akhaliq into Hugging Face papers based on its title, abstract, and authors."
+  },
+  {
+    "id": "news-2024-03-05",
+    "date": "2024-03-05",
+    "display_date": "Mar 5, 2024",
+    "content": "Our dataset, <a href=\"https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full\">WildChat</a>, is used in Anthropic's <a href=\"https://www-cdn.anthropic.com/de8ba9b01c9ab7cbabf5c33b80b7bbc618857627/Model_Card_Claude_3.pdf\">Claude 3</a> for evaluating refusals.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1765127045246284084\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Our dataset, WildChat, is used in Anthropic's Claude 3 for evaluating refusals."
+  },
+  {
+    "id": "news-2023-11-14",
+    "date": "2023-11-14",
+    "display_date": "Nov 14, 2023",
+    "content": "Our dataset, <a href=\"https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full\">WildChat</a>, is now publicly available! It is a corpus of 650K real-world user-ChatGPT interactions, characterized by over 60 languages and a diversity of user prompts.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1724503257601458575\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Our dataset, WildChat, is now publicly available! It is a corpus of 650K real-world user-ChatGPT interactions, characterized by over 60 languages and a diversity of user prompts."
+  },
+  {
+    "id": "news-2023-11-07",
+    "date": "2023-11-07",
+    "display_date": "Nov 7, 2023",
+    "content": "Our paper, <a href=\"https://arxiv.org/pdf/2311.01460.pdf\">Implicit Chain of Thought Reasoning via Knowledge Distillation</a>, is now publicly available! This paper trains LMs that can reason internally using hidden states instead of articulating all reasoning steps like humans.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1721934898582229498\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Our paper, Implicit Chain of Thought Reasoning via Knowledge Distillation, is now publicly available! This paper trains LMs that can reason internally using hidden states instead of articulating all reasoning steps like humans."
+  },
+  {
+    "id": "news-2023-03-29",
+    "date": "2023-03-29",
+    "display_date": "Mar 29, 2023",
+    "content": "<a href=\"https://openaiwatch.com/\">OpenAIWatch.com</a> is launched! It tracks GPT-4's nondeterministic behavior even with greedy decoding in unicorn illustrations. 🦄 \n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1641108596510343168\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "OpenAIWatch.com is launched! It tracks GPT-4's nondeterministic behavior even with greedy decoding in unicorn illustrations. 🦄"
+  },
+  {
+    "id": "news-2023-03-29-2",
+    "date": "2023-03-29",
+    "display_date": "Mar 29, 2023",
+    "content": "Our <a href=\"https://huggingface.co/spaces/yuntian-deng/ChatGPT\">GPT Chatbot</a>, based on Yuvraj Sharma's <a href=\"https://huggingface.co/spaces/ysharma/ChatGPT4\">code</a>, is now live! It provides free access to GPT with the aim of collecting dialogue data for research purposes.",
+    "title": "Our GPT Chatbot, based on Yuvraj Sharma's code, is now live! It provides free access to GPT with the aim of collecting dialogue data for research purposes."
+  },
+  {
+    "id": "news-2022-10-18",
+    "date": "2022-10-18",
+    "display_date": "Oct 18, 2022",
+    "content": "Our paper, <a href=\"https://aclanthology.org/2022.emnlp-main.815.pdf\">Model Criticism for Long-Form Text Generation</a>, is now publicly available! This paper uses model criticism in latent space to quantify various notions of high-level coherence in long-form text generation.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/srush_nlp/status/1582410985226108930\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Our paper, Model Criticism for Long-Form Text Generation, is now publicly available! This paper uses model criticism in latent space to quantify various notions of high-level coherence in long-form text generation."
+  },
+  {
+    "id": "news-2022-10-12",
+    "date": "2022-10-12",
+    "display_date": "Oct 12, 2022",
+    "content": "<a href=\"https://huggingface.co/spaces/yuntian-deng/latex2im\">Markup-to-Image Diffusion Models demo</a> is now live! This project uses a diffusion model to learn how to render various types of markups, including LaTeX.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/srush_nlp/status/1580255172340879360\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Markup-to-Image Diffusion Models demo is now live! This project uses a diffusion model to learn how to render various types of markups, including LaTeX."
+  },
+  {
+    "id": "news-2020-06-02",
+    "date": "2020-06-02",
+    "display_date": "Jun 2, 2020",
+    "content": "Our paper, <a href=\"https://papers.nips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf\">Cascaded Text Generation with Markov Transformers</a>, is available! It allows parallel, fast, autoregressive, and accurate text generation using a high-order Markov model.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/srush_nlp/status/1267866675904417801\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Our paper, Cascaded Text Generation with Markov Transformers, is available! It allows parallel, fast, autoregressive, and accurate text generation using a high-order Markov model."
+  },
+  {
+    "id": "news-2020-04-26",
+    "date": "2020-04-26",
+    "display_date": "Apr 26, 2020",
+    "content": "Introducing <a href=\"https://openreview.net/pdf?id=B1l4SgHKDH\">Residual Energy-Based Models for Text Generation</a>, a globally-normalized approach to text generation! Our approach uses a global discriminator to guide the traditional locally-normalized language model to produce text that's more indistinguishable from human-written text.",
+    "title": "Introducing Residual Energy-Based Models for Text Generation, a globally-normalized approach to text generation! Our approach uses a global discriminator to guide the traditional locally-normalized language model to produce text that's more indistinguishable from human-written text."
+  },
+  {
+    "id": "news-2019-09-05",
+    "date": "2019-09-05",
+    "display_date": "Sep 5, 2019",
+    "content": "<a href=\"https://steganography.live\">Neural Linguistic Steganography demo</a> is now live! This project lets you hide secret messages in natural language using arithmetic coding.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/srush_nlp/status/1169647490284605443\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Neural Linguistic Steganography demo is now live! This project lets you hide secret messages in natural language using arithmetic coding."
+  },
+  {
+    "id": "news-2016-12-19",
+    "date": "2016-12-19",
+    "display_date": "Dec 19, 2016",
+    "content": "Excited to introduce <a href=\"http://opennmt.net\">OpenNMT</a>, an open-source neural machine translation toolkit developed for industrial and academic use.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/srush_nlp/status/810900018907533313\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Excited to introduce OpenNMT, an open-source neural machine translation toolkit developed for industrial and academic use."
+  },
+  {
+    "id": "news-2016-09-19",
+    "date": "2016-09-19",
+    "display_date": "Sep 19, 2016",
+    "content": "Excited to announce that we've provided a solution to OpenAI's <a href=\"https://github.com/openai/requests-for-research/blob/master/_requests_for_research/im2latex.html\">requests-for-research im2latex challenge</a> using neural sequence-to-sequence learning! Check out the visualizations <a href=\"https://im2markup.yuntiandeng.com\">here</a>.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/srush_nlp/status/777901557585178624\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "title": "Excited to announce that we've provided a solution to OpenAI's requests-for-research im2latex challenge using neural sequence-to-sequence learning! Check out the visualizations here."
+  }
+]

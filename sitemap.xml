@@ -1,0 +1,23 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>{{ '/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/group/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/demos/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/talks/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/teaching/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/publications/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/cv.pdf' | absolute_url | xml_escape }}</loc></url>
+  {% for course in site.data.teaching.teaching %}
+  <url><loc>{{ course.course_url | absolute_url | xml_escape }}</loc></url>
+  {% endfor %}
+  {% assign talk_urls = site.data.talks.talks | map: 'url' | compact | uniq %}
+  {% for talk_url in talk_urls %}
+  {% assign first_character = talk_url | slice: 0 %}
+  {% if first_character == '/' %}
+  <url><loc>{{ talk_url | absolute_url | xml_escape }}</loc></url>
+  {% endif %}
+  {% endfor %}
+</urlset>

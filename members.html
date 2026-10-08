@@ -1,24 +1,26 @@
 ---
 layout: page
 title: Group
+seo_title: Research Group | Yuntian Deng
+description: "Meet the graduate students, visitors, and alumni of Yuntian Deng's research group at the University of Waterloo."
 permalink: /group/
 weight: 1.5
 show: 1
 ---
 
 
+<h1 class="page-heading">Research Group</h1>
 {% for group in site.data.members %}
-<h3 style="margin-top:20px">{{group.group}}</h3>
+<h2 class="group-heading" id="{{ group.group | slugify }}">{{group.group}}</h2>
 <div class="members-grid">
 {% for member in group.people %}
 <div class="member-card">
   <a href="{{member.url}}">
-    <img class="member-photo" src="{% if member.githubid %}https://avatars2.githubusercontent.com/u/{{member.githubid}}?v=3&s=400{% else %}{{member.pic}}{% endif %}" alt="Photo of {{member.name}}">
+    <img class="member-photo" src="{% if member.githubid %}https://avatars2.githubusercontent.com/u/{{member.githubid}}?v=3&s=400{% else %}{{member.pic}}{% endif %}" alt="Photo of {{member.name}}" width="150" height="150" loading="lazy" decoding="async">
   </a>
-  <h5 class="member-name">{{member.name}}</h5>
+  <h3 class="member-name">{{member.name}}</h3>
   {% if member.research %}<p class="member-research">{{member.research}}</p>{% endif %}
 </div>
 {% endfor %}
 </div>
 {% endfor %}
-

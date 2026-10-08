@@ -1,0 +1,73 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": {{ '/#website' | absolute_url | jsonify }},
+      "url": {{ '/' | absolute_url | jsonify }},
+      "name": "Yuntian Deng",
+      "publisher": { "@id": {{ '/#person' | absolute_url | jsonify }} }
+    },
+    {
+      "@type": "{% if page.url == '/' %}ProfilePage{% else %}WebPage{% endif %}",
+      "@id": {{ canonical_url | append: '#webpage' | jsonify }},
+      "url": {{ canonical_url | jsonify }},
+      "name": {{ seo_title | jsonify }},
+      "description": {{ seo_description | jsonify }},
+      "inLanguage": "en",
+      "isPartOf": { "@id": {{ '/#website' | absolute_url | jsonify }} },
+      {% if page.url == '/' %}
+      "mainEntity": { "@id": {{ '/#person' | absolute_url | jsonify }} }
+      {% else %}
+      "about": { "@id": {{ '/#person' | absolute_url | jsonify }} }
+      {% endif %}
+    },
+    {
+      "@type": "Person",
+      "@id": {{ '/#person' | absolute_url | jsonify }},
+      "name": "Yuntian Deng",
+      "url": {{ '/' | absolute_url | jsonify }},
+      "jobTitle": "Assistant Professor of Computer Science",
+      "image": {{ '/images/yuntian-deng.jpg' | absolute_url | jsonify }},
+      "email": "yuntian@uwaterloo.ca",
+      "mainEntityOfPage": { "@id": {{ '/#webpage' | absolute_url | jsonify }} },
+      "worksFor": {
+        "@type": "CollegeOrUniversity",
+        "name": "University of Waterloo",
+        "url": "https://uwaterloo.ca/"
+      },
+      "affiliation": [
+        { "@type": "CollegeOrUniversity", "name": "University of Waterloo", "url": "https://uwaterloo.ca/" },
+        { "@type": "CollegeOrUniversity", "name": "Harvard University", "url": "https://www.harvard.edu/" },
+        { "@type": "Organization", "name": "Vector Institute for Artificial Intelligence", "url": "https://vectorinstitute.ai/" }
+      ],
+      "sameAs": [
+        "https://orcid.org/0000-0001-5280-8974",
+        "https://cs.uwaterloo.ca/about/people/yuntian",
+        "https://scholar.google.com/citations?user=tk0e5lYAAAAJ",
+        "https://www.semanticscholar.org/author/Yuntian-Deng/2268298457",
+        "https://x.com/yuntiandeng",
+        "https://www.linkedin.com/in/yuntian-deng-536664a1/",
+        "https://openreview.net/profile?id=~Yuntian_Deng2",
+        "https://www.researchgate.net/profile/Yuntian-Deng",
+        "https://github.com/da03",
+        "https://huggingface.co/yuntian-deng",
+        "https://underline.io/speakers/103474-yuntian-deng"
+      ],
+      "knowsAbout": [
+        "ProgramAsWeights (PAW) and neural programs",
+        "NeuralOS and neural world models",
+        "Implicit chain-of-thought reasoning",
+        "Real-world language-model use and open research infrastructure"
+      ],
+      "alumniOf": [
+        { "@type": "Organization", "name": "Allen Institute for AI" },
+        { "@type": "CollegeOrUniversity", "name": "Harvard University" },
+        { "@type": "CollegeOrUniversity", "name": "Carnegie Mellon University" },
+        { "@type": "CollegeOrUniversity", "name": "Tsinghua University" }
+      ]
+    }
+  ]
+}
+</script>

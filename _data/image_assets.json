@@ -1,0 +1,260 @@
+{
+  "/images/ICDAR19_table.png": {
+    "width": 833,
+    "height": 1111
+  },
+  "/images/ICLR20_REBM.png": {
+    "width": 916,
+    "height": 368
+  },
+  "/images/VariationalAttention.png": {
+    "width": 1200,
+    "height": 1185
+  },
+  "/images/acl15_entity.png": {
+    "width": 2048,
+    "height": 622,
+    "webp": "/images/optimized/acl15_entity-png.webp"
+  },
+  "/images/adapt.png": {
+    "width": 341,
+    "height": 245
+  },
+  "/images/adaptive-length-reward.png": {
+    "width": 1600,
+    "height": 634,
+    "webp": "/images/optimized/adaptive-length-reward-png.webp"
+  },
+  "/images/aesw2016.png": {
+    "width": 445,
+    "height": 305
+  },
+  "/images/aggregation.png": {
+    "width": 1412,
+    "height": 1202,
+    "webp": "/images/optimized/aggregation-png.webp"
+  },
+  "/images/ai-observatory.png": {
+    "width": 1600,
+    "height": 560,
+    "webp": "/images/optimized/ai-observatory-png.webp"
+  },
+  "/images/ak_paper_selection_predictor.png": {
+    "width": 1740,
+    "height": 1334,
+    "webp": "/images/optimized/ak_paper_selection_predictor-png.webp"
+  },
+  "/images/angular.png": {
+    "width": 1480,
+    "height": 602,
+    "webp": "/images/optimized/angular-png.webp"
+  },
+  "/images/bottomup.png": {
+    "width": 369,
+    "height": 176
+  },
+  "/images/cascade.png": {
+    "width": 177,
+    "height": 162
+  },
+  "/images/cascaded-generation.gif": {
+    "width": 442,
+    "height": 400,
+    "webp": "/images/optimized/cascaded-generation-gif.webp"
+  },
+  "/images/cifar-synthetic-evidence.png": {
+    "width": 1600,
+    "height": 656,
+    "webp": "/images/optimized/cifar-synthetic-evidence-png.webp"
+  },
+  "/images/claudish.png": {
+    "width": 910,
+    "height": 531,
+    "webp": "/images/optimized/claudish-png.webp"
+  },
+  "/images/code2lora.png": {
+    "width": 1600,
+    "height": 1044,
+    "webp": "/images/optimized/code2lora-png.webp"
+  },
+  "/images/concept_taxonomy.png": {
+    "width": 754,
+    "height": 316,
+    "webp": "/images/optimized/concept_taxonomy-png.webp"
+  },
+  "/images/detectzoo.png": {
+    "width": 1178,
+    "height": 475,
+    "webp": "/images/optimized/detectzoo-png.webp"
+  },
+  "/images/diversity.png": {
+    "width": 1296,
+    "height": 698,
+    "webp": "/images/optimized/diversity-png.webp"
+  },
+  "/images/dropout.png": {
+    "width": 598,
+    "height": 151
+  },
+  "/images/emnlp19_arithmetic.png": {
+    "width": 920,
+    "height": 778
+  },
+  "/images/emnlp21_rationale.png": {
+    "width": 2607,
+    "height": 2687,
+    "webp": "/images/optimized/emnlp21_rationale-png.webp"
+  },
+  "/images/emnlp21_seq2lattice.png": {
+    "width": 1585,
+    "height": 633,
+    "webp": "/images/optimized/emnlp21_seq2lattice-png.webp"
+  },
+  "/images/genome_imputation_full.png": {
+    "width": 536,
+    "height": 360
+  },
+  "/images/im2latex_cropped.gif": {
+    "width": 880,
+    "height": 479,
+    "webp": "/images/optimized/im2latex_cropped-gif.webp"
+  },
+  "/images/implicit_cot_grade_school_math_en.gif": {
+    "width": 572,
+    "height": 252,
+    "webp": "/images/optimized/implicit_cot_grade_school_math_en-gif.webp"
+  },
+  "/images/implicit_cot_large_cropped_2x.gif": {
+    "width": 468,
+    "height": 343
+  },
+  "/images/implicit_cot_multiplication.gif": {
+    "width": 1000,
+    "height": 674,
+    "webp": "/images/optimized/implicit_cot_multiplication-gif.webp"
+  },
+  "/images/interactive_training.png": {
+    "width": 5740,
+    "height": 4197,
+    "webp": "/images/optimized/interactive_training-png.webp"
+  },
+  "/images/internalize_step_by_step.gif": {
+    "width": 960,
+    "height": 960,
+    "webp": "/images/optimized/internalize_step_by_step-gif.webp"
+  },
+  "/images/leaderboard-illusion.png": {
+    "width": 1600,
+    "height": 777,
+    "webp": "/images/optimized/leaderboard-illusion-png.webp"
+  },
+  "/images/long-grounded-thoughts.png": {
+    "width": 1600,
+    "height": 651,
+    "webp": "/images/optimized/long-grounded-thoughts-png.webp"
+  },
+  "/images/magpie.png": {
+    "width": 2044,
+    "height": 2085,
+    "webp": "/images/optimized/magpie-png.webp"
+  },
+  "/images/mix-of-language-experts.png": {
+    "width": 1055,
+    "height": 995
+  },
+  "/images/mixeval.jpg": {
+    "width": 3000,
+    "height": 1800,
+    "webp": "/images/optimized/mixeval-jpg.webp"
+  },
+  "/images/model_criticism.png": {
+    "width": 2154,
+    "height": 710,
+    "webp": "/images/optimized/model_criticism-png.webp"
+  },
+  "/images/molecules_rendering.gif": {
+    "width": 128,
+    "height": 128,
+    "webp": "/images/optimized/molecules_rendering-gif.webp"
+  },
+  "/images/molecules_rendering_cropped.gif": {
+    "width": 128,
+    "height": 66,
+    "webp": "/images/optimized/molecules_rendering_cropped-gif.webp"
+  },
+  "/images/multiplication-transformers.png": {
+    "width": 1600,
+    "height": 783,
+    "webp": "/images/optimized/multiplication-transformers-png.webp"
+  },
+  "/images/neural-os.gif": {
+    "width": 512,
+    "height": 384
+  },
+  "/images/neurips21_lowrank.png": {
+    "width": 1176,
+    "height": 334
+  },
+  "/images/overview.png": {
+    "width": 192,
+    "height": 179
+  },
+  "/images/paw.png": {
+    "width": 680,
+    "height": 399
+  },
+  "/images/phylogeny_with_generated_sequence.jpg": {
+    "width": 2007,
+    "height": 1787
+  },
+  "/images/real-or-fake.png": {
+    "width": 1041,
+    "height": 507
+  },
+  "/images/recurrent_attention.png": {
+    "width": 518,
+    "height": 682
+  },
+  "/images/tokdrift.png": {
+    "width": 1600,
+    "height": 1105,
+    "webp": "/images/optimized/tokdrift-png.webp"
+  },
+  "/images/tree_prompt.png": {
+    "width": 1562,
+    "height": 1039
+  },
+  "/images/unicorn_cropped.jpg": {
+    "width": 1170,
+    "height": 1336,
+    "webp": "/images/optimized/unicorn_cropped-jpg.webp"
+  },
+  "/images/wildbench.png": {
+    "width": 994,
+    "height": 798,
+    "webp": "/images/optimized/wildbench-png.webp"
+  },
+  "/images/wildchat.gif": {
+    "width": 600,
+    "height": 350,
+    "webp": "/images/optimized/wildchat-gif.webp"
+  },
+  "/images/wildhallucinations.png": {
+    "width": 1020,
+    "height": 674,
+    "webp": "/images/optimized/wildhallucinations-png.webp"
+  },
+  "/images/wildvisualizer.gif": {
+    "width": 600,
+    "height": 600,
+    "webp": "/images/optimized/wildvisualizer-gif.webp"
+  },
+  "/images/yuntian-deng.jpg": {
+    "width": 1600,
+    "height": 1600
+  },
+  "https://im2markup.yuntiandeng.com/network.png": {
+    "width": 833,
+    "height": 1111
+  }
+}

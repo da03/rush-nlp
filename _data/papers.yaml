@@ -301,7 +301,6 @@ papers:
       authors: <strong>Yuntian Deng</strong>, Alexander M. Rush
       pdf: https://aclanthology.org/2021.findings-emnlp.318.pdf
       image: /images/emnlp21_seq2lattice.png
-      slides: /slides/emnlp21_seq2lattice.pdf
       conference: EMNLP 2021 Findings
       year: 2021
     - title: "Rationales for Sequential Predictions"

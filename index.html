@@ -29,6 +29,18 @@ show: 1
         // Start collapsed.
         setCollapsed(true);
 
+        // Feed links and shared news anchors must reveal older entries too.
+        function revealLinkedNews() {
+            const id = window.location.hash.slice(1);
+            if (!id.startsWith('news-')) return;
+            const item = document.getElementById(id);
+            if (!item || !newsList.contains(item)) return;
+            if (item.classList.contains(hiddenClass)) setCollapsed(false);
+            item.scrollIntoView();
+        }
+        revealLinkedNews();
+        window.addEventListener('hashchange', revealLinkedNews);
+
         toggleBtn.addEventListener('click', () => {
             const isCurrentlyCollapsed = toggleBtn.getAttribute('aria-expanded') !== 'true';
             setCollapsed(!isCurrentlyCollapsed);
@@ -38,7 +50,7 @@ show: 1
 
 <div class="profile-section">
   <div class="profile-photo">
-    <img width="200" src="/images/yuntian-deng.jpg" alt="Photo of Yuntian Deng">
+    {% include responsive-image.html src="/images/yuntian-deng.jpg" alt="Photo of Yuntian Deng" loading="eager" display_width=200 %}
   </div>
   <div class="profile-info">
     <h1>Yuntian Deng</h1>
@@ -74,24 +86,24 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
   <p class="research-vision__more"><a href="https://x.com/i/article/2062944042996936704">Read the full article: From AI as Problem Solver to AI as Tool Builder</a></p>
 </div>
 
-<h2>Research Themes</h2>
+<h2 id="research">Research Themes</h2>
 <div class="research-themes">
   <div class="theme-card">
-    <h3>ProgramAsWeights (PAW)</h3>
+    <h3 id="programasweights">ProgramAsWeights (PAW)</h3>
     <p>A new programming paradigm that replaces symbolic code for fuzzy functions with compiled neural programs. Towards programming without code as an intermediary.</p>
     <span class="theme-papers">
       <a href="https://programasweights.com">programasweights.com</a>
     </span>
   </div>
   <div class="theme-card">
-    <h3>Neural World Models</h3>
+    <h3 id="neuralos">Neural World Models</h3>
     <p>Can generative models learn the behavior of interactive computing environments? We explore this through NeuralOS, which uses a neural generative model to simulate an operating system end to end.</p>
     <span class="theme-papers">
       <a href="https://neural-os.com">NeuralOS</a>
     </span>
   </div>
   <div class="theme-card">
-    <h3>Implicit Chain of Thought</h3>
+    <h3 id="implicit-chain-of-thought">Implicit Chain of Thought</h3>
     <p>We internalize chain-of-thought reasoning into hidden computation. A 12-layer GPT-2 reaches 99.5% accuracy when multiplying two 20-digit numbers without emitting intermediate steps.</p>
     <span class="theme-papers">
       <a href="https://arxiv.org/pdf/2405.14838">Internalize CoT</a> &middot;
@@ -101,7 +113,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
     </span>
   </div>
   <div class="theme-card">
-    <h3>LLM Usage at Scale</h3>
+    <h3 id="llm-usage">LLM Usage at Scale</h3>
     <p>How do people actually use large language models? We collect and analyze millions of real-world conversations to understand usage patterns, safety, and emergent behaviors.</p>
     <span class="theme-papers">
       <a href="https://arxiv.org/abs/2405.01470">WildChat</a> &middot;
@@ -111,7 +123,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
   </div>
 </div>
 
-<h2>In the Media</h2>
+<h2 id="media">In the Media</h2>
 <h3 class="media-group-title">Interviews, Features, and Expert Commentary</h3>
 <div class="media-highlights">
   <a href="https://www.sciencenews.org/article/ai-model-reason-logic-words-efficient" class="media-item">
@@ -178,7 +190,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
   </a>
 </div>
 
-<h2>Selected Recognition</h2>
+<h2 id="recognition">Selected Recognition</h2>
 <ul class="recognition-list">
   <li><a href="https://www.laude.org/updates/slingshots-three">Laude Institute Slingshots (NeuralOS)</a><time datetime="2026-06">2026</time></li>
   <li><span>Google Research Award (co-PI)</span><time datetime="2026-04">2026</time></li>
@@ -187,165 +199,21 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
   <li><a href="https://ieee-ceda.org/paper-award/dac-best-paper-award">DAC 2020 Best Paper Award</a><time datetime="2020-07">2020</time></li>
 </ul>
 
-<h2>News</h2>
+<h2 id="news">News</h2>
 <ul id="news-list">
-    <li><time datetime="2026-09-24">Sep 24, 2026</time>: Our paper, <a href="https://arxiv.org/abs/2607.02512">Program-as-Weights: A Programming Paradigm for Fuzzy Functions</a>, has been accepted to NeurIPS 2026!</li>
-    <li><time datetime="2026-09-22">Sep 22, 2026</time>: Quoted in <a href="https://www.sciencenews.org/article/ai-model-reason-logic-words-efficient"><em>Science News</em></a> on reasoning without words and the efficiency and interpretability of AI models.</li>
-    <li><time datetime="2026-09-08">Sep 8, 2026</time>: Discussed Claudish, how coding agents are influencing human language, and our <a href="https://programasweights.com/claudish">ProgramAsWeights translator</a> in a <a href="https://uwaterloo.ca/news/media/q-and-experts-what-claudish">University of Waterloo expert Q&amp;A</a>.</li>
-    <li><time datetime="2026-08-26">Aug 26, 2026</time>: Interviewed by Taylor Lorenz for her <em>User Mag</em> article, <a href="https://www.usermag.co/p/vibe-coders-now-have-their-own-language">"Vibe Coders Now Have Their Own Language,"</a> about <a href="https://programasweights.com/claudish">English &harr; Claudish</a>, how coding agents are shaping software developers' language, and whether humans are adapting to machine-generated dialects.
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/taylorlorenz/status/2092682840651743406">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2026-08-22">Aug 22, 2026</time>: Built <a href="https://programasweights.com/claudish">English &harr; Claudish</a>, a bidirectional translator implemented as two local neural programs compiled with <a href="https://programasweights.com">ProgramAsWeights</a>. The <a href="https://x.com/yuntiandeng/status/2091201867737145472">launch post</a> reached <strong>1 million+ views and 17,000+ likes</strong>. <a href="https://github.com/programasweights/claudish">Code</a>.
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/yuntiandeng/status/2091201867737145472">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2026-08-18">Aug 18, 2026</time>: Our team launched <a href="https://openreview.net/forum?id=o5j63mCxIq">the AI Observatory</a>, an independent public resource for measuring real-world AI use, with a feature on <a href="https://www.washingtonpost.com/business/2026/08/18/ai-observatory-tries-reveal-how-people-really-use-technology/">The Washington Post homepage</a> and a long-form article in <a href="https://www.technologyreview.com/2026/08/18/1142226/how-people-use-ai/">MIT Technology Review</a>. The Technology Review article highlights <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full">WildChat</a> as one of the Observatory's largest and most detailed datasets.
-    </li>
-    <li><time datetime="2026-06-05">Jun 5, 2026</time>: Wrote an article, <a href="https://x.com/i/article/2062944042996936704">"From AI as Problem Solver to AI as Tool Builder"</a>, on my view that pretraining models to compile repeated tasks into small reusable neural programs (<a href="https://programasweights.com">ProgramAsWeights</a>) is one of the most exciting future directions in AI.
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/yuntiandeng/status/2063024515899105333">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2026-06-03">Jun 3, 2026</time>: Built a <a href="https://programasweights.com/avatar">3D character you can control with language</a> instead of predefined buttons - a <a href="https://programasweights.com">ProgramAsWeights</a> neural program turns instructions like "act excited, wave, dance, then sit proudly" into movements.
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/yuntiandeng/status/2062209625399656637">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2026-06-02">Jun 2, 2026</time>: Built an <a href="#ask">"Ask me anything" website helper</a> powered by <a href="https://programasweights.com">ProgramAsWeights</a>, using its new Finetune compiler that trades compile time for accuracy (synthesizes ~3.6K examples and finetunes in about a minute).
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/yuntiandeng/status/2061846160294158814">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2025-12-24">Dec 24, 2025</time>: Organizing the <a href="https://latent-implicit-thinking.github.io/">Latent & Implicit Thinking - Going Beyond CoT Reasoning Workshop</a> at ICLR 2026.
-    </li>
-    <li><time datetime="2025-12-19">Dec 19, 2025</time>: My PhD student <a href="https://wentao-zhang.me/">Wentao Zhang</a> was selected as one of two University of Waterloo nominees advancing to the proposal round of the <a href="https://www.qualcomm.com/research/university-relations/innovation-fellowship/2026-north-america">2026 Qualcomm Innovation Fellowship</a>.
-    </li>
-    <li><time datetime="2025-12-16">Dec 16, 2025</time>: Became Co-Chief Technical Officer (Co-CTO) for <a href="https://aclrollingreview.org/organization">ACL Rolling Review (ARR)</a>.
-    </li>
-    <li><time datetime="2025-12-05">Dec 5, 2025</time>: Featured in a <a href="https://www.ctvnews.ca/sci-tech/article/real-or-fake-researchers-to-develop-tool-that-would-help-courts-spot-ai-evidence/">Canadian Press article</a> about developing a tool to help courts spot AI-generated evidence.
-    </li>
-    <li><time datetime="2025-08-11">Aug 11, 2025</time>: Released <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full">WildChat-4.8M-Full</a>, a dataset of 4.8M real user-ChatGPT conversations collected from our public chatbots (o1-preview and o1-mini).
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/yuntiandeng/status/1954929005305414062">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2025-07-14">Jul 14, 2025</time>: We built a demo, <a href="https://neural-os.com">NeuralOS</a>, an operating system entirely powered by neural networks. Check out our <a href="https://huggingface.co/papers/2507.08800">paper</a> for more details!
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/yuntiandeng/status/1944802154314916331">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-11-30">Nov 30, 2024</time>: Featured in an <a href="https://www.nzz.ch/technologie/schreibe-eine-erotische-kurzgeschichte-warum-sollte-man-in-wollishofen-wohnen-wieso-versteht-mich-meine-frau-nicht-was-leute-chat-gpt-wirklich-fragen-ld.1858229">NZZ article</a> about <a href="https://wildvisualizer.com/">WildChat</a>.
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/NZZTech/status/1862724482768490827">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-11-20">Nov 20, 2024</time>: Gave a talk at <a href="https://cims.nyu.edu/ai/seminars/cilvr-seminar-series/56/">NYU CILVR</a> on <a href="https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication">implicit chain of thought reasoning</a>.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/NYUDataScience/status/1864402586427670752">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-10-02">Oct 2, 2024</time>: Interviewed by <a href="https://techcrunch.com/2024/10/02/why-is-chatgpt-so-bad-at-math">TechCrunch</a> to discuss the challenges of using LLMs to solve basic math problems.
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/yuntiandeng/status/1836114401213989366">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-08-04">Aug 4, 2024</time>: <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-1M-Full-with-parameters-internal">WildChat</a> was featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a>! This work collected 1M real-world user-ChatGPT conversations. You can explore all data at <a href="https://wildvisualizer.com">wildvisualizer.com</a>, or try our data-collecting chatbot at <a href="https://huggingface.co/spaces/yuntian-deng/ChatGPT4">huggingface.co/spaces/yuntian-deng/ChatGPT4</a>.
-        <a class="twitter-link" aria-label="View tweet" href="https://x.com/washingtonpost/status/1820111621101936692">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-07-19">Jul 19, 2024</time>: I built a <a href="https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication">demo</a> using GPT-2 to directly produce the product of two numbers without chain-of-thought (CoT). CoT is internalized using the approach in <a href="https://arxiv.org/pdf/2405.14838">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>. A 12-layer GPT-2 can solve <strong>20-digit multiplication</strong> with 99.5% accuracy!
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/yuntiandeng/status/1814319104448467137">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-07-11">Jul 11, 2024</time>: I built a <a href="https://huggingface.co/spaces/yuntian-deng/implicit-cot-math">demo</a> to solve grade school math problems (GSM8K)  without chain-of-thought (CoT) at 52% accuracy. CoT is internalized using the approach in <a href="https://arxiv.org/pdf/2405.14838">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/yuntiandeng/status/1811448907161043224">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-06-19">Jun 19, 2024</time>: I built a website, <a href="https://wildvisualizer.com">wildvisualizer.com</a>, for interactive search of WildChat, allowing keyword, toxicity, IP, language, and country-based searches of 1M WildChat conversations.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/yuntiandeng/status/1803496908259991963">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-05-29">May 29, 2024</time>: Our paper, <a href="https://arxiv.org/pdf/2405.14838">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>, is now publicly available! This paper proposes a simple yet effective method to teach language models to internalize chain-of-thought reasoning by gradually removing intermediate steps and finetuning.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/yuntiandeng/status/1795854740879774036">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-04-26">Apr 26, 2024</time>: I built a demo, <a href="https://huggingface.co/spaces/yuntian-deng/AKSelectionPredictor">AKSelectionPredictor</a>, to predict whether a paper will be selected by <a href="https://twitter.com/_akhaliq">@_akhaliq</a> into Hugging Face papers based on its title, abstract, and authors.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/yuntiandeng/status/1783888775950561673">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2024-03-05">Mar 5, 2024</time>: Our dataset, <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full">WildChat</a>, is used in Anthropic's <a href="https://www-cdn.anthropic.com/de8ba9b01c9ab7cbabf5c33b80b7bbc618857627/Model_Card_Claude_3.pdf">Claude 3</a> for evaluating refusals.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/yuntiandeng/status/1765127045246284084">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2023-11-14">Nov 14, 2023</time>: Our dataset, <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full">WildChat</a>, is now publicly available! It is a corpus of 650K real-world user-ChatGPT interactions, characterized by over 60 languages and a diversity of user prompts.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/yuntiandeng/status/1724503257601458575">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2023-11-07">Nov 7, 2023</time>: Our paper, <a href="https://arxiv.org/pdf/2311.01460.pdf">Implicit Chain of Thought Reasoning via Knowledge Distillation</a>, is now publicly available! This paper trains LMs that can reason internally using hidden states instead of articulating all reasoning steps like humans.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/yuntiandeng/status/1721934898582229498">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2023-03-29">Mar 29, 2023</time>: <a href="https://openaiwatch.com/">OpenAIWatch.com</a> is launched! It tracks GPT-4's nondeterministic behavior even with greedy decoding in unicorn illustrations. 🦄 
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/yuntiandeng/status/1641108596510343168">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2023-03-29">Mar 29, 2023</time>: Our <a href="https://huggingface.co/spaces/yuntian-deng/ChatGPT">GPT Chatbot</a>, based on Yuvraj Sharma's <a href="https://huggingface.co/spaces/ysharma/ChatGPT4">code</a>, is now live! It provides free access to GPT with the aim of collecting dialogue data for research purposes.
-    </li>
-    <li><time datetime="2022-10-18">Oct 18, 2022</time>: Our paper, <a href="https://aclanthology.org/2022.emnlp-main.815.pdf">Model Criticism for Long-Form Text Generation</a>, is now publicly available! This paper uses model criticism in latent space to quantify various notions of high-level coherence in long-form text generation.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/srush_nlp/status/1582410985226108930">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2022-10-12">Oct 12, 2022</time>: <a href="https://huggingface.co/spaces/yuntian-deng/latex2im">Markup-to-Image Diffusion Models demo</a> is now live! This project uses a diffusion model to learn how to render various types of markups, including LaTeX.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/srush_nlp/status/1580255172340879360">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2020-06-02">Jun 2, 2020</time>: Our paper, <a href="https://papers.nips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf">Cascaded Text Generation with Markov Transformers</a>, is available! It allows parallel, fast, autoregressive, and accurate text generation using a high-order Markov model.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/srush_nlp/status/1267866675904417801">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2020-04-26">Apr 26, 2020</time>: Introducing <a href="https://openreview.net/pdf?id=B1l4SgHKDH">Residual Energy-Based Models for Text Generation</a>, a globally-normalized approach to text generation! Our approach uses a global discriminator to guide the traditional locally-normalized language model to produce text that's more indistinguishable from human-written text.
-    </li>
-    <li><time datetime="2019-09-05">Sep 5, 2019</time>: <a href="https://steganography.live">Neural Linguistic Steganography demo</a> is now live! This project lets you hide secret messages in natural language using arithmetic coding.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/srush_nlp/status/1169647490284605443">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2016-12-19">Dec 19, 2016</time>: Excited to introduce <a href="http://opennmt.net">OpenNMT</a>, an open-source neural machine translation toolkit developed for industrial and academic use.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/srush_nlp/status/810900018907533313">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
-    <li><time datetime="2016-09-19">Sep 19, 2016</time>: Excited to announce that we've provided a solution to OpenAI's <a href="https://github.com/openai/requests-for-research/blob/master/_requests_for_research/im2latex.html">requests-for-research im2latex challenge</a> using neural sequence-to-sequence learning! Check out the visualizations <a href="https://im2markup.yuntiandeng.com">here</a>.
-        <a class="twitter-link" aria-label="View tweet" href="https://twitter.com/srush_nlp/status/777901557585178624">
-            <img src="images/twitter_logo.svg" alt="" aria-hidden="true">
-        </a>
-    </li>
+{% for item in site.data.news %}
+    <li id="{{ item.id }}"><time datetime="{{ item.date }}">{{ item.display_date }}</time>: {{ item.content }}</li>
+{% endfor %}
 </ul>
 <button type="button" id="toggle-news-btn" class="toggle-news-btn" aria-expanded="false" aria-controls="news-list">Show Older News</button>
 
-<h2>Current Research</h2>
+<h2 id="current-research">Current Research</h2>
 <div class="papers-list">
 {% for paper in site.data.papers.featured %}
-<div class="paper-card">
+<div class="paper-card" id="{{ paper.title | slugify }}">
   {% if paper.image %}
   <div class="paper-card-image">
-    <a href="{{paper.pdf}}"><img src="{{paper.image}}" alt="Figure from {{paper.title}}"></a>
+    <a href="{{paper.pdf}}">{% assign figure_alt = paper.title | prepend: "Figure from " %}{% include responsive-image.html src=paper.image alt=figure_alt %}</a>
   </div>
   {% endif %}
   <div class="paper-card-body">
@@ -358,14 +226,14 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
 {% endfor %}
 </div>
 
-<h2>Other Selected Works</h2>
-<p>For all my papers, visit <a href="/publications">the publications page</a> or my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.</p>
+<h2 id="other-selected-works">Other Selected Works</h2>
+<p>For all my papers, visit <a href="/publications/">the publications page</a> or my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.</p>
 <div class="papers-list">
 {% for paper in site.data.papers.notable %}
-<div class="paper-card">
+<div class="paper-card" id="{{ paper.title | slugify }}">
   {% if paper.image %}
   <div class="paper-card-image">
-    <a href="{{paper.pdf}}"><img src="{{paper.image}}" alt="Figure from {{paper.title}}"></a>
+    <a href="{{paper.pdf}}">{% assign figure_alt = paper.title | prepend: "Figure from " %}{% include responsive-image.html src=paper.image alt=figure_alt %}</a>
   </div>
   {% endif %}
   <div class="paper-card-body">
@@ -378,7 +246,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
 {% endfor %}
 </div>
 
-<h2>Service</h2>
+<h2 id="service">Service</h2>
 <ul class="service-list">
     <li><strong>Co-Chief Technical Officer</strong>, <a href="https://aclrollingreview.org/organization">ACL Rolling Review (ARR)</a>, 2025&ndash;present (technical infrastructure supporting 17,087 submissions in the May 2026 cycle)</li>
     <li><strong>Action Editor</strong>, TACL, 2025&ndash;present</li>
@@ -387,7 +255,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
     <li><strong>Mentor Chair</strong>, <a href="https://iclr.cc/Conferences/2026/Committees">ICLR 2026</a></li>
 </ul>
 
-<h2>Prospective Students</h2>
+<h2 id="prospective-students">Prospective Students</h2>
 <p>
 If you are interested in joining my group, please first read <a href="https://programasweights.com/">ProgramAsWeights (PAW)</a>, <a href="https://neural-os.com/">NeuralOS</a>, and our work on implicit chain-of-thought reasoning (<a href="https://arxiv.org/pdf/2405.14838">internalization</a>; <a href="https://arxiv.org/pdf/2311.01460.pdf">knowledge distillation</a>). When reaching out, briefly explain which research direction interests you. Due to high volume, I am unable to respond to generic inquiries.
 </p>

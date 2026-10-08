@@ -1,0 +1,15 @@
+{%- assign asset = site.data.image_assets[include.src] -%}
+{%- assign image_loading = include.loading | default: 'lazy' -%}
+{%- assign image_width = include.display_width | default: asset.width -%}
+{%- assign image_height = asset.height -%}
+{%- if include.display_width and asset.width -%}
+  {%- assign image_height = asset.height | times: include.display_width | divided_by: asset.width -%}
+{%- endif -%}
+{%- if asset.webp -%}
+<picture>
+  <source srcset="{{ asset.webp | relative_url }}" type="image/webp">
+{%- endif -%}
+<img src="{{ include.src | relative_url }}" alt="{{ include.alt | escape }}"{% if image_width and image_height %} width="{{ image_width }}" height="{{ image_height }}"{% endif %} loading="{{ image_loading }}" decoding="async">
+{%- if asset.webp -%}
+</picture>
+{%- endif -%}

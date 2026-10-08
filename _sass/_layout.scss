@@ -345,6 +345,7 @@ pre code {
     flex-shrink: 0;
 
     img {
+        height: auto;
         border-radius: 50%;
     }
 }
@@ -443,6 +444,7 @@ pre code {
 
     img {
         width: 100%;
+        height: auto;
         border-radius: 4px;
     }
 
@@ -871,6 +873,29 @@ table.table-bordered {
 
     h4 {
         font-size: var(--step-1);
+    }
+
+    .page-heading,
+    .group-heading {
+        font-size: var(--step-1);
+        margin-top: 18px;
+        margin-bottom: 6px;
+    }
+
+    .group-heading {
+        margin-top: 20px;
+    }
+
+    .year-header {
+        font-size: var(--step-1);
+        margin-top: 24px;
+        margin-bottom: $spacing-unit / 2;
+    }
+
+    .member-name {
+        font-size: 14px;
+        margin-top: 8px;
+        margin-bottom: $spacing-unit / 2;
     }
 
     // First h2 in the content shouldn't push down the page since the profile

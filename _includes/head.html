@@ -25,25 +25,37 @@
     })();
   </script>
 
-  <title>{% if page.title %}{% if page.title == "Home" %}Yuntian Deng{% else %}{{ page.title }}{% endif %}{% else %}{{ site.title }}{% endif %}</title>
-  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  {%- assign canonical_url = page.url | replace: 'index.html', '' | absolute_url -%}
+  {%- capture seo_title -%}
+    {%- if page.seo_title -%}{{ page.seo_title }}
+    {%- elsif page.url == '/' -%}Yuntian Deng | University of Waterloo
+    {%- elsif page.title -%}{{ page.title }} | Yuntian Deng
+    {%- else -%}{{ site.title }}
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- assign seo_description = page.description | default: page.excerpt | default: site.description | strip_html | normalize_whitespace -%}
+  <title>{{ seo_title | escape }}</title>
+  <meta name="description" content="{{ seo_description | escape }}">
 
-  <meta property="og:title" content="{% if page.title %}{% if page.title == "Home" %}Yuntian Deng{% else %}{{ page.title }}{% endif %}{% else %}{{ site.title }}{% endif %}">
+  <meta property="og:title" content="{{ seo_title | escape }}">
+  <meta property="og:site_name" content="{{ site.title | escape }}">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-  <meta property="og:description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  <meta property="og:url" content="{{ canonical_url | escape }}">
+  <meta property="og:description" content="{{ seo_description | escape }}">
   <meta property="og:image" content="https://yuntiandeng.com/images/yuntian-deng.jpg">
+  <meta property="og:image:alt" content="Yuntian Deng">
 
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@yuntiandeng">
-  <meta name="twitter:title" content="{% if page.title %}{% if page.title == "Home" %}Yuntian Deng{% else %}{{ page.title }}{% endif %}{% else %}{{ site.title }}{% endif %}">
-  <meta name="twitter:description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  <meta name="twitter:title" content="{{ seo_title | escape }}">
+  <meta name="twitter:description" content="{{ seo_description | escape }}">
   <meta name="twitter:image" content="https://yuntiandeng.com/images/yuntian-deng.jpg">
+  <meta name="twitter:image:alt" content="Yuntian Deng">
 
   <link rel="icon" type="image/png" href="/images/favicon.ico">
   <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
-  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}">
+  <link rel="canonical" href="{{ canonical_url | escape }}">
+  <link rel="alternate" type="application/rss+xml" title="Yuntian Deng — News" href="{{ '/feed.xml' | absolute_url }}">
   {% if page.mathjax %}
   <script>
     MathJax = {
@@ -92,88 +104,7 @@
             width: 16px;
         }
     </style>
-    <script type="application/ld+json">
-    {
-      "@context": "http://schema.org",
-      "@type": "Person",
-      "name": "Yuntian Deng",
-      "jobTitle": "Assistant Professor of Computer Science",
-      "image": "https://yuntiandeng.com/images/yuntian-deng.jpg",
-      "affiliation": [
-        {
-          "@type": "EducationalOrganization",
-          "name": "University of Waterloo",
-          "url": "https://cs.uwaterloo.ca/about/people/yuntian"
-        },
-        {
-          "@type": "EducationalOrganization",
-          "name": "Harvard University"
-        },
-        {
-          "@type": "Organization",
-          "name": "Vector Institute for Artificial Intelligence"
-        }
-      ],
-      "url": "https://yuntiandeng.com/",
-      "sameAs": [
-        "https://scholar.google.com/citations?user=tk0e5lYAAAAJ",
-        "https://www.semanticscholar.org/author/Yuntian-Deng/2268298457",
-        "https://twitter.com/yuntiandeng",
-        "https://www.linkedin.com/in/yuntian-deng-536664a1/",
-        "https://openreview.net/profile?id=~Yuntian_Deng2",
-        "https://www.researchgate.net/profile/Yuntian-Deng",
-        "https://github.com/da03",
-        "https://huggingface.co/yuntian-deng",
-        "https://underline.io/speakers/103474-yuntian-deng"
-      ],
-      "mainEntityOfPage": "https://yuntiandeng.com/",
-      "researchArea": [
-        {
-          "@type": "Thing",
-          "name": "Natural Language Processing"
-        },
-        {
-          "@type": "Thing",
-          "name": "Machine Learning"
-        },
-        {
-          "@type": "Thing",
-          "name": "Language Model Reasoning"
-        },
-        {
-          "@type": "Thing",
-          "name": "Neural Programs and ProgramAsWeights (PAW)"
-        },
-        {
-          "@type": "Thing",
-          "name": "Neural World Models"
-        },
-        {
-          "@type": "Thing",
-          "name": "Real-World LLM Usage and Evaluation"
-        }
-      ],
-      "email": "yuntian@uwaterloo.ca",
-      "alumniOf": [
-        {
-          "@type": "Organization",
-          "name": "Allen Institute for AI"
-        },
-        {
-          "@type": "EducationalOrganization",
-          "name": "Harvard University"
-        },
-        {
-          "@type": "EducationalOrganization",
-          "name": "Carnegie Mellon University"
-        },
-        {
-          "@type": "EducationalOrganization",
-          "name": "Tsinghua University"
-        }
-      ]
-    }
-    </script>
+  {% include structured-data.html %}
 
 <style>
     .hidden-news {
