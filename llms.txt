@@ -1,0 +1,22 @@
+---
+layout: null
+permalink: /llms.txt
+---
+# {{ site.title }}
+
+> {{ site.description | strip_html | normalize_whitespace }}
+
+## Research directions
+
+{% for theme in site.data.research_themes -%}
+- [{{ theme.title }}]({{ '/' | append: '#' | append: theme.id | absolute_url }}): {{ theme.description | strip_html | normalize_whitespace }}
+{% endfor %}
+## Website and CV
+
+- [Homepage]({{ '/' | absolute_url }}): Research overview, affiliations, media coverage, news, and professional service.
+- [Full CV (PDF)]({{ '/cv.pdf' | absolute_url }}): Full academic curriculum vitae.
+{% assign guide_routes = '/publications/|/group/|/demos/|/talks/|/teaching/' | split: '|' -%}
+{% for route in guide_routes -%}
+{% assign guide_page = site.pages | where: 'url', route | first -%}
+- [{{ guide_page.title }}]({{ route | absolute_url }}): {{ guide_page.description | strip_html | normalize_whitespace }}
+{% endfor %}

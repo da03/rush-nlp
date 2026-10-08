@@ -1,0 +1,34 @@
+- id: programasweights
+  title: ProgramAsWeights (PAW)
+  description: A new programming paradigm that replaces symbolic code for fuzzy functions with compiled neural programs. Towards programming without code as an intermediary.
+  links:
+    - title: programasweights.com
+      url: https://programasweights.com
+- id: neuralos
+  title: Neural World Models
+  description: Can generative models learn the behavior of interactive computing environments? We explore this through NeuralOS, which uses a neural generative model to simulate an operating system end to end.
+  links:
+    - title: NeuralOS
+      url: https://neural-os.com
+- id: implicit-chain-of-thought
+  title: Implicit Chain of Thought
+  description: We internalize chain-of-thought reasoning into hidden computation. A 12-layer GPT-2 reaches 99.5% accuracy when multiplying two 20-digit numbers without emitting intermediate steps.
+  links:
+    - title: Internalize CoT
+      url: https://arxiv.org/pdf/2405.14838
+    - title: Implicit CoT
+      url: https://arxiv.org/pdf/2311.01460.pdf
+    - title: 20-digit multiplication demo
+      url: https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication
+    - title: ICLR 2026 Workshop
+      url: https://latent-implicit-thinking.github.io/
+- id: llm-usage
+  title: LLM Usage at Scale
+  description: How do people actually use large language models? We collect and analyze millions of real-world conversations to understand usage patterns, safety, and emergent behaviors.
+  links:
+    - title: WildChat
+      url: https://arxiv.org/abs/2405.01470
+    - title: AI Observatory
+      url: https://openreview.net/forum?id=o5j63mCxIq
+    - title: WildVis
+      url: https://wildvisualizer.com
