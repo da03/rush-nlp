@@ -16,6 +16,16 @@
 <p class="cover-names">Yuntian Deng &amp; Bing Yan</p><p class="event">Vision 2026 · October 14 · Brantford</p>
 
 </section>
+<section class="opening-hook" id="built-with-ai">
+<h2>I wrote <span class="accent">zero code</span> for these slides</h2>
+<div class="stage opening-evidence">
+<figure class="opening-requests"><figcaption>My requests to Codex</figcaption><div class="opening-request-card"><img alt="Two actual requests in the conversation: ‘Ok now strategize how to add them to slides’ and ‘Ok now build’." height="125" src="assets/opening/codex-requests.png" width="710"/></div></figure>
+<span aria-hidden="true" class="opening-arrow">→</span>
+<figure class="opening-result"><figcaption>The result</figcaption><img alt="The actual deck preview in the same screenshot: Beyond ChatGPT, What else can AI become?, by Yuntian Deng and Bing Yan." height="800" src="assets/opening/deck-result.png" width="1500"/></figure>
+</div>
+<p class="source">Actual screenshot · excerpts from a longer conversation · October 14, 2026</p>
+
+</section>
 <section class="prompt" id="your-ai">
 <h2>What have you<br/>used <span class="accent">AI</span> for?</h2>
 
@@ -26,28 +36,44 @@
 <div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
 
 </section>
-<section class="learning" id="next-screen">
+<section class="learning learn-real" id="next-screen">
 <h2>Predict the next screen</h2>
-<div class="stage"><div class="learn-flow"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Current screen</figcaption></figure><div class="learn-action">Click <span>×</span><div aria-hidden="true" class="learn-arrow">→</div></div><figure><div aria-label="The next screen to predict" class="learn-screen unknown" role="img"><span>?</span></div><figcaption>Next screen</figcaption></figure></div></div>
-<p class="source">Illustrated training example</p>
+<div class="stage"><div class="learn-real-pair">
+<figure><img alt="Real recorded screen: a Screenshot dialog is open in front of Terminal; the original red annotation says escape." class="learn-real-screen" height="384" src="assets/neuralos/learn-real-input.png" width="512"/><figcaption>Recorded screen</figcaption></figure>
+<div class="learn-real-action"><span>Press</span><kbd>Escape</kbd><b aria-hidden="true">→</b></div>
+<figure><div aria-label="What will the next screen show?" class="learn-real-unknown" role="img"><span>?</span></div><figcaption>Next screen</figcaption></figure>
+</div></div>
+<p class="source">Real recorded screen · NeuralOS research example</p>
 
 </section>
-<section class="learning" id="training-example">
+<section class="learning learn-real" id="training-example">
 <h2>A recording gives us the answer</h2>
-<div class="stage"><div class="learn-flow"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Current screen</figcaption></figure><div class="learn-action">Click <span>×</span><div aria-hidden="true" class="learn-arrow">→</div></div><figure class="fragment"><div aria-label="Illustrated desktop after the window closes" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-taskbar"></div></div><figcaption>Recorded next screen</figcaption></figure></div></div>
-<p class="source">Illustrated training example</p>
+<div class="stage"><div class="learn-real-pair">
+<figure><img alt="Real recorded screen: a Screenshot dialog is open in front of Terminal; the original red annotation says escape." class="learn-real-screen" height="384" src="assets/neuralos/learn-real-input.png" width="512"/><figcaption>Recorded screen</figcaption></figure>
+<div class="learn-real-action"><span>Press</span><kbd>Escape</kbd><b aria-hidden="true">→</b></div>
+<figure class="fragment"><img alt="Recorded next screen: the Screenshot dialog is gone and the Terminal window remains open." class="learn-real-screen" height="384" src="assets/neuralos/learn-real-target.png" width="512"/><figcaption>Actual next screen</figcaption></figure>
+</div></div>
+<p class="source">Real recorded input and target · NeuralOS research example</p>
 
 </section>
-<section class="learning" id="model-prediction">
+<section class="learning learn-real" id="model-prediction">
 <h2>The model makes a prediction</h2>
-<div class="stage"><div class="learn-prediction"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Screen + click ×</figcaption></figure><div class="learn-model"><span>Model</span><small>learned weights</small></div><figure class="fragment"><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window mismatch"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Predicted next screen</figcaption></figure></div></div>
-<p class="source">Illustrated training example</p>
+<div class="stage"><div class="learn-real-pair">
+<figure><img alt="Real recorded screen: a Screenshot dialog is open in front of Terminal; the original red annotation says escape." class="learn-real-screen" height="384" src="assets/neuralos/learn-real-input.png" width="512"/><figcaption>Screen + Escape</figcaption></figure>
+<div class="learn-real-model"><span>Model</span><small>learned weights</small></div>
+<figure class="fragment"><img alt="Actual model prediction from the research example: only the desktop remains; Terminal is missing too." class="learn-real-screen" height="384" src="assets/neuralos/learn-real-prediction.png" width="512"/><figcaption>Model prediction</figcaption></figure>
+</div></div>
+<p class="source">Recorded input and actual model prediction · NeuralOS research</p>
 
 </section>
-<section class="learning" id="prediction-error">
+<section class="learning learn-real" id="prediction-error">
 <h2>Measure the prediction’s error</h2>
-<div class="stage"><div class="learn-compare"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window mismatch"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Prediction</figcaption></figure><figure><div aria-label="Illustrated desktop after the window closes" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-taskbar"></div></div><figcaption>Recorded answer</figcaption></figure><div class="learn-error fragment">Mismatch <span>→</span> error score</div></div></div>
-<p class="source">Illustrated training example</p>
+<div class="stage"><div class="learn-real-compare">
+<figure><img alt="Actual model prediction from the research example: only the desktop remains; Terminal is missing too." class="learn-real-screen" height="384" src="assets/neuralos/learn-real-prediction.png" width="512"/><figcaption>Model prediction</figcaption></figure>
+<figure><img alt="Recorded next screen: the Screenshot dialog is gone and the Terminal window remains open." class="learn-real-screen" height="384" src="assets/neuralos/learn-real-target.png" width="512"/><figcaption>Recorded answer</figcaption></figure>
+<div class="learn-real-error fragment">Mismatch <span aria-hidden="true">→</span> error score</div>
+</div></div>
+<p class="source">Actual research comparison · Terminal should still be visible</p>
 
 </section>
 <section class="learning" id="adjust-weights">
@@ -62,45 +88,78 @@
 <p class="source">Simplified learning loop</p>
 
 </section>
-<section class="learning" id="run-model">
+<section class="learning learn-real" id="run-model">
 <h2>Now use the trained model</h2>
-<div class="stage"><div class="inference-cycle"><div class="learn-prediction"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Screen + action</figcaption></figure><div class="learn-model"><span>Trained<br/>model</span><small>weights stay fixed</small></div><figure class="fragment"><div aria-label="Illustrated desktop after the window closes" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-taskbar"></div></div><figcaption>Predicted next screen</figcaption></figure></div><svg aria-hidden="true" class="inference-return" viewbox="0 0 1000 65"><path d="M850 4 V42 H150 V4 M138 19 L150 4 L162 19" fill="none" stroke="currentColor" stroke-width="3"></path></svg><p class="inference-label">Next action, next frame</p></div></div>
-<p class="source">Simplified prediction loop</p>
+<div class="stage"><div class="learn-real-inference">
+<div class="learn-real-pair">
+<figure><img alt="Real recorded screen: a Screenshot dialog is open in front of Terminal; the original red annotation says escape." class="learn-real-screen" height="384" src="assets/neuralos/learn-real-input.png" width="512"/><figcaption>Screen + action</figcaption></figure>
+<div class="learn-real-model"><span>Trained<br/>model</span><small>weights stay fixed</small></div>
+<figure class="fragment"><img alt="Actual model prediction from the research example: only the desktop remains; Terminal is missing too." class="learn-real-screen" height="384" src="assets/neuralos/learn-real-prediction.png" width="512"/><figcaption>Predicted frame</figcaption></figure>
+</div>
+<svg aria-hidden="true" class="learn-real-return" viewbox="0 0 1000 52"><path d="M850 3 V35 H150 V3 M139 16 L150 3 L161 16" fill="none" stroke="currentColor" stroke-width="3"></path></svg>
+<p class="learn-real-repeat">Next action, next frame</p>
+</div></div>
+<p class="source">Same research example · simplified prediction loop</p>
 
 </section>
 <section class="dark" data-background-color="#101a2c" id="click-demo">
-<h2>NeuralOS responds to a click</h2>
-<div class="stage"><video class="desktop" muted="" playsinline="" poster="assets/neuralos/demo_output_poster.png" preload="metadata" src="assets/neuralos/demo_output.mp4"></video><img alt="Recorded NeuralOS browser interaction" class="print-poster desktop" src="assets/neuralos/demo_output_poster.png"/><span class="media-caption">Recorded interaction</span></div>
+<h2>Typing requires precision</h2>
+<div class="stage"><video class="desktop" muted="" playsinline="" poster="assets/neuralos/firefox-failure-poster.png" preload="metadata" src="assets/neuralos/firefox-failure.mp4"></video><img alt="NeuralOS generates an unrelated, garbled page after the input wikipedia.org" class="print-poster desktop" src="assets/neuralos/firefox-failure-poster.png"/><span class="media-caption">Requested: <strong>wikipedia.org</strong></span></div>
 <div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
-
-</section>
-<section id="hover-error">
-<h2>The model confused hovering with clicking</h2>
-<div class="stage"><div class="pair"><figure><img alt="Cursor near the Close button without clicking" src="assets/neuralos/hover_before.png"/><figcaption>Hover only</figcaption></figure><figure class="fragment"><img alt="Historical model incorrectly closes the window" src="assets/neuralos/hover_error.png"/><figcaption>Window closes</figcaption></figure></div></div>
-<p class="source">Historical model error · NeuralOS</p>
-
-</section>
-<section id="counterexample">
-<h2>The missing example: hover without clicking</h2>
-<div class="stage"><figure><img alt="Window remaining open while the cursor hovers near Close" class="desktop" src="assets/neuralos/hover_before.png"/><figcaption class="media-caption">Desired behavior: the window stays open</figcaption></figure></div>
-
-</section>
-<section class="learning" id="internal-memory">
-<h2>The screen cannot tell the whole story</h2>
-<div class="stage"><div class="memory-histories"><figure><p>Created a folder earlier</p><img alt="Desktop after the file manager has closed" src="assets/neuralos/file_manager_closed.png"/><figcaption>Same visible screen</figcaption></figure><figure class="fragment"><p>Never created a folder</p><img alt="The identical desktop illustrating a different history" src="assets/neuralos/file_manager_closed.png"/><figcaption>Different history</figcaption></figure></div></div>
-<p class="source">Illustrated histories · identical desktop image</p>
+<p class="source">NeuralOS · current demo model (October 2026)</p>
 
 </section>
 <section id="memory-test">
 <h2>Will the folder still be there?</h2>
-<div class="stage"><div class="pair"><figure><img alt="Setup screen showing a newly created folder" src="assets/neuralos/step3_folder.png"/><figcaption>Create a folder</figcaption></figure><figure class="fragment"><img alt="Setup screen after closing the file manager" src="assets/neuralos/step4_close.png"/><figcaption>Close. Wait. Reopen.</figcaption></figure></div></div>
-<p class="source">Memory-test setup</p>
+<div class="stage"><video class="desktop" data-pause-at="10.7" muted="" playsinline="" poster="assets/neuralos/folder-created-real.png" preload="metadata" src="assets/neuralos/folder-memory-failure.mp4"></video><img alt="A newly created folder inside Documents in the actual NeuralOS recording" class="print-poster desktop" src="assets/neuralos/folder-created-real.png"/><span class="media-caption">Create a folder. Close. Reopen.</span></div>
+<div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
+<p class="source">NeuralOS · 2025 model · continuous recording</p>
 
 </section>
 <section id="memory-result">
-<h2>Memory is still a challenge</h2>
-<div class="stage"><div class="big-stat"><strong>62%</strong><p>Folder recalled after 256 frames</p></div></div>
-<p class="source">Created-folder tests · NeuralOS study</p>
+<h2>The folder is gone</h2>
+<div class="stage"><div class="pair"><figure><img alt="Actual generated Documents view before closing, containing the newly created Untitled folder" src="assets/neuralos/folder-created-real.png"/><figcaption>Before closing</figcaption></figure><figure><img alt="The same generated Documents directory after reopening, now empty" src="assets/neuralos/folder-missing-real.png"/><figcaption>After reopening</figcaption></figure></div></div>
+<p class="source">NeuralOS · 2025 model · two frames from the same recording</p>
+
+</section>
+<section class="learning" id="internal-memory">
+<h2>Some facts are off-screen</h2>
+<div class="stage"><div class="memory-context">
+<img alt="Actual generated desktop after closing the file manager in the folder-memory recording; the folder is no longer visible" height="384" src="assets/neuralos/folder-closed-real.png" width="512"/>
+<div class="memory-reminder fragment"><span>Needed from history</span><p>A folder was<br/>created earlier.</p></div>
+</div></div>
+<p class="source">NeuralOS · 2025 model · actual frame; reminder is conceptual</p>
+
+</section>
+<section class="cot-learning" id="worked-solution">
+<h2>Learning with worked solutions</h2>
+<div class="stage cot-worked">
+<div class="cot-input"><span class="cot-label">Input</span><p>12 × 34</p></div>
+<span aria-hidden="true" class="cot-arrow">→</span>
+<div class="cot-target"><span class="cot-label">Model learns to write</span><p class="cot-step">12 × 4 = 48</p><p class="cot-step">12 × 30 = 360</p><p class="cot-answer"><span>Answer</span>408</p></div>
+</div>
+<p class="source">Teaching illustration · <a href="https://arxiv.org/abs/2405.14838">Implicit chain of thought</a></p>
+
+</section>
+<section class="cot-learning" id="internalize-steps">
+<h2>Less written working, more training</h2>
+<div class="stage cot-worked cot-removal">
+<div class="cot-input"><span class="cot-label">Same input</span><p>12 × 34</p></div>
+<span aria-hidden="true" class="cot-arrow">→</span>
+<div class="cot-target"><span class="cot-label">What the model must write</span><p class="cot-step fragment fade-out" data-fragment-index="0">12 × 4 = 48</p><p class="cot-step fragment fade-out" data-fragment-index="1">12 × 30 = 360</p><p class="cot-answer"><span>Answer</span>408</p></div>
+</div>
+<p class="cot-training-loop">Remove a little <span aria-hidden="true">→</span> keep training <span aria-hidden="true">→</span> repeat</p>
+<p class="source">Training illustration · stages simplified; the real method removes tokens from the start</p>
+
+</section>
+<section class="cot-demo" id="implicit-demo">
+<h2>An answer without written steps</h2>
+<div class="stage cot-demo-stage">
+<p class="cot-demo-input">12345678 × 87654321</p>
+<img alt="Actual demo result: Ground Truth Product 1082152022374638 and Implicit CoT Prediction (Ours) 1082152022374638. All predicted digits are marked correct." height="173" src="assets/implicit-cot/multiplication-result.png" width="600"/>
+<p class="cot-demo-link"><a data-live="" href="https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication" rel="noopener" target="_blank">Try the multiplication demo ↗</a></p>
+</div>
+<p class="source">Actual GPT-2 demo result · captured October 14, 2026 · one example</p>
 
 </section>
 <section id="guess-word">
@@ -116,7 +175,7 @@
 
 </section>
 <section class="dark paw-compile-slide" data-background-color="#101a2c" id="english-description">
-<h2>A model can generate<br/>another model’s settings</h2>
+<h2>A description becomes a program</h2>
 <div class="stage paw-stage">
 <div aria-label="A task description goes into a neural compiler. The compiler produces a reusable program containing text and generated weights." class="paw-build-flow" role="img">
 <div class="paw-description">
@@ -140,23 +199,23 @@
 
 </section>
 <section class="paw-reuse-slide" data-background-color="#f5f3ed" id="reusable-function">
-<h2>Build once. Use on new inputs.</h2>
+<h2>Same program. New clue.</h2>
 <div class="stage paw-stage">
-<div aria-label="Clue one and clue two pass through the same program and shared interpreter to produce guess one and guess two. These are conceptual placeholders." class="paw-run-flow" role="img">
+<div aria-label="The recorded clue, around earth, not sun, leads to moon. A proposed new clue, yellow fruit, peel to eat, goes through the same program and shared model; its output is a question mark because this test has not been run." class="paw-run-flow" role="img">
 <div class="paw-io-column paw-inputs">
-<div class="paw-io">Clue 1</div>
-<div class="paw-io fragment" data-fragment-index="1">Clue 2</div>
+<div class="paw-io"><span class="paw-example-label">Recorded example</span>“around earth,<br/>not sun”</div>
+<div class="paw-io fragment" data-fragment-index="1"><span class="paw-example-label">Proposed test</span>“yellow fruit,<br/>peel to eat”</div>
 </div>
 <div aria-hidden="true" class="paw-run-arrows"><span>→</span><span class="fragment" data-fragment-index="1">→</span></div>
 <div class="paw-runtime">
 <div class="paw-same-program"><span class="paw-kicker">Same program</span><span>Text + weights</span></div>
 <div aria-hidden="true" class="paw-runtime-link">+</div>
-<div class="paw-interpreter">Shared interpreter</div>
+<div class="paw-interpreter">Shared model</div>
 </div>
 <div aria-hidden="true" class="paw-run-arrows"><span class="fragment" data-fragment-index="0">→</span><span class="fragment" data-fragment-index="1">→</span></div>
 <div class="paw-io-column paw-outputs">
-<div class="paw-io fragment" data-fragment-index="0">Guess 1</div>
-<div class="paw-io fragment" data-fragment-index="1">Guess 2</div>
+<div class="paw-io fragment" data-fragment-index="0">moon</div>
+<div class="paw-io paw-unrun fragment" data-fragment-index="1">?</div>
 </div>
 </div>
 </div>
@@ -166,6 +225,7 @@
 <h2>You can direct the character in English</h2>
 <div class="stage wide linked-stage"><video muted="" playsinline="" poster="assets/paw/avatar.png" preload="metadata" src="assets/paw/avatar.mp4"></video><figure class="try-demo"><a data-live="" href="https://programasweights.com/avatar" rel="noopener" target="_blank"><img alt="QR code: https://programasweights.com/avatar" src="assets/qr/avatar.png"/><figcaption><span>programasweights.com</span><strong>/avatar</strong></figcaption></a><p>Try it yourself</p></figure><img alt="Avatar Director" class="print-poster" src="assets/paw/avatar.png"/><span class="media-caption">Avatar Director · recorded example</span></div>
 <div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
+<p class="recording-context">“act excited, wave, dance, then sit proudly”</p>
 
 </section>
 <section id="action-sequence">
@@ -178,136 +238,132 @@
 <div class="stage"><div class="action-demo"><code>wave</code><img alt="Character in the Avatar Director application" src="assets/paw/avatar.png"/></div></div>
 
 </section>
-<section class="prompt" id="new-instruction">
-<h2>Does it follow<br/>a <span class="accent">new instruction?</span></h2>
-<p class="small-prompt fragment">“Wave twice, then sit.”</p>
-<div class="media-tools"><a data-live="" href="https://programasweights.com/avatar" rel="noopener" target="_blank">Live demo</a></div>
+<section class="paw-counting" id="paw-counting-failure">
+<h2>Can it count the <span class="accent">r’s?</span></h2>
+<div class="stage paw-count-stage">
+<div aria-label="Exact input: strawberryrr" class="paw-count-word" role="img">
+<span>s</span><span>t</span><span>r<span aria-hidden="true" class="fragment paw-count-mark" data-count="1" data-fragment-index="1">r</span></span><span>a</span><span>w</span><span>b</span><span>e</span><span>r<span aria-hidden="true" class="fragment paw-count-mark" data-count="2" data-fragment-index="1">r</span></span><span>r<span aria-hidden="true" class="fragment paw-count-mark" data-count="3" data-fragment-index="1">r</span></span><span>y</span><span>r<span aria-hidden="true" class="fragment paw-count-mark" data-count="4" data-fragment-index="1">r</span></span><span>r<span aria-hidden="true" class="fragment paw-count-mark" data-count="5" data-fragment-index="1">r</span></span>
+</div>
+<div class="paw-count-comparison">
+<div class="fragment" data-fragment-index="0"><span class="paw-count-label">Program returned</span><strong class="paw-count-observed">4</strong></div>
+<div class="fragment" data-fragment-index="1"><span class="paw-count-label">Correct count</span><strong class="paw-count-correct">5</strong></div>
+</div>
+<p class="paw-count-link"><a data-live="" href="https://programasweights.com/hub/ff9f42e546987d7c7c39" rel="noopener" target="_blank">Try this program ↗</a></p>
+</div>
+<p class="source">Actual Standard 0.6B result · October 14, 2026 · <a href="assets/paw/letter-count-run.jpg" rel="noopener" target="_blank">View captured run ↗</a></p>
 
 </section>
-<section id="inside-reaction">
-<h2>What happened inside this reaction?</h2>
-<div class="stage"><div class="electron-transfer"><span class="molecule">Molecule</span><span class="electron fragment">+ e<sup>−</sup></span><span class="reaction-arrow fragment">→</span><span class="molecule fragment">Changed<br/>molecule</span></div></div>
-<p class="source">A simplified electron-transfer example</p>
+<section class="" id="chemistry-medicine">
+<h2>How could AI help us make a medicine?</h2>
+<div class="stage chem-medicine"><p>Ibuprofen</p><img alt="Illustrative ball-and-stick model of ibuprofen, with hydrogen atoms omitted" src="assets/science/bing/ibuprofen.png"/></div>
+<p class="source">Bing Yan · illustrative molecular model · hydrogen atoms omitted</p>
 
 </section>
-<section id="measurement">
-<h2>A measurement gives us a clue</h2>
-<div class="stage"><img alt="Cyclic voltammogram of SPARK’s bundled RuHex experimental case: measured current versus applied voltage, scan rate 0.10 volts per second" class="science-picture" src="assets/science/spark-ruhex-measurement.png"/></div>
-<p class="source">Experimental example bundled with SPARK</p>
+<section class="" id="reaction-connections">
+<h2>A reaction changes the connections</h2>
+<div class="stage chem-reaction"><div class="chem-before-after"><span>Before</span><span>After</span></div><img alt="Before: two H2 molecules and one O2 molecule. After: two water molecules, preserving four hydrogen and two oxygen atoms." src="assets/science/bing/reaction-connections.svg"/></div>
+<p class="source">Teaching model · 2 H₂ + O₂ → 2 H₂O</p>
 
 </section>
-<section class="science-mechanism" id="askchem">
-<h2>AI turns papers into searchable claims</h2>
-<div class="stage sc-claim-stage">
-<div class="sc-claim-flow">
-<div aria-label="A scientific paper, with a sentence highlighted" class="sc-paper">
-<h3>Paper</h3>
-<div aria-hidden="true" class="sc-paper-lines"><i></i><i></i><i class="sc-selected"></i><i></i><i></i></div>
-</div>
-<div class="sc-connector"><span>AI extracts</span><b aria-hidden="true">→</b></div>
-<div class="sc-claim-card">
-<h3>Searchable<br/>claim</h3>
-<div class="sc-evidence-link">Quote + source</div>
-</div>
-</div>
-<figure class="try-demo"><a data-live="" href="https://askchem.org/" rel="noopener" target="_blank"><img alt="QR code: https://askchem.org/" src="assets/qr/askchem.png"/><figcaption><span>askchem.org</span></figcaption></a><p>Try it yourself</p></figure>
-</div>
-<div class="media-tools"><a data-live="" href="https://askchem.org/#/search?q=Practical%20Beginners%20Guide%20Cyclic%20Voltammetry" rel="noopener" target="_blank">Open prepared AskChem result</a></div>
-<p class="source">AskChem · papers become claims with traceable evidence</p>
+<section class="" id="askchem">
+<h2>What have other chemists already tried?</h2>
+<div class="stage chem-askchem"><div><p class="chem-query">“How has making<br/>ibuprofen improved?”</p><div class="chem-source-flow"><span>Papers</span><b>→</b><span>AskChem</span><b>→</b><span>Original source</span></div></div><figure class="try-demo"><a data-live="" href="https://askchem.org/#/search?q=ibuprofen%20synthesis" rel="noopener" target="_blank"><img alt="QR code: https://askchem.org/" src="assets/qr/askchem.png"/><figcaption><span>askchem.org</span></figcaption></a><p>Try it yourself</p></figure></div>
+<p class="source">AskChem · prepared search: ibuprofen synthesis</p>
 
 </section>
-<section id="original-paper">
-<h2>A scientific claim needs a source</h2>
-<div class="stage" style="flex-direction:column;align-items:flex-start;padding:0 30px"><blockquote class="science-quote">“Cyclic voltammetry can be used as a rapid way to assess the ability of a molecule to undergo <em>electron transfer.</em>”</blockquote><p class="science-byline">Sandford et al. · <em>Chemical Science</em> · 2019</p></div>
-<p class="source"><a href="https://doi.org/10.1039/c9sc01545k" rel="noopener" target="_blank">doi.org/10.1039/c9sc01545k</a></p>
+<section class="" id="ibuprofen-route">
+<h2>Six reaction steps became three</h2>
+<div class="stage chem-route-comparison"><figure><figcaption>Earlier route</figcaption><strong>6</strong><p>reaction steps</p></figure><span class="chem-big-arrow">→</span><figure><figcaption>Improved industrial route</figcaption><strong class="accent">3</strong><p>reaction steps</p></figure></div>
+<p class="source">Historical ibuprofen process · <a href="https://www.epa.gov/greenchemistry/presidential-green-chemistry-challenge-1997-greener-synthetic-pathways-award">EPA, 1997</a> · same target molecule</p>
 
 </section>
-<section class="science-mechanism" id="simulated-examples">
-<h2>Simulations create training examples</h2>
-<div class="stage">
-<div class="sc-training-flow">
-<div class="sc-known"><h3>Reaction<br/>+ rates</h3><p>Known inputs</p></div>
-<span aria-hidden="true" class="sc-arrow">→</span>
-<div class="sc-simulator"><h3>Physics<br/>simulator</h3></div>
-<span aria-hidden="true" class="sc-arrow">→</span>
-<figure class="sc-curve-card">
-<svg aria-labelledby="sc-training-title" class="sc-curve" role="img" viewbox="0 0 300 210">
-<title id="sc-training-title">Illustrative simulated current versus voltage curve; no numerical data</title>
-<path class="sc-axis" d="M28 18 V178 H282"></path>
-<path class="sc-zero" d="M28 101 H282"></path>
-<path class="sc-sim-line" d="M271 104 C227 104 192 107 164 131 C132 165 105 173 80 146 C62 127 45 122 37 122 C55 111 80 103 111 94 C143 85 156 34 185 46 C216 62 232 72 271 75"></path>
-</svg>
-<figcaption>Simulated curve</figcaption>
-</figure>
-</div>
-</div>
-<p class="source">Illustrative training pair · the answer is known inside the simulator</p>
+<section class="" id="claim-check">
+<h2>Does this summary follow?</h2>
+<div class="stage chem-claim-check"><blockquote>“Half as many reaction steps<br/>means half the production time.”</blockquote><div class="chem-vote"><p><span>A</span> Yes</p><p class="fragment chem-answer"><span>B</span> We need timing data</p></div></div>
+<p class="source">Invented summary for discussion · not a recorded AI response</p>
 
 </section>
-<section class="science-mechanism" id="spark-explanations">
-<h2>AI works backward from the curve</h2>
-<div class="stage">
-<div class="sc-inference-flow">
-<figure class="sc-curve-card">
-<svg aria-labelledby="sc-inference-title" class="sc-curve" role="img" viewbox="0 0 300 210">
-<title id="sc-inference-title">Illustrative input curve; not the earlier RuHex measurement</title>
-<path class="sc-axis" d="M28 18 V178 H282"></path>
-<path class="sc-zero" d="M28 101 H282"></path>
-<path class="sc-measured-line" d="M271 104 C227 104 192 107 164 131 C132 165 105 173 80 146 C62 127 45 122 37 122 C55 111 80 103 111 94 C143 85 156 34 185 46 C216 62 232 72 271 75"></path>
-</svg>
-<figcaption>Curve</figcaption>
-</figure>
-<span aria-hidden="true" class="sc-arrow">→</span>
-<div class="sc-inverse-model"><h3>Trained<br/>model</h3></div>
-<span aria-hidden="true" class="sc-arrow">→</span>
-<div class="sc-causes">
-<h3>Plausible explanations</h3>
-<div class="sc-cause"><span aria-hidden="true">e<sup>−</sup></span><p>Electron transfer</p></div>
-<div class="sc-cause fragment"><span aria-hidden="true">e<sup>−</sup> + H<sup>+</sup></span><p>With a proton step</p></div>
-</div>
-</div>
-</div>
-<p class="source">Teaching example: E vs PCET · no fitted result shown</p>
+<section class="" id="shape-question">
+<h2>Did a chemical reaction happen?</h2>
+<div class="stage chem-shape-question"><div class="chem-shape-pair"><img alt="Illustrative butane molecule in an extended conformation" src="assets/science/bing/butane-extended.png"/><span>→</span><img alt="Illustrative butane molecule in a bent conformation" src="assets/science/bing/butane-bent.png"/></div><div class="chem-vote"><p><span>A</span> Different molecule</p><p><span>B</span> Different shape</p></div></div>
+<p class="source">Butane · illustrative 3D models</p>
 
 </section>
-<section class="science-mechanism" id="reconstruct-curve">
-<h2>Can it reproduce the measured curve?</h2>
-<div class="stage">
-<div class="sc-check-flow">
-<div class="sc-check-candidate"><h3>Candidate<br/>explanation</h3></div>
-<span aria-hidden="true" class="sc-arrow">→</span>
-<div class="sc-simulator"><h3>Physics<br/>simulator</h3></div>
-<span aria-hidden="true" class="sc-arrow">→</span>
-<figure class="sc-comparison">
-<svg aria-labelledby="sc-comparison-title sc-comparison-description" role="img" viewbox="0 0 420 280">
-<title id="sc-comparison-title">Illustrative comparison of measurement and reconstruction</title>
-<desc id="sc-comparison-description">A solid dark measurement curve and dashed purple simulation curve roughly follow each other. These are schematic curves, not experimental data or an actual SPARK result.</desc>
-<path class="sc-axis" d="M32 16 V243 H402"></path>
-<path class="sc-zero" d="M32 135 H402"></path>
-<path class="sc-measured-line" d="M386 137 C324 138 275 141 235 177 C189 223 149 232 114 197 C88 171 62 165 45 166 C76 151 116 138 159 123 C205 108 222 41 266 61 C307 80 339 97 386 101"></path>
-<path class="sc-reconstruction-line" d="M386 143 C323 143 275 149 234 181 C188 224 150 225 115 192 C86 165 65 162 45 162 C78 145 116 131 160 118 C203 103 226 48 266 67 C308 86 339 104 386 107"></path>
-</svg>
-<figcaption class="sc-legend"><span><i class="sc-key sc-key-measured"></i>Measurement</span><span><i class="sc-key sc-key-simulated"></i>Simulation</span></figcaption>
-</figure>
-</div>
-</div>
-<p class="source">Illustrative comparison · neither curve is experimental data</p>
+<section class="" id="same-connections">
+<h2>Same bonds. Different shape.</h2>
+<div class="stage"><img alt="Two simplified four-carbon skeletons of butane retain the same three connections but have different conformations" class="chem-bonds" src="assets/science/bing/butane-connections.svg"/></div>
+<p class="source">Butane · simplified carbon skeletons · hydrogen atoms omitted</p>
 
 </section>
-<section class="lime" data-background-color="#dcff79" id="choose-experiment">
-<h2>Which experiment could separate them?</h2>
-<div class="stage"><div class="experiment-options"><div><span class="choice">A</span>Change<br/>acidity</div><div><span class="choice">B</span>Repeat the<br/>same conditions</div></div></div>
-<p class="source">Proposed test</p>
+<section class="" id="eva-flow">
+<h2>EVA-Flow predicts possible molecular shapes</h2>
+<div class="stage"><div class="chem-model-flow"><div><h3>Molecule<br/>+ surroundings</h3><p>Atoms and bonds supplied</p></div><span>→</span><div class="chem-model"><h3>EVA-Flow</h3></div><span>→</span><div><h3>Possible<br/>3D shapes</h3></div></div></div>
+<p class="source"><a href="https://bingyan.me/papers/EVA_Flow.pdf" rel="noopener" target="_blank">EVA-Flow manuscript ↗</a></p>
+
+</section>
+<section class="" id="eva-example">
+<h2>Compare the prediction with a reference</h2>
+<div class="stage"><div class="chem-eva-grid"><div></div><h3>Dataset reference</h3><h3 class="accent">AI prediction</h3><p>In a liquid</p><img alt="EVA-Flow Table 4: dataset reference conformation in the solvation setting" src="assets/science/bing/eva-liquid-reference.png"/><img alt="EVA-Flow Table 4: predicted conformation in the solvation setting" src="assets/science/bing/eva-liquid-prediction.png"/><p>Near a<br/>protein</p><img alt="EVA-Flow Table 4: dataset reference conformation in the docking setting" src="assets/science/bing/eva-protein-reference.png"/><img alt="EVA-Flow Table 4: predicted conformation in the docking setting" src="assets/science/bing/eva-protein-prediction.png"/></div></div>
+<p class="source"><a href="https://bingyan.me/papers/EVA_Flow.pdf">EVA-Flow · Table 4</a> · one molecule, two settings</p>
+
+</section>
+<section class="" id="hidden-steps">
+<h2>Different routes can reach the same product</h2>
+<div class="stage"><div class="chem-pathways"><div><p>Possibility 1</p><span class="chem-species">A</span><span class="chem-long-arrow">⟶</span><span class="chem-species">C</span></div><div><p>Possibility 2</p><span class="chem-species">A</span><span class="chem-short-arrow">→</span><span class="chem-species accent">B<small>Temporary molecule</small></span><span class="chem-short-arrow">→</span><span class="chem-species">C</span></div></div></div>
+<p class="source">Teaching illustration · A, B and C represent different molecules</p>
+
+</section>
+<section class="lime" data-background-color="#dcff79" id="when-look">
+<h2>When should we look for B?</h2>
+<div class="stage chem-when"><p class="chem-short-path">A → <strong>B</strong> → C</p><div class="experiment-options"><div><span class="choice">1</span>Several times<br/>during the reaction</div><div><span class="choice">2</span>Only after<br/>it has finished</div></div></div>
+<p class="source">Proposed measurement</p>
+
+</section>
+<section class="" id="catch-intermediate">
+<h2>B may appear only during the reaction</h2>
+<div class="stage chem-snapshots"><figure class="chem-snapshot"><figcaption>At the start</figcaption><div><span class="species-a">A</span><span class="species-a">A</span><span class="species-a">A</span><span class="species-a">A</span><span class="species-a">A</span><span class="species-a">A</span></div></figure><span class="chem-snapshot-arrow">→</span><figure class="chem-snapshot fragment"><figcaption>During the reaction</figcaption><div><span class="species-a">A</span><span class="species-b">B</span><span class="species-b">B</span><span class="species-a">A</span><span class="species-c">C</span><span class="species-b">B</span></div></figure><span class="chem-snapshot-arrow">→</span><figure class="chem-snapshot"><figcaption>At the end</figcaption><div><span class="species-c">C</span><span class="species-c">C</span><span class="species-c">C</span><span class="species-c">C</span><span class="species-c">C</span><span class="species-c">C</span></div></figure></div>
+<p class="source">Teaching snapshots · not measurements or SPARK predictions</p>
+
+</section>
+<section class="" id="spark-inference">
+<h2>SPARK learns from simulated reactions</h2>
+<div class="stage"><div class="chem-spark-flow"><div><p>Training examples</p><h3>Known reaction steps</h3><span>→</span><h3>Simulated signals</h3></div><div><p>Using the model</p><h3>Measurements<br/>+ conditions</h3><span>→</span><h3 class="accent">Possible hidden steps</h3></div></div></div>
+<p class="source">SPARK · simulation-based reaction inference</p>
+
+</section>
+<section class="" id="spark-failure">
+<h2>The top proposal included an extra step</h2>
+<div class="stage"><div class="chem-failure"><div><h3>Known simulated reaction</h3><p><span>Step 1</span><b>+</b><span>Step 2</span></p></div><div><h3>SPARK’s top proposal</h3><p><span>Step 1</span><b>+</b><span>Step 2</span><span class="chem-extra fragment"><b>+</b><strong>Extra step</strong></span></p></div></div></div>
+<p class="source">Bing’s saved SPARK demonstration · simulated test case · October 13, 2026</p>
 
 </section>
 <section class="prompt dark with-demo" data-background-color="#101a2c" id="test-explanation">
-<h2>An AI explanation<br/>still needs<br/><span class="accent">a real test.</span></h2><figure class="try-demo"><a data-live="" href="https://huggingface.co/spaces/bing-yan/spark" rel="noopener" target="_blank"><img alt="QR code: https://huggingface.co/spaces/bing-yan/spark" src="assets/qr/spark.png"/><figcaption><span>huggingface.co/spaces</span><strong>/bing-yan/spark</strong></figcaption></a><p>Try it yourself</p></figure>
+<h2>An AI prediction<br/>still needs<br/><span class="accent">a real test.</span></h2>
+<figure class="try-demo"><a data-live="" href="https://huggingface.co/spaces/bing-yan/spark" rel="noopener" target="_blank"><img alt="QR code: https://huggingface.co/spaces/bing-yan/spark" src="assets/qr/spark.png"/><figcaption><span>huggingface.co/spaces</span><strong>/bing-yan/spark</strong></figcaption></a><p>Try it yourself</p></figure>
 
 </section>
-<section id="wildchat">
-<h2>AI research also studies people</h2>
-<div class="stage"><div class="big-stat"><strong>1 million</strong><p>Real conversations in an earlier WildChat release</p></div></div>
-<p class="source">Historical release reported in the May 2025 talk</p>
+<section class="wildchat-question" id="wildchat">
+<h2>What do people actually ask AI?</h2>
+<div class="stage"><div class="wildchat-prompt"><span class="wildchat-label">WildChat-4.8M</span><p>“In 100 words, explain photosynthesis”</p></div></div>
+<p class="source"><a href="https://wildvisualizer.com/conversation/wildchat/1238647" rel="noopener" target="_blank">A real prompt from WildChat</a></p>
+
+</section>
+<section class="wildchat-explore" id="wildchat-explore">
+<h2>Let’s look</h2>
+<div class="stage"><video muted="" playsinline="" poster="assets/wildchat/wildvisualizer-photosynthesis-poster.png" preload="metadata" src="assets/wildchat/wildvisualizer-photosynthesis.mp4"></video><img alt="WildVisualizer: a selected real conversation asking for an explanation of photosynthesis" class="print-poster" src="assets/wildchat/wildvisualizer-photosynthesis-poster.png"/></div>
+<p class="wildchat-url"><a data-live="" href="https://wildvisualizer.com/?dataset=wildchat&amp;toxic=false&amp;contains=photosynthesis" rel="noopener" target="_blank">wildvisualizer.com ↗</a></p>
+<p class="source">Recorded walkthrough · conversation excerpt</p>
+<div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button><a data-live="" href="https://wildvisualizer.com/?dataset=wildchat&amp;toxic=false&amp;contains=photosynthesis" rel="noopener" target="_blank">Live demo</a></div>
+
+</section>
+<section class="wildchat-investigate dark" data-background-color="#101a2c" id="wildchat-investigate">
+<h2>What would you investigate?</h2>
+<div class="stage"><p class="wildchat-research-question">Do people ask for<br/><span class="accent">explanations</span> or<br/><span class="accent">finished answers?</span></p></div>
+
+</section>
+<section class="wildchat-access" id="wildchat-try">
+<h2>You can investigate this too</h2>
+<div class="stage"><p class="wildchat-access-url"><a data-live="" href="https://wildvisualizer.com/?dataset=wildchat&amp;toxic=false&amp;contains=photosynthesis" rel="noopener" target="_blank">wildvisualizer.com ↗</a></p><p class="wildchat-resources"><a href="demos.html#wildchat" rel="noopener" target="_blank">Demos and data ↗</a></p></div>
 
 </section>
 <section class="prompt dark" data-background-color="#101a2c" id="your-project">
@@ -324,8 +380,42 @@
 
 </section>
 <section class="prompt dark" data-background-color="#101a2c" id="questions">
-<h2>What are you<br/><span class="accent">curious</span> about?</h2>
-<p class="small-prompt">Yuntian Deng &amp; Bing Yan</p><p class="resources-link"><a href="demos.html" rel="noopener" target="_blank">Demos and further reading ↗</a></p>
+<div class="closing-grid">
+<div><h2>What are you<br/><span class="accent">curious</span> about?</h2><p class="small-prompt">Yuntian Deng &amp; Bing Yan</p></div>
+<figure class="closing-qr"><a href="demos.html" rel="noopener" target="_blank"><img alt="QR code for all demos and resources: https://yuntiandeng.com/talks/beyond-chatgpt/demos.html" height="328" src="assets/qr/resources.png" width="328"/><figcaption>Demos and resources</figcaption></a></figure>
+</div>
+<p class="resources-link"><a href="https://yuntiandeng.com/talks/beyond-chatgpt/" rel="noopener" target="_blank">yuntiandeng.com/talks/beyond-chatgpt/ ↗</a></p>
+
+</section>
+<section data-backup="1" data-visibility="uncounted" id="hover-error">
+<h2>The model confused hovering with clicking</h2>
+<div class="stage"><div class="pair"><figure><img alt="Cursor near the Close button without clicking" src="assets/neuralos/hover_before.png"/><figcaption>Hover only</figcaption></figure><figure class="fragment"><img alt="Historical model incorrectly closes the window" src="assets/neuralos/hover_error.png"/><figcaption>Window closes</figcaption></figure></div></div>
+<p class="source">Backup · historical model error · NeuralOS · <a href="#/questions">Return to questions ↗</a></p>
+
+</section>
+<section data-backup="2" data-visibility="uncounted" id="counterexample">
+<h2>The missing example: hover without clicking</h2>
+<div class="stage"><figure><img alt="Window remaining open while the cursor hovers near Close" class="desktop" src="assets/neuralos/hover_before.png"/><figcaption class="media-caption">Desired behavior: the window stays open</figcaption></figure></div>
+<p class="source">Backup · desired training example · <a href="#/questions">Return to questions ↗</a></p>
+
+</section>
+<section class="wildchat-map" data-backup="3" data-visibility="uncounted" id="wildchat-map">
+<h2>People use AI around the world</h2>
+<div class="stage"><video muted="" playsinline="" poster="assets/wildchat/wildchat-map-poster.png" preload="metadata" src="assets/wildchat/wildchat-map-2024.mp4"></video><img alt="Historical WildChat location visualization: red circles appear across a gray world map" class="print-poster" src="assets/wildchat/wildchat-map-poster.png"/></div>
+<p class="source"><a href="https://x.com/yuntiandeng/status/1786306747361333486">WildChat location visualization · shared May 2024</a> · <a href="#/questions">Return to questions ↗</a></p>
+<div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
+
+</section>
+<section data-backup="4" data-visibility="uncounted" id="measurement">
+<h2>A measurement gives us a clue</h2>
+<div class="stage"><img alt="Cyclic voltammogram of SPARK’s bundled RuHex experimental case: measured current versus applied voltage, scan rate 0.10 volts per second" class="science-picture" src="assets/science/spark-ruhex-measurement.png"/></div>
+<p class="source">Experimental example bundled with SPARK · Backup · <a href="#/questions">Return to questions ↗</a></p>
+
+</section>
+<section data-backup="5" data-visibility="uncounted" id="chemistry-consistency">
+<h2>Matching answers can still be wrong</h2>
+<div class="stage chem-consistency"><div><p>ethanol</p><span>IUPAC name</span></div><b>=</b><div><p><code>CCO</code></p><span>SMILES</span></div><p class="chem-consistency-caption">Same molecule. Different text.</p></div>
+<p class="source">Teaching example · <a href="https://doi.org/10.1039/D5DD00176E">Yan, Chen &amp; Cho, 2025</a> · <a href="#/questions">Return to questions ↗</a></p>
 
 </section>
 </div></div>
