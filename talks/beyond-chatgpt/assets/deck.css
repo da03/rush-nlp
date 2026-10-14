@@ -396,6 +396,7 @@
 .theme-flow{display:grid;grid-template-columns:1fr 55px 1fr 55px 1fr;gap:25px;text-align:center}
 .theme-flow h3{font-size:42px;color:var(--purple);margin-bottom:28px;letter-spacing:-.025em}
 .theme-flow p{font-size:29px;line-height:1.35;color:var(--muted)}.theme-flow>span{font-size:48px;color:var(--muted)}
+.reveal #learning-theme .theme-flow h3{margin:0;font-size:40px}
 .english-program-stage{display:grid;grid-template-columns:710px 1fr;grid-template-rows:230px 230px;gap:25px 35px;align-content:center}
 .reveal .english-program-stage blockquote{font-size:47px;line-height:1.25;margin:0;letter-spacing:-.025em}
 .english-program-output{display:flex;gap:30px;align-items:center;color:var(--purple)}
@@ -468,6 +469,30 @@
 .reveal .training-after{font-size:25px;line-height:1.1;margin-top:10px;color:var(--purple);font-weight:600}
 .training-steps{grid-column:1/-1;display:flex;gap:24px;align-items:center;justify-content:center;font-size:33px;line-height:1.2;font-weight:600;color:var(--purple)}
 .training-steps b{font-weight:400;color:var(--muted);margin-right:18px}
+/* A real prediction/target pair and an explicitly illustrative learning curve. */
+.training-error-stage{display:grid;grid-template-columns:700px 420px;gap:32px;align-items:center}
+.training-comparison{display:grid;grid-template-columns:340px 340px;gap:24px 20px;align-items:start}
+.training-comparison figure{width:340px;text-align:center}
+.training-comparison figcaption{font-size:28px;line-height:1.2;font-weight:600;margin-bottom:18px}
+.training-comparison .training-image-stack,.training-comparison .training-image-stack img,.training-comparison figure>img{width:340px;height:255px;object-fit:contain}
+.reveal .training-comparison .training-after{font-size:24px;line-height:1.2;margin-top:13px}
+.reveal .training-compare-caption{grid-column:1/-1;text-align:center;font-size:28px;line-height:1.2;color:var(--purple);margin-top:4px}
+.training-curve{border-left:2px solid var(--rule);padding-left:22px;width:420px;box-sizing:border-box}
+.training-curve h3{font-size:28px;line-height:1.2;text-align:center;margin:0 0 18px}
+.training-curve svg{width:398px;height:294px;overflow:visible}
+.curve-axis{fill:none;stroke:var(--muted);stroke-width:2}
+.curve-label{fill:var(--muted);font-size:24px;font-family:inherit}
+.curve-line{fill:none;stroke:var(--purple);stroke-width:6;stroke-linecap:round}
+.curve-start,.curve-result circle{fill:var(--purple)}
+.reveal .training-curve>p{text-align:center;font-size:30px;line-height:1.2;color:var(--purple);font-weight:600;margin-top:18px}
+/* Show a program's input first; reveal its output on the presenter's click. */
+.english-io-stage{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:70px}
+.reveal .english-io-stage blockquote{font-size:43px;line-height:1.25;font-weight:600;letter-spacing:-.025em;margin:0;white-space:nowrap}
+.english-io-example{display:grid;grid-template-columns:570px 70px 1fr;gap:35px;align-items:start;border-top:2px solid var(--rule);padding-top:45px}
+.english-io-example h3{font-size:27px;color:var(--muted);margin:0 0 23px;line-height:1.2;font-weight:500}
+.reveal .english-io-example p{font-size:43px;line-height:1.27;letter-spacing:-.025em;margin:0}
+.reveal .english-output p{color:var(--purple);font-weight:650;white-space:nowrap}
+.english-io-arrow{font-size:55px;color:var(--purple);padding-top:52px}
 .reveal .visible-demo-url{font-size:34px;line-height:1.3;font-weight:600;letter-spacing:-.02em;color:var(--purple)}
 .reveal .dark .visible-demo-url{color:var(--lime)}
 .reveal .count-demo-url{position:absolute;bottom:25px;left:64px;font-size:26px;white-space:nowrap}
@@ -535,6 +560,7 @@
 
 .gta-context-stage{display:grid;grid-template-columns:710px 1fr;gap:42px}
 .gta-context-stage img{width:710px;height:493px;object-fit:contain}
+.stage.gta-context-stage video{width:710px;height:493px;max-height:493px;object-fit:contain}
 .reveal .gta-context-stage p{font-size:27px;color:#bec6d5;margin-bottom:28px}
 .reveal .gta-context-stage strong{font-size:41px;line-height:1.2;font-weight:650;color:var(--lime)}
 .gta-skills .stage{height:500px}
