@@ -426,3 +426,19 @@
 .reveal .backup-return{position:absolute;bottom:25px;left:64px;font-size:21px;border:0;color:var(--muted)}
 #paw-counting-failure .paw-count-stage{padding-top:0}
 .reveal .count-instruction{font-size:29px;color:var(--muted);margin-bottom:24px}
+
+/* Deliberate line breaks: full-width opening and coherent headline phrases. */
+.reveal #beyond-chatgpt .cover{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:30px;height:490px;text-align:center}
+.reveal #beyond-chatgpt h1{font-size:112px;line-height:1.04;letter-spacing:-.045em;white-space:nowrap}
+.reveal #beyond-chatgpt .cover-subtitle{font-size:56px;line-height:1.18;letter-spacing:-.025em;font-weight:600;color:var(--lime);white-space:nowrap}
+.reveal #beyond-chatgpt .cover-names,.reveal #beyond-chatgpt .event{text-align:center}
+.reveal #beyond-chatgpt .cover-names{font-size:29px}
+.reveal #beyond-chatgpt .event{font-size:21px}
+.reveal #worked-solution h2{font-size:78px;line-height:1.18;max-width:1140px}
+.reveal .wildchat-research-question{font-size:68px;line-height:1.22;max-width:1130px;text-align:center}
+.reveal #your-project h2,.reveal #your-test h2{max-width:1152px;white-space:nowrap}
+.morning-exchange{flex-direction:column;align-items:stretch;justify-content:center;gap:58px;padding:0 45px}
+.morning-exchange figcaption{font-size:25px;line-height:1.2;color:var(--muted);margin-bottom:19px}
+.reveal .morning-request img{width:100%;height:auto;max-height:none;border-radius:20px}
+.morning-answer{padding-left:28px;border-left:4px solid var(--purple)}
+.reveal .morning-answer blockquote{margin:0;font-size:80px;line-height:1.15;letter-spacing:-.035em;font-weight:650;color:var(--purple)}
