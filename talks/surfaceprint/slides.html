@@ -1,24 +1,84 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="SurfacePrint measures formatting patterns in text to study AI-generated text detection."><title>SurfacePrint</title><link rel="stylesheet" href="vendor/reveal.css"><link rel="stylesheet" href="theme.css"></head><body><details class="public-menu"><summary aria-label="Presentation links">Links</summary><nav class="public-nav" aria-label="Presentation links"><a href="index.html">Overview</a><a href="backup.html">Additional results</a><a href="SurfacePrint.pdf">PDF</a></nav></details><div class="reveal"><div class="slides"><section id="surfaceprint"><div class="slide title"><div class="body"><h1>SurfacePrint</h1><p class="subtitle">Typographic Fingerprints<br>of LLMs</p><p class="byline">Yuntian Deng</p><div class="title-mark" aria-hidden="true">’ *</div></div></div></section>
-<section id="same-word"><div class="slide "><h2>Same word. Different apostrophe.</h2><div class="body"><div class="example-pair center"><div><div class="word">don<span class="blue">'</span>t</div><div class="example-label">Straight</div></div><div><div class="word">don<span class="accent">’</span>t</div><div class="example-label">Curly</div></div></div></div></div></section>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="SurfacePrint measures formatting patterns in text to study AI-generated text detection."><title>SurfacePrint</title><link rel="stylesheet" href="vendor/reveal.css"><link rel="stylesheet" href="theme.css"></head><body><details class="public-menu"><summary aria-label="Presentation links">Links</summary><nav class="public-nav" aria-label="Presentation links"><a href="index.html">Overview</a><a href="backup.html">Additional results</a><a href="SurfacePrint.pdf">PDF</a></nav></details><div class="reveal"><div class="slides"><section id="surfaceprint"><div class="slide title"><div class="body"><h1>SurfacePrint</h1><p class="subtitle">Typographic Fingerprints of LLMs</p><p class="byline">Yuntian Deng</p><div class="title-mark" aria-hidden="true">’ *</div></div></div></section>
+<section id="same-word"><div class="slide "><h2>Same word. Different apostrophe.</h2><div class="body"><div class="example-pair center"><div><div class="word">don<span class="blue">'</span>t</div><div class="unicode-label">U+0027</div><div class="byte-label">UTF-8: <strong>27</strong></div></div><div><div class="word">don<span class="accent">’</span>t</div><div class="unicode-label">U+2019</div><div class="byte-label">UTF-8: <strong>E2 80 99</strong></div></div></div></div></div></section>
 <section id="features"><div class="slide "><h2>Count the formatting.</h2><div class="body"><div class="ratio-example"><div class="glyph-sample"><span class="accent">’ ’ ’</span> <span class="blue">' '</span></div><div class="ratio-result fragment"><div class="big-number">3 / 5</div><p class="number-label">60% curly</p></div></div></div></div></section>
-<section id="no-lm"><div class="slide "><h2>A random forest learns formatting patterns.</h2><div class="body"><div class="method-flow" aria-label="Raw text, then 97 features, then a trained random forest, then a score"><strong>Raw text</strong><span class="flow-arrow" aria-hidden="true">→</span><strong>97 features</strong><span class="flow-arrow" aria-hidden="true">→</span><strong>Random forest</strong><span class="flow-arrow" aria-hidden="true">→</span><strong class="blue">Score</strong></div></div></div></section>
+<section id="no-lm"><div class="slide "><h2>A random forest learns formatting patterns.</h2><div class="body"><svg class="forest-method" viewBox="0 0 1128 370" role="img" aria-labelledby="forest-method-title forest-method-desc" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;font-family:'Source Sans',sans-serif">
+  <title id="forest-method-title">Formatting features feed a random forest, producing a human-to-language-model score</title>
+  <desc id="forest-method-desc">Raw text becomes 97 formatting features. An ensemble of 300 decision trees combines those features into a continuous score, from more human-like to more language-model-like. The trees are schematic illustrations, not specific learned rules.</desc>
+  <defs>
+    <marker id="forest-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7d8b90"/>
+    </marker>
+    <linearGradient id="forest-score-gradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#216583"/>
+      <stop offset=".5" stop-color="#dedbd1"/>
+      <stop offset="1" stop-color="#b74b32"/>
+    </linearGradient>
+    <g id="forest-tree" fill="none" stroke="#216583" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 48 8 L 23 56 M 48 8 L 73 56 M 23 56 L 9 104 M 23 56 L 37 104 M 73 56 L 59 104 M 73 56 L 87 104"/>
+      <circle cx="48" cy="8" r="8" fill="#216583"/>
+      <circle cx="23" cy="56" r="7" fill="#f6f3eb"/>
+      <circle cx="73" cy="56" r="7" fill="#f6f3eb"/>
+      <circle cx="9" cy="104" r="7" fill="#216583" stroke="none"/>
+      <circle cx="37" cy="104" r="7" fill="#b74b32" stroke="none"/>
+      <circle cx="59" cy="104" r="7" fill="#216583" stroke="none"/>
+      <circle cx="87" cy="104" r="7" fill="#b74b32" stroke="none"/>
+    </g>
+  </defs>
+
+  <g fill="#182c39" font-size="30" font-weight="600" text-anchor="middle">
+    <text x="104" y="48">Raw text</text>
+    <text x="344" y="48">97 features</text>
+    <text x="654" y="48">Random forest</text>
+    <text x="1002" y="48">Score</text>
+  </g>
+  <path d="M 37 92 H 150 L 184 126 V 278 Q 184 290 172 290 H 37 Q 25 290 25 278 V 104 Q 25 92 37 92 Z" fill="#fffdf7" stroke="#182c39" stroke-width="2.5"/>
+  <path d="M 150 92 V 126 H 184" fill="none" stroke="#182c39" stroke-width="2.5"/>
+  <g fill="#182c39" font-size="29">
+    <text x="46" y="164">don<tspan fill="#b74b32" font-weight="600">’</tspan>t</text>
+    <text x="46" y="214"><tspan fill="#b74b32">**</tspan>bold<tspan fill="#b74b32">**</tspan></text>
+  </g>
+  <path d="M 46 249 H 149 M 46 266 H 119" stroke="#c1c6c4" stroke-width="4" stroke-linecap="round"/>
+
+  <path d="M 205 190 H 242" stroke="#7d8b90" stroke-width="2.5" marker-end="url(#forest-arrow)"/>
+  <path d="M 282 123 H 272 V 257 H 282 M 406 123 H 416 V 257 H 406" fill="none" stroke="#182c39" stroke-width="2.5"/>
+  <g fill="#216583">
+    <rect x="294" y="134" width="25" height="25" rx="4" opacity=".8"/>
+    <rect x="332" y="134" width="25" height="25" rx="4" opacity=".35"/>
+    <rect x="370" y="134" width="25" height="25" rx="4" opacity=".6"/>
+    <rect x="294" y="174" width="25" height="25" rx="4" opacity=".35"/>
+    <rect x="332" y="174" width="25" height="25" rx="4" opacity=".8"/>
+    <rect x="370" y="174" width="25" height="25" rx="4" opacity=".35"/>
+  </g>
+  <text x="344" y="240" text-anchor="middle" fill="#182c39" font-size="32" letter-spacing="7">···</text>
+
+  <path d="M 439 190 H 476" stroke="#7d8b90" stroke-width="2.5" marker-end="url(#forest-arrow)"/>
+  <rect x="496" y="92" width="316" height="198" rx="18" fill="#216583" fill-opacity=".055" stroke="#216583" stroke-opacity=".32" stroke-width="2"/>
+  <use href="#forest-tree" x="507" y="126"/>
+  <use href="#forest-tree" x="606" y="126"/>
+  <use href="#forest-tree" x="705" y="126"/>
+  <text x="654" y="272" text-anchor="middle" fill="#216583" font-size="27" font-weight="600">300 trees</text>
+
+  <path d="M 831 190 H 868" stroke="#7d8b90" stroke-width="2.5" marker-end="url(#forest-arrow)"/>
+  <rect x="892" y="176" width="220" height="28" rx="14" fill="url(#forest-score-gradient)"/>
+  <g font-size="27" font-weight="600">
+    <text x="892" y="245" fill="#216583">Human</text>
+    <text x="1112" y="245" text-anchor="end" fill="#b74b32">LM</text>
+  </g>
+</svg>
+</div></div></section>
 <section id="benchmark"><div class="slide "><h2>Test new text from familiar sources.</h2><div class="body"><div class="train-test"><div><span class="flow-label">TRAIN</span><p>Human text<br>+ <strong>17 AI models</strong></p></div><div class="train-test-rule"></div><div><span class="flow-label">TEST</span><p><strong>New texts</strong><br>from the same sources</p></div></div></div></div></section>
-<section id="metric"><div class="slide "><h2>Does generated text rank higher?</h2><div class="body"><div class="ranking-pair"><span>Human text</span><span class="rank-symbol">&lt;</span><span class="blue">Generated text</span></div><p class="rank-label">Detector score</p><div class="metric-scale"><div><strong>0.5</strong><span>Chance</span></div><div class="scale-line"><span>AUROC</span></div><div><strong class="blue">1.0</strong><span>Perfect</span></div></div></div></div></section>
+<section id="metric"><div class="slide "><h2>Evaluation</h2><div class="body"><div class="ranking-pair"><span>Human text</span><span class="rank-symbol">&lt;</span><span class="blue">Generated text</span></div><p class="rank-label">Detector score</p><div class="metric-scale"><div><strong>0.5</strong><span>Chance</span></div><div class="scale-line"><span>AUROC</span></div><div><strong class="blue">1.0</strong><span>Perfect</span></div></div></div></div></section>
 <section id="main-result"><div class="slide "><h2>Formatting separates these benchmark texts.</h2><div class="body"><div class="hero-result"><div class="hero-number accent">0.983</div><p class="hero-unit">Mean AUROC</p><p class="result-context">Held-out texts · 17 known model sources</p></div></div></div></section>
-<section id="whitespace"><div class="slide "><h2>Some signal survives whitespace cleanup.</h2><div class="body"><div class="whitespace-pair"><div><div class="edit-label">Trained on raw text</div><pre class="layout-example">First paragraph.
+<section id="whitespace"><div class="slide "><h2>Even whitespace carries a fingerprint</h2><div class="body"><div class="whitespace-pair"><div><div class="edit-label">Raw text</div><pre class="layout-example">First paragraph.
 
 
-Second paragraph.</pre><div class="compact-metric">0.983 <span>AUROC</span></div></div><div><div class="edit-label">Trained on cleaned text</div><pre class="layout-example normalized">First paragraph.
+Second paragraph.</pre><div class="compact-metric">0.983 <span>AUROC</span></div></div><div><div class="edit-label">Whitespace cleaned</div><pre class="layout-example normalized">First paragraph.
 
 Second paragraph.</pre><div class="compact-metric blue">0.889 <span>AUROC</span></div></div></div></div></div></section>
-<section id="transfer"><div class="slide "><h2>Transfer to new models is uneven.</h2><div class="body"><p class="protocol">Train: human + Claude Sonnet 4 · cleaned text</p><svg class="chart" viewBox="0 0 1128 283" role="img" aria-label="Unseen test models · AUROC: Claude Sonnet 4.6 0.969, OPT-IML 1.3B 0.301"><text class="small" x="375" y="14">Unseen test models · AUROC</text><line x1="375" y1="30" x2="375" y2="198" stroke="#d9dedc" stroke-width="1" stroke-dasharray="none"/><text class="tick" x="375" y="232" text-anchor="middle">0.0</text><line x1="519.5" y1="30" x2="519.5" y2="198" stroke="#d9dedc" stroke-width="1" stroke-dasharray="none"/><text class="tick" x="519.5" y="232" text-anchor="middle">0.25</text><line x1="664" y1="30" x2="664" y2="198" stroke="#182c39" stroke-width="2" stroke-dasharray="6 6"/><text class="tick" x="664" y="232" text-anchor="middle">0.5</text><text class="small" x="664" y="264" text-anchor="middle">Chance</text><line x1="808.5" y1="30" x2="808.5" y2="198" stroke="#d9dedc" stroke-width="1" stroke-dasharray="none"/><text class="tick" x="808.5" y="232" text-anchor="middle">0.75</text><line x1="953" y1="30" x2="953" y2="198" stroke="#d9dedc" stroke-width="1" stroke-dasharray="none"/><text class="tick" x="953" y="232" text-anchor="middle">1.0</text><text class="label" x="0" y="71">Claude Sonnet 4.6</text><circle cx="935.082" cy="60" r="8" fill="#216583"/><text class="value" x="1004" y="71" style="fill:#216583">0.969</text><text class="label" x="0" y="144">OPT-IML 1.3B</text><circle cx="548.978" cy="133" r="10" fill="#b74b32"/><text class="value" x="1004" y="144" style="fill:#b74b32">0.301</text></svg></div></div></section>
-<section id="editable"><div class="slide "><h2>Same wording. Different formatting.</h2><div class="body"><div class="edit-comparison"><div><div class="edit-label">Before</div><pre class="raw-example"><span class="accent">**</span>A simple answer<span class="accent">**</span>
-
-It doesn<span class="accent">’</span>t change.</pre></div><div class="fragment"><div class="edit-label">After</div><pre class="raw-example">A simple answer
-
-It doesn<span class="blue">'</span>t change.</pre></div></div></div></div></section>
-<section id="validation"><div class="slide "><div class="body"><p class="large-statement">How often would<br><span class="accent">human text</span><br>be wrongly flagged?</p></div></div></section>
-<section id="takeaway"><div class="slide "><div class="body"><p class="takeaway">Formatting is an<br><span class="blue">additional detection clue.</span></p></div></div></section></div></div><script src="vendor/reveal.js"></script><script>
+<section id="transfer"><div class="slide "><h2>Transfer to new models is uneven.</h2><div class="body"><p class="protocol">Train: human + Claude Sonnet 4 · cleaned text</p><svg class="chart" viewBox="0 0 1128 258" role="img" aria-label="Detection AUROC: Claude Sonnet 4.6 (same family) 0.969, OPT-IML 1.3B (different family) 0.301"><line x1="540" y1="30" x2="540" y2="173" stroke="#d9dedc" stroke-width="1" stroke-dasharray="none"/><text class="tick" x="540" y="207" text-anchor="middle">0.0</text><line x1="643.25" y1="30" x2="643.25" y2="173" stroke="#d9dedc" stroke-width="1" stroke-dasharray="none"/><text class="tick" x="643.25" y="207" text-anchor="middle">0.25</text><line x1="746.5" y1="30" x2="746.5" y2="173" stroke="#182c39" stroke-width="2" stroke-dasharray="6 6"/><text class="tick" x="746.5" y="207" text-anchor="middle">0.5</text><text class="small" x="746.5" y="239" text-anchor="middle">Chance</text><line x1="849.75" y1="30" x2="849.75" y2="173" stroke="#d9dedc" stroke-width="1" stroke-dasharray="none"/><text class="tick" x="849.75" y="207" text-anchor="middle">0.75</text><line x1="953" y1="30" x2="953" y2="173" stroke="#d9dedc" stroke-width="1" stroke-dasharray="none"/><text class="tick" x="953" y="207" text-anchor="middle">1.0</text><text class="label" x="0" y="46">Claude Sonnet 4.6<tspan class="family"> (same family)</tspan></text><circle cx="940.197" cy="35" r="8" fill="#216583"/><text class="value" x="1004" y="46" style="fill:#216583">0.969</text><text class="label" x="0" y="119">OPT-IML 1.3B<tspan class="family"> (different family)</tspan></text><circle cx="664.313" cy="108" r="10" fill="#b74b32"/><text class="value" x="1004" y="119" style="fill:#b74b32">0.301</text></svg></div></div></section>
+<section id="instruction-tuning"><div class="slide "><h2>Instruction-tuned text is often easier to detect</h2><div class="body"><p class="protocol">Whitespace cleaned</p><svg class="chart paired-chart" viewBox="0 0 1128 440" role="img" aria-label="Detection AUROC for base and instruction-tuned checkpoints. Llama 2: 0.81 and 0.804; Llama 3.1: 0.744 and 0.88; OLMo 3: 0.709 and 0.958; Qwen 3.5: 0.84 and 0.978; Gemma 4: 0.754 and 0.963"><circle cx="275" cy="15" r="7" fill="#a2afb3"/><text class="small" x="292" y="23">Base model</text><circle cx="455" cy="15" r="7" fill="#b74b32"/><text class="small" x="472" y="23">Trained to follow requests</text><text class="small" x="969" y="23">AUROC</text><line x1="364.28571428571416" y1="45" x2="364.28571428571416" y2="375" stroke="#d9dedc"/><text class="tick" x="364.28571428571416" y="414" text-anchor="middle">0.7</text><line x1="552.8571428571429" y1="45" x2="552.8571428571429" y2="375" stroke="#d9dedc"/><text class="tick" x="552.8571428571429" y="414" text-anchor="middle">0.8</text><line x1="741.4285714285714" y1="45" x2="741.4285714285714" y2="375" stroke="#d9dedc"/><text class="tick" x="741.4285714285714" y="414" text-anchor="middle">0.9</text><line x1="930" y1="45" x2="930" y2="375" stroke="#d9dedc"/><text class="tick" x="930" y="414" text-anchor="middle">1.0</text><text class="label" x="0" y="82">Llama 2</text><line x1="571.7142857142858" y1="72" x2="560.4000000000001" y2="72" stroke="#182c39" stroke-width="3"/><circle cx="571.7142857142858" cy="72" r="8" fill="#a2afb3"/><circle cx="560.4000000000001" cy="72" r="8" fill="#b74b32"/><text class="small" x="969" y="81">0.810 / 0.804</text><text class="label" x="0" y="148">Llama 3.1</text><line x1="447.2571428571428" y1="138" x2="703.7142857142858" y2="138" stroke="#182c39" stroke-width="3"/><circle cx="447.2571428571428" cy="138" r="8" fill="#a2afb3"/><circle cx="703.7142857142858" cy="138" r="8" fill="#b74b32"/><text class="small" x="969" y="147">0.744 / 0.880</text><text class="label" x="0" y="214">OLMo 3</text><line x1="381.25714285714275" y1="204" x2="850.8" y2="204" stroke="#182c39" stroke-width="3"/><circle cx="381.25714285714275" cy="204" r="8" fill="#a2afb3"/><circle cx="850.8" cy="204" r="8" fill="#b74b32"/><text class="small" x="969" y="213">0.709 / 0.958</text><text class="label" x="0" y="280">Qwen 3.5</text><line x1="628.2857142857142" y1="270" x2="888.5142857142856" y2="270" stroke="#182c39" stroke-width="3"/><circle cx="628.2857142857142" cy="270" r="8" fill="#a2afb3"/><circle cx="888.5142857142856" cy="270" r="8" fill="#b74b32"/><text class="small" x="969" y="279">0.840 / 0.978</text><text class="label" x="0" y="346">Gemma 4</text><line x1="466.11428571428564" y1="336" x2="860.2285714285714" y2="336" stroke="#182c39" stroke-width="3"/><circle cx="466.11428571428564" cy="336" r="8" fill="#a2afb3"/><circle cx="860.2285714285714" cy="336" r="8" fill="#b74b32"/><text class="small" x="969" y="345">0.754 / 0.963</text></svg></div></div></section>
+<section id="retraining"><div class="slide "><h2>Detectors must track changing model conventions</h2><div class="body"><div class="refresh-flow"><div><span class="refresh-step">New models</span><span class="refresh-detail">Collect outputs</span></div><span class="flow-arrow" aria-hidden="true">→</span><div><span class="refresh-step">Fresh examples</span><span class="refresh-detail">Label human and LM text</span></div><span class="flow-arrow" aria-hidden="true">→</span><div><span class="refresh-step blue">Updated detector</span><span class="refresh-detail">Retrain</span></div></div></div></div></section>
+<section id="takeaway"><div class="slide "><div class="body"><p class="takeaway"><span class="closing-line">Human-like prose can still carry</span><br><span class="blue">a pipeline fingerprint.</span></p></div></div></section></div></div><script src="vendor/reveal.js"></script><script>
 Reveal.initialize({...{"width":1280,"height":720,"margin":0.025,"center":false,"hash":true,"respondToHashChanges":true,"controls":true,"controlsTutorial":false,"progress":false,"slideNumber":false,"transition":"none","transitionSpeed":"fast","backgroundTransition":"none","autoSlide":0,"loop":false,"view":"slide","pdfSeparateFragments":false,"pdfMaxPagesPerSlide":1},keyboard:{79:()=>window.location.href='index.html',66:()=>window.open('backup.html','_blank')}});
 </script></body></html>

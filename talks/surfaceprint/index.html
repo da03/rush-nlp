@@ -63,16 +63,18 @@
       <section aria-labelledby="finding">
         <h2 id="finding">What the study shows</h2>
         <div class="copy">
-          <p>A <strong>random forest</strong>, an ensemble of small decision trees, learns from <strong>97 measurements</strong> of raw text: punctuation, Markdown, math markup, code formatting and whitespace. Scoring a new passage requires no language-model calls.</p>
+          <p>A <strong>random forest</strong>, an ensemble of 300 small decision trees, learns from <strong>97 measurements</strong> of raw text: punctuation, Markdown, math markup, code formatting and whitespace. Scoring a new passage requires no language-model calls.</p>
           <p>On held-out texts from <strong>17 model sources represented in training</strong>, SurfacePrint reaches a mean <strong class="result">AUROC of 0.983</strong>, compared with 0.950 for Fast-DetectGPT. Both use the same test texts, but SurfacePrint learns from labeled examples; Fast-DetectGPT is a training-free detector.</p>
-          <p>A separately trained variant reaches 0.889 after selected whitespace cleanup. This comparison measures two trained variants; it does not test whether the original detector withstands edits. The additional slides include baseline comparisons and instruction-tuning results.</p>
+          <p>A separately trained variant reaches 0.889 after selected whitespace cleanup. This comparison measures two trained variants; it does not test whether the original detector withstands edits.</p>
+          <p>Instruction-tuned outputs are easier to distinguish from human text in four of five tested model families. Each condition uses a separately trained detector, and prompt templates also differ, so this comparison does not isolate the effect of weight updates.</p>
         </div>
       </section>
       <section aria-labelledby="meaning">
         <h2 id="meaning">How to read the results</h2>
         <div class="copy">
           <p>AUROC measures how well scores rank generated text above human text: 0.5 is chance ranking and 1.0 is perfect. <strong>It is neither accuracy at a chosen cutoff nor a document’s probability of AI authorship.</strong></p>
-          <p>Formatting offers an additional clue, with reliability that depends on the source and processing of the text. Transfer to unseen models is uneven, formatting is editable, and these experiments address non-adversarial detection. Practical use needs measured false-positive rates on representative documents; the score should not be sole evidence of authorship.</p>
+          <p><strong>Human-like prose can still carry a pipeline fingerprint.</strong> Here, a fingerprint means a statistical pattern, not a unique identity. Transfer to unseen models is uneven, and the paper recommends retraining detectors to track changing model conventions. That recommendation is not a completed retraining experiment.</p>
+          <p>Formatting is editable, and these experiments address non-adversarial detection. The editing example in the additional slides is an illustration of this limitation, not a measured evasion result. Practical use needs measured false-positive rates on representative documents; the score should not be sole evidence of authorship.</p>
           <p class="status">The manuscript is not yet publicly available.</p>
         </div>
       </section>
