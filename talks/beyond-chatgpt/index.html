@@ -47,7 +47,15 @@
 
 </section>
 <section class="os-intuition" id="next-screen"><h2>How is it done?</h2><p class="os-subtitle">Break it into one small prediction at a time.</p><div class="stage os-loop"><div class="os-loop-row"><figure class="os-history"><figcaption>Earlier screens</figcaption><div><img alt="Earlier desktop frame" src="assets/neuralos/past_frame11.png"/><img alt="Another earlier desktop frame" src="assets/neuralos/past_frame13.png"/></div></figure><figure class="os-current"><figcaption>Current screen</figcaption><img alt="NeuralOS desktop with Home selected" src="assets/neuralos/click_home.png"/><p class="os-action fragment" data-fragment-index="0">Double-click Home</p></figure><div class="os-model fragment" data-fragment-index="1"><span>→</span><strong>NeuralOS</strong><span>→</span></div><figure class="os-next fragment" data-fragment-index="1"><figcaption>Next screen</figcaption><img alt="Generated file manager open" src="assets/neuralos/file_manager_open.png"/></figure></div><div class="os-repeat fragment" data-fragment-index="2"><svg aria-hidden="true" viewbox="0 0 1000 65"><path d="M910 5 V43 H90 V5 M78 19 L90 5 L102 19" fill="none" stroke="currentColor" stroke-width="3"></path></svg><p>Then take the next action and repeat.</p></div></div></section>
-<section class="learning-intuition" id="repeat-training"><h2>How does it learn?</h2><div class="stage"><div class="learning-three"><div><span class="learning-number">1</span><h3>Predict</h3><p>The model guesses<br/>the next screen.</p></div><span class="learning-link fragment" data-fragment-index="0">→</span><div class="fragment" data-fragment-index="0"><span class="learning-number">2</span><h3>Compare</h3><p>Check against<br/>the recorded screen.</p></div><span class="learning-link fragment" data-fragment-index="1">→</span><div class="fragment" data-fragment-index="1"><span class="learning-number">3</span><h3>Adjust</h3><p>Change the model<br/>to reduce the error.</p></div><p class="learning-repeat fragment" data-fragment-index="2">Repeat with many recorded interactions.</p></div></div></section>
+<section class="training-visual" id="repeat-training">
+<h2>How does it learn?</h2>
+<div class="stage training-visual-stage">
+<figure class="training-prediction"><figcaption>Model’s prediction</figcaption><div class="training-image-stack"><img alt="Earlier training-stage prediction: a badly distorted file-manager screen" class="fragment fade-out" data-fragment-index="2" src="assets/neuralos/training-prediction-earlier.png"/><img alt="Later training-stage prediction: the file-manager layout is clearer, though still imperfect" class="fragment" data-fragment-index="2" src="assets/neuralos/training-prediction-later.png"/></div><p class="training-after fragment" data-fragment-index="2">After more training</p></figure>
+<figure class="training-target fragment" data-fragment-index="0"><figcaption>What really happened</figcaption><img alt="The recorded target: a clean file-manager window showing Desktop, Documents, Downloads, Music, Pictures and Public" src="assets/neuralos/training-recorded-screen.png"/></figure>
+<div class="training-steps"><span>Predict</span><span class="fragment" data-fragment-index="0"><b>→</b> Compare</span><span class="fragment" data-fragment-index="1"><b>→</b> Adjust</span><span class="fragment" data-fragment-index="2"><b>→</b> Repeat</span></div>
+</div>
+
+</section>
 <section id="neuralos-limits"><h2>Where does it fail?</h2><div class="stage"><div class="failure-types"><div><span>1</span><h3>Fine-grained interactions</h3><p>Getting a click or<br/>typed text exactly right.</p></div><div class="fragment" data-fragment-index="0"><span>2</span><h3>Persistent memory</h3><p>Remembering what changed<br/>after a window closes.</p></div></div></div></section>
 <section class="dark" data-background-color="#101a2c" id="click-demo">
 <h2>A small interaction can go wrong</h2>
@@ -55,48 +63,56 @@
 <div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
 
 </section>
-<section class="dark cot-chapter" data-background-color="#101a2c" id="worked-solution">
-<h2>Can AI reason<br/><span class="accent">without writing every step?</span></h2>
+<section class="dark cot-chapter cot-v2" data-background-color="#101a2c" id="worked-solution">
+<h2>Can AI do<br/><span class="accent">what we find hard?</span></h2>
 
 </section>
-<section class="cot-curriculum" id="internalize-steps">
-<h2>Teach the steps. Then take them away.</h2>
+<section class="cot-challenge cot-v2" id="mental-multiplication">
+<h2>Could you give just the answer?</h2>
+<div class="stage cot-challenge-stage">
+<p class="cot-challenge-problem">12345678 × 87654321</p>
+<p class="cot-challenge-rule">No calculator. No written steps.</p>
+<div class="cot-challenge-baseline fragment" data-fragment-index="0"><p>Our small model struggled, too.</p><span>When trained only on final answers.</span></div>
+</div>
+
+</section>
+<section class="cot-curriculum cot-v2" id="internalize-steps">
+<h2>Gradually take the scaffolding away</h2>
 <div class="stage cot-curriculum-stage">
-<div aria-label="A multiplication training example: twelve times thirty-four. The written working, forty-eight and three hundred sixty, is gradually removed from the training target. The answer four hundred eight remains." class="cot-long-multiplication">
+<div aria-label="A training example: twelve times thirty-four. The written working, forty-eight and three hundred sixty, is removed in stages. The answer, four hundred eight, remains." class="cot-long-multiplication">
 <div class="cot-multiply-input"><span>12</span><span><b>×</b>34</span></div>
 <div class="cot-multiply-working"><span class="fragment fade-out" data-fragment-index="0">48</span><span class="fragment fade-out" data-fragment-index="1"><b>+</b>360</span></div>
 <div class="cot-multiply-answer">408</div>
 </div>
 <div class="cot-teaching-stages">
-<div class="cot-teaching-stage fragment fade-out" data-fragment-index="0"><p>First, learn<br/><strong>every step.</strong></p></div>
-<div class="cot-teaching-stage fragment current-visible" data-fragment-index="0"><p>Remove a little.<br/><strong>Train again.</strong></p></div>
-<div class="cot-teaching-stage fragment" data-fragment-index="1"><p>Remove a little more.<br/><strong>Train again.</strong></p><p class="cot-endpoint">Until only the answer remains.</p></div>
+<div class="cot-teaching-stage fragment fade-out" data-fragment-index="0"><p>Learn with<br/><strong>all the steps.</strong></p></div>
+<div class="cot-teaching-stage fragment current-visible" data-fragment-index="0"><p>Remove a step.<br/><strong>Train again.</strong></p></div>
+<div class="cot-teaching-stage fragment" data-fragment-index="1"><p>Remove another.<br/><strong>Train again.</strong></p><p class="cot-endpoint">Until only the answer remains.</p></div>
 </div>
 </div>
 
 </section>
-<section class="cot-demo cot-demo-reveal" id="implicit-demo">
-<h2>Now try much bigger numbers</h2>
+<section class="cot-demo cot-demo-reveal cot-v2" id="implicit-demo">
+<h2>Now it can give just the answer</h2>
 <div class="stage cot-demo-stage">
 <p class="cot-demo-input">12345678 × 87654321</p>
-<figure class="cot-actual-result fragment" data-fragment-index="0"><img alt="Actual demo output: the ground-truth product and the model’s prediction both read 1082152022374638. All predicted digits are correct." height="173" src="assets/implicit-cot/multiplication-result.png" width="600"/></figure>
-<p class="cot-demo-link fragment" data-fragment-index="0"><a data-live="" href="https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication" rel="noopener" target="_blank">Try it yourself ↗</a></p>
+<figure class="cot-actual-result fragment" data-fragment-index="0"><img alt="Actual model demo: the reference product and the model prediction both read 1082152022374638, with every predicted digit correct." height="173" src="assets/implicit-cot/multiplication-result.png" width="600"/></figure>
+<p class="cot-demo-link fragment" data-fragment-index="0"><a data-live="" href="https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication" rel="noopener" target="_blank">huggingface.co/spaces/yuntian-deng/gpt2-multiplication</a></p>
 </div>
 
 </section>
 <section class="section-divider dark" data-background-color="#101a2c" data-presenter="Yuntian" id="programs-section"><h2>Programming<br/><span class="accent">in English</span></h2></section>
 <section class="english-program" id="english-description"><h2>Describe what the program should do</h2><div class="stage english-program-stage"><blockquote>“Given a sentence,<br/>return all the verbs in it.”</blockquote><div class="english-program-output fragment" data-fragment-index="0"><span class="english-arrow">→</span><strong>A program</strong></div><div class="english-example fragment" data-fragment-index="1"><p>“Maya opened the door and smiled.”</p><span>Expected output</span><strong>opened, smiled</strong></div></div></section>
-<section class="dark" data-background-color="#101a2c" id="avatar-demo">
-<h2>A real program: direct a character</h2>
-<div class="stage wide linked-stage"><video muted="" playsinline="" poster="assets/paw/avatar.png" preload="metadata" src="assets/paw/avatar.mp4"></video><figure class="try-demo"><a data-live="" href="https://programasweights.com/avatar" rel="noopener" target="_blank"><img alt="QR code: https://programasweights.com/avatar" src="assets/qr/avatar.png"/><figcaption><span>programasweights.com</span><strong>/avatar</strong></figcaption></a><p>Try it yourself</p></figure><img alt="Avatar Director" class="print-poster" src="assets/paw/avatar.png"/></div>
-<div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
-<p class="recording-context">“act excited, wave, dance, then sit proudly”</p>
-
-</section>
 <section id="paw-hard-to-code"><h2>Easy to describe. Hard to write every rule.</h2><div class="stage language-context"><div><p>I <span class="fragment highlight-current-purple" data-fragment-index="0">watch</span> birds.</p><strong class="fragment" data-fragment-index="0">watch is a verb</strong></div><div class="fragment" data-fragment-index="1"><p>My watch broke.</p><strong class="fragment" data-fragment-index="2">broke is the verb</strong></div></div></section>
 <section id="paw-demonstrations"><h2>Teach it with demonstrations</h2><div class="stage paw-examples"><div class="paw-example-row"><p class="paw-task">Find the verbs</p><p>“Maya opened the door.”</p><strong>opened</strong></div><div class="paw-example-row fragment" data-fragment-index="0"><p class="paw-task">Is it urgent?</p><p>“Call now. The room is flooding.”</p><strong>urgent</strong></div><p class="paw-example-takeaway fragment" data-fragment-index="1">Many tasks. Inputs. Correct outputs.</p></div></section>
 <section id="paw-learning"><h2>The model learns to build the program</h2><div class="stage paw-learning-flow"><div class="paw-builder-row"><div><span>Task description</span><p>“Find the verbs.”</p></div><b>→</b><div><span>AI builder</span><p>Creates a program</p></div><b class="fragment" data-fragment-index="0">→</b><div class="fragment" data-fragment-index="0"><span>Try an example</span><p>Does it return<br/>the right verbs?</p></div></div><div class="paw-feedback fragment" data-fragment-index="1"><span>Compare with the demonstration.</span><strong>Improve the builder. Repeat.</strong></div></div></section>
 <section class="dark" data-background-color="#101a2c" id="personal-helper"><h2>An AI helper on my website</h2><div class="stage helper-demo"><video muted="" playsinline="" poster="assets/paw/personal-helper-poster.jpg" preload="metadata" src="assets/paw/personal-helper.mp4"></video><img alt="Yuntian’s personal website helper" class="print-poster" src="assets/paw/personal-helper-poster.jpg"/><p><a data-live="" href="https://yuntiandeng.com/#ask" rel="noopener" target="_blank">yuntiandeng.com/#ask ↗</a></p></div><div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div></section>
+<section class="dark avatar-modern" data-background-color="#101a2c" id="avatar-demo">
+<h2>Direct a character in English</h2>
+<div class="stage avatar-modern-stage"><video muted="" playsinline="" poster="assets/paw/gangnam-poster.jpg" preload="metadata" src="assets/paw/gangnam-directions.mp4"></video><img alt="The Gangnam character following an English direction" class="print-poster" src="assets/paw/gangnam-poster.jpg"/><div><blockquote>“Now on one foot.”</blockquote><p class="visible-demo-url"><a data-live="" href="https://programasweights.com/gangnam" rel="noopener" target="_blank">programasweights.com/gangnam</a></p></div></div>
+<div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
+
+</section>
 <section class="paw-counting" id="paw-counting-failure">
 <h2>Where does it fail?</h2>
 <div class="stage paw-count-stage"><p class="count-instruction">Count the r’s in this exact string.</p>
@@ -108,6 +124,7 @@
 <div class="fragment" data-fragment-index="1"><span class="paw-count-label">Correct count</span><strong class="paw-count-correct">5</strong></div>
 </div>
 <p class="counting-tool fragment" data-fragment-index="2"><span>A counting tool gets it right:</span> <code>text.count("r")</code> <strong>5</strong></p></div>
+<p class="visible-demo-url count-demo-url"><a data-live="" href="https://programasweights.com/hub/ff9f42e546987d7c7c39" rel="noopener" target="_blank">programasweights.com/hub/ff9f42e546987d7c7c39</a></p>
 
 </section>
 <section class="dark" data-background-color="#101a2c" id="turing-test-joke">
@@ -132,7 +149,7 @@
 </section>
 <section class="" id="askchem">
 <h2>What have other chemists already tried?</h2>
-<div class="stage chem-askchem"><div><p class="chem-query">“How has making<br/>ibuprofen improved?”</p><div class="chem-source-flow fragment" data-fragment-index="0"><span>Papers</span><b>→</b><span>AskChem</span><b>→</b><span>Original source</span></div></div><figure class="try-demo fragment" data-fragment-index="1"><a data-live="" href="https://askchem.org/#/search?q=ibuprofen%20synthesis" rel="noopener" target="_blank"><img alt="QR code: https://askchem.org/" src="assets/qr/askchem.png"/><figcaption><span>askchem.org</span></figcaption></a><p>Try it yourself</p></figure></div>
+<div class="stage chem-askchem"><div><p class="chem-query">“How has making<br/>ibuprofen improved?”</p><div class="chem-source-flow fragment" data-fragment-index="0"><span>Papers</span><b>→</b><span>AskChem</span><b>→</b><span>Original source</span></div></div><p class="visible-demo-url fragment" data-fragment-index="1"><a data-live="" href="https://askchem.org/#/search?q=ibuprofen%20synthesis" rel="noopener" target="_blank">askchem.org</a></p></div>
 
 </section>
 <section class="" id="ibuprofen-route">
@@ -193,7 +210,7 @@
 </section>
 <section class="prompt dark with-demo" data-background-color="#101a2c" id="test-explanation">
 <h2>An AI prediction<br/><span class="accent">needs a real test.</span></h2>
-<figure class="try-demo"><a data-live="" href="https://huggingface.co/spaces/bing-yan/spark" rel="noopener" target="_blank"><img alt="QR code: https://huggingface.co/spaces/bing-yan/spark" src="assets/qr/spark.png"/><figcaption><span>huggingface.co/spaces</span><strong>/bing-yan/spark</strong></figcaption></a><p>Try it yourself</p></figure>
+<figure class="try-demo"><a data-live="" href="https://huggingface.co/spaces/bing-yan/spark" rel="noopener" target="_blank"><figcaption><span>huggingface.co/spaces</span><strong>/bing-yan/spark</strong></figcaption></a></figure>
 
 </section>
 <section class="section-divider dark" data-background-color="#101a2c" data-presenter="Yuntian" id="people-section"><h2>How do people<br/><span class="accent">use AI?</span></h2></section>
@@ -216,7 +233,7 @@
 </section>
 <section class="wildchat-access" id="wildchat-try">
 <h2>You can investigate this too</h2>
-<div class="stage"><p class="wildchat-access-url"><a data-live="" href="https://wildvisualizer.com/?dataset=wildchat&amp;toxic=false&amp;contains=photosynthesis" rel="noopener" target="_blank">wildvisualizer.com ↗</a></p><p class="wildchat-resources fragment" data-fragment-index="0"><a href="demos.html#wildchat" rel="noopener" target="_blank">Demos and data ↗</a></p></div>
+<div class="stage"><p class="wildchat-access-url"><a data-live="" href="https://wildvisualizer.com/?dataset=wildchat&amp;toxic=false&amp;contains=photosynthesis" rel="noopener" target="_blank">wildvisualizer.com ↗</a></p><p class="wildchat-resources fragment" data-fragment-index="0"><a href="https://huggingface.co/datasets/allenai/WildChat-4.8M" rel="noopener" target="_blank">huggingface.co/datasets/allenai/WildChat-4.8M</a></p></div>
 
 </section>
 <section class="prompt dark" data-background-color="#101a2c" id="your-project">
@@ -235,9 +252,8 @@
 <section class="prompt dark" data-background-color="#101a2c" id="questions">
 <div class="closing-grid">
 <div><h2>What are you<br/><span class="accent">curious</span> about?</h2><div class="closing-contacts"><p><strong>Yuntian Deng</strong><a href="https://yuntiandeng.com/">yuntiandeng.com</a><a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a></p><p><strong>Bing Yan</strong><a href="https://bingyan.me/">bingyan.me</a><a href="mailto:bing.yan@nyu.edu">bing.yan@nyu.edu</a></p></div></div>
-<figure class="closing-qr"><a href="demos.html" rel="noopener" target="_blank"><img alt="QR code for all demos and resources: https://yuntiandeng.com/talks/beyond-chatgpt/demos.html" height="328" src="assets/qr/resources.png" width="328"/><figcaption>Demos and resources</figcaption></a></figure>
 </div>
-<p class="resources-link"><a href="https://yuntiandeng.com/talks/beyond-chatgpt/" rel="noopener" target="_blank">yuntiandeng.com/talks/beyond-chatgpt/ ↗</a></p>
+<p class="resources-link"><a href="https://yuntiandeng.com/talks/beyond-chatgpt/demos.html" rel="noopener" target="_blank">yuntiandeng.com/talks/beyond-chatgpt/demos.html</a></p>
 
 </section>
 <section data-backup="1" data-visibility="uncounted" id="hover-error">
