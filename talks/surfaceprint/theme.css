@@ -20,3 +20,5 @@ body{background:var(--paper)}.reveal{font-family:'Source Sans',sans-serif;font-s
 .reveal .title .byline{font-size:29px;line-height:1.55;margin-top:54px;font-weight:400}.reveal .title .author{white-space:nowrap;font-weight:400}
 
 .reveal .definition-name{font-size:90px;font-weight:600;letter-spacing:-2px;color:var(--blue)}.reveal .definition-text{font-size:46px;line-height:1.25;margin-top:24px}
+
+.reveal #instruction-tuning h2{text-wrap:balance}
