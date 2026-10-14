@@ -2,7 +2,7 @@
 const deck = Reveal;
 deck.initialize({
   width:1280,height:720,margin:0.04,minScale:0.2,maxScale:2,
-  hash:true,history:true,center:false,transition:'fade',transitionSpeed:'fast',
+  hash:true,history:true,center:false,transition:'none',transitionSpeed:'fast',
   backgroundTransition:'none',controls:true,controlsTutorial:false,progress:true,
   slideNumber:slide=>slide?.dataset.backup?[`Backup ${slide.dataset.backup}`]:[deck.getSlidePastCount(slide)+1,'/',deck.getTotalSlides()],
   showSlideNumber:'all',navigationMode:'linear',
@@ -34,4 +34,16 @@ deck.on('slidechanged',()=>{
   const v=currentVideo();if(v){v.dataset.pauseReached='false';v.currentTime=0;if(v.hasAttribute('data-play-on-entry'))v.play().catch(()=>{})}
 });
 deck.on('ready',()=>{const v=currentVideo();if(v?.hasAttribute('data-play-on-entry'))v.play().catch(()=>{})});
+// A revealed recording starts only when the presenter advances to it.
+function fragmentVideos(event,selector){
+  return [...new Set((event.fragments||[event.fragment]).flatMap(f=>
+    f.matches(selector)?[f]:[...f.querySelectorAll(selector)]
+  ))];
+}
+deck.on('fragmentshown',event=>{
+  fragmentVideos(event,'video[data-play-on-fragment]').forEach(v=>v.play().catch(()=>{}));
+});
+deck.on('fragmenthidden',event=>{
+  fragmentVideos(event,'video').forEach(v=>{v.pause();v.currentTime=0;});
+});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('deck-help').hidden=true}});
