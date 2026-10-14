@@ -50,6 +50,12 @@
 .claim-with-link{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:46px}.claim-with-link .spec{font-size:54px}.claim-with-link .science-small{font-size:23px}
 .with-demo h2{max-width:840px!important;font-size:78px!important}.with-demo .try-demo{position:absolute;right:64px;top:258px}.reveal .resources-link{font-size:27px;position:absolute;bottom:62px;left:64px;color:var(--lime)}
 
+/* Brief joke after the letter-counting experiment. */
+.turing-comparison{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start;padding-top:85px}
+.reveal .turing-label{font-size:25px;color:#bac4d1;margin-bottom:28px;line-height:1.2}
+.reveal .turing-question{font-size:59px;font-weight:650;line-height:1.16;letter-spacing:-.035em}
+.turing-expectation .turing-question{color:#bac4d1}
+
 /* Actual conversation and deck-preview crops for the opening story. */
 .opening-evidence{display:grid;grid-template-columns:610px 46px 448px;gap:24px;align-items:center}
 .opening-evidence figure{min-width:0}
