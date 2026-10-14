@@ -4,6 +4,7 @@ talks:
     venue: "Vision 2026 STEAM Conference, Wilfrid Laurier University, Brantford (Outreach seminar; with Bing Yan)"
     date: "Oct 14, 2026 (upcoming)"
     url: "https://vision-conference.ca/event/artificial-intelligence/"
+    slides_url: "/talks/beyond-chatgpt/"
   - year: 2026
     title: "ProgramAsWeights"
     venue: "University of Waterloo AI Reading Group"
