@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SurfacePrint studies how typography and formatting help distinguish human and language-model text. Slides and PDF from Yuntian Deng’s October 14, 2026 talk.">
+  <meta name="theme-color" content="#f6f3eb">
+  <title>SurfacePrint: Typographic Fingerprints of LLMs — Yuntian Deng</title>
+  <style>
+    @font-face{font-family:Source Sans;src:url('assets/source-sans-pro-regular.woff');font-display:swap}
+    @font-face{font-family:Source Sans;src:url('assets/source-sans-pro-semibold.woff');font-weight:600;font-display:swap}
+    :root{--paper:#f6f3eb;--ink:#182c39;--muted:#52636b;--blue:#216583;--orange:#b74b32;--line:#d9dedc}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Source Sans,system-ui,sans-serif;font-size:20px;line-height:1.55}
+    a{color:var(--blue);text-underline-offset:4px;text-decoration-thickness:1px}
+    a:hover{text-decoration-thickness:2px}
+    a:focus-visible{outline:3px solid var(--orange);outline-offset:5px;border-radius:2px}
+    .wrap{width:min(100% - 64px,1064px);margin:auto}
+    nav{display:flex;justify-content:space-between;gap:24px;align-items:center;padding:28px 0;font-size:18px;border-bottom:1px solid var(--line)}
+    nav a{text-decoration:none}
+    .hero{padding:65px 0 60px;position:relative}
+    .eyebrow{color:var(--muted);font-size:18px;margin:0 0 18px}
+    h1,h2,p{margin:0}
+    h1{font-size:clamp(58px,9vw,104px);font-weight:600;letter-spacing:-.055em;line-height:1.02}
+    .subtitle{font-size:clamp(28px,4.2vw,43px);line-height:1.15;letter-spacing:-.02em;margin-top:12px}
+    .intro{font-size:25px;line-height:1.4;max-width:790px;margin-top:31px;color:var(--muted)}
+    .actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
+    .button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:10px 21px;border:1px solid var(--blue);border-radius:3px;text-decoration:none;font-size:19px;font-weight:600}
+    .button.primary{background:var(--blue);color:var(--paper)}
+    .button:hover{background:#e6ecec;text-decoration:none}
+    .button.primary:hover{background:#194e66}
+    .download-note{font-size:17px;color:var(--muted);margin-top:14px}
+    section{display:grid;grid-template-columns:245px 1fr;gap:48px;padding:39px 0 43px;border-top:1px solid var(--line)}
+    h2{font-size:29px;font-weight:600;line-height:1.2;letter-spacing:-.025em}
+    .copy p+p{margin-top:20px}
+    .copy strong{font-weight:600}
+    .result{color:var(--blue)}
+    .status{color:var(--muted);font-size:18px;padding-top:20px}
+    footer{padding:26px 0 34px;border-top:1px solid var(--line);color:var(--muted);font-size:17px}
+    @media(max-width:700px){.wrap{width:calc(100% - 40px)}nav{padding:22px 0}.hero{padding:43px 0 42px}.intro{font-size:22px}section{grid-template-columns:1fr;gap:19px;padding:30px 0 34px}h2{font-size:27px}body{font-size:19px}.actions{gap:11px}.button{padding:10px 17px}}
+    @media(prefers-reduced-motion:no-preference){.button{transition:background-color .15s ease}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav aria-label="Site navigation">
+      <a href="https://yuntiandeng.com/">Yuntian Deng</a>
+      <a href="https://yuntiandeng.com/talks/">All talks</a>
+    </nav>
+    <main>
+      <header class="hero">
+        <p class="eyebrow">Research talk · <time datetime="2026-10-14">October 14, 2026</time></p>
+        <h1>SurfacePrint</h1>
+        <p class="subtitle">Typographic Fingerprints of LLMs</p>
+        <p class="intro">Small formatting choices carry information about how text was produced. SurfacePrint asks how much that information can help distinguish human and language-model text.</p>
+        <div class="actions">
+          <a class="button primary" href="slides.html">View slides</a>
+          <a class="button" href="SurfacePrint.pdf" download>Download PDF</a>
+          <a class="button" href="backup.html">Additional results</a>
+        </div>
+        <p class="download-note">The PDF includes all 13 main slides and 8 additional slides.</p>
+      </header>
+      <section aria-labelledby="finding">
+        <h2 id="finding">What the study shows</h2>
+        <div class="copy">
+          <p>A small classifier learns from <strong>97 measurements</strong> of raw text: punctuation, Markdown, math markup, code formatting and whitespace. Scoring a new passage requires no language-model calls.</p>
+          <p>On held-out texts from <strong>17 model sources represented in training</strong>, SurfacePrint reaches a mean <strong class="result">AUROC of 0.983</strong>, compared with 0.950 for Fast-DetectGPT. Both use the same test texts, but SurfacePrint learns from labeled examples; Fast-DetectGPT is a training-free detector.</p>
+          <p>A separately trained variant reaches 0.889 after selected whitespace cleanup. This comparison measures two trained variants; it does not test whether the original detector withstands edits.</p>
+        </div>
+      </section>
+      <section aria-labelledby="meaning">
+        <h2 id="meaning">How to read the results</h2>
+        <div class="copy">
+          <p>AUROC measures how well scores rank generated text above human text: 0.5 is chance ranking and 1.0 is perfect. <strong>It is neither accuracy at a chosen cutoff nor a document’s probability of AI authorship.</strong></p>
+          <p>Formatting offers an additional clue, with reliability that depends on the source and processing of the text. Transfer to unseen models is uneven, formatting is editable, and these experiments address non-adversarial detection. Practical use needs measured false-positive rates on representative documents; the score should not be sole evidence of authorship.</p>
+          <p class="status">The manuscript is not yet publicly available.</p>
+        </div>
+      </section>
+    </main>
+    <footer>SurfacePrint · <a href="https://yuntiandeng.com/">Yuntian Deng</a></footer>
+  </div>
+</body>
+</html>

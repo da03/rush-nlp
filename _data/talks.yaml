@@ -1,5 +1,10 @@
 talks:
   - year: 2026
+    title: "SurfacePrint: Typographic Fingerprints of LLMs"
+    venue: "CIFAR meeting"
+    date: "Oct 14, 2026"
+    url: "/talks/surfaceprint/"
+  - year: 2026
     title: "Beyond ChatGPT: What Else Can AI Become?"
     venue: "Vision 2026 STEAM Conference, Wilfrid Laurier University, Brantford (Outreach seminar; with Bing Yan)"
     date: "Oct 14, 2026 (upcoming)"
