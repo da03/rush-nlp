@@ -26,18 +26,46 @@
 <div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
 
 </section>
-<section id="examples">
-<h2>Examples shape what a model learns</h2>
-<div class="stage"><div class="pair"><figure><img alt="Example screen with the Home folder selected" src="assets/neuralos/click_home.png"/><figcaption>Action</figcaption></figure><figure class="fragment"><img alt="The resulting file manager window" src="assets/neuralos/file_manager_open.png"/><figcaption>Result</figcaption></figure></div></div>
+<section class="learning" id="next-screen">
+<h2>Predict the next screen</h2>
+<div class="stage"><div class="learn-flow"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Current screen</figcaption></figure><div class="learn-action">Click <span>×</span><div aria-hidden="true" class="learn-arrow">→</div></div><figure><div aria-label="The next screen to predict" class="learn-screen unknown" role="img"><span>?</span></div><figcaption>Next screen</figcaption></figure></div></div>
+<p class="source">Illustrated training example</p>
 
 </section>
-<section class="prompt lime" data-background-color="#dcff79" id="first-test">
-<h2>What would<br/>you test?</h2>
+<section class="learning" id="training-example">
+<h2>A recording gives us the answer</h2>
+<div class="stage"><div class="learn-flow"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Current screen</figcaption></figure><div class="learn-action">Click <span>×</span><div aria-hidden="true" class="learn-arrow">→</div></div><figure class="fragment"><div aria-label="Illustrated desktop after the window closes" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-taskbar"></div></div><figcaption>Recorded next screen</figcaption></figure></div></div>
+<p class="source">Illustrated training example</p>
 
 </section>
-<section id="next-screen">
-<h2>Each action changes the next screen</h2>
-<div class="stage"><div class="triple"><figure><img alt="Desktop before an interaction" src="assets/neuralos/file_manager_closed.png"/><figcaption>Previous screen</figcaption></figure><div class="action-label fragment">Double-click<br/>Home</div><figure class="fragment"><img alt="Predicted screen after opening Home" src="assets/neuralos/file_manager_open.png"/><figcaption>Next screen</figcaption></figure></div></div>
+<section class="learning" id="model-prediction">
+<h2>The model makes a prediction</h2>
+<div class="stage"><div class="learn-prediction"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Screen + click ×</figcaption></figure><div class="learn-model"><span>Model</span><small>learned weights</small></div><figure class="fragment"><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window mismatch"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Predicted next screen</figcaption></figure></div></div>
+<p class="source">Illustrated training example</p>
+
+</section>
+<section class="learning" id="prediction-error">
+<h2>Measure the prediction’s error</h2>
+<div class="stage"><div class="learn-compare"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window mismatch"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Prediction</figcaption></figure><figure><div aria-label="Illustrated desktop after the window closes" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-taskbar"></div></div><figcaption>Recorded answer</figcaption></figure><div class="learn-error fragment">Mismatch <span>→</span> error score</div></div></div>
+<p class="source">Illustrated training example</p>
+
+</section>
+<section class="learning" id="adjust-weights">
+<h2>Training adjusts the model’s numbers</h2>
+<div class="stage"><div class="learn-update"><div class="learn-feedback">Prediction<br/>error<div aria-hidden="true" class="learn-arrow">→</div></div><div class="weight-table"><div class="weight-head">Weights</div><div class="weight-columns"><span>Before</span><span>Small update</span></div><div class="weight-row"><span>0.42</span><strong class="fragment" data-fragment-index="0">0.43</strong></div><div class="weight-row"><span>−0.18</span><strong class="fragment" data-fragment-index="0">−0.17</strong></div><div class="weight-row"><span>0.71</span><strong class="fragment" data-fragment-index="0">0.70</strong></div></div></div></div>
+<p class="source">Illustrative weights and update</p>
+
+</section>
+<section class="learning" id="repeat-training">
+<h2>Repeat across many examples</h2>
+<div class="stage"><div class="training-cycle"><div class="cycle-steps"><span>Predict</span><b aria-hidden="true">→</b><span>Compare</span><b aria-hidden="true">→</b><span>Adjust</span></div><svg aria-label="Repeat the training cycle" class="cycle-return" role="img" viewbox="0 0 1000 100"><path d="M890 5 V55 H110 V5" fill="none" stroke="currentColor" stroke-width="4"></path><path d="M98 20 L110 5 L122 20" fill="none" stroke="currentColor" stroke-width="4"></path></svg><p>Across many recorded interactions</p></div></div>
+<p class="source">Simplified learning loop</p>
+
+</section>
+<section class="learning" id="run-model">
+<h2>Now use the trained model</h2>
+<div class="stage"><div class="inference-cycle"><div class="learn-prediction"><figure><div aria-label="Illustrated desktop with an open Home window" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-window"><div class="learn-titlebar"><span>Home</span><b>×</b></div><div class="learn-files"><i></i><i></i><i></i></div></div><div class="learn-taskbar"></div></div><figcaption>Screen + action</figcaption></figure><div class="learn-model"><span>Trained<br/>model</span><small>weights stay fixed</small></div><figure class="fragment"><div aria-label="Illustrated desktop after the window closes" class="learn-screen" role="img"><div class="learn-desktop-icon"></div><div class="learn-taskbar"></div></div><figcaption>Predicted next screen</figcaption></figure></div><svg aria-hidden="true" class="inference-return" viewbox="0 0 1000 65"><path d="M850 4 V42 H150 V4 M138 19 L150 4 L162 19" fill="none" stroke="currentColor" stroke-width="3"></path></svg><p class="inference-label">Next action, next frame</p></div></div>
+<p class="source">Simplified prediction loop</p>
 
 </section>
 <section class="dark" data-background-color="#101a2c" id="click-demo">
@@ -55,6 +83,12 @@
 <section id="counterexample">
 <h2>The missing example: hover without clicking</h2>
 <div class="stage"><figure><img alt="Window remaining open while the cursor hovers near Close" class="desktop" src="assets/neuralos/hover_before.png"/><figcaption class="media-caption">Desired behavior: the window stays open</figcaption></figure></div>
+
+</section>
+<section class="learning" id="internal-memory">
+<h2>The screen cannot tell the whole story</h2>
+<div class="stage"><div class="memory-histories"><figure><p>Created a folder earlier</p><img alt="Desktop after the file manager has closed" src="assets/neuralos/file_manager_closed.png"/><figcaption>Same visible screen</figcaption></figure><figure class="fragment"><p>Never created a folder</p><img alt="The identical desktop illustrating a different history" src="assets/neuralos/file_manager_closed.png"/><figcaption>Different history</figcaption></figure></div></div>
+<p class="source">Illustrated histories · identical desktop image</p>
 
 </section>
 <section id="memory-test">
@@ -81,14 +115,51 @@
 <div class="media-tools"><button data-video-toggle="">Play / pause</button><button data-video-restart="">Replay</button></div>
 
 </section>
-<section class="dark" data-background-color="#101a2c" id="english-description">
-<h2>The behavior starts with an English description</h2>
-<div class="stage"><p class="spec">Given a clue,<br/>return the <span class="highlight">most likely word.</span></p></div>
+<section class="dark paw-compile-slide" data-background-color="#101a2c" id="english-description">
+<h2>A model can generate<br/>another model’s settings</h2>
+<div class="stage paw-stage">
+<div aria-label="A task description goes into a neural compiler. The compiler produces a reusable program containing text and generated weights." class="paw-build-flow" role="img">
+<div class="paw-description">
+<span class="paw-kicker">Description</span>
+<p>“Given a clue,<br/>guess the word.”</p>
+</div>
+<span aria-hidden="true" class="paw-arrow fragment" data-fragment-index="0">→</span>
+<div class="paw-compiler fragment" data-fragment-index="0">
+<div aria-hidden="true" class="paw-model-mark"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<strong>Compiler</strong>
+</div>
+<span aria-hidden="true" class="paw-arrow fragment" data-fragment-index="1">→</span>
+<div class="paw-artifact fragment" data-fragment-index="1">
+<span class="paw-kicker">Program</span>
+<div class="paw-artifact-part"><span aria-hidden="true" class="paw-text-mark"><i></i><i></i><i></i></span><strong>Text</strong></div>
+<span aria-hidden="true" class="paw-plus">+</span>
+<div class="paw-artifact-part"><span aria-hidden="true" class="paw-weight-mark"><i></i><i></i><i></i><i></i><i></i><i></i></span><strong>Weights</strong></div>
+</div>
+</div>
+</div>
 
 </section>
-<section id="reusable-function">
-<h2>One neural program can handle new inputs</h2>
-<div class="stage"><div class="flow"><div><div class="input-line">Clue 1</div><div class="input-line fragment">Clue 2</div></div><div class="program">Same<br/>program<span class="tiny">built from the description</span></div><div><div class="input-line output">Guess 1</div><div class="input-line output fragment">Guess 2</div></div></div></div>
+<section class="paw-reuse-slide" data-background-color="#f5f3ed" id="reusable-function">
+<h2>Build once. Use on new inputs.</h2>
+<div class="stage paw-stage">
+<div aria-label="Clue one and clue two pass through the same program and shared interpreter to produce guess one and guess two. These are conceptual placeholders." class="paw-run-flow" role="img">
+<div class="paw-io-column paw-inputs">
+<div class="paw-io">Clue 1</div>
+<div class="paw-io fragment" data-fragment-index="1">Clue 2</div>
+</div>
+<div aria-hidden="true" class="paw-run-arrows"><span>→</span><span class="fragment" data-fragment-index="1">→</span></div>
+<div class="paw-runtime">
+<div class="paw-same-program"><span class="paw-kicker">Same program</span><span>Text + weights</span></div>
+<div aria-hidden="true" class="paw-runtime-link">+</div>
+<div class="paw-interpreter">Shared interpreter</div>
+</div>
+<div aria-hidden="true" class="paw-run-arrows"><span class="fragment" data-fragment-index="0">→</span><span class="fragment" data-fragment-index="1">→</span></div>
+<div class="paw-io-column paw-outputs">
+<div class="paw-io fragment" data-fragment-index="0">Guess 1</div>
+<div class="paw-io fragment" data-fragment-index="1">Guess 2</div>
+</div>
+</div>
+</div>
 
 </section>
 <section class="dark" data-background-color="#101a2c" id="avatar-demo">
@@ -125,11 +196,24 @@
 <p class="source">Experimental example bundled with SPARK</p>
 
 </section>
-<section id="askchem">
-<h2>AskChem searches scientific claims</h2>
-<div class="stage claim-with-link"><div><p class="spec">Electrical measurements<br/>can reveal <span class="highlight">electron transfer.</span></p><p class="science-small">A plain-language summary of one retrieved claim</p></div><figure class="try-demo"><a data-live="" href="https://askchem.org/" rel="noopener" target="_blank"><img alt="QR code: https://askchem.org/" src="assets/qr/askchem.png"/><figcaption><span>askchem.org</span></figcaption></a><p>Try it yourself</p></figure></div>
-<div class="media-tools"><a data-live="" href="https://askchem.org/#/search?q=Practical%20Beginners%20Guide%20Cyclic%20Voltammetry" rel="noopener" target="_blank">Open AskChem result</a></div>
-<p class="source">Retrieved paper: Sandford et al. · Chemical Science · 2019</p>
+<section class="science-mechanism" id="askchem">
+<h2>AI turns papers into searchable claims</h2>
+<div class="stage sc-claim-stage">
+<div class="sc-claim-flow">
+<div aria-label="A scientific paper, with a sentence highlighted" class="sc-paper">
+<h3>Paper</h3>
+<div aria-hidden="true" class="sc-paper-lines"><i></i><i></i><i class="sc-selected"></i><i></i><i></i></div>
+</div>
+<div class="sc-connector"><span>AI extracts</span><b aria-hidden="true">→</b></div>
+<div class="sc-claim-card">
+<h3>Searchable<br/>claim</h3>
+<div class="sc-evidence-link">Quote + source</div>
+</div>
+</div>
+<figure class="try-demo"><a data-live="" href="https://askchem.org/" rel="noopener" target="_blank"><img alt="QR code: https://askchem.org/" src="assets/qr/askchem.png"/><figcaption><span>askchem.org</span></figcaption></a><p>Try it yourself</p></figure>
+</div>
+<div class="media-tools"><a data-live="" href="https://askchem.org/#/search?q=Practical%20Beginners%20Guide%20Cyclic%20Voltammetry" rel="noopener" target="_blank">Open prepared AskChem result</a></div>
+<p class="source">AskChem · papers become claims with traceable evidence</p>
 
 </section>
 <section id="original-paper">
@@ -138,10 +222,76 @@
 <p class="source"><a href="https://doi.org/10.1039/c9sc01545k" rel="noopener" target="_blank">doi.org/10.1039/c9sc01545k</a></p>
 
 </section>
-<section id="spark-explanations">
-<h2>SPARK explores possible explanations</h2>
-<div class="stage"><div class="science-candidates"><div><span class="candidate-symbol">e<sup>−</sup></span>Electron transfer</div><div class="fragment"><span class="candidate-symbol">e<sup>−</sup> + H<sup>+</sup></span>Electron transfer<br/>with a proton step</div></div></div>
-<p class="source">Teaching example · alternative reaction mechanisms</p>
+<section class="science-mechanism" id="simulated-examples">
+<h2>Simulations create training examples</h2>
+<div class="stage">
+<div class="sc-training-flow">
+<div class="sc-known"><h3>Reaction<br/>+ rates</h3><p>Known inputs</p></div>
+<span aria-hidden="true" class="sc-arrow">→</span>
+<div class="sc-simulator"><h3>Physics<br/>simulator</h3></div>
+<span aria-hidden="true" class="sc-arrow">→</span>
+<figure class="sc-curve-card">
+<svg aria-labelledby="sc-training-title" class="sc-curve" role="img" viewbox="0 0 300 210">
+<title id="sc-training-title">Illustrative simulated current versus voltage curve; no numerical data</title>
+<path class="sc-axis" d="M28 18 V178 H282"></path>
+<path class="sc-zero" d="M28 101 H282"></path>
+<path class="sc-sim-line" d="M271 104 C227 104 192 107 164 131 C132 165 105 173 80 146 C62 127 45 122 37 122 C55 111 80 103 111 94 C143 85 156 34 185 46 C216 62 232 72 271 75"></path>
+</svg>
+<figcaption>Simulated curve</figcaption>
+</figure>
+</div>
+</div>
+<p class="source">Illustrative training pair · the answer is known inside the simulator</p>
+
+</section>
+<section class="science-mechanism" id="spark-explanations">
+<h2>AI works backward from the curve</h2>
+<div class="stage">
+<div class="sc-inference-flow">
+<figure class="sc-curve-card">
+<svg aria-labelledby="sc-inference-title" class="sc-curve" role="img" viewbox="0 0 300 210">
+<title id="sc-inference-title">Illustrative input curve; not the earlier RuHex measurement</title>
+<path class="sc-axis" d="M28 18 V178 H282"></path>
+<path class="sc-zero" d="M28 101 H282"></path>
+<path class="sc-measured-line" d="M271 104 C227 104 192 107 164 131 C132 165 105 173 80 146 C62 127 45 122 37 122 C55 111 80 103 111 94 C143 85 156 34 185 46 C216 62 232 72 271 75"></path>
+</svg>
+<figcaption>Curve</figcaption>
+</figure>
+<span aria-hidden="true" class="sc-arrow">→</span>
+<div class="sc-inverse-model"><h3>Trained<br/>model</h3></div>
+<span aria-hidden="true" class="sc-arrow">→</span>
+<div class="sc-causes">
+<h3>Plausible explanations</h3>
+<div class="sc-cause"><span aria-hidden="true">e<sup>−</sup></span><p>Electron transfer</p></div>
+<div class="sc-cause fragment"><span aria-hidden="true">e<sup>−</sup> + H<sup>+</sup></span><p>With a proton step</p></div>
+</div>
+</div>
+</div>
+<p class="source">Teaching example: E vs PCET · no fitted result shown</p>
+
+</section>
+<section class="science-mechanism" id="reconstruct-curve">
+<h2>Can it reproduce the measured curve?</h2>
+<div class="stage">
+<div class="sc-check-flow">
+<div class="sc-check-candidate"><h3>Candidate<br/>explanation</h3></div>
+<span aria-hidden="true" class="sc-arrow">→</span>
+<div class="sc-simulator"><h3>Physics<br/>simulator</h3></div>
+<span aria-hidden="true" class="sc-arrow">→</span>
+<figure class="sc-comparison">
+<svg aria-labelledby="sc-comparison-title sc-comparison-description" role="img" viewbox="0 0 420 280">
+<title id="sc-comparison-title">Illustrative comparison of measurement and reconstruction</title>
+<desc id="sc-comparison-description">A solid dark measurement curve and dashed purple simulation curve roughly follow each other. These are schematic curves, not experimental data or an actual SPARK result.</desc>
+<path class="sc-axis" d="M32 16 V243 H402"></path>
+<path class="sc-zero" d="M32 135 H402"></path>
+<path class="sc-measured-line" d="M386 137 C324 138 275 141 235 177 C189 223 149 232 114 197 C88 171 62 165 45 166 C76 151 116 138 159 123 C205 108 222 41 266 61 C307 80 339 97 386 101"></path>
+<path class="sc-reconstruction-line" d="M386 143 C323 143 275 149 234 181 C188 224 150 225 115 192 C86 165 65 162 45 162 C78 145 116 131 160 118 C203 103 226 48 266 67 C308 86 339 104 386 107"></path>
+</svg>
+<figcaption class="sc-legend"><span><i class="sc-key sc-key-measured"></i>Measurement</span><span><i class="sc-key sc-key-simulated"></i>Simulation</span></figcaption>
+</figure>
+</div>
+</div>
+<p class="source">Illustrative comparison · neither curve is experimental data</p>
 
 </section>
 <section class="lime" data-background-color="#dcff79" id="choose-experiment">

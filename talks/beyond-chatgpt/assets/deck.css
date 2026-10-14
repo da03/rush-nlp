@@ -49,3 +49,110 @@
 .try-demo figcaption{font-size:22px;line-height:1.4;letter-spacing:-.025em}.try-demo figcaption span,.try-demo figcaption strong{display:block}.try-demo figcaption strong{font-size:30px;font-weight:650}.reveal .try-demo p{font-size:21px;margin-top:12px;color:var(--muted)}.dark .try-demo p{color:#bec6d5}.dark .try-demo a:hover{color:var(--lime)}
 .claim-with-link{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:46px}.claim-with-link .spec{font-size:54px}.claim-with-link .science-small{font-size:23px}
 .with-demo h2{max-width:840px!important;font-size:78px!important}.with-demo .try-demo{position:absolute;right:64px;top:258px}.reveal .resources-link{font-size:27px;position:absolute;bottom:62px;left:64px;color:var(--lime)}
+
+/* Editable teaching diagrams for prediction, training and memory. */
+.learn-flow{display:grid;grid-template-columns:1fr 210px 1fr;align-items:center;gap:30px;width:100%}
+.learning figure{text-align:center}.learning figcaption{font-size:27px;margin-top:22px;color:var(--ink)}
+.learn-screen{width:100%;aspect-ratio:4/3;position:relative;overflow:hidden;background:#283e53;border:2px solid #233246;border-radius:3px}
+.learn-taskbar{height:14px;position:absolute;bottom:0;left:0;right:0;background:#192839}
+.learn-desktop-icon{position:absolute;top:12%;left:7%;width:31px;height:23px;background:#dcff79;border-radius:2px}
+.learn-desktop-icon:before{content:"";position:absolute;top:-5px;left:0;width:14px;height:7px;background:#dcff79;border-radius:2px}
+.learn-window{position:absolute;left:20%;top:25%;width:68%;height:57%;background:#f5f3ed;border:2px solid #acb7c6;box-shadow:0 8px 15px #0003}
+.learn-titlebar{height:30px;display:flex;align-items:center;justify-content:space-between;background:#d8dee7;padding:0 7px;font-size:16px;color:var(--ink)}
+.learn-titlebar b{font-size:25px;line-height:1;color:#6b46d8}.learn-files{display:flex;justify-content:space-evenly;align-items:center;height:66%}.learn-files i{width:28px;height:23px;background:#ceb981;border-radius:2px;position:relative}.learn-files i:before{content:"";position:absolute;top:-4px;left:0;width:12px;height:6px;background:#ceb981}
+.learn-window.mismatch{outline:5px solid #bd4d32;outline-offset:4px}.learn-screen.unknown{display:grid;place-items:center;background:transparent;border:3px dashed var(--rule)}.learn-screen.unknown span{font-size:120px;color:var(--purple);font-weight:650}
+.learn-action{text-align:center;font-size:33px;font-weight:650}.learn-action>span{font-size:48px;color:var(--purple)}.learn-arrow{font-size:59px;color:var(--purple);font-weight:400;line-height:1.4}
+.learn-prediction{display:grid;grid-template-columns:1fr 235px 1fr;align-items:center;gap:46px;width:100%}.learn-model{border-top:3px solid var(--purple);border-bottom:3px solid var(--purple);padding:28px 0;text-align:center;position:relative;color:var(--purple)}.learn-model:before,.learn-model:after{content:"→";position:absolute;top:42%;font-size:35px;color:var(--muted)}.learn-model:before{left:-36px}.learn-model:after{right:-36px}.learn-model>span{font-size:37px;line-height:1.15;display:block;font-weight:650}.learn-model>small{display:block;font-size:22px;margin-top:16px;color:var(--muted)}
+.learn-compare{display:grid;grid-template-columns:1fr 1fr;column-gap:95px;row-gap:20px;width:960px}.learn-compare .learn-screen{aspect-ratio:4/3}.learn-error{grid-column:1/-1;text-align:center;font-size:34px;font-weight:600;color:var(--purple)}.learn-error span{padding:0 20px}
+.learn-update{display:grid;grid-template-columns:340px 520px;gap:75px;align-items:center}.learn-feedback{font-size:42px;font-weight:650;line-height:1.2;text-align:center}.learn-feedback .learn-arrow{margin-top:10px}.weight-table{font-variant-numeric:tabular-nums}.weight-head{font-size:33px;color:var(--purple);font-weight:650;margin-bottom:23px}.weight-columns,.weight-row{display:grid;grid-template-columns:1fr 1fr;gap:45px}.weight-columns{font-size:23px;color:var(--muted);padding-bottom:16px;border-bottom:2px solid var(--rule)}.weight-row{font-size:53px;line-height:1.35;padding-top:12px}.weight-row strong{font-weight:600;color:var(--purple)}
+.training-cycle{width:1050px;text-align:center}.cycle-steps{display:flex;align-items:center;justify-content:space-around;font-size:50px;font-weight:650}.cycle-steps b{font-size:42px;font-weight:400;color:var(--muted)}.cycle-return{display:block;width:100%;height:110px;margin:12px 0 36px;color:var(--purple)}.training-cycle p{font-size:31px;color:var(--muted)}
+.inference-cycle{width:100%}.inference-return{display:block;width:100%;height:58px;margin-top:28px;color:var(--purple)}.inference-label{text-align:center;font-size:27px;color:var(--muted)}
+.memory-histories{display:grid;grid-template-columns:1fr 1fr;gap:55px;width:100%}.memory-histories p{font-size:31px;font-weight:650;margin-bottom:22px}.memory-histories img{width:100%;height:320px;object-fit:contain}.memory-histories figcaption{color:var(--muted);font-size:26px}
+
+/* PAW mechanism slides: scoped, editable HTML/CSS diagrams. */
+.paw-stage{height:496px}
+.paw-build-flow{display:grid;grid-template-columns:310px 66px 240px 66px 310px;gap:24px;align-items:center;width:1088px;max-width:100%}
+.paw-kicker{display:block;font-size:24px;font-weight:600;line-height:1.2;letter-spacing:0;margin-bottom:24px;color:var(--muted)}
+.dark .paw-kicker{color:#bec6d5}
+.paw-description p{font-size:36px;line-height:1.28;letter-spacing:-.025em}
+.paw-arrow{font-size:58px;font-weight:400;color:var(--lime);text-align:center}
+.paw-compiler{height:240px;border:2px solid #8b9baf;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;background:#19273d}
+.paw-compiler strong{font-size:34px;font-weight:650}
+.paw-model-mark{display:grid;grid-template-columns:repeat(3,16px);gap:14px}
+.paw-model-mark i{width:16px;height:16px;border-radius:50%;background:var(--lime)}
+.paw-model-mark i:nth-child(3n){opacity:.45}
+.paw-artifact{min-height:320px;background:var(--lime);color:var(--ink);border-radius:18px;padding:30px 32px}
+.dark .paw-artifact .paw-kicker{color:var(--ink);font-weight:700;margin-bottom:24px}
+.paw-artifact-part{display:flex;align-items:center;gap:25px}
+.paw-artifact-part strong{font-size:32px;font-weight:600}
+.paw-plus{display:block;font-size:24px;margin:10px 0 10px 94px;opacity:.6}
+.paw-text-mark{width:66px;height:60px;display:flex;flex-direction:column;justify-content:center;gap:9px}
+.paw-text-mark i{display:block;height:5px;border-radius:2px;background:var(--ink);width:60px}
+.paw-text-mark i:last-child{width:42px}
+.paw-weight-mark{display:grid;grid-template-columns:repeat(3,16px);gap:8px;width:66px}
+.paw-weight-mark i{height:16px;border-radius:3px;background:var(--ink)}
+.paw-weight-mark i:nth-child(2),.paw-weight-mark i:nth-child(4){opacity:.35}
+.paw-run-flow{display:grid;grid-template-columns:190px 64px 384px 64px 190px;gap:36px;align-items:center;width:1036px;max-width:100%}
+.paw-io-column,.paw-run-arrows{display:grid;grid-template-rows:100px 100px;gap:80px;align-items:center}
+.paw-io{font-size:38px;font-weight:600;white-space:nowrap}
+.paw-inputs{text-align:right}.paw-outputs{text-align:left;color:var(--purple)}
+.paw-run-arrows{font-size:54px;text-align:center;color:var(--purple);font-weight:400}
+.paw-runtime{border:2px solid var(--rule);border-radius:20px;background:white;padding:26px 26px 29px;text-align:center;box-shadow:0 10px 25px #101a2c08}
+.paw-same-program{padding:21px 16px;background:var(--lime);border-radius:12px;color:var(--ink)}
+.paw-same-program .paw-kicker{font-size:30px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.paw-same-program>span:last-child{font-size:24px;color:#34451d}
+.paw-runtime-link{font-size:27px;line-height:1;margin:16px 0;color:var(--muted)}
+.paw-interpreter{font-size:27px;font-weight:600;line-height:1.2}
+
+/* Native, editable science diagrams; styles scoped to the four mechanism slides. */
+.science-mechanism h2{font-size:52px}
+.science-mechanism .stage{height:496px}
+.science-mechanism h3{font-family:inherit;font-size:34px;line-height:1.17;font-weight:650;letter-spacing:-.025em;text-transform:none;margin:0}
+.science-mechanism .sc-arrow{font-size:52px;color:var(--muted);text-align:center;font-weight:400}
+.science-mechanism .sc-claim-stage{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:42px}
+.science-mechanism .sc-claim-stage .try-demo{width:220px}
+.science-mechanism .sc-claim-flow{width:100%;display:grid;grid-template-columns:236px 148px minmax(0,1fr);gap:20px;align-items:center}
+.science-mechanism .sc-paper{height:286px;padding:26px 27px;background:#fff;border:2px solid var(--rule);border-radius:4px}
+.science-mechanism .sc-paper h3{font-size:34px}
+.science-mechanism .sc-paper-lines{display:grid;gap:17px;margin-top:29px}
+.science-mechanism .sc-paper-lines i{height:7px;background:#c4cbd5;border-radius:2px;width:100%}
+.science-mechanism .sc-paper-lines i:nth-child(2){width:84%}
+.science-mechanism .sc-paper-lines i:last-child{width:70%}
+.science-mechanism .sc-paper-lines i.sc-selected{height:20px;background:#e4d9ff;border-left:6px solid var(--purple)}
+.science-mechanism .sc-connector{text-align:center;color:var(--purple)}
+.science-mechanism .sc-connector span{font-size:26px;white-space:nowrap}
+.science-mechanism .sc-connector b{display:block;font-size:63px;font-weight:400;line-height:1.2;margin-top:12px}
+.science-mechanism .sc-claim-card{border-top:3px solid var(--purple);border-bottom:3px solid var(--purple);padding:30px 0}
+.science-mechanism .sc-claim-card h3{font-size:40px}
+.science-mechanism .sc-evidence-link{margin-top:27px;padding-top:20px;border-top:1px solid var(--rule);font-size:27px;color:var(--accent);white-space:nowrap}
+.science-mechanism .sc-training-flow{display:grid;grid-template-columns:255px 50px 250px 50px minmax(0,1fr);gap:25px;align-items:center;width:100%}
+.science-mechanism .sc-known{border-top:3px solid var(--purple);border-bottom:3px solid var(--purple);padding:32px 20px;text-align:center}
+.science-mechanism .sc-known h3{font-size:38px}
+.science-mechanism .sc-known p{font-size:25px;color:var(--muted);margin-top:23px}
+.science-mechanism .sc-simulator{padding:33px 18px;background:#ece6fa;border:2px solid #d9cdef;text-align:center;border-radius:6px}
+.science-mechanism .sc-simulator h3{font-size:34px;color:var(--purple)}
+.science-mechanism .sc-curve-card{width:100%;text-align:center}
+.science-mechanism .sc-curve{display:block;width:100%;height:218px;overflow:visible}
+.science-mechanism .sc-curve-card figcaption{font-size:29px;font-weight:600;margin-top:18px}
+.science-mechanism .sc-axis{fill:none;stroke:#78859a;stroke-width:2}
+.science-mechanism .sc-zero{fill:none;stroke:#e2e5e9;stroke-width:1.5}
+.science-mechanism .sc-sim-line{fill:none;stroke:var(--purple);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.science-mechanism .sc-measured-line{fill:none;stroke:var(--ink);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.science-mechanism .sc-inference-flow{width:100%;display:grid;grid-template-columns:263px 48px 198px 48px minmax(0,1fr);gap:22px;align-items:center}
+.science-mechanism .sc-inverse-model{padding:43px 15px;border-top:3px solid var(--purple);border-bottom:3px solid var(--purple);text-align:center}
+.science-mechanism .sc-inverse-model h3{font-size:35px;color:var(--purple)}
+.science-mechanism .sc-causes h3{font-size:29px;margin-bottom:25px}
+.science-mechanism .sc-cause{border-top:1px solid var(--rule);padding:17px 0}
+.science-mechanism .sc-cause>span{display:block;font-size:41px;color:var(--purple);font-weight:650;line-height:1.1;letter-spacing:-.02em}
+.science-mechanism .sc-cause sup{font-size:.53em;vertical-align:super}
+.science-mechanism .sc-cause p{font-size:28px;line-height:1.22;margin-top:12px}
+.science-mechanism .sc-check-flow{width:100%;display:grid;grid-template-columns:220px 43px 205px 43px minmax(0,1fr);gap:20px;align-items:center}
+.science-mechanism .sc-check-candidate{border-top:3px solid var(--purple);border-bottom:3px solid var(--purple);padding:35px 0;text-align:center}
+.science-mechanism .sc-check-candidate h3{font-size:33px}
+.science-mechanism .sc-comparison{width:100%;text-align:center}
+.science-mechanism .sc-comparison svg{display:block;width:100%;height:286px;overflow:visible}
+.science-mechanism .sc-reconstruction-line{fill:none;stroke:var(--purple);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:10 8}
+.science-mechanism .sc-legend{font-size:25px;line-height:1.2;display:flex;flex-direction:column;gap:13px;align-items:flex-start;padding-left:34px;margin-top:14px}
+.science-mechanism .sc-legend span{display:flex;align-items:center;gap:15px}
+.science-mechanism .sc-key{display:inline-block;width:41px;border-top:4px solid var(--ink)}
+.science-mechanism .sc-key-simulated{border-top:4px dashed var(--purple)}
