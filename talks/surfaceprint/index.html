@@ -63,7 +63,7 @@
       <section aria-labelledby="finding">
         <h2 id="finding">What the study shows</h2>
         <div class="copy">
-          <p>A small classifier learns from <strong>97 measurements</strong> of raw text: punctuation, Markdown, math markup, code formatting and whitespace. Scoring a new passage requires no language-model calls.</p>
+          <p>A <strong>random forest</strong>, an ensemble of small decision trees, learns from <strong>97 measurements</strong> of raw text: punctuation, Markdown, math markup, code formatting and whitespace. Scoring a new passage requires no language-model calls.</p>
           <p>On held-out texts from <strong>17 model sources represented in training</strong>, SurfacePrint reaches a mean <strong class="result">AUROC of 0.983</strong>, compared with 0.950 for Fast-DetectGPT. Both use the same test texts, but SurfacePrint learns from labeled examples; Fast-DetectGPT is a training-free detector.</p>
           <p>A separately trained variant reaches 0.889 after selected whitespace cleanup. This comparison measures two trained variants; it does not test whether the original detector withstands edits.</p>
         </div>
