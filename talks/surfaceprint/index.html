@@ -60,13 +60,13 @@
           <a class="button" href="SurfacePrint.pdf" download>Download PDF</a>
           <a class="button" href="backup.html">Additional results</a>
         </div>
-        <p class="download-note">The PDF includes all 13 main slides and 8 additional slides. The slides use a concise spoken-talk format; the explanation below supplies context for reading them independently.</p>
+        <p class="download-note">The PDF includes all 14 main slides and 8 additional slides. The slides use a concise spoken-talk format; the explanation below supplies context for reading them independently.</p>
       </header>
       <section aria-labelledby="finding">
         <h2 id="finding">What the study shows</h2>
         <div class="copy">
           <p>The opening example shows how the same words can have different surface forms, motivating the measurements used by the classifier; it is an illustration, not an experimental result.</p>
-          <p>A <strong>random forest</strong>, an ensemble of 300 small decision trees, learns from <strong>97 measurements</strong> of raw text: punctuation, Markdown, math markup, code formatting and whitespace. Scoring a new passage requires no language-model calls.</p>
+          <p><strong>SurfacePrint</strong> represents a text with <strong>97 measurements</strong> of its formatting: punctuation, Markdown, math markup, code formatting and whitespace. A <strong>random forest</strong>, an ensemble of 300 small decision trees, learns from this representation to distinguish human and generated text. Scoring a new passage requires no language-model calls.</p>
           <p>On held-out texts from <strong>17 model sources represented in training</strong>, SurfacePrint reaches a mean <strong class="result">AUROC of 0.983</strong>, compared with 0.950 for Fast-DetectGPT. Both use the same test texts, but SurfacePrint learns from labeled examples; Fast-DetectGPT is a training-free detector.</p>
           <p>A separately trained variant reaches 0.889 after selected whitespace cleanup. This comparison measures two trained variants; it does not test whether the original detector withstands edits.</p>
           <p>Instruction-tuned outputs are easier to distinguish from human text in four of five tested model families. Each condition uses a separately trained detector, and prompt templates also differ, so this comparison does not isolate the effect of weight updates.</p>
@@ -77,7 +77,7 @@
         <div class="copy">
           <p>AUROC measures how well scores rank generated text above human text: 0.5 is chance ranking and 1.0 is perfect. <strong>It is neither accuracy at a chosen cutoff nor a document’s probability of AI authorship.</strong></p>
           <p><strong>AI writing styles leave revealing fingerprints.</strong> Here, a fingerprint means a statistical pattern, not a unique identity. Transfer to unseen models is uneven, so a strong result on known model sources does not guarantee the same performance on a new model.</p>
-          <p>When a new model family appears, the practical next step is to collect labeled examples of its outputs alongside human writing, retrain SurfacePrint to learn its formatting patterns, and use the updated detector to score new text. This is a recommendation based on uneven transfer and evolving conventions; the study does not test a continuing retraining loop or establish that updating always restores performance. An updated detector needs evaluation on held-out examples.</p>
+          <p>When a new model family appears, the practical next step is to collect labeled examples of its outputs alongside human writing, retrain SurfacePrint to learn its formatting patterns, and use the updated detector to detect AI-generated text. This is a recommendation based on uneven transfer and evolving conventions; the study does not test a continuing retraining loop or establish that updating always restores performance. An updated detector needs evaluation on held-out examples.</p>
           <p>Formatting is editable, and these experiments address non-adversarial detection. Practical use needs measured false-positive rates on representative documents; the score should not be sole evidence of authorship.</p>
           <p class="status">The manuscript is not yet publicly available.</p>
         </div>
