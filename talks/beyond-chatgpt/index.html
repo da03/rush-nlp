@@ -136,13 +136,22 @@
 </div>
 
 </section>
-<section class="section-divider dark" data-background-color="#101a2c" data-presenter="Yuntian" id="programs-section"><h2>Programming<br/><span class="accent">in English</span></h2></section>
-<section class="english-program english-io" id="english-description">
-<h2>Describe the input and output</h2>
-<div class="stage english-io-stage">
-<blockquote>“Given a sentence, return all the verbs in it.”</blockquote>
-<div class="english-io-example"><div class="english-input"><h3>Program input</h3><p>Maya opened the door<br>and smiled.</p></div><span class="english-io-arrow fragment" data-fragment-index="0">→</span><div class="english-output fragment" data-fragment-index="0"><h3>Program output</h3><p>opened, smiled</p></div></div>
-</div></section>
+<section class="section-divider dark" data-background-color="#101a2c" data-presenter="Yuntian" id="programs-section"><h2>Can AI turn English<br/><span class="accent">into programs?</span></h2></section>
+<section id="model-as-program">
+<h2>One AI model creates another</h2>
+<div class="stage model-program-stage">
+<div class="model-program-comparison"><h3>Code generation</h3><p><span>English</span><b>→</b><span>Python code</span></p></div>
+<div class="model-program-comparison model-program-new fragment" data-fragment-index="0"><h3>Program-as-Weights</h3><p><span>English</span><b>→</b><span>A small AI model</span></p><div class="model-function">Input <b>→</b> Output</div></div>
+</div>
+
+</section>
+<section class="verb-real" id="english-description">
+<h2>A real program: find the verbs</h2>
+<div class="stage verb-real-stage">
+<figure class="verb-spec"><figcaption>Program description</figcaption><img src="assets/paw/verb-specification-text.png" alt="Actual specification: Given a sentence, return all the verbs in it."></figure>
+<div class="verb-real-io"><figure class="verb-input"><figcaption>Program input</figcaption><img src="assets/paw/verb-input-text.png" alt="Actual input: Maya opened the door and smiled."></figure><span class="verb-real-arrow fragment" data-fragment-index="0">→</span><figure class="verb-output fragment" data-fragment-index="0"><figcaption>Program output</figcaption><img src="assets/paw/verb-output-text.png" alt='Actual output: ["opened", "smiled"]'></figure></div>
+</div><p class="verb-live-link"><a data-live href="https://programasweights.com/hub/779da82d4923b7d93dd6" target="_blank" rel="noopener">programasweights.com/hub/779da82d4923b7d93dd6</a></p>
+</section>
 <section id="paw-hard-to-code"><h2>Easy to describe. Hard to write every rule.</h2><div class="stage language-context"><div><p>I <span class="fragment highlight-current-purple" data-fragment-index="0">watch</span> birds.</p><strong class="fragment" data-fragment-index="0">watch is a verb</strong></div><div class="fragment" data-fragment-index="1"><p>My watch broke.</p><strong class="fragment" data-fragment-index="2">broke is the verb</strong></div></div></section>
 <section id="paw-demonstrations"><h2>Teach it with demonstrations</h2><div class="stage paw-examples"><div class="paw-example-row"><p class="paw-task">Find the verbs</p><p>“Maya opened the door.”</p><strong>opened</strong></div><div class="paw-example-row fragment" data-fragment-index="0"><p class="paw-task">Is it urgent?</p><p>“Call now. The room is flooding.”</p><strong>urgent</strong></div><p class="paw-example-takeaway fragment" data-fragment-index="1">Many tasks. Inputs. Correct outputs.</p></div></section>
 <section id="paw-learning"><h2>The model learns to build the program</h2><div class="stage paw-learning-flow"><div class="paw-builder-row"><div><span>Task description</span><p>“Find the verbs.”</p></div><b class="fragment" data-fragment-index="0">→</b><div class="fragment" data-fragment-index="0"><span>AI builder</span><p>Creates a program</p></div><b class="fragment" data-fragment-index="1">→</b><div class="fragment" data-fragment-index="1"><span>Try an example</span><p>Does it return<br/>the right verbs?</p></div></div><div class="paw-feedback fragment" data-fragment-index="2"><span>Compare with the demonstration.</span><strong>Improve the builder. Repeat.</strong></div></div></section>
