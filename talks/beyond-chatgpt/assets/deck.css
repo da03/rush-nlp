@@ -488,3 +488,54 @@
 .reveal .avatar-modern-stage blockquote{font-size:48px;line-height:1.2;letter-spacing:-.03em;margin:0 0 42px;font-weight:600}
 .reveal .avatar-modern-stage .visible-demo-url{font-size:30px;white-space:nowrap}
 @media print{.avatar-modern-stage .print-poster{display:block!important}}
+
+/* Chemistry follows questions about knowledge, reaction pathways and shape. */
+.chemistry-outlook .outlook-stage{flex-direction:column;align-items:flex-start;justify-content:center;gap:65px}
+.reveal .outlook-question{font-size:70px;font-weight:650;line-height:1.12;letter-spacing:-.03em}
+.outlook-flow{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;font-size:30px;color:var(--paper)}
+.outlook-flow b{color:var(--lime);font-weight:400}
+.reveal .chem-visible-link{position:absolute;bottom:27px;left:64px;font-size:26px;color:var(--purple);font-weight:600}
+.helper-tree-stage{display:grid;grid-template-columns:760px 1fr;gap:36px}
+.stage.helper-tree-stage video,.stage.helper-tree-stage .print-poster{width:760px;height:492px;max-height:492px;align-self:center;object-fit:contain}
+.reveal .helper-tree-stage p{font-size:44px;line-height:1.2;font-weight:600;margin-bottom:44px}
+.reveal .helper-tree-stage a{font-size:25px;color:var(--lime);white-space:nowrap}
+
+/* One editable training demonstration, revealed in two steps. */
+.doom-teaching-stage{height:415px;display:grid;grid-template-columns:500px 62px 500px;gap:32px;align-items:center;justify-content:center;padding-top:20px}
+.doom-teaching-stage figure{width:500px;text-align:center}
+.doom-teaching-stage figure>img,.doom-image-stack{width:500px;height:375px;object-fit:contain}
+.doom-image-stack{position:relative}
+.doom-image-stack img{position:absolute;inset:0;width:500px;height:375px;object-fit:contain}
+.doom-teaching-stage figcaption{font-size:28px;font-weight:600;margin-top:14px;height:38px;position:relative;text-align:center}
+.doom-edited-desktop figcaption span{position:absolute;inset:0}
+.doom-splice-arrow{font-size:59px;color:var(--purple);text-align:center}
+.reveal .doom-never-installed{font-size:34px;font-weight:650;color:var(--purple);margin-top:47px;text-align:center}
+@media print{.doom-image-stack .fade-out,.doom-edited-desktop figcaption .fade-out{display:none!important}}
+
+/* WildChat: collection origin, historical reach and a self-contained search. */
+.wildchat-origin .stage{height:450px}
+.wildchat-origin-stage{display:grid;grid-template-columns:620px 1fr;gap:48px;align-items:center}
+.wildchat-origin-stage>img{width:620px;height:350px;object-fit:contain}
+.reveal .wc-origin-lead{font-size:51px;line-height:1.15;font-weight:700;color:var(--purple);margin-bottom:30px}
+.reveal .wc-origin-consent{font-size:34px;line-height:1.3}
+.reveal .wc-origin-url{font-size:35px;line-height:1.2;white-space:nowrap;text-align:center;color:var(--purple)}
+.wildchat-global .stage{height:440px}
+.wildchat-global .stage video,.wildchat-global .stage .print-poster{height:435px;align-self:center}
+.reveal .wc-global-scale{font-size:35px;line-height:1.2;text-align:center;color:var(--muted);margin-top:12px}
+.wc-global-scale strong{color:var(--purple)}
+.wildchat-browse .stage{height:440px}
+.wc-browse-stage{display:grid;grid-template-columns:470px 570px;gap:75px;align-items:center}
+.wc-browse-stage figure{width:100%}
+.wc-browse-stage figcaption{font-size:28px;font-weight:600;color:var(--muted);margin-bottom:24px}
+.wc-browse-stage .wc-filter-example img{width:470px;height:auto}
+.wc-browse-stage .wc-result-example img{width:570px;height:auto;image-rendering:auto}
+.reveal .wc-open-data{text-align:center;font-size:28px;line-height:1.4}
+.reveal .wc-open-data p{font-size:29px;margin-bottom:18px;color:var(--muted)}
+.reveal .wc-open-data a{font-size:29px;white-space:nowrap}
+
+.gta-context-stage{display:grid;grid-template-columns:710px 1fr;gap:42px}
+.gta-context-stage img{width:710px;height:493px;object-fit:contain}
+.reveal .gta-context-stage p{font-size:27px;color:#bec6d5;margin-bottom:28px}
+.reveal .gta-context-stage strong{font-size:41px;line-height:1.2;font-weight:650;color:var(--lime)}
+.gta-skills .stage{height:500px}
+.gta-skills .stage video,.gta-skills .stage .print-poster{height:500px;max-height:500px;width:100%;align-self:center}
