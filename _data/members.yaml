@@ -16,10 +16,18 @@
       url : "https://github.com/AustingDong"
       github : AustingDong
       githubid : 110651277
-    - name : Akira Kudo
-      url : "https://github.com/akirakudo901"
-      github : akirakudo901
-      githubid : 76494218
+    - name : Nina Zhang
+      url : "https://github.com/WeibingZhang04"
+      github : WeibingZhang04
+      githubid : 292952291
+    - name : Max Ku
+      url : "https://kuwingfung.github.io/"
+      github : vinesmsuic
+      githubid : 34955859
+    - name : Yubo Wang
+      url : "https://wyyyb.github.io/"
+      github : Wyyyb
+      githubid : 20929360
 
 - group : MMath Alumni
   people :
@@ -37,6 +45,10 @@
 
 - group : Undergrad Alumni
   people :
+    - name : Akira Kudo
+      url : "https://github.com/akirakudo901"
+      github : akirakudo901
+      githubid : 76494218
     - name : Yifan Zong (xAI)
       url : "https://github.com/zongyf02"
       github: zongyf02
