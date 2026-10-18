@@ -12,19 +12,17 @@
       url: https://neural-os.com
 - id: implicit-chain-of-thought
   title: Implicit Chain of Thought
-  description: We internalize chain-of-thought reasoning into hidden computation. A 12-layer GPT-2 reaches 99.5% accuracy when multiplying two 20-digit numbers without emitting intermediate steps.
-  resource:
-    title: Implicit chain-of-thought reading list
-    url: https://latent-implicit-thinking.github.io/
-    description: Papers organized by approach, with explanations, demos, and downloadable citations.
+  description: We internalize chain-of-thought reasoning. A 12-layer GPT-2 multiplies two 20-digit numbers with 99.5% accuracy, without writing intermediate steps.
   links:
-    - title: Internalize CoT
+    - title: Internalization
       url: https://arxiv.org/pdf/2405.14838
-    - title: Implicit CoT
+    - title: Distillation
       url: https://arxiv.org/pdf/2311.01460.pdf
-    - title: 20-digit multiplication demo
+    - title: Demo
       url: https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication
-    - title: ICLR 2026 Workshop
+    - title: Reading list
+      url: https://latent-implicit-thinking.github.io/
+    - title: ICLR 2026 workshop
       url: https://latent-implicit-thinking.github.io/workshop/2026/
 - id: llm-usage
   title: LLM Usage at Scale
