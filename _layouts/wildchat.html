@@ -1,5 +1,8 @@
 {%- assign wc_meta = site.data.wildchat.meta -%}
-{%- assign wc_paper = site.data.wildchat.papers | where: 'id', page.paper_id | first -%}
+{%- assign wc_paper = nil -%}
+{%- if page.paper_id -%}
+  {%- assign wc_paper = site.data.wildchat.papers | where: 'id', page.paper_id | first -%}
+{%- endif -%}
 {%- assign wc_title = page.title -%}
 {%- assign wc_description = page.description -%}
 {%- if wc_paper -%}
