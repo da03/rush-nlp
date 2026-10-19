@@ -12,12 +12,12 @@
       url: https://neural-os.com
 - id: implicit-chain-of-thought
   title: Implicit Chain of Thought
-  description: We internalize chain-of-thought reasoning. A 12-layer GPT-2 multiplies two 20-digit numbers with 99.5% accuracy, without writing intermediate steps.
+  description: "We first proposed implicit chain-of-thought reasoning in 2023: using continuous hidden states instead of writing out intermediate steps. Our work includes knowledge distillation and step-by-step internalization."
   links:
-    - title: Internalization
-      url: https://arxiv.org/pdf/2405.14838
-    - title: Distillation
+    - title: 2023 paper
       url: https://arxiv.org/pdf/2311.01460.pdf
+    - title: 2024 paper
+      url: https://arxiv.org/pdf/2405.14838
     - title: Demo
       url: https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication
     - title: Reading list
