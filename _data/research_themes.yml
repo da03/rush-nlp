@@ -4,6 +4,10 @@
   links:
     - title: programasweights.com
       url: https://programasweights.com
+    - title: Research
+      url: https://programasweights.com/research/
+    - title: Reading list
+      url: https://programasweights.com/reading-list/
 - id: neuralos
   title: Neural World Models
   description: Can generative models learn the behavior of interactive computing environments? We explore this through NeuralOS, which uses a neural generative model to simulate an operating system end to end.
