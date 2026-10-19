@@ -200,7 +200,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
   <div class="paper-card-body">
     <a class="paper" href="{{paper.pdf}}">{{paper.title}}</a><br>
     {{paper.authors}}.<br>
-    {{paper.conference}}<br>
+    {{paper.conference}}{% if paper.reading_list %} <a class="tag tag-paper" href="{{paper.reading_list | escape}}">reading list</a>{% endif %}<br>
     {% if paper.notes %}{{paper.notes}}{% endif %}
   </div>
 </div>
@@ -220,7 +220,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
   <div class="paper-card-body">
     <a class="paper" href="{{paper.pdf}}">{{paper.title}}</a><br>
     {{paper.authors}}.<br>
-    {{paper.conference}}<br>
+    {{paper.conference}}{% if paper.reading_list %} <a class="tag tag-paper" href="{{paper.reading_list | escape}}">reading list</a>{% endif %}<br>
     {% if paper.notes %}{{paper.notes}}{% endif %}
   </div>
 </div>

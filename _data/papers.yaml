@@ -96,6 +96,7 @@ notable:
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       pdf: https://steganography.live
+      reading_list: https://steganography.live/reading-list/
       conference: EMNLP 2019 (<strong>Oral</strong>)
       image: /images/emnlp19_arithmetic.png
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
@@ -347,6 +348,7 @@ papers:
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       pdf: https://steganography.live
+      reading_list: https://steganography.live/reading-list/
       image: /images/emnlp19_arithmetic.png
       conference: EMNLP 2019 (<strong>Oral</strong>)
       year: 2019

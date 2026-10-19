@@ -87,6 +87,7 @@ demos:
       abstract: Hide secret messages in fluent texts using arithmetic coding and strong neural models.
       image: /images/emnlp19_arithmetic.png
       demo: https://steganography.live/
+      reading_list: https://steganography.live/reading-list/
       code: https://github.com/harvardnlp/NeuralSteganography
       paper: https://aclanthology.org/D19-1115/
     - link: http://opennmt.net
