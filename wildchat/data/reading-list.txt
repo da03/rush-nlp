@@ -4,7 +4,7 @@ permalink: /wildchat/data/reading-list.md
 ---
 # WildChat: annotated research list
 
-Selected papers introducing, exploring, studying, or extending WildChat.
+Selected papers introducing, exploring, studying, or extending WildChat and WildVis.
 
 Research hub: https://yuntiandeng.com/wildchat/
 Research list: https://yuntiandeng.com/wildchat/research/
@@ -19,7 +19,7 @@ Dates below identify the first arXiv version unless the date note states otherwi
 {{ paper.author_note }}
 {% endif %}
 - Venue: {{ paper.venue }}
-- Preprint date: {{ paper.first_public }}
+- {{ paper.date_label | default: 'First arXiv submission' }}: {{ paper.first_public }}
 - Date note: {{ paper.date_note }}
 - Date source: {{ paper.date_source }}
 - Relationship: {{ paper.relationship_label }}
@@ -29,11 +29,12 @@ Dates below identify the first arXiv version unless the date note states otherwi
 - Paper: {{ paper.paper_url }}
 {% if paper.arxiv %}- arXiv: https://arxiv.org/abs/{{ paper.arxiv }}
 {% endif %}{% if paper.code_url %}- Code and resources: {{ paper.code_url }}
+{% endif %}{% if paper.project_url %}- Project: {{ paper.project_url }}
 {% endif %}- Cited version: {{ paper.citation_note }}
 - Citation title: {{ paper.citation_title }}
 - Citation year: {{ paper.citation_year }}
 - Citation source: {{ paper.citation_url }}
-{% if paper.container_title %}- Proceedings: {{ paper.container_title }}
+{% if paper.container_title %}- Publication: {{ paper.container_title }}
 {% endif %}{% if paper.doi %}- DOI: https://doi.org/{{ paper.doi }}
 {% endif %}- BibTeX: {{ paper.record_url }}citation.bib
 - CSL JSON: {{ paper.record_url }}citation.csl.json

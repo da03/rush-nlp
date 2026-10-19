@@ -10,9 +10,9 @@ layout: wildchat
     <h1>{{ paper.title | escape }}</h1>
     <p class="wc-authors">{% include wildchat/authors.html authors=paper.authors %}</p>
     {% if paper.author_note %}<p class="wc-note">{{ paper.author_note | escape }}</p>{% endif %}
-    <p class="wc-date">{{ paper.venue | escape }} · First arXiv submission <time datetime="{{ paper.first_public }}">{{ paper.first_public }}</time></p>
+    <p class="wc-date">{{ paper.venue | escape }} · {{ paper.date_label | default: 'First arXiv submission' | escape }} <time datetime="{{ paper.first_public }}">{{ paper.first_public }}</time></p>
     <p class="wc-lead">{{ paper.summary | escape }}</p>
-    <div class="wc-links"><a href="{{ paper.paper_url }}">Paper ↗</a>{% if paper.code_url %}<a href="{{ paper.code_url }}">Code ↗</a>{% endif %}<a href="#citation">Citation</a></div>
+    <div class="wc-links"><a href="{{ paper.paper_url }}">Paper ↗</a>{% if paper.code_url %}<a href="{{ paper.code_url }}">Code ↗</a>{% endif %}{% if paper.project_url %}<a href="{{ paper.project_url }}">Project ↗</a>{% endif %}<a href="#citation">Citation</a></div>
   </header>
   <section class="wc-section">
     <h2>Dataset and scope</h2>
@@ -23,7 +23,7 @@ layout: wildchat
   </section>
   <section class="wc-section">
     <h2>Dates and versions</h2>
-    <p>{{ paper.date_note | escape }} <a href="{{ paper.date_source }}">ArXiv version history</a>.</p>
+    <p>{{ paper.date_note | escape }} <a href="{{ paper.date_source }}">{{ paper.date_source_label | default: 'ArXiv version history' | escape }}</a>.</p>
     {% if paper.citation_note %}<p>{{ paper.citation_note | escape }}</p>{% endif %}
     <p class="wc-note">The annotation describes the linked source version. Consult the paper for its full methods, assumptions, and limitations.</p>
   </section>

@@ -45,7 +45,7 @@
   <meta name="citation_title" content="{{ wc_paper.citation_title | default: wc_paper.title | escape }}">
   {% for author in wc_paper.authors %}<meta name="citation_author" content="{{ author.given | escape }} {{ author.family | escape }}">
   {% endfor %}<meta name="citation_publication_date" content="{{ wc_paper.citation_year | default: wc_paper.year }}">
-  {% if wc_paper.container_title %}<meta name="citation_conference_title" content="{{ wc_paper.container_title | escape }}">{% endif %}
+  {% if wc_paper.container_title %}{% if wc_paper.bibtex_type == 'article' %}<meta name="citation_journal_title" content="{{ wc_paper.container_title | escape }}">{% else %}<meta name="citation_conference_title" content="{{ wc_paper.container_title | escape }}">{% endif %}{% endif %}
   {% if wc_paper.doi %}<meta name="citation_doi" content="{{ wc_paper.doi | escape }}">{% endif %}
   {% endif %}
 </head>

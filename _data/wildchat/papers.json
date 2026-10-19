@@ -412,5 +412,1281 @@
     "citation_year": 2026,
     "citation_note": "Cites the arXiv preprint with its original 2026 preprint year. The annotation follows the August 2026 revision.",
     "doi": "10.48550/arXiv.2605.29018"
+  },
+  {
+    "id": "ai-fiction",
+    "title": "AI Fiction in the Wild",
+    "authors": [
+      {
+        "given": "Neel",
+        "family": "Gupta"
+      },
+      {
+        "given": "Maria",
+        "family": "Antoniak"
+      },
+      {
+        "given": "Melanie",
+        "family": "Walsh"
+      }
+    ],
+    "first_public": "2026-06-22",
+    "date_note": "First arXiv version; the paper reports an earlier presentation at the MFS Cultural AI Conference on September 19, 2025. The annotation follows arXiv v2.",
+    "date_source": "https://arxiv.org/abs/2606.22748",
+    "year": 2026,
+    "venue": "arXiv preprint",
+    "paper_url": "https://arxiv.org/abs/2606.22748",
+    "arxiv": "2606.22748",
+    "doi": "10.48550/arXiv.2606.22748",
+    "project_url": "https://ai-fiction-wild.com/about",
+    "category": "behavior",
+    "relationship": "uses",
+    "relationship_label": "Uses WildChat",
+    "dataset_version": "573,453 English-language conversations from the first WildChat release, covering April 2023–May 2024.",
+    "summary": "Studies how people generate and consume fiction through chatbots, combining conversation classification with close reading of repeated story requests. The authors examine fanfiction, roleplay, and erotic fiction, and discuss how iterative generation can reshape the relationship between reader and writer. A companion viewer supports exploration of the fiction subset.",
+    "finding": "The study classifies 195,271 conversations (34%) as fiction. Sampling one conversation per inferred user reduces this share to 7.1%, showing how strongly prolific users shape the conversation-level result.",
+    "evidence_url": "https://arxiv.org/html/2606.22748v2",
+    "evidence_note": "Sections 3–4 describe the historical release, classification, and user grouping; Table 3 gives the conversation counts. Inferred users are grouped from hashed IPs and similar prompts, rather than verified identities.",
+    "bibtex_key": "gupta2026aifiction",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/ai-fiction/",
+    "citation_title": "AI Fiction in the Wild",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2606.22748",
+    "citation_year": 2026,
+    "citation_note": "Cites the 2026 arXiv preprint. The linked version describes the essay as provisionally forthcoming in Modern Fiction Studies."
+  },
+  {
+    "id": "garden-forking-prompts",
+    "title": "The Garden of Forking Prompts: How Users Explore Narrative Space in Story Generation",
+    "authors": [
+      {
+        "given": "Advait",
+        "family": "Deshmukh"
+      },
+      {
+        "given": "Nora",
+        "family": "Benedict"
+      },
+      {
+        "given": "Melanie",
+        "family": "Walsh"
+      },
+      {
+        "given": "Maria",
+        "family": "Antoniak"
+      }
+    ],
+    "first_public": "2026-09-13",
+    "date_note": "First arXiv version. The paper appeared at COLM 2026.",
+    "date_source": "https://arxiv.org/abs/2609.14677",
+    "year": 2026,
+    "venue": "COLM 2026",
+    "paper_url": "https://openreview.net/forum?id=w6VGVCw4FF",
+    "arxiv": "2609.14677",
+    "code_url": "https://github.com/advaitdeshmukh/The-Garden-of-Forking-Prompts",
+    "category": "behavior",
+    "relationship": "uses",
+    "relationship_label": "Uses WildChat",
+    "dataset_version": "The yuntian-deng/WildChat-4.8M-Full release, filtered to 2,560,447 English prompt-response pairs with prompts of at least 20 words; one story-shape analysis uses WildChat-1M.",
+    "summary": "Introduces WildStories, containing 275,635 story prompts, and WildEdits, containing 24,291 reconstructed edit trees. The study follows revisions across separate conversations, organizes edits by direction and narrative target, and uses this framework to generate story-prompt variations for evaluation.",
+    "finding": "94.2% of prompts with an identified parent link to a different WildChat conversation. These reconstructed trees expose iterative story exploration that within-conversation analysis would miss.",
+    "evidence_url": "https://arxiv.org/html/2609.14677v1",
+    "evidence_note": "Sections 3–4 document sampling, inferred users, and edit-tree construction; Sections 5–6 analyze revisions and test prompt permutation. The released data contains identifiers and labels, with text obtained separately from WildChat.",
+    "bibtex_key": "deshmukh2026forkingprompts",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/garden-forking-prompts/",
+    "citation_title": "The Garden of Forking Prompts: How Users Explore Narrative Space in Story Generation",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "Third Conference on Language Modeling",
+    "citation_url": "https://openreview.net/forum?id=w6VGVCw4FF",
+    "citation_year": 2026,
+    "citation_note": "Cites the COLM 2026 paper. The annotation follows the first arXiv version and the accompanying public repository."
+  },
+  {
+    "id": "speak-easy",
+    "title": "Speak Easy: Eliciting Harmful Jailbreaks from LLMs with Simple Interactions",
+    "authors": [
+      {
+        "given": "Yik Siu",
+        "family": "Chan"
+      },
+      {
+        "given": "Narutatsu",
+        "family": "Ri"
+      },
+      {
+        "given": "Yuxin",
+        "family": "Xiao"
+      },
+      {
+        "given": "Marzyeh",
+        "family": "Ghassemi"
+      }
+    ],
+    "first_public": "2025-02-06",
+    "date_note": "First arXiv version; the paper appeared at ICML 2025.",
+    "date_source": "https://arxiv.org/abs/2502.04322",
+    "year": 2025,
+    "venue": "ICML 2025",
+    "paper_url": "https://proceedings.mlr.press/v267/chan25b.html",
+    "arxiv": "2502.04322",
+    "code_url": "https://github.com/yiksiu-chan/SpeakEasy",
+    "category": "safety",
+    "relationship": "uses",
+    "relationship_label": "Uses WildVis",
+    "dataset_version": "Real-world conversations retrieved through WildVis motivate the study; experiments use four separate safety benchmarks rather than a new WildChat benchmark.",
+    "summary": "Uses real conversations found through WildVis to motivate an investigation of safety failures during ordinary multi-step and multilingual interactions. The paper introduces HarmScore, which assesses actionability and informativeness, and a framework for testing these interaction patterns across safety benchmarks.",
+    "finding": "Figure 2 draws directly on WildVis examples, connecting observed chatbot misuse to the design of the safety evaluation.",
+    "evidence_url": "https://arxiv.org/html/2502.04322v3",
+    "evidence_note": "Section 4 and Figure 2 explicitly identify the motivating conversations as sourced from WildVis; Section 5 describes evaluation on HarmBench, AdvBench, SORRY-Bench, and MedSafetyBench.",
+    "bibtex_key": "chan2025speakeasy",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/speak-easy/",
+    "citation_title": "Speak Easy: Eliciting Harmful Jailbreaks from LLMs with Simple Interactions",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "Proceedings of the 42nd International Conference on Machine Learning",
+    "citation_url": "https://proceedings.mlr.press/v267/chan25b.html",
+    "citation_year": 2025,
+    "citation_note": "Cites the ICML 2025 proceedings paper in PMLR volume 267.",
+    "pages": "7306–7331",
+    "volume": "267",
+    "publisher": "PMLR"
+  },
+  {
+    "id": "arabic-politeness",
+    "title": "A corpus-based analysis of politeness strategies in Arabic speakers’ interactions with ChatGPT",
+    "authors": [
+      {
+        "given": "Saleem",
+        "family": "Abdelhady"
+      },
+      {
+        "given": "Konstantinos M.",
+        "family": "Pitychoutis"
+      }
+    ],
+    "first_public": "2026-06-23",
+    "date_note": "Journal publication date.",
+    "date_source": "https://www.tandfonline.com/doi/full/10.1080/23311983.2026.2691356",
+    "year": 2026,
+    "venue": "Cogent Arts & Humanities",
+    "paper_url": "https://www.tandfonline.com/doi/full/10.1080/23311983.2026.2691356",
+    "doi": "10.1080/23311983.2026.2691356",
+    "category": "language",
+    "relationship": "uses",
+    "relationship_label": "Uses WildChat and WildVis",
+    "dataset_version": "349 Arabic-dominant WildChat conversations with at least ten turns, retrieved using the WildVis filter interface; an exact dataset revision is not specified.",
+    "summary": "Examines user-side politeness in Arabic conversations selected through WildVis. The authors code prompts with an adapted Brown and Levinson framework and compare openings, conversation bodies, closings, and topic shifts to study directness and relational language in human–AI interaction.",
+    "finding": "Bald on-record strategies account for 88.42% of coded instances in this selected corpus; the study does not establish population-wide behavior or experimentally test chatbot responses to politeness.",
+    "evidence_url": "https://www.tandfonline.com/doi/full/10.1080/23311983.2026.2691356",
+    "evidence_note": "Sections 3.1–3.2 describe the WildVis retrieval and coding; Section 4.1 reports the strategy proportions; Section 3.4 discusses the exploratory sample and limits on generalization.",
+    "bibtex_key": "abdelhady2026politeness",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/arabic-politeness/",
+    "citation_title": "A corpus-based analysis of politeness strategies in Arabic speakers’ interactions with ChatGPT",
+    "citation_type": "article-journal",
+    "bibtex_type": "article",
+    "container_title": "Cogent Arts & Humanities",
+    "citation_url": "https://doi.org/10.1080/23311983.2026.2691356",
+    "citation_year": 2026,
+    "citation_note": "Cites the published journal article.",
+    "volume": "13",
+    "issue": "1",
+    "pages": "2691356",
+    "publisher": "Taylor & Francis",
+    "date_label": "Published",
+    "date_source_label": "Publication record",
+    "publication_date": "2026-06-23"
+  },
+  {
+    "id": "mental-health-prevalence",
+    "title": "Prevalence of Mental Health Discussions in Publicly Available Generative AI Conversations",
+    "authors": [
+      {
+        "given": "Ryan K.",
+        "family": "McBain"
+      },
+      {
+        "given": "Li Ang",
+        "family": "Zhang"
+      },
+      {
+        "given": "Alyssa",
+        "family": "Burnett"
+      },
+      {
+        "given": "Jonathan H.",
+        "family": "Cantor"
+      },
+      {
+        "given": "Hao",
+        "family": "Yu"
+      }
+    ],
+    "first_public": "2026-08-24",
+    "date_note": "Journal publication date.",
+    "date_source": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2853211",
+    "year": 2026,
+    "venue": "JAMA Network Open",
+    "paper_url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2853211",
+    "doi": "10.1001/jamanetworkopen.2026.30635",
+    "category": "behavior",
+    "relationship": "uses",
+    "relationship_label": "Uses WildChat",
+    "dataset_version": "620,699 conversations from WildChat-4.8M; the article cites the WildVis paper as its corpus reference.",
+    "summary": "Studies how the definition of a mental-health conversation changes prevalence estimates in WildChat-4.8M. A classifier scores topicality, help-seeking intent, clinical language, and affective risk, with validation against independently coded conversations.",
+    "finding": "The estimated share is 0.21% under a definition requiring explicit help-seeking for an identifiable person, versus 4.90% when any mental-health topicality qualifies. These are estimates for the analyzed public corpus.",
+    "evidence_url": "https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2853211",
+    "evidence_note": "Methods specifies the corpus, four domains, and 370-conversation validation sample; Results compares the two definitions; reference 4 is WildVis. The available conversation metadata does not establish participant ages.",
+    "bibtex_key": "mcbain2026mentalhealth",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/mental-health-prevalence/",
+    "citation_title": "Prevalence of Mental Health Discussions in Publicly Available Generative AI Conversations",
+    "citation_type": "article-journal",
+    "bibtex_type": "article",
+    "container_title": "JAMA Network Open",
+    "citation_url": "https://doi.org/10.1001/jamanetworkopen.2026.30635",
+    "citation_year": 2026,
+    "citation_note": "Cites the published research letter.",
+    "volume": "9",
+    "issue": "8",
+    "pages": "e2630635",
+    "publisher": "American Medical Association",
+    "date_label": "Published",
+    "date_source_label": "Publication record",
+    "publication_date": "2026-08-24"
+  },
+  {
+    "id": "rewardbench-2",
+    "title": "RewardBench 2: Advancing Reward Model Evaluation",
+    "authors": [
+      {
+        "given": "Saumya",
+        "family": "Malik"
+      },
+      {
+        "given": "Valentina",
+        "family": "Pyatkin"
+      },
+      {
+        "given": "Sander",
+        "family": "Land"
+      },
+      {
+        "given": "Jacob",
+        "family": "Morrison"
+      },
+      {
+        "given": "Noah A.",
+        "family": "Smith"
+      },
+      {
+        "given": "Hannaneh",
+        "family": "Hajishirzi"
+      },
+      {
+        "given": "Nathan",
+        "family": "Lambert"
+      }
+    ],
+    "first_public": "2025-06-02",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2506.01937",
+    "year": 2026,
+    "venue": "ICLR 2026",
+    "paper_url": "https://arxiv.org/abs/2506.01937",
+    "arxiv": "2506.01937",
+    "code_url": "https://github.com/allenai/reward-bench",
+    "category": "evaluation",
+    "relationship": "uses",
+    "dataset_version": "Previously unreleased WildChat collection prompts supply approximately 70% of the 1,865-prompt benchmark; this is not a benchmark built from an entire public WildChat release.",
+    "summary": "Builds a reward-model benchmark around previously unseen human prompts from WildChat, combining quality and topic filtering with manual verification. It evaluates reward models across factuality, precise instruction following, math, safety, focus, and ties, and studies how benchmark scores relate to best-of-N sampling and RLHF.",
+    "finding": "WildChat supplies the human-prompt domains: factuality (475), precise instruction following (160), math (183), and focus (495). The safety and ties domains use other prompt sources.",
+    "evidence_url": "https://arxiv.org/html/2506.01937v2",
+    "evidence_note": "Section 3 and Table 2 identify the WildChat source, approximately 70% share, and 1,865-prompt total; Sections 4–5 evaluate reward models and downstream use.",
+    "bibtex_key": "malik2025rewardbench2",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/rewardbench-2/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "RewardBench 2: Advancing Reward Model Evaluation",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2506.01937",
+    "citation_year": 2025,
+    "citation_note": "Cites the arXiv preprint with its original 2025 preprint year. The paper later appeared at ICLR 2026.",
+    "doi": "10.48550/arXiv.2506.01937"
+  },
+  {
+    "id": "wildchat-aqa",
+    "title": "From Chat Logs to Collective Insights: Aggregative Question Answering",
+    "authors": [
+      {
+        "given": "Wentao",
+        "family": "Zhang"
+      },
+      {
+        "given": "Woojeong",
+        "family": "Kim"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "first_public": "2025-05-29",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2505.23765",
+    "year": 2025,
+    "venue": "EMNLP 2025",
+    "paper_url": "https://aclanthology.org/2025.emnlp-main.1667/",
+    "arxiv": "2505.23765",
+    "category": "evaluation",
+    "relationship": "uses",
+    "dataset_version": "A filtered WildChat-Full release of roughly 990,000 conversations, reduced to 182,330 conversations after deduplication, length limits, and an active-user requirement.",
+    "summary": "Introduces aggregative question answering: answering questions that require combining evidence across many conversations. WildChat-AQA pairs conversation text and metadata with inferred topics and keywords, and compares retrieval, fine-tuning, and the PROBE retrieval method.",
+    "finding": "The benchmark contains 6,027 questions over 182,330 conversations; PROBE improves over standard retrieval in the reported experiments, while substantial retrieval and reasoning gaps remain.",
+    "evidence_url": "https://arxiv.org/html/2505.23765v2",
+    "evidence_note": "Section 2 and Appendix E describe construction; Section 4 evaluates ranking quality, retrieval, and computational cost. Questions and inferred attributes are model-generated, with human quality checks.",
+    "bibtex_key": "wildchataqa2025",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildchat-aqa/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "From Chat Logs to Collective Insights: Aggregative Question Answering",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "citation_url": "https://aclanthology.org/2025.emnlp-main.1667/",
+    "citation_year": 2025,
+    "citation_note": "Cites the EMNLP 2025 proceedings paper; the date above records the first arXiv version.",
+    "doi": "10.18653/v1/2025.emnlp-main.1667",
+    "code_url": "https://github.com/yuntian-group/wildchat_aggregative_question_answering",
+    "container_title": "Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing",
+    "pages": "32811–32850",
+    "publisher": "Association for Computational Linguistics"
+  },
+  {
+    "id": "paths-writing",
+    "title": "Prototypical Human-AI Collaboration Behaviors from LLM-Assisted Writing in the Wild",
+    "authors": [
+      {
+        "given": "Sheshera",
+        "family": "Mysore"
+      },
+      {
+        "given": "Debarati",
+        "family": "Das"
+      },
+      {
+        "given": "Hancheng",
+        "family": "Cao"
+      },
+      {
+        "given": "Bahareh",
+        "family": "Sarrafzadeh"
+      }
+    ],
+    "first_public": "2025-05-21",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2505.16023",
+    "year": 2025,
+    "venue": "EMNLP 2025",
+    "paper_url": "https://aclanthology.org/2025.emnlp-main.852/",
+    "arxiv": "2505.16023",
+    "category": "behavior",
+    "relationship": "uses",
+    "dataset_version": "Approximately 68,000 English writing sessions from WildChat-1M, filtered to at least two user utterances; compared with writing sessions from Bing Copilot.",
+    "summary": "Studies how users steer writing across successive turns. The authors label follow-up types, identify recurring collaboration patterns with principal component analysis, and relate those patterns to writing intents such as brainstorming, technical drafting, and long-form composition.",
+    "finding": "Seven collaboration patterns account for 80–85% of the variance in the analyzed follow-up representations; explicit positive or negative feedback appears in only a small minority of sessions.",
+    "evidence_url": "https://arxiv.org/html/2505.16023v3",
+    "evidence_note": "Sections 3–6 and Appendix B specify the WildChat subset, analysis, and shared patterns across the two services; the scope is English writing sessions.",
+    "bibtex_key": "pathswriting2025",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/paths-writing/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "Prototypical Human-AI Collaboration Behaviors from LLM-Assisted Writing in the Wild",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "citation_url": "https://aclanthology.org/2025.emnlp-main.852/",
+    "citation_year": 2025,
+    "citation_note": "Cites the EMNLP 2025 proceedings paper; the date above records the first arXiv version.",
+    "doi": "10.18653/v1/2025.emnlp-main.852",
+    "container_title": "Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing",
+    "pages": "16819–16846",
+    "publisher": "Association for Computational Linguistics"
+  },
+  {
+    "id": "rifts",
+    "title": "Navigating Rifts in Human-LLM Grounding: Study and Benchmark",
+    "authors": [
+      {
+        "given": "Omar",
+        "family": "Shaikh"
+      },
+      {
+        "given": "Hussein",
+        "family": "Mozannar"
+      },
+      {
+        "given": "Gagan",
+        "family": "Bansal"
+      },
+      {
+        "given": "Adam",
+        "family": "Fourney"
+      },
+      {
+        "given": "Eric",
+        "family": "Horvitz"
+      }
+    ],
+    "first_public": "2025-03-18",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2503.13975",
+    "year": 2025,
+    "venue": "ACL 2025",
+    "paper_url": "https://aclanthology.org/2025.acl-long.1016/",
+    "arxiv": "2503.13975",
+    "category": "evaluation",
+    "relationship": "uses",
+    "dataset_version": "Non-toxic English WildChat conversations, sampled at one conversation per user for the main grounding analysis; RIFTS selects initial prompts from WildChat.",
+    "summary": "Analyzes how users and assistants establish mutual understanding, alongside Bing Chat and human-human MultiWOZ conversations. It releases grounding annotations, a forecasting approach, and RIFTS to test when assistants should clarify, ask follow-up questions, or proceed.",
+    "finding": "RIFTS contains 1,740 tasks. The evaluated assistants rarely take useful grounding initiative, and a forecasting-based prompting intervention improves performance in the reported tests.",
+    "evidence_url": "https://arxiv.org/html/2503.13975v2",
+    "evidence_note": "Section 4 identifies the data filters; Section 6 and Appendix A describe benchmark construction and evaluation. The benchmark reflects tasks and difficulties observed in the source interactions.",
+    "bibtex_key": "rifts2025",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/rifts/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "Navigating Rifts in Human-LLM Grounding: Study and Benchmark",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "citation_url": "https://aclanthology.org/2025.acl-long.1016/",
+    "citation_year": 2025,
+    "citation_note": "Cites the ACL 2025 proceedings paper; the date above records the first arXiv version.",
+    "doi": "10.18653/v1/2025.acl-long.1016",
+    "code_url": "https://github.com/microsoft/rifts",
+    "container_title": "Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    "pages": "20832–20847",
+    "publisher": "Association for Computational Linguistics"
+  },
+  {
+    "id": "wildfeedback",
+    "title": "WildFeedback: Aligning LLMs With In-situ User Interactions And Feedback",
+    "authors": [
+      {
+        "given": "Taiwei",
+        "family": "Shi"
+      },
+      {
+        "given": "Zhuoer",
+        "family": "Wang"
+      },
+      {
+        "given": "Longqi",
+        "family": "Yang"
+      },
+      {
+        "given": "Ying-Chun",
+        "family": "Lin"
+      },
+      {
+        "given": "Zexue",
+        "family": "He"
+      },
+      {
+        "given": "Mengting",
+        "family": "Wan"
+      },
+      {
+        "given": "Pei",
+        "family": "Zhou"
+      },
+      {
+        "given": "Sujay Kumar",
+        "family": "Jauhar"
+      },
+      {
+        "given": "Sihao",
+        "family": "Chen"
+      },
+      {
+        "given": "Shan",
+        "family": "Xia"
+      },
+      {
+        "given": "Hongfei",
+        "family": "Zhang"
+      },
+      {
+        "given": "Jieyu",
+        "family": "Zhao"
+      },
+      {
+        "given": "Xiaofeng",
+        "family": "Xu"
+      },
+      {
+        "given": "Xia",
+        "family": "Song"
+      },
+      {
+        "given": "Jennifer",
+        "family": "Neville"
+      }
+    ],
+    "first_public": "2024-08-28",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2408.15549",
+    "year": 2026,
+    "venue": "ACL 2026",
+    "paper_url": "https://aclanthology.org/2026.acl-long.1701/",
+    "arxiv": "2408.15549",
+    "category": "training",
+    "relationship": "extends",
+    "dataset_version": "148,715 multi-turn conversations from the original WildChat corpus, used to identify feedback and construct 20,281 preference examples.",
+    "summary": "Converts naturally occurring user feedback into preferred and dispreferred responses. Its pipeline detects satisfaction and dissatisfaction, constructs preference examples, and evaluates responses against checklists derived from the feedback.",
+    "finding": "The released WildFeedback dataset contains 20,281 examples; fine-tuned models improve on the paper’s reported alignment and checklist-based evaluations.",
+    "evidence_url": "https://arxiv.org/html/2408.15549v4",
+    "evidence_note": "Sections 2–3 specify feedback mining and evaluation; Appendix E describes the original WildChat source. Annotation follows the April 2026 revision.",
+    "bibtex_key": "wildfeedback2024",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildfeedback/",
+    "relationship_label": "Extends WildChat",
+    "citation_title": "WildFeedback: Aligning LLMs With In-situ User Interactions And Feedback",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "citation_url": "https://aclanthology.org/2026.acl-long.1701/",
+    "citation_year": 2026,
+    "citation_note": "Cites the ACL 2026 proceedings paper; the date above records the first arXiv version.",
+    "doi": "10.18653/v1/2026.acl-long.1701",
+    "container_title": "Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    "pages": "36701–36725",
+    "publisher": "Association for Computational Linguistics"
+  },
+  {
+    "id": "implicit-user-feedback",
+    "title": "User Feedback in Human-LLM Dialogues: A Lens to Understand Users But Noisy as a Learning Signal",
+    "authors": [
+      {
+        "given": "Yuhan",
+        "family": "Liu"
+      },
+      {
+        "given": "Michael J. Q.",
+        "family": "Zhang"
+      },
+      {
+        "given": "Eunsol",
+        "family": "Choi"
+      }
+    ],
+    "first_public": "2025-07-30",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2507.23158",
+    "year": 2025,
+    "venue": "EMNLP 2025",
+    "paper_url": "https://aclanthology.org/2025.emnlp-main.133/",
+    "arxiv": "2507.23158",
+    "category": "behavior",
+    "relationship": "uses",
+    "dataset_version": "WildChat and LMSYS-Chat-1M, including dense manual annotations on 34 WildChat conversations and separate 1,000-conversation samples for feedback-conditioned response experiments.",
+    "summary": "Examines the frequency, meaning, and usefulness of implicit feedback in real conversations. It separates feedback polarity from what users actually request, and tests whether regenerating responses with that additional context improves model training.",
+    "finding": "Feedback semantics help on MTBench but do not consistently improve the longer, more complex WildBench tasks; positive feedback alone can be a noisy training signal.",
+    "evidence_url": "https://arxiv.org/html/2507.23158v2",
+    "evidence_note": "Sections 3–4 describe manual labels and user behavior; Sections 5–7 compare regeneration and training. Table 1 reports 34 WildChat conversations, distinct from the combined annotation total.",
+    "bibtex_key": "implicituserfeedback2025",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/implicit-user-feedback/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "User Feedback in Human-LLM Dialogues: A Lens to Understand Users But Noisy as a Learning Signal",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "citation_url": "https://aclanthology.org/2025.emnlp-main.133/",
+    "citation_year": 2025,
+    "citation_note": "Cites the EMNLP 2025 proceedings paper; the date above records the first arXiv version.",
+    "doi": "10.18653/v1/2025.emnlp-main.133",
+    "code_url": "https://github.com/lyh6560new/implicit-user-feedback",
+    "container_title": "Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing",
+    "pages": "2666–2681",
+    "publisher": "Association for Computational Linguistics"
+  },
+  {
+    "id": "show-or-tell",
+    "title": "Show or Tell? Modeling the evolution of request-making in Human-LLM conversations",
+    "authors": [
+      {
+        "given": "Shengqi",
+        "family": "Zhu"
+      },
+      {
+        "given": "Jeffrey M.",
+        "family": "Rzeszotarski"
+      },
+      {
+        "given": "David",
+        "family": "Mimno"
+      }
+    ],
+    "first_public": "2025-08-02",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2508.01213",
+    "year": 2026,
+    "venue": "Findings of EACL 2026",
+    "paper_url": "https://aclanthology.org/2026.findings-eacl.265/",
+    "arxiv": "2508.01213",
+    "category": "behavior",
+    "relationship": "uses",
+    "dataset_version": "211,414 English request-making first turns from 18,964 inferred users, drawn from WildChat conversations collected between April 2023 and May 2024.",
+    "summary": "Introduces ReCCRE, which separates request content, context, assigned roles, and general expressions in user prompts. The study tracks how request-making changes across time and user experience, beyond the particular task being requested.",
+    "finding": "The analysis finds a shift toward including more context and a tendency for individual users’ expression patterns to stabilize with experience.",
+    "evidence_url": "https://arxiv.org/html/2508.01213v2",
+    "evidence_note": "Sections 3–5 specify segmentation, filtering, and longitudinal analyses; Section 6 discusses the limits of English-only data from one collection setting.",
+    "bibtex_key": "showortell2025",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/show-or-tell/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "Show or Tell? Modeling the evolution of request-making in Human-LLM conversations",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "citation_url": "https://aclanthology.org/2026.findings-eacl.265/",
+    "citation_year": 2026,
+    "citation_note": "Cites the Findings of EACL 2026 proceedings paper; the date above records the first arXiv version.",
+    "doi": "10.18653/v1/2026.findings-eacl.265",
+    "container_title": "Findings of the Association for Computational Linguistics: EACL 2026",
+    "pages": "5023–5034",
+    "publisher": "Association for Computational Linguistics"
+  },
+  {
+    "id": "invisible-failures",
+    "title": "Invisible failures in human-AI interactions",
+    "authors": [
+      {
+        "given": "Christopher",
+        "family": "Potts"
+      },
+      {
+        "given": "Moritz",
+        "family": "Sudhof"
+      }
+    ],
+    "first_public": "2026-03-16",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2603.15423",
+    "year": 2026,
+    "venue": "arXiv preprint",
+    "paper_url": "https://arxiv.org/abs/2603.15423",
+    "arxiv": "2603.15423",
+    "category": "behavior",
+    "relationship": "uses",
+    "dataset_version": "100,000 filtered English conversations from the original WildChat corpus, plus counterfactual model responses to 2,000 sampled single-turn conversations.",
+    "summary": "Develops a taxonomy of eight failure patterns that may occur without an explicit user complaint. The authors use model-assisted annotations with human oversight to analyze failures and compare original responses with newer models on a sampled set of prompts.",
+    "finding": "In this annotated sample, 79% of conversations labeled as failures were classified as invisible: the user gave no overt signal of the problem. This is a sample-specific annotation result, not a population-wide failure rate.",
+    "evidence_url": "https://arxiv.org/html/2603.15423v2",
+    "evidence_note": "Sections 3–4 describe sampling and annotation; Section 5 studies replacement responses. Annotation follows the May 2026 revision and keeps observed logs separate from simulated newer-model responses.",
+    "bibtex_key": "invisiblefailures2026",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/invisible-failures/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "Invisible failures in human-AI interactions",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2603.15423",
+    "citation_year": 2026,
+    "citation_note": "Cites the arXiv preprint with its original preprint year.",
+    "doi": "10.48550/arXiv.2603.15423",
+    "code_url": "https://github.com/bigspinai/bigspin-invisible-failure-archetypes"
+  },
+  {
+    "id": "ai-fluency",
+    "title": "A paradox of AI fluency",
+    "authors": [
+      {
+        "given": "Christopher",
+        "family": "Potts"
+      },
+      {
+        "given": "Moritz",
+        "family": "Sudhof"
+      }
+    ],
+    "first_public": "2026-04-28",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2604.25905",
+    "year": 2026,
+    "venue": "arXiv preprint",
+    "paper_url": "https://arxiv.org/abs/2604.25905",
+    "arxiv": "2604.25905",
+    "category": "behavior",
+    "relationship": "uses",
+    "dataset_version": "27,000 English transcripts sampled across 27 months from the non-toxic WildChat-4.8M release, with separate analyses of recurring Midjourney and Blockman interaction clusters.",
+    "summary": "Relates inferred AI fluency to task complexity and conversational outcomes. The study distinguishes active iteration and critical evaluation from passive acceptance, and examines how those behaviors connect to visible and invisible failures.",
+    "finding": "More fluent users attempt harder tasks and show more visible failures, yet achieve greater success on complex work; less fluent users more often have failures without overt negative feedback.",
+    "evidence_url": "https://arxiv.org/html/2604.25905v1",
+    "evidence_note": "Sections 3–5 specify monthly sampling, cluster handling, annotation, and outcome analysis. These are observational associations based on model-assisted labels.",
+    "bibtex_key": "aifluency2026",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/ai-fluency/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "A paradox of AI fluency",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2604.25905",
+    "citation_year": 2026,
+    "citation_note": "Cites the arXiv preprint with its original preprint year.",
+    "doi": "10.48550/arXiv.2604.25905",
+    "code_url": "https://github.com/bigspinai/bigspin-fluency-outcomes"
+  },
+  {
+    "id": "wildreward",
+    "title": "WildReward: Learning Reward Models from In-the-Wild Human Interactions",
+    "authors": [
+      {
+        "given": "Hao",
+        "family": "Peng"
+      },
+      {
+        "given": "Yunjia",
+        "family": "Qi"
+      },
+      {
+        "given": "Xiaozhi",
+        "family": "Wang"
+      },
+      {
+        "given": "Zijun",
+        "family": "Yao"
+      },
+      {
+        "given": "Lei",
+        "family": "Hou"
+      },
+      {
+        "given": "Juanzi",
+        "family": "Li"
+      }
+    ],
+    "first_public": "2026-02-09",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2602.08829",
+    "year": 2026,
+    "venue": "ACL 2026",
+    "paper_url": "https://aclanthology.org/2026.acl-long.864/",
+    "arxiv": "2602.08829",
+    "category": "training",
+    "relationship": "extends",
+    "dataset_version": "Filtered English and Chinese conversations from WildChat-4.8M, yielding approximately 186,000 feedback instances for the WildFB training data.",
+    "summary": "Trains reward models directly on implicit user feedback using ordinal regression. Its pipeline classifies feedback, filters ambiguous signals, and validates refusal cases before training; experiments examine calibration, cross-prompt score consistency, user diversity, and online DPO.",
+    "finding": "The study reports that broader user diversity improves reward modeling, and that the resulting WildReward models support stronger online DPO results than the compared reward-model baseline in its experiments.",
+    "evidence_url": "https://arxiv.org/html/2602.08829v1",
+    "evidence_note": "Section 2 describes mining and training; Section 4 tests score consistency and user diversity; Appendix A identifies WildChat-4.8M and its language and quality filters.",
+    "bibtex_key": "wildreward2026",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildreward/",
+    "relationship_label": "Extends WildChat",
+    "citation_title": "WildReward: Learning Reward Models from In-the-Wild Human Interactions",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "citation_url": "https://aclanthology.org/2026.acl-long.864/",
+    "citation_year": 2026,
+    "citation_note": "Cites the ACL 2026 proceedings paper; the date above records the first arXiv version.",
+    "doi": "10.18653/v1/2026.acl-long.864",
+    "code_url": "https://github.com/THU-KEG/WildReward",
+    "container_title": "Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    "pages": "18932–18948",
+    "publisher": "Association for Computational Linguistics"
+  },
+  {
+    "id": "wildteaming",
+    "title": "WildTeaming at Scale: From In-the-Wild Jailbreaks to (Adversarially) Safer Language Models",
+    "authors": [
+      {
+        "given": "Liwei",
+        "family": "Jiang"
+      },
+      {
+        "given": "Kavel",
+        "family": "Rao"
+      },
+      {
+        "given": "Seungju",
+        "family": "Han"
+      },
+      {
+        "given": "Allyson",
+        "family": "Ettinger"
+      },
+      {
+        "given": "Faeze",
+        "family": "Brahman"
+      },
+      {
+        "given": "Sachin",
+        "family": "Kumar"
+      },
+      {
+        "given": "Niloofar",
+        "family": "Mireshghallah"
+      },
+      {
+        "given": "Ximing",
+        "family": "Lu"
+      },
+      {
+        "given": "Maarten",
+        "family": "Sap"
+      },
+      {
+        "given": "Yejin",
+        "family": "Choi"
+      },
+      {
+        "given": "Nouha",
+        "family": "Dziri"
+      }
+    ],
+    "first_public": "2024-06-26",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2406.18510",
+    "year": 2024,
+    "venue": "NeurIPS 2024",
+    "paper_url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/54024fca0cef9911be36319e622cde38-Abstract-Conference.html",
+    "arxiv": "2406.18510",
+    "category": "safety",
+    "relationship": "extends",
+    "dataset_version": "Single-turn WildChat and LMSYS-Chat-1M examples filtered for potentially harmful interactions; the WildChat portion contributes 8,981 adversarial queries in the reported tactic inventory.",
+    "summary": "Mines naturally occurring jailbreak tactics and combines them into adversarial tests and synthetic safety-training examples. The resulting WildJailbreak resource contains harmful and benign requests in both direct and adversarial forms, enabling experiments on safety and over-refusal.",
+    "finding": "The combined source inventory yields 5,688 tactic clusters; WildJailbreak contains approximately 262,000 prompt-response pairs. These totals combine sources and synthetic construction rather than measuring WildChat alone.",
+    "evidence_url": "https://arxiv.org/html/2406.18510v1",
+    "evidence_note": "Section 2 and Table 1 separate WildChat from LMSYS contributions; Sections 4–5 describe WildJailbreak and safety-training experiments.",
+    "bibtex_key": "wildteaming2024",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildteaming/",
+    "relationship_label": "Extends WildChat",
+    "citation_title": "WildTeaming at Scale: From In-the-Wild Jailbreaks to (Adversarially) Safer Language Models",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "citation_url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/54024fca0cef9911be36319e622cde38-Abstract-Conference.html",
+    "citation_year": 2024,
+    "citation_note": "Cites the NeurIPS 2024 proceedings paper.",
+    "doi": "10.52202/079017-1493",
+    "code_url": "https://github.com/allenai/wildteaming",
+    "container_title": "Advances in Neural Information Processing Systems",
+    "volume": "37"
+  },
+  {
+    "id": "wildguard",
+    "title": "WildGuard: Open One-Stop Moderation Tools for Safety Risks, Jailbreaks, and Refusals of LLMs",
+    "authors": [
+      {
+        "given": "Seungju",
+        "family": "Han"
+      },
+      {
+        "given": "Kavel",
+        "family": "Rao"
+      },
+      {
+        "given": "Allyson",
+        "family": "Ettinger"
+      },
+      {
+        "given": "Liwei",
+        "family": "Jiang"
+      },
+      {
+        "given": "Bill Yuchen",
+        "family": "Lin"
+      },
+      {
+        "given": "Nathan",
+        "family": "Lambert"
+      },
+      {
+        "given": "Yejin",
+        "family": "Choi"
+      },
+      {
+        "given": "Nouha",
+        "family": "Dziri"
+      }
+    ],
+    "first_public": "2024-06-26",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2406.18495",
+    "year": 2024,
+    "venue": "NeurIPS 2024 Datasets and Benchmarks",
+    "paper_url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/0f69b4b96a46f284b726fbd70f74fb3b-Abstract.html",
+    "arxiv": "2406.18495",
+    "category": "safety",
+    "relationship": "uses",
+    "dataset_version": "WildChat prompts form one component of a mixed-source moderation dataset; additional sources include LMSYS, annotator-written safety data, and synthetic adversarial examples.",
+    "summary": "Builds a moderation model that jointly identifies harmful requests, harmful responses, and refusals. WildChat contributes real user prompts and, through the WildTeaming pipeline, observed jailbreak tactics used to construct adversarial examples.",
+    "finding": "WildGuardMix contains roughly 92,000 examples, including a 5,299-item human-annotated test set. The resource supports both safety evaluation and moderation-model training.",
+    "evidence_url": "https://arxiv.org/html/2406.18495v3",
+    "evidence_note": "Section 3.1 explains direct WildChat sampling and tactic-based generation; Section 3.2 describes test annotation. Dataset counts describe the full mixture, not a WildChat-only subset.",
+    "bibtex_key": "wildguard2024",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildguard/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "WildGuard: Open One-Stop Moderation Tools for Safety Risks, Jailbreaks, and Refusals of LLMs",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "citation_url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/0f69b4b96a46f284b726fbd70f74fb3b-Abstract.html",
+    "citation_year": 2024,
+    "citation_note": "Cites the NeurIPS 2024 proceedings paper.",
+    "doi": "10.52202/079017-0261",
+    "code_url": "https://github.com/allenai/wildguard",
+    "container_title": "Advances in Neural Information Processing Systems",
+    "volume": "37"
+  },
+  {
+    "id": "wildcode",
+    "title": "WildCode Revisited: A Comprehensive Empirical Study on the Security of LLM-Generated Code",
+    "authors": [
+      {
+        "given": "Kobra",
+        "family": "Khanmohammadi"
+      },
+      {
+        "given": "Pooria",
+        "family": "Roy"
+      },
+      {
+        "given": "Raphael",
+        "family": "Khoury"
+      },
+      {
+        "given": "Abdelwahab",
+        "family": "Hamou-Lhadj"
+      },
+      {
+        "given": "Wilfried Patrick",
+        "family": "Konan"
+      },
+      {
+        "given": "Alexander",
+        "family": "Da Re"
+      },
+      {
+        "given": "Nicholas Rebelo",
+        "family": "Melo"
+      }
+    ],
+    "first_public": "2025-12-03",
+    "date_note": "First arXiv version, originally titled WildCode: An Empirical Analysis of Code Generated by ChatGPT; this annotation follows the extended June 2026 revision.",
+    "date_source": "https://arxiv.org/abs/2512.04259",
+    "year": 2026,
+    "venue": "Extended arXiv preprint",
+    "paper_url": "https://arxiv.org/abs/2512.04259",
+    "arxiv": "2512.04259",
+    "category": "safety",
+    "relationship": "uses",
+    "dataset_version": "82,843 conversations containing generated code from an 837,989-conversation WildChat release; user-intent analyses use a filtered English subset of 34,478 conversations.",
+    "summary": "Examines the security and quality of code generated in real user interactions, together with user intent and follow-up behavior. The extended study also tests security-oriented prompting strategies using prompts derived from the observed logs.",
+    "finding": "Security concerns are uncommon in the analyzed user requests, even when generated code has detected problems; code analysis and English-only intent analysis use different subsets.",
+    "evidence_url": "https://arxiv.org/html/2512.04259v2",
+    "evidence_note": "Section 3 specifies extraction and language filtering; Sections 4–6 analyze code, prompting, and user intent. The June 2026 revision extends the earlier WildCode conference study and changes its title and author list.",
+    "bibtex_key": "wildcode2025",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildcode/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "WildCode Revisited: A Comprehensive Empirical Study on the Security of LLM-Generated Code",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2512.04259",
+    "citation_year": 2025,
+    "citation_note": "Cites the arXiv preprint under its revised title and author list, retaining its original 2025 preprint year.",
+    "doi": "10.48550/arXiv.2512.04259",
+    "code_url": "https://github.com/regularpooria/WildCode"
+  },
+  {
+    "id": "european-language-interactions",
+    "title": "“An bhfuil Gaeilge agat?”: Differences in User Interaction and Assistant Responses Across Languages of European Origin in Large-scale Conversational Datasets",
+    "authors": [
+      {
+        "given": "Aldan",
+        "family": "Creo"
+      }
+    ],
+    "first_public": "2025-03-21",
+    "date_label": "Proceedings published",
+    "date_note": "CEUR proceedings publication date; presented at AICS 2024 on December 9–10, 2024.",
+    "date_source": "https://ceur-ws.org/Vol-3910/",
+    "year": 2025,
+    "venue": "AICS 2024",
+    "paper_url": "https://ceur-ws.org/Vol-3910/aics2024_p83.pdf",
+    "code_url": "https://github.com/ACMCMC/eur-langs-convs-analysis",
+    "category": "language",
+    "relationship": "uses",
+    "relationship_label": "Uses WildChat",
+    "dataset_version": "WildChat (990,372 conversations) combined with LMSYS-Chat-1M; language and quality filters leave 781,376 conversations across 28 languages of European origin.",
+    "summary": "Compares topics, conversation length, sentiment, moderation scores, and inferred satisfaction across 28 languages using WildChat and LMSYS-Chat-1M. The study combines corpus analysis with a classifier for user–assistant–user interaction triples.",
+    "finding": "Topics substantially overlap across language groups, while conversation length and moderation scores vary. Satisfaction is inferred by a model rather than collected as direct user ratings.",
+    "evidence_url": "https://ceur-ws.org/Vol-3910/aics2024_p83.pdf",
+    "evidence_note": "Section 2 describes dataset combination and filtering; Sections 3–7 contain the five analyses. WildVis is cited as prior large-scale conversation analysis, but use of its interface is not documented.",
+    "bibtex_key": "creo2025gaeilge",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/european-language-interactions/",
+    "citation_title": "“An bhfuil Gaeilge agat?”: Differences in User Interaction and Assistant Responses Across Languages of European Origin in Large-scale Conversational Datasets",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "Proceedings of the 32nd Irish Conference on Artificial Intelligence and Cognitive Science",
+    "citation_url": "https://ceur-ws.org/Vol-3910/aics2024_p83.pdf",
+    "citation_year": 2025,
+    "citation_note": "The conference took place in December 2024; CEUR published volume 3910 in March 2025.",
+    "pages": "202–214",
+    "volume": "3910",
+    "publisher": "CEUR Workshop Proceedings",
+    "date_source_label": "Proceedings record",
+    "publication_date": "2025-03-21"
+  },
+  {
+    "id": "trust-me-im-wrong",
+    "title": "Trust Me, I’m Wrong: LLMs Hallucinate with Certainty Despite Knowing the Answer",
+    "authors": [
+      {
+        "given": "Adi",
+        "family": "Simhi"
+      },
+      {
+        "given": "Itay",
+        "family": "Itzhak"
+      },
+      {
+        "given": "Fazl",
+        "family": "Barez"
+      },
+      {
+        "given": "Gabriel",
+        "family": "Stanovsky"
+      },
+      {
+        "given": "Yonatan",
+        "family": "Belinkov"
+      }
+    ],
+    "first_public": "2025-02-18",
+    "date_note": "First arXiv version; citation metadata describes the published proceedings paper.",
+    "date_source": "https://arxiv.org/abs/2502.12964",
+    "year": 2025,
+    "venue": "EMNLP 2025 Findings",
+    "paper_url": "https://aclanthology.org/2025.findings-emnlp.792/",
+    "doi": "10.18653/v1/2025.findings-emnlp.792",
+    "arxiv": "2502.12964",
+    "relationship": "uses",
+    "bibtex_key": "trustmeimwrong2025",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/trust-me-im-wrong/",
+    "citation_title": "Trust Me, I’m Wrong: LLMs Hallucinate with Certainty Despite Knowing the Answer",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "Findings of the Association for Computational Linguistics: EMNLP 2025",
+    "citation_url": "https://aclanthology.org/2025.findings-emnlp.792/",
+    "citation_year": 2025,
+    "citation_note": "Cites the published proceedings paper.",
+    "pages": "14665–14688",
+    "publisher": "Association for Computational Linguistics",
+    "code_url": "https://github.com/technion-cs-nlp/Trust_me_Im_wrong",
+    "category": "safety",
+    "relationship_label": "Uses WildVis",
+    "dataset_version": "Queries WildChat and LMSYS-Chat-1M through WildVis to validate help-seeking prompt styles; the main experiments use Natural Questions and TriviaQA.",
+    "summary": "Uses WildVis to check that prompt variations in a hallucination study resemble real human requests. The paper studies cases where models give confident incorrect answers after small prompt changes despite consistently answering the original question correctly.",
+    "finding": "Appendix F.2 documents searches through WildVis and real WildChat examples, grounding the evaluation’s help-seeking language in observed conversations.",
+    "evidence_url": "https://aclanthology.org/2025.findings-emnlp.792.pdf",
+    "evidence_note": "Section 3.1 describes prompt construction and validation; Appendix F.2 explicitly states that WildVis was used to query WildChat and LMSYS-Chat-1M. The corpus supplies realism checks, not the main QA evaluation set."
+  },
+  {
+    "id": "seaexam-seabench",
+    "title": "SeaExam and SeaBench: Benchmarking LLMs with Local Multilingual Questions in Southeast Asia",
+    "authors": [
+      {
+        "given": "Chaoqun",
+        "family": "Liu"
+      },
+      {
+        "given": "Wenxuan",
+        "family": "Zhang"
+      },
+      {
+        "given": "Jiahao",
+        "family": "Ying"
+      },
+      {
+        "given": "Mahani",
+        "family": "Aljunied"
+      },
+      {
+        "given": "Anh Tuan",
+        "family": "Luu"
+      },
+      {
+        "given": "Lidong",
+        "family": "Bing"
+      }
+    ],
+    "first_public": "2025-02-10",
+    "date_note": "First arXiv version; citation metadata describes the published proceedings paper.",
+    "date_source": "https://arxiv.org/abs/2502.06298",
+    "year": 2025,
+    "venue": "NAACL 2025 Findings",
+    "paper_url": "https://aclanthology.org/2025.findings-naacl.341/",
+    "doi": "10.18653/v1/2025.findings-naacl.341",
+    "arxiv": "2502.06298",
+    "relationship": "uses",
+    "bibtex_key": "seaexamseabench2025",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/seaexam-seabench/",
+    "citation_title": "SeaExam and SeaBench: Benchmarking LLMs with Local Multilingual Questions in Southeast Asia",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "Findings of the Association for Computational Linguistics: NAACL 2025",
+    "citation_url": "https://aclanthology.org/2025.findings-naacl.341/",
+    "citation_year": 2025,
+    "citation_note": "Cites the published proceedings paper.",
+    "pages": "6134–6151",
+    "publisher": "Association for Computational Linguistics",
+    "code_url": "https://github.com/DAMO-NLP-SG/SeaBench",
+    "category": "evaluation",
+    "relationship_label": "Uses WildChat",
+    "dataset_version": "Wild Queries combines filtered WildChat-1M and LMSYS-Chat-1M inputs in Indonesian, Thai, and Vietnamese; the paper reports 4,658 queries across the two sources.",
+    "summary": "Builds locally grounded Southeast Asian evaluation sets and uses real conversations to test how closely they reflect everyday requests. WildChat and LMSYS-Chat-1M supply the Wild Queries comparison corpus after language checks, length limits, and filtering.",
+    "finding": "In embedding-based comparisons, the locally constructed SeaExam and SeaBench are closer to the observed query distribution than translated MMLU and MT-Bench.",
+    "evidence_url": "https://aclanthology.org/2025.findings-naacl.341.pdf",
+    "evidence_note": "Section 3.1 describes Wild Queries construction and distribution comparisons; Appendix B and Table 10 report its language breakdown. The paper cites WildVis alongside WildChat but does not explicitly document using the interface."
+  },
+  {
+    "id": "jailbreakhunter",
+    "title": "JailbreakHunter: A Visual Analytics Approach for Jailbreak Prompts Discovery From Large-Scale Human-LLM Conversational Datasets",
+    "authors": [
+      {
+        "given": "Zhihua",
+        "family": "Jin"
+      },
+      {
+        "given": "Shiyi",
+        "family": "Liu"
+      },
+      {
+        "given": "Haotian",
+        "family": "Li"
+      },
+      {
+        "given": "Xun",
+        "family": "Zhao"
+      },
+      {
+        "given": "Huamin",
+        "family": "Qu"
+      }
+    ],
+    "first_public": "2024-07-03",
+    "date_note": "First arXiv version; the journal article appeared online in April 2025 and in the October 2025 issue.",
+    "date_source": "https://arxiv.org/abs/2407.03045",
+    "year": 2025,
+    "venue": "IEEE Transactions on Visualization and Computer Graphics",
+    "paper_url": "https://doi.org/10.1109/TVCG.2025.3557568",
+    "arxiv": "2407.03045",
+    "doi": "10.1109/TVCG.2025.3557568",
+    "category": "tool",
+    "relationship": "uses",
+    "dataset_version": "An earlier WildChat release described as containing more than 500,000 conversations, alongside LMSYS-Chat-1M; an exact WildChat revision is not specified.",
+    "summary": "Provides visual analysis at the group, conversation, and individual-turn levels to find jailbreak attempts in conversation logs. Analysts combine filtering, cluster views, conversation timelines, and comparisons with previously reported prompts; a case study uses WildChat to investigate multi-turn attempts after an initial model refusal.",
+    "finding": "The WildChat case study narrows the search to 503 conversations using explicit multi-turn and moderation criteria. Evaluation includes two case studies and interviews with nine researchers.",
+    "evidence_url": "https://arxiv.org/html/2407.03045v1",
+    "evidence_note": "Section III-C identifies the datasets; Section VI-B documents the WildChat case study and its filters; Section VI-C reports the expert evaluation. Annotation follows the July 2024 preprint.",
+    "bibtex_key": "jin2025jailbreakhunter",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/jailbreakhunter/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "JailbreakHunter: A Visual Analytics Approach for Jailbreak Prompts Discovery From Large-Scale Human-LLM Conversational Datasets",
+    "citation_type": "article-journal",
+    "bibtex_type": "article",
+    "container_title": "IEEE Transactions on Visualization and Computer Graphics",
+    "citation_url": "https://doi.org/10.1109/TVCG.2025.3557568",
+    "citation_year": 2025,
+    "citation_note": "Cites the 2025 journal article; the first arXiv version appeared in July 2024.",
+    "pages": "7923–7937",
+    "volume": "31",
+    "issue": "10",
+    "publisher": "IEEE"
+  },
+  {
+    "id": "utility-of-user-simulators",
+    "title": "Quantifying the Utility of User Simulators for Building Collaborative LLM Assistants",
+    "authors": [
+      {
+        "given": "Joseph",
+        "family": "Suh"
+      },
+      {
+        "given": "Ayush",
+        "family": "Raj"
+      },
+      {
+        "given": "Minwoo",
+        "family": "Kang"
+      },
+      {
+        "given": "Serina",
+        "family": "Chang"
+      }
+    ],
+    "first_public": "2026-05-10",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2605.09808",
+    "year": 2026,
+    "venue": "arXiv preprint",
+    "paper_url": "https://arxiv.org/abs/2605.09808",
+    "arxiv": "2605.09808",
+    "code_url": "https://github.com/schang-lab/utility-of-user-simulators",
+    "category": "evaluation",
+    "relationship": "uses",
+    "relationship_label": "Uses WildChat and WildBench",
+    "dataset_version": "WildChat-1M provides human utterances for user-simulator training; WildChat-4.8M and WildBench support evaluation and tests of generalization.",
+    "summary": "Tests whether learning a user simulator from real conversations helps train assistants that work better with people. The study fine-tunes simulators on WildChat user utterances, trains assistants through simulated interaction, and evaluates them on WildBench and in a study with 283 participants.",
+    "finding": "The assistant trained with the learned user simulator wins 58% of comparisons against the initial assistant in the human study; training with a role-playing model yields 51%.",
+    "evidence_url": "https://arxiv.org/html/2605.09808v1",
+    "evidence_note": "Sections 2–3 and Appendix C document WildChat preprocessing and simulator training; Section 5 reports the human study. WildVis is cited as the source reference for WildChat-4.8M, without explicit interface use.",
+    "bibtex_key": "suh2026utilityusersimulators",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/utility-of-user-simulators/",
+    "citation_title": "Quantifying the Utility of User Simulators for Building Collaborative LLM Assistants",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2605.09808",
+    "citation_year": 2026,
+    "citation_note": "Cites the arXiv preprint.",
+    "doi": "10.48550/arXiv.2605.09808"
+  },
+  {
+    "id": "course-correction-steerability",
+    "title": "A Course Correction in Steerability Evaluation: Revealing Miscalibration and Side Effects in LLMs",
+    "authors": [
+      {
+        "given": "Trenton",
+        "family": "Chang"
+      },
+      {
+        "given": "Tobias",
+        "family": "Schnabel"
+      },
+      {
+        "given": "Adith",
+        "family": "Swaminathan"
+      },
+      {
+        "given": "Jenna",
+        "family": "Wiens"
+      }
+    ],
+    "first_public": "2025-05-27",
+    "date_note": "First arXiv version; the paper appeared at AAAI 2026.",
+    "date_source": "https://arxiv.org/abs/2505.23816",
+    "year": 2026,
+    "venue": "AAAI 2026",
+    "paper_url": "https://ojs.aaai.org/index.php/AAAI/article/view/41057",
+    "doi": "10.1609/aaai.v40i44.41057",
+    "arxiv": "2505.23816",
+    "category": "evaluation",
+    "relationship": "uses",
+    "relationship_label": "Uses WildVis",
+    "dataset_version": "English-language examples retrieved through WildVis validate the study’s text-rewriting goals; the controlled experiments use separate source-text corpora.",
+    "summary": "Uses keyword searches and manual review in WildVis to connect a steerability evaluation to requests people actually make. The study tests whether models can change one property of rewritten text, such as reading difficulty or formality, while controlling other properties.",
+    "finding": "Appendix D.5 links real conversation examples to the chosen goal dimensions, grounding the evaluation in observed requests. The main experiments identify miscalibration and unintended changes to other text properties.",
+    "evidence_url": "https://arxiv.org/html/2505.23816v1",
+    "evidence_note": "Appendix D.5 explicitly documents WildVis searches, English filtering, manual review, and linked conversation examples. WildChat supplies motivating examples rather than the controlled rewriting benchmark.",
+    "bibtex_key": "chang2026coursecorrection",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/course-correction-steerability/",
+    "citation_title": "A Course Correction in Steerability Evaluation: Revealing Miscalibration and Side Effects in LLMs",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "Proceedings of the AAAI Conference on Artificial Intelligence",
+    "citation_url": "https://doi.org/10.1609/aaai.v40i44.41057",
+    "citation_year": 2026,
+    "citation_note": "Cites the AAAI 2026 proceedings paper.",
+    "volume": "40",
+    "issue": "44",
+    "pages": "37259–37267",
+    "publisher": "AAAI Press"
   }
 ]

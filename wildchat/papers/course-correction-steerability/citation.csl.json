@@ -1,0 +1,7 @@
+---
+layout: null
+paper_id: course-correction-steerability
+permalink: /wildchat/papers/course-correction-steerability/citation.csl.json
+---
+{%- assign paper = site.data.wildchat.papers | where: 'id', page.paper_id | first -%}
+{% include wildchat/csl.json paper=paper %}
