@@ -12,7 +12,7 @@
       url: https://neural-os.com
 - id: implicit-chain-of-thought
   title: Implicit Chain of Thought
-  description: "We first proposed implicit chain-of-thought reasoning in 2023: using continuous hidden states instead of writing out intermediate steps. Our work includes knowledge distillation and step-by-step internalization."
+  description: "We first proposed implicit chain-of-thought reasoning (also called latent reasoning) in 2023: using continuous hidden states instead of writing out intermediate steps. Our work includes knowledge distillation and step-by-step internalization."
   links:
     - title: 2023 paper
       url: https://arxiv.org/pdf/2311.01460.pdf
