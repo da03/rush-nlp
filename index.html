@@ -203,6 +203,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
     {{paper.conference}}
     {% if paper.pdf_url %} <a class="tag" href="{{ paper.pdf_url | escape }}">PDF</a>{% endif %}
     {% if paper.html_url %} <a class="tag" href="{{ paper.html_url | escape }}">HTML</a>{% endif %}
+    {% if paper.reading_list %} <a class="tag tag-paper" href="{{paper.reading_list | escape}}">reading list</a>{% endif %}
     <br>
     {% if paper.notes %}{{paper.notes}}{% endif %}
   </div>
@@ -226,6 +227,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
     {{paper.conference}}
     {% if paper.pdf_url %} <a class="tag" href="{{ paper.pdf_url | escape }}">PDF</a>{% endif %}
     {% if paper.html_url %} <a class="tag" href="{{ paper.html_url | escape }}">HTML</a>{% endif %}
+    {% if paper.reading_list %} <a class="tag tag-paper" href="{{paper.reading_list | escape}}">reading list</a>{% endif %}
     <br>
     {% if paper.notes %}{{paper.notes}}{% endif %}
   </div>

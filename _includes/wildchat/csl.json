@@ -9,13 +9,15 @@
   "DOI": {{ include.paper.doi | jsonify }}{% endif %}{% if include.paper.publisher %},
   "publisher": {{ include.paper.publisher | jsonify }}{% endif %}{% if include.paper.pages %},
   "page": {{ include.paper.pages | jsonify }}{% endif %}{% if include.paper.volume %},
-  "volume": {{ include.paper.volume | jsonify }}{% endif %}{% if include.paper.bibtex_type == 'misc' %},
+  "volume": {{ include.paper.volume | jsonify }}{% endif %}{% if include.paper.issue %},
+  "issue": {{ include.paper.issue | jsonify }}{% endif %}{% if include.paper.bibtex_type == 'misc' %},
   "genre": "Preprint",
   "archive": "arXiv",
   "number": {{ include.paper.arxiv | jsonify }}{% endif %},
   "custom": {
     "record_url": {{ '/wildchat/papers/' | append: include.paper.id | append: '/' | absolute_url | jsonify }},
-    "first_arxiv_submission": {{ include.paper.first_public | jsonify }},
+    "first_public_date": {{ include.paper.first_public | jsonify }},
+    {% if include.paper.arxiv %}"first_arxiv_submission": {{ include.paper.first_public | jsonify }},{% endif %}
     "citation_note": {{ include.paper.citation_note | default: include.paper.date_note | jsonify }}
   }
 }

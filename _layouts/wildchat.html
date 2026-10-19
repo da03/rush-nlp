@@ -45,7 +45,7 @@
   <meta name="citation_title" content="{{ wc_paper.citation_title | default: wc_paper.title | escape }}">
   {% for author in wc_paper.authors %}<meta name="citation_author" content="{{ author.given | escape }} {{ author.family | escape }}">
   {% endfor %}<meta name="citation_publication_date" content="{{ wc_paper.citation_year | default: wc_paper.year }}">
-  {% if wc_paper.container_title %}<meta name="citation_conference_title" content="{{ wc_paper.container_title | escape }}">{% endif %}
+  {% if wc_paper.container_title %}{% if wc_paper.bibtex_type == 'article' %}<meta name="citation_journal_title" content="{{ wc_paper.container_title | escape }}">{% else %}<meta name="citation_conference_title" content="{{ wc_paper.container_title | escape }}">{% endif %}{% endif %}
   {% if wc_paper.doi %}<meta name="citation_doi" content="{{ wc_paper.doi | escape }}">{% endif %}
   {% endif %}
 </head>
@@ -62,7 +62,7 @@
   </header>
   <main id="main" class="wc-shell" tabindex="-1">{{ content }}</main>
   <footer class="wc-footer wc-shell">
-    <div><p>Curated by <a href="{{ wc_meta.curator_url | default: '/' | relative_url }}">Yuntian Deng</a>.</p><p class="wc-muted">Sources checked {{ wc_meta.literature_checked_on | default: wc_meta.updated_at }}. A selected, evolving research list.</p></div>
+    <div><p>Curated by <a href="{{ wc_meta.curator_url | default: '/' | relative_url }}">Yuntian Deng</a>.</p><p class="wc-muted">Sources checked {{ wc_meta.literature_checked_on | default: wc_meta.updated_at }}.</p></div>
     <nav aria-label="Additional resources"><a href="{{ '/wildchat/about/' | relative_url }}">About</a><a href="{{ '/wildchat/data/navigation.json' | relative_url }}">URL directory</a><a href="https://wildvisualizer.com/">WildVis ↗</a></nav>
   </footer>
   {% if page.explorer %}<script src="{{ '/wildchat/assets/lit-hub.js' | relative_url }}" defer></script>{% endif %}

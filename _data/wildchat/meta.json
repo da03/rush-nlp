@@ -33,6 +33,14 @@
     {
       "id": "information",
       "name": "Information access"
+    },
+    {
+      "id": "safety",
+      "name": "Safety"
+    },
+    {
+      "id": "language",
+      "name": "Language and culture"
     }
   ]
 }

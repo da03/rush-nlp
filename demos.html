@@ -30,6 +30,7 @@ show: 1
     {% if demo.paper %}<a class="tag tag-paper" href="{{demo.paper}}">paper</a> {% endif %}
     {% if demo.data %}<a class="tag tag-data" href="{{demo.data}}">data</a> {% endif %}
     {% if demo.models %}<a class="tag tag-models" href="{{demo.models}}">models</a>{% endif %}
+    {% if demo.reading_list %} <a class="tag tag-paper" href="{{demo.reading_list | escape}}">reading list</a>{% endif %}
   </div>
 </div>
 {% endfor %}

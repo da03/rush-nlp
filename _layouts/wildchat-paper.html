@@ -10,22 +10,21 @@ layout: wildchat
     <h1>{{ paper.title | escape }}</h1>
     <p class="wc-authors">{% include wildchat/authors.html authors=paper.authors %}</p>
     {% if paper.author_note %}<p class="wc-note">{{ paper.author_note | escape }}</p>{% endif %}
-    <p class="wc-date">{{ paper.venue | escape }} · First arXiv submission <time datetime="{{ paper.first_public }}">{{ paper.first_public }}</time></p>
+    <p class="wc-date">{{ paper.venue | escape }} · {{ paper.date_label | default: 'First arXiv submission' | escape }} <time datetime="{{ paper.first_public }}">{{ paper.first_public }}</time></p>
     <p class="wc-lead">{{ paper.summary | escape }}</p>
-    <div class="wc-links"><a href="{{ paper.paper_url }}">Paper ↗</a>{% if paper.code_url %}<a href="{{ paper.code_url }}">Code ↗</a>{% endif %}<a href="#citation">Citation</a></div>
+    <div class="wc-links"><a href="{{ paper.paper_url }}">Paper ↗</a>{% if paper.code_url %}<a href="{{ paper.code_url }}">Code ↗</a>{% endif %}{% if paper.project_url %}<a href="{{ paper.project_url }}">Project ↗</a>{% endif %}<a href="#citation">Citation</a></div>
   </header>
   <section class="wc-section">
-    <h2>Dataset and scope</h2>
+    <h2>Data used</h2>
     <p>{{ paper.dataset_version | escape }}</p>
-    <h3>Selected finding</h3>
+    <h3>Findings</h3>
     <p>{{ paper.finding | escape }}</p>
     <p class="wc-note">{{ paper.evidence_note | escape }} <a href="{{ paper.evidence_url }}">Read the source</a>.</p>
   </section>
   <section class="wc-section">
     <h2>Dates and versions</h2>
-    <p>{{ paper.date_note | escape }} <a href="{{ paper.date_source }}">ArXiv version history</a>.</p>
+    <p>{{ paper.date_note | escape }} <a href="{{ paper.date_source }}">{{ paper.date_source_label | default: 'ArXiv version history' | escape }}</a>.</p>
     {% if paper.citation_note %}<p>{{ paper.citation_note | escape }}</p>{% endif %}
-    <p class="wc-note">The annotation describes the linked source version. Consult the paper for its full methods, assumptions, and limitations.</p>
   </section>
   <section class="wc-section" id="citation">
     <h2>Cite this paper</h2>
@@ -36,7 +35,6 @@ layout: wildchat
   <section class="wc-section">
     <h2>Reuse this entry</h2>
     <p class="wc-links"><a href="{{ paper_path | append: 'record.json' | relative_url }}">JSON record</a><a href="{{ '/wildchat/data/reading-list.md' | relative_url }}">Full reading list in Markdown</a><a href="{{ '/wildchat/data/' | relative_url }}">Full bibliography</a></p>
-    <p class="wc-note">Annotations are a reading aid prepared for this hub. The linked authors’ work is the source for research claims. <a href="{{ '/wildchat/about/' | relative_url }}">About the selection and corrections</a>.</p>
   </section>
 </article>
 <script type="application/ld+json">

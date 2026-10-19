@@ -97,13 +97,15 @@ notable:
     - title: "Image-to-Markup Generation with Coarse-to-Fine Attention"
       authors: <strong>Yuntian Deng</strong>, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
       conference: ICML 2017
-      paper_url: https://im2markup.yuntiandeng.com
-      code : https://im2markup.yuntiandeng.com
+      paper_url: https://proceedings.mlr.press/v70/deng17a.html
+      code : https://github.com/harvardnlp/im2markup
       image: /images/im2latex_cropped.gif
       slides: /slides/icml17.pdf
+      notes: '<span id="im2latex">Our 2016–2017 Image-to-Markup research introduced IM2LATEX-100K (im2latex), a dataset pairing mathematical-expression images with LaTeX source.</span> <a href="https://im2markup.yuntiandeng.com/">Project</a> &middot; <a href="https://im2markup.yuntiandeng.com/data/">Dataset &amp; attribution</a> &middot; <a href="https://im2markup.yuntiandeng.com/data/#citation">Citation</a>'
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       paper_url: https://steganography.live
+      reading_list: https://steganography.live/reading-list/
       conference: EMNLP 2019 (<strong>Oral</strong>)
       image: /images/emnlp19_arithmetic.png
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
@@ -379,6 +381,7 @@ papers:
     - title: "Neural Linguistic Steganography"
       authors: Zachary Ziegler*, <strong>Yuntian Deng</strong>*, Alexander Rush
       paper_url: https://steganography.live
+      reading_list: https://steganography.live/reading-list/
       image: /images/emnlp19_arithmetic.png
       conference: EMNLP 2019 (<strong>Oral</strong>)
       year: 2019
@@ -406,10 +409,11 @@ papers:
     - title: "Image-to-Markup Generation with Coarse-to-Fine Attention"
       authors: <strong>Yuntian Deng</strong>, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
       conference: ICML 2017
-      paper_url: https://im2markup.yuntiandeng.com
-      code : https://im2markup.yuntiandeng.com
+      paper_url: https://proceedings.mlr.press/v70/deng17a.html
+      code : https://github.com/harvardnlp/im2markup
       image: /images/im2latex_cropped.gif
       slides: /slides/icml17.pdf
+      notes: '<span id="im2latex">Our 2016–2017 Image-to-Markup research introduced IM2LATEX-100K (im2latex), a dataset pairing mathematical-expression images with LaTeX source.</span> <a href="https://im2markup.yuntiandeng.com/">Project</a> &middot; <a href="https://im2markup.yuntiandeng.com/data/">Dataset &amp; attribution</a> &middot; <a href="https://im2markup.yuntiandeng.com/data/#citation">Citation</a>'
       year: 2017
     - title: "OpenNMT: Open-Source Toolkit for Neural Machine Translation"
       authors: Guillaume Klein, Yoon Kim, <strong>Yuntian Deng</strong>, Jean Senellart, Alexander M. Rush

@@ -1,0 +1,7 @@
+---
+layout: null
+paper_id: show-or-tell
+permalink: /wildchat/papers/show-or-tell/record.json
+---
+{%- assign paper = site.data.wildchat.papers | where: 'id', page.paper_id | first -%}
+{{ paper | jsonify }}

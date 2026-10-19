@@ -18,6 +18,10 @@
       "inLanguage": "en",
       "isPartOf": { "@id": {{ '/#website' | absolute_url | jsonify }} },
       {% if page.url == '/' %}
+      "mentions": [
+        { "@id": "https://im2markup.yuntiandeng.com/data/#dataset" },
+        { "@id": "https://im2markup.yuntiandeng.com/#paper" }
+      ],
       "mainEntity": { "@id": {{ '/#person' | absolute_url | jsonify }} }
       {% else %}
       "about": { "@id": {{ '/#person' | absolute_url | jsonify }} }
@@ -59,6 +63,7 @@
         "ProgramAsWeights (PAW) and neural programs",
         "NeuralOS and neural world models",
         "Implicit chain-of-thought reasoning",
+        "Image-to-Markup and the IM2LATEX-100K (im2latex) dataset",
         "Real-world language-model use and open research infrastructure"
       ],
       "alumniOf": [
@@ -68,6 +73,40 @@
         { "@type": "CollegeOrUniversity", "name": "Tsinghua University" }
       ]
     }
+    {% if page.url == '/' %},
+    {
+      "@type": "Dataset",
+      "@id": "https://im2markup.yuntiandeng.com/data/#dataset",
+      "name": "IM2LATEX-100K",
+      "alternateName": ["im2latex-100k", "Image-to-Markup dataset"],
+      "url": "https://im2markup.yuntiandeng.com/data/",
+      "description": "Mathematical expression images paired with LaTeX source, introduced in the 2016 Image-to-Markup research by Yuntian Deng, Anssi Kanervisto, and Alexander M. Rush.",
+      "creator": [
+        { "@type": "Person", "@id": {{ '/#person' | absolute_url | jsonify }}, "name": "Yuntian Deng" },
+        { "@type": "Person", "name": "Anssi Kanervisto", "url": "https://github.com/Miffyli" },
+        { "@type": "Person", "name": "Alexander M. Rush", "url": "https://rush-nlp.com/" }
+      ],
+      "citation": { "@id": "https://im2markup.yuntiandeng.com/#paper" },
+      "subjectOf": { "@id": "https://im2markup.yuntiandeng.com/#paper" }
+    },
+    {
+      "@type": "ScholarlyArticle",
+      "@id": "https://im2markup.yuntiandeng.com/#paper",
+      "name": "Image-to-Markup Generation with Coarse-to-Fine Attention",
+      "url": "https://proceedings.mlr.press/v70/deng17a.html",
+      "datePublished": "2017",
+      "author": [
+        { "@type": "Person", "@id": {{ '/#person' | absolute_url | jsonify }}, "name": "Yuntian Deng" },
+        { "@type": "Person", "name": "Anssi Kanervisto", "url": "https://github.com/Miffyli" },
+        { "@type": "Person", "name": "Jeffrey Ling", "url": "https://github.com/jeffreyling" },
+        { "@type": "Person", "name": "Alexander M. Rush", "url": "https://rush-nlp.com/" }
+      ],
+      "about": { "@id": "https://im2markup.yuntiandeng.com/data/#dataset" },
+      "isPartOf": { "@type": "PublicationVolume", "name": "Proceedings of Machine Learning Research", "volumeNumber": "70" },
+      "pageStart": "980",
+      "pageEnd": "989"
+    }
+    {% endif %}
   ]
 }
 </script>
