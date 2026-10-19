@@ -1,0 +1,39 @@
+---
+layout: null
+permalink: /wildchat/data/navigation.json
+---
+{
+  "schema_version": 1,
+  "title": {{ site.data.wildchat.meta.name | jsonify }},
+  "updated": {{ site.data.wildchat.meta.updated_at | jsonify }},
+  "canonical_base": "https://yuntiandeng.com/wildchat/",
+  "pages": [
+    {"title": "WildChat: Dataset, Tools, and Research", "url": "https://yuntiandeng.com/wildchat/"},
+    {"title": "Research using WildChat", "url": "https://yuntiandeng.com/wildchat/research/"},
+    {"title": "Release guide", "url": "https://yuntiandeng.com/wildchat/releases/"},
+    {"title": "Data and citation exports", "url": "https://yuntiandeng.com/wildchat/data/"},
+    {"title": "About this collection", "url": "https://yuntiandeng.com/wildchat/about/"}
+  ],
+  "exports": [
+    {"title": "Paper records", "format": "application/json", "url": "https://yuntiandeng.com/wildchat/data/papers.json"},
+    {"title": "Bibliography", "format": "application/x-bibtex", "url": "https://yuntiandeng.com/wildchat/data/papers.bib"},
+    {"title": "CSL bibliography", "format": "application/vnd.citationstyles.csl+json", "url": "https://yuntiandeng.com/wildchat/data/papers.csl.json"},
+    {"title": "Release records", "format": "application/json", "url": "https://yuntiandeng.com/wildchat/data/releases.json"},
+    {"title": "Annotated reading list", "format": "text/markdown", "url": "https://yuntiandeng.com/wildchat/data/reading-list.md"},
+    {"title": "Navigation", "format": "application/json", "url": "https://yuntiandeng.com/wildchat/data/navigation.json"}
+  ],
+  "papers": [
+    {% for paper in site.data.wildchat.papers %}{
+      "id": {{ paper.id | jsonify }},
+      "title": {{ paper.title | jsonify }},
+      "url": {{ paper.record_url | jsonify }},
+      "source_url": {{ paper.paper_url | jsonify }},
+      "exports": [
+        {"format": "application/json", "url": {{ paper.record_url | append: 'record.json' | jsonify }}},
+        {"format": "application/x-bibtex", "url": {{ paper.record_url | append: 'citation.bib' | jsonify }}},
+        {"format": "application/vnd.citationstyles.csl+json", "url": {{ paper.record_url | append: 'citation.csl.json' | jsonify }}}
+      ]
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ]
+}

@@ -11,6 +11,14 @@ permalink: /llms.txt
 {% for theme in site.data.research_themes -%}
 - [{{ theme.title }}]({{ '/' | append: '#' | append: theme.id | absolute_url }}): {{ theme.description | strip_html | normalize_whitespace }}
 {% endfor %}
+## WildChat research guide
+
+- [WildChat](https://yuntiandeng.com/wildchat/): Dataset, tools, original contribution, and related research.
+- [Research using WildChat](https://yuntiandeng.com/wildchat/research/): Annotated bibliography with primary-source evidence.
+- [Release guide](https://yuntiandeng.com/wildchat/releases/): Release families, filtered/full datasets, counts, and coverage.
+- [Bibliography and citations](https://yuntiandeng.com/wildchat/data/): JSON, Markdown, BibTeX, and CSL-JSON.
+- [Exact URL directory](https://yuntiandeng.com/wildchat/data/navigation.json).
+
 ## Website and CV
 
 - [Homepage]({{ '/' | absolute_url }}): Research overview, affiliations, media coverage, news, and professional service.

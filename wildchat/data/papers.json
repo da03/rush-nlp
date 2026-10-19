@@ -1,0 +1,5 @@
+---
+layout: null
+permalink: /wildchat/data/papers.json
+---
+{{ site.data.wildchat.papers | jsonify }}

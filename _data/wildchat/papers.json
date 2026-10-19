@@ -1,0 +1,416 @@
+[
+  {
+    "id": "wildchat",
+    "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+    "authors": [
+      {
+        "given": "Wenting",
+        "family": "Zhao"
+      },
+      {
+        "given": "Xiang",
+        "family": "Ren"
+      },
+      {
+        "given": "Jack",
+        "family": "Hessel"
+      },
+      {
+        "given": "Claire",
+        "family": "Cardie"
+      },
+      {
+        "given": "Yejin",
+        "family": "Choi"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "author_note": "Wenting Zhao and Yuntian Deng contributed equally.",
+    "first_public": "2024-05-02",
+    "date_note": "First arXiv version; this is not the date of WildChat's earlier ICLR submission or initial dataset release.",
+    "date_source": "https://arxiv.org/abs/2405.01470",
+    "year": 2024,
+    "venue": "ICLR 2024",
+    "paper_url": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/9421261e06f1a63a352b068f1ac90609-Abstract-Conference.html",
+    "arxiv": "2405.01470",
+    "category": "dataset",
+    "relationship": "original",
+    "dataset_version": "The original paper's approximately one-million-conversation release; some experiments use earlier collection windows.",
+    "summary": "Introduces consented, multilingual, multi-turn conversations with GPT-3.5 and GPT-4, together with timestamps and metadata for studying use across time and locations. The paper examines language and prompt diversity, toxicity and jailbreaks, and instruction tuning with WildLlama.",
+    "finding": "The paper reports 68 languages with more than 100 user prompts each and demonstrates instruction tuning with a Llama-2 7B model.",
+    "evidence_url": "https://arxiv.org/html/2405.01470v1",
+    "evidence_note": "Sections 2–5 document collection, the language threshold, safety analyses, and the WildLlama experiment; Section 6 discusses sampling limitations.",
+    "bibtex_key": "zhao2024wildchat",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildchat/",
+    "relationship_label": "Original dataset",
+    "citation_title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "International Conference on Learning Representations",
+    "citation_url": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/9421261e06f1a63a352b068f1ac90609-Abstract-Conference.html",
+    "citation_year": 2024,
+    "citation_note": "Cites the ICLR 2024 proceedings paper; the date above identifies its first arXiv version, not the beginning of the project.",
+    "pages": "34590–34605"
+  },
+  {
+    "id": "wildvis",
+    "title": "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild",
+    "authors": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Wenting",
+        "family": "Zhao"
+      },
+      {
+        "given": "Jack",
+        "family": "Hessel"
+      },
+      {
+        "given": "Xiang",
+        "family": "Ren"
+      },
+      {
+        "given": "Claire",
+        "family": "Cardie"
+      },
+      {
+        "given": "Yejin",
+        "family": "Choi"
+      }
+    ],
+    "first_public": "2024-09-05",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2409.03753",
+    "year": 2024,
+    "venue": "EMNLP 2024 System Demonstrations",
+    "paper_url": "https://aclanthology.org/2024.emnlp-demo.50/",
+    "arxiv": "2409.03753",
+    "doi": "10.18653/v1/2024.emnlp-demo.50",
+    "code_url": "https://github.com/da03/WildVisualizer",
+    "category": "tool",
+    "relationship": "tool",
+    "dataset_version": "WildChat at approximately one million conversations, alongside LMSYS-Chat-1M; an exact WildChat revision is not specified.",
+    "summary": "Provides composable search filters and an embedding map for inspecting WildChat and LMSYS-Chat-1M. Its case studies connect individual conversations to broader topic patterns and reproduce examples from research on journalism and personal disclosures.",
+    "finding": "The visual comparison identifies a Midjourney prompt-generation cluster in WildChat and a chemistry cluster in LMSYS-Chat-1M.",
+    "evidence_url": "https://arxiv.org/html/2409.03753v1",
+    "evidence_note": "Sections 2–4 describe the interface, indexed datasets, and case studies; Appendix E expands the cross-dataset comparison.",
+    "bibtex_key": "deng2024wildvis",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildvis/",
+    "relationship_label": "Exploration tool",
+    "citation_title": "WildVis: Open Source Visualizer for Million-Scale Chat Logs in the Wild",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing: System Demonstrations",
+    "citation_url": "https://aclanthology.org/2024.emnlp-demo.50/",
+    "citation_year": 2024,
+    "citation_note": "Cites the EMNLP 2024 System Demonstrations proceedings paper.",
+    "pages": "497–506",
+    "publisher": "Association for Computational Linguistics"
+  },
+  {
+    "id": "wildbench",
+    "title": "WildBench: Benchmarking LLMs with Challenging Tasks from Real Users in the Wild",
+    "authors": [
+      {
+        "given": "Bill Yuchen",
+        "family": "Lin"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Khyathi",
+        "family": "Chandu"
+      },
+      {
+        "given": "Faeze",
+        "family": "Brahman"
+      },
+      {
+        "given": "Abhilasha",
+        "family": "Ravichander"
+      },
+      {
+        "given": "Valentina",
+        "family": "Pyatkin"
+      },
+      {
+        "given": "Nouha",
+        "family": "Dziri"
+      },
+      {
+        "given": "Ronan",
+        "family": "Le Bras"
+      },
+      {
+        "given": "Yejin",
+        "family": "Choi"
+      }
+    ],
+    "first_public": "2024-06-07",
+    "date_note": "First arXiv version; the paper also describes benchmark releases in March and May 2024.",
+    "date_source": "https://arxiv.org/abs/2406.04770",
+    "year": 2025,
+    "venue": "ICLR 2025",
+    "paper_url": "https://openreview.net/forum?id=MKEHCx25xp",
+    "arxiv": "2406.04770",
+    "code_url": "https://github.com/allenai/WildBench",
+    "category": "evaluation",
+    "relationship": "uses",
+    "dataset_version": "WildBench V2: 1,024 tasks curated from WildChat collection data and held out of the public WildChat training corpus.",
+    "summary": "Turns challenging user requests from the WildChat collection into an evaluation set with task-specific checklists. The selection process combines language and quality filters, model difficulty estimates, and manual review, while reserving selected conversations from the public WildChat release.",
+    "finding": "For the top-ranked models evaluated in the paper, WB-Reward has a Pearson correlation of 0.98 with Chatbot Arena's human-voted Elo ratings.",
+    "evidence_url": "https://arxiv.org/html/2406.04770v2",
+    "evidence_note": "Section 2.1 specifies selection and held-out data; Sections 3–4 define the metrics and compare model rankings.",
+    "bibtex_key": "lin2024wildbench",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildbench/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "WildBench: Benchmarking LLMs with Challenging Tasks from Real Users in the Wild",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2406.04770",
+    "citation_year": 2024,
+    "citation_note": "Cites the arXiv preprint with its original 2024 preprint year. The paper later appeared at ICLR 2025.",
+    "doi": "10.48550/arXiv.2406.04770"
+  },
+  {
+    "id": "trust-no-bot",
+    "title": "Trust No Bot: Discovering Personal Disclosures in Human-LLM Conversations in the Wild",
+    "authors": [
+      {
+        "given": "Niloofar",
+        "family": "Mireshghallah"
+      },
+      {
+        "given": "Maria",
+        "family": "Antoniak"
+      },
+      {
+        "given": "Yash",
+        "family": "More"
+      },
+      {
+        "given": "Yejin",
+        "family": "Choi"
+      },
+      {
+        "given": "Golnoosh",
+        "family": "Farnadi"
+      }
+    ],
+    "first_public": "2024-07-16",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2407.11438",
+    "year": 2024,
+    "venue": "COLM 2024",
+    "paper_url": "https://openreview.net/forum?id=tIpWtMYkzU",
+    "arxiv": "2407.11438",
+    "code_url": "https://github.com/mireshghallah/ChatGPT-personal-disclosures",
+    "category": "privacy",
+    "relationship": "uses",
+    "dataset_version": "A 5,000-conversation English sample from the one-million-conversation WildChat corpus, limited to one conversation per hashed IP with additional prefix and length filters.",
+    "summary": "Studies the tasks and contexts in which people disclose personal or sensitive information to chatbots. It combines automated PII detection with task and sensitive-topic taxonomies, releasing annotations that support analyses beyond conventional identifiers.",
+    "finding": "In the analyzed sample, sensitive disclosures extend beyond the categories recognized by PII detectors, including preferences, personal habits, and application-related information.",
+    "evidence_url": "https://arxiv.org/html/2407.11438v2",
+    "evidence_note": "Section 2 specifies sampling; Sections 3–4 compare detected identifiers with sensitive topics. The observations apply to this filtered sample.",
+    "bibtex_key": "mireshghallah2024trustnobot",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/trust-no-bot/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "Trust No Bot: Discovering Personal Disclosures in Human-LLM Conversations in the Wild",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2407.11438",
+    "citation_year": 2024,
+    "citation_note": "Cites the arXiv preprint with its original 2024 preprint year. The paper also appeared at COLM 2024.",
+    "doi": "10.48550/arXiv.2407.11438"
+  },
+  {
+    "id": "developing-story",
+    "title": "Developing Story: Case Studies of Generative AI's Use in Journalism",
+    "authors": [
+      {
+        "given": "Natalie Grace",
+        "family": "Brigham"
+      },
+      {
+        "given": "Chongjiu",
+        "family": "Gao"
+      },
+      {
+        "given": "Tadayoshi",
+        "family": "Kohno"
+      },
+      {
+        "given": "Franziska",
+        "family": "Roesner"
+      },
+      {
+        "given": "Niloofar",
+        "family": "Mireshghallah"
+      }
+    ],
+    "first_public": "2024-06-19",
+    "date_note": "First arXiv version, initially titled Breaking News; the revised title is Developing Story.",
+    "date_source": "https://arxiv.org/abs/2406.13706",
+    "year": 2024,
+    "venue": "SoLaR Workshop at NeurIPS 2024",
+    "paper_url": "https://openreview.net/forum?id=415AZy8Jih",
+    "arxiv": "2406.13706",
+    "category": "behavior",
+    "relationship": "uses",
+    "dataset_version": "An earlier WildChat release containing approximately 650,000 conversations, before the one-million-conversation release.",
+    "summary": "Matches conversations in WildChat to published articles from two news agencies, documenting how source material and generated drafts enter journalistic workflows. The study examines input materials, overlap with published text, and publication timing; its cases do not establish prevalence across journalism.",
+    "finding": "The authors match 78 conversations to 111 published articles and report a median output-to-publication ROUGE-L overlap of 0.62.",
+    "evidence_url": "https://arxiv.org/html/2406.13706v2",
+    "evidence_note": "Section 2 identifies the earlier release; Table 1 reports verified matches; Section 3 reports text overlap. Section 5 states that identified sensitive conversations were subsequently removed.",
+    "bibtex_key": "brigham2024developingstory",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/developing-story/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "Developing Story: Case Studies of Generative AI's Use in Journalism",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2406.13706",
+    "citation_year": 2024,
+    "citation_note": "Cites the arXiv preprint with its original 2024 preprint year. Uses the revised Developing Story title; the paper also appeared at SoLaR 2024.",
+    "doi": "10.48550/arXiv.2406.13706"
+  },
+  {
+    "id": "wildchat-50m",
+    "title": "WildChat-50M: A Deep Dive Into the Role of Synthetic Data in Post-Training",
+    "authors": [
+      {
+        "given": "Benjamin",
+        "family": "Feuer"
+      },
+      {
+        "given": "Chinmay",
+        "family": "Hegde"
+      }
+    ],
+    "first_public": "2025-01-30",
+    "date_note": "First arXiv version.",
+    "date_source": "https://arxiv.org/abs/2501.18511",
+    "year": 2025,
+    "venue": "ICML 2025",
+    "paper_url": "https://proceedings.mlr.press/v267/feuer25a.html",
+    "arxiv": "2501.18511",
+    "code_url": "https://github.com/penfever/wildchat-50m",
+    "category": "training",
+    "relationship": "extends",
+    "dataset_version": "A third-party synthetic-response extension of WildChat-1M, retaining its user prompts and adding responses from open-weight models.",
+    "summary": "Uses WildChat prompts to compare responses from more than 50 open-weight model checkpoints and study the choice of synthetic-data generator. The authors also construct Re-Wild, a supervised fine-tuning mixture, and test it with Llama-3.1 8B.",
+    "finding": "The reported Re-Wild mixture outperforms the Tulu-3 SFT mixture on the paper's aggregate evaluations using 40% as many training samples.",
+    "evidence_url": "https://arxiv.org/html/2501.18511v1",
+    "evidence_note": "Section 2 identifies WildChat-1M as the prompt source and describes 54 checkpoints; Section 3 reports the SFT mixtures and evaluations.",
+    "bibtex_key": "feuer2025wildchat50m",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildchat-50m/",
+    "relationship_label": "Extends WildChat",
+    "citation_title": "WildChat-50M: A Deep Dive Into the Role of Synthetic Data in Post-Training",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "Proceedings of the 42nd International Conference on Machine Learning",
+    "citation_url": "https://proceedings.mlr.press/v267/feuer25a.html",
+    "citation_year": 2025,
+    "citation_note": "Cites the ICML 2025 proceedings paper in PMLR volume 267.",
+    "pages": "17100–17130",
+    "volume": "267",
+    "publisher": "PMLR"
+  },
+  {
+    "id": "wildclaims",
+    "title": "WildClaims: Conversational Information Access in the Wild(Chat)",
+    "authors": [
+      {
+        "given": "Hideaki",
+        "family": "Joko"
+      },
+      {
+        "given": "Shakiba",
+        "family": "Amirshahi"
+      },
+      {
+        "given": "Charles L. A.",
+        "family": "Clarke"
+      },
+      {
+        "given": "Faegheh",
+        "family": "Hasibi"
+      }
+    ],
+    "first_public": "2025-09-22",
+    "date_note": "First arXiv version; the ECIR 2026 paper uses the revised title shown here.",
+    "date_source": "https://arxiv.org/abs/2509.17442",
+    "year": 2026,
+    "venue": "ECIR 2026",
+    "paper_url": "https://link.springer.com/chapter/10.1007/978-3-032-21321-1_47",
+    "arxiv": "2509.17442",
+    "doi": "10.1007/978-3-032-21321-1_47",
+    "code_url": "https://github.com/shakibaam/wildclaims",
+    "category": "information",
+    "relationship": "uses",
+    "dataset_version": "3,000 sampled English WildChat conversations after excluding math and coding; the paper does not identify an exact dataset revision.",
+    "summary": "Examines factual information conveyed by chatbot responses, including when the user's main task is editing or creative writing. It releases extracted claims and check-worthiness annotations to study information access beyond explicit questions.",
+    "finding": "WildClaims contains 121,905 extracted claims from 7,587 assistant utterances; estimated check-worthy-conversation prevalence varies substantially with the annotation method.",
+    "evidence_url": "https://arxiv.org/html/2509.17442v2",
+    "evidence_note": "Section 3 and Table 2 specify selection and annotation counts; the prevalence analysis distinguishes conservative and more permissive classification choices.",
+    "bibtex_key": "joko2026wildclaims",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/wildclaims/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "WildClaims: Conversational Information Access in the Wild(Chat)",
+    "citation_type": "paper-conference",
+    "bibtex_type": "inproceedings",
+    "container_title": "Advances in Information Retrieval. ECIR 2026",
+    "citation_url": "https://link.springer.com/chapter/10.1007/978-3-032-21321-1_47",
+    "citation_year": 2026,
+    "citation_note": "Cites the published ECIR 2026 paper under its revised title; the preprint first appeared in September 2025.",
+    "pages": "367–382",
+    "volume": "16486",
+    "publisher": "Springer, Cham"
+  },
+  {
+    "id": "adopt-adapt",
+    "title": "Adopt ≠ Adapt: Longitudinal Analyses of LLM Conversations in the Wild",
+    "authors": [
+      {
+        "given": "Rebecca M. M.",
+        "family": "Hicke"
+      },
+      {
+        "given": "Kiran",
+        "family": "Tomlinson"
+      }
+    ],
+    "first_public": "2026-05-27",
+    "date_note": "First arXiv version; annotation follows the August 2026 revision.",
+    "date_source": "https://arxiv.org/abs/2605.29018",
+    "year": 2026,
+    "venue": "arXiv preprint",
+    "paper_url": "https://arxiv.org/abs/2605.29018",
+    "arxiv": "2605.29018",
+    "code_url": "https://github.com/microsoft/adopt-adapt-wildchat",
+    "category": "behavior",
+    "relationship": "uses",
+    "dataset_version": "WildChat-4.8M, with hashed-IP filters and a main-analysis cutoff before September 2024 to reduce later API-like activity.",
+    "summary": "Compares individual and population-level usage patterns in Bing Copilot with analyses of WildChat-4.8M. The study separates changes over a user's trajectory from differences between users, and uses the cross-platform comparison to examine how WildChat's sample differs.",
+    "finding": "WildChat users' intent and domain distributions more closely resemble high-activity Copilot users than low-activity users; hashed IPs remain an imperfect proxy for individuals.",
+    "evidence_url": "https://arxiv.org/html/2605.29018v2",
+    "evidence_note": "Section 3.2 describes the WildChat filters and time cutoff; Section 6 and Figure 6 compare activity groups across the two sources.",
+    "bibtex_key": "hicke2026adoptadapt",
+    "record_url": "https://yuntiandeng.com/wildchat/papers/adopt-adapt/",
+    "relationship_label": "Uses WildChat",
+    "citation_title": "Adopt ≠ Adapt: Longitudinal Analyses of LLM Conversations in the Wild",
+    "citation_type": "article-journal",
+    "bibtex_type": "misc",
+    "citation_url": "https://arxiv.org/abs/2605.29018",
+    "citation_year": 2026,
+    "citation_note": "Cites the arXiv preprint with its original 2026 preprint year. The annotation follows the August 2026 revision.",
+    "doi": "10.48550/arXiv.2605.29018"
+  }
+]

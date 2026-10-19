@@ -1,0 +1,7 @@
+---
+layout: null
+permalink: /wildchat/data/papers.csl.json
+---
+[
+{% for paper in site.data.wildchat.papers %}{% include wildchat/csl.json paper=paper %}{% unless forloop.last %},{% endunless %}
+{% endfor %}]

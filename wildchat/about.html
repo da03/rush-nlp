@@ -1,0 +1,32 @@
+---
+layout: wildchat
+title: "About the WildChat research guide"
+description: "Scope, curation, source practices, and credits for the WildChat dataset and research guide maintained by Yuntian Deng."
+permalink: /wildchat/about/
+---
+<header class="wc-hero">
+  <p class="wc-kicker">About this guide</p>
+  <h1>Scope and curation</h1>
+  <p class="wc-lead">A research home for the dataset and the work it supports.</p>
+  <p>This guide is curated by <a href="/">Yuntian Deng</a>, a coauthor of WildChat and WildVis. It connects the original contributions, dataset releases, tools, and selected research using WildChat.</p>
+</header>
+
+<section class="wc-section wc-prose" aria-labelledby="scope-title">
+  <h2 id="scope-title">What the guide covers</h2>
+  <p>The bibliography is a selected collection, not a complete citation index. Papers are included for a concrete relationship to WildChat: introducing the dataset, enabling exploration, analyzing conversations, building evaluations, or creating training data from it.</p>
+  <p>Each annotation states how the paper uses WildChat and points to supporting primary sources. Dataset versions and study snapshots are identified where the source provides them. Third-party derivatives are distinguished from newly collected human conversations.</p>
+  <p>WildVis is a separate research contribution and a multi-dataset tool. This guide links to <a href="https://wildvisualizer.com/">WildVisualizer</a> for exploration and to the original Hugging Face repositories for data access.</p>
+</section>
+
+<section class="wc-section wc-prose" aria-labelledby="sources-title">
+  <h2 id="sources-title">Sources and updates</h2>
+  <p>Publication records, papers, dataset cards, and the processing repository support the descriptions here. Release counts describe the checked repository state; they can differ from a paper’s historical statistics.</p>
+  <p class="wc-date">Literature checked {{ site.data.wildchat.meta.literature_checked_on | date: "%B %-d, %Y" }}. Release information checked {{ site.data.wildchat.releases.checked_on | date: "%B %-d, %Y" }}. Guide updated {{ site.data.wildchat.meta.updated_at | date: "%B %-d, %Y" }}.</p>
+  <p>For corrections or papers to consider, use the contact information on <a href="/">Yuntian Deng’s homepage</a>. For dataset removal requests, follow the <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true#data-removal-requests">dataset card’s instructions</a>.</p>
+</section>
+
+<section class="wc-section wc-prose" aria-labelledby="credits-title">
+  <h2 id="credits-title">Site credits</h2>
+  <p>The bibliography and citation-download machinery is adapted from the <a href="https://latent-implicit-thinking.github.io/">Latent &amp; Implicit Thinking reading list</a>. Its <a href="https://github.com/latent-implicit-thinking/latent-implicit-thinking.github.io">source repository</a> is available under the MIT license; the reused code’s <a href="/wildchat/assets/LICENSE.txt">license notice</a> is retained here.</p>
+  <p><a href="/wildchat/data/">Download the guide data and citations</a>.</p>
+</section>

@@ -1,0 +1,80 @@
+---
+layout: wildchat
+title: "WildChat: Dataset, Tools, and Research"
+description: "WildChat's original contribution, current dataset releases, and an annotated guide to research using real user–chatbot conversations."
+permalink: /wildchat/
+---
+{% assign original = site.data.wildchat.papers | where: "id", "wildchat" | first %}
+{% assign visualizer = site.data.wildchat.papers | where: "id", "wildvis" | first %}
+{% assign releases = site.data.wildchat.releases %}
+<header class="wc-hero">
+  <p class="wc-kicker">Dataset, tools, and research</p>
+  <h1>WildChat</h1>
+  <p class="wc-lead">Real conversations for studying how people use language models.</p>
+  <p>WildChat collects multilingual, multi-turn conversations between consenting users and ChatGPT. It supports research on user behavior, safety, evaluation, and instruction tuning.</p>
+  <p class="wc-links"><a href="{{ original.paper_url }}">Original paper</a><a href="/wildchat/releases/">Choose a dataset release</a><a href="/wildchat/research/">Research using WildChat</a><a href="https://wildvisualizer.com/">Explore with WildVis</a></p>
+</header>
+
+<section class="wc-section wc-prose" aria-labelledby="contribution-title">
+  <p class="wc-kicker">The original contribution · {{ original.venue }}</p>
+  <h2 id="contribution-title">{{ original.title }}</h2>
+  <p class="wc-authors">{% include wildchat/authors.html authors=original.authors %}</p>
+  <p class="wc-muted">{{ original.author_note }}</p>
+  <p>{{ original.summary }}</p>
+  <p>The collection pairs conversation text with timestamps, geographic metadata, hashed IP addresses, and request headers. These enable analyses of language-model use across conversations, locations, and time. <a href="{{ original.evidence_url }}">Read the collection methods and analyses.</a></p>
+</section>
+
+<section class="wc-section" aria-labelledby="use-title">
+  <h2 id="use-title">A guide to using WildChat</h2>
+  <div class="wc-columns">
+    <div class="wc-prose">
+      <h3>Dataset releases</h3>
+      <p>The original collection has grown. The 1M and 4.8M names describe release families; current counts depend on filtering and subsequent removals. Open and gated versions serve different research needs.</p>
+      <p><a href="/wildchat/releases/">Compare releases, counts, and collection coverage</a></p>
+    </div>
+    <div class="wc-prose">
+      <h3>Research using WildChat</h3>
+      <p>An annotated selection connects each paper to the data it uses and the question it investigates, including privacy, safety, evaluation, information access, and synthetic training data.</p>
+      <p><a href="/wildchat/research/">Browse the research list</a></p>
+    </div>
+    <div class="wc-prose">
+      <h3>Explore conversations with WildVis</h3>
+      <p>WildVis is a separate visualization and search tool for WildChat and LMSYS-Chat-1M. Its filters and embedding maps help connect individual conversations with broader patterns.</p>
+      <p><a href="https://wildvisualizer.com/">Open WildVisualizer</a> · <a href="{{ visualizer.paper_url }}">WildVis paper</a> · <a href="{{ visualizer.code_url }}">Code</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="wc-section wc-prose" aria-labelledby="start-title">
+  <h2 id="start-title">Start with the sources</h2>
+  <p>For most new work that does not require flagged content, the maintainers recommend <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M">WildChat-4.8M</a>. Match the release and revision when reproducing an earlier study. The <a href="https://github.com/da03/wildchat">processing repository</a> documents conversation reconstruction, redaction, moderation, and reserved evaluation data.</p>
+  <p>This hub links to the original datasets and publications. It also provides <a href="/wildchat/data/">downloadable annotations and citations</a> for readers and research tools.</p>
+  <p class="wc-date">Release information checked {{ releases.checked_on | date: "%B %-d, %Y" }}. <a href="/wildchat/about/">About this guide</a>.</p>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "@id": {{ "/wildchat/#dataset" | absolute_url | jsonify }},
+  "name": "WildChat",
+  "url": {{ "/wildchat/" | absolute_url | jsonify }},
+  "description": "Multilingual, multi-turn conversations between consenting users and ChatGPT, with metadata for studying user behavior, safety, evaluation, and instruction tuning.",
+  "license": "https://opendatacommons.org/licenses/by/1-0/",
+  "creator": [{% for author in original.authors %}{% capture author_name %}{{ author.given }} {{ author.family }}{% endcapture %}{"@type": "Person", "name": {{ author_name | strip | jsonify }}}{% unless forloop.last %},{% endunless %}{% endfor %}],
+  "citation": {
+    "@type": "ScholarlyArticle",
+    "name": {{ original.title | jsonify }},
+    "url": {{ original.paper_url | jsonify }},
+    "datePublished": {{ original.year | append: "" | jsonify }},
+    "author": [{% for author in original.authors %}{% capture author_name %}{{ author.given }} {{ author.family }}{% endcapture %}{"@type": "Person", "name": {{ author_name | strip | jsonify }}}{% unless forloop.last %},{% endunless %}{% endfor %}]
+  },
+  "hasPart": [{% for release in releases.releases %}{
+    "@type": "Dataset",
+    "name": {{ release.name | jsonify }},
+    "url": {{ release.url | jsonify }},
+    "description": {{ release.description | jsonify }},
+    "license": "https://opendatacommons.org/licenses/by/1-0/"
+  }{% unless forloop.last %},{% endunless %}{% endfor %}]
+}
+</script>

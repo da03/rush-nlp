@@ -1,0 +1,15 @@
+{%- assign bib_open = '{' -%}
+{%- assign bib_close = '}' -%}
+@{{ include.paper.bibtex_type | default: 'misc' }}{{ bib_open }}{{ include.paper.bibtex_key }},
+  title = {{ bib_open }}{{ bib_open }}{{ include.paper.citation_title | default: include.paper.title | replace: '&', '\&' | replace: '%', '\%' | replace: '_', '\_' | replace: '#', '\#' }}{{ bib_close }}{{ bib_close }},
+  author = {{ bib_open }}{% for author in include.paper.authors %}{{ author.family | replace: '&', '\&' }}, {{ author.given | replace: '&', '\&' }}{% unless forloop.last %} and {% endunless %}{% endfor %}{{ bib_close }},
+  year = {{ bib_open }}{{ include.paper.citation_year | default: include.paper.year }}{{ bib_close }},{% if include.paper.container_title %}
+  booktitle = {{ bib_open }}{{ include.paper.container_title | replace: '&', '\&' | replace: '%', '\%' | replace: '_', '\_' | replace: '#', '\#' }}{{ bib_close }},{% endif %}{% if include.paper.publisher %}
+  publisher = {{ bib_open }}{{ include.paper.publisher | replace: '&', '\&' }}{{ bib_close }},{% endif %}{% if include.paper.volume %}
+  volume = {{ bib_open }}{{ include.paper.volume }}{{ bib_close }},{% endif %}{% if include.paper.pages %}
+  pages = {{ bib_open }}{{ include.paper.pages | replace: '–', '--' }}{{ bib_close }},{% endif %}{% if include.paper.doi %}
+  doi = {{ bib_open }}{{ include.paper.doi }}{{ bib_close }},{% endif %}{% if include.paper.bibtex_type == 'misc' %}
+  eprint = {{ bib_open }}{{ include.paper.arxiv }}{{ bib_close }},
+  archivePrefix = {arXiv},{% endif %}
+  url = {{ bib_open }}{{ include.paper.citation_url | default: include.paper.paper_url }}{{ bib_close }}
+{{ bib_close }}

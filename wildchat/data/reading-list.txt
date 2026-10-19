@@ -1,0 +1,56 @@
+---
+layout: null
+permalink: /wildchat/data/reading-list.md
+---
+# WildChat: annotated research list
+
+Selected papers introducing, exploring, studying, or extending WildChat.
+
+Research hub: https://yuntiandeng.com/wildchat/
+Research list: https://yuntiandeng.com/wildchat/research/
+Release guide: https://yuntiandeng.com/wildchat/releases/
+
+Dates below identify the first arXiv version unless the date note states otherwise. They do not establish the first public appearance of a project or dataset. The cited version and citation year are specified separately.
+
+{% for paper in site.data.wildchat.papers %}## {{ paper.title }}
+
+{% for author in paper.authors %}{{ author.given }} {{ author.family }}{% unless forloop.last %}; {% endunless %}{% endfor %}
+{% if paper.author_note %}
+{{ paper.author_note }}
+{% endif %}
+- Venue: {{ paper.venue }}
+- Preprint date: {{ paper.first_public }}
+- Date note: {{ paper.date_note }}
+- Date source: {{ paper.date_source }}
+- Relationship: {{ paper.relationship_label }}
+- Topic: {{ paper.category }}
+- Data used: {{ paper.dataset_version }}
+- Research record: {{ paper.record_url }}
+- Paper: {{ paper.paper_url }}
+{% if paper.arxiv %}- arXiv: https://arxiv.org/abs/{{ paper.arxiv }}
+{% endif %}{% if paper.code_url %}- Code and resources: {{ paper.code_url }}
+{% endif %}- Cited version: {{ paper.citation_note }}
+- Citation title: {{ paper.citation_title }}
+- Citation year: {{ paper.citation_year }}
+- Citation source: {{ paper.citation_url }}
+{% if paper.container_title %}- Proceedings: {{ paper.container_title }}
+{% endif %}{% if paper.doi %}- DOI: https://doi.org/{{ paper.doi }}
+{% endif %}- BibTeX: {{ paper.record_url }}citation.bib
+- CSL JSON: {{ paper.record_url }}citation.csl.json
+- Record JSON: {{ paper.record_url }}record.json
+
+{{ paper.summary }}
+
+Finding: {{ paper.finding }}
+
+Evidence: {{ paper.evidence_url }}
+
+{{ paper.evidence_note }}
+
+{% endfor %}## Complete exports
+
+- Records: https://yuntiandeng.com/wildchat/data/papers.json
+- BibTeX: https://yuntiandeng.com/wildchat/data/papers.bib
+- CSL JSON: https://yuntiandeng.com/wildchat/data/papers.csl.json
+- Releases: https://yuntiandeng.com/wildchat/data/releases.json
+- Navigation: https://yuntiandeng.com/wildchat/data/navigation.json

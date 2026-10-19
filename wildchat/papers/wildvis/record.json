@@ -1,0 +1,7 @@
+---
+layout: null
+paper_id: wildvis
+permalink: /wildchat/papers/wildvis/record.json
+---
+{%- assign paper = site.data.wildchat.papers | where: 'id', page.paper_id | first -%}
+{{ paper | jsonify }}

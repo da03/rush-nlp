@@ -1,0 +1,11 @@
+{
+  "@type": "ScholarlyArticle",
+  "@id": {{ include.paper.citation_url | default: include.paper.paper_url | jsonify }},
+  "name": {{ include.paper.citation_title | default: include.paper.title | jsonify }},
+  "url": {{ include.paper.citation_url | default: include.paper.paper_url | jsonify }},
+  "author": [{% for author in include.paper.authors %}{% capture author_name %}{{ author.given }} {{ author.family }}{% endcapture %}{"@type":"Person","name":{{ author_name | jsonify }},"givenName":{{ author.given | jsonify }},"familyName":{{ author.family | jsonify }}}{% unless forloop.last %},{% endunless %}{% endfor %}],
+  "description": {{ include.paper.summary | jsonify }},
+  "identifier": [{"@type":"PropertyValue","propertyID":"arXiv","value":{{ include.paper.arxiv | jsonify }}}{% if include.paper.doi %},{"@type":"PropertyValue","propertyID":"DOI","value":{{ include.paper.doi | jsonify }}}{% endif %}]{% if include.paper.publication_date %},
+  "datePublished": {{ include.paper.publication_date | jsonify }}{% endif %}{% if include.paper.container_title %},
+  "isPartOf": {"@type":"CreativeWork","name":{{ include.paper.container_title | jsonify }}}{% endif %}
+}

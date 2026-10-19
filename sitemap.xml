@@ -20,4 +20,11 @@ layout: null
   <url><loc>{{ talk_url | absolute_url | xml_escape }}</loc></url>
   {% endif %}
   {% endfor %}
+  {% for hub_page in site.pages %}
+  {% assign prefix = hub_page.url | slice: 0, 10 %}
+  {% assign suffix = hub_page.url | slice: -1, 1 %}
+  {% if prefix == '/wildchat/' and suffix == '/' %}
+  <url><loc>{{ hub_page.url | absolute_url | xml_escape }}</loc><lastmod>{{ site.data.wildchat.meta.updated_at }}</lastmod></url>
+  {% endif %}
+  {% endfor %}
 </urlset>

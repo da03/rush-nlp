@@ -1,0 +1,1 @@
+{%- for author in include.authors -%}{{ author.given | escape }} {{ author.family | escape }}{% unless forloop.last %}, {% endunless %}{%- endfor -%}

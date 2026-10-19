@@ -1,0 +1,40 @@
+---
+layout: wildchat
+title: Research using WildChat
+description: "An annotated bibliography of WildChat research: user behavior, privacy, information access, evaluation, synthetic data, and conversation exploration."
+permalink: /wildchat/research/
+explorer: true
+---
+<div class="wc-hero">
+  <p class="wc-kicker">Papers and connections</p>
+  <h1>Research using WildChat</h1>
+  <p class="wc-lead">What can real conversations tell us about language models and the people who use them?</p>
+  <p>This selected bibliography includes the original dataset, exploration tools, and studies that use or extend WildChat. Each entry explains the relationship and identifies its source.</p>
+  <p class="wc-date">Literature checked {{ site.data.wildchat.meta.literature_checked_on }} · {{ site.data.wildchat.papers.size }} papers · <a href="/wildchat/data/">Download the bibliography</a></p>
+</div>
+<section class="wc-research" aria-label="Annotated bibliography">
+  <div class="wc-controls">
+    <div class="wc-control search"><label for="paper-search">Search papers, authors, and notes</label><input id="paper-search" type="search" placeholder="For example: privacy" autocomplete="off"></div>
+    <div class="wc-control"><label for="paper-topic">Research area</label><select id="paper-topic" data-filter-select="topic"><option value="all">All areas</option>{% for category in site.data.wildchat.meta.categories %}<option value="{{ category.id }}">{{ category.name }}</option>{% endfor %}</select></div>
+    <div class="wc-control"><label for="paper-sort">Order</label><select id="paper-sort"><option value="date-asc">Earliest preprint first</option><option value="date-desc">Newest preprint first</option><option value="title">Title</option></select></div>
+    <button id="paper-reset" type="button">Reset</button><button id="paper-share" type="button">Copy view link</button>
+  </div>
+  <noscript><p>All papers are shown below. Search and filters require JavaScript; the notes and downloads do not.</p></noscript>
+  <p id="paper-result-count" class="wc-results" aria-live="polite">Showing {{ site.data.wildchat.papers.size }} papers</p>
+  <p id="paper-empty" hidden>No papers match these filters. Try a broader search or reset the filters.</p>
+  <div id="paper-list">
+  {% assign papers = site.data.wildchat.papers | sort: 'first_public' %}{% for paper in papers %}
+  {% assign category = site.data.wildchat.meta.categories | where: 'id', paper.category | first %}
+  {% capture searchable %}{{ paper.title }} {% for author in paper.authors %}{{ author.given }} {{ author.family }} {% endfor %}{{ paper.summary }} {{ paper.finding }} {{ paper.dataset_version }} {{ category.name }}{% endcapture %}
+  <article id="{{ paper.id }}" class="lit-paper-row" data-paper-id="{{ paper.id }}" data-date="{{ paper.first_public }}" data-title="{{ paper.title | escape }}" data-search="{{ searchable | normalize_whitespace | escape }}" data-topic="{{ paper.category }}">
+    <div><span class="wc-year">{{ paper.first_public | slice: 0, 4 }}</span><span class="wc-category">{{ category.name }}</span></div>
+    <div>
+      <h2><a href="/wildchat/papers/{{ paper.id }}/">{{ paper.title | escape }}</a></h2>
+      <p class="wc-authors">{% include wildchat/authors.html authors=paper.authors %}</p>
+      <p>{{ paper.summary | escape }}</p>
+      <p class="wc-muted">{{ paper.finding | escape }}</p>
+      <div class="wc-paper-links"><a href="/wildchat/papers/{{ paper.id }}/">Notes &amp; citation</a><a href="{{ paper.paper_url }}">Paper ↗</a>{% if paper.code_url %}<a href="{{ paper.code_url }}">Code ↗</a>{% endif %}</div>
+    </div>
+  </article>{% endfor %}
+  </div>
+</section>
