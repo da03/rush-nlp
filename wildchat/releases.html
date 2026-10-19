@@ -1,7 +1,7 @@
 ---
 layout: wildchat
 title: "WildChat release guide"
-description: "Choose a WildChat release: current conversation counts, collection coverage, filtering, access, and source-linked dataset updates."
+description: "Choose a WildChat release: conversation counts, collection coverage, filtering, access, and release updates."
 permalink: /wildchat/releases/
 ---
 {% assign release_data = site.data.wildchat.releases %}
@@ -9,14 +9,13 @@ permalink: /wildchat/releases/
   <p class="wc-kicker">Dataset guide</p>
   <h1>Choose a WildChat release</h1>
   <p class="wc-lead">Match the collection and filtering to the research question.</p>
-  <p>Start with the open <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M">WildChat-4.8M</a> release for most new projects. Use a Full release when the study requires flagged content and access has been approved. For replication, match the repository, revision, and filters used by the original study.</p>
+  <p>Start with the open <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M">WildChat-4.8M</a> release. Full releases include flagged content and require an access request. For replication, match the repository, revision, and filters used by the original study.</p>
   <p class="wc-note">Current downloads and access requests: <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M">yuntian-deng/WildChat-4.8M</a> and <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full">yuntian-deng/WildChat-4.8M-Full</a>. Request Full access in the latter repository.</p>
   <p class="wc-date">Counts and access information checked {{ release_data.checked_on | date: "%B %-d, %Y" }} against the linked dataset cards.</p>
 </header>
 
 <section class="wc-section" aria-labelledby="releases-title">
   <h2 id="releases-title">Available releases</h2>
-  <p class="wc-note">The “4.8M” name identifies the release family rather than every download’s row count. “Full” still includes documented removals.</p>
   {% for release in release_data.releases %}
   <article class="wc-release" id="{{ release.id }}">
     <h3><a href="{{ release.url }}">{{ release.name }}</a></h3>
@@ -26,7 +25,7 @@ permalink: /wildchat/releases/
       <dt>Current count</dt><dd>{{ release.count_note }}</dd>
       <dt>Collection coverage</dt><dd>{{ release.coverage }}</dd>
       <dt>Models</dt><dd>{{ release.models }}</dd>
-      <dt>Use when</dt><dd>{{ release.recommended_for }}</dd>
+      <dt>Research use</dt><dd>{{ release.recommended_for }}</dd>
     </dl>
     <p><a href="{{ release.source_url }}">Dataset card and count source</a></p>
   </article>
@@ -39,13 +38,12 @@ permalink: /wildchat/releases/
   <h3>{{ item.title }}</h3>
   <p>{{ item.text }} <a href="{{ item.source_url }}">Source</a>.</p>
   {% endfor %}
-  <p>Read the <a href="https://opendatacommons.org/licenses/by/1-0/">ODC-BY license</a> and the <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true">Full release card</a> for terms and collection details. The <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true#data-removal-requests">current removal-request instructions</a> remain with the dataset.</p>
+  <p>Read the <a href="https://opendatacommons.org/licenses/by/1-0/">ODC-BY license</a> and the <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true">Full release card</a> for terms and collection details. For removal requests, follow the <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true#data-removal-requests">dataset card’s instructions</a>.</p>
 </section>
 
 <section class="wc-section wc-prose" aria-labelledby="history-title">
-  <h2 id="history-title">Selected collection and release milestones</h2>
-  <p>The <a href="https://arxiv.org/html/2405.01470v1">original paper</a> describes an approximately one-million-conversation corpus, and some experiments use earlier collection windows. The expanded 4.8M releases cover a longer period and more models. Historical study counts should be read in that context.</p>
-  <p>Collection dates, paper versions, and dataset updates describe different events. The arXiv version below does not establish the first public release of WildChat.</p>
+  <h2 id="history-title">Collection and release milestones</h2>
+  <p>The <a href="https://arxiv.org/html/2405.01470v1">original paper</a> describes an approximately one-million-conversation corpus. The 4.8M releases extend the collection through July 2025 and add more models.</p>
   <dl class="wc-facts">
     {% for event in release_data.timeline %}
     <dt>{{ event.date | date: "%B %-d, %Y" }}</dt>

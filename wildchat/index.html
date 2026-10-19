@@ -29,26 +29,26 @@ permalink: /wildchat/
   <div class="wc-columns">
     <div class="wc-prose">
       <h3>Dataset releases</h3>
-      <p>The original collection has grown. The 1M and 4.8M names describe release families; current counts depend on filtering and subsequent removals. Open and gated versions serve different research needs.</p>
+      <p>The 4.8M releases extend the collection through July 2025. The open release filters flagged conversations; the Full release includes them and requires an access request.</p>
       <p><a href="/wildchat/releases/">Compare releases, counts, and collection coverage</a></p>
     </div>
     <div class="wc-prose">
       <h3>Research using WildChat</h3>
-      <p>An annotated selection connects each paper to the data it uses and the question it investigates, including privacy, safety, evaluation, information access, and synthetic training data.</p>
+      <p>Read summaries of work on privacy, safety, evaluation, information access, and synthetic training data, with dataset details and citations.</p>
       <p><a href="/wildchat/research/">Browse the research list</a></p>
     </div>
     <div class="wc-prose">
       <h3>Explore conversations with WildVis</h3>
-      <p>WildVis is a separate visualization and search tool for WildChat and LMSYS-Chat-1M. Its filters and embedding maps help connect individual conversations with broader patterns.</p>
+      <p>Search and visualize WildChat and LMSYS-Chat-1M with WildVis, using conversation filters and embedding maps.</p>
       <p><a href="https://wildvisualizer.com/">Open WildVisualizer</a> · <a href="{{ visualizer.paper_url }}">WildVis paper</a> · <a href="{{ visualizer.code_url }}">Code</a></p>
     </div>
   </div>
 </section>
 
 <section class="wc-section wc-prose" aria-labelledby="start-title">
-  <h2 id="start-title">Start with the sources</h2>
-  <p>For most new work that does not require flagged content, the maintainers recommend <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M">WildChat-4.8M</a>. Match the release and revision when reproducing an earlier study. The <a href="https://github.com/da03/wildchat">processing repository</a> documents conversation reconstruction, redaction, moderation, and reserved evaluation data.</p>
-  <p>This hub links to the original datasets and publications. It also provides <a href="/wildchat/data/">downloadable annotations and citations</a> for readers and research tools.</p>
+  <h2 id="start-title">Get started</h2>
+  <p>Download <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M">WildChat-4.8M</a> or <a href="/wildchat/releases/">compare releases</a>. The <a href="https://github.com/da03/wildchat">processing repository</a> documents conversation reconstruction, redaction, moderation, and reserved evaluation data.</p>
+  <p><a href="/wildchat/data/">Download the research annotations and citations</a> as JSON, Markdown, BibTeX, or CSL-JSON.</p>
   <p class="wc-date">Release information checked {{ releases.checked_on | date: "%B %-d, %Y" }}. <a href="/wildchat/about/">About this guide</a>.</p>
 </section>
 

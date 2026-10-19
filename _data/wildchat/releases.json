@@ -7,24 +7,24 @@
       "url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M",
       "access": "Open download; toxicity-filtered",
       "conversations": 3199860,
-      "count_note": "3,199,860 conversations in the current repository metadata. The 4.8M name identifies the release family.",
-      "coverage": "The 4.8M collection extends through July 31, 2025; the Full release card documents this collection cutoff.",
+      "count_note": "3,199,860 conversations.",
+      "coverage": "Through July 31, 2025.",
       "models": "GPT-3.5, GPT-4, GPT-4 Turbo, GPT-4o, GPT-4.1 mini, o1-mini, o1-preview",
       "description": "The expanded human–ChatGPT collection, excluding conversations flagged by OpenAI Moderation or Detoxify.",
-      "recommended_for": "A starting point for most new projects that do not need flagged content.",
+      "recommended_for": "Projects using toxicity-filtered conversations.",
       "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M/blob/main/README.md"
     },
     {
       "id": "wildchat-4-8m-full",
       "name": "WildChat-4.8M-Full",
       "url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full",
-      "access": "Gated; reviewed justification required",
+      "access": "Gated; access request required",
       "conversations": 4743336,
       "count_note": "4,743,336 after removing conversations flagged in the sexual/minors category, from an original 4,804,190.",
       "coverage": "Through July 31, 2025; updated August 11, 2025.",
       "models": "GPT-3.5, GPT-4, GPT-4 Turbo, GPT-4o, GPT-4.1 mini, o1-mini, o1-preview",
-      "description": "Includes flagged and unflagged conversations, with the stated category removal still applied. The card reports 122,921 o1-mini/o1-preview conversations.",
-      "recommended_for": "Studies whose question requires flagged content, subject to the dataset access process.",
+      "description": "Includes flagged and unflagged conversations, excluding the sexual/minors category. Contains 122,921 o1-mini/o1-preview conversations.",
+      "recommended_for": "Research on flagged content.",
       "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true"
     }
   ],
@@ -33,30 +33,30 @@
       "date": "2023-04-09",
       "event": "Start of the collection window reported for the expanded corpus in the May 2024 paper.",
       "source_url": "https://arxiv.org/html/2405.01470v1#S2",
-      "date_note": "Collection date, not a public release date."
+      "date_note": "Collection start."
     },
     {
       "date": "2024-05-02",
       "event": "The WildChat arXiv version describes the expanded one-million-conversation corpus.",
       "source_url": "https://arxiv.org/abs/2405.01470",
-      "date_note": "arXiv version date, distinct from the earlier ICLR submission and initial dataset release."
+      "date_note": "First arXiv version."
     },
     {
       "date": "2025-08-11",
       "event": "The 4.8M release update extends coverage to before August 1, 2025 and adds secret scanning.",
       "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true#updates",
-      "date_note": "Release-update date; the collection cutoff is earlier."
+      "date_note": "Collection through July 31, 2025."
     }
   ],
   "guidance": [
     {
       "title": "Choose and record a snapshot",
-      "text": "Use the yuntian-deng repositories linked here for current downloads and access requests. For comparisons with earlier studies, match their collection window, revision, and filters. Release names are not current row counts.",
+      "text": "Use the yuntian-deng repositories linked here for downloads and access requests. To reproduce an earlier study, match its collection window, revision, and filters.",
       "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M"
     },
     {
-      "title": "Request Full access in the current repository",
-      "text": "Submit an access request on yuntian-deng/WildChat-4.8M-Full with a detailed explanation of why your work needs flagged content. Approval is reviewed manually.",
+      "title": "Request Full access",
+      "text": "Submit an access request on yuntian-deng/WildChat-4.8M-Full explaining why your work needs flagged content. Requests are reviewed manually.",
       "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true"
     },
     {
@@ -65,13 +65,13 @@
       "source_url": "https://github.com/da03/wildchat#data-preparation"
     },
     {
-      "title": "Distinguish logs from synthetic extensions",
-      "text": "WildChat-50M is a separate follow-up by Benjamin Feuer and Chinmay Hegde: it adds responses from more than 50 open-weight models to WildChat prompts. Its name does not mean 50 million newly collected human conversations.",
+      "title": "WildChat-50M",
+      "text": "WildChat-50M, by Benjamin Feuer and Chinmay Hegde, adds responses from more than 50 open-weight models to WildChat prompts.",
       "source_url": "https://arxiv.org/abs/2501.18511"
     },
     {
-      "title": "Use the appropriate citation",
-      "text": "Cite Zhao, Ren, Hessel, Cardie, Choi, and Deng’s ICLR 2024 WildChat paper for the dataset. Cite the separate WildVis paper when using the visualizer, and identify the downloaded release and revision.",
+      "title": "Cite WildChat and WildVis",
+      "text": "Cite Zhao, Ren, Hessel, Cardie, Choi, and Deng’s ICLR 2024 WildChat paper for the dataset. Cite the WildVis paper when using the visualizer, and identify the downloaded release and revision.",
       "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true"
     },
     {
@@ -80,13 +80,13 @@
       "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true"
     },
     {
-      "title": "Interpret metadata carefully",
-      "text": "The paper describes geographic data inferred from IP addresses and discusses selection bias in the service’s user population. Treat this as a particular population of chatbot users when interpreting aggregate behavior.",
+      "title": "Geographic metadata",
+      "text": "Geographic locations are inferred from IP addresses. Section 6 of the paper describes the service’s user population and sampling biases.",
       "source_url": "https://arxiv.org/html/2405.01470v1#S6"
     },
     {
-      "title": "Understand the identifiers",
-      "text": "In the expanded releases, conversation_hash identifies content and is not a unique conversation key. The cards identify turn_identifier as the unique identifier within each turn.",
+      "title": "Conversation and turn identifiers",
+      "text": "In the expanded releases, conversation_hash is a content hash and can repeat across conversations. turn_identifier uniquely identifies each turn.",
       "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true"
     }
   ]

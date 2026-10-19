@@ -10,7 +10,7 @@ Research hub: https://yuntiandeng.com/wildchat/
 Research list: https://yuntiandeng.com/wildchat/research/
 Release guide: https://yuntiandeng.com/wildchat/releases/
 
-Dates below identify the first arXiv version unless the date note states otherwise. They do not establish the first public appearance of a project or dataset. The cited version and citation year are specified separately.
+Each entry lists its preprint or publication date and citation details.
 
 {% for paper in site.data.wildchat.papers %}## {{ paper.title }}
 

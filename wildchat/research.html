@@ -6,10 +6,10 @@ permalink: /wildchat/research/
 explorer: true
 ---
 <div class="wc-hero">
-  <p class="wc-kicker">Papers and connections</p>
+  <p class="wc-kicker">Bibliography</p>
   <h1>Research using WildChat</h1>
-  <p class="wc-lead">What can real conversations tell us about language models and the people who use them?</p>
-  <p>This selected bibliography includes the original dataset, exploration tools, and studies that use or extend WildChat or WildVis. Each entry explains the relationship and identifies its source.</p>
+  <p class="wc-lead">Research on chatbot use, safety, evaluation, and training.</p>
+  <p>Papers introducing, exploring, and using WildChat and WildVis, with summaries, findings, and citations.</p>
   <p class="wc-date">Literature checked {{ site.data.wildchat.meta.literature_checked_on }} · {{ site.data.wildchat.papers.size }} papers · <a href="/wildchat/data/">Download the bibliography</a></p>
 </div>
 <section class="wc-research" aria-label="Annotated bibliography">
@@ -19,7 +19,7 @@ explorer: true
     <div class="wc-control"><label for="paper-sort">Order</label><select id="paper-sort"><option value="date-asc">Earliest paper first</option><option value="date-desc">Newest paper first</option><option value="title">Title</option></select></div>
     <button id="paper-reset" type="button">Reset</button><button id="paper-share" type="button">Copy view link</button>
   </div>
-  <noscript><p>All papers are shown below. Search and filters require JavaScript; the notes and downloads do not.</p></noscript>
+  <noscript><p>Search and filters require JavaScript. All papers are shown below.</p></noscript>
   <p id="paper-result-count" class="wc-results" aria-live="polite">Showing {{ site.data.wildchat.papers.size }} papers</p>
   <p id="paper-empty" hidden>No papers match these filters. Try a broader search or reset the filters.</p>
   <div id="paper-list">
@@ -40,5 +40,5 @@ explorer: true
 </section>
 <section class="wc-section wc-prose" aria-labelledby="community-tools-title">
   <h2 id="community-tools-title">Related tools</h2>
-  <p><a href="https://github.com/aaronsnoswell/WildVisualizerAdvancedSearch/tree/advanced-search-queries">Aaron Snoswell’s advanced-search fork of WildVisualizer</a> adds compound phrase searches, excluded phrases, and user/assistant turn filters. This is an experimental community branch; its implementation notes identify the embeddings page as untested.</p>
+  <p><a href="https://github.com/aaronsnoswell/WildVisualizerAdvancedSearch/tree/advanced-search-queries">Aaron Snoswell’s advanced-search fork of WildVisualizer</a> adds compound phrase searches, excluded phrases, and user/assistant turn filters.</p>
 </section>

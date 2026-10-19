@@ -62,7 +62,7 @@
   </header>
   <main id="main" class="wc-shell" tabindex="-1">{{ content }}</main>
   <footer class="wc-footer wc-shell">
-    <div><p>Curated by <a href="{{ wc_meta.curator_url | default: '/' | relative_url }}">Yuntian Deng</a>.</p><p class="wc-muted">Sources checked {{ wc_meta.literature_checked_on | default: wc_meta.updated_at }}. A selected, evolving research list.</p></div>
+    <div><p>Curated by <a href="{{ wc_meta.curator_url | default: '/' | relative_url }}">Yuntian Deng</a>.</p><p class="wc-muted">Sources checked {{ wc_meta.literature_checked_on | default: wc_meta.updated_at }}.</p></div>
     <nav aria-label="Additional resources"><a href="{{ '/wildchat/about/' | relative_url }}">About</a><a href="{{ '/wildchat/data/navigation.json' | relative_url }}">URL directory</a><a href="https://wildvisualizer.com/">WildVis ↗</a></nav>
   </footer>
   {% if page.explorer %}<script src="{{ '/wildchat/assets/lit-hub.js' | relative_url }}" defer></script>{% endif %}
