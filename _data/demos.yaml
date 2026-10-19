@@ -13,7 +13,7 @@ demos:
       image: /images/paw.png
       demo: https://programasweights.com
       code: https://github.com/programasweights
-      paper: https://arxiv.org/pdf/2607.02512
+      paper: https://arxiv.org/abs/2607.02512
     - link: https://neural-os.com
       title: "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models"
       authors: Luke Rivard, Sun Sun, Hongyu Guo, Wenhu Chen, Yuntian Deng
@@ -28,7 +28,7 @@ demos:
       image: /images/interactive_training.png
       demo: https://interactivetraining.ai
       code: https://github.com/yuntian-group/interactive-training
-      paper: https://arxiv.org/pdf/2510.02297
+      paper: https://arxiv.org/abs/2510.02297
     - link: https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication
       title: Predicting Multiplication without Intermediate Reasoning Steps
       authors: Yuntian Deng, Yejin Choi, Stuart Shieber

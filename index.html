@@ -194,13 +194,16 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
 <div class="paper-card" id="{{ paper.title | slugify }}">
   {% if paper.image %}
   <div class="paper-card-image">
-    <a href="{{paper.pdf}}">{% assign figure_alt = paper.title | prepend: "Figure from " %}{% include responsive-image.html src=paper.image alt=figure_alt %}</a>
+    <a href="{{paper.paper_url}}">{% assign figure_alt = paper.title | prepend: "Figure from " %}{% include responsive-image.html src=paper.image alt=figure_alt %}</a>
   </div>
   {% endif %}
   <div class="paper-card-body">
-    <a class="paper" href="{{paper.pdf}}">{{paper.title}}</a><br>
+    <a class="paper" href="{{paper.paper_url}}">{{paper.title}}</a><br>
     {{paper.authors}}.<br>
-    {{paper.conference}}<br>
+    {{paper.conference}}
+    {% if paper.pdf_url %} <a class="tag" href="{{ paper.pdf_url | escape }}">PDF</a>{% endif %}
+    {% if paper.html_url %} <a class="tag" href="{{ paper.html_url | escape }}">HTML</a>{% endif %}
+    <br>
     {% if paper.notes %}{{paper.notes}}{% endif %}
   </div>
 </div>
@@ -214,13 +217,16 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
 <div class="paper-card" id="{{ paper.title | slugify }}">
   {% if paper.image %}
   <div class="paper-card-image">
-    <a href="{{paper.pdf}}">{% assign figure_alt = paper.title | prepend: "Figure from " %}{% include responsive-image.html src=paper.image alt=figure_alt %}</a>
+    <a href="{{paper.paper_url}}">{% assign figure_alt = paper.title | prepend: "Figure from " %}{% include responsive-image.html src=paper.image alt=figure_alt %}</a>
   </div>
   {% endif %}
   <div class="paper-card-body">
-    <a class="paper" href="{{paper.pdf}}">{{paper.title}}</a><br>
+    <a class="paper" href="{{paper.paper_url}}">{{paper.title}}</a><br>
     {{paper.authors}}.<br>
-    {{paper.conference}}<br>
+    {{paper.conference}}
+    {% if paper.pdf_url %} <a class="tag" href="{{ paper.pdf_url | escape }}">PDF</a>{% endif %}
+    {% if paper.html_url %} <a class="tag" href="{{ paper.html_url | escape }}">HTML</a>{% endif %}
+    <br>
     {% if paper.notes %}{{paper.notes}}{% endif %}
   </div>
 </div>
@@ -240,5 +246,5 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
 
 <h2 id="prospective-students">Prospective Students</h2>
 <p>
-If you are interested in joining my group, please first read <a href="https://programasweights.com/">ProgramAsWeights (PAW)</a>, <a href="https://neural-os.com/">NeuralOS</a>, and our work on implicit chain-of-thought reasoning (<a href="https://arxiv.org/pdf/2405.14838">internalization</a>; <a href="https://arxiv.org/pdf/2311.01460.pdf">knowledge distillation</a>). When reaching out, briefly explain which research direction interests you. Due to high volume, I am unable to respond to generic inquiries.
+If you are interested in joining my group, please first read <a href="https://programasweights.com/">ProgramAsWeights (PAW)</a>, <a href="https://neural-os.com/">NeuralOS</a>, and our work on implicit chain-of-thought reasoning (<a href="https://arxiv.org/abs/2405.14838">internalization</a>; <a href="https://arxiv.org/abs/2311.01460">knowledge distillation</a>). When reaching out, briefly explain which research direction interests you. Due to high volume, I am unable to respond to generic inquiries.
 </p>

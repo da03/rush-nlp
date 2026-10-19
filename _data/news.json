@@ -143,14 +143,14 @@
     "id": "news-2024-07-19",
     "date": "2024-07-19",
     "display_date": "Jul 19, 2024",
-    "content": "I built a <a href=\"https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication\">demo</a> using GPT-2 to directly produce the product of two numbers without chain-of-thought (CoT). CoT is internalized using the approach in <a href=\"https://arxiv.org/pdf/2405.14838\">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>. A 12-layer GPT-2 can solve <strong>20-digit multiplication</strong> with 99.5% accuracy!\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1814319104448467137\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "content": "I built a <a href=\"https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication\">demo</a> using GPT-2 to directly produce the product of two numbers without chain-of-thought (CoT). CoT is internalized using the approach in <a href=\"https://arxiv.org/abs/2405.14838\">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>. A 12-layer GPT-2 can solve <strong>20-digit multiplication</strong> with 99.5% accuracy!\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1814319104448467137\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
     "title": "I built a demo using GPT-2 to directly produce the product of two numbers without chain-of-thought (CoT). CoT is internalized using the approach in From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step. A 12-layer GPT-2 can solve 20-digit multiplication with 99.5% accuracy!"
   },
   {
     "id": "news-2024-07-11",
     "date": "2024-07-11",
     "display_date": "Jul 11, 2024",
-    "content": "I built a <a href=\"https://huggingface.co/spaces/yuntian-deng/implicit-cot-math\">demo</a> to solve grade school math problems (GSM8K)  without chain-of-thought (CoT) at 52% accuracy. CoT is internalized using the approach in <a href=\"https://arxiv.org/pdf/2405.14838\">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1811448907161043224\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "content": "I built a <a href=\"https://huggingface.co/spaces/yuntian-deng/implicit-cot-math\">demo</a> to solve grade school math problems (GSM8K)  without chain-of-thought (CoT) at 52% accuracy. CoT is internalized using the approach in <a href=\"https://arxiv.org/abs/2405.14838\">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1811448907161043224\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
     "title": "I built a demo to solve grade school math problems (GSM8K) without chain-of-thought (CoT) at 52% accuracy. CoT is internalized using the approach in From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step."
   },
   {
@@ -164,7 +164,7 @@
     "id": "news-2024-05-29",
     "date": "2024-05-29",
     "display_date": "May 29, 2024",
-    "content": "Our paper, <a href=\"https://arxiv.org/pdf/2405.14838\">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>, is now publicly available! This paper proposes a simple yet effective method to teach language models to internalize chain-of-thought reasoning by gradually removing intermediate steps and finetuning.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1795854740879774036\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "content": "Our paper, <a href=\"https://arxiv.org/abs/2405.14838\">From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step</a>, is now publicly available! This paper proposes a simple yet effective method to teach language models to internalize chain-of-thought reasoning by gradually removing intermediate steps and finetuning.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1795854740879774036\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
     "title": "Our paper, From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step, is now publicly available! This paper proposes a simple yet effective method to teach language models to internalize chain-of-thought reasoning by gradually removing intermediate steps and finetuning."
   },
   {
@@ -192,7 +192,7 @@
     "id": "news-2023-11-07",
     "date": "2023-11-07",
     "display_date": "Nov 7, 2023",
-    "content": "Our paper, <a href=\"https://arxiv.org/pdf/2311.01460.pdf\">Implicit Chain of Thought Reasoning via Knowledge Distillation</a>, is now publicly available! This paper trains LMs that can reason internally using hidden states instead of articulating all reasoning steps like humans.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1721934898582229498\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
+    "content": "Our paper, <a href=\"https://arxiv.org/abs/2311.01460\">Implicit Chain of Thought Reasoning via Knowledge Distillation</a>, is now publicly available! This paper trains LMs that can reason internally using hidden states instead of articulating all reasoning steps like humans.\n        <a class=\"twitter-link\" aria-label=\"View tweet\" href=\"https://twitter.com/yuntiandeng/status/1721934898582229498\">\n            <img src=\"images/twitter_logo.svg\" alt=\"\" aria-hidden=\"true\">\n        </a>",
     "title": "Our paper, Implicit Chain of Thought Reasoning via Knowledge Distillation, is now publicly available! This paper trains LMs that can reason internally using hidden states instead of articulating all reasoning steps like humans."
   },
   {
