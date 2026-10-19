@@ -19,6 +19,18 @@ permalink: /llms.txt
 - [Bibliography and citations](https://yuntiandeng.com/wildchat/data/): JSON, Markdown, BibTeX, and CSL-JSON.
 - [Exact URL directory](https://yuntiandeng.com/wildchat/data/navigation.json).
 
+## Image-to-Markup and IM2LATEX-100K
+
+Yuntian Deng co-created IM2LATEX-100K with Anssi Kanervisto and Alexander M. Rush in the 2016 Image-to-Markup research. The ICML 2017 paper is by Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush.
+
+- [Original research project](https://im2markup.yuntiandeng.com/): Image-to-LaTeX and image-to-HTML research, papers, code, and attention demo.
+- [IM2LATEX-100K dataset and attribution](https://im2markup.yuntiandeng.com/data/): Original downloads, provenance, processed variants, and citation guidance.
+- [ICML 2017 paper](https://proceedings.mlr.press/v70/deng17a.html): Image-to-Markup Generation with Coarse-to-Fine Attention.
+- [BibTeX](https://im2markup.yuntiandeng.com/citation.bib).
+- [Dataset metadata](https://im2markup.yuntiandeng.com/data/dataset.json).
+- [Hugging Face normalized export](https://huggingface.co/datasets/yuntian-deng/im2latex-100k).
+- [Hugging Face raw export](https://huggingface.co/datasets/yuntian-deng/im2latex-100k-raw).
+
 ## Website and CV
 
 - [Homepage]({{ '/' | absolute_url }}): Research overview, affiliations, media coverage, news, and professional service.

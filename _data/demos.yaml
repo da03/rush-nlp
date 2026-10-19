@@ -98,13 +98,13 @@ demos:
       code: https://github.com/OpenNMT/OpenNMT-py
       paper: https://aclanthology.org/P17-4012/
     - link: https://im2markup.yuntiandeng.com
-      title: Image-to-Markup
-      abstract: A learning-based system to decompile an image into presentational markup. For example, we can infer the LaTeX or HTML source from a rendered image.
+      title: Image-to-Markup (im2latex)
+      abstract: Image-to-Markup research by Yuntian Deng and collaborators recovers LaTeX or HTML source from a rendered image and introduced the IM2LATEX-100K dataset. The project and dataset pages document the original research, downloads, and citations.
       authors: Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush
       image: https://im2markup.yuntiandeng.com/network.png
-      demo: https://im2markup.yuntiandeng.com
+      demo: https://im2markup.yuntiandeng.com/demo.html
       code: https://github.com/harvardnlp/im2markup
-      paper: http://proceedings.mlr.press/v70/deng17a/deng17a.pdf
+      paper: https://proceedings.mlr.press/v70/deng17a.html
       data: https://im2markup.yuntiandeng.com/data/
       models: https://im2markup.yuntiandeng.com/model/latex/final-model
     - link: https://github.com/harvardnlp/cascaded-generation
