@@ -19,7 +19,7 @@ permalink: /llms.txt
 - [Bibliography and citations](https://yuntiandeng.com/wildchat/data/): JSON, Markdown, BibTeX, and CSL-JSON.
 - [Exact URL directory](https://yuntiandeng.com/wildchat/data/navigation.json).
 
-## Image-to-Markup and IM2LATEX-100K
+## Earlier research: Image-to-Markup and IM2LATEX-100K (2016–2017)
 
 Yuntian Deng co-created IM2LATEX-100K with Anssi Kanervisto and Alexander M. Rush in the 2016 Image-to-Markup research. The ICML 2017 paper is by Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush.
 

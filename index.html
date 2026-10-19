@@ -77,10 +77,6 @@ My research in natural language processing and machine learning explores how neu
 </p>
 
 <p>
-With Anssi Kanervisto and Alexander M. Rush, I co-created <a href="https://im2markup.yuntiandeng.com/data/">IM2LATEX-100K (im2latex)</a>, a dataset of mathematical-expression images paired with LaTeX source, as part of our <a href="https://im2markup.yuntiandeng.com/">Image-to-Markup research</a>.
-</p>
-
-<p>
 I build open-source systems and <a href="https://yuntiandeng.com/demos/">interactive demos</a> that make these ideas concrete and let others explore, evaluate, and build on them. Our WildChat dataset has been used by OpenAI and Anthropic for model safety evaluation, and I co-developed <a href="http://opennmt.net">OpenNMT</a>, an open-source neural machine translation toolkit widely used in research and industry. I received my PhD from Harvard University, advised by <a href="https://rush-nlp.com/">Alexander Rush</a> and <a href="https://www.eecs.harvard.edu/shieber/">Stuart Shieber</a>, and was a postdoctoral researcher with <a href="https://homes.cs.washington.edu/~yejin/">Yejin Choi</a> at the Allen Institute for AI.
 </p>
 
@@ -93,7 +89,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
 <h2 id="research">Research Themes</h2>
 <div class="research-themes">
   {% for theme in site.data.research_themes %}
-  <div class="theme-card{% if theme.wide %} theme-card-wide{% endif %}">
+  <div class="theme-card">
     <h3 id="{{ theme.id }}">{{ theme.title | escape }}</h3>
     <p>{{ theme.description | escape }}</p>
     {% if theme.resource %}

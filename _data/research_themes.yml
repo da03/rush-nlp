@@ -40,20 +40,3 @@
       url: https://openreview.net/forum?id=o5j63mCxIq
     - title: WildVis
       url: https://wildvisualizer.com
-- id: im2latex
-  title: Image-to-Markup (im2latex)
-  wide: true
-  description: "Yuntian Deng, Anssi Kanervisto, and Alexander M. Rush introduced IM2LATEX-100K in their 2016 research on recovering LaTeX and HTML markup from images. The ICML 2017 paper, by Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush, develops image-to-markup generation with coarse-to-fine attention. The dataset page documents original downloads, processed versions, provenance, and how to cite the research."
-  links:
-    - title: Project
-      url: https://im2markup.yuntiandeng.com/
-    - title: Dataset & attribution
-      url: https://im2markup.yuntiandeng.com/data/
-    - title: ICML 2017 paper
-      url: https://proceedings.mlr.press/v70/deng17a.html
-    - title: Hugging Face (normalized)
-      url: https://huggingface.co/datasets/yuntian-deng/im2latex-100k
-    - title: Hugging Face (raw)
-      url: https://huggingface.co/datasets/yuntian-deng/im2latex-100k-raw
-    - title: Citation
-      url: https://im2markup.yuntiandeng.com/data/#citation
