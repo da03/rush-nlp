@@ -17,3 +17,5 @@ jobs:
         with:
           ruby-version: '3.3'
       - run: ruby scripts/test_paper_links.rb
+      - run: gem install jekyll -v 4.3.4 --no-document
+      - run: ruby scripts/test_dataset_metadata.rb
