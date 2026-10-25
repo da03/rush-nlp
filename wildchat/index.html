@@ -62,7 +62,8 @@ permalink: /wildchat/
   "description": "Multilingual, multi-turn conversations between consenting users and ChatGPT, with metadata for studying user behavior, safety, evaluation, and instruction tuning.",
   "license": "https://opendatacommons.org/licenses/by/1-0/",
   "creator": [{% for author in original.authors %}{% capture author_name %}{{ author.given }} {{ author.family }}{% endcapture %}{"@type": "Person", "name": {{ author_name | strip | jsonify }}}{% unless forloop.last %},{% endunless %}{% endfor %}],
-  "citation": {
+  "citation": {{ original.paper_url | jsonify }},
+  "subjectOf": {
     "@type": "ScholarlyArticle",
     "name": {{ original.title | jsonify }},
     "url": {{ original.paper_url | jsonify }},
@@ -74,6 +75,7 @@ permalink: /wildchat/
     "name": {{ release.name | jsonify }},
     "url": {{ release.url | jsonify }},
     "description": {{ release.description | jsonify }},
+    "creator": [{% for author in original.authors %}{% capture author_name %}{{ author.given }} {{ author.family }}{% endcapture %}{"@type": "Person", "name": {{ author_name | strip | jsonify }}}{% unless forloop.last %},{% endunless %}{% endfor %}],
     "license": "https://opendatacommons.org/licenses/by/1-0/"
   }{% unless forloop.last %},{% endunless %}{% endfor %}]
 }

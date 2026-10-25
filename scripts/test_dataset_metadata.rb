@@ -54,26 +54,57 @@ class DatasetMetadataTest < Minitest::Test
     false
   end
 
-  def citation?(value)
+  def google_dataset_citation?(value)
     return !value.strip.empty? if value.is_a?(String)
     value.is_a?(Hash) &&
-      (Array(value['@type']) & %w[CreativeWork ScholarlyArticle Article Book]).any? &&
+      Array(value['@type']).include?('CreativeWork') &&
       url?(value['url'])
   end
 
-  def test_all_rendered_datasets_have_licenses_and_supported_citations
+  def creator?(value)
+    value.is_a?(Hash) &&
+      (Array(value['@type']) & %w[Person Organization]).any? &&
+      value['name'].is_a?(String) && !value['name'].strip.empty?
+  end
+
+  def test_all_rendered_datasets_have_creators_licenses_and_supported_citations
     datasets = self.class.rendered_pages.values.flat_map do |html|
       documents(html).flat_map { |document| objects(document) }
     end.select { |item| Array(item['@type']).include?('Dataset') }
     assert_operator datasets.length, :>=, 2
     datasets.each do |dataset|
+      creators = dataset['creator'].is_a?(Array) ? dataset['creator'] : [dataset['creator']]
+      refute_empty creators, "Missing creator: #{dataset['name']}"
+      creators.each { |creator| assert creator?(creator), "Missing or invalid creator: #{dataset['name']}" }
       assert url?(dataset['license']), "Missing or invalid license: #{dataset['name']}"
       assert_operator dataset.fetch('description').length, :>=, 50
       next unless dataset.key?('citation')
       citations = dataset['citation'].is_a?(Array) ? dataset['citation'] : [dataset['citation']]
       refute_empty citations
-      citations.each { |citation| assert citation?(citation), "Invalid citation: #{dataset['name']}" }
+      citations.each { |citation| assert google_dataset_citation?(citation), "Unsupported Google Dataset citation: #{dataset['name']}" }
     end
+  end
+
+  def test_wildchat_releases_keep_all_six_creators
+    dataset = documents(self.class.rendered_pages.fetch('wildchat/index.html')).find { |item| item['@type'] == 'Dataset' }
+    releases = dataset.fetch('hasPart')
+    assert_equal ['WildChat-4.8M', 'WildChat-4.8M-Full'], releases.map { |release| release['name'] }
+    expected = ['Wenting Zhao', 'Xiang Ren', 'Jack Hessel', 'Claire Cardie', 'Yejin Choi', 'Yuntian Deng']
+    ([dataset] + releases).each do |item|
+      assert_equal expected, item.fetch('creator', []).map { |creator| creator['name'] }, "Incorrect creators: #{item['name']}"
+    end
+  end
+
+  def test_wildchat_uses_a_citation_url_and_preserves_the_paper
+    dataset = documents(self.class.rendered_pages.fetch('wildchat/index.html')).find { |item| item['@type'] == 'Dataset' }
+    paper_url = 'https://proceedings.iclr.cc/paper_files/paper/2024/hash/9421261e06f1a63a352b068f1ac90609-Abstract-Conference.html'
+    assert_equal paper_url, dataset['citation']
+    paper = dataset.fetch('subjectOf')
+    assert_equal 'ScholarlyArticle', paper['@type']
+    assert_equal paper_url, paper['url']
+    assert_equal 'WildChat: 1M ChatGPT Interaction Logs in the Wild', paper['name']
+    assert_equal '2024', paper['datePublished']
+    assert_equal ['Wenting Zhao', 'Xiang Ren', 'Jack Hessel', 'Claire Cardie', 'Yejin Choi', 'Yuntian Deng'], paper['author'].map { |author| author['name'] }
   end
 
   def test_im2latex_keeps_its_paper_and_creator_attribution
@@ -88,10 +119,11 @@ class DatasetMetadataTest < Minitest::Test
     assert_equal 4, paper['author'].length
   end
 
-  def test_untyped_citation_reference_is_rejected
-    refute citation?({'@id' => 'https://im2markup.yuntiandeng.com/#paper'})
-    assert citation?(PAPER)
-    assert citation?({'@type' => 'ScholarlyArticle', 'url' => PAPER})
+  def test_google_dataset_citation_profile
+    refute google_dataset_citation?({'@id' => 'https://im2markup.yuntiandeng.com/#paper'})
+    assert google_dataset_citation?(PAPER)
+    assert google_dataset_citation?({'@type' => 'CreativeWork', 'url' => PAPER})
+    refute google_dataset_citation?({'@type' => 'ScholarlyArticle', 'url' => PAPER})
     refute url?(nil)
     refute url?('CC0')
   end
