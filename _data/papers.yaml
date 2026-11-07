@@ -118,9 +118,10 @@ notable:
 papers:
     - title: "Compile by Training: Turning Natural-Language Specifications into Local Neural Functions"
       authors: <strong>Yuntian Deng</strong>, Pengyu Nie, Stuart Shieber
-      paper_url: https://arxiv.org/abs/2609.04199
-      pdf_url: https://arxiv.org/pdf/2609.04199
-      conference: EMNLP 2026 Demo
+      paper_url: https://aclanthology.org/2026.emnlp-demos.78/
+      pdf_url: https://aclanthology.org/2026.emnlp-demos.78.pdf
+      conference: EMNLP 2026 System Demonstrations
+      notes: '<a href="https://aclanthology.org/2026.emnlp-demos.78.bib">BibTeX</a> &middot; <a href="https://arxiv.org/abs/2609.04199">arXiv</a>'
       year: 2026
     - title: "Control-Data Flow Separation: Stable Prompt Optimization in Multi-Agent LLMs"
       authors: Wentao Zhang, Shariyar Murtaza, Junaid Bhatti, Utkarsh Soni, Yifan Nie, Eugene Wen, <strong>Yuntian Deng</strong>
