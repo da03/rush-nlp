@@ -55,7 +55,9 @@ notable:
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       research_guide: /research/llm-decision-trees/
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
-      paper_url: https://arxiv.org/html/2310.14034v1
+      paper_url: https://arxiv.org/abs/2310.14034
+      pdf_url: https://arxiv.org/pdf/2310.14034
+      html_url: https://arxiv.org/html/2310.14034v1
       code: https://github.com/csinva/tree-prompt
       image: /images/tree_prompt.png
       conference: EMNLP 2023
@@ -64,6 +66,7 @@ notable:
       research_guide: /research/learned-rendering/
       authors: <strong>Yuntian Deng</strong>, Noriyuki Kojima, Alexander M. Rush
       paper_url: https://arxiv.org/abs/2210.05147
+      pdf_url: https://arxiv.org/pdf/2210.05147
       code: https://github.com/da03/markup2im
       image: /images/molecules_rendering_cropped.gif
       conference: ICLR 2023
@@ -77,6 +80,7 @@ notable:
       research_guide: /research/structured-decoding/
       authors: <strong>Yuntian Deng</strong>, Alexander M. Rush
       paper_url: https://arxiv.org/abs/2006.01112
+      pdf_url: https://arxiv.org/pdf/2006.01112
       image: /images/cascaded-generation.gif
       slides: /slides/neurips20_cascaded_generation_10min.pdf
       conference: NeurIPS 2020
@@ -84,7 +88,9 @@ notable:
       research_guide: /research/energy-based-text-generation/
       authors: <strong>Yuntian Deng</strong>, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc'Aurelio Ranzato
       conference: ICLR 2020
-      paper_url: https://arxiv.org/html/2004.11714v1
+      paper_url: https://arxiv.org/abs/2004.11714
+      pdf_url: https://arxiv.org/pdf/2004.11714
+      html_url: https://arxiv.org/html/2004.11714v1
       slides: /slides/openai_EBM.pdf
       code: https://github.com/da03/Residual-EBM
       image: /images/ICLR20_REBM.png
@@ -101,6 +107,7 @@ notable:
       authors: <strong>Yuntian Deng</strong>*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
       conference: NeurIPS 2018
       paper_url: https://arxiv.org/abs/1807.03756
+      pdf_url: https://arxiv.org/pdf/1807.03756
       code: https://github.com/harvardnlp/var-attn/
       image: /images/VariationalAttention.png
     - title: "Image-to-Markup Generation with Coarse-to-Fine Attention"
@@ -306,7 +313,9 @@ papers:
     - title: "Tree Prompting: Efficient Task Adaptation without Fine-Tuning"
       research_guide: /research/llm-decision-trees/
       authors: John Xavier Morris*, Chandan Singh*, Alexander M. Rush, Jianfeng Gao, <strong>Yuntian Deng</strong>
-      paper_url: https://arxiv.org/html/2310.14034v1
+      paper_url: https://arxiv.org/abs/2310.14034
+      pdf_url: https://arxiv.org/pdf/2310.14034
+      html_url: https://arxiv.org/html/2310.14034v1
       code: https://github.com/csinva/tree-prompt
       image: /images/tree_prompt.png
       conference: EMNLP 2023
@@ -316,6 +325,7 @@ papers:
       research_guide: /research/learned-rendering/
       authors: <strong>Yuntian Deng</strong>, Noriyuki Kojima, Alexander M. Rush
       paper_url: https://arxiv.org/abs/2210.05147
+      pdf_url: https://arxiv.org/pdf/2210.05147
       image: /images/molecules_rendering_cropped.gif
       conference: ICLR 2023
       year: 2023
@@ -371,6 +381,7 @@ papers:
       research_guide: /research/structured-decoding/
       authors: <strong>Yuntian Deng</strong>, Alexander M. Rush
       paper_url: https://arxiv.org/abs/2006.01112
+      pdf_url: https://arxiv.org/pdf/2006.01112
       image: /images/cascaded-generation.gif
       conference: NeurIPS 2020
       slides: /slides/neurips20_cascaded_generation_10min.pdf
@@ -379,7 +390,9 @@ papers:
       research_guide: /research/energy-based-text-generation/
       authors: <strong>Yuntian Deng</strong>, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc'Aurelio Ranzato
       conference: ICLR 2020
-      paper_url: https://arxiv.org/html/2004.11714v1
+      paper_url: https://arxiv.org/abs/2004.11714
+      pdf_url: https://arxiv.org/pdf/2004.11714
+      html_url: https://arxiv.org/html/2004.11714v1
       code: https://github.com/da03/Residual-EBM
       slides: /slides/openai_EBM.pdf
       image: /images/ICLR20_REBM.png
@@ -417,6 +430,7 @@ papers:
       authors: <strong>Yuntian Deng</strong>*, Yoon Kim*, Justin Chiu, Demi Guo, Alexander M. Rush
       conference: NeurIPS 2018
       paper_url: https://arxiv.org/abs/1807.03756
+      pdf_url: https://arxiv.org/pdf/1807.03756
       code: https://github.com/harvardnlp/var-attn/
       image: /images/VariationalAttention.png
       year: 2018

@@ -94,7 +94,7 @@ class PaperLinksTest < Minitest::Test
     urls = papers.map { |paper| paper['paper_url'] }
     assert_includes urls, '/papers/Deng2019ICDAR.pdf'
     assert_includes urls, 'https://aclanthology.org/P17-4012.pdf'
-    assert_includes urls, 'https://openreview.net/pdf?id=d0zla3M3LI'
+    assert_includes urls, 'https://aclanthology.org/2022.emnlp-main.815/'
   end
 
   def test_tests_are_not_published_as_site_content
