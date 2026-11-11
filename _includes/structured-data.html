@@ -10,18 +10,20 @@
       "publisher": { "@id": {{ '/#person' | absolute_url | jsonify }} }
     },
     {
-      "@type": "{% if page.url == '/' %}ProfilePage{% else %}WebPage{% endif %}",
+      "@type": "{% if page.url == '/' or page.url == '/zh/' %}ProfilePage{% else %}WebPage{% endif %}",
       "@id": {{ canonical_url | append: '#webpage' | jsonify }},
       "url": {{ canonical_url | jsonify }},
       "name": {{ seo_title | jsonify }},
       "description": {{ seo_description | jsonify }},
-      "inLanguage": "en",
+      "inLanguage": {{ page.lang | default: 'en' | jsonify }},
       "isPartOf": { "@id": {{ '/#website' | absolute_url | jsonify }} },
       {% if page.url == '/' %}
       "mentions": [
         { "@id": "https://im2markup.yuntiandeng.com/data/#dataset" },
         { "@id": "https://im2markup.yuntiandeng.com/#paper" }
       ],
+      "mainEntity": { "@id": {{ '/#person' | absolute_url | jsonify }} }
+      {% elsif page.url == '/zh/' %}
       "mainEntity": { "@id": {{ '/#person' | absolute_url | jsonify }} }
       {% else %}
       "about": { "@id": {{ '/#person' | absolute_url | jsonify }} }
@@ -31,6 +33,7 @@
       "@type": "Person",
       "@id": {{ '/#person' | absolute_url | jsonify }},
       "name": "Yuntian Deng",
+      "alternateName": "邓云天",
       "url": {{ '/' | absolute_url | jsonify }},
       "jobTitle": "Assistant Professor of Computer Science",
       "image": {{ '/images/yuntian-deng.jpg' | absolute_url | jsonify }},

@@ -1,0 +1,106 @@
+{
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights（PAW）",
+      "description": "一种新的编程范式：将自然语言函数描述编译成可复用的神经程序，用神经程序替代模糊函数的符号代码。我们的目标是不以代码为中介的编程。",
+      "links": [
+        {
+          "title": "项目与演示",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "研究介绍",
+          "url": "https://programasweights.com/zh/research/"
+        },
+        {
+          "title": "阅读清单",
+          "url": "https://programasweights.com/zh/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "神经世界模型（Neural World Models）",
+      "description": "生成模型如何学会交互式计算环境的行为？NeuralOS 用神经生成模型端到端模拟操作系统，让模型根据用户操作生成界面变化。",
+      "links": [
+        {
+          "title": "交互演示",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "阅读清单",
+          "url": "https://neural-os.com/reading-list/zh/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "隐式思维链（Implicit CoT）",
+      "description": "我们于 2023 年首次提出隐式思维链推理（Implicit CoT，也称 latent reasoning）：让语言模型通过连续隐藏状态推理，而不是把中间步骤写成文字。我们的方法包括知识蒸馏和逐步内化推理（Internalized reasoning）。",
+      "links": [
+        {
+          "title": "2023 论文",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "2024 论文",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "交互演示",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "论文导读",
+          "url": "https://latent-implicit-thinking.github.io/zh/"
+        },
+        {
+          "title": "ICLR 2026 研讨会",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "真实场景中的语言模型使用",
+      "description": "人们实际怎样使用大语言模型？我们收集和分析数百万条真实对话，研究使用模式、模型安全与涌现行为，并提供开放的数据和分析工具。",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/zh/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "将自然语言函数描述编译成神经程序，用模型权重执行函数计算。"
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "用神经生成模型端到端模拟操作系统，根据用户操作生成界面变化。"
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "2023 年首次提出通过连续隐藏状态进行隐式思维链推理，并用知识蒸馏将显式推理过程迁移到模型内部。"
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "逐步移除训练中的显式推理步骤，让模型学会在内部完成推理，直接输出答案。"
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "收集真实用户与 ChatGPT 的多语言、多轮对话，为用户行为、模型安全与语言模型训练提供研究数据。"
+    }
+  ]
+}

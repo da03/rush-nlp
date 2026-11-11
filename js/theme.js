@@ -45,8 +45,10 @@
       var b = buttons[i];
       var isDark = active === 'dark';
       b.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-      b.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-      b.setAttribute('title', isDark ? 'Switch to light theme' : 'Switch to dark theme');
+      var zh = root.lang === 'zh-Hans';
+      var label = zh ? (isDark ? '切换至浅色模式' : '切换至深色模式') : (isDark ? 'Switch to light theme' : 'Switch to dark theme');
+      b.setAttribute('aria-label', label);
+      b.setAttribute('title', label);
     }
   }
 

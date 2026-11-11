@@ -17,6 +17,6 @@
         </ul>
       </div>
     </div>
-    <p class="footer-updated">Last updated: {{ site.time | date: "%b %Y" }}</p>
+    <p class="footer-updated">{% if page.lang == 'zh-Hans' %}更新于 {{ site.time | date: '%Y 年 %m 月' }}{% else %}Last updated: {{ site.time | date: '%b %Y' }}{% endif %}</p>
   </div>
 </footer>

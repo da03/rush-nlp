@@ -1,0 +1,86 @@
+---
+layout: page
+title: 邓云天 Yuntian Deng
+seo_title: 邓云天 Yuntian Deng | 滑铁卢大学
+lang: zh-Hans
+permalink: /zh/
+helper: false
+description: 邓云天（Yuntian Deng），滑铁卢大学助理教授。研究神经程序、神经世界模型、隐式思维链（Implicit CoT）与真实场景中的语言模型使用。
+---
+<div class="profile-section">
+  <div class="profile-photo">
+    {% include responsive-image.html src="/images/yuntian-deng.jpg" alt="邓云天 Yuntian Deng" loading="eager" display_width=200 %}
+  </div>
+  <div class="profile-info">
+    <h1>邓云天 <span class="profile-name-en" lang="en">Yuntian Deng</span></h1>
+    <ul class="profile-affil">
+      <li><strong>助理教授</strong>，滑铁卢大学计算机学院</li>
+      <li><strong>Associate</strong>，Harvard SEAS</li>
+      <li><strong>Faculty Affiliate</strong>，Vector Institute</li>
+      <li>哈佛大学计算机科学博士</li>
+    </ul>
+    <ul class="profile-links">
+      <li><a href="/cv.pdf">简历</a></li>
+      <li><a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a></li>
+      <li><a href="https://orcid.org/0000-0001-5280-8974">ORCID</a></li>
+      <li><a href="https://github.com/da03">GitHub</a></li>
+      <li><a href="https://x.com/yuntiandeng">X / Twitter</a></li>
+      <li><a href="mailto:yuntian@uwaterloo.ca">联系我</a></li>
+    </ul>
+  </div>
+</div>
+
+<p>我研究自然语言处理与机器学习：让神经模型学会原本通过符号程序或显式推理步骤完成的计算。我的研究组将自然语言函数描述编译成可复用的神经程序（<a href="https://programasweights.com">ProgramAsWeights</a>），用生成模型模拟交互式计算环境（<a href="https://neural-os.com">NeuralOS</a>），并研究<a href="https://latent-implicit-thinking.github.io/zh/">隐式思维链（Implicit CoT）</a>与推理内化。我们也通过 <a href="/wildchat/zh/">WildChat</a> 对话数据和 <a href="https://wildvisualizer.com">WildVis</a> 分析工具，研究人们如何使用语言模型。</p>
+
+<p>我开发开源系统和<a href="/demos/">交互演示</a>，供研究者体验、评测和开展后续研究。WildChat 已被 OpenAI 和 Anthropic 用于模型安全评测。我也是开源神经机器翻译工具包 <a href="https://opennmt.net/">OpenNMT</a> 的共同开发者。我在哈佛大学获得计算机科学博士学位，导师是 <a href="https://rush-nlp.com/">Alexander Rush</a> 和 <a href="https://www.eecs.harvard.edu/shieber/">Stuart Shieber</a>，之后在 Allen Institute for AI 与 <a href="https://yejinc.github.io/">Yejin Choi</a> 合作开展博士后研究。</p>
+
+<div class="research-vision">
+  <span class="research-vision__label">从解题者到工具创造者</span>
+  <p class="research-vision__quote">我认为，通过预训练让模型把重复任务编译成小型、可复用的神经程序，而不是每次都从头求解，是人工智能未来最令人兴奋的方向之一。</p>
+</div>
+
+<h2 id="research">研究方向</h2>
+<div class="research-themes">
+  {% for theme in site.data.homepage_zh.research_themes %}
+  <div class="theme-card">
+    <h3 id="{{ theme.id }}">{{ theme.title | escape }}</h3>
+    <p>{{ theme.description | escape }}</p>
+    <span class="theme-papers">
+      {% for link in theme.links %}
+      <a href="{{ link.url | escape }}">{{ link.title | escape }}</a>{% unless forloop.last %} &middot;{% endunless %}
+      {% endfor %}
+    </span>
+  </div>
+  {% endfor %}
+</div>
+
+<h2 id="papers">代表论文</h2>
+<div class="papers-list">
+{% for entry in site.data.homepage_zh.papers %}
+{% assign paper = site.data.papers.featured | where: 'title', entry.title | first %}
+<div class="paper-card">
+  {% if paper.image %}
+  <div class="paper-card-image">
+    <a href="{{ paper.paper_url | escape }}">{% include responsive-image.html src=paper.image alt=paper.title %}</a>
+  </div>
+  {% endif %}
+  <div class="paper-card-body">
+    <a class="paper" href="{{ paper.paper_url | escape }}" lang="en">{{ paper.title | escape }}</a><br>
+    <span lang="en">{{ paper.authors }}.<br>{{ paper.conference }}</span>
+    <p class="paper-summary">{{ entry.description | escape }}</p>
+    <a class="tag tag-paper" href="{{ paper.paper_url | escape }}">论文与项目</a>
+    {% if paper.pdf_url %}<a class="tag" href="{{ paper.pdf_url | escape }}">PDF</a>{% endif %}
+    {% if paper.html_url %}<a class="tag" href="{{ paper.html_url | escape }}">HTML</a>{% endif %}
+    {% if paper.code %}<a class="tag" href="{{ paper.code | escape }}">代码与资源</a>{% endif %}
+  </div>
+</div>
+{% endfor %}
+</div>
+<p><a href="/publications/">全部论文</a> · <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a></p>
+
+<h2 id="guides">研究导读</h2>
+<p><a href="/research/zh/">语言模型与结构化学习研究导读</a>介绍 Tree Prompting、能量模型、概率注意力、结构化解码、长文本评估、学习式渲染和交互式训练，提供原始论文、方法示例、相关工作与引用。</p>
+<p><a href="https://im2markup.yuntiandeng.com/zh/">Image-to-Markup 与 IM2LATEX-100K</a>介绍我们在 2016–2017 年开展的图像转 LaTeX 研究，以及数据集、代码和交互演示。</p>
+
+<h2 id="prospective-students">加入研究组</h2>
+<p>如果你希望加入我的研究组，请先阅读 <a href="https://programasweights.com/">ProgramAsWeights</a>、<a href="https://neural-os.com/">NeuralOS</a> 和我们的隐式思维链研究（<a href="https://arxiv.org/abs/2311.01460">2023 年隐式思维链</a>；<a href="https://arxiv.org/abs/2405.14838">2024 年逐步内化</a>）。联系时，请简要说明你感兴趣的研究方向。由于来信量大，我无法回复没有具体研究内容的咨询。</p>

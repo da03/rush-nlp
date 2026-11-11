@@ -56,6 +56,11 @@
   {% assign stylesheet_version = site.github.build_revision | default: "im2latex-20261019" %}
   <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}?v={{ stylesheet_version | escape }}">
   <link rel="canonical" href="{{ canonical_url | escape }}">
+  {% if page.url == '/' or page.url == '/zh/' %}
+  <link rel="alternate" hreflang="en" href="{{ '/' | absolute_url }}">
+  <link rel="alternate" hreflang="zh-Hans" href="{{ '/zh/' | absolute_url }}">
+  <link rel="alternate" hreflang="x-default" href="{{ '/' | absolute_url }}">
+  {% endif %}
   <link rel="alternate" type="application/rss+xml" title="Yuntian Deng — News" href="{{ '/feed.xml' | absolute_url }}">
   <link rel="describedby" type="text/plain" title="Site guide for AI agents" href="{{ '/llms.txt' | absolute_url }}">
   {% if page.mathjax %}

@@ -904,3 +904,25 @@ table.table-bordered {
         margin-top: 24px;
     }
 }
+
+.language-switch {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 10px;
+    white-space: nowrap;
+}
+
+html[lang="zh-Hans"] .profile-name-en {
+    display: block;
+    font-size: 0.72em;
+    margin-top: 4px;
+}
+
+html[lang="zh-Hans"] .post-content {
+    line-height: 1.8;
+}
+
+html[lang="zh-Hans"] .paper-summary {
+    margin: 10px 0;
+}
