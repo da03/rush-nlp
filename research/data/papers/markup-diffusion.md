@@ -15,7 +15,7 @@ Building on recent advances in image generation, we present a fully data-driven 
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{deng2023markuptoimage,
   title = {{Markup-to-Image Diffusion Models with Scheduled Sampling}},
   author = {Deng, Yuntian and Kojima, Noriyuki and Rush, Alexander M.},
   year = {2023},

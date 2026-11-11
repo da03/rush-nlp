@@ -9,15 +9,14 @@ layout: null
   <url><loc>{{ '/talks/' | absolute_url | xml_escape }}</loc></url>
   <url><loc>{{ '/teaching/' | absolute_url | xml_escape }}</loc></url>
   <url><loc>{{ '/publications/' | absolute_url | xml_escape }}</loc></url>
-  <url><loc>{{ '/research/' | absolute_url | xml_escape }}</loc></url>
-  <url><loc>{{ '/research/papers/' | absolute_url | xml_escape }}</loc></url>
-  <url><loc>{{ '/research/data/' | absolute_url | xml_escape }}</loc></url>
-  <url><loc>{{ '/research/about/' | absolute_url | xml_escape }}</loc></url>
+  {% for research_page in site.data.methods.meta.static_pages %}
+  <url><loc>{{ research_page.path | prepend: '/research/' | absolute_url | xml_escape }}</loc><lastmod>{{ research_page.updated_at | xml_escape }}</lastmod></url>
+  {% endfor %}
   {% for guide in site.data.methods.guides %}
-  <url><loc>{{ guide.id | prepend: '/research/' | append: '/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ guide.id | prepend: '/research/' | append: '/' | absolute_url | xml_escape }}</loc><lastmod>{{ guide.updated_at | xml_escape }}</lastmod></url>
   {% endfor %}
   {% for paper in site.data.methods.papers %}
-  <url><loc>{{ paper.id | prepend: '/research/papers/' | append: '/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ paper.id | prepend: '/research/papers/' | append: '/' | absolute_url | xml_escape }}</loc><lastmod>{{ paper.updated_at | xml_escape }}</lastmod></url>
   {% endfor %}
   <url><loc>{{ '/cv.pdf' | absolute_url | xml_escape }}</loc></url>
   {% for course in site.data.teaching.teaching %}

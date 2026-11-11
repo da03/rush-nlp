@@ -11,7 +11,7 @@ Clarifies that the term variational attention also names a different random obje
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{bahuleyan2018variational,
   title = {{Variational Attention for Sequence-to-Sequence Models}},
   author = {Bahuleyan, Hareesh and Mou, Lili and Vechtomova, Olga and Poupart, Pascal},
   year = {2018},

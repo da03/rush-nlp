@@ -112,6 +112,7 @@
         ]
       }
     ],
+    "updated_at": "2026-11-10",
     "url": "https://yuntiandeng.com/research/llm-decision-trees/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/llm-decision-trees.md"
   },
@@ -247,6 +248,7 @@
         ]
       }
     ],
+    "updated_at": "2026-11-10",
     "url": "https://yuntiandeng.com/research/energy-based-text-generation/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/energy-based-text-generation.md"
   },
@@ -397,6 +399,7 @@
       "lilicorr2026",
       "diffuspec2026"
     ],
+    "updated_at": "2026-11-10",
     "url": "https://yuntiandeng.com/research/structured-decoding/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/structured-decoding.md"
   },
@@ -527,6 +530,7 @@
       "bahuleyan2018",
       "bayesianattention2020"
     ],
+    "updated_at": "2026-11-10",
     "url": "https://yuntiandeng.com/research/probabilistic-attention/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/probabilistic-attention.md"
   },
@@ -617,6 +621,7 @@
       "openmeva",
       "story-evaluation-survey"
     ],
+    "updated_at": "2026-11-10",
     "url": "https://yuntiandeng.com/research/long-form-evaluation/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/long-form-evaluation.md"
   },
@@ -706,6 +711,7 @@
       "fsa-cdm",
       "diffusion-input-perturbation"
     ],
+    "updated_at": "2026-11-10",
     "url": "https://yuntiandeng.com/research/learned-rendering/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/learned-rendering.md"
   },
@@ -800,6 +806,7 @@
       "livetune",
       "ai-training-manager"
     ],
+    "updated_at": "2026-11-10",
     "url": "https://yuntiandeng.com/research/interactive-training/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/interactive-training.md"
   }

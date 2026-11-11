@@ -1,0 +1,21 @@
+{
+  "references_checked_at": "2026-11-10",
+  "static_pages": [
+    {
+      "path": "",
+      "updated_at": "2026-11-10"
+    },
+    {
+      "path": "papers/",
+      "updated_at": "2026-11-10"
+    },
+    {
+      "path": "data/",
+      "updated_at": "2026-11-10"
+    },
+    {
+      "path": "about/",
+      "updated_at": "2026-11-10"
+    }
+  ]
+}

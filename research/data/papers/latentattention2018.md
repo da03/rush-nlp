@@ -15,7 +15,7 @@ Neural attention has become central to many state-of-the-art models in natural l
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{deng2018latent,
   title = {{Latent Alignment and Variational Attention}},
   author = {Deng, Yuntian and Kim, Yoon and Chiu, Justin and Guo, Demi and Rush, Alexander M.},
   year = {2018},

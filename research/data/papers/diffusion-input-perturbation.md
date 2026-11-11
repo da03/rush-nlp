@@ -11,7 +11,7 @@ Addresses the same training–sampling mismatch through input perturbation, prov
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{pmlr-v202-ning23a,
   title = {{Input Perturbation Reduces Exposure Bias in Diffusion Models}},
   author = {Ning, Mang and Sangineto, Enver and Porrello, Angelo and Calderara, Simone and Cucchiara, Rita},
   year = {2023},

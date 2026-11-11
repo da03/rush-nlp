@@ -15,7 +15,7 @@ Experiment trackers show how training is progressing, but changing a live run st
 ## Citation
 
 ```bibtex
-@misc{article_number,
+@misc{zhang2026interactivetraining2,
   title = {{Interactive Training 2: Auditable Control Plane for Live Model Training}},
   author = {Zhang, Wentao and Pan, Xuanhe and Zhou, Han and Lu, Yang and Deng, Yuntian},
   year = {2026},

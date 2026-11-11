@@ -15,7 +15,7 @@ Non-autoregressive machine translation (NAT) approaches enable fast generation b
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{deng-rush-2021-sequence,
   title = {{Sequence-to-Lattice Models for Fast Translation}},
   author = {Deng, Yuntian and Rush, Alexander M.},
   year = {2021},

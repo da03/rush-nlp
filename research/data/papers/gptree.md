@@ -11,7 +11,7 @@ A later LLM decision-tree system with expert interaction and several split types
 ## Citation
 
 ```bibtex
-@misc{article_number,
+@misc{gptree,
   title = {{GPTree: Towards Explainable Decision-Making via LLM-powered Decision Trees}},
   author = {Xiong, Sichao and Ihlamur, Yigit and Alican, Fuat and Yin, Aaron Ontoyin},
   year = {2024},

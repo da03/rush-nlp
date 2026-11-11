@@ -45,6 +45,7 @@
     "arxiv_first_posted": "2023-10-21",
     "abstract": "Prompting language models (LMs) is the main interface for applying them to new tasks. However, for smaller LMs, prompting provides low accuracy compared to gradient-based fine-tuning. Tree Prompting is an approach to prompting which builds a decision tree of prompts, linking multiple LM calls together to solve a task. At inference time, each call to the LM is determined by efficiently routing the outcome of the previous call using the tree. Experiments on classification datasets show that Tree Prompting improves accuracy over competing methods and is competitive with fine-tuning. We also show that variants of Tree Prompting allow inspection of a model’s decision-making process.",
     "abstract_source": "https://arxiv.org/html/2310.14034v1",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/tree-prompting/"
   },
   {
@@ -84,6 +85,7 @@
     "volume": "14",
     "issue": "1",
     "article_number": "7913",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/aug-tree/"
   },
   {
@@ -121,6 +123,7 @@
     "arxiv_first_posted": "2024-11-13",
     "publication_type": "preprint",
     "container_title": "arXiv",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/gptree/"
   },
   {
@@ -166,6 +169,7 @@
     "arxiv_first_posted": "2025-09-30",
     "publication_type": "preprint",
     "container_title": "arXiv",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/act/"
   },
   {
@@ -209,6 +213,7 @@
     "arxiv_first_posted": "2020-04-22",
     "abstract": "Text generation is ubiquitous in many NLP tasks, from summarization, to dialogue and machine translation. The dominant parametric approach is based on locally normalized models which predict one word at a time. While these work remarkably well, they are plagued by exposure bias due to the greedy nature of the generation process. In this work, we investigate un-normalized energy-based models (EBMs) which operate not at the token but at the sequence level. In order to make training tractable, we first work in the residual of a pretrained locally normalized language model and second we train using noise contrastive estimation. Furthermore, since the EBM works at the sequence level, we can leverage pretrained bi-directional contextual representations, such as BERT and RoBERTa. Our experiments on two large language modeling datasets show that residual EBMs yield lower perplexity compared to locally normalized baselines. Moreover, generation via importance sampling is very efficient and of higher quality than the baseline models according to human evaluation.",
     "abstract_source": "https://arxiv.org/html/2004.11714v1",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/residual-ebm/"
   },
   {
@@ -261,6 +266,7 @@
     "pages": "1–41",
     "abstract": "Current large-scale auto-regressive language models display impressive fluency and can generate convincing text. In this work we start by asking the question: Can the generations of these models be reliably distinguished from real text by statistical discriminators? We find experimentally that the answer is affirmative when we have access to the training data for the model, and guardedly affirmative even if we do not. This suggests that the auto-regressive models can be improved by incorporating the (globally normalized) discriminators into the generative process. We give a formalism for this using the Energy-Based Model framework, and show that it indeed improves the results of the generative models, measured both in terms of perplexity and in terms of human evaluation.",
     "abstract_source": "https://www.jmlr.org/papers/v22/20-326.html",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/residual-ebm-jmlr/"
   },
   {
@@ -312,6 +318,7 @@
     ],
     "arxiv_id": "2410.21357",
     "arxiv_first_posted": "2024-10-28",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/edlm/"
   },
   {
@@ -349,6 +356,7 @@
     "arxiv_first_posted": "2026-06-08",
     "publication_type": "preprint",
     "container_title": "arXiv",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/unified-energy/"
   },
   {
@@ -376,6 +384,7 @@
     ],
     "arxiv_id": "1710.10739",
     "arxiv_first_posted": "2017-10-30",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/neural-trf-nce/"
   },
   {
@@ -408,6 +417,7 @@
     "arxiv_first_posted": "2020-06-01",
     "abstract": "The two dominant approaches to neural text generation are fully autoregressive models, using serial beam search decoding, and non-autoregressive models, using parallel decoding with no output dependencies. This work proposes an autoregressive model with sub-linear parallel time generation. Noting that conditional random fields with bounded context can be decoded in parallel, we propose an efficient cascaded decoding approach for generating high-quality output. To parameterize this cascade, we introduce a Markov transformer, a variant of the popular fully autoregressive model that allows us to simultaneously decode with specific autoregressive context cutoffs. This approach requires only a small modification from standard autoregressive training, while showing competitive accuracy/speed tradeoff compared to existing methods on five machine translation datasets.",
     "abstract_source": "https://arxiv.org/html/2006.01112v2",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/cascaded2020/"
   },
   {
@@ -439,6 +449,7 @@
     ],
     "abstract": "Non-autoregressive machine translation (NAT) approaches enable fast generation by utilizing parallelizable generative processes. The remaining bottleneck in these models is their decoder layers; unfortunately unlike in autoregressive models (Kasai et al., 2020), removing decoder layers from NAT models significantly degrades accuracy. This work proposes a sequence-to-lattice model that replaces the decoder with a search lattice. Our approach first constructs a candidate lattice using efficient lookup operations, generates lattice scores from a deep encoder, and finally finds the best path using dynamic programming. Experiments on three machine translation datasets show that our method is faster than past non-autoregressive generation approaches, and more accurate than naively reducing the number of decoder layers.",
     "abstract_source": "https://aclanthology.org/2021.findings-emnlp.318/",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/lattice2021/"
   },
   {
@@ -484,6 +495,7 @@
     ],
     "arxiv_id": "1910.11555",
     "arxiv_first_posted": "2019-10-25",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/sun2019/"
   },
   {
@@ -529,6 +541,7 @@
     ],
     "arxiv_id": "2603.00045",
     "arxiv_first_posted": "2026-02-09",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/codd2026/"
   },
   {
@@ -568,6 +581,7 @@
     ],
     "arxiv_id": "2609.15070",
     "arxiv_first_posted": "2026-09-14",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/dadlm2026/"
   },
   {
@@ -622,6 +636,7 @@
     "arxiv_first_posted": "2026-08-20",
     "publication_type": "preprint",
     "container_title": "arXiv",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/lilicorr2026/"
   },
   {
@@ -670,6 +685,7 @@
       "https://aclanthology.org/2026.findings-acl.1048/",
       "https://aclanthology.org/2026.findings-acl.1048.pdf"
     ],
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/diffuspec2026/"
   },
   {
@@ -718,6 +734,7 @@
     "arxiv_first_posted": "2018-07-10",
     "abstract": "Neural attention has become central to many state-of-the-art models in natural language processing and related domains. Attention networks are an easy-to-train and effective method for softly simulating alignment; however, the approach does not marginalize over latent alignments in a probabilistic sense. This property makes it difficult to compare attention to other alignment approaches, to compose it with probabilistic models, and to perform posterior inference conditioned on observed data. A related latent approach, hard attention, fixes these issues, but is generally harder to train and less accurate. This work considers variational attention networks, alternatives to soft and hard attention for learning latent variable alignment models, with tighter approximation bounds based on amortized variational inference. We further propose methods for reducing the variance of gradients to make these approaches computationally feasible. Experiments show that for machine translation and visual question answering, inefficient exact latent variable models outperform standard neural attention, but these gains go away when using hard attention based training. On the other hand, variational attention retains most of the performance gain but with training speed comparable to neural attention.",
     "abstract_source": "https://arxiv.org/html/1807.03756v2",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/latentattention2018/"
   },
   {
@@ -771,6 +788,7 @@
     ],
     "arxiv_id": "1502.03044",
     "arxiv_first_posted": "2015-02-10",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/showattendtell2015/"
   },
   {
@@ -811,6 +829,7 @@
     ],
     "arxiv_id": "1702.00887",
     "arxiv_first_posted": "2017-02-03",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/structuredattention2017/"
   },
   {
@@ -848,6 +867,7 @@
     ],
     "arxiv_id": "1712.08207",
     "arxiv_first_posted": "2017-12-21",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/bahuleyan2018/"
   },
   {
@@ -889,6 +909,7 @@
     ],
     "arxiv_id": "2010.10604",
     "arxiv_first_posted": "2020-10-20",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/bayesianattention2020/"
   },
   {
@@ -926,6 +947,7 @@
     "arxiv_first_posted": "2022-10-16",
     "abstract": "Language models have demonstrated the ability to generate highly fluent text; however, it remains unclear whether their output retains coherent high-level structure (e.g., story progression). Here, we propose to apply a statistical tool, model criticism in latent space, to evaluate the high-level structure of the generated text. Model criticism compares the distributions between real and generated data in a latent space obtained according to an assumptive generative process. Different generative processes identify specific failure modes of the underlying model. We perform experiments on three representative aspects of high-level discourse—coherence, coreference, and topicality—and find that transformer-based language models are able to capture topical structures but have a harder time maintaining structural coherence or modeling coreference.",
     "abstract_source": "https://arxiv.org/html/2210.08444v1",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/model-criticism/"
   },
   {
@@ -977,6 +999,7 @@
     "source_urls": [
       "https://aclanthology.org/2021.acl-long.500/"
     ],
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/openmeva/"
   },
   {
@@ -1009,6 +1032,7 @@
     "arxiv_first_posted": "2024-08-26",
     "publication_type": "preprint",
     "container_title": "arXiv",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/story-evaluation-survey/"
   },
   {
@@ -1046,6 +1070,7 @@
     "arxiv_first_posted": "2022-10-11",
     "abstract": "Building on recent advances in image generation, we present a fully data-driven approach to rendering markup into images. The approach is based on diffusion models, which parameterize the distribution of data using a sequence of denoising operations on top of a Gaussian noise distribution. We view the diffusion denoising process as a sequential decision making process, and show that it exhibits compounding errors similar to exposure bias issues in imitation learning problems. To mitigate these issues, we adapt the scheduled sampling algorithm to diffusion training. We conduct experiments on four markup datasets: mathematical formulas (LaTeX), table layouts (HTML), sheet music (LilyPond), and molecular images (SMILES). These experiments each verify the effectiveness of the diffusion process and the use of scheduled sampling to fix generation issues. These results also show that the markup-to-image task presents a useful controlled compositional setting for diagnosing and analyzing generative image models.",
     "abstract_source": "https://arxiv.org/html/2210.05147v1",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/markup-diffusion/"
   },
   {
@@ -1090,6 +1115,7 @@
     ],
     "arxiv_id": "2308.01147",
     "arxiv_first_posted": "2023-08-02",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/fsa-cdm/"
   },
   {
@@ -1128,6 +1154,7 @@
     "source_urls": [
       "https://proceedings.mlr.press/v202/ning23a.html"
     ],
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/"
   },
   {
@@ -1165,6 +1192,7 @@
     "arxiv_first_posted": "2025-10-02",
     "abstract": "Traditional neural network training typically follows fixed, predefined optimization recipes, lacking the flexibility to dynamically respond to instabilities or emerging training issues. In this paper, we introduce Interactive Training, an open-source framework that enables real-time, feedback-driven intervention during neural network training by human experts or automated AI agents. At its core, Interactive Training uses a control server to mediate communication between users or agents and the ongoing training process, allowing users to dynamically adjust optimizer hyperparameters, training data, and model checkpoints. Through three case studies, we demonstrate that Interactive Training achieves superior training stability, reduced sensitivity to initial hyperparameters, and improved adaptability to evolving user needs, paving the way toward a future training paradigm where AI agents autonomously monitor training logs, proactively resolve instabilities, and optimize training dynamics.",
     "abstract_source": "https://arxiv.org/html/2510.02297v1",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/interactive-training-2025/"
   },
   {
@@ -1218,6 +1246,7 @@
     "container_title": "arXiv",
     "abstract": "Experiment trackers show how training is progressing, but changing a live run still usually requires trainer-specific code. We present Interactive Training 2, an open-source control plane for steering training through a shared protocol. Training applications declare which settings and actions they expose, humans and automated controllers submit requests through the same interface, and the training loop validates and applies them at safe control points. A customized Aim workspace combines live metrics and controls with a chronological record of requests and outcomes. We demonstrate the system across five NLP and reinforcement-learning workflows. The released code and traces provide a reusable foundation for auditable human- and agent-guided training.",
     "abstract_source": "https://arxiv.org/html/2607.18314v1",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/interactive-training-2026/"
   },
   {
@@ -1258,6 +1287,7 @@
     "arxiv_first_posted": "2023-11-28",
     "publication_type": "preprint",
     "container_title": "arXiv",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/livetune/"
   },
   {
@@ -1290,6 +1320,7 @@
     "arxiv_first_posted": "2026-06-29",
     "publication_type": "preprint",
     "container_title": "arXiv",
+    "updated_at": "2026-11-10",
     "record_url": "https://yuntiandeng.com/research/papers/ai-training-manager/"
   }
 ]

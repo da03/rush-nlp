@@ -15,7 +15,7 @@ Current large-scale auto-regressive language models display impressive fluency a
 ## Citation
 
 ```bibtex
-@article{article_number,
+@article{residualebmjmlr,
   title = {{Residual Energy-Based Models for Text}},
   author = {Bakhtin, Anton and Deng, Yuntian and Gross, Sam and Ott, Myle and Ranzato, Marc’Aurelio and Szlam, Arthur},
   year = {2021},

@@ -15,7 +15,7 @@ Text generation is ubiquitous in many NLP tasks, from summarization, to dialogue
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{residualebm,
   title = {{Residual Energy-Based Models for Text Generation}},
   author = {Deng, Yuntian and Bakhtin, Anton and Ott, Myle and Szlam, Arthur and Ranzato, Marc’Aurelio},
   year = {2020},

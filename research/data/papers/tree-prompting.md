@@ -15,7 +15,7 @@ Prompting language models (LMs) is the main interface for applying them to new t
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{treeprompting,
   title = {{Tree Prompting: Efficient Task Adaptation without Fine-Tuning}},
   author = {Morris, John X. and Singh, Chandan and Rush, Alexander M. and Gao, Jianfeng and Deng, Yuntian},
   year = {2023},

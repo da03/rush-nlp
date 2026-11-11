@@ -15,7 +15,7 @@ The two dominant approaches to neural text generation are fully autoregressive m
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{deng2020cascaded,
   title = {{Cascaded Text Generation with Markov Transformers}},
   author = {Deng, Yuntian and Rush, Alexander M.},
   year = {2020},

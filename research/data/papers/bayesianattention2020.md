@@ -11,7 +11,7 @@ Extends probabilistic attention to modular stochastic weights with data-dependen
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{fan2020bayesian,
   title = {{Bayesian Attention Modules}},
   author = {Fan, Xinjie and Zhang, Shujian and Chen, Bo and Zhou, Mingyuan},
   year = {2020},

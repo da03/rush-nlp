@@ -11,7 +11,7 @@ Places structural criticism within the broader evaluation of coherence, characte
 ## Citation
 
 ```bibtex
-@misc{article_number,
+@misc{yang2024goodstory,
   title = {{What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation}},
   author = {Yang, Dingyi and Jin, Qin},
   year = {2024},

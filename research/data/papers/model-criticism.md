@@ -15,7 +15,7 @@ Language models have demonstrated the ability to generate highly fluent text; ho
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{deng-etal-2022-model,
   title = {{Model Criticism for Long-Form Text Generation}},
   author = {Deng, Yuntian and Kuleshov, Volodymyr and Rush, Alexander M.},
   year = {2022},

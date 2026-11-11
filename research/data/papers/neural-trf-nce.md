@@ -11,7 +11,7 @@ Earlier residual formulation and NCE training explicitly discussed in the 2020 p
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{neuraltrfnce,
   title = {{Learning Neural Trans-Dimensional Random Field Language Models with Noise-Contrastive Estimation}},
   author = {Wang, Bin and Ou, Zhijian},
   year = {2018},

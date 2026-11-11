@@ -11,7 +11,7 @@ Tests whether an evaluator detects known story defects; complements latent-space
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{guan-etal-2021-openmeva,
   title = {{OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics}},
   author = {Guan, Jian and Zhang, Zhexin and Feng, Zhuoer and Liu, Zitao and Ding, Wenbiao and Mao, Xiaoxi and Fan, Changjie and Huang, Minlie},
   year = {2021},

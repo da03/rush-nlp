@@ -11,7 +11,7 @@ An earlier system for changing running optimization processes; compare its param
 ## Citation
 
 ```bibtex
-@misc{article_number,
+@misc{shabgahi2023livetune,
   title = {{LiveTune: Dynamic Parameter Tuning for Feedback-Driven Optimization}},
   author = {Shabgahi, Soheil Zibakhsh and Sheybani, Nojan and Tabrizi, Aiden and Koushanfar, Farinaz},
   year = {2023},

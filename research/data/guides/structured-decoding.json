@@ -145,6 +145,7 @@
     "lilicorr2026",
     "diffuspec2026"
   ],
+  "updated_at": "2026-11-10",
   "url": "https://yuntiandeng.com/research/structured-decoding/",
   "papers": [
     {
@@ -176,7 +177,8 @@
       "arxiv_id": "2006.01112",
       "arxiv_first_posted": "2020-06-01",
       "abstract": "The two dominant approaches to neural text generation are fully autoregressive models, using serial beam search decoding, and non-autoregressive models, using parallel decoding with no output dependencies. This work proposes an autoregressive model with sub-linear parallel time generation. Noting that conditional random fields with bounded context can be decoded in parallel, we propose an efficient cascaded decoding approach for generating high-quality output. To parameterize this cascade, we introduce a Markov transformer, a variant of the popular fully autoregressive model that allows us to simultaneously decode with specific autoregressive context cutoffs. This approach requires only a small modification from standard autoregressive training, while showing competitive accuracy/speed tradeoff compared to existing methods on five machine translation datasets.",
-      "abstract_source": "https://arxiv.org/html/2006.01112v2"
+      "abstract_source": "https://arxiv.org/html/2006.01112v2",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "lattice2021",
@@ -206,7 +208,8 @@
         "https://aclanthology.org/2021.findings-emnlp.318.pdf"
       ],
       "abstract": "Non-autoregressive machine translation (NAT) approaches enable fast generation by utilizing parallelizable generative processes. The remaining bottleneck in these models is their decoder layers; unfortunately unlike in autoregressive models (Kasai et al., 2020), removing decoder layers from NAT models significantly degrades accuracy. This work proposes a sequence-to-lattice model that replaces the decoder with a search lattice. Our approach first constructs a candidate lattice using efficient lookup operations, generates lattice scores from a deep encoder, and finally finds the best path using dynamic programming. Experiments on three machine translation datasets show that our method is faster than past non-autoregressive generation approaches, and more accurate than naively reducing the number of decoder layers.",
-      "abstract_source": "https://aclanthology.org/2021.findings-emnlp.318/"
+      "abstract_source": "https://aclanthology.org/2021.findings-emnlp.318/",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "sun2019",
@@ -250,7 +253,8 @@
         "https://arxiv.org/abs/1910.11555"
       ],
       "arxiv_id": "1910.11555",
-      "arxiv_first_posted": "2019-10-25"
+      "arxiv_first_posted": "2019-10-25",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "codd2026",
@@ -294,7 +298,8 @@
         "https://arxiv.org/html/2603.00045v3"
       ],
       "arxiv_id": "2603.00045",
-      "arxiv_first_posted": "2026-02-09"
+      "arxiv_first_posted": "2026-02-09",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "dadlm2026",
@@ -332,7 +337,8 @@
         "https://arxiv.org/abs/2609.15070"
       ],
       "arxiv_id": "2609.15070",
-      "arxiv_first_posted": "2026-09-14"
+      "arxiv_first_posted": "2026-09-14",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "lilicorr2026",
@@ -385,7 +391,8 @@
       "arxiv_id": "2608.20530",
       "arxiv_first_posted": "2026-08-20",
       "publication_type": "preprint",
-      "container_title": "arXiv"
+      "container_title": "arXiv",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "diffuspec2026",
@@ -432,7 +439,8 @@
       "source_urls": [
         "https://aclanthology.org/2026.findings-acl.1048/",
         "https://aclanthology.org/2026.findings-acl.1048.pdf"
-      ]
+      ],
+      "updated_at": "2026-11-10"
     }
   ]
 }

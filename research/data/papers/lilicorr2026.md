@@ -11,7 +11,7 @@ Uses the candidate–edge–path pattern with local training and inference tailo
 ## Citation
 
 ```bibtex
-@misc{article_number,
+@misc{rusanovsky2026lilicorr,
   title = {{LiLiCorr: Lightweight Likelihood Correlation of Parallel Drafts for Speculative Decoding}},
   author = {Rusanovsky, Matan and Miron, Yoav and Uziel, Roy and Belhasin, Omer and Guo, Hao and Zilberstein, Ran and Ashkenazi, Maor and Elad, Michael},
   year = {2026},

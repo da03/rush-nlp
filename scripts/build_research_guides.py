@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build readable research guides and citation exports from one bibliography."""
 from pathlib import Path
+from datetime import date
 import html
 import json
 import re
@@ -9,13 +10,16 @@ from xml.etree import ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 BASE = 'https://yuntiandeng.com'
 PREFIX = '/research/'
-UPDATED = '2026-11-10'
 e = html.escape
+META = json.loads((ROOT/'_data/methods/meta.json').read_text())
 GUIDES = json.loads((ROOT/'_data/methods/guides.json').read_text())
 PAPERS = json.loads((ROOT/'_data/methods/papers.json').read_text())
 GP = {g['id']: g for g in GUIDES}
 PP = {p['id']: p for p in PAPERS}
 assert len(GP) == len(GUIDES) and len(PP) == len(PAPERS)
+PAGE_DATES = {p['path']: p['updated_at'] for p in META['static_pages']}
+PAGE_DATES.update({g['id']+'/': g['updated_at'] for g in GUIDES})
+PAGE_DATES.update({'papers/'+p['id']+'/': p['updated_at'] for p in PAPERS})
 GENERATED = []
 
 def plain(s):
@@ -42,8 +46,8 @@ def bibtex(p):
     if p.get('publication_type')=='preprint':typ='misc'
     fields = [('title','{'+p['title']+'}'),('author',' and '.join(a['family']+', '+a['given'] for a in p['authors'])),('year',str(p['year'])),('journal' if typ=='article' else 'booktitle',p.get('container_title',p['venue'])),('url',p['paper_url'])]
     if typ=='misc':fields=[(k,v) for k,v in fields if k!='booktitle']
-    for key,field in [('volume','volume'),('issue','number'),('pages','pages'),('article_number','pages')]:
-        if p.get(key):fields.append((field,str(p[key]).replace('–','--')))
+    for source_key,field in [('volume','volume'),('issue','number'),('pages','pages'),('article_number','pages')]:
+        if p.get(source_key):fields.append((field,str(p[source_key]).replace('–','--')))
     if p.get('arxiv_id'):fields.extend([('eprint',p['arxiv_id']),('archivePrefix','arXiv')])
     if p.get('doi'): fields.append(('doi',p['doi']))
     return '@'+typ+'{'+key+',\n'+',\n'.join('  '+k+' = {'+v+'}' for k,v in fields)+'\n}\n'
@@ -67,6 +71,7 @@ def paper_schema(p):
 
 def layout(title, desc, path, body, active='guides', paper=None):
     canonical=url(path)
+    updated_at=PAGE_DATES[path]
     guide=GP.get(path.rstrip('/'))
     json_path='data/papers/'+paper['id']+'.json' if paper else 'data/guides/'+guide['id']+'.json' if guide else 'data/papers.json'
     markdown_path='data/papers/'+paper['id']+'.md' if paper else 'data/guides/'+guide['id']+'.md' if guide else 'data/reading-list.md'
@@ -82,7 +87,8 @@ def layout(title, desc, path, body, active='guides', paper=None):
         if paper.get('doi'):extra+='<meta name="citation_doi" content="'+e(paper['doi'],quote=True)+'">\n'
         schema=paper_schema(paper)
     else:
-        schema={'@context':'https://schema.org','@type':'CollectionPage' if active in ['papers','data'] else 'Article','headline':title,'description':desc,'url':canonical,'author':{'@type':'Person','name':'Yuntian Deng','url':BASE},'dateModified':UPDATED}
+        schema={'@context':'https://schema.org','@type':'CollectionPage' if active in ['papers','data'] else 'Article','headline':title,'description':desc,'url':canonical,'author':{'@type':'Person','name':'Yuntian Deng','url':BASE}}
+    schema['dateModified']=updated_at
     nav=''.join('<a href="'+PREFIX+dest+'"'+(' aria-current="page"' if key==active else '')+'>'+label+'</a>' for key,label,dest in [('guides','Guides',''),('papers','Papers','papers/'),('data','Citations & data','data/')])
     return f'''<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -93,7 +99,7 @@ def layout(title, desc, path, body, active='guides', paper=None):
 {extra}<script type="application/ld+json">{json.dumps(schema,ensure_ascii=False).replace('</','<\\/')}</script>
 <script src="/research/assets/research.js" defer></script></head><body>
 <a class="skip" href="#main">Skip to main content</a><header class="shell topbar"><a class="wordmark" href="/research/">Research notes<span>Language models & structured learning</span></a><nav class="nav" aria-label="Main navigation">{nav}<a href="/">Yuntian Deng ↗</a></nav></header>
-<main id="main" class="shell">{body}</main><footer class="shell footer"><div><p>Research notes by <a href="/">Yuntian Deng</a>.</p><p>Original methods, current connections, and reusable references.</p></div><div><p>References checked {UPDATED}.</p><p><a href="/research/about/">About this collection</a> · <a href="/research/data/navigation.json">URL directory</a> · <a href="/research/data/reading-list.md">Markdown</a></p></div></footer></body></html>'''
+<main id="main" class="shell">{body}</main><footer class="shell footer"><div><p>Research notes by <a href="/">Yuntian Deng</a>.</p><p>Original methods, current connections, and reusable references.</p></div><div><p>References checked {META['references_checked_at']}.</p><p><a href="/research/about/">About this collection</a> · <a href="/research/data/navigation.json">URL directory</a> · <a href="/research/data/reading-list.md">Markdown</a></p></div></footer></body></html>'''
 
 def ref_links(ids):
     return '<p class="sources">Sources: '+''.join('<a href="'+paper_url(PP[i])+'">'+e(PP[i].get('short_title',PP[i]['title']))+'</a>' for i in ids)+'</p>' if ids else ''
@@ -203,7 +209,7 @@ def build_exports():
     for p in PAPERS:md+='### '+p['title']+'\n\n'+authors(p)+'. '+p['venue']+'.\n\n'+plain(p['summary'])+'\n\n'+plain(p.get('connection',''))+'\n\n[Paper]('+p['paper_url']+') · [Record and citation]('+BASE+paper_url(p)+')\n\n'
     emit('data/reading-list.md',md)
     emit('llms.txt','# Research notes: language models and structured learning\n\n> Methods, original papers, current connections, and citations.\n\n'+''.join('- ['+g['title']+']('+BASE+guide_url(g)+'): '+g['description']+'\n' for g in GUIDES)+'\n- [Annotated bibliography]('+url('data/reading-list.md')+')\n- [Bibliography JSON]('+url('data/papers.json')+')\n- [URL directory]('+url('data/navigation.json')+')\n')
-    navigation={'title':'Research notes','updated':UPDATED,'home':url(''),'bibliography':url('papers/'),'downloads':url('data/'),'guides':[{'title':g['title'],'url':BASE+guide_url(g),'markdown':url('data/guides/'+g['id']+'.md'),'original_papers':g['original_papers']} for g in GUIDES],'papers':[{'id':p['id'],'title':p['title'],'record':BASE+paper_url(p),'source':p['paper_url'],'json':url('data/papers/'+p['id']+'.json'),'bibtex':url('data/papers/'+p['id']+'.bib'),'csl':url('data/papers/'+p['id']+'.csl.json')} for p in PAPERS]}
+    navigation={'title':'Research notes','updated':PAGE_DATES['data/'],'home':url(''),'bibliography':url('papers/'),'downloads':url('data/'),'guides':[{'title':g['title'],'url':BASE+guide_url(g),'markdown':url('data/guides/'+g['id']+'.md'),'original_papers':g['original_papers']} for g in GUIDES],'papers':[{'id':p['id'],'title':p['title'],'record':BASE+paper_url(p),'source':p['paper_url'],'json':url('data/papers/'+p['id']+'.json'),'bibtex':url('data/papers/'+p['id']+'.bib'),'csl':url('data/papers/'+p['id']+'.csl.json')} for p in PAPERS]}
     json_emit('data/navigation.json',navigation)
     items=[('Annotated bibliography','papers.json','JSON; full metadata and method notes'),('Citation library','citations.bib','BibTeX'),('Citation library','citations.csl.json','CSL JSON'),('Readable bibliography','reading-list.md','Markdown'),('Guide contents','guides.json','JSON; descriptions and sections'),('URL directory','navigation.json','JSON; guides, records, and citation files')]
     body='<header class="hero"><p class="kicker">Citations & data</p><h1>References that travel.</h1><p class="lead">Download the bibliography, follow the original sources, or read the guides as plain text. Every format is generated from the same paper records.</p></header><ul class="data-list">'+''.join('<li><a href="'+fn+'" download>'+label+' ↗</a><span>'+desc+'</span></li>' for label,fn,desc in items)+'</ul><section class="home-bottom"><div><h2>Individual papers</h2><p>Each paper record includes a copyable citation and individual BibTeX, CSL JSON and metadata downloads.</p><a href="/research/papers/">Browse paper records →</a></div><div><h2>Plain-text guides</h2>'+''.join('<p><a href="guides/'+g['id']+'.md">'+e(g['title'])+'</a></p>' for g in GUIDES)+'</div></section>'
@@ -212,6 +218,10 @@ def build_exports():
     emit('about/index.html',layout('About the research notes','About this source-backed collection of research methods, examples, connections, and bibliographic records.','about/',body,'data'))
 
 def validate_inputs():
+    assert set(p['path'] for p in META['static_pages']) == {'', 'papers/', 'data/', 'about/'}
+    assert len(PAGE_DATES) == len(META['static_pages']) + len(GUIDES) + len(PAPERS)
+    for value in [*PAGE_DATES.values(), META['references_checked_at']]:
+        assert date.fromisoformat(value).isoformat() == value
     for g in GUIDES:
         assert g['demo'] in {'tree','energy','lattice','attention','structure','markup','training'}
         ids=g['original_papers']+g['reading_order']+[x for s in g['sections'] for x in s.get('citations',[])]
@@ -235,6 +245,7 @@ ET.register_namespace('', 'http://www.sitemaps.org/schemas/sitemap/0.9')
 root=ET.Element('{http://www.sitemaps.org/schemas/sitemap/0.9}urlset')
 for path in GENERATED.copy():
     if path.endswith('/index.html'):
-        entry=ET.SubElement(root,'url');ET.SubElement(entry,'loc').text=BASE+'/'+path.removesuffix('index.html');ET.SubElement(entry,'lastmod').text=UPDATED
+        page_path=path.removeprefix('research/').removesuffix('index.html')
+        entry=ET.SubElement(root,'url');ET.SubElement(entry,'loc').text=BASE+'/'+path.removesuffix('index.html');ET.SubElement(entry,'lastmod').text=PAGE_DATES[page_path]
 emit('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(root,encoding='unicode')+'\n')
 print(json.dumps({'guides':len(GUIDES),'papers':len(PAPERS),'generated_files':len(GENERATED)},indent=2))

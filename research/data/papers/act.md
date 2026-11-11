@@ -11,7 +11,7 @@ A later agentic formulation of learning question-based decision trees; compare q
 ## Citation
 
 ```bibtex
-@misc{article_number,
+@misc{act,
   title = {{ACT: Agentic Classification Tree}},
   author = {Grari, Vincent and Arni, Tim and Laugel, Thibault and Lamprier, Sylvain and Zou, James and Detyniecki, Marcin},
   year = {2025},

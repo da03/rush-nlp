@@ -111,7 +111,8 @@
           "The accompanying illustration lets you follow a fixed tree and change branch choices. To build a learned classifier, start with the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples. Treat the illustration as a mechanism explanation, separate from an empirical accuracy result."
         ]
       }
-    ]
+    ],
+    "updated_at": "2026-11-10"
   },
   {
     "id": "energy-based-text-generation",
@@ -244,7 +245,8 @@
           "For importance resampling from candidates already drawn from the base model, the pool weights are exp(−E(x)). The base-model factor is already accounted for by that sampling step. This distinction connects the normalized model to its practical sampling procedure."
         ]
       }
-    ]
+    ],
+    "updated_at": "2026-11-10"
   },
   {
     "id": "structured-decoding",
@@ -392,7 +394,8 @@
       "dadlm2026",
       "lilicorr2026",
       "diffuspec2026"
-    ]
+    ],
+    "updated_at": "2026-11-10"
   },
   {
     "id": "probabilistic-attention",
@@ -520,7 +523,8 @@
       "structuredattention2017",
       "bahuleyan2018",
       "bayesianattention2020"
-    ]
+    ],
+    "updated_at": "2026-11-10"
   },
   {
     "id": "long-form-evaluation",
@@ -608,7 +612,8 @@
       "model-criticism",
       "openmeva",
       "story-evaluation-survey"
-    ]
+    ],
+    "updated_at": "2026-11-10"
   },
   {
     "id": "learned-rendering",
@@ -695,7 +700,8 @@
       "markup-diffusion",
       "fsa-cdm",
       "diffusion-input-perturbation"
-    ]
+    ],
+    "updated_at": "2026-11-10"
   },
   {
     "id": "interactive-training",
@@ -787,6 +793,7 @@
       "interactive-training-2026",
       "livetune",
       "ai-training-manager"
-    ]
+    ],
+    "updated_at": "2026-11-10"
   }
 ]

@@ -11,7 +11,7 @@ A direct transfer of structured output modeling from non-autoregressive translat
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{ji2026dadlm,
   title = {{DA-DLM: Explicitly Modeling Token Dependencies in Diffusion Language Models}},
   author = {Ji, Pengyu and Zhang, Zichen and Hu, Xiang and Tu, Kewei},
   year = {2026},

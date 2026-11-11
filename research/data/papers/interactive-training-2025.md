@@ -15,7 +15,7 @@ Traditional neural network training typically follows fixed, predefined optimiza
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{zhang-etal-2025-interactive,
   title = {{Interactive Training: Feedback-Driven Neural Network Optimization}},
   author = {Zhang, Wentao and Lu, Yang Young and Deng, Yuntian},
   year = {2025},

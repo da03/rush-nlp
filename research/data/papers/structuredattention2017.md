@@ -11,7 +11,7 @@ Models structured selections and computes expected annotations; full prediction 
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{kim2017structured,
   title = {{Structured Attention Networks}},
   author = {Kim, Yoon and Denton, Carl and Hoang, Luong and Rush, Alexander M.},
   year = {2017},

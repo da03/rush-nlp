@@ -11,7 +11,7 @@ Studies an automated controller over active training, complementing Interactive 
 ## Citation
 
 ```bibtex
-@misc{article_number,
+@misc{rao2026aitrainingmanager,
   title = {{AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes}},
   author = {Rao, Anjali and Advani, Nikhil Kamalkumar},
   year = {2026},

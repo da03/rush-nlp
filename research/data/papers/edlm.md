@@ -11,7 +11,7 @@ Directly cites Deng et al. (2020), carrying residual correction and partition es
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{edlm,
   title = {{Energy-Based Diffusion Language Models for Text Generation}},
   author = {Xu, Minkai and Geffner, Tomas and Kreis, Karsten and Nie, Weili and Xu, Yilun and Leskovec, Jure and Ermon, Stefano and Vahdat, Arash},
   year = {2025},

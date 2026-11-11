@@ -11,7 +11,7 @@ Connects candidate-lattice path selection to autoregressive verification of para
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{li2026diffuspec,
   title = {{DiffuSpec: Unlocking Diffusion Language Models for Speculative Decoding}},
   author = {Li, Guanghao and Fu, Zhihui and Fang, Min and Zhao, Qibin and Tang, Ming and Yuan, Chun and Wang, Jun},
   year = {2026},

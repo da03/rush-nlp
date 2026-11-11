@@ -11,7 +11,7 @@ Extends the contemporary energy-corrected diffusion direction with a unified tre
 ## Citation
 
 ```bibtex
-@misc{article_number,
+@misc{unifiedenergy,
   title = {{Unified Energy for Invariant and Independent Decoding in Diffusion Language Models}},
   author = {Yan, Yuchen and Xu, Minkai and Yang, Zaiquan and Bian, Yatao},
   year = {2026},

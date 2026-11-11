@@ -111,6 +111,7 @@
       ]
     }
   ],
+  "updated_at": "2026-11-10",
   "url": "https://yuntiandeng.com/research/llm-decision-trees/",
   "papers": [
     {
@@ -158,7 +159,8 @@
       "arxiv_id": "2310.14034",
       "arxiv_first_posted": "2023-10-21",
       "abstract": "Prompting language models (LMs) is the main interface for applying them to new tasks. However, for smaller LMs, prompting provides low accuracy compared to gradient-based fine-tuning. Tree Prompting is an approach to prompting which builds a decision tree of prompts, linking multiple LM calls together to solve a task. At inference time, each call to the LM is determined by efficiently routing the outcome of the previous call using the tree. Experiments on classification datasets show that Tree Prompting improves accuracy over competing methods and is competitive with fine-tuning. We also show that variants of Tree Prompting allow inspection of a model’s decision-making process.",
-      "abstract_source": "https://arxiv.org/html/2310.14034v1"
+      "abstract_source": "https://arxiv.org/html/2310.14034v1",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "aug-tree",
@@ -196,7 +198,8 @@
       "container_title": "Nature Communications",
       "volume": "14",
       "issue": "1",
-      "article_number": "7913"
+      "article_number": "7913",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "gptree",
@@ -232,7 +235,8 @@
       "arxiv_id": "2411.08257",
       "arxiv_first_posted": "2024-11-13",
       "publication_type": "preprint",
-      "container_title": "arXiv"
+      "container_title": "arXiv",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "act",
@@ -276,7 +280,8 @@
       "arxiv_id": "2509.26433",
       "arxiv_first_posted": "2025-09-30",
       "publication_type": "preprint",
-      "container_title": "arXiv"
+      "container_title": "arXiv",
+      "updated_at": "2026-11-10"
     }
   ]
 }

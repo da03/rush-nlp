@@ -130,6 +130,7 @@
       ]
     }
   ],
+  "updated_at": "2026-11-10",
   "url": "https://yuntiandeng.com/research/energy-based-text-generation/",
   "papers": [
     {
@@ -172,7 +173,8 @@
       "arxiv_id": "2004.11714",
       "arxiv_first_posted": "2020-04-22",
       "abstract": "Text generation is ubiquitous in many NLP tasks, from summarization, to dialogue and machine translation. The dominant parametric approach is based on locally normalized models which predict one word at a time. While these work remarkably well, they are plagued by exposure bias due to the greedy nature of the generation process. In this work, we investigate un-normalized energy-based models (EBMs) which operate not at the token but at the sequence level. In order to make training tractable, we first work in the residual of a pretrained locally normalized language model and second we train using noise contrastive estimation. Furthermore, since the EBM works at the sequence level, we can leverage pretrained bi-directional contextual representations, such as BERT and RoBERTa. Our experiments on two large language modeling datasets show that residual EBMs yield lower perplexity compared to locally normalized baselines. Moreover, generation via importance sampling is very efficient and of higher quality than the baseline models according to human evaluation.",
-      "abstract_source": "https://arxiv.org/html/2004.11714v1"
+      "abstract_source": "https://arxiv.org/html/2004.11714v1",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "residual-ebm-jmlr",
@@ -223,7 +225,8 @@
       "issue": "40",
       "pages": "1–41",
       "abstract": "Current large-scale auto-regressive language models display impressive fluency and can generate convincing text. In this work we start by asking the question: Can the generations of these models be reliably distinguished from real text by statistical discriminators? We find experimentally that the answer is affirmative when we have access to the training data for the model, and guardedly affirmative even if we do not. This suggests that the auto-regressive models can be improved by incorporating the (globally normalized) discriminators into the generative process. We give a formalism for this using the Energy-Based Model framework, and show that it indeed improves the results of the generative models, measured both in terms of perplexity and in terms of human evaluation.",
-      "abstract_source": "https://www.jmlr.org/papers/v22/20-326.html"
+      "abstract_source": "https://www.jmlr.org/papers/v22/20-326.html",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "edlm",
@@ -273,7 +276,8 @@
         "https://arxiv.org/html/2410.21357v4"
       ],
       "arxiv_id": "2410.21357",
-      "arxiv_first_posted": "2024-10-28"
+      "arxiv_first_posted": "2024-10-28",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "unified-energy",
@@ -309,7 +313,8 @@
       "arxiv_id": "2606.09159",
       "arxiv_first_posted": "2026-06-08",
       "publication_type": "preprint",
-      "container_title": "arXiv"
+      "container_title": "arXiv",
+      "updated_at": "2026-11-10"
     },
     {
       "id": "neural-trf-nce",
@@ -335,7 +340,8 @@
         "https://arxiv.org/abs/1710.10739"
       ],
       "arxiv_id": "1710.10739",
-      "arxiv_first_posted": "2017-10-30"
+      "arxiv_first_posted": "2017-10-30",
+      "updated_at": "2026-11-10"
     }
   ]
 }

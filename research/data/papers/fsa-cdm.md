@@ -11,7 +11,7 @@ A subsequent markup-to-image method that builds on the task and four datasets in
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{zhong2023contrastaugmented,
   title = {{Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation}},
   author = {Zhong, Guojin and Yuan, Jin and Wang, Pan and Yang, Kailun and Guan, Weili and Li, Zhiyong},
   year = {2023},

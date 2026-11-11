@@ -11,7 +11,7 @@ Contrasts training-time feature expansion with Tree Prompting’s language-model
 ## Citation
 
 ```bibtex
-@article{article_number,
+@article{augtree,
   title = {{Augmenting interpretable models with large language models during training}},
   author = {Singh, Chandan and Askari, Armin and Caruana, Rich and Gao, Jianfeng},
   year = {2023},

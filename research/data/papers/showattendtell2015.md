@@ -11,7 +11,7 @@ An early stochastic-attention reference for the distinction between expected fea
 ## Citation
 
 ```bibtex
-@inproceedings{article_number,
+@inproceedings{xu2015show,
   title = {{Show, Attend and Tell: Neural Image Caption Generation with Visual Attention}},
   author = {Xu, Kelvin and Ba, Jimmy Lei and Kiros, Ryan and Cho, Kyunghyun and Courville, Aaron and Salakhutdinov, Ruslan and Zemel, Richard S. and Bengio, Yoshua},
   year = {2015},
