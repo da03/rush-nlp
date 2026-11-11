@@ -37,6 +37,7 @@ featured:
       notes: <strong>Featured in the <a href="https://wapo.st/3A6e4me">Washington Post</a></strong><br>Used in <strong>OpenAI's o1</strong> for safety evaluation<br>Used in <strong>Anthropic's Claude 3</strong> for evaluating refusals
 notable:
     - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
+      demo_url: https://interactivetraining.ai/
       research_guide: /research/interactive-training/
       authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
       paper_url: https://aclanthology.org/2025.emnlp-demos.65/
@@ -59,6 +60,7 @@ notable:
       image: /images/tree_prompt.png
       conference: EMNLP 2023
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
+      demo_url: https://huggingface.co/spaces/yuntian-deng/latex2im
       research_guide: /research/learned-rendering/
       authors: <strong>Yuntian Deng</strong>, Noriyuki Kojima, Alexander M. Rush
       paper_url: https://arxiv.org/abs/2210.05147
@@ -198,6 +200,7 @@ papers:
       conference: ICLR 2026
       year: 2026
     - title: "Interactive Training: Feedback-Driven Neural Network Optimization"
+      demo_url: https://interactivetraining.ai/
       research_guide: /research/interactive-training/
       authors: Wentao Zhang, Yang Young Lu, <strong>Yuntian Deng</strong>
       paper_url: https://aclanthology.org/2025.emnlp-demos.65/
@@ -309,6 +312,7 @@ papers:
       conference: EMNLP 2023
       year: 2023
     - title: "Markup-to-Image Diffusion Models with Scheduled Sampling"
+      demo_url: https://huggingface.co/spaces/yuntian-deng/latex2im
       research_guide: /research/learned-rendering/
       authors: <strong>Yuntian Deng</strong>, Noriyuki Kojima, Alexander M. Rush
       paper_url: https://arxiv.org/abs/2210.05147

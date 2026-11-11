@@ -23,6 +23,7 @@ demos:
       code: https://github.com/yuntian-group/neural-os
     - link: https://interactivetraining.ai
       title: "Interactive Training: Feedback-Driven Neural Network Optimization"
+      research_guide: /research/interactive-training/
       authors: Wentao Zhang, Yang Young Lu, Yuntian Deng
       abstract: A live interface for steering neural network training with human feedback and auditable, reversible controls.
       image: /images/interactive_training.png
@@ -74,12 +75,13 @@ demos:
       data: https://huggingface.co/datasets/yuntian-deng/openaiwatch
     - link: https://huggingface.co/spaces/yuntian-deng/latex2im
       title: Markup-to-Image Diffusion Models with Scheduled Sampling
+      research_guide: /research/learned-rendering/
       authors: Yuntian Deng, Noriyuki Kojima, Alexander M. Rush
       abstract: A learning-based system to <q>compile</q> presentational markup, such as LaTeX, into corresponding images.
       image: /images/molecules_rendering.gif
       demo: https://huggingface.co/spaces/yuntian-deng/latex2im
       code: https://github.com/da03/markup2im
-      paper: https://openreview.net/pdf?id=81VJDmOE2ol
+      paper: https://arxiv.org/abs/2210.05147
       models: https://huggingface.co/yuntian-deng/latex2im_ss_finetunegptneo
     - link: https://steganography.live/
       title: Neural Linguistic Steganography
@@ -109,6 +111,7 @@ demos:
       models: https://im2markup.yuntiandeng.com/model/latex/final-model
     - link: https://github.com/harvardnlp/cascaded-generation
       title: Cascaded Text Generation with Markov Transformers
+      research_guide: /research/structured-decoding/
       authors: Yuntian Deng, Alexander M. Rush
       abstract: A parallel, fast, autoregressive, and accurate text generation algorithm using high-order Conditional Random Fields (CRFs).
       image: /images/cascade.png
