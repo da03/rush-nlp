@@ -42,9 +42,9 @@
         "id": "program-view",
         "title": "Reading a prompt tree as a program",
         "paragraphs": [
-          "Consider an illustrative support classifier. A first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. These example questions illustrate the control flow; they are not a tree reported in the paper.",
+          "In a worked support-classification example, a first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. This fixed example illustrates control flow; the paper learns its trees from data.",
           "The program consists of conditions, branches and return values. A conventional condition tests a numerical threshold or an exact string. A prompt-based condition asks the LM to interpret the input under an instruction. The instruction defines the question; the LM supplies the decision for this particular input.",
-          "A useful inspection separates three failures. The node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream."
+          "A path log distinguishes three failure types: the node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream."
         ]
       },
       {
@@ -63,8 +63,8 @@
         "id": "related-methods",
         "title": "Compare where the language model enters",
         "paragraphs": [
-          "Aug-Tree expands text features using an LLM during fitting, then deploys an interpretable tree without LM calls. It is a useful alternative when prediction must run with ordinary feature checks. GPTree builds LLM-powered trees and supports expert feedback on decision paths. ACT learns binary natural-language questions with impurity-based selection and TextGrad refinement.",
-          "These distinctions identify separate design choices: generating features, answering semantic questions, searching for better questions, and revising the resulting program. A paper that uses the word “tree” does not by that name specify which of these operations it performs."
+          "Aug-Tree expands text features using an LLM during fitting, then deploys an interpretable tree without LM calls. GPTree builds LLM-powered trees and supports expert feedback on decision paths. ACT learns binary natural-language questions with impurity-based selection and TextGrad refinement.",
+          "These distinctions identify separate design choices: generating features, answering semantic questions, searching for better questions, and revising the resulting program."
         ],
         "table": {
           "columns": [
@@ -107,8 +107,8 @@
         "title": "When a learned question tree is useful",
         "paragraphs": [
           "Use this design when the task has a repeatable decision structure and labeled examples expose which distinctions matter. Intent routing, document classification and categorization all provide a natural setting for asking successive semantic questions. The tree stores task-specific structure outside the model weights.",
-          "Examine the complete system rather than the diagram alone. A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.",
-          "The accompanying illustration lets you follow a fixed tree and change branch choices. To build a learned classifier, start with the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples. Treat the illustration as a mechanism explanation, separate from an empirical accuracy result."
+          "A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.",
+          "Choose among example messages to follow their paths through a fixed tree. The interactive illustration demonstrates control flow, not classification accuracy. To train a classifier, use the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples."
         ]
       },
       {
@@ -182,8 +182,8 @@
         "title": "Why a discriminator can change a generator",
         "paragraphs": [
           "The JMLR 2021 article, Residual Energy-Based Models for Text, develops the connection between distinguishing generated text and improving its distribution. Anton Bakhtin and Yuntian Deng contributed equally; Sam Gross, Myle Ott, Marc’Aurelio Ranzato and Arthur Szlam complete the author list. A discriminator supplies information about where a generator overproduces or underproduces text. A residual model turns that information into a probability correction.",
-          "Read the product as two separate jobs. The base model provides fluent proposals and their relative frequency. The energy changes their relative desirability after viewing the sequence. An energy of zero everywhere leaves the base distribution unchanged. Adding the same constant to every energy also leaves the normalized distribution unchanged, because the constant cancels between numerator and denominator.",
-          "This gives a practical debugging check: changing a shared energy offset must not change candidate-selection probabilities. Changing a single candidate’s energy must change its probability in the expected direction. Those are algebraic properties, independent of which neural network computes the scores."
+          "The base model provides fluent proposals and their relative frequency. The energy changes their relative desirability after viewing the sequence. An energy of zero everywhere leaves the base distribution unchanged. Adding the same constant to every energy also leaves the normalized distribution unchanged, because the constant cancels between numerator and denominator.",
+          "Two algebraic checks apply regardless of the network that computes the scores: changing a shared energy offset leaves candidate-selection probabilities unchanged, while lowering one candidate’s energy increases its probability."
         ],
         "citations": [
           "residual-ebm-jmlr"
@@ -342,7 +342,7 @@
         "paragraphs": [
           "Diffusion introduces a repeated version of the same coordination problem: several uncertain tokens are resolved during one denoising step. The connection to structured generation is a modeling principle: use a tractable joint distribution to couple those decisions while retaining parallel neural computation. A Markov order describes dependence across output positions; a diffusion timestep describes the progression from corrupted to recovered text. They are different axes.",
           "CoDD, introduced in Breaking the Factorization Barrier in Diffusion Language Models (ICML 2026), combines factorized neural predictions with a probabilistic-circuit structural prior. Its experiments instantiate that prior with a hidden Markov model. The product supports joint inference without materializing a vocabulary-sized table for every possible token combination. This shares the structured-generation goal, while using latent-state structure and diffusion-conditioned inference rather than a cascade of increasing observed-token context orders.",
-          "DA-DLM (EMNLP 2026) makes the relationship to non-autoregressive translation explicit. It adapts directed-acyclic-graph modeling to iterative denoising: node groups correspond to output positions, and previously fixed tokens become anchors connected to unresolved candidates. Its graph changes as denoising proceeds. These are precise connections between earlier structured output modeling and present diffusion methods; they do not identify the original translation models as diffusion models."
+          "DA-DLM (EMNLP 2026) makes the relationship to non-autoregressive translation explicit. It adapts directed-acyclic-graph modeling to iterative denoising: node groups correspond to output positions, and previously fixed tokens become anchors connected to unresolved candidates. Its graph changes as denoising proceeds. The earlier models apply structured output modeling to translation; DA-DLM places it inside diffusion denoising."
         ],
         "citations": [
           "cascaded2020",
@@ -355,7 +355,7 @@
         "title": "Candidate lattices: Sequence-to-Lattice Models for Fast Translation",
         "paragraphs": [
           "Sequence-to-Lattice replaces a deep decoder with candidate lookup, neural edge scoring, and path search. A statistical alignment model proposes a small vocabulary at each output position. A deep encoder and a shallow scoring head evaluate transitions between candidates in parallel. Viterbi then selects the highest-scoring complete path.",
-          "The paper specifies a first-order conditional Markov model with locally normalized transition probabilities. Exact Viterbi search refers to the constructed candidate lattice. It neither restores candidates excluded during construction nor makes the model a globally normalized higher-order CRF. The central computational separation is reusable: build alternatives cheaply, score compatible neighbors together, and search the resulting graph."
+          "The paper specifies a first-order conditional Markov model with locally normalized transition probabilities. Viterbi finds the exact optimum among the candidates retained in the constructed lattice. Candidate construction, edge scoring and path search are separate stages: build alternatives cheaply, score compatible neighbors together, and search the resulting graph."
         ],
         "citations": [
           "lattice2021"
@@ -366,7 +366,7 @@
         "title": "From candidate lattices to coherent speculative drafts",
         "paragraphs": [
           "Parallel speculative drafting creates a related setting: several candidates are available at each future position, but individually attractive choices need not form a useful draft. LiLiCorr keeps top-K candidates, computes incoming and outgoing vectors in a lightweight network, scores adjacent compatibility with batched operations, and performs a greedy walk. Its training objective targets accepted prefixes and co-adapts the drafter and scoring head.",
-          "The connection to Sequence-to-Lattice is the candidate–edge–path architecture. The differences are substantive: translation candidates come from an alignment-based lookup model; LiLiCorr candidates come from a parallel drafter. Sequence-to-Lattice uses exact Viterbi for a complete path objective; LiLiCorr uses local normalization and greedy selection aligned with prefix acceptance.",
+          "The connection to Sequence-to-Lattice is the candidate–edge–path architecture. Translation candidates come from an alignment-based lookup model; LiLiCorr candidates come from a parallel drafter. Sequence-to-Lattice uses exact Viterbi for a complete path objective; LiLiCorr uses local normalization and greedy selection aligned with prefix acceptance.",
           "DiffuSpec uses a diffusion model as a parallel drafter and introduces Causal-consistency Path Search over its token lattice, together with draft-length adaptation from acceptance feedback. Here the graph mediates between bidirectional draft proposals and an autoregressive verifier. A lattice describes the candidate organization; the scoring rule and verification procedure determine what selecting a path accomplishes."
         ],
         "citations": [
@@ -381,7 +381,7 @@
         "paragraphs": [
           "Three operations over the same graph answer different questions. Maximization finds the best complete path under a score. Marginalization sums over alternatives to measure probability or train a latent model. Sampling draws a sequence according to a distribution. Replacing one operation with another changes the algorithm even when the nodes and edges are identical.",
           "A small numerical example makes the distinction concrete. Suppose the first decision offers A with probability 0.6 and B with probability 0.4. The strongest continuation after A has conditional probability 0.5; after B it has probability 0.9. Greedy selection begins with A. Whole-path maximization chooses B because 0.4 × 0.9 exceeds 0.6 × 0.5. In speculative decoding, the target verifier introduces another objective: the useful quantity is the accepted prefix, together with the cost of producing it.",
-          "To compare implementations, identify the candidate set, the edge dependence, the normalization, and the inference operation. Then measure the work that dominates runtime: neural passes, candidate scoring, dynamic programming, and verification. A graph alone establishes neither an exact decoder nor a speed advantage."
+          "To compare implementations, identify the candidate set, the edge dependence, the normalization, and the inference operation. Then measure the work that dominates runtime: neural passes, candidate scoring, dynamic programming, and verification. Exactness depends on the retained search space and inference algorithm; speed depends on the costs of these stages."
         ],
         "table": {
           "columns": [
@@ -466,7 +466,7 @@
     "id": "probabilistic-attention",
     "title": "Attention as a Latent Variable: Modeling a Distribution over Attention",
     "eyebrow": "Probabilistic attention and latent inference",
-    "description": "A guide to Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.",
+    "description": "Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.",
     "lead": "Latent Alignment and Variational Attention (NeurIPS 2018), by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. The general idea is to model a distribution over where a network attends and reason over that distribution, rather than pass one deterministic weighted average into the prediction network.",
     "original_papers": [
       "latentattention2018"
@@ -509,7 +509,7 @@
         "id": "latent-attention-example",
         "title": "What a posterior over attention tells you",
         "paragraphs": [
-          "Imagine an image containing two people and a question asking who is holding a cup. Before seeing the answer, the model assigns attention probability to both people. Once the answer is observed, posterior inference redistributes probability toward alignments that explain it. This example defines an inference question independently of the visualization used to display the weights.",
+          "Imagine an image containing two people and a question asking who is holding a cup. Before seeing the answer, the model assigns attention probability to both people. Once the answer is observed, posterior inference redistributes probability toward alignments that explain it.",
           "The distinction also matters when attention is composed with another probabilistic component. Explicit variables expose which quantities are conditioned on, which alternatives are integrated out, and what an approximation replaces. A sampled attention vector, its expectation, and its most probable value answer different questions; naming the distribution makes those choices inspectable."
         ],
         "citations": [
@@ -538,7 +538,7 @@
         "title": "Four questions for a probabilistic attention model",
         "paragraphs": [
           "Start with the random object: a selected position, a distribution over positions, a context vector, or an entire structured selection. Next specify the prior and the information available to the posterior. Then identify what the prediction integrates: an intermediate representation or the output likelihood. Finally state whether training and prediction enumerate states, sample them, use an expectation, or optimize a variational approximation.",
-          "These choices determine the meaning of the model. They also make comparisons useful: two systems both called “variational attention” need not represent the same latent quantity or solve the same inference problem."
+          "Latent Alignment and Variational Attention uses categorical and simplex-valued alignments; Variational Attention for Sequence-to-Sequence Models uses Gaussian context vectors. The latent quantity and inference problem distinguish these two models."
         ],
         "table": {
           "columns": [
@@ -608,7 +608,7 @@
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/probabilistic-attention/",
         "title": "把注意力建模为隐变量：学习注意力的概率分布",
-        "description": "Latent Alignment and Variational Attention 导读：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
+        "description": "Latent Alignment and Variational Attention：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
         "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/probabilistic-attention.md"
       }
     }
@@ -679,10 +679,10 @@
       },
       {
         "id": "evaluation-recipe",
-        "title": "Design a useful long-form evaluation",
+        "title": "Design a long-form evaluation",
         "paragraphs": [
           "Start with the failure you want to detect, then define its latent representation and reference corpus. Fit or specify the critic, check its behavior on real texts and known structural errors, and apply it identically to reference and generated samples. Keep generation conditions, document lengths, and sample counts visible so that the comparison answers the intended question.",
-          "Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code provide concrete starting points for coherence, coreference, and topicality rather than a single universal quality metric."
+          "Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code implement separate diagnostics for coherence, coreference, and topicality."
         ],
         "citations": [
           "model-criticism",
@@ -735,7 +735,7 @@
         "title": "The input is markup; the output is an image",
         "paragraphs": [
           "A learned renderer receives a sequence that specifies a visual object and predicts its rendered pixels. LaTeX describes mathematical notation; SMILES describes atoms and bonds; HTML describes a table-like layout; LilyPond describes music notation. The four domains test symbolic content, layout, and dependencies that extend across the input sequence.",
-          "This direction matters. Image-to-LaTeX recognition recovers source notation from a picture. Markup-to-image generation performs the reverse task. The paper adapts paired data, including im2latex-100k, to learn this forward mapping from markup to pixels. It trains a conditional diffusion model rather than invoking a conventional rendering engine at inference time."
+          "Image-to-LaTeX recognition recovers source notation from a picture. Markup-to-image generation performs the reverse task. The paper adapts paired data, including im2latex-100k, to learn this forward mapping from markup to pixels. It trains a conditional diffusion model rather than invoking a conventional rendering engine at inference time."
         ],
         "citations": [
           "markup-diffusion"
@@ -765,10 +765,10 @@
       },
       {
         "id": "related-methods",
-        "title": "Follow the two research threads",
+        "title": "Markup alignment and diffusion exposure bias",
         "paragraphs": [
           "The rendering thread continues in FSA-CDM, by Guojin Zhong and colleagues, published at ACM Multimedia 2023. It evaluates the same four-domain task and adds fine-grained sequence alignment, contextual modeling, and contrastive training signals. Its contribution addresses how markup tokens correspond to visual structure, alongside the denoising process.",
-          "The diffusion-training thread connects to Input Perturbation Reduces Exposure Bias in Diffusion Models, published at ICML 2023. That method perturbs training inputs to simulate prediction errors. The shared question is how training should prepare a denoiser for the states it encounters during sampling. Model-generated inputs and synthetic perturbations are different answers, with different training procedures."
+          "The diffusion-training thread connects to Input Perturbation Reduces Exposure Bias in Diffusion Models, published at ICML 2023. That method perturbs training inputs to simulate prediction errors. Both train the denoiser for the states it encounters during sampling: scheduled sampling uses model-generated inputs, while input perturbation adds synthetic errors."
         ],
         "citations": [
           "fsa-cdm",
@@ -781,7 +781,7 @@
         "title": "Inspect the original examples and implementation",
         "paragraphs": [
           "The released repository includes side-by-side animations of scheduled sampling, the baseline, and ground truth for formulas, tables, music, and molecules. These examples expose the intermediate denoising trajectory. Inspect whether symbols appear, disappear, merge, or move, then compare the final output against the exact input specification.",
-          "For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. Separate rendering accuracy from stylistic resemblance. The original datasets, checkpoints, code, and recorded examples establish a reproducible starting point without treating a successful example as evidence of exact rendering on every input."
+          "For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. Separate rendering accuracy from stylistic resemblance. The released resources include the original datasets, checkpoints, code, and recorded examples."
         ],
         "citations": [
           "markup-diffusion"
@@ -846,7 +846,7 @@
         "title": "The 2025 system: monitoring connected to intervention",
         "paragraphs": [
           "The original framework uses a control server to mediate between a human or automated agent and the training process. Its Trainer integration exposes commands for optimizer hyperparameters, data handling, and checkpoints. A live interface lets the controller observe training and submit changes instead of editing a static recipe and relaunching the program.",
-          "The paper presents three case studies spanning training stability, sensitivity to initial hyperparameters, and changing user needs. Its LLM-driven learning-rate example demonstrates an agent reading feedback and intervening during optimization. The system contribution is the connection among live observation, a control interface, and the training loop—not a replacement for the optimizer’s parameter updates."
+          "The paper presents three case studies spanning training stability, sensitivity to initial hyperparameters, and changing user needs. Its LLM-driven learning-rate example demonstrates an agent reading feedback and intervening during optimization. The system connects live observation and intervention to the training loop, while the optimizer continues updating model parameters."
         ],
         "citations": [
           "interactive-training-2025"
@@ -868,7 +868,7 @@
         "title": "Compare mechanisms, controllers, and experiments",
         "paragraphs": [
           "LiveTune predates Interactive Training and exposes LiveVariables for changing optimization parameters without restarting the loop. It supplies an earlier mechanism for live parameter adjustment. Interactive Training’s focus is the human and AI-agent workflow around training, and v2 makes the control vocabulary and event record reusable across applications.",
-          "AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. This is a useful comparison at the controller level: what evidence reaches the agent, which actions it can request, and how later outcomes affect its decisions. Infrastructure support and measured controller performance are distinct contributions."
+          "AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. Controller-level comparisons concern the evidence available to the agent, the actions it can request, and how later outcomes affect its decisions. Infrastructure support and measured controller performance are distinct contributions."
         ],
         "citations": [
           "livetune",
@@ -882,7 +882,7 @@
         "title": "Design an observable feedback loop",
         "paragraphs": [
           "Expose controls that the training application can actually apply, and define when changes take effect. Record the observation that motivated a request, the requested value, the applied value, the step of application, and the subsequent measurements. A submitted request and a successful update are different events. Keeping them linked makes the behavior inspectable.",
-          "Evaluate an automated controller against a stated training objective under explicit workloads and budgets. Count its inference and intervention overhead, preserve the run history, and separate improvements within a continuing run from results of newly initialized rounds. The Interactive Training papers and implementation provide the machinery for this feedback loop; the controller and task determine what the loop accomplishes."
+          "Evaluate an automated controller against a stated training objective under explicit workloads and budgets. Count its inference and intervention overhead, preserve the run history, and separate improvements within a continuing run from results of newly initialized rounds."
         ],
         "citations": [
           "interactive-training-2025",

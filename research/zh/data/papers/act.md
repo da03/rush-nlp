@@ -4,7 +4,7 @@ Vincent Grari, Tim Arni, Thibault Laugel, Sylvain Lamprier, James Zou, Marcin De
 
 通过基于不纯度的划分选择与 TextGrad 优化，学习由自然语言二元问题组成的分类树。
 
-后续以智能体方式学习问题决策树的工作；比较时应关注问题优化与树的构建方式。
+后续以智能体方式学习问题决策树的工作，将问题优化与树结构学习结合。
 
 [论文原文](https://arxiv.org/html/2509.26433v4)
 

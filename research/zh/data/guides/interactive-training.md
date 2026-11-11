@@ -15,7 +15,7 @@ Wentao Zhang、Yang Young Lu 和 Yuntian Deng 的 Interactive Training: Feedback
 
 原始框架通过控制服务器连接人或自动化智能体与训练进程。与 Trainer 的集成开放了优化器超参数、数据处理和检查点命令。控制者可以在实时界面中观察训练并提交修改，无需把修改写进静态配置后重新启动程序。
 
-论文展示了三个案例，分别涉及训练稳定性、对初始超参数的敏感性和变化中的用户需求。其中，LLM 驱动的学习率调节示例展示了智能体如何读取反馈并在优化过程中干预。系统的贡献是把实时观测、控制接口和训练循环连接起来，而非替代优化器对模型参数的更新。
+论文展示了三个案例，分别涉及训练稳定性、对初始超参数的敏感性和变化中的用户需求。其中，LLM 驱动的学习率调节示例展示了智能体如何读取反馈并在优化过程中干预。系统把实时观测和控制接口与训练循环连接起来，优化器继续更新模型参数。
 
 - [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/)
 
@@ -31,7 +31,7 @@ Wentao Zhang、Xuanhe Pan、Han Zhou、Yang Lu 和 Yuntian Deng 的 Interactive 
 
 LiveTune 早于 Interactive Training，通过 LiveVariables 在不重启优化循环的情况下修改优化参数，提供了更早的实时参数调节机制。Interactive Training 关注围绕训练展开的人与 AI 智能体工作流程；第二版进一步让控制项与事件记录能够在不同应用间复用。
 
-AI Training Manager 研究一个受约束的 LLM 监督控制器，异步读取训练遥测数据并调整正在执行的训练配置。其实验在监督学习与强化学习中引入指定的失败模式。这为控制器层面的比较提供了实例：智能体能获得哪些证据、能请求哪些动作、后续结果如何影响其决策。基础设施支持与测得的控制器性能，是不同的贡献。
+AI Training Manager 研究一个受约束的 LLM 监督控制器，异步读取训练遥测数据并调整正在执行的训练配置。其实验在监督学习与强化学习中引入指定的失败模式。控制器层面的比较涉及智能体能获得的证据、能请求的动作，以及后续结果对决策的影响。基础设施支持与测得的控制器性能，是不同的贡献。
 
 - [LiveTune: Dynamic Parameter Tuning for Feedback-Driven Optimization](https://arxiv.org/abs/2311.17279)
 - [AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes](https://arxiv.org/abs/2606.29871)
@@ -42,7 +42,7 @@ AI Training Manager 研究一个受约束的 LLM 监督控制器，异步读取�
 
 开放训练应用实际能够执行的控制项，并定义修改在何时生效。记录触发请求的观测、请求值、实际应用值、生效的训练步数，以及后续测量结果。提交请求与成功完成更新是不同的事件；将两者关联起来，才能检查系统实际做了什么。
 
-在明确的任务负载和预算下，按预先指定的训练目标评估自动化控制器。计算推理与干预开销，保留运行历史，并区分持续运行中的改进与新初始化轮次的结果。Interactive Training 论文和实现提供了搭建这一反馈闭环的机制；闭环实现什么目标，由控制器和任务共同决定。
+在明确的任务负载和预算下，按预先指定的训练目标评估自动化控制器。计算推理与干预开销，保留运行历史，并区分持续运行中的改进与新初始化轮次的结果。
 
 - [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/)
 - [Interactive Training 2: Auditable Control Plane for Live Model Training](https://arxiv.org/abs/2607.18314)

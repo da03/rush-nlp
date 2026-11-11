@@ -41,9 +41,9 @@
       "id": "program-view",
       "title": "Reading a prompt tree as a program",
       "paragraphs": [
-        "Consider an illustrative support classifier. A first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. These example questions illustrate the control flow; they are not a tree reported in the paper.",
+        "In a worked support-classification example, a first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. This fixed example illustrates control flow; the paper learns its trees from data.",
         "The program consists of conditions, branches and return values. A conventional condition tests a numerical threshold or an exact string. A prompt-based condition asks the LM to interpret the input under an instruction. The instruction defines the question; the LM supplies the decision for this particular input.",
-        "A useful inspection separates three failures. The node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream."
+        "A path log distinguishes three failure types: the node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream."
       ]
     },
     {
@@ -62,8 +62,8 @@
       "id": "related-methods",
       "title": "Compare where the language model enters",
       "paragraphs": [
-        "Aug-Tree expands text features using an LLM during fitting, then deploys an interpretable tree without LM calls. It is a useful alternative when prediction must run with ordinary feature checks. GPTree builds LLM-powered trees and supports expert feedback on decision paths. ACT learns binary natural-language questions with impurity-based selection and TextGrad refinement.",
-        "These distinctions identify separate design choices: generating features, answering semantic questions, searching for better questions, and revising the resulting program. A paper that uses the word “tree” does not by that name specify which of these operations it performs."
+        "Aug-Tree expands text features using an LLM during fitting, then deploys an interpretable tree without LM calls. GPTree builds LLM-powered trees and supports expert feedback on decision paths. ACT learns binary natural-language questions with impurity-based selection and TextGrad refinement.",
+        "These distinctions identify separate design choices: generating features, answering semantic questions, searching for better questions, and revising the resulting program."
       ],
       "table": {
         "columns": [
@@ -106,8 +106,8 @@
       "title": "When a learned question tree is useful",
       "paragraphs": [
         "Use this design when the task has a repeatable decision structure and labeled examples expose which distinctions matter. Intent routing, document classification and categorization all provide a natural setting for asking successive semantic questions. The tree stores task-specific structure outside the model weights.",
-        "Examine the complete system rather than the diagram alone. A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.",
-        "The accompanying illustration lets you follow a fixed tree and change branch choices. To build a learned classifier, start with the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples. Treat the illustration as a mechanism explanation, separate from an empirical accuracy result."
+        "A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.",
+        "Choose among example messages to follow their paths through a fixed tree. The interactive illustration demonstrates control flow, not classification accuracy. To train a classifier, use the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples."
       ]
     },
     {
@@ -302,7 +302,7 @@
       "venue": "arXiv:2509.26433",
       "paper_url": "https://arxiv.org/html/2509.26433v4",
       "summary": "Learns classification trees of natural-language binary questions through impurity-based split selection and TextGrad refinement.",
-      "connection": "A later agentic formulation of learning question-based decision trees; compare question optimization and tree construction.",
+      "connection": "A later agentic formulation of learning question-based decision trees, combining question optimization with tree construction.",
       "bibtex_type": "article",
       "citation_key": "act",
       "source_urls": [
@@ -317,7 +317,7 @@
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/act/",
           "summary": "通过基于不纯度的划分选择与 TextGrad 优化，学习由自然语言二元问题组成的分类树。",
-          "connection": "后续以智能体方式学习问题决策树的工作；比较时应关注问题优化与树的构建方式。"
+          "connection": "后续以智能体方式学习问题决策树的工作，将问题优化与树结构学习结合。"
         }
       }
     }

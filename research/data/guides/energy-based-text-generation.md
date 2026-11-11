@@ -14,9 +14,9 @@ The distribution is p(y | x) = q(y | x) exp(−E(x,y)) / Z(x). Here x is the con
 
 The JMLR 2021 article, Residual Energy-Based Models for Text, develops the connection between distinguishing generated text and improving its distribution. Anton Bakhtin and Yuntian Deng contributed equally; Sam Gross, Myle Ott, Marc’Aurelio Ranzato and Arthur Szlam complete the author list. A discriminator supplies information about where a generator overproduces or underproduces text. A residual model turns that information into a probability correction.
 
-Read the product as two separate jobs. The base model provides fluent proposals and their relative frequency. The energy changes their relative desirability after viewing the sequence. An energy of zero everywhere leaves the base distribution unchanged. Adding the same constant to every energy also leaves the normalized distribution unchanged, because the constant cancels between numerator and denominator.
+The base model provides fluent proposals and their relative frequency. The energy changes their relative desirability after viewing the sequence. An energy of zero everywhere leaves the base distribution unchanged. Adding the same constant to every energy also leaves the normalized distribution unchanged, because the constant cancels between numerator and denominator.
 
-This gives a practical debugging check: changing a shared energy offset must not change candidate-selection probabilities. Changing a single candidate’s energy must change its probability in the expected direction. Those are algebraic properties, independent of which neural network computes the scores.
+Two algebraic checks apply regardless of the network that computes the scores: changing a shared energy offset leaves candidate-selection probabilities unchanged, while lowering one candidate’s energy increases its probability.
 
 - [Residual Energy-Based Models for Text](https://www.jmlr.org/papers/v22/20-326.html)
 

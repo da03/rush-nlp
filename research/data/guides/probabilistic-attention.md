@@ -21,7 +21,7 @@ Prior attention asks where to attend before the answer is known. Posterior atten
 
 ## What a posterior over attention tells you
 
-Imagine an image containing two people and a question asking who is holding a cup. Before seeing the answer, the model assigns attention probability to both people. Once the answer is observed, posterior inference redistributes probability toward alignments that explain it. This example defines an inference question independently of the visualization used to display the weights.
+Imagine an image containing two people and a question asking who is holding a cup. Before seeing the answer, the model assigns attention probability to both people. Once the answer is observed, posterior inference redistributes probability toward alignments that explain it.
 
 The distinction also matters when attention is composed with another probabilistic component. Explicit variables expose which quantities are conditioned on, which alternatives are integrated out, and what an approximation replaces. A sampled attention vector, its expectation, and its most probable value answer different questions; naming the distribution makes those choices inspectable.
 
@@ -47,7 +47,7 @@ Bayesian Attention Modules (NeurIPS 2020) constructs stochastic attention weight
 
 Start with the random object: a selected position, a distribution over positions, a context vector, or an entire structured selection. Next specify the prior and the information available to the posterior. Then identify what the prediction integrates: an intermediate representation or the output likelihood. Finally state whether training and prediction enumerate states, sample them, use an expectation, or optimize a variational approximation.
 
-These choices determine the meaning of the model. They also make comparisons useful: two systems both called “variational attention” need not represent the same latent quantity or solve the same inference problem.
+Latent Alignment and Variational Attention uses categorical and simplex-valued alignments; Variational Attention for Sequence-to-Sequence Models uses Gaussian context vectors. The latent quantity and inference problem distinguish these two models.
 
 | Method | Random or structured object | Role of inference |
 | --- | --- | --- |

@@ -2,7 +2,7 @@
   "id": "probabilistic-attention",
   "title": "把注意力建模为隐变量：学习注意力的概率分布",
   "eyebrow": "概率注意力与隐变量推断",
-  "description": "Latent Alignment and Variational Attention 导读：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
+  "description": "Latent Alignment and Variational Attention：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
   "lead": "Yuntian Deng、Yoon Kim、Justin Chiu、Demi Guo 和 Alexander M. Rush 的 Latent Alignment and Variational Attention（NeurIPS 2018）将注意力建模为显式隐变量，并使用变分推断进行学习。其一般思路是对网络关注的位置建立概率分布，并对这一分布进行推断，而不是把一个确定性的加权平均向量传入预测网络。",
   "original_papers": [
     "latentattention2018"
@@ -45,7 +45,7 @@
       "id": "latent-attention-example",
       "title": "注意力后验告诉我们什么",
       "paragraphs": [
-        "设想一张图片里有两个人，问题是“谁拿着杯子”。在看到答案之前，模型为两个人都分配注意力概率。观测到答案后，后验推断把概率重新分配给能够解释这个答案的对齐。这个例子提出的是一个推断问题，与用什么可视化方式展示权重无关。",
+        "设想一张图片里有两个人，问题是“谁拿着杯子”。在看到答案之前，模型为两个人都分配注意力概率。观测到答案后，后验推断把概率重新分配给能够解释这个答案的对齐。",
         "当注意力与另一个概率模块组合时，这一区别同样重要。显式变量说明了哪些量是条件、哪些备选状态被积分消去，以及近似方法替换了哪一步。采样得到的注意力向量、它的期望和最大概率取值回答不同的问题；明确分布后，这些选择就能被逐项检查。"
       ],
       "citations": [
@@ -74,7 +74,7 @@
       "title": "理解概率注意力模型的四个问题",
       "paragraphs": [
         "首先确定随机对象：选中的位置、位置上的概率分布、上下文向量，还是完整的结构化选择。其次规定先验，以及后验能使用哪些信息。然后辨明预测时综合的是中间表示，还是输出似然。最后说明训练与预测是枚举状态、采样、使用期望，还是优化变分近似。",
-        "这些选择决定模型的含义，也使不同方法之间的比较具有实质内容：两个都叫“变分注意力”的系统，不一定表示同一个隐变量，也不一定解决同一个推断问题。"
+        "Latent Alignment and Variational Attention 使用类别值或单纯形上的对齐；Variational Attention for Sequence-to-Sequence Models 使用高斯上下文向量。这两种模型的隐变量和推断问题不同。"
       ],
       "table": {
         "columns": [

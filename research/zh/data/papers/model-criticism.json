@@ -22,7 +22,7 @@
   "code_url": "https://github.com/da03/criticize_text_generation",
   "doi": "10.18653/v1/2022.emnlp-main.815",
   "summary": "通过在显式生成式检验模型定义的潜在空间中比较真实数据与生成数据，评估文本的高层结构。实验研究篇章连贯性、共指和主题性。",
-  "connection": "本指南的原始方法：对结构分布进行诊断式评估，与词元层面的流畅度分开。",
+  "connection": "诊断生成文本结构分布的原始框架，将结构评估与词元层面的流畅度分开。",
   "bibtex_type": "inproceedings",
   "citation_key": "deng-etal-2022-model",
   "source_urls": [

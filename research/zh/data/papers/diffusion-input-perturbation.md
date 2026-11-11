@@ -4,7 +4,7 @@ Mang Ning, Enver Sangineto, Angelo Porrello, Simone Calderara, Rita Cucchiara. I
 
 研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。
 
-通过输入扰动处理同一种训练与采样不匹配问题，可与在模型生成状态上训练的 Scheduled Sampling 比较。
+通过合成输入扰动处理同一种训练与采样不匹配问题；Scheduled Sampling 则在模型生成的状态上训练。
 
 [论文原文](https://proceedings.mlr.press/v202/ning23a.html)
 

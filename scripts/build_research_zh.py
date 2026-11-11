@@ -46,7 +46,7 @@ def build(m):
             translated=ui.get(core[:-2])
             if translated is not None: translated += core[-2:]
         if translated is None:
-            translated = re.sub(r'^References checked (.+)\.$', r'参考文献核查日期：\1。', core)
+            translated = core
             translated = re.sub(r'^First posted on arXiv: (.+)\. Citation year: (\d+)\.$', r'arXiv 首次公开：\1。引用年份：\2。', translated)
             translated = re.sub(r'^First public version: (.+)\. Citation year: (\d+)\.$', r'首次公开版本：\1。引用年份：\2。', translated)
             translated = re.sub(r' contributed equally\.$', ' 为共同第一作者。', translated)
@@ -177,7 +177,7 @@ def build(m):
     for p in nav['papers']: p['translations'] = {'zh-Hans': m.BASE + '/research/zh/papers/' + p['id'] + '/'}
     nav_path.write_text(json.dumps(nav, ensure_ascii=False, indent=2) + '\n')
     llms = m.ROOT / 'research/llms.txt'
-    llms.write_text(llms.read_text() + '\n## 中文导读\n\n- [中文研究导读](' + m.BASE + '/research/zh/): 七个主题的中文说明，与英文版共用论文和引用记录。\n- [中文纯文本导读](' + m.BASE + '/research/zh/data/reading-list.md)\n- [中文论文描述 JSON](' + m.BASE + '/research/zh/data/papers.json)\n')
+    llms.write_text(llms.read_text() + '\n## 中文导读\n\n- [中文研究导读](' + m.BASE + '/research/zh/): 七个主题的研究导读，附交互示例、原始论文与引用下载。\n- [中文纯文本导读](' + m.BASE + '/research/zh/data/reading-list.md)\n- [中文论文描述 JSON](' + m.BASE + '/research/zh/data/papers.json)\n')
 
     namespace = 'http://www.sitemaps.org/schemas/sitemap/0.9'
     sitemap = ET.fromstring((m.ROOT / 'research/sitemap.xml').read_text())

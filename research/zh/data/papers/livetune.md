@@ -4,7 +4,7 @@ Soheil Zibakhsh Shabgahi, Nojan Sheybani, Aiden Tabrizi, Farinaz Koushanfar. arX
 
 LiveVariables 通过指定的系统端口开放优化参数，支持在不重启优化循环的情况下实时调整参数。
 
-更早的运行中优化过程调节系统；可将其参数机制与 Interactive Training 的人和智能体命令接口及第二版协议比较。
+更早的实时优化参数调节系统；Interactive Training 将人和智能体的命令接入训练，第二版提供共用的控制协议。
 
 [论文原文](https://arxiv.org/abs/2311.17279)
 

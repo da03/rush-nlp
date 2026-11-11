@@ -4,7 +4,7 @@ Yuntian Deng, Volodymyr Kuleshov, Alexander M. Rush. EMNLP 2022 (2022).
 
 A framework for evaluating high-level text structure by comparing real and generated data in latent spaces defined by explicit generative critics. Experiments study discourse coherence, coreference, and topicality.
 
-The original method behind this guide: diagnostic evaluation of structural distributions, separate from word-level fluency.
+The original framework for diagnosing structural distributions in generated text, separate from word-level fluency.
 
 ## Abstract
 

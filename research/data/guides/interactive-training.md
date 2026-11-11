@@ -15,7 +15,7 @@ This differs from choosing a configuration before launch or proposing a new expe
 
 The original framework uses a control server to mediate between a human or automated agent and the training process. Its Trainer integration exposes commands for optimizer hyperparameters, data handling, and checkpoints. A live interface lets the controller observe training and submit changes instead of editing a static recipe and relaunching the program.
 
-The paper presents three case studies spanning training stability, sensitivity to initial hyperparameters, and changing user needs. Its LLM-driven learning-rate example demonstrates an agent reading feedback and intervening during optimization. The system contribution is the connection among live observation, a control interface, and the training loop—not a replacement for the optimizer’s parameter updates.
+The paper presents three case studies spanning training stability, sensitivity to initial hyperparameters, and changing user needs. Its LLM-driven learning-rate example demonstrates an agent reading feedback and intervening during optimization. The system connects live observation and intervention to the training loop, while the optimizer continues updating model parameters.
 
 - [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/)
 
@@ -31,7 +31,7 @@ The training application chooses control points at which queued requests are val
 
 LiveTune predates Interactive Training and exposes LiveVariables for changing optimization parameters without restarting the loop. It supplies an earlier mechanism for live parameter adjustment. Interactive Training’s focus is the human and AI-agent workflow around training, and v2 makes the control vocabulary and event record reusable across applications.
 
-AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. This is a useful comparison at the controller level: what evidence reaches the agent, which actions it can request, and how later outcomes affect its decisions. Infrastructure support and measured controller performance are distinct contributions.
+AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. Controller-level comparisons concern the evidence available to the agent, the actions it can request, and how later outcomes affect its decisions. Infrastructure support and measured controller performance are distinct contributions.
 
 - [LiveTune: Dynamic Parameter Tuning for Feedback-Driven Optimization](https://arxiv.org/abs/2311.17279)
 - [AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes](https://arxiv.org/abs/2606.29871)
@@ -42,7 +42,7 @@ AI Training Manager studies a bounded LLM supervisor that asynchronously reads t
 
 Expose controls that the training application can actually apply, and define when changes take effect. Record the observation that motivated a request, the requested value, the applied value, the step of application, and the subsequent measurements. A submitted request and a successful update are different events. Keeping them linked makes the behavior inspectable.
 
-Evaluate an automated controller against a stated training objective under explicit workloads and budgets. Count its inference and intervention overhead, preserve the run history, and separate improvements within a continuing run from results of newly initialized rounds. The Interactive Training papers and implementation provide the machinery for this feedback loop; the controller and task determine what the loop accomplishes.
+Evaluate an automated controller against a stated training objective under explicit workloads and budgets. Count its inference and intervention overhead, preserve the run history, and separate improvements within a continuing run from results of newly initialized rounds.
 
 - [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/)
 - [Interactive Training 2: Auditable Control Plane for Live Model Training](https://arxiv.org/abs/2607.18314)

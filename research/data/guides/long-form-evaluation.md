@@ -36,11 +36,11 @@ The story-evaluation survey by Dingyi Yang and Qin Jin organizes broader criteri
 - [What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation](https://arxiv.org/abs/2408.14622)
 - [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
 
-## Design a useful long-form evaluation
+## Design a long-form evaluation
 
 Start with the failure you want to detect, then define its latent representation and reference corpus. Fit or specify the critic, check its behavior on real texts and known structural errors, and apply it identically to reference and generated samples. Keep generation conditions, document lengths, and sample counts visible so that the comparison answers the intended question.
 
-Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code provide concrete starting points for coherence, coreference, and topicality rather than a single universal quality metric.
+Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code implement separate diagnostics for coherence, coreference, and topicality.
 
 - [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
 - [OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics](https://aclanthology.org/2021.acl-long.500/)

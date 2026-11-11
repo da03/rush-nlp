@@ -3,7 +3,7 @@
 - [大语言模型决策树：从 Tree Prompting 到智能体分类](https://yuntiandeng.com/research/zh/llm-decision-trees/) — Tree Prompting 如何学习由语言模型提示调用组成的决策树，以及它与 Aug-Tree、GPTree 和 Agentic Classification Tree 的联系。
 - [基于能量的文本生成：残差模型、重采样与扩散](https://yuntiandeng.com/research/zh/energy-based-text-generation/) — Residual Energy-Based Models for Text Generation 将序列级能量、噪声对比估计和重要性重采样联系起来，并与基于能量的扩散语言模型直接相连。
 - [结构化解码：高阶 CRF、扩散语言模型与候选格](https://yuntiandeng.com/research/zh/structured-decoding/) — Cascaded Text Generation 和 Sequence-to-Lattice 如何连接高阶条件随机场、联合扩散解码，以及用于投机生成的候选格。
-- [把注意力建模为隐变量：学习注意力的概率分布](https://yuntiandeng.com/research/zh/probabilistic-attention/) — Latent Alignment and Variational Attention 导读：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。
+- [把注意力建模为隐变量：学习注意力的概率分布](https://yuntiandeng.com/research/zh/probabilistic-attention/) — Latent Alignment and Variational Attention：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。
 - [如何评估长文本的结构](https://yuntiandeng.com/research/zh/long-form-evaluation/) — 潜在空间中的模型检验如何超越词元层面的流畅度，评估生成文本的篇章结构、实体行为与主题关系。
 - [学习渲染 LaTeX、SMILES、HTML 与乐谱](https://yuntiandeng.com/research/zh/learned-rendering/) — 用扩散模型学习渲染数学公式、分子、表格布局和乐谱，并通过 Scheduled Sampling 处理暴露偏差。
 - [让人和 AI 智能体控制正在运行的训练任务](https://yuntiandeng.com/research/zh/interactive-training/) — Interactive Training 将实时指标与人和 LLM 对训练任务的干预相连；第二版加入带类型的控制项和有序操作日志。
@@ -46,7 +46,7 @@ Vincent Grari, Tim Arni, Thibault Laugel, Sylvain Lamprier, James Zou, Marcin De
 
 通过基于不纯度的划分选择与 TextGrad 优化，学习由自然语言二元问题组成的分类树。
 
-后续以智能体方式学习问题决策树的工作；比较时应关注问题优化与树的构建方式。
+后续以智能体方式学习问题决策树的工作，将问题优化与树结构学习结合。
 
 [论文原文](https://arxiv.org/html/2509.26433v4) · [论文记录与引用](https://yuntiandeng.com/research/zh/papers/act/)
 
@@ -56,7 +56,7 @@ Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc’Aurelio Ranzato. ICL
 
 将固定的自回归语言模型与学到的序列级能量结合，使用 NCE 训练、基于重要性重采样的条件生成，以及似然上下界。
 
-本指南讨论的原始文本生成与评估框架，将序列级残差能量与当前采用能量修正的扩散解码联系起来。
+原始文本生成与评估框架，将序列级残差能量与采用能量修正的扩散解码联系起来。
 
 [论文原文](https://arxiv.org/html/2004.11714v1) · [论文记录与引用](https://yuntiandeng.com/research/zh/papers/residual-ebm/)
 
@@ -226,7 +226,7 @@ Yuntian Deng, Volodymyr Kuleshov, Alexander M. Rush. EMNLP 2022.
 
 通过在显式生成式检验模型定义的潜在空间中比较真实数据与生成数据，评估文本的高层结构。实验研究篇章连贯性、共指和主题性。
 
-本指南的原始方法：对结构分布进行诊断式评估，与词元层面的流畅度分开。
+诊断生成文本结构分布的原始框架，将结构评估与词元层面的流畅度分开。
 
 [论文原文](https://aclanthology.org/2022.emnlp-main.815/) · [论文记录与引用](https://yuntiandeng.com/research/zh/papers/model-criticism/)
 
@@ -256,7 +256,7 @@ Yuntian Deng, Noriyuki Kojima, Alexander M. Rush. ICLR 2023.
 
 通过条件扩散学习渲染 LaTeX、HTML 表格布局、LilyPond 乐谱和 SMILES 分子。Scheduled Sampling 让去噪器接触自己生成的输入，以处理逐步累积的错误。
 
-本指南讨论的原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。
+原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。
 
 [论文原文](https://arxiv.org/abs/2210.05147) · [论文记录与引用](https://yuntiandeng.com/research/zh/papers/markup-diffusion/)
 
@@ -276,7 +276,7 @@ Mang Ning, Enver Sangineto, Angelo Porrello, Simone Calderara, Rita Cucchiara. I
 
 研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。
 
-通过输入扰动处理同一种训练与采样不匹配问题，可与在模型生成状态上训练的 Scheduled Sampling 比较。
+通过合成输入扰动处理同一种训练与采样不匹配问题；Scheduled Sampling 则在模型生成的状态上训练。
 
 [论文原文](https://proceedings.mlr.press/v202/ning23a.html) · [论文记录与引用](https://yuntiandeng.com/research/zh/papers/diffusion-input-perturbation/)
 
@@ -306,7 +306,7 @@ Soheil Zibakhsh Shabgahi, Nojan Sheybani, Aiden Tabrizi, Farinaz Koushanfar. arX
 
 LiveVariables 通过指定的系统端口开放优化参数，支持在不重启优化循环的情况下实时调整参数。
 
-更早的运行中优化过程调节系统；可将其参数机制与 Interactive Training 的人和智能体命令接口及第二版协议比较。
+更早的实时优化参数调节系统；Interactive Training 将人和智能体的命令接入训练，第二版提供共用的控制协议。
 
 [论文原文](https://arxiv.org/abs/2311.17279) · [论文记录与引用](https://yuntiandeng.com/research/zh/papers/livetune/)
 

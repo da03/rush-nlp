@@ -4,7 +4,7 @@ Yuntian Deng, Noriyuki Kojima, Alexander M. Rush. ICLR 2023 (2023).
 
 Learns to render LaTeX, HTML table layouts, LilyPond music notation, and SMILES molecules with conditional diffusion. Scheduled sampling exposes denoisers to their own generated inputs to address compounding errors.
 
-The original diffusion-based markup-to-image method and four-domain rendering benchmark discussed in this guide.
+The original diffusion-based markup-to-image method and four-domain rendering benchmark.
 
 ## Abstract
 

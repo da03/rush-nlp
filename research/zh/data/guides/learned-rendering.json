@@ -21,7 +21,7 @@
       "title": "输入是标记语言，输出是图像",
       "paragraphs": [
         "学习式渲染器接收描述视觉对象的序列，预测渲染后的像素。LaTeX 描述数学记号，SMILES 描述原子与化学键，HTML 描述表格类布局，LilyPond 描述乐谱。这四个领域共同检验模型对符号内容、布局，以及跨越输入序列的依赖关系的处理能力。",
-        "必须区分任务方向。图像到 LaTeX 的识别任务从图片恢复源代码；标记语言到图像的生成任务则朝相反方向进行。论文调整了包括 im2latex-100k 在内的配对数据，学习从标记语言到像素的正向映射。它训练的是条件扩散模型，推理时不调用传统渲染引擎。"
+        "图像到 LaTeX 的识别任务从图片恢复源代码；标记语言到图像的生成任务则朝相反方向进行。论文调整了包括 im2latex-100k 在内的配对数据，学习从标记语言到像素的正向映射。它训练的是条件扩散模型，推理时不调用传统渲染引擎。"
       ],
       "citations": [
         "markup-diffusion"
@@ -51,10 +51,10 @@
     },
     {
       "id": "related-methods",
-      "title": "沿两条研究线索继续阅读",
+      "title": "标记语言对齐与扩散暴露偏差",
       "paragraphs": [
         "渲染这条线索延伸到 Guojin Zhong 等人在 ACM Multimedia 2023 发表的 FSA-CDM。它沿用四个领域的任务，加入细粒度序列对齐、上下文建模和对比训练信号。除了去噪过程，这项工作还研究标记语言中的词元如何对应图像结构。",
-        "扩散训练这条线索则联系到 ICML 2023 论文 Input Perturbation Reduces Exposure Bias in Diffusion Models。该方法通过扰动训练输入，模拟预测误差。共同的问题是：训练应如何让去噪器适应采样时遇到的状态？使用模型生成的输入与使用合成扰动，是两种不同的回答，也对应不同的训练流程。"
+        "扩散训练这条线索则联系到 ICML 2023 论文 Input Perturbation Reduces Exposure Bias in Diffusion Models。该方法通过扰动训练输入，模拟预测误差。两者都针对去噪器在采样时遇到的状态进行训练：Scheduled Sampling 使用模型生成的输入，输入扰动则加入合成误差。"
       ],
       "citations": [
         "fsa-cdm",
@@ -67,7 +67,7 @@
       "title": "查看原始示例与实现",
       "paragraphs": [
         "开源仓库提供了公式、表格、乐谱和分子的并排动画，对照 Scheduled Sampling、基线和真实图像。这些示例展示了中间去噪轨迹。可以检查符号何时出现、消失、合并或移动，再把最终输出与精确的输入描述比较。",
-        "设计新的学习式渲染任务时，先确定配对的源数据与目标图像，识别哪些符号错误会改变含义，再选择能够暴露这些错误的指标。将渲染准确性与风格相似性分开。原始数据集、检查点、代码和记录的示例提供了可复现的起点；单个成功示例不等于对每种输入都能精确渲染。"
+        "设计新的学习式渲染任务时，先确定配对的源数据与目标图像，识别哪些符号错误会改变含义，再选择能够暴露这些错误的指标。将渲染准确性与风格相似性分开。已发布的资源包括原始数据集、检查点、代码和记录的示例。"
       ],
       "citations": [
         "markup-diffusion"
@@ -111,7 +111,7 @@
       "code_url": "https://github.com/da03/markup2im",
       "doi": "10.48550/arXiv.2210.05147",
       "summary": "通过条件扩散学习渲染 LaTeX、HTML 表格布局、LilyPond 乐谱和 SMILES 分子。Scheduled Sampling 让去噪器接触自己生成的输入，以处理逐步累积的错误。",
-      "connection": "本指南讨论的原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。",
+      "connection": "原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。",
       "bibtex_type": "inproceedings",
       "citation_key": "deng2023markuptoimage",
       "source_urls": [
@@ -202,7 +202,7 @@
       "paper_url": "https://proceedings.mlr.press/v202/ning23a.html",
       "pdf_url": "https://proceedings.mlr.press/v202/ning23a/ning23a.pdf",
       "summary": "研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。",
-      "connection": "通过输入扰动处理同一种训练与采样不匹配问题，可与在模型生成状态上训练的 Scheduled Sampling 比较。",
+      "connection": "通过合成输入扰动处理同一种训练与采样不匹配问题；Scheduled Sampling 则在模型生成的状态上训练。",
       "bibtex_type": "inproceedings",
       "citation_key": "pmlr-v202-ning23a",
       "source_urls": [

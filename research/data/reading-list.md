@@ -3,7 +3,7 @@
 - [LLM decision trees: from Tree Prompting to agentic classification](https://yuntiandeng.com/research/llm-decision-trees/) — How Tree Prompting learns decision trees of prompted language-model calls, and how it relates to Aug-Tree, GPTree and Agentic Classification Tree.
 - [Energy-based text generation: residual models, resampling and diffusion](https://yuntiandeng.com/research/energy-based-text-generation/) — Residual Energy-Based Models for Text Generation connects sequence-level energy, noise-contrastive estimation and importance resampling to energy-based diffusion language models.
 - [Structured Decoding: Higher-Order CRFs, Diffusion Language Models, and Candidate Lattices](https://yuntiandeng.com/research/structured-decoding/) — How Cascaded Text Generation and Sequence-to-Lattice connect higher-order CRFs, joint diffusion decoding, and candidate lattices for speculative generation.
-- [Attention as a Latent Variable: Modeling a Distribution over Attention](https://yuntiandeng.com/research/probabilistic-attention/) — A guide to Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.
+- [Attention as a Latent Variable: Modeling a Distribution over Attention](https://yuntiandeng.com/research/probabilistic-attention/) — Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.
 - [Evaluating the structure of long-form text](https://yuntiandeng.com/research/long-form-evaluation/) — How latent-space model criticism evaluates discourse structure, entity behavior, and topicality beyond word-level fluency in generated text.
 - [Learning to render LaTeX, SMILES, HTML and music notation](https://yuntiandeng.com/research/learned-rendering/) — Diffusion models as learned renderers for mathematical formulas, molecules, table layouts, and music notation, with scheduled sampling to address exposure bias.
 - [Controlling a running training job with humans and AI agents](https://yuntiandeng.com/research/interactive-training/) — Interactive Training connects live metrics to human and LLM interventions in running neural-network jobs; v2 adds typed controls and an ordered action journal.
@@ -46,7 +46,7 @@ Vincent Grari, Tim Arni, Thibault Laugel, Sylvain Lamprier, James Zou, Marcin De
 
 Learns classification trees of natural-language binary questions through impurity-based split selection and TextGrad refinement.
 
-A later agentic formulation of learning question-based decision trees; compare question optimization and tree construction.
+A later agentic formulation of learning question-based decision trees, combining question optimization with tree construction.
 
 [Paper](https://arxiv.org/html/2509.26433v4) · [Record and citation](https://yuntiandeng.com/research/papers/act/)
 
@@ -226,7 +226,7 @@ Yuntian Deng, Volodymyr Kuleshov, Alexander M. Rush. EMNLP 2022.
 
 A framework for evaluating high-level text structure by comparing real and generated data in latent spaces defined by explicit generative critics. Experiments study discourse coherence, coreference, and topicality.
 
-The original method behind this guide: diagnostic evaluation of structural distributions, separate from word-level fluency.
+The original framework for diagnosing structural distributions in generated text, separate from word-level fluency.
 
 [Paper](https://aclanthology.org/2022.emnlp-main.815/) · [Record and citation](https://yuntiandeng.com/research/papers/model-criticism/)
 
@@ -256,7 +256,7 @@ Yuntian Deng, Noriyuki Kojima, Alexander M. Rush. ICLR 2023.
 
 Learns to render LaTeX, HTML table layouts, LilyPond music notation, and SMILES molecules with conditional diffusion. Scheduled sampling exposes denoisers to their own generated inputs to address compounding errors.
 
-The original diffusion-based markup-to-image method and four-domain rendering benchmark discussed in this guide.
+The original diffusion-based markup-to-image method and four-domain rendering benchmark.
 
 [Paper](https://arxiv.org/abs/2210.05147) · [Record and citation](https://yuntiandeng.com/research/papers/markup-diffusion/)
 
@@ -276,7 +276,7 @@ Mang Ning, Enver Sangineto, Angelo Porrello, Simone Calderara, Rita Cucchiara. I
 
 Studies accumulated sampling errors in diffusion models and trains with perturbed inputs to simulate inference-time prediction errors.
 
-Addresses the same training–sampling mismatch through input perturbation, providing a comparison with scheduled sampling on model-generated states.
+Addresses the same training–sampling mismatch with synthetic input perturbations; scheduled sampling trains on model-generated states.
 
 [Paper](https://proceedings.mlr.press/v202/ning23a.html) · [Record and citation](https://yuntiandeng.com/research/papers/diffusion-input-perturbation/)
 
@@ -306,7 +306,7 @@ Soheil Zibakhsh Shabgahi, Nojan Sheybani, Aiden Tabrizi, Farinaz Koushanfar. arX
 
 LiveVariables expose optimization parameters through designated system ports for real-time adjustment without restarting the optimization loop.
 
-An earlier system for changing running optimization processes; compare its parameter mechanism with Interactive Training’s human/agent command interface and v2 protocol.
+An earlier system for live optimization-parameter adjustment; Interactive Training connects human and agent commands to training, and v2 supplies a shared control protocol.
 
 [Paper](https://arxiv.org/abs/2311.17279) · [Record and citation](https://yuntiandeng.com/research/papers/livetune/)
 

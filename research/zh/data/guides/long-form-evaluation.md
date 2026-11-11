@@ -36,11 +36,11 @@ Dingyi Yang 和 Qin Jin 的故事评估综述整理了连贯性、人物发展�
 - [What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation](https://arxiv.org/abs/2408.14622)
 - [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
 
-## 设计有用的长文本评估
+## 设计长文本评估
 
 先明确要检测什么错误，再定义对应的潜在表示与参考语料。拟合或指定检验模型，检查它在真实文本和已知结构错误上的表现，然后以相同方式处理参考样本和生成样本。明确报告生成条件、文档长度和样本数量，让比较回答预定的问题。
 
-分别报告词元层面与结构层面的指标。检查异常潜在分数背后的文本，也检查检验模型自身的推断错误。分布不匹配指出需要诊断的方向，并不意味着每一个不同寻常的故事都不好。原论文和开源代码为篇章连贯性、共指和主题性提供了具体起点，而非一个通用的单一质量指标。
+分别报告词元层面与结构层面的指标。检查异常潜在分数背后的文本，也检查检验模型自身的推断错误。分布不匹配指出需要诊断的方向，并不意味着每一个不同寻常的故事都不好。原论文和开源代码分别实现了篇章连贯性、共指和主题性的诊断。
 
 - [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
 - [OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics](https://aclanthology.org/2021.acl-long.500/)

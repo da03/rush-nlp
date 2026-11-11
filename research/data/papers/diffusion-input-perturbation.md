@@ -4,7 +4,7 @@ Mang Ning, Enver Sangineto, Angelo Porrello, Simone Calderara, Rita Cucchiara. I
 
 Studies accumulated sampling errors in diffusion models and trains with perturbed inputs to simulate inference-time prediction errors.
 
-Addresses the same training–sampling mismatch through input perturbation, providing a comparison with scheduled sampling on model-generated states.
+Addresses the same training–sampling mismatch with synthetic input perturbations; scheduled sampling trains on model-generated states.
 
 [Original paper](https://proceedings.mlr.press/v202/ning23a.html)
 

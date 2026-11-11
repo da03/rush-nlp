@@ -2,7 +2,7 @@
   "id": "probabilistic-attention",
   "title": "Attention as a Latent Variable: Modeling a Distribution over Attention",
   "eyebrow": "Probabilistic attention and latent inference",
-  "description": "A guide to Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.",
+  "description": "Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.",
   "lead": "Latent Alignment and Variational Attention (NeurIPS 2018), by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. The general idea is to model a distribution over where a network attends and reason over that distribution, rather than pass one deterministic weighted average into the prediction network.",
   "original_papers": [
     "latentattention2018"
@@ -45,7 +45,7 @@
       "id": "latent-attention-example",
       "title": "What a posterior over attention tells you",
       "paragraphs": [
-        "Imagine an image containing two people and a question asking who is holding a cup. Before seeing the answer, the model assigns attention probability to both people. Once the answer is observed, posterior inference redistributes probability toward alignments that explain it. This example defines an inference question independently of the visualization used to display the weights.",
+        "Imagine an image containing two people and a question asking who is holding a cup. Before seeing the answer, the model assigns attention probability to both people. Once the answer is observed, posterior inference redistributes probability toward alignments that explain it.",
         "The distinction also matters when attention is composed with another probabilistic component. Explicit variables expose which quantities are conditioned on, which alternatives are integrated out, and what an approximation replaces. A sampled attention vector, its expectation, and its most probable value answer different questions; naming the distribution makes those choices inspectable."
       ],
       "citations": [
@@ -74,7 +74,7 @@
       "title": "Four questions for a probabilistic attention model",
       "paragraphs": [
         "Start with the random object: a selected position, a distribution over positions, a context vector, or an entire structured selection. Next specify the prior and the information available to the posterior. Then identify what the prediction integrates: an intermediate representation or the output likelihood. Finally state whether training and prediction enumerate states, sample them, use an expectation, or optimize a variational approximation.",
-        "These choices determine the meaning of the model. They also make comparisons useful: two systems both called “variational attention” need not represent the same latent quantity or solve the same inference problem."
+        "Latent Alignment and Variational Attention uses categorical and simplex-valued alignments; Variational Attention for Sequence-to-Sequence Models uses Gaussian context vectors. The latent quantity and inference problem distinguish these two models."
       ],
       "table": {
         "columns": [
@@ -399,7 +399,7 @@
     "zh-Hans": {
       "url": "https://yuntiandeng.com/research/zh/probabilistic-attention/",
       "title": "把注意力建模为隐变量：学习注意力的概率分布",
-      "description": "Latent Alignment and Variational Attention 导读：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
+      "description": "Latent Alignment and Variational Attention：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
       "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/probabilistic-attention.md"
     }
   }

@@ -4,7 +4,7 @@ Soheil Zibakhsh Shabgahi, Nojan Sheybani, Aiden Tabrizi, Farinaz Koushanfar. arX
 
 LiveVariables expose optimization parameters through designated system ports for real-time adjustment without restarting the optimization loop.
 
-An earlier system for changing running optimization processes; compare its parameter mechanism with Interactive Training’s human/agent command interface and v2 protocol.
+An earlier system for live optimization-parameter adjustment; Interactive Training connects human and agent commands to training, and v2 supplies a shared control protocol.
 
 [Original paper](https://arxiv.org/abs/2311.17279)
 

@@ -31,7 +31,7 @@
   "venue": "arXiv:2509.26433",
   "paper_url": "https://arxiv.org/html/2509.26433v4",
   "summary": "通过基于不纯度的划分选择与 TextGrad 优化，学习由自然语言二元问题组成的分类树。",
-  "connection": "后续以智能体方式学习问题决策树的工作；比较时应关注问题优化与树的构建方式。",
+  "connection": "后续以智能体方式学习问题决策树的工作，将问题优化与树结构学习结合。",
   "bibtex_type": "article",
   "citation_key": "act",
   "source_urls": [

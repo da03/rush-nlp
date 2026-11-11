@@ -6,7 +6,7 @@ Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 的 Markup-to-Image Diffusi
 
 学习式渲染器接收描述视觉对象的序列，预测渲染后的像素。LaTeX 描述数学记号，SMILES 描述原子与化学键，HTML 描述表格类布局，LilyPond 描述乐谱。这四个领域共同检验模型对符号内容、布局，以及跨越输入序列的依赖关系的处理能力。
 
-必须区分任务方向。图像到 LaTeX 的识别任务从图片恢复源代码；标记语言到图像的生成任务则朝相反方向进行。论文调整了包括 im2latex-100k 在内的配对数据，学习从标记语言到像素的正向映射。它训练的是条件扩散模型，推理时不调用传统渲染引擎。
+图像到 LaTeX 的识别任务从图片恢复源代码；标记语言到图像的生成任务则朝相反方向进行。论文调整了包括 im2latex-100k 在内的配对数据，学习从标记语言到像素的正向映射。它训练的是条件扩散模型，推理时不调用传统渲染引擎。
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 
@@ -26,11 +26,11 @@ Scheduled Sampling 改变训练输入，让去噪器接触模型自己产生的�
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 
-## 沿两条研究线索继续阅读
+## 标记语言对齐与扩散暴露偏差
 
 渲染这条线索延伸到 Guojin Zhong 等人在 ACM Multimedia 2023 发表的 FSA-CDM。它沿用四个领域的任务，加入细粒度序列对齐、上下文建模和对比训练信号。除了去噪过程，这项工作还研究标记语言中的词元如何对应图像结构。
 
-扩散训练这条线索则联系到 ICML 2023 论文 Input Perturbation Reduces Exposure Bias in Diffusion Models。该方法通过扰动训练输入，模拟预测误差。共同的问题是：训练应如何让去噪器适应采样时遇到的状态？使用模型生成的输入与使用合成扰动，是两种不同的回答，也对应不同的训练流程。
+扩散训练这条线索则联系到 ICML 2023 论文 Input Perturbation Reduces Exposure Bias in Diffusion Models。该方法通过扰动训练输入，模拟预测误差。两者都针对去噪器在采样时遇到的状态进行训练：Scheduled Sampling 使用模型生成的输入，输入扰动则加入合成误差。
 
 - [Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation](https://arxiv.org/abs/2308.01147)
 - [Input Perturbation Reduces Exposure Bias in Diffusion Models](https://proceedings.mlr.press/v202/ning23a.html)
@@ -40,7 +40,7 @@ Scheduled Sampling 改变训练输入，让去噪器接触模型自己产生的�
 
 开源仓库提供了公式、表格、乐谱和分子的并排动画，对照 Scheduled Sampling、基线和真实图像。这些示例展示了中间去噪轨迹。可以检查符号何时出现、消失、合并或移动，再把最终输出与精确的输入描述比较。
 
-设计新的学习式渲染任务时，先确定配对的源数据与目标图像，识别哪些符号错误会改变含义，再选择能够暴露这些错误的指标。将渲染准确性与风格相似性分开。原始数据集、检查点、代码和记录的示例提供了可复现的起点；单个成功示例不等于对每种输入都能精确渲染。
+设计新的学习式渲染任务时，先确定配对的源数据与目标图像，识别哪些符号错误会改变含义，再选择能够暴露这些错误的指标。将渲染准确性与风格相似性分开。已发布的资源包括原始数据集、检查点、代码和记录的示例。
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 

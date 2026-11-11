@@ -5,7 +5,7 @@
 - [LLM decision trees: from Tree Prompting to agentic classification](https://yuntiandeng.com/research/llm-decision-trees/): How Tree Prompting learns decision trees of prompted language-model calls, and how it relates to Aug-Tree, GPTree and Agentic Classification Tree.
 - [Energy-based text generation: residual models, resampling and diffusion](https://yuntiandeng.com/research/energy-based-text-generation/): Residual Energy-Based Models for Text Generation connects sequence-level energy, noise-contrastive estimation and importance resampling to energy-based diffusion language models.
 - [Structured Decoding: Higher-Order CRFs, Diffusion Language Models, and Candidate Lattices](https://yuntiandeng.com/research/structured-decoding/): How Cascaded Text Generation and Sequence-to-Lattice connect higher-order CRFs, joint diffusion decoding, and candidate lattices for speculative generation.
-- [Attention as a Latent Variable: Modeling a Distribution over Attention](https://yuntiandeng.com/research/probabilistic-attention/): A guide to Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.
+- [Attention as a Latent Variable: Modeling a Distribution over Attention](https://yuntiandeng.com/research/probabilistic-attention/): Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.
 - [Evaluating the structure of long-form text](https://yuntiandeng.com/research/long-form-evaluation/): How latent-space model criticism evaluates discourse structure, entity behavior, and topicality beyond word-level fluency in generated text.
 - [Learning to render LaTeX, SMILES, HTML and music notation](https://yuntiandeng.com/research/learned-rendering/): Diffusion models as learned renderers for mathematical formulas, molecules, table layouts, and music notation, with scheduled sampling to address exposure bias.
 - [Controlling a running training job with humans and AI agents](https://yuntiandeng.com/research/interactive-training/): Interactive Training connects live metrics to human and LLM interventions in running neural-network jobs; v2 adds typed controls and an ordered action journal.
@@ -16,6 +16,6 @@
 
 ## 中文导读
 
-- [中文研究导读](https://yuntiandeng.com/research/zh/): 七个主题的中文说明，与英文版共用论文和引用记录。
+- [中文研究导读](https://yuntiandeng.com/research/zh/): 七个主题的研究导读，附交互示例、原始论文与引用下载。
 - [中文纯文本导读](https://yuntiandeng.com/research/zh/data/reading-list.md)
 - [中文论文描述 JSON](https://yuntiandeng.com/research/zh/data/papers.json)

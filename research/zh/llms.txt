@@ -5,7 +5,7 @@
 - [大语言模型决策树：从 Tree Prompting 到智能体分类](https://yuntiandeng.com/research/zh/llm-decision-trees/): Tree Prompting 如何学习由语言模型提示调用组成的决策树，以及它与 Aug-Tree、GPTree 和 Agentic Classification Tree 的联系。
 - [基于能量的文本生成：残差模型、重采样与扩散](https://yuntiandeng.com/research/zh/energy-based-text-generation/): Residual Energy-Based Models for Text Generation 将序列级能量、噪声对比估计和重要性重采样联系起来，并与基于能量的扩散语言模型直接相连。
 - [结构化解码：高阶 CRF、扩散语言模型与候选格](https://yuntiandeng.com/research/zh/structured-decoding/): Cascaded Text Generation 和 Sequence-to-Lattice 如何连接高阶条件随机场、联合扩散解码，以及用于投机生成的候选格。
-- [把注意力建模为隐变量：学习注意力的概率分布](https://yuntiandeng.com/research/zh/probabilistic-attention/): Latent Alignment and Variational Attention 导读：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。
+- [把注意力建模为隐变量：学习注意力的概率分布](https://yuntiandeng.com/research/zh/probabilistic-attention/): Latent Alignment and Variational Attention：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。
 - [如何评估长文本的结构](https://yuntiandeng.com/research/zh/long-form-evaluation/): 潜在空间中的模型检验如何超越词元层面的流畅度，评估生成文本的篇章结构、实体行为与主题关系。
 - [学习渲染 LaTeX、SMILES、HTML 与乐谱](https://yuntiandeng.com/research/zh/learned-rendering/): 用扩散模型学习渲染数学公式、分子、表格布局和乐谱，并通过 Scheduled Sampling 处理暴露偏差。
 - [让人和 AI 智能体控制正在运行的训练任务](https://yuntiandeng.com/research/zh/interactive-training/): Interactive Training 将实时指标与人和 LLM 对训练任务的干预相连；第二版加入带类型的控制项和有序操作日志。

@@ -4,7 +4,7 @@ Vincent Grari, Tim Arni, Thibault Laugel, Sylvain Lamprier, James Zou, Marcin De
 
 Learns classification trees of natural-language binary questions through impurity-based split selection and TextGrad refinement.
 
-A later agentic formulation of learning question-based decision trees; compare question optimization and tree construction.
+A later agentic formulation of learning question-based decision trees, combining question optimization with tree construction.
 
 [Original paper](https://arxiv.org/html/2509.26433v4)
 

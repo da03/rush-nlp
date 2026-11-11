@@ -22,7 +22,7 @@
   "code_url": "https://github.com/da03/markup2im",
   "doi": "10.48550/arXiv.2210.05147",
   "summary": "Learns to render LaTeX, HTML table layouts, LilyPond music notation, and SMILES molecules with conditional diffusion. Scheduled sampling exposes denoisers to their own generated inputs to address compounding errors.",
-  "connection": "The original diffusion-based markup-to-image method and four-domain rendering benchmark discussed in this guide.",
+  "connection": "The original diffusion-based markup-to-image method and four-domain rendering benchmark.",
   "bibtex_type": "inproceedings",
   "citation_key": "deng2023markuptoimage",
   "source_urls": [
@@ -39,7 +39,7 @@
     "zh-Hans": {
       "url": "https://yuntiandeng.com/research/zh/papers/markup-diffusion/",
       "summary": "通过条件扩散学习渲染 LaTeX、HTML 表格布局、LilyPond 乐谱和 SMILES 分子。Scheduled Sampling 让去噪器接触自己生成的输入，以处理逐步累积的错误。",
-      "connection": "本指南讨论的原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。"
+      "connection": "原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。"
     }
   }
 }

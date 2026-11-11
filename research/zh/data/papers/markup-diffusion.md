@@ -4,7 +4,7 @@ Yuntian Deng, Noriyuki Kojima, Alexander M. Rush. ICLR 2023 (2023).
 
 通过条件扩散学习渲染 LaTeX、HTML 表格布局、LilyPond 乐谱和 SMILES 分子。Scheduled Sampling 让去噪器接触自己生成的输入，以处理逐步累积的错误。
 
-本指南讨论的原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。
+原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。
 
 ## 原文摘要（英文）
 

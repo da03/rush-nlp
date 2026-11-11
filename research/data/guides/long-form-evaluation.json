@@ -64,10 +64,10 @@
     },
     {
       "id": "evaluation-recipe",
-      "title": "Design a useful long-form evaluation",
+      "title": "Design a long-form evaluation",
       "paragraphs": [
         "Start with the failure you want to detect, then define its latent representation and reference corpus. Fit or specify the critic, check its behavior on real texts and known structural errors, and apply it identically to reference and generated samples. Keep generation conditions, document lengths, and sample counts visible so that the comparison answers the intended question.",
-        "Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code provide concrete starting points for coherence, coreference, and topicality rather than a single universal quality metric."
+        "Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code implement separate diagnostics for coherence, coreference, and topicality."
       ],
       "citations": [
         "model-criticism",
@@ -112,7 +112,7 @@
       "code_url": "https://github.com/da03/criticize_text_generation",
       "doi": "10.18653/v1/2022.emnlp-main.815",
       "summary": "A framework for evaluating high-level text structure by comparing real and generated data in latent spaces defined by explicit generative critics. Experiments study discourse coherence, coreference, and topicality.",
-      "connection": "The original method behind this guide: diagnostic evaluation of structural distributions, separate from word-level fluency.",
+      "connection": "The original framework for diagnosing structural distributions in generated text, separate from word-level fluency.",
       "bibtex_type": "inproceedings",
       "citation_key": "deng-etal-2022-model",
       "source_urls": [
@@ -128,7 +128,7 @@
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/model-criticism/",
           "summary": "通过在显式生成式检验模型定义的潜在空间中比较真实数据与生成数据，评估文本的高层结构。实验研究篇章连贯性、共指和主题性。",
-          "connection": "本指南的原始方法：对结构分布进行诊断式评估，与词元层面的流畅度分开。"
+          "connection": "诊断生成文本结构分布的原始框架，将结构评估与词元层面的流畅度分开。"
         }
       }
     },

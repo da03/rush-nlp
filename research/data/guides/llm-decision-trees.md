@@ -12,11 +12,11 @@ The tree is learned from labeled examples. Candidate prompts include sampled dem
 
 ## Reading a prompt tree as a program
 
-Consider an illustrative support classifier. A first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. These example questions illustrate the control flow; they are not a tree reported in the paper.
+In a worked support-classification example, a first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. This fixed example illustrates control flow; the paper learns its trees from data.
 
 The program consists of conditions, branches and return values. A conventional condition tests a numerical threshold or an exact string. A prompt-based condition asks the LM to interpret the input under an instruction. The instruction defines the question; the LM supplies the decision for this particular input.
 
-A useful inspection separates three failures. The node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream.
+A path log distinguishes three failure types: the node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream.
 
 
 ## What is learned, and what inference costs
@@ -31,9 +31,9 @@ For an implementation, specify the label set, output parser, stopping rule and b
 
 ## Compare where the language model enters
 
-Aug-Tree expands text features using an LLM during fitting, then deploys an interpretable tree without LM calls. It is a useful alternative when prediction must run with ordinary feature checks. GPTree builds LLM-powered trees and supports expert feedback on decision paths. ACT learns binary natural-language questions with impurity-based selection and TextGrad refinement.
+Aug-Tree expands text features using an LLM during fitting, then deploys an interpretable tree without LM calls. GPTree builds LLM-powered trees and supports expert feedback on decision paths. ACT learns binary natural-language questions with impurity-based selection and TextGrad refinement.
 
-These distinctions identify separate design choices: generating features, answering semantic questions, searching for better questions, and revising the resulting program. A paper that uses the word “tree” does not by that name specify which of these operations it performs.
+These distinctions identify separate design choices: generating features, answering semantic questions, searching for better questions, and revising the resulting program.
 
 | Method | Node or split | Role of the LM |
 | --- | --- | --- |
@@ -51,9 +51,9 @@ These distinctions identify separate design choices: generating features, answer
 
 Use this design when the task has a repeatable decision structure and labeled examples expose which distinctions matter. Intent routing, document classification and categorization all provide a natural setting for asking successive semantic questions. The tree stores task-specific structure outside the model weights.
 
-Examine the complete system rather than the diagram alone. A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.
+A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.
 
-The accompanying illustration lets you follow a fixed tree and change branch choices. To build a learned classifier, start with the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples. Treat the illustration as a mechanism explanation, separate from an empirical accuracy result.
+Choose among example messages to follow their paths through a fixed tree. The interactive illustration demonstrates control flow, not classification accuracy. To train a classifier, use the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples.
 
 
 ## Run the original Tree Prompting notebook

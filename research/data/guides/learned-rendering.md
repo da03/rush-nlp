@@ -6,7 +6,7 @@ Markup-to-Image Diffusion Models with Scheduled Sampling, by Yuntian Deng, Noriy
 
 A learned renderer receives a sequence that specifies a visual object and predicts its rendered pixels. LaTeX describes mathematical notation; SMILES describes atoms and bonds; HTML describes a table-like layout; LilyPond describes music notation. The four domains test symbolic content, layout, and dependencies that extend across the input sequence.
 
-This direction matters. Image-to-LaTeX recognition recovers source notation from a picture. Markup-to-image generation performs the reverse task. The paper adapts paired data, including im2latex-100k, to learn this forward mapping from markup to pixels. It trains a conditional diffusion model rather than invoking a conventional rendering engine at inference time.
+Image-to-LaTeX recognition recovers source notation from a picture. Markup-to-image generation performs the reverse task. The paper adapts paired data, including im2latex-100k, to learn this forward mapping from markup to pixels. It trains a conditional diffusion model rather than invoking a conventional rendering engine at inference time.
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 
@@ -26,11 +26,11 @@ Scheduled sampling changes the training inputs so that the denoiser encounters m
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 
-## Follow the two research threads
+## Markup alignment and diffusion exposure bias
 
 The rendering thread continues in FSA-CDM, by Guojin Zhong and colleagues, published at ACM Multimedia 2023. It evaluates the same four-domain task and adds fine-grained sequence alignment, contextual modeling, and contrastive training signals. Its contribution addresses how markup tokens correspond to visual structure, alongside the denoising process.
 
-The diffusion-training thread connects to Input Perturbation Reduces Exposure Bias in Diffusion Models, published at ICML 2023. That method perturbs training inputs to simulate prediction errors. The shared question is how training should prepare a denoiser for the states it encounters during sampling. Model-generated inputs and synthetic perturbations are different answers, with different training procedures.
+The diffusion-training thread connects to Input Perturbation Reduces Exposure Bias in Diffusion Models, published at ICML 2023. That method perturbs training inputs to simulate prediction errors. Both train the denoiser for the states it encounters during sampling: scheduled sampling uses model-generated inputs, while input perturbation adds synthetic errors.
 
 - [Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation](https://arxiv.org/abs/2308.01147)
 - [Input Perturbation Reduces Exposure Bias in Diffusion Models](https://proceedings.mlr.press/v202/ning23a.html)
@@ -40,7 +40,7 @@ The diffusion-training thread connects to Input Perturbation Reduces Exposure Bi
 
 The released repository includes side-by-side animations of scheduled sampling, the baseline, and ground truth for formulas, tables, music, and molecules. These examples expose the intermediate denoising trajectory. Inspect whether symbols appear, disappear, merge, or move, then compare the final output against the exact input specification.
 
-For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. Separate rendering accuracy from stylistic resemblance. The original datasets, checkpoints, code, and recorded examples establish a reproducible starting point without treating a successful example as evidence of exact rendering on every input.
+For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. Separate rendering accuracy from stylistic resemblance. The released resources include the original datasets, checkpoints, code, and recorded examples.
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 

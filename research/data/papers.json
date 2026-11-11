@@ -180,7 +180,7 @@
     "venue": "arXiv:2509.26433",
     "paper_url": "https://arxiv.org/html/2509.26433v4",
     "summary": "Learns classification trees of natural-language binary questions through impurity-based split selection and TextGrad refinement.",
-    "connection": "A later agentic formulation of learning question-based decision trees; compare question optimization and tree construction.",
+    "connection": "A later agentic formulation of learning question-based decision trees, combining question optimization with tree construction.",
     "bibtex_type": "article",
     "citation_key": "act",
     "source_urls": [
@@ -196,7 +196,7 @@
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/papers/act/",
         "summary": "通过基于不纯度的划分选择与 TextGrad 优化，学习由自然语言二元问题组成的分类树。",
-        "connection": "后续以智能体方式学习问题决策树的工作；比较时应关注问题优化与树的构建方式。"
+        "connection": "后续以智能体方式学习问题决策树的工作，将问题优化与树结构学习结合。"
       }
     }
   },
@@ -247,7 +247,7 @@
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/papers/residual-ebm/",
         "summary": "将固定的自回归语言模型与学到的序列级能量结合，使用 NCE 训练、基于重要性重采样的条件生成，以及似然上下界。",
-        "connection": "本指南讨论的原始文本生成与评估框架，将序列级残差能量与当前采用能量修正的扩散解码联系起来。"
+        "connection": "原始文本生成与评估框架，将序列级残差能量与采用能量修正的扩散解码联系起来。"
       }
     }
   },
@@ -1083,7 +1083,7 @@
     "code_url": "https://github.com/da03/criticize_text_generation",
     "doi": "10.18653/v1/2022.emnlp-main.815",
     "summary": "A framework for evaluating high-level text structure by comparing real and generated data in latent spaces defined by explicit generative critics. Experiments study discourse coherence, coreference, and topicality.",
-    "connection": "The original method behind this guide: diagnostic evaluation of structural distributions, separate from word-level fluency.",
+    "connection": "The original framework for diagnosing structural distributions in generated text, separate from word-level fluency.",
     "bibtex_type": "inproceedings",
     "citation_key": "deng-etal-2022-model",
     "source_urls": [
@@ -1100,7 +1100,7 @@
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/papers/model-criticism/",
         "summary": "通过在显式生成式检验模型定义的潜在空间中比较真实数据与生成数据，评估文本的高层结构。实验研究篇章连贯性、共指和主题性。",
-        "connection": "本指南的原始方法：对结构分布进行诊断式评估，与词元层面的流畅度分开。"
+        "connection": "诊断生成文本结构分布的原始框架，将结构评估与词元层面的流畅度分开。"
       }
     }
   },
@@ -1227,7 +1227,7 @@
     "code_url": "https://github.com/da03/markup2im",
     "doi": "10.48550/arXiv.2210.05147",
     "summary": "Learns to render LaTeX, HTML table layouts, LilyPond music notation, and SMILES molecules with conditional diffusion. Scheduled sampling exposes denoisers to their own generated inputs to address compounding errors.",
-    "connection": "The original diffusion-based markup-to-image method and four-domain rendering benchmark discussed in this guide.",
+    "connection": "The original diffusion-based markup-to-image method and four-domain rendering benchmark.",
     "bibtex_type": "inproceedings",
     "citation_key": "deng2023markuptoimage",
     "source_urls": [
@@ -1244,7 +1244,7 @@
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/papers/markup-diffusion/",
         "summary": "通过条件扩散学习渲染 LaTeX、HTML 表格布局、LilyPond 乐谱和 SMILES 分子。Scheduled Sampling 让去噪器接触自己生成的输入，以处理逐步累积的错误。",
-        "connection": "本指南讨论的原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。"
+        "connection": "原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。"
       }
     }
   },
@@ -1330,7 +1330,7 @@
     "paper_url": "https://proceedings.mlr.press/v202/ning23a.html",
     "pdf_url": "https://proceedings.mlr.press/v202/ning23a/ning23a.pdf",
     "summary": "Studies accumulated sampling errors in diffusion models and trains with perturbed inputs to simulate inference-time prediction errors.",
-    "connection": "Addresses the same training–sampling mismatch through input perturbation, providing a comparison with scheduled sampling on model-generated states.",
+    "connection": "Addresses the same training–sampling mismatch with synthetic input perturbations; scheduled sampling trains on model-generated states.",
     "bibtex_type": "inproceedings",
     "citation_key": "pmlr-v202-ning23a",
     "source_urls": [
@@ -1342,7 +1342,7 @@
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/papers/diffusion-input-perturbation/",
         "summary": "研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。",
-        "connection": "通过输入扰动处理同一种训练与采样不匹配问题，可与在模型生成状态上训练的 Scheduled Sampling 比较。"
+        "connection": "通过合成输入扰动处理同一种训练与采样不匹配问题；Scheduled Sampling 则在模型生成的状态上训练。"
       }
     }
   },
@@ -1479,7 +1479,7 @@
     "pdf_url": "https://arxiv.org/pdf/2311.17279",
     "doi": "10.48550/arXiv.2311.17279",
     "summary": "LiveVariables expose optimization parameters through designated system ports for real-time adjustment without restarting the optimization loop.",
-    "connection": "An earlier system for changing running optimization processes; compare its parameter mechanism with Interactive Training’s human/agent command interface and v2 protocol.",
+    "connection": "An earlier system for live optimization-parameter adjustment; Interactive Training connects human and agent commands to training, and v2 supplies a shared control protocol.",
     "bibtex_type": "article",
     "citation_key": "shabgahi2023livetune",
     "source_urls": [
@@ -1496,7 +1496,7 @@
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/papers/livetune/",
         "summary": "LiveVariables 通过指定的系统端口开放优化参数，支持在不重启优化循环的情况下实时调整参数。",
-        "connection": "更早的运行中优化过程调节系统；可将其参数机制与 Interactive Training 的人和智能体命令接口及第二版协议比较。"
+        "connection": "更早的实时优化参数调节系统；Interactive Training 将人和智能体的命令接入训练，第二版提供共用的控制协议。"
       }
     }
   },

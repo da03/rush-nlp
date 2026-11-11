@@ -156,7 +156,7 @@
     "venue": "arXiv:2509.26433",
     "paper_url": "https://arxiv.org/html/2509.26433v4",
     "summary": "Learns classification trees of natural-language binary questions through impurity-based split selection and TextGrad refinement.",
-    "connection": "A later agentic formulation of learning question-based decision trees; compare question optimization and tree construction.",
+    "connection": "A later agentic formulation of learning question-based decision trees, combining question optimization with tree construction.",
     "bibtex_type": "article",
     "citation_key": "act",
     "source_urls": [
@@ -915,7 +915,7 @@
     "code_url": "https://github.com/da03/criticize_text_generation",
     "doi": "10.18653/v1/2022.emnlp-main.815",
     "summary": "A framework for evaluating high-level text structure by comparing real and generated data in latent spaces defined by explicit generative critics. Experiments study discourse coherence, coreference, and topicality.",
-    "connection": "The original method behind this guide: diagnostic evaluation of structural distributions, separate from word-level fluency.",
+    "connection": "The original framework for diagnosing structural distributions in generated text, separate from word-level fluency.",
     "bibtex_type": "inproceedings",
     "citation_key": "deng-etal-2022-model",
     "source_urls": [
@@ -1035,7 +1035,7 @@
     "code_url": "https://github.com/da03/markup2im",
     "doi": "10.48550/arXiv.2210.05147",
     "summary": "Learns to render LaTeX, HTML table layouts, LilyPond music notation, and SMILES molecules with conditional diffusion. Scheduled sampling exposes denoisers to their own generated inputs to address compounding errors.",
-    "connection": "The original diffusion-based markup-to-image method and four-domain rendering benchmark discussed in this guide.",
+    "connection": "The original diffusion-based markup-to-image method and four-domain rendering benchmark.",
     "bibtex_type": "inproceedings",
     "citation_key": "deng2023markuptoimage",
     "source_urls": [
@@ -1122,7 +1122,7 @@
     "paper_url": "https://proceedings.mlr.press/v202/ning23a.html",
     "pdf_url": "https://proceedings.mlr.press/v202/ning23a/ning23a.pdf",
     "summary": "Studies accumulated sampling errors in diffusion models and trains with perturbed inputs to simulate inference-time prediction errors.",
-    "connection": "Addresses the same training–sampling mismatch through input perturbation, providing a comparison with scheduled sampling on model-generated states.",
+    "connection": "Addresses the same training–sampling mismatch with synthetic input perturbations; scheduled sampling trains on model-generated states.",
     "bibtex_type": "inproceedings",
     "citation_key": "pmlr-v202-ning23a",
     "source_urls": [
@@ -1247,7 +1247,7 @@
     "pdf_url": "https://arxiv.org/pdf/2311.17279",
     "doi": "10.48550/arXiv.2311.17279",
     "summary": "LiveVariables expose optimization parameters through designated system ports for real-time adjustment without restarting the optimization loop.",
-    "connection": "An earlier system for changing running optimization processes; compare its parameter mechanism with Interactive Training’s human/agent command interface and v2 protocol.",
+    "connection": "An earlier system for live optimization-parameter adjustment; Interactive Training connects human and agent commands to training, and v2 supplies a shared control protocol.",
     "bibtex_type": "article",
     "citation_key": "shabgahi2023livetune",
     "source_urls": [

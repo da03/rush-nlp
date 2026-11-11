@@ -34,7 +34,7 @@
       "title": "The 2025 system: monitoring connected to intervention",
       "paragraphs": [
         "The original framework uses a control server to mediate between a human or automated agent and the training process. Its Trainer integration exposes commands for optimizer hyperparameters, data handling, and checkpoints. A live interface lets the controller observe training and submit changes instead of editing a static recipe and relaunching the program.",
-        "The paper presents three case studies spanning training stability, sensitivity to initial hyperparameters, and changing user needs. Its LLM-driven learning-rate example demonstrates an agent reading feedback and intervening during optimization. The system contribution is the connection among live observation, a control interface, and the training loop—not a replacement for the optimizer’s parameter updates."
+        "The paper presents three case studies spanning training stability, sensitivity to initial hyperparameters, and changing user needs. Its LLM-driven learning-rate example demonstrates an agent reading feedback and intervening during optimization. The system connects live observation and intervention to the training loop, while the optimizer continues updating model parameters."
       ],
       "citations": [
         "interactive-training-2025"
@@ -56,7 +56,7 @@
       "title": "Compare mechanisms, controllers, and experiments",
       "paragraphs": [
         "LiveTune predates Interactive Training and exposes LiveVariables for changing optimization parameters without restarting the loop. It supplies an earlier mechanism for live parameter adjustment. Interactive Training’s focus is the human and AI-agent workflow around training, and v2 makes the control vocabulary and event record reusable across applications.",
-        "AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. This is a useful comparison at the controller level: what evidence reaches the agent, which actions it can request, and how later outcomes affect its decisions. Infrastructure support and measured controller performance are distinct contributions."
+        "AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. Controller-level comparisons concern the evidence available to the agent, the actions it can request, and how later outcomes affect its decisions. Infrastructure support and measured controller performance are distinct contributions."
       ],
       "citations": [
         "livetune",
@@ -70,7 +70,7 @@
       "title": "Design an observable feedback loop",
       "paragraphs": [
         "Expose controls that the training application can actually apply, and define when changes take effect. Record the observation that motivated a request, the requested value, the applied value, the step of application, and the subsequent measurements. A submitted request and a successful update are different events. Keeping them linked makes the behavior inspectable.",
-        "Evaluate an automated controller against a stated training objective under explicit workloads and budgets. Count its inference and intervention overhead, preserve the run history, and separate improvements within a continuing run from results of newly initialized rounds. The Interactive Training papers and implementation provide the machinery for this feedback loop; the controller and task determine what the loop accomplishes."
+        "Evaluate an automated controller against a stated training objective under explicit workloads and budgets. Count its inference and intervention overhead, preserve the run history, and separate improvements within a continuing run from results of newly initialized rounds."
       ],
       "citations": [
         "interactive-training-2025",
@@ -223,7 +223,7 @@
       "pdf_url": "https://arxiv.org/pdf/2311.17279",
       "doi": "10.48550/arXiv.2311.17279",
       "summary": "LiveVariables expose optimization parameters through designated system ports for real-time adjustment without restarting the optimization loop.",
-      "connection": "An earlier system for changing running optimization processes; compare its parameter mechanism with Interactive Training’s human/agent command interface and v2 protocol.",
+      "connection": "An earlier system for live optimization-parameter adjustment; Interactive Training connects human and agent commands to training, and v2 supplies a shared control protocol.",
       "bibtex_type": "article",
       "citation_key": "shabgahi2023livetune",
       "source_urls": [
@@ -239,7 +239,7 @@
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/livetune/",
           "summary": "LiveVariables 通过指定的系统端口开放优化参数，支持在不重启优化循环的情况下实时调整参数。",
-          "connection": "更早的运行中优化过程调节系统；可将其参数机制与 Interactive Training 的人和智能体命令接口及第二版协议比较。"
+          "connection": "更早的实时优化参数调节系统；Interactive Training 将人和智能体的命令接入训练，第二版提供共用的控制协议。"
         }
       }
     },
