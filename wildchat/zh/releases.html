@@ -1,0 +1,48 @@
+---
+layout: wildchat
+lang: zh-Hans
+title: "WildChat 数据版本、下载与访问申请"
+description: "比较 WildChat-4.8M 与 WildChat-4.8M-Full 的对话条数、采集范围、内容过滤和访问方式，并记录复现所需的数据版本。"
+permalink: /wildchat/zh/releases/
+english_url: /wildchat/releases/
+chinese_url: /wildchat/zh/releases/
+---
+{% assign release_data = site.data.wildchat.releases %}
+<header class="wc-hero wc-prose">
+  <p class="wc-kicker">数据使用指南</p><h1>选择 WildChat 数据版本</h1>
+  <p class="wc-lead">根据研究问题选择采集范围和内容过滤方式。</p>
+  <p>公开下载使用 <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M">WildChat-4.8M</a>；需要被审核工具标记的对话时，在 <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full">WildChat-4.8M-Full</a> 页面提交访问申请，说明研究为何需要这些内容。申请由人工审核。</p>
+  <p>如果访问申请未收到回复，可以给 <a href="/">Yuntian Deng</a> 发邮件：<a href="mailto:yuntian@uwaterloo.ca">yuntian@uwaterloo.ca</a>。</p>
+</header>
+<section class="wc-section">
+  <h2>版本比较</h2>
+  {% for release in release_data.releases %}
+  <article class="wc-release" id="{{ release.id }}">
+    <h3><a href="{{ release.url }}">{{ release.name }}</a></h3>
+    <p>{{ release.zh.description }}</p>
+    <dl class="wc-facts">
+      <dt>访问方式</dt><dd>{{ release.zh.access }}</dd>
+      <dt>对话条数</dt><dd>{{ release.conversations }}。{{ release.zh.count_note }}</dd>
+      <dt>采集范围</dt><dd>{{ release.zh.coverage }}</dd>
+      <dt>模型</dt><dd>{{ release.models }}</dd>
+    </dl>
+    <p><a href="{{ release.source_url }}">数据集说明与条数来源</a></p>
+  </article>{% endfor %}
+  <p class="wc-date">数据条数与访问说明核对日期：{{ release_data.checked_on }}。下载时请保存所用 revision。</p>
+</section>
+<section class="wc-section wc-prose">
+  <h2>原始论文与后续扩展</h2>
+  <p><a href="/wildchat/zh/papers/wildchat/">ICLR 2024 原始论文</a>介绍了约一百万段与 GPT-3.5、GPT-4 的对话。2024 年 5 月 2 日的 arXiv 版本描述的扩展语料从 2023 年 4 月 9 日开始采集。4.8M 系列将时间范围延长到 2025 年 7 月 31 日，并加入更多模型。不要把原始论文中的实验样本数与后续版本的条数混用。</p>
+  <p>2025 年 8 月 11 日的<a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true#updates">版本更新</a>说明了采集范围扩展和密钥扫描。<a href="https://arxiv.org/abs/2501.18511">WildChat-50M</a> 则由 Benjamin Feuer 与 Chinmay Hegde 为 WildChat 提示添加 50 多个开放权重模型的回答；这些新增回答与原始用户对话的来源不同。</p>
+</section>
+<section class="wc-section wc-prose">
+  <h2>使用前要记录什么</h2>
+  <ul>
+    <li><strong>数据快照：</strong>仓库名称、revision、采集范围、过滤条件和处理脚本。复现论文时对齐该研究实际使用的版本。</li>
+    <li><strong>对话与轮次：</strong><code>conversation_hash</code> 是内容哈希，不保证每段对话唯一；<code>turn_identifier</code> 用于唯一标识每一轮。</li>
+    <li><strong>训练与评测：</strong><a href="https://github.com/da03/wildchat#data-preparation">处理流程</a>排除了为 WildBench 留出的对话。构建训练集时保留这种分离。</li>
+    <li><strong>许可与删除请求：</strong>阅读 <a href="https://opendatacommons.org/licenses/by/1-0/">ODC-BY 许可</a>和 <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true#data-removal-requests">Full 数据集的删除请求说明</a>。</li>
+    <li><strong>引用：</strong>引用 WildChat 原始论文并注明数据版本；使用可视化工具时同时引用 WildVis。</li>
+  </ul>
+  <p><a href="/wildchat/data/releases.json">下载含中文说明的版本 JSON</a> · <a href="/wildchat/zh/data/">获取论文引用</a></p>
+</section>

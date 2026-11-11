@@ -9,6 +9,7 @@ Selected papers introducing, exploring, studying, or extending WildChat and Wild
 Research hub: https://yuntiandeng.com/wildchat/
 Research list: https://yuntiandeng.com/wildchat/research/
 Release guide: https://yuntiandeng.com/wildchat/releases/
+Chinese guide / 中文指南: https://yuntiandeng.com/wildchat/zh/
 
 Each entry lists its preprint or publication date and citation details.
 
@@ -41,6 +42,11 @@ Each entry lists its preprint or publication date and citation details.
 - Record JSON: {{ paper.record_url }}record.json
 
 {{ paper.summary }}
+{% if paper.zh %}
+中文说明：{{ paper.zh.summary }}
+
+中文解读：{{ paper.zh.url }}
+{% endif %}
 
 Finding: {{ paper.finding }}
 

@@ -12,7 +12,13 @@
       "models": "GPT-3.5, GPT-4, GPT-4 Turbo, GPT-4o, GPT-4.1 mini, o1-mini, o1-preview",
       "description": "The expanded human–ChatGPT collection, excluding conversations flagged by OpenAI Moderation or Detoxify.",
       "recommended_for": "Projects using toxicity-filtered conversations.",
-      "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M/blob/main/README.md"
+      "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M/blob/main/README.md",
+      "zh": {
+        "description": "扩展后的真实用户与 ChatGPT 对话数据，过滤了被 OpenAI Moderation 或 Detoxify 标记的对话。",
+        "access": "公开下载，已过滤被标记内容。",
+        "count_note": "",
+        "coverage": "截至 2025 年 7 月 31 日。"
+      }
     },
     {
       "id": "wildchat-4-8m-full",
@@ -25,7 +31,13 @@
       "models": "GPT-3.5, GPT-4, GPT-4 Turbo, GPT-4o, GPT-4.1 mini, o1-mini, o1-preview",
       "description": "Includes flagged and unflagged conversations, excluding the sexual/minors category. Contains 122,921 o1-mini/o1-preview conversations.",
       "recommended_for": "Research on flagged content.",
-      "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true"
+      "source_url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full?not-for-all-audiences=true",
+      "zh": {
+        "description": "包含被标记与未被标记的对话，排除 sexual/minors 类别。其中有 122921 段 o1-mini/o1-preview 对话。",
+        "access": "需要申请访问。",
+        "count_note": "原有 4804190 段；移除 sexual/minors 类别后为当前条数。",
+        "coverage": "截至 2025 年 7 月 31 日；2025 年 8 月 11 日更新。"
+      }
     }
   ],
   "timeline": [

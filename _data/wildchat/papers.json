@@ -52,7 +52,12 @@
     "citation_url": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/9421261e06f1a63a352b068f1ac90609-Abstract-Conference.html",
     "citation_year": 2024,
     "citation_note": "ICLR 2024 proceedings paper.",
-    "pages": "34590–34605"
+    "pages": "34590–34605",
+    "zh": {
+      "summary": "WildChat 提供经用户同意采集的、与 GPT-3.5 和 GPT-4 的多语言、多轮对话，并结合时间戳和元数据研究不同时间与地点的使用情况。论文分析语言与提示的多样性、有害内容和越狱，并通过 WildLlama 展示指令微调。",
+      "finding": "论文报告 68 种语言各自包含超过 100 条用户提示，并使用 Llama-2 7B 展示指令微调。",
+      "url": "https://yuntiandeng.com/wildchat/zh/papers/wildchat/"
+    }
   },
   {
     "id": "wildvis",
@@ -110,7 +115,12 @@
     "citation_year": 2024,
     "citation_note": "EMNLP 2024 System Demonstrations proceedings paper.",
     "pages": "497–506",
-    "publisher": "Association for Computational Linguistics"
+    "publisher": "Association for Computational Linguistics",
+    "zh": {
+      "summary": "WildVis 为 WildChat 和 LMSYS-Chat-1M 提供对话检索、过滤和嵌入空间可视化，把具体对话与大规模主题分布联系起来。WildVisualizer 是代码仓库名，在线工具位于 wildvisualizer.com。",
+      "finding": "论文的跨数据集比较在 WildChat 中识别出 Midjourney 提示生成簇，在 LMSYS-Chat-1M 中识别出化学主题簇。",
+      "url": "https://yuntiandeng.com/wildchat/zh/data/"
+    }
   },
   {
     "id": "wildbench",

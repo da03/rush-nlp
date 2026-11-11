@@ -1,0 +1,42 @@
+---
+layout: wildchat
+lang: zh-Hans
+paper_id: wildchat
+permalink: /wildchat/zh/papers/wildchat/
+english_url: /wildchat/papers/wildchat/
+chinese_url: /wildchat/zh/papers/wildchat/
+---
+{% assign paper = site.data.wildchat.papers | where: 'id', page.paper_id | first %}
+<article class="wc-prose wc-paper-detail">
+  <header class="wc-hero">
+    <p class="wc-kicker">原始数据集论文 · {{ paper.venue }}</p>
+    <h1>{{ paper.title }}</h1>
+    <p class="wc-authors">{% include wildchat/authors.html authors=paper.authors %}</p>
+    <p class="wc-lead">{{ paper.zh.summary }}</p>
+    <p class="wc-links"><a href="{{ paper.paper_url }}">会议论文</a><a href="{{ paper.evidence_url }}">arXiv 全文</a><a href="/wildchat/zh/releases/">数据下载与访问</a><a href="#citation">引用</a></p>
+  </header>
+  <section class="wc-section">
+    <h2>这项工作提供了什么</h2>
+    <p>WildChat 通过免费提供 GPT-3.5 和 GPT-4 聊天服务，在征得用户同意后采集真实对话。原始论文介绍约一百万段多语言、多轮对话，并提供时间戳及元数据，用于研究跨地点、跨时间的语言模型使用。</p>
+    <p>论文分析了语言和提示的多样性、有害内容与越狱，并用这些数据对 Llama-2 7B 进行指令微调，得到 WildLlama。论文报告 68 种语言各自包含超过 100 条用户提示。<a href="{{ paper.evidence_url }}">第 2–5 节给出采集、分析与训练方法</a>。</p>
+  </section>
+  <section class="wc-section">
+    <h2>采集方式与研究范围</h2>
+    <p>对话来自 Hugging Face Spaces 上的聊天机器人，包括 <a href="https://huggingface.co/spaces/yuntian-deng/ChatGPT">yuntian-deng/ChatGPT</a>。对话文本与时间戳、地理位置、哈希化的 IP 地址和请求头相配合，用于分析用户行为和模型回答。</p>
+    <p>地理位置由 IP 地址推断。论文第 6 节讨论了服务用户群体和采样偏差；分析其他平台或人群时，需要检查采样范围。<a href="{{ paper.evidence_url }}#S6">阅读原文讨论</a>。</p>
+    <p>原始论文与后续 4.8M 数据版本的采集时间、模型和条数不同。<a href="/wildchat/zh/releases/">版本指南</a>列出当前下载与访问入口。</p>
+  </section>
+  <section class="wc-section">
+    <h2>日期与版本</h2>
+    <p>论文发表于 {{ paper.venue }}。首个 arXiv 版本日期为 <time datetime="{{ paper.first_public }}">{{ paper.first_public }}</time>，在 ICLR 投稿和初始数据发布之后；这个日期不表示数据首次公开的日期。<a href="{{ paper.date_source }}">查看版本历史</a>。</p>
+  </section>
+  <section class="wc-section" id="citation">
+    <h2>引用原始论文</h2>
+    <p>{% include wildchat/authors.html authors=paper.authors %}. {{ paper.citation_year }}. <a href="{{ paper.citation_url }}">{{ paper.citation_title }}</a>. {{ paper.container_title }}.</p>
+    <p class="wc-links"><a href="/wildchat/papers/wildchat/citation.bib">BibTeX</a><a href="/wildchat/papers/wildchat/citation.csl.json">CSL-JSON</a><a href="/wildchat/papers/wildchat/record.json">论文记录 JSON</a></p>
+    <details class="wc-citation"><summary>查看 BibTeX</summary>{% capture paper_bibtex %}{% include wildchat/bibtex.txt paper=paper %}{% endcapture %}<pre><code>{{ paper_bibtex | strip | escape }}</code></pre></details>
+  </section>
+</article>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "WebPage", "url": {{ page.url | absolute_url | jsonify }}, "inLanguage": "zh-Hans", "name": {{ paper.title | jsonify }}, "description": {{ paper.zh.summary | jsonify }}, "mainEntity": {% include wildchat/article.json paper=paper %}}
+</script>

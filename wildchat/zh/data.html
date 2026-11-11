@@ -1,0 +1,36 @@
+---
+layout: wildchat
+lang: zh-Hans
+title: "WildChat 论文、引用与指南数据"
+description: "区分 WildChat 数据集和 WildVis 可视化工具，获取原始英文论文、共享的 BibTeX 与 CSL-JSON，以及含中文说明的研究记录。"
+permalink: /wildchat/zh/data/
+english_url: /wildchat/data/
+chinese_url: /wildchat/zh/data/
+---
+<header class="wc-hero wc-prose">
+  <p class="wc-kicker">论文与引用</p><h1>找到原始论文与数据来源</h1>
+  <p class="wc-lead">数据集和可视化工具分别对应 WildChat 与 WildVis 两篇论文。</p>
+  <p>引用时请使用原始英文论文标题和完整作者列表。对话数据从<a href="/wildchat/zh/releases/">数据集仓库</a>获取；下面的导出文件用于阅读与引用研究文献。</p>
+</header>
+{% assign selected = 'wildchat,wildvis' | split: ',' %}
+{% for id in selected %}{% assign paper = site.data.wildchat.papers | where: 'id', id | first %}
+<section class="wc-section wc-prose">
+  <p class="wc-kicker">{% if id == 'wildchat' %}对话数据集{% else %}检索与可视化工具{% endif %} · {{ paper.venue }}</p>
+  <h2><a href="{{ paper.paper_url }}">{{ paper.title }}</a></h2>
+  <p class="wc-authors">{% include wildchat/authors.html authors=paper.authors %}</p>
+  <p>{{ paper.zh.summary }}</p>
+  <p>{{ paper.zh.finding }} <a href="{{ paper.evidence_url }}">阅读方法与结果</a>。</p>
+  <p class="wc-date">首个 arXiv 版本：{{ paper.first_public }}。{% if id == 'wildchat' %}该日期在 ICLR 投稿和初始数据发布之后。{% endif %}<a href="{{ paper.date_source }}">版本历史</a>。</p>
+  <p class="wc-links"><a href="{{ paper.record_url }}citation.bib">BibTeX</a><a href="{{ paper.record_url }}citation.csl.json">CSL-JSON</a><a href="{{ paper.record_url }}record.json">JSON 记录</a></p>
+</section>{% endfor %}
+<section class="wc-section wc-prose">
+  <h2>研究列表与导出</h2>
+  <p><a href="/wildchat/research/">完整研究列表（英文）</a>按用户行为、隐私、安全、训练、评测、信息获取与语言文化等主题整理后续研究，并注明使用的数据和来源。</p>
+  <dl class="wc-downloads">
+    <dt><a href="/wildchat/data/papers.json">papers.json</a></dt><dd>共享的论文元数据、注释和来源；WildChat 与 WildVis 记录含 <code>zh</code> 中文说明。</dd>
+    <dt><a href="/wildchat/data/papers.bib">papers.bib</a> · <a href="/wildchat/data/papers.csl.json">papers.csl.json</a></dt><dd>与英文指南相同的文献引用。</dd>
+    <dt><a href="/wildchat/data/releases.json">releases.json</a></dt><dd>数据版本、条数、访问入口与中文说明。</dd>
+    <dt><a href="/wildchat/data/reading-list.md">reading-list.md</a></dt><dd>带来源和引用链接的研究列表。</dd>
+    <dt><a href="/wildchat/data/navigation.json">navigation.json</a></dt><dd>中英文页面与可下载记录的目录。</dd>
+  </dl>
+</section>

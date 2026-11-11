@@ -7,12 +7,23 @@ permalink: /wildchat/data/navigation.json
   "title": {{ site.data.wildchat.meta.name | jsonify }},
   "updated": {{ site.data.wildchat.meta.updated_at | jsonify }},
   "canonical_base": "https://yuntiandeng.com/wildchat/",
+  "languages": ["en", "zh-Hans"],
+  "chinese_edition": {
+    "title": "WildChat：真实 ChatGPT 对话数据集与研究指南",
+    "description": "采集方式、数据版本、访问申请、原始论文与共享引用。",
+    "updated": "2026-11-11",
+    "url": "https://yuntiandeng.com/wildchat/zh/"
+  },
   "pages": [
     {"title": "WildChat: Dataset, Tools, and Research", "url": "https://yuntiandeng.com/wildchat/"},
     {"title": "Research using WildChat", "url": "https://yuntiandeng.com/wildchat/research/"},
     {"title": "Release guide", "url": "https://yuntiandeng.com/wildchat/releases/"},
     {"title": "Data and citation exports", "url": "https://yuntiandeng.com/wildchat/data/"},
-    {"title": "About this collection", "url": "https://yuntiandeng.com/wildchat/about/"}
+    {"title": "About this collection", "url": "https://yuntiandeng.com/wildchat/about/"},
+    {"title": "WildChat 中文指南", "language": "zh-Hans", "description": "真实用户与 ChatGPT 的多语言、多轮对话。", "url": "https://yuntiandeng.com/wildchat/zh/"},
+    {"title": "数据版本、下载与访问", "language": "zh-Hans", "description": "比较公开版与 Full 版，记录采集范围与过滤条件。", "url": "https://yuntiandeng.com/wildchat/zh/releases/"},
+    {"title": "WildChat 原始论文", "language": "zh-Hans", "description": "ICLR 2024 论文的贡献、数据采集与引用。", "url": "https://yuntiandeng.com/wildchat/zh/papers/wildchat/"},
+    {"title": "论文、引用与指南数据", "language": "zh-Hans", "description": "区分 WildChat 与 WildVis，获取共享的论文和引用记录。", "url": "https://yuntiandeng.com/wildchat/zh/data/"}
   ],
   "exports": [
     {"title": "Paper records", "format": "application/json", "url": "https://yuntiandeng.com/wildchat/data/papers.json"},
