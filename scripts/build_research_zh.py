@@ -13,6 +13,7 @@ def build(m):
     overlays = json.loads((directory / 'papers.json').read_text())
     meta = json.loads((directory / 'meta.json').read_text())
     ui = json.loads((directory / 'ui.json').read_text())
+    ui.update({'Read ' + g['title']: '阅读' + g['title'] for g in guides})
     english_guides, english_papers = m.GUIDES, m.PAPERS
     assert [g['id'] for g in guides] == [g['id'] for g in english_guides]
     assert set(overlays) == {p['id'] for p in english_papers}
