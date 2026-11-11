@@ -1,0 +1,73 @@
+---
+layout: page
+---
+{% assign home = site.data.homepages[page.homepage_locale] %}
+<div class="localized-homepage">
+  <div class="profile-section">
+    <div class="profile-photo">
+      {% include responsive-image.html src="/images/yuntian-deng.jpg" alt="Yuntian Deng" loading="eager" display_width=200 %}
+    </div>
+    <div class="profile-info">
+      <h1><bdi lang="en" dir="ltr">Yuntian Deng</bdi></h1>
+      <ul class="profile-affil">
+        {% for affiliation in home.affiliations_html %}<li>{{ affiliation }}</li>{% endfor %}
+      </ul>
+      <ul class="profile-links">
+        <li><a href="/cv.pdf">{{ home.labels.cv | escape }}</a></li>
+        <li><a href="/publications/">{{ home.labels.publications | escape }}</a></li>
+        <li><a href="https://orcid.org/0000-0001-5280-8974" lang="en" dir="ltr">ORCID</a></li>
+        <li><a href="https://github.com/da03" lang="en" dir="ltr">GitHub</a></li>
+        <li><a href="https://x.com/yuntiandeng" lang="en" dir="ltr">X / Twitter</a></li>
+        <li><a href="mailto:yuntian@uwaterloo.ca">{{ home.labels.contact | escape }}</a></li>
+      </ul>
+    </div>
+  </div>
+
+  {% for paragraph in home.intro_html %}<p>{{ paragraph }}</p>{% endfor %}
+  <div class="research-vision">
+    <span class="research-vision__label">{{ home.vision_label | escape }}</span>
+    <p class="research-vision__quote">{{ home.vision | escape }}</p>
+  </div>
+
+  <h2 id="research">{{ home.labels.research | escape }}</h2>
+  <div class="research-themes">
+    {% for theme in home.research_themes %}
+    <div class="theme-card">
+      <h3 id="{{ theme.id }}">{{ theme.title | escape }}</h3>
+      <p>{{ theme.description | escape }}</p>
+      <span class="theme-papers">
+        {% for link in theme.links %}<a href="{{ link.url | escape }}">{{ link.title | escape }}</a>{% unless forloop.last %} &middot;{% endunless %}{% endfor %}
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <h2 id="papers">{{ home.labels.featured | escape }}</h2>
+  <div class="papers-list">
+    {% for entry in home.papers %}
+    {% assign paper = site.data.papers.featured | where: 'title', entry.title | first %}
+    <div class="paper-card">
+      {% if paper.image %}
+      <div class="paper-card-image"><a href="{{ paper.paper_url | escape }}">{% include responsive-image.html src=paper.image alt=paper.title %}</a></div>
+      {% endif %}
+      <div class="paper-card-body">
+        <div class="paper-citation" lang="en" dir="ltr">
+          <a class="paper" href="{{ paper.paper_url | escape }}">{{ paper.title | escape }}</a><br>
+          {{ paper.authors }}.<br>{{ paper.conference }}
+        </div>
+        <p class="paper-summary">{{ entry.description | escape }}</p>
+        <a class="tag tag-paper" href="{{ paper.paper_url | escape }}">{{ home.labels.paper_project | escape }}</a>
+        {% if paper.pdf_url %}<a class="tag" href="{{ paper.pdf_url | escape }}" lang="en" dir="ltr">PDF</a>{% endif %}
+        {% if paper.html_url %}<a class="tag" href="{{ paper.html_url | escape }}" lang="en" dir="ltr">HTML</a>{% endif %}
+        {% if paper.code %}<a class="tag" href="{{ paper.code | escape }}">{{ home.labels.code | escape }}</a>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <p><a href="/publications/">{{ home.labels.all_publications | escape }}</a></p>
+
+  <h2 id="guides">{{ home.labels.guides | escape }}</h2>
+  {% for paragraph in home.guides_html %}<p>{{ paragraph }}</p>{% endfor %}
+  <h2 id="prospective-students">{{ home.labels.students | escape }}</h2>
+  <p>{{ home.students_html }}</p>
+</div>

@@ -1,0 +1,145 @@
+{
+  "seo_title": "Yuntian Deng | 워털루대학교",
+  "description": "워털루대학교 조교수 Yuntian Deng. 신경 프로그램, 신경 세계 모델, 암묵적 사고 사슬(Implicit CoT), 실제 환경에서의 언어 모델 사용을 연구합니다.",
+  "affiliations_html": [
+    "<strong>조교수</strong>, 워털루대학교 컴퓨터과학부",
+    "<strong>Associate</strong>, Harvard SEAS",
+    "<strong>Faculty Affiliate</strong>, Vector Institute",
+    "하버드대학교 컴퓨터과학 박사"
+  ],
+  "intro_html": [
+    "저는 자연어 처리와 기계학습을 연구합니다. 기호 프로그램이나 명시적인 추론 단계로 수행하던 계산을 신경 모델이 학습하게 하는 것이 연구의 중심입니다. 저희 연구실은 자연어로 작성된 함수 명세를 재사용 가능한 신경 프로그램으로 컴파일하고(<a href=\"https://programasweights.com\">ProgramAsWeights</a>), 생성 모델로 상호작용이 가능한 컴퓨팅 환경을 시뮬레이션하며(<a href=\"https://neural-os.com\">NeuralOS</a>), <a href=\"https://latent-implicit-thinking.github.io/\">암묵적 사고 사슬(Implicit CoT)</a>과 추론 내재화를 연구합니다. 또한 <a href=\"/wildchat/\">WildChat</a> 대화 데이터와 <a href=\"https://wildvisualizer.com\">WildVis</a> 분석 도구를 통해 사람들이 언어 모델을 어떻게 사용하는지 연구합니다.",
+    "연구자들이 직접 사용하고 평가하며 후속 연구에 활용할 수 있도록 오픈소스 시스템과 <a href=\"/demos/\">인터랙티브 데모</a>를 개발합니다. OpenAI와 Anthropic은 모델 안전성 평가에 WildChat을 사용했습니다. 저는 오픈소스 신경 기계번역 툴킷 <a href=\"https://opennmt.net/\">OpenNMT</a>의 공동 개발자이기도 합니다. 하버드대학교에서 <a href=\"https://rush-nlp.com/\">Alexander Rush</a>와 <a href=\"https://www.eecs.harvard.edu/shieber/\">Stuart Shieber</a>의 지도로 컴퓨터과학 박사학위를 받았고, 이후 Allen Institute for AI에서 <a href=\"https://yejinc.github.io/\">Yejin Choi</a>와 함께 박사후 연구를 수행했습니다."
+  ],
+  "vision_label": "문제를 푸는 모델에서 도구를 만드는 모델로",
+  "vision": "저는 모델이 매번 문제를 처음부터 푸는 대신, 반복되는 작업을 작고 재사용 가능한 신경 프로그램으로 컴파일하도록 사전학습하는 것이 AI의 미래에서 가장 흥미로운 연구 방향 중 하나라고 생각합니다.",
+  "labels": {
+    "home": "홈",
+    "language": "언어",
+    "research": "연구 분야",
+    "papers": "논문",
+    "guides": "연구 가이드",
+    "students": "연구실 지원",
+    "cv": "이력서",
+    "publications": "전체 논문",
+    "contact": "연락처",
+    "featured": "주요 논문",
+    "paper_project": "논문 및 프로젝트",
+    "code": "코드 및 자료",
+    "all_publications": "전체 논문 및 인용 정보",
+    "updated": "업데이트",
+    "skip": "본문으로 건너뛰기",
+    "menu": "메뉴 열기/닫기",
+    "theme_dark": "다크 테마로 전환",
+    "theme_light": "라이트 테마로 전환"
+  },
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights (PAW)",
+      "description": "자연어 함수 명세를 재사용 가능한 신경 프로그램으로 컴파일하고, 퍼지 함수(fuzzy functions)의 기호 코드를 신경 프로그램으로 대체하는 새로운 프로그래밍 패러다임입니다. 저희의 목표는 코드를 중간 단계로 거치지 않는 프로그래밍입니다.",
+      "links": [
+        {
+          "title": "프로젝트 및 데모",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "연구 소개",
+          "url": "https://programasweights.com/research/"
+        },
+        {
+          "title": "읽을 논문",
+          "url": "https://programasweights.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "신경 세계 모델(Neural World Models)",
+      "description": "생성 모델은 상호작용이 가능한 컴퓨팅 환경의 동작을 어떻게 학습할까요? NeuralOS는 신경 생성 모델로 운영체제를 엔드투엔드로 시뮬레이션하며, 사용자의 동작에 따른 화면 변화를 생성합니다.",
+      "links": [
+        {
+          "title": "인터랙티브 데모",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "읽을 논문",
+          "url": "https://neural-os.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "암묵적 사고 사슬(Implicit CoT)",
+      "description": "저희는 2023년에 암묵적 사고 사슬 추론(Implicit CoT, latent reasoning으로도 불림)을 최초로 제안했습니다. 언어 모델이 중간 단계를 글로 쓰는 대신 연속적인 은닉 상태를 통해 추론하는 방식입니다. 저희의 방법에는 지식 증류와 단계적 추론 내재화(Internalized reasoning)가 포함됩니다.",
+      "links": [
+        {
+          "title": "2023년 논문",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "2024년 논문",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "인터랙티브 데모",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "논문 가이드",
+          "url": "https://latent-implicit-thinking.github.io/"
+        },
+        {
+          "title": "ICLR 2026 워크숍",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "실제 환경에서의 언어 모델 사용",
+      "description": "사람들은 대규모 언어 모델을 실제로 어떻게 사용할까요? 저희는 수백만 건의 실제 대화를 수집하고 분석해 사용 패턴, 모델 안전성, 창발적 행동을 연구하며, 데이터와 분석 도구를 공개합니다.",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "자연어 함수 명세를 신경 프로그램으로 컴파일하고, 모델 가중치로 함수 계산을 수행합니다."
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "신경 생성 모델로 운영체제를 엔드투엔드로 시뮬레이션하고, 사용자의 동작에 따른 화면 변화를 생성합니다."
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "2023년에 연속적인 은닉 상태를 통한 암묵적 사고 사슬 추론을 최초로 제안하고, 지식 증류를 통해 명시적 추론 과정을 모델 내부로 옮겼습니다."
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "학습 과정에서 명시적인 추론 단계를 점진적으로 제거해, 모델이 내부에서 추론하고 답을 바로 출력하도록 학습합니다."
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "실제 사용자와 ChatGPT 사이의 다국어·다중 턴 대화를 수집해 사용자 행동, 모델 안전성, 언어 모델 학습을 위한 연구 데이터를 제공합니다."
+    }
+  ],
+  "guides_html": [
+    "<a href=\"/research/\">언어 모델과 구조화 학습 연구 가이드</a>에서는 Tree Prompting, 에너지 기반 모델, 확률적 어텐션, 구조화 디코딩, 장문 평가, 학습 기반 렌더링, 상호작용 학습을 다룹니다. 원 논문, 방법 예시, 관련 연구와 인용 정보를 제공합니다.",
+    "<a href=\"https://im2markup.yuntiandeng.com/\">Image-to-Markup과 IM2LATEX-100K</a>에서는 2016–2017년에 수행한 이미지의 LaTeX 변환 연구와 데이터셋, 코드, 인터랙티브 데모를 소개합니다."
+  ],
+  "students_html": "저희 연구실에 합류하고 싶다면 먼저 <a href=\"https://programasweights.com/\">ProgramAsWeights</a>, <a href=\"https://neural-os.com/\">NeuralOS</a>, 암묵적 사고 사슬 연구(<a href=\"https://arxiv.org/abs/2311.01460\">2023년 Implicit CoT</a>, <a href=\"https://arxiv.org/abs/2405.14838\">2024년 단계적 내재화</a>)를 읽어 주세요. 연락할 때는 관심 있는 연구 방향을 간단히 설명해 주세요. 받는 메일이 많아 구체적인 연구 내용이 없는 문의에는 답변하지 못합니다."
+}

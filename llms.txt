@@ -37,9 +37,12 @@ Yuntian Deng co-created IM2LATEX-100K with Anssi Kanervisto and Alexander M. Rus
 - [Hugging Face normalized export](https://huggingface.co/datasets/yuntian-deng/im2latex-100k).
 - [Hugging Face raw export](https://huggingface.co/datasets/yuntian-deng/im2latex-100k-raw).
 
-## Website and CV
+## Homepage languages
 
-- [邓云天 Yuntian Deng — 中文主页](https://yuntiandeng.com/zh/): 研究方向、代表论文、研究导读与联系方式。
+{% for language in site.data.homepage_languages -%}
+- [{{ language.label }}]({{ language.path | absolute_url }})
+{% endfor %}
+## Website and CV
 
 - [Homepage]({{ '/' | absolute_url }}): Research overview, affiliations, media coverage, news, and professional service.
 - [Full CV (PDF)]({{ '/cv.pdf' | absolute_url }}): Full academic curriculum vitae.

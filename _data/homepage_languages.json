@@ -1,0 +1,10 @@
+[
+  {"id":"en","lang":"en","label":"English","path":"/","dir":"ltr"},
+  {"id":"zh","lang":"zh-Hans","label":"中文","path":"/zh/","dir":"ltr"},
+  {"id":"fa","lang":"fa","label":"فارسی","path":"/fa/","dir":"rtl"},
+  {"id":"ja","lang":"ja","label":"日本語","path":"/ja/","dir":"ltr"},
+  {"id":"ko","lang":"ko","label":"한국어","path":"/ko/","dir":"ltr"},
+  {"id":"es","lang":"es","label":"Español","path":"/es/","dir":"ltr"},
+  {"id":"fr","lang":"fr","label":"Français","path":"/fr/","dir":"ltr"},
+  {"id":"pt-BR","lang":"pt-BR","label":"Português","path":"/pt-br/","dir":"ltr"}
+]

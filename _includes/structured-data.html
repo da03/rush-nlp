@@ -10,7 +10,7 @@
       "publisher": { "@id": {{ '/#person' | absolute_url | jsonify }} }
     },
     {
-      "@type": "{% if page.url == '/' or page.url == '/zh/' %}ProfilePage{% else %}WebPage{% endif %}",
+      "@type": "{% if page.homepage_locale %}ProfilePage{% else %}WebPage{% endif %}",
       "@id": {{ canonical_url | append: '#webpage' | jsonify }},
       "url": {{ canonical_url | jsonify }},
       "name": {{ seo_title | jsonify }},
@@ -23,7 +23,7 @@
         { "@id": "https://im2markup.yuntiandeng.com/#paper" }
       ],
       "mainEntity": { "@id": {{ '/#person' | absolute_url | jsonify }} }
-      {% elsif page.url == '/zh/' %}
+      {% elsif page.homepage_locale %}
       "mainEntity": { "@id": {{ '/#person' | absolute_url | jsonify }} }
       {% else %}
       "about": { "@id": {{ '/#person' | absolute_url | jsonify }} }

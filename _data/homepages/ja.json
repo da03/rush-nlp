@@ -1,0 +1,145 @@
+{
+  "seo_title": "Yuntian Deng | ウォータールー大学",
+  "description": "ウォータールー大学助教 Yuntian Deng。ニューラルプログラム、ニューラル世界モデル、暗黙的な思考の連鎖（Implicit CoT）、実社会での言語モデルの利用を研究しています。",
+  "affiliations_html": [
+    "<strong>助教（Assistant Professor）</strong>、ウォータールー大学 School of Computer Science",
+    "<strong>Associate</strong>、Harvard SEAS",
+    "<strong>Faculty Affiliate</strong>、Vector Institute",
+    "ハーバード大学 コンピュータサイエンス博士"
+  ],
+  "intro_html": [
+    "私は自然言語処理と機械学習を研究しています。記号的なプログラムや明示的な推論ステップで行う計算を、ニューラルモデルに学習させることがテーマです。私の研究室では、自然言語による関数の仕様を再利用可能なニューラルプログラムにコンパイルする <a href=\"https://programasweights.com\">ProgramAsWeights</a>、生成モデルで対話的な計算環境をシミュレートする <a href=\"https://neural-os.com\">NeuralOS</a>、そして<a href=\"https://latent-implicit-thinking.github.io/\">暗黙的な思考の連鎖（Implicit CoT）</a>と推論の内在化に取り組んでいます。また、<a href=\"/wildchat/\">WildChat</a> の対話データと <a href=\"https://wildvisualizer.com\">WildVis</a> の分析ツールを通じて、人々が言語モデルをどのように使っているかを調べています。",
+    "研究者がこれらのアイデアを試し、評価し、発展させられるよう、オープンソースのシステムと<a href=\"/demos/\">対話型デモ</a>を開発しています。WildChat は OpenAI と Anthropic によるモデルの安全性評価に使われています。ニューラル機械翻訳のオープンソースツールキット <a href=\"https://opennmt.net/\">OpenNMT</a> の共同開発者でもあります。ハーバード大学で <a href=\"https://rush-nlp.com/\">Alexander Rush</a> と <a href=\"https://www.eecs.harvard.edu/shieber/\">Stuart Shieber</a> の指導を受け、コンピュータサイエンスの博士号を取得しました。その後、Allen Institute for AI で <a href=\"https://yejinc.github.io/\">Yejin Choi</a> とともに博士研究員として研究しました。"
+  ],
+  "vision_label": "問題を解くモデルから、道具を作るモデルへ",
+  "vision": "私は、毎回ゼロから問題を解くのではなく、繰り返し行うタスクを小さく再利用可能なニューラルプログラムにコンパイルするようモデルを事前学習させることが、AI の未来で最も刺激的な方向の一つだと考えています。",
+  "labels": {
+    "home": "ホーム",
+    "language": "言語",
+    "research": "研究テーマ",
+    "papers": "論文",
+    "guides": "研究ガイド",
+    "students": "研究室への参加",
+    "cv": "経歴",
+    "publications": "論文一覧",
+    "contact": "連絡先",
+    "featured": "代表論文",
+    "paper_project": "論文・プロジェクト",
+    "code": "コード・資料",
+    "all_publications": "すべての論文と引用情報",
+    "updated": "更新日",
+    "skip": "本文へ移動",
+    "menu": "メニューを開閉",
+    "theme_dark": "ダークモードに切り替え",
+    "theme_light": "ライトモードに切り替え"
+  },
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights（PAW）",
+      "description": "新しいプログラミングの枠組みです。自然言語による関数の仕様を再利用可能なニューラルプログラムにコンパイルし、ファジー関数の記号的なコードをニューラルプログラムで置き換えます。コードを介さないプログラミングを目指しています。",
+      "links": [
+        {
+          "title": "プロジェクトとデモ",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "研究紹介",
+          "url": "https://programasweights.com/research/"
+        },
+        {
+          "title": "リーディングリスト",
+          "url": "https://programasweights.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "ニューラル世界モデル（Neural World Models）",
+      "description": "生成モデルは、対話的な計算環境の動作をどう学習するのでしょうか。NeuralOS はニューラル生成モデルで OS 全体をエンドツーエンドにシミュレートし、ユーザーの操作に応じて画面の変化を生成します。",
+      "links": [
+        {
+          "title": "対話型デモ",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "リーディングリスト",
+          "url": "https://neural-os.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "暗黙的な思考の連鎖（Implicit CoT）",
+      "description": "私たちは 2023 年に、暗黙的な思考の連鎖による推論（Implicit CoT、latent reasoning とも呼ばれる）を初めて提案しました。言語モデルが中間ステップを言葉で書き出す代わりに、連続値の隠れ状態を通じて推論するという考え方です。私たちの手法には、知識蒸留と、推論を段階的に内在化する学習（Internalized reasoning）があります。",
+      "links": [
+        {
+          "title": "2023 年の論文",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "2024 年の論文",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "対話型デモ",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "論文ガイド",
+          "url": "https://latent-implicit-thinking.github.io/"
+        },
+        {
+          "title": "ICLR 2026 ワークショップ",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "実社会での言語モデルの利用",
+      "description": "人々は大規模言語モデルを実際にどう使っているのでしょうか。私たちは数百万件の実際の対話を収集・分析し、利用パターン、モデルの安全性、創発的な振る舞いを研究するとともに、データと分析ツールを公開しています。",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "自然言語による関数の仕様をニューラルプログラムにコンパイルし、モデルの重みを通じて関数の計算を実行します。"
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "ニューラル生成モデルで OS 全体をエンドツーエンドにシミュレートし、ユーザーの操作に応じて画面の変化を生成します。"
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "2023 年に、連続値の隠れ状態を通じた暗黙的な思考の連鎖による推論を初めて提案し、知識蒸留によって明示的な推論過程をモデル内部へ移しました。"
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "学習中に明示的な推論ステップを段階的に取り除き、モデルが内部で推論して答えを直接出力するよう学習させます。"
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "実際のユーザーと ChatGPT の多言語・複数ターンの対話を収集し、ユーザー行動、モデルの安全性、言語モデルの学習に関する研究データを提供します。"
+    }
+  ],
+  "guides_html": [
+    "<a href=\"/research/\">言語モデルと構造化学習の研究ガイド</a>では、Tree Prompting、エネルギーベースモデル、確率的注意機構、構造化デコーディング、長文の評価、学習によるレンダリング、対話的な学習を紹介しています。原論文、手法の具体例、関連研究、引用情報をまとめています。",
+    "<a href=\"https://im2markup.yuntiandeng.com/\">Image-to-Markup と IM2LATEX-100K</a>では、2016–2017 年の画像から LaTeX への変換に関する私たちの研究を、データセット、コード、対話型デモとともに紹介しています。"
+  ],
+  "students_html": "私の研究室への参加を希望する方は、まず <a href=\"https://programasweights.com/\">ProgramAsWeights</a>、<a href=\"https://neural-os.com/\">NeuralOS</a>、私たちの暗黙的な思考の連鎖の研究（<a href=\"https://arxiv.org/abs/2311.01460\">2023 年の Implicit CoT</a>、<a href=\"https://arxiv.org/abs/2405.14838\">2024 年の段階的な内在化</a>）を読んでください。連絡の際は、関心のある研究テーマを簡潔に説明してください。多くのメールを受け取るため、具体的な研究内容のない問い合わせには返信できません。"
+}

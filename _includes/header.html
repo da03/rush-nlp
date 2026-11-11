@@ -2,19 +2,30 @@
 
   <div class="wrapper">
 
-    <a class="site-brand" href="{{ site.baseurl }}/{% if page.lang == 'zh-Hans' %}zh/{% endif %}" aria-label="{% if page.lang == 'zh-Hans' %}首页{% else %}Home{% endif %}">
+    <a class="site-brand" href="{% if page.homepage_locale %}{{ page.url }}{% else %}{{ site.baseurl }}/{% if page.lang == 'zh-Hans' %}zh/{% endif %}{% endif %}" aria-label="{% if homepage_copy.labels.home %}{{ homepage_copy.labels.home | escape }}{% elsif page.lang == 'zh-Hans' %}首页{% else %}Home{% endif %}">
       <img width="50" height="50" src="/images/waterloo.png" alt="University of Waterloo">
-      {% if page.url != "/" %}<span class="site-brand-name">Yuntian Deng</span>{% endif %}
+      {% unless page.homepage_locale %}<span class="site-brand-name" lang="en" dir="ltr">Yuntian Deng</span>{% endunless %}
     </a>
 
     <div class="site-header-actions">
-      {% if page.url == '/' %}<a class="language-switch" href="/zh/" lang="zh-Hans" hreflang="zh-Hans">中文</a>{% elsif page.url == '/zh/' %}<a class="language-switch" href="/" lang="en" hreflang="en">English</a>{% endif %}
+      {% if page.homepage_locale %}
+      <details class="language-menu">
+        {% assign current_language = site.data.homepage_languages | where: 'id', page.homepage_locale | first %}
+        <summary aria-label="{{ homepage_copy.labels.language | escape }}">{{ current_language.label }}</summary>
+        <ul>
+          {% for language in site.data.homepage_languages %}
+          <li><a href="{{ language.path }}" lang="{{ language.lang }}" hreflang="{{ language.lang }}" dir="{{ language.dir }}"{% if language.id == page.homepage_locale %} aria-current="page"{% endif %}>{{ language.label }}</a></li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endif %}
       <button type="button"
               class="theme-toggle"
               data-theme-toggle
+              {% if homepage_copy %}data-label-dark="{{ homepage_copy.labels.theme_dark | escape }}" data-label-light="{{ homepage_copy.labels.theme_light | escape }}"{% endif %}
               aria-pressed="false"
-              aria-label="{% if page.lang == 'zh-Hans' %}切换至深色模式{% else %}Switch to dark theme{% endif %}"
-              title="{% if page.lang == 'zh-Hans' %}切换至深色模式{% else %}Switch to dark theme{% endif %}">
+              aria-label="{% if homepage_copy.labels.theme_dark %}{{ homepage_copy.labels.theme_dark | escape }}{% elsif page.lang == 'zh-Hans' %}切换至深色模式{% else %}Switch to dark theme{% endif %}"
+              title="{% if homepage_copy.labels.theme_dark %}{{ homepage_copy.labels.theme_dark | escape }}{% elsif page.lang == 'zh-Hans' %}切换至深色模式{% else %}Switch to dark theme{% endif %}">
         <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
           <circle cx="12" cy="12" r="4" fill="currentColor"/>
           <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -34,7 +45,7 @@
       </button>
 
       <nav class="site-nav">
-        <button type="button" class="menu-icon" aria-label="{% if page.lang == 'zh-Hans' %}展开导航{% else %}Toggle navigation{% endif %}" aria-expanded="false" aria-controls="primary-nav">
+        <button type="button" class="menu-icon" aria-label="{% if homepage_copy.labels.menu %}{{ homepage_copy.labels.menu | escape }}{% elsif page.lang == 'zh-Hans' %}展开导航{% else %}Toggle navigation{% endif %}" aria-expanded="false" aria-controls="primary-nav">
           <svg viewBox="0 0 18 15" aria-hidden="true">
             <path fill="currentColor" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
             <path fill="currentColor" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
@@ -43,7 +54,12 @@
         </button>
 
         <div class="trigger" id="primary-nav">
-          {% if page.url == '/zh/' %}
+          {% if page.homepage_locale and page.homepage_locale != 'en' and page.homepage_locale != 'zh' %}
+          <a class="page-link" href="#research">{{ homepage_copy.labels.research | escape }}</a>
+          <a class="page-link" href="#papers">{{ homepage_copy.labels.papers | escape }}</a>
+          <a class="page-link" href="#guides">{{ homepage_copy.labels.guides | escape }}</a>
+          <a class="page-link" href="#prospective-students">{{ homepage_copy.labels.students | escape }}</a>
+          {% elsif page.url == '/zh/' %}
           <a class="page-link" href="#research">研究方向</a>
           <a class="page-link" href="#papers">论文</a>
           <a class="page-link" href="/research/zh/">研究导读</a>

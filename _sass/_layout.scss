@@ -934,3 +934,72 @@ html[lang="zh-Hans"] .research-themes {
         grid-template-columns: 1fr;
     }
 }
+
+.language-menu {
+    position: relative;
+    font-size: 14px;
+    summary {
+        cursor: pointer;
+        padding: 10px;
+        min-height: 44px;
+        box-sizing: border-box;
+        white-space: nowrap;
+    }
+    ul {
+        position: absolute;
+        inset-inline-end: 0;
+        top: 100%;
+        z-index: 60;
+        min-width: 150px;
+        margin: 4px 0 0;
+        padding: 4px;
+        list-style: none;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: var(--shadow-md);
+    }
+    li { margin: 0; }
+    a {
+        display: block;
+        padding: 10px 12px;
+        min-height: 44px;
+        box-sizing: border-box;
+        text-align: start;
+        border-radius: 4px;
+    }
+    a:hover, a[aria-current="page"] { background: var(--bg-subtle); }
+    a[aria-current="page"] { font-weight: 600; }
+}
+
+.localized-homepage {
+    line-height: 1.75;
+    .research-themes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .profile-info, .paper-card-body { min-width: 0; }
+    .paper-summary { margin: 10px 0; }
+    .paper-citation { text-align: left; }
+    .theme-papers a { white-space: normal; }
+    .research-vision__label { text-transform: none; letter-spacing: normal; }
+    @include media-query($on-palm) {
+        .research-themes { grid-template-columns: minmax(0, 1fr); }
+        .profile-links { justify-content: center; }
+    }
+}
+
+html[dir="rtl"] {
+    .skip-link { left: auto; right: 0; clip-path: inset(50%); }
+    .skip-link:focus { right: 12px; clip-path: none; }
+    .research-vision { border-left-width: 1px; border-right: 4px solid var(--brand); }
+    .site-nav .page-link:not(:last-child) { margin-right: 0; margin-left: 20px; }
+    .site-nav .trigger { text-align: right; }
+    .footer-contact { direction: ltr; }
+    .tag { margin-right: 0; margin-inline-end: 4px; }
+    @include media-query($on-palm) {
+        .site-nav .trigger { right: auto; left: 0; }
+        .site-nav .page-link:not(:last-child) { margin-left: 0; }
+    }
+}
+
+@media (max-width: 480px) {
+    .homepage .site-header .site-brand-name { display: none; }
+}

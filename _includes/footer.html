@@ -6,7 +6,7 @@
       </div>
       <div class="footer-social">
         <ul class="social-media-list">
-          {% if page.lang == 'zh-Hans' %}<li><a href="/publications/">论文列表</a></li>{% else %}<li><a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ" aria-label="Google Scholar">Scholar</a></li>{% endif %}
+          {% if page.homepage_locale and page.homepage_locale != 'en' %}<li><a href="/publications/">{{ homepage_copy.labels.publications | escape }}</a></li>{% elsif page.lang == 'zh-Hans' %}<li><a href="/publications/">论文列表</a></li>{% else %}<li><a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ" aria-label="Google Scholar">Scholar</a></li>{% endif %}
           {% if site.github_username %}
           <li>{% include icon-github.html username=site.github_username %}</li>
           {% endif %}
@@ -17,6 +17,6 @@
         </ul>
       </div>
     </div>
-    <p class="footer-updated">{% if page.lang == 'zh-Hans' %}更新于 {{ site.time | date: '%Y 年 %m 月' }}{% else %}Last updated: {{ site.time | date: '%b %Y' }}{% endif %}</p>
+    <p class="footer-updated">{% if page.homepage_locale and page.homepage_locale != 'en' and page.homepage_locale != 'zh' %}{{ homepage_copy.labels.updated | escape }} <bdi dir="ltr">{{ page.last_modified_at | date: '%Y-%m-%d' }}</bdi>{% elsif page.lang == 'zh-Hans' %}更新于 {{ site.time | date: '%Y 年 %m 月' }}{% else %}Last updated: {{ site.time | date: '%b %Y' }}{% endif %}</p>
   </div>
 </footer>

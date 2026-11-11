@@ -1,0 +1,145 @@
+{
+  "seo_title": "Yuntian Deng | دانشگاه واترلو",
+  "description": "Yuntian Deng، استادیار دانشگاه واترلو. پژوهش در برنامه‌های عصبی، مدل‌های عصبی جهان، زنجیرهٔ فکر ضمنی (Implicit CoT) و استفاده از مدل‌های زبانی در دنیای واقعی.",
+  "affiliations_html": [
+    "<strong>استادیار</strong>، دانشکدهٔ علوم کامپیوتر دانشگاه واترلو",
+    "<strong><bdi lang=\"en\" dir=\"ltr\">Associate</bdi></strong>، <bdi lang=\"en\" dir=\"ltr\">Harvard SEAS</bdi>",
+    "<strong><bdi lang=\"en\" dir=\"ltr\">Faculty Affiliate</bdi></strong>، <bdi lang=\"en\" dir=\"ltr\">Vector Institute</bdi>",
+    "دکترای علوم کامپیوتر از دانشگاه هاروارد"
+  ],
+  "intro_html": [
+    "من در پردازش زبان طبیعی و یادگیری ماشین پژوهش می‌کنم: چگونه مدل‌های عصبی محاسباتی را یاد بگیرند که با برنامه‌های نمادین یا مراحل صریح استدلال انجام می‌شوند. گروه من توصیف توابع به زبان طبیعی را به برنامه‌های عصبیِ قابل استفادهٔ مجدد کامپایل می‌کند (<a href=\"https://programasweights.com\"><bdi lang=\"en\" dir=\"ltr\">ProgramAsWeights</bdi></a>)، با مدل‌های مولد محیط‌های محاسباتی تعاملی را شبیه‌سازی می‌کند (<a href=\"https://neural-os.com\"><bdi lang=\"en\" dir=\"ltr\">NeuralOS</bdi></a>) و روی <a href=\"https://latent-implicit-thinking.github.io/\">زنجیرهٔ فکر ضمنی (<bdi lang=\"en\" dir=\"ltr\">Implicit CoT</bdi>)</a> و درونی‌سازی استدلال کار می‌کند. همچنین با داده‌های گفت‌وگوی <a href=\"/wildchat/\"><bdi lang=\"en\" dir=\"ltr\">WildChat</bdi></a> و ابزار تحلیل <a href=\"https://wildvisualizer.com\"><bdi lang=\"en\" dir=\"ltr\">WildVis</bdi></a> بررسی می‌کنیم که مردم چگونه از مدل‌های زبانی استفاده می‌کنند.",
+    "من سامانه‌های متن‌باز و <a href=\"/demos/\">دموهای تعاملی</a> می‌سازم تا پژوهشگران این ایده‌ها را تجربه و ارزیابی کنند و پژوهش‌های بعدی را بر پایهٔ آن‌ها پیش ببرند. <bdi lang=\"en\" dir=\"ltr\">OpenAI</bdi> و <bdi lang=\"en\" dir=\"ltr\">Anthropic</bdi> از <bdi lang=\"en\" dir=\"ltr\">WildChat</bdi> برای ارزیابی ایمنی مدل‌ها استفاده کرده‌اند. من از توسعه‌دهندگان <a href=\"https://opennmt.net/\"><bdi lang=\"en\" dir=\"ltr\">OpenNMT</bdi></a>، ابزار متن‌باز ترجمهٔ ماشینی عصبی، هستم. دکترای علوم کامپیوتر را از دانشگاه هاروارد با راهنمایی <a href=\"https://rush-nlp.com/\"><bdi lang=\"en\" dir=\"ltr\">Alexander Rush</bdi></a> و <a href=\"https://www.eecs.harvard.edu/shieber/\"><bdi lang=\"en\" dir=\"ltr\">Stuart Shieber</bdi></a> گرفتم. سپس در <bdi lang=\"en\" dir=\"ltr\">Allen Institute for AI</bdi> با <a href=\"https://yejinc.github.io/\"><bdi lang=\"en\" dir=\"ltr\">Yejin Choi</bdi></a> پژوهشگر پسادکتری بودم."
+  ],
+  "vision_label": "از حل‌کنندگان مسئله به سازندگان ابزار",
+  "vision": "به باور من، یکی از هیجان‌انگیزترین مسیرهای آیندهٔ هوش مصنوعی این است که با پیش‌آموزش، مدل‌ها یاد بگیرند کارهای تکراری را به برنامه‌های عصبیِ کوچک و قابل استفادهٔ مجدد کامپایل کنند، به‌جای آنکه هر بار مسئله را از ابتدا حل کنند.",
+  "labels": {
+    "home": "خانه",
+    "language": "زبان",
+    "research": "زمینه‌های پژوهش",
+    "papers": "مقاله‌ها",
+    "guides": "راهنماهای پژوهش",
+    "students": "پیوستن به گروه",
+    "cv": "رزومه",
+    "publications": "آثار پژوهشی",
+    "contact": "تماس",
+    "featured": "مقاله‌های منتخب",
+    "paper_project": "مقاله و پروژه",
+    "code": "کد و منابع",
+    "all_publications": "همهٔ آثار و اطلاعات استناد",
+    "updated": "به‌روزرسانی",
+    "skip": "رفتن به محتوای اصلی",
+    "menu": "باز و بسته کردن منو",
+    "theme_dark": "تغییر به نمای تیره",
+    "theme_light": "تغییر به نمای روشن"
+  },
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights (PAW)",
+      "description": "یک الگوی تازهٔ برنامه‌نویسی: توصیف توابع به زبان طبیعی را به برنامه‌های عصبیِ قابل استفادهٔ مجدد کامپایل می‌کنیم و برای توابع فازی، برنامه‌های عصبی را جایگزین کد نمادین می‌کنیم. هدف ما برنامه‌نویسی بدون واسطهٔ کد است.",
+      "links": [
+        {
+          "title": "پروژه و دموها",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "معرفی پژوهش",
+          "url": "https://programasweights.com/research/"
+        },
+        {
+          "title": "فهرست مطالعه",
+          "url": "https://programasweights.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "مدل‌های عصبی جهان (Neural World Models)",
+      "description": "مدل‌های مولد چگونه رفتار محیط‌های محاسباتی تعاملی را یاد می‌گیرند؟ NeuralOS با مدل‌های مولد عصبی، سیستم‌عامل را به‌صورت سرتاسری شبیه‌سازی می‌کند و در پاسخ به کنش‌های کاربر، تغییرات رابط کاربری را تولید می‌کند.",
+      "links": [
+        {
+          "title": "دموی تعاملی",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "فهرست مطالعه",
+          "url": "https://neural-os.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "زنجیرهٔ فکر ضمنی (Implicit CoT)",
+      "description": "ما در سال ۲۰۲۳ برای نخستین بار استدلال با زنجیرهٔ فکر ضمنی (Implicit CoT، که latent reasoning نیز نامیده می‌شود) را مطرح کردیم: مدل‌های زبانی به‌جای نوشتن مراحل میانی به‌صورت متن، از طریق حالت‌های پنهانِ پیوسته استدلال می‌کنند. روش‌های ما شامل تقطیر دانش و یادگیریِ درونی‌سازی گام‌به‌گام استدلال (Internalized reasoning) است.",
+      "links": [
+        {
+          "title": "مقالهٔ ۲۰۲۳",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "مقالهٔ ۲۰۲۴",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "دموی تعاملی",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "راهنمای مقاله‌ها",
+          "url": "https://latent-implicit-thinking.github.io/"
+        },
+        {
+          "title": "کارگاه ICLR 2026",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "استفاده از مدل‌های زبانی در دنیای واقعی",
+      "description": "مردم در عمل چگونه از مدل‌های زبانی بزرگ استفاده می‌کنند؟ ما میلیون‌ها گفت‌وگوی واقعی را گردآوری و تحلیل می‌کنیم تا الگوهای استفاده، ایمنی مدل‌ها و رفتارهای نوظهور را بررسی کنیم و داده‌ها و ابزارهای تحلیل را به‌صورت آزاد در دسترس قرار می‌دهیم.",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "توصیف توابع به زبان طبیعی را به برنامه‌های عصبی کامپایل می‌کنیم تا محاسبات تابع از طریق وزن‌های مدل انجام شوند."
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "سیستم‌عامل را با مدل‌های مولد عصبی به‌صورت سرتاسری شبیه‌سازی می‌کنیم و در پاسخ به کنش‌های کاربر، تغییرات رابط کاربری را تولید می‌کنیم."
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "در سال ۲۰۲۳ برای نخستین بار استدلال با زنجیرهٔ فکر ضمنی از طریق حالت‌های پنهانِ پیوسته را مطرح کردیم و با تقطیر دانش، فرایند استدلال صریح را به درون مدل انتقال دادیم."
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "با حذف تدریجی مراحل صریح استدلال در آموزش، مدل یاد می‌گیرد در درون خود استدلال کند و مستقیماً پاسخ بدهد."
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "گفت‌وگوهای چندزبانه و چندنوبتی کاربران واقعی با ChatGPT را گردآوری می‌کنیم تا داده‌های پژوهشی برای بررسی رفتار کاربران، ایمنی مدل‌ها و آموزش مدل‌های زبانی فراهم شوند."
+    }
+  ],
+  "guides_html": [
+    "<a href=\"/research/\">راهنمای پژوهش در مدل‌های زبانی و یادگیری ساختاریافته</a> به <bdi lang=\"en\" dir=\"ltr\">Tree Prompting</bdi>، مدل‌های مبتنی بر انرژی، توجه احتمالاتی، رمزگشایی ساختاریافته، ارزیابی متن‌های بلند، رندرگیریِ آموخته‌شده و آموزش تعاملی می‌پردازد و مقاله‌های اصلی، مثال‌هایی از روش‌ها، کارهای مرتبط و اطلاعات استناد را ارائه می‌کند.",
+    "<a href=\"https://im2markup.yuntiandeng.com/\"><bdi lang=\"en\" dir=\"ltr\">Image-to-Markup</bdi> و <bdi lang=\"en\" dir=\"ltr\">IM2LATEX-100K</bdi></a> پژوهش ما در سال‌های ۲۰۱۶–۲۰۱۷ دربارهٔ تبدیل تصویر به <bdi lang=\"en\" dir=\"ltr\">LaTeX</bdi> را همراه با مجموعه‌داده‌ها، کد و دموهای تعاملی معرفی می‌کند."
+  ],
+  "students_html": "اگر می‌خواهید به گروه من بپیوندید، ابتدا <a href=\"https://programasweights.com/\"><bdi lang=\"en\" dir=\"ltr\">ProgramAsWeights</bdi></a>، <a href=\"https://neural-os.com/\"><bdi lang=\"en\" dir=\"ltr\">NeuralOS</bdi></a> و پژوهش ما دربارهٔ زنجیرهٔ فکر ضمنی را بخوانید (<a href=\"https://arxiv.org/abs/2311.01460\">زنجیرهٔ فکر ضمنی در ۲۰۲۳</a>؛ <a href=\"https://arxiv.org/abs/2405.14838\">درونی‌سازی گام‌به‌گام در ۲۰۲۴</a>). در پیام خود به‌اختصار بنویسید به چه زمینهٔ پژوهشی علاقه دارید. به‌دلیل حجم بالای ایمیل‌ها، نمی‌توانم به پیام‌هایی پاسخ بدهم که موضوع پژوهشی مشخصی ندارند."
+}

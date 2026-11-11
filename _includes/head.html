@@ -30,13 +30,14 @@
 
   {%- assign canonical_url = page.url | replace: 'index.html', '' | absolute_url -%}
   {%- capture seo_title -%}
-    {%- if page.seo_title -%}{{ page.seo_title }}
+    {%- if homepage_copy.seo_title -%}{{ homepage_copy.seo_title }}
+    {%- elsif page.seo_title -%}{{ page.seo_title }}
     {%- elsif page.url == '/' -%}Yuntian Deng | University of Waterloo
     {%- elsif page.title -%}{{ page.title }} | Yuntian Deng
     {%- else -%}{{ site.title }}
     {%- endif -%}
   {%- endcapture -%}
-  {%- assign seo_description = page.description | default: page.excerpt | default: site.description | strip_html | normalize_whitespace -%}
+  {%- assign seo_description = homepage_copy.description | default: page.description | default: page.excerpt | default: site.description | strip_html | normalize_whitespace -%}
   <title>{{ seo_title | escape }}</title>
   <meta name="description" content="{{ seo_description | escape }}">
 
@@ -59,9 +60,10 @@
   {% assign stylesheet_version = site.github.build_revision | default: "im2latex-20261019" %}
   <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}?v={{ stylesheet_version | escape }}">
   <link rel="canonical" href="{{ canonical_url | escape }}">
-  {% if page.url == '/' or page.url == '/zh/' %}
-  <link rel="alternate" hreflang="en" href="{{ '/' | absolute_url }}">
-  <link rel="alternate" hreflang="zh-Hans" href="{{ '/zh/' | absolute_url }}">
+  {% if page.homepage_locale %}
+  {% for language in site.data.homepage_languages %}
+  <link rel="alternate" hreflang="{{ language.lang }}" href="{{ language.path | absolute_url }}">
+  {% endfor %}
   <link rel="alternate" hreflang="x-default" href="{{ '/' | absolute_url }}">
   {% endif %}
   <link rel="alternate" type="application/rss+xml" title="Yuntian Deng — News" href="{{ '/feed.xml' | absolute_url }}">
