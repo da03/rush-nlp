@@ -1,0 +1,29 @@
+[
+  {
+    "id": "rao2026aitrainingmanager",
+    "type": "article",
+    "title": "AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes",
+    "author": [
+      {
+        "given": "Anjali",
+        "family": "Rao"
+      },
+      {
+        "given": "Nikhil Kamalkumar",
+        "family": "Advani"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/abs/2606.29871",
+    "genre": "preprint",
+    "publisher": "arXiv",
+    "DOI": "10.48550/arXiv.2606.29871"
+  }
+]

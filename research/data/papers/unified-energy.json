@@ -1,0 +1,37 @@
+{
+  "id": "unified-energy",
+  "title": "Unified Energy for Invariant and Independent Decoding in Diffusion Language Models",
+  "authors": [
+    {
+      "given": "Yuchen",
+      "family": "Yan"
+    },
+    {
+      "given": "Minkai",
+      "family": "Xu"
+    },
+    {
+      "given": "Zaiquan",
+      "family": "Yang"
+    },
+    {
+      "given": "Yatao",
+      "family": "Bian"
+    }
+  ],
+  "year": 2026,
+  "venue": "arXiv:2606.09159",
+  "paper_url": "https://arxiv.org/html/2606.09159v1",
+  "summary": "Combines energy corrections for dependency and invariance in diffusion decoding.",
+  "connection": "Extends the contemporary energy-corrected diffusion direction with a unified treatment of decoding errors.",
+  "bibtex_type": "article",
+  "citation_key": "unifiedenergy",
+  "source_urls": [
+    "https://arxiv.org/html/2606.09159v1"
+  ],
+  "arxiv_id": "2606.09159",
+  "arxiv_first_posted": "2026-06-08",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "record_url": "https://yuntiandeng.com/research/papers/unified-energy/"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "codd2026",
+  "title": "Breaking the Factorization Barrier in Diffusion Language Models",
+  "authors": [
+    {
+      "given": "Ian",
+      "family": "Li"
+    },
+    {
+      "given": "Zilei",
+      "family": "Shao"
+    },
+    {
+      "given": "Benjie",
+      "family": "Wang"
+    },
+    {
+      "given": "Rose",
+      "family": "Yu"
+    },
+    {
+      "given": "Guy",
+      "family": "Van den Broeck"
+    },
+    {
+      "given": "Anji",
+      "family": "Liu"
+    }
+  ],
+  "year": 2026,
+  "venue": "ICML 2026",
+  "paper_url": "https://proceedings.mlr.press/v306/li26fd.html",
+  "summary": "CoDD composes factorized diffusion predictions with a tractable probabilistic-circuit prior to model joint token dependencies.",
+  "connection": "Shares structured generation’s separation of parallel neural scoring from joint probabilistic inference.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "li2026factorization",
+  "source_urls": [
+    "https://proceedings.mlr.press/v306/li26fd.html",
+    "https://arxiv.org/abs/2603.00045",
+    "https://arxiv.org/html/2603.00045v3"
+  ],
+  "arxiv_id": "2603.00045",
+  "arxiv_first_posted": "2026-02-09",
+  "record_url": "https://yuntiandeng.com/research/papers/codd2026/"
+}

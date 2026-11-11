@@ -1,0 +1,45 @@
+[
+  {
+    "id": "residualebmjmlr",
+    "type": "article-journal",
+    "title": "Residual Energy-Based Models for Text",
+    "author": [
+      {
+        "given": "Anton",
+        "family": "Bakhtin"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Sam",
+        "family": "Gross"
+      },
+      {
+        "given": "Myle",
+        "family": "Ott"
+      },
+      {
+        "given": "Marc’Aurelio",
+        "family": "Ranzato"
+      },
+      {
+        "given": "Arthur",
+        "family": "Szlam"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Journal of Machine Learning Research",
+    "URL": "https://www.jmlr.org/papers/v22/20-326.html",
+    "volume": "22",
+    "issue": "40",
+    "page": "1–41"
+  }
+]

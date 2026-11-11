@@ -1,0 +1,38 @@
+{
+  "id": "diffusion-input-perturbation",
+  "title": "Input Perturbation Reduces Exposure Bias in Diffusion Models",
+  "authors": [
+    {
+      "given": "Mang",
+      "family": "Ning"
+    },
+    {
+      "given": "Enver",
+      "family": "Sangineto"
+    },
+    {
+      "given": "Angelo",
+      "family": "Porrello"
+    },
+    {
+      "given": "Simone",
+      "family": "Calderara"
+    },
+    {
+      "given": "Rita",
+      "family": "Cucchiara"
+    }
+  ],
+  "year": 2023,
+  "venue": "ICML 2023",
+  "paper_url": "https://proceedings.mlr.press/v202/ning23a.html",
+  "pdf_url": "https://proceedings.mlr.press/v202/ning23a/ning23a.pdf",
+  "summary": "Studies accumulated sampling errors in diffusion models and trains with perturbed inputs to simulate inference-time prediction errors.",
+  "connection": "Addresses the same training–sampling mismatch through input perturbation, providing a comparison with scheduled sampling on model-generated states.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "pmlr-v202-ning23a",
+  "source_urls": [
+    "https://proceedings.mlr.press/v202/ning23a.html"
+  ],
+  "record_url": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/"
+}

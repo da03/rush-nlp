@@ -1,0 +1,39 @@
+{
+  "id": "aug-tree",
+  "title": "Augmenting interpretable models with large language models during training",
+  "authors": [
+    {
+      "given": "Chandan",
+      "family": "Singh"
+    },
+    {
+      "given": "Armin",
+      "family": "Askari"
+    },
+    {
+      "given": "Rich",
+      "family": "Caruana"
+    },
+    {
+      "given": "Jianfeng",
+      "family": "Gao"
+    }
+  ],
+  "year": 2023,
+  "venue": "Nature Communications 14, 7913",
+  "paper_url": "https://www.nature.com/articles/s41467-023-43713-1",
+  "summary": "Aug-Tree uses language-model-generated expansions to construct interpretable text features for tree splits.",
+  "connection": "Contrasts training-time feature expansion with Tree Prompting’s language-model calls while traversing a tree.",
+  "bibtex_type": "article",
+  "citation_key": "augtree",
+  "source_urls": [
+    "https://www.nature.com/articles/s41467-023-43713-1"
+  ],
+  "first_public": "2022-09-23",
+  "doi": "10.1038/s41467-023-43713-1",
+  "container_title": "Nature Communications",
+  "volume": "14",
+  "issue": "1",
+  "article_number": "7913",
+  "record_url": "https://yuntiandeng.com/research/papers/aug-tree/"
+}

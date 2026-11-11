@@ -1,0 +1,39 @@
+{
+  "id": "dadlm2026",
+  "title": "DA-DLM: Explicitly Modeling Token Dependencies in Diffusion Language Models",
+  "authors": [
+    {
+      "given": "Pengyu",
+      "family": "Ji"
+    },
+    {
+      "given": "Zichen",
+      "family": "Zhang"
+    },
+    {
+      "given": "Xiang",
+      "family": "Hu"
+    },
+    {
+      "given": "Kewei",
+      "family": "Tu"
+    }
+  ],
+  "year": 2026,
+  "venue": "EMNLP 2026",
+  "paper_url": "https://aclanthology.org/2026.emnlp-main.2094/",
+  "pdf_url": "https://aclanthology.org/2026.emnlp-main.2094.pdf",
+  "doi": "10.18653/2026.emnlp-main.2094",
+  "summary": "Adapts directed-acyclic dependency modeling to iterative diffusion using position-oriented candidate groups and fixed-token anchors.",
+  "connection": "A direct transfer of structured output modeling from non-autoregressive translation to diffusion denoising.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "ji2026dadlm",
+  "source_urls": [
+    "https://aclanthology.org/2026.emnlp-main.2094/",
+    "https://aclanthology.org/2026.emnlp-main.2094.pdf",
+    "https://arxiv.org/abs/2609.15070"
+  ],
+  "arxiv_id": "2609.15070",
+  "arxiv_first_posted": "2026-09-14",
+  "record_url": "https://yuntiandeng.com/research/papers/dadlm2026/"
+}

@@ -1,0 +1,206 @@
+{
+  "id": "learned-rendering",
+  "title": "Learning to render LaTeX, SMILES, HTML and music notation",
+  "eyebrow": "Markup-to-image diffusion",
+  "description": "Diffusion models as learned renderers for mathematical formulas, molecules, table layouts, and music notation, with scheduled sampling to address exposure bias.",
+  "lead": "Markup-to-Image Diffusion Models with Scheduled Sampling, by Yuntian Deng, Noriyuki Kojima, and Alexander M. Rush, learns to turn symbolic descriptions into images. Released on October 11, 2022 and published at ICLR 2023, the work introduced diffusion-based rendering across LaTeX formulas, SMILES molecules, HTML table layouts, and LilyPond sheet music. It also studies a general diffusion problem: errors accumulate when sampling visits states that differ from the model’s training inputs.",
+  "original_papers": [
+    "markup-diffusion"
+  ],
+  "terms": [
+    "markup-to-image generation",
+    "learned rendering",
+    "LaTeX-to-image",
+    "SMILES-to-image",
+    "diffusion scheduled sampling",
+    "diffusion exposure bias"
+  ],
+  "sections": [
+    {
+      "id": "rendering-direction",
+      "title": "The input is markup; the output is an image",
+      "paragraphs": [
+        "A learned renderer receives a sequence that specifies a visual object and predicts its rendered pixels. LaTeX describes mathematical notation; SMILES describes atoms and bonds; HTML describes a table-like layout; LilyPond describes music notation. The four domains test symbolic content, layout, and dependencies that extend across the input sequence.",
+        "This direction matters. Image-to-LaTeX recognition recovers source notation from a picture. Markup-to-image generation performs the reverse task. The paper adapts paired data, including im2latex-100k, to learn this forward mapping from markup to pixels. It trains a conditional diffusion model rather than invoking a conventional rendering engine at inference time."
+      ],
+      "citations": [
+        "markup-diffusion"
+      ]
+    },
+    {
+      "id": "symbolic-fidelity",
+      "title": "A plausible image is not enough",
+      "paragraphs": [
+        "These images demand exact symbolic fidelity. An extra minus sign changes a formula; an incorrect bond changes a molecule; a shifted note changes a score. An image that resembles the right domain still fails when its symbols do not match the input. Layout errors also propagate: an extra symbol displaces what follows.",
+        "The paper therefore evaluates alignment with the reference rendering. Its primary metric treats binarized images as sequences of columns and uses dynamic time warping, with tolerance for small shifts. Pixel error and additional image-similarity metrics provide complementary measurements. The paper explicitly distinguishes these criteria from natural-image scores that emphasize visual fidelity and broad semantics."
+      ],
+      "citations": [
+        "markup-diffusion"
+      ]
+    },
+    {
+      "id": "scheduled-sampling",
+      "title": "Train the denoiser on its own intermediate states",
+      "paragraphs": [
+        "Standard diffusion training constructs noisy inputs from ground-truth images. During sampling, the next denoising step instead receives the result of previous model predictions. Mistakes in those predictions change the states encountered later. The paper analyzes this mismatch as a sequential decision problem with compounding errors, connecting diffusion sampling to exposure bias.",
+        "Scheduled sampling changes the training inputs so that the denoiser encounters model-generated states and learns to correct its own errors. This adapts a principle previously studied in sequence generation to diffusion training. The experiments compare scheduled sampling with the baseline across all four rendering domains. Recognizable output and faithful symbolic rendering remain separate evaluation targets; the paper reports failures as well as successful generations."
+      ],
+      "citations": [
+        "markup-diffusion"
+      ]
+    },
+    {
+      "id": "related-methods",
+      "title": "Follow the two research threads",
+      "paragraphs": [
+        "The rendering thread continues in FSA-CDM, by Guojin Zhong and colleagues, published at ACM Multimedia 2023. It evaluates the same four-domain task and adds fine-grained sequence alignment, contextual modeling, and contrastive training signals. Its contribution addresses how markup tokens correspond to visual structure, alongside the denoising process.",
+        "The diffusion-training thread connects to Input Perturbation Reduces Exposure Bias in Diffusion Models, published at ICML 2023. That method perturbs training inputs to simulate prediction errors. The shared question is how training should prepare a denoiser for the states it encounters during sampling. Model-generated inputs and synthetic perturbations are different answers, with different training procedures."
+      ],
+      "citations": [
+        "fsa-cdm",
+        "diffusion-input-perturbation",
+        "markup-diffusion"
+      ]
+    },
+    {
+      "id": "inspect-results",
+      "title": "Inspect the original examples and implementation",
+      "paragraphs": [
+        "The released repository includes side-by-side animations of scheduled sampling, the baseline, and ground truth for formulas, tables, music, and molecules. These examples expose the intermediate denoising trajectory. Inspect whether symbols appear, disappear, merge, or move, then compare the final output against the exact input specification.",
+        "For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. Separate rendering accuracy from stylistic resemblance. The original datasets, checkpoints, code, and recorded examples establish a reproducible starting point without treating a successful example as evidence of exact rendering on every input."
+      ],
+      "citations": [
+        "markup-diffusion"
+      ]
+    }
+  ],
+  "related_guides": [
+    "structured-decoding",
+    "probabilistic-attention"
+  ],
+  "demo": "markup",
+  "reading_order": [
+    "markup-diffusion",
+    "fsa-cdm",
+    "diffusion-input-perturbation"
+  ],
+  "url": "https://yuntiandeng.com/research/learned-rendering/",
+  "papers": [
+    {
+      "id": "markup-diffusion",
+      "title": "Markup-to-Image Diffusion Models with Scheduled Sampling",
+      "authors": [
+        {
+          "given": "Yuntian",
+          "family": "Deng"
+        },
+        {
+          "given": "Noriyuki",
+          "family": "Kojima"
+        },
+        {
+          "given": "Alexander M.",
+          "family": "Rush"
+        }
+      ],
+      "year": 2023,
+      "venue": "ICLR 2023",
+      "paper_url": "https://arxiv.org/abs/2210.05147",
+      "pdf_url": "https://arxiv.org/pdf/2210.05147",
+      "code_url": "https://github.com/da03/markup2im",
+      "doi": "10.48550/arXiv.2210.05147",
+      "summary": "Learns to render LaTeX, HTML table layouts, LilyPond music notation, and SMILES molecules with conditional diffusion. Scheduled sampling exposes denoisers to their own generated inputs to address compounding errors.",
+      "connection": "The original diffusion-based markup-to-image method and four-domain rendering benchmark discussed in this guide.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "deng2023markuptoimage",
+      "source_urls": [
+        "https://arxiv.org/html/2210.05147v1",
+        "https://github.com/da03/markup2im"
+      ],
+      "arxiv_id": "2210.05147",
+      "arxiv_first_posted": "2022-10-11",
+      "abstract": "Building on recent advances in image generation, we present a fully data-driven approach to rendering markup into images. The approach is based on diffusion models, which parameterize the distribution of data using a sequence of denoising operations on top of a Gaussian noise distribution. We view the diffusion denoising process as a sequential decision making process, and show that it exhibits compounding errors similar to exposure bias issues in imitation learning problems. To mitigate these issues, we adapt the scheduled sampling algorithm to diffusion training. We conduct experiments on four markup datasets: mathematical formulas (LaTeX), table layouts (HTML), sheet music (LilyPond), and molecular images (SMILES). These experiments each verify the effectiveness of the diffusion process and the use of scheduled sampling to fix generation issues. These results also show that the markup-to-image task presents a useful controlled compositional setting for diagnosing and analyzing generative image models.",
+      "abstract_source": "https://arxiv.org/html/2210.05147v1"
+    },
+    {
+      "id": "fsa-cdm",
+      "title": "Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation",
+      "authors": [
+        {
+          "given": "Guojin",
+          "family": "Zhong"
+        },
+        {
+          "given": "Jin",
+          "family": "Yuan"
+        },
+        {
+          "given": "Pan",
+          "family": "Wang"
+        },
+        {
+          "given": "Kailun",
+          "family": "Yang"
+        },
+        {
+          "given": "Weili",
+          "family": "Guan"
+        },
+        {
+          "given": "Zhiyong",
+          "family": "Li"
+        }
+      ],
+      "year": 2023,
+      "venue": "ACM Multimedia 2023",
+      "paper_url": "https://arxiv.org/abs/2308.01147",
+      "pdf_url": "https://arxiv.org/pdf/2308.01147",
+      "summary": "FSA-CDM combines fine-grained cross-modal sequence alignment, contextual modeling, and a contrast-augmented diffusion objective for markup-to-image generation.",
+      "connection": "A subsequent markup-to-image method that builds on the task and four datasets introduced by Deng, Kojima, and Rush, addressing alignment and contrastive feedback.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "zhong2023contrastaugmented",
+      "source_urls": [
+        "https://arxiv.org/html/2308.01147v1"
+      ],
+      "arxiv_id": "2308.01147",
+      "arxiv_first_posted": "2023-08-02"
+    },
+    {
+      "id": "diffusion-input-perturbation",
+      "title": "Input Perturbation Reduces Exposure Bias in Diffusion Models",
+      "authors": [
+        {
+          "given": "Mang",
+          "family": "Ning"
+        },
+        {
+          "given": "Enver",
+          "family": "Sangineto"
+        },
+        {
+          "given": "Angelo",
+          "family": "Porrello"
+        },
+        {
+          "given": "Simone",
+          "family": "Calderara"
+        },
+        {
+          "given": "Rita",
+          "family": "Cucchiara"
+        }
+      ],
+      "year": 2023,
+      "venue": "ICML 2023",
+      "paper_url": "https://proceedings.mlr.press/v202/ning23a.html",
+      "pdf_url": "https://proceedings.mlr.press/v202/ning23a/ning23a.pdf",
+      "summary": "Studies accumulated sampling errors in diffusion models and trains with perturbed inputs to simulate inference-time prediction errors.",
+      "connection": "Addresses the same training–sampling mismatch through input perturbation, providing a comparison with scheduled sampling on model-generated states.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "pmlr-v202-ning23a",
+      "source_urls": [
+        "https://proceedings.mlr.press/v202/ning23a.html"
+      ]
+    }
+  ]
+}

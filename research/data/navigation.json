@@ -1,0 +1,349 @@
+{
+  "title": "Research notes",
+  "updated": "2026-11-10",
+  "home": "https://yuntiandeng.com/research/",
+  "bibliography": "https://yuntiandeng.com/research/papers/",
+  "downloads": "https://yuntiandeng.com/research/data/",
+  "guides": [
+    {
+      "title": "LLM decision trees: from Tree Prompting to agentic classification",
+      "url": "https://yuntiandeng.com/research/llm-decision-trees/",
+      "markdown": "https://yuntiandeng.com/research/data/guides/llm-decision-trees.md",
+      "original_papers": [
+        "tree-prompting"
+      ]
+    },
+    {
+      "title": "Energy-based text generation: residual models, resampling and diffusion",
+      "url": "https://yuntiandeng.com/research/energy-based-text-generation/",
+      "markdown": "https://yuntiandeng.com/research/data/guides/energy-based-text-generation.md",
+      "original_papers": [
+        "residual-ebm",
+        "residual-ebm-jmlr"
+      ]
+    },
+    {
+      "title": "Structured Decoding: Higher-Order CRFs, Diffusion Language Models, and Candidate Lattices",
+      "url": "https://yuntiandeng.com/research/structured-decoding/",
+      "markdown": "https://yuntiandeng.com/research/data/guides/structured-decoding.md",
+      "original_papers": [
+        "cascaded2020",
+        "lattice2021"
+      ]
+    },
+    {
+      "title": "Attention as a Latent Variable: Modeling a Distribution over Attention",
+      "url": "https://yuntiandeng.com/research/probabilistic-attention/",
+      "markdown": "https://yuntiandeng.com/research/data/guides/probabilistic-attention.md",
+      "original_papers": [
+        "latentattention2018"
+      ]
+    },
+    {
+      "title": "Evaluating the structure of long-form text",
+      "url": "https://yuntiandeng.com/research/long-form-evaluation/",
+      "markdown": "https://yuntiandeng.com/research/data/guides/long-form-evaluation.md",
+      "original_papers": [
+        "model-criticism"
+      ]
+    },
+    {
+      "title": "Learning to render LaTeX, SMILES, HTML and music notation",
+      "url": "https://yuntiandeng.com/research/learned-rendering/",
+      "markdown": "https://yuntiandeng.com/research/data/guides/learned-rendering.md",
+      "original_papers": [
+        "markup-diffusion"
+      ]
+    },
+    {
+      "title": "Controlling a running training job with humans and AI agents",
+      "url": "https://yuntiandeng.com/research/interactive-training/",
+      "markdown": "https://yuntiandeng.com/research/data/guides/interactive-training.md",
+      "original_papers": [
+        "interactive-training-2025",
+        "interactive-training-2026"
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "id": "tree-prompting",
+      "title": "Tree Prompting: Efficient Task Adaptation without Fine-Tuning",
+      "record": "https://yuntiandeng.com/research/papers/tree-prompting/",
+      "source": "https://arxiv.org/html/2310.14034v1",
+      "json": "https://yuntiandeng.com/research/data/papers/tree-prompting.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/tree-prompting.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/tree-prompting.csl.json"
+    },
+    {
+      "id": "aug-tree",
+      "title": "Augmenting interpretable models with large language models during training",
+      "record": "https://yuntiandeng.com/research/papers/aug-tree/",
+      "source": "https://www.nature.com/articles/s41467-023-43713-1",
+      "json": "https://yuntiandeng.com/research/data/papers/aug-tree.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/aug-tree.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/aug-tree.csl.json"
+    },
+    {
+      "id": "gptree",
+      "title": "GPTree: Towards Explainable Decision-Making via LLM-powered Decision Trees",
+      "record": "https://yuntiandeng.com/research/papers/gptree/",
+      "source": "https://arxiv.org/html/2411.08257v1",
+      "json": "https://yuntiandeng.com/research/data/papers/gptree.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/gptree.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/gptree.csl.json"
+    },
+    {
+      "id": "act",
+      "title": "ACT: Agentic Classification Tree",
+      "record": "https://yuntiandeng.com/research/papers/act/",
+      "source": "https://arxiv.org/html/2509.26433v4",
+      "json": "https://yuntiandeng.com/research/data/papers/act.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/act.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/act.csl.json"
+    },
+    {
+      "id": "residual-ebm",
+      "title": "Residual Energy-Based Models for Text Generation",
+      "record": "https://yuntiandeng.com/research/papers/residual-ebm/",
+      "source": "https://arxiv.org/html/2004.11714v1",
+      "json": "https://yuntiandeng.com/research/data/papers/residual-ebm.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/residual-ebm.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/residual-ebm.csl.json"
+    },
+    {
+      "id": "residual-ebm-jmlr",
+      "title": "Residual Energy-Based Models for Text",
+      "record": "https://yuntiandeng.com/research/papers/residual-ebm-jmlr/",
+      "source": "https://www.jmlr.org/papers/v22/20-326.html",
+      "json": "https://yuntiandeng.com/research/data/papers/residual-ebm-jmlr.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/residual-ebm-jmlr.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/residual-ebm-jmlr.csl.json"
+    },
+    {
+      "id": "edlm",
+      "title": "Energy-Based Diffusion Language Models for Text Generation",
+      "record": "https://yuntiandeng.com/research/papers/edlm/",
+      "source": "https://arxiv.org/html/2410.21357v4",
+      "json": "https://yuntiandeng.com/research/data/papers/edlm.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/edlm.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/edlm.csl.json"
+    },
+    {
+      "id": "unified-energy",
+      "title": "Unified Energy for Invariant and Independent Decoding in Diffusion Language Models",
+      "record": "https://yuntiandeng.com/research/papers/unified-energy/",
+      "source": "https://arxiv.org/html/2606.09159v1",
+      "json": "https://yuntiandeng.com/research/data/papers/unified-energy.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/unified-energy.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/unified-energy.csl.json"
+    },
+    {
+      "id": "neural-trf-nce",
+      "title": "Learning Neural Trans-Dimensional Random Field Language Models with Noise-Contrastive Estimation",
+      "record": "https://yuntiandeng.com/research/papers/neural-trf-nce/",
+      "source": "https://arxiv.org/abs/1710.10739",
+      "json": "https://yuntiandeng.com/research/data/papers/neural-trf-nce.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/neural-trf-nce.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/neural-trf-nce.csl.json"
+    },
+    {
+      "id": "cascaded2020",
+      "title": "Cascaded Text Generation with Markov Transformers",
+      "record": "https://yuntiandeng.com/research/papers/cascaded2020/",
+      "source": "https://arxiv.org/abs/2006.01112",
+      "json": "https://yuntiandeng.com/research/data/papers/cascaded2020.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/cascaded2020.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/cascaded2020.csl.json"
+    },
+    {
+      "id": "lattice2021",
+      "title": "Sequence-to-Lattice Models for Fast Translation",
+      "record": "https://yuntiandeng.com/research/papers/lattice2021/",
+      "source": "https://aclanthology.org/2021.findings-emnlp.318/",
+      "json": "https://yuntiandeng.com/research/data/papers/lattice2021.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/lattice2021.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/lattice2021.csl.json"
+    },
+    {
+      "id": "sun2019",
+      "title": "Fast Structured Decoding for Sequence Models",
+      "record": "https://yuntiandeng.com/research/papers/sun2019/",
+      "source": "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html",
+      "json": "https://yuntiandeng.com/research/data/papers/sun2019.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/sun2019.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/sun2019.csl.json"
+    },
+    {
+      "id": "codd2026",
+      "title": "Breaking the Factorization Barrier in Diffusion Language Models",
+      "record": "https://yuntiandeng.com/research/papers/codd2026/",
+      "source": "https://proceedings.mlr.press/v306/li26fd.html",
+      "json": "https://yuntiandeng.com/research/data/papers/codd2026.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/codd2026.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/codd2026.csl.json"
+    },
+    {
+      "id": "dadlm2026",
+      "title": "DA-DLM: Explicitly Modeling Token Dependencies in Diffusion Language Models",
+      "record": "https://yuntiandeng.com/research/papers/dadlm2026/",
+      "source": "https://aclanthology.org/2026.emnlp-main.2094/",
+      "json": "https://yuntiandeng.com/research/data/papers/dadlm2026.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/dadlm2026.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/dadlm2026.csl.json"
+    },
+    {
+      "id": "lilicorr2026",
+      "title": "LiLiCorr: Lightweight Likelihood Correlation of Parallel Drafts for Speculative Decoding",
+      "record": "https://yuntiandeng.com/research/papers/lilicorr2026/",
+      "source": "https://arxiv.org/abs/2608.20530",
+      "json": "https://yuntiandeng.com/research/data/papers/lilicorr2026.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/lilicorr2026.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/lilicorr2026.csl.json"
+    },
+    {
+      "id": "diffuspec2026",
+      "title": "DiffuSpec: Unlocking Diffusion Language Models for Speculative Decoding",
+      "record": "https://yuntiandeng.com/research/papers/diffuspec2026/",
+      "source": "https://aclanthology.org/2026.findings-acl.1048/",
+      "json": "https://yuntiandeng.com/research/data/papers/diffuspec2026.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/diffuspec2026.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/diffuspec2026.csl.json"
+    },
+    {
+      "id": "latentattention2018",
+      "title": "Latent Alignment and Variational Attention",
+      "record": "https://yuntiandeng.com/research/papers/latentattention2018/",
+      "source": "https://arxiv.org/abs/1807.03756",
+      "json": "https://yuntiandeng.com/research/data/papers/latentattention2018.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/latentattention2018.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/latentattention2018.csl.json"
+    },
+    {
+      "id": "showattendtell2015",
+      "title": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention",
+      "record": "https://yuntiandeng.com/research/papers/showattendtell2015/",
+      "source": "https://proceedings.mlr.press/v37/xuc15.html",
+      "json": "https://yuntiandeng.com/research/data/papers/showattendtell2015.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/showattendtell2015.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/showattendtell2015.csl.json"
+    },
+    {
+      "id": "structuredattention2017",
+      "title": "Structured Attention Networks",
+      "record": "https://yuntiandeng.com/research/papers/structuredattention2017/",
+      "source": "https://arxiv.org/abs/1702.00887",
+      "json": "https://yuntiandeng.com/research/data/papers/structuredattention2017.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/structuredattention2017.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/structuredattention2017.csl.json"
+    },
+    {
+      "id": "bahuleyan2018",
+      "title": "Variational Attention for Sequence-to-Sequence Models",
+      "record": "https://yuntiandeng.com/research/papers/bahuleyan2018/",
+      "source": "https://aclanthology.org/C18-1142/",
+      "json": "https://yuntiandeng.com/research/data/papers/bahuleyan2018.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/bahuleyan2018.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/bahuleyan2018.csl.json"
+    },
+    {
+      "id": "bayesianattention2020",
+      "title": "Bayesian Attention Modules",
+      "record": "https://yuntiandeng.com/research/papers/bayesianattention2020/",
+      "source": "https://arxiv.org/abs/2010.10604",
+      "json": "https://yuntiandeng.com/research/data/papers/bayesianattention2020.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/bayesianattention2020.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/bayesianattention2020.csl.json"
+    },
+    {
+      "id": "model-criticism",
+      "title": "Model Criticism for Long-Form Text Generation",
+      "record": "https://yuntiandeng.com/research/papers/model-criticism/",
+      "source": "https://aclanthology.org/2022.emnlp-main.815/",
+      "json": "https://yuntiandeng.com/research/data/papers/model-criticism.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/model-criticism.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/model-criticism.csl.json"
+    },
+    {
+      "id": "openmeva",
+      "title": "OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics",
+      "record": "https://yuntiandeng.com/research/papers/openmeva/",
+      "source": "https://aclanthology.org/2021.acl-long.500/",
+      "json": "https://yuntiandeng.com/research/data/papers/openmeva.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/openmeva.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/openmeva.csl.json"
+    },
+    {
+      "id": "story-evaluation-survey",
+      "title": "What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation",
+      "record": "https://yuntiandeng.com/research/papers/story-evaluation-survey/",
+      "source": "https://arxiv.org/abs/2408.14622",
+      "json": "https://yuntiandeng.com/research/data/papers/story-evaluation-survey.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/story-evaluation-survey.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/story-evaluation-survey.csl.json"
+    },
+    {
+      "id": "markup-diffusion",
+      "title": "Markup-to-Image Diffusion Models with Scheduled Sampling",
+      "record": "https://yuntiandeng.com/research/papers/markup-diffusion/",
+      "source": "https://arxiv.org/abs/2210.05147",
+      "json": "https://yuntiandeng.com/research/data/papers/markup-diffusion.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/markup-diffusion.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/markup-diffusion.csl.json"
+    },
+    {
+      "id": "fsa-cdm",
+      "title": "Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation",
+      "record": "https://yuntiandeng.com/research/papers/fsa-cdm/",
+      "source": "https://arxiv.org/abs/2308.01147",
+      "json": "https://yuntiandeng.com/research/data/papers/fsa-cdm.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/fsa-cdm.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/fsa-cdm.csl.json"
+    },
+    {
+      "id": "diffusion-input-perturbation",
+      "title": "Input Perturbation Reduces Exposure Bias in Diffusion Models",
+      "record": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/",
+      "source": "https://proceedings.mlr.press/v202/ning23a.html",
+      "json": "https://yuntiandeng.com/research/data/papers/diffusion-input-perturbation.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/diffusion-input-perturbation.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/diffusion-input-perturbation.csl.json"
+    },
+    {
+      "id": "interactive-training-2025",
+      "title": "Interactive Training: Feedback-Driven Neural Network Optimization",
+      "record": "https://yuntiandeng.com/research/papers/interactive-training-2025/",
+      "source": "https://aclanthology.org/2025.emnlp-demos.65/",
+      "json": "https://yuntiandeng.com/research/data/papers/interactive-training-2025.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/interactive-training-2025.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/interactive-training-2025.csl.json"
+    },
+    {
+      "id": "interactive-training-2026",
+      "title": "Interactive Training 2: Auditable Control Plane for Live Model Training",
+      "record": "https://yuntiandeng.com/research/papers/interactive-training-2026/",
+      "source": "https://arxiv.org/abs/2607.18314",
+      "json": "https://yuntiandeng.com/research/data/papers/interactive-training-2026.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/interactive-training-2026.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/interactive-training-2026.csl.json"
+    },
+    {
+      "id": "livetune",
+      "title": "LiveTune: Dynamic Parameter Tuning for Feedback-Driven Optimization",
+      "record": "https://yuntiandeng.com/research/papers/livetune/",
+      "source": "https://arxiv.org/abs/2311.17279",
+      "json": "https://yuntiandeng.com/research/data/papers/livetune.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/livetune.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/livetune.csl.json"
+    },
+    {
+      "id": "ai-training-manager",
+      "title": "AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes",
+      "record": "https://yuntiandeng.com/research/papers/ai-training-manager/",
+      "source": "https://arxiv.org/abs/2606.29871",
+      "json": "https://yuntiandeng.com/research/data/papers/ai-training-manager.json",
+      "bibtex": "https://yuntiandeng.com/research/data/papers/ai-training-manager.bib",
+      "csl": "https://yuntiandeng.com/research/data/papers/ai-training-manager.csl.json"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "bayesianattention2020",
+  "title": "Bayesian Attention Modules",
+  "authors": [
+    {
+      "given": "Xinjie",
+      "family": "Fan"
+    },
+    {
+      "given": "Shujian",
+      "family": "Zhang"
+    },
+    {
+      "given": "Bo",
+      "family": "Chen"
+    },
+    {
+      "given": "Mingyuan",
+      "family": "Zhou"
+    }
+  ],
+  "year": 2020,
+  "venue": "NeurIPS 2020",
+  "paper_url": "https://arxiv.org/abs/2010.10604",
+  "pdf_url": "https://proceedings.neurips.cc/paper_files/paper/2020/file/bcff3f632fd16ff099a49c2f0932b47a-Paper.pdf",
+  "summary": "Builds distributions over attention weights from normalized reparameterizable variables and learns them with Bayesian regularization.",
+  "connection": "Extends probabilistic attention to modular stochastic weights with data-dependent priors.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "fan2020bayesian",
+  "source_urls": [
+    "https://arxiv.org/abs/2010.10604",
+    "https://proceedings.neurips.cc/paper_files/paper/2020/file/bcff3f632fd16ff099a49c2f0932b47a-Paper.pdf"
+  ],
+  "equal_contribution": [
+    "Xinjie Fan",
+    "Shujian Zhang"
+  ],
+  "arxiv_id": "2010.10604",
+  "arxiv_first_posted": "2020-10-20",
+  "record_url": "https://yuntiandeng.com/research/papers/bayesianattention2020/"
+}

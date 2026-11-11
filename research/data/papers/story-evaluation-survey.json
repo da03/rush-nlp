@@ -1,0 +1,32 @@
+{
+  "id": "story-evaluation-survey",
+  "title": "What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation",
+  "authors": [
+    {
+      "given": "Dingyi",
+      "family": "Yang"
+    },
+    {
+      "given": "Qin",
+      "family": "Jin"
+    }
+  ],
+  "year": 2024,
+  "venue": "arXiv",
+  "paper_url": "https://arxiv.org/abs/2408.14622",
+  "pdf_url": "https://arxiv.org/pdf/2408.14622",
+  "doi": "10.48550/arXiv.2408.14622",
+  "summary": "A survey of story-quality criteria, human evaluation, automatic metrics, and evaluation benchmarks.",
+  "connection": "Places structural criticism within the broader evaluation of coherence, character development, and narrative quality.",
+  "bibtex_type": "article",
+  "citation_key": "yang2024goodstory",
+  "source_urls": [
+    "https://arxiv.org/abs/2408.14622",
+    "https://arxiv.org/pdf/2408.14622"
+  ],
+  "arxiv_id": "2408.14622",
+  "arxiv_first_posted": "2024-08-26",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "record_url": "https://yuntiandeng.com/research/papers/story-evaluation-survey/"
+}

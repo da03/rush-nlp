@@ -1,0 +1,42 @@
+[
+  {
+    "id": "zhong2023contrastaugmented",
+    "type": "paper-conference",
+    "title": "Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation",
+    "author": [
+      {
+        "given": "Guojin",
+        "family": "Zhong"
+      },
+      {
+        "given": "Jin",
+        "family": "Yuan"
+      },
+      {
+        "given": "Pan",
+        "family": "Wang"
+      },
+      {
+        "given": "Kailun",
+        "family": "Yang"
+      },
+      {
+        "given": "Weili",
+        "family": "Guan"
+      },
+      {
+        "given": "Zhiyong",
+        "family": "Li"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "ACM Multimedia 2023",
+    "URL": "https://arxiv.org/abs/2308.01147"
+  }
+]

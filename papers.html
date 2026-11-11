@@ -12,6 +12,7 @@ show: 1
 <p>
 My full list of papers can be found at my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.
 </p>
+<p><a href="/research/">Research guides</a> explain prompted decision trees, energy-based generation, probabilistic attention, structured decoding, long-form evaluation, learned rendering, and interactive training, with examples and related papers.</p>
 
 {% assign papers_by_year = site.data.papers.papers | group_by: "year" | sort: "name" | reverse %}
 {% for year_group in papers_by_year %}
@@ -36,6 +37,7 @@ My full list of papers can be found at my <a href="https://scholar.google.com/ci
     {% endif %}
     {{paper.authors}}.<br>
     {{paper.conference}}
+    {% if paper.research_guide %} <a class="tag tag-paper" href="{{ paper.research_guide | escape }}">research guide</a>{% endif %}
     {% if paper.pdf_url %} <a class="tag" href="{{ paper.pdf_url | escape }}">PDF</a>{% endif %}
     {% if paper.html_url %} <a class="tag" href="{{ paper.html_url | escape }}">HTML</a>{% endif %}
     {% if paper.code %} <a class="tag tag-code" href="{{paper.code}}">code</a>{% endif %}

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "deng-rush-2021-sequence",
+    "type": "paper-conference",
+    "title": "Sequence-to-Lattice Models for Fast Translation",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Findings of EMNLP 2021",
+    "URL": "https://aclanthology.org/2021.findings-emnlp.318/",
+    "DOI": "10.18653/v1/2021.findings-emnlp.318"
+  }
+]

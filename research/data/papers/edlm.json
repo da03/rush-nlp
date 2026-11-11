@@ -1,0 +1,51 @@
+{
+  "id": "edlm",
+  "title": "Energy-Based Diffusion Language Models for Text Generation",
+  "authors": [
+    {
+      "given": "Minkai",
+      "family": "Xu"
+    },
+    {
+      "given": "Tomas",
+      "family": "Geffner"
+    },
+    {
+      "given": "Karsten",
+      "family": "Kreis"
+    },
+    {
+      "given": "Weili",
+      "family": "Nie"
+    },
+    {
+      "given": "Yilun",
+      "family": "Xu"
+    },
+    {
+      "given": "Jure",
+      "family": "Leskovec"
+    },
+    {
+      "given": "Stefano",
+      "family": "Ermon"
+    },
+    {
+      "given": "Arash",
+      "family": "Vahdat"
+    }
+  ],
+  "year": 2025,
+  "venue": "ICLR 2025",
+  "paper_url": "https://arxiv.org/html/2410.21357v4",
+  "summary": "Adds a full-sequence residual energy to each diffusion denoising distribution, with autoregressive or NCE parameterizations and parallel importance sampling.",
+  "connection": "Directly cites Deng et al. (2020), carrying residual correction and partition estimation into diffusion language modeling.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "edlm",
+  "source_urls": [
+    "https://arxiv.org/html/2410.21357v4"
+  ],
+  "arxiv_id": "2410.21357",
+  "arxiv_first_posted": "2024-10-28",
+  "record_url": "https://yuntiandeng.com/research/papers/edlm/"
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "edlm",
+    "type": "paper-conference",
+    "title": "Energy-Based Diffusion Language Models for Text Generation",
+    "author": [
+      {
+        "given": "Minkai",
+        "family": "Xu"
+      },
+      {
+        "given": "Tomas",
+        "family": "Geffner"
+      },
+      {
+        "given": "Karsten",
+        "family": "Kreis"
+      },
+      {
+        "given": "Weili",
+        "family": "Nie"
+      },
+      {
+        "given": "Yilun",
+        "family": "Xu"
+      },
+      {
+        "given": "Jure",
+        "family": "Leskovec"
+      },
+      {
+        "given": "Stefano",
+        "family": "Ermon"
+      },
+      {
+        "given": "Arash",
+        "family": "Vahdat"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "container-title": "ICLR 2025",
+    "URL": "https://arxiv.org/html/2410.21357v4"
+  }
+]

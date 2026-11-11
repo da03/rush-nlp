@@ -1,0 +1,48 @@
+{
+  "id": "diffuspec2026",
+  "title": "DiffuSpec: Unlocking Diffusion Language Models for Speculative Decoding",
+  "authors": [
+    {
+      "given": "Guanghao",
+      "family": "Li"
+    },
+    {
+      "given": "Zhihui",
+      "family": "Fu"
+    },
+    {
+      "given": "Min",
+      "family": "Fang"
+    },
+    {
+      "given": "Qibin",
+      "family": "Zhao"
+    },
+    {
+      "given": "Ming",
+      "family": "Tang"
+    },
+    {
+      "given": "Chun",
+      "family": "Yuan"
+    },
+    {
+      "given": "Jun",
+      "family": "Wang"
+    }
+  ],
+  "year": 2026,
+  "venue": "Findings of ACL 2026",
+  "paper_url": "https://aclanthology.org/2026.findings-acl.1048/",
+  "pdf_url": "https://aclanthology.org/2026.findings-acl.1048.pdf",
+  "doi": "10.18653/v1/2026.findings-acl.1048",
+  "summary": "Uses diffusion drafting, Causal-consistency Path Search over token lattices, and adaptive draft lengths.",
+  "connection": "Connects candidate-lattice path selection to autoregressive verification of parallel diffusion proposals.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "li2026diffuspec",
+  "source_urls": [
+    "https://aclanthology.org/2026.findings-acl.1048/",
+    "https://aclanthology.org/2026.findings-acl.1048.pdf"
+  ],
+  "record_url": "https://yuntiandeng.com/research/papers/diffuspec2026/"
+}

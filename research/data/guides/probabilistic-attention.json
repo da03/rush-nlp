@@ -1,0 +1,345 @@
+{
+  "id": "probabilistic-attention",
+  "title": "Attention as a Latent Variable: Modeling a Distribution over Attention",
+  "eyebrow": "Probabilistic attention and latent inference",
+  "description": "A guide to Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.",
+  "lead": "Latent Alignment and Variational Attention (NeurIPS 2018), by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. The general idea is to model a distribution over where a network attends and reason over that distribution, rather than pass one deterministic weighted average into the prediction network.",
+  "original_papers": [
+    "latentattention2018"
+  ],
+  "terms": [
+    "attention as a latent variable",
+    "probabilistic attention",
+    "distribution over attention",
+    "latent alignment",
+    "variational attention",
+    "stochastic attention",
+    "Bayesian attention",
+    "marginalizing attention"
+  ],
+  "sections": [
+    {
+      "id": "distribution-versus-weights",
+      "title": "Normalized attention weights and a probabilistic model",
+      "paragraphs": [
+        "An attention vector contains nonnegative weights that sum to one. That numerical property does not specify how uncertainty enters the prediction. A deterministic mechanism constructs one context vector from those weights and applies the downstream network once. A latent-variable mechanism defines alternative attention states, predicts under them, and integrates their contributions.",
+        "Write the attention state as z and the downstream computation as f. In general, f(E[z]) ≠ E[f(z)]. For a simple illustration, let z be 0 or 2 with equal probability and let f(z) = z². Applying f to the mean gives 1; averaging the two outputs gives 2. Neural prediction contains nonlinear operations, so moving the expectation across the network changes the model. This is the distinction between an average representation and an average over predictions."
+      ],
+      "citations": [
+        "latentattention2018",
+        "structuredattention2017"
+      ]
+    },
+    {
+      "id": "latent-alignment",
+      "title": "Latent alignment and variational attention",
+      "paragraphs": [
+        "The 2018 paper makes alignment an explicit variable in the generative model. It studies categorical alignments, which select one source element, and Dirichlet alignments, which distribute attention across a mixture of elements. Amortized variational inference learns a posterior conditioned on observed inputs and outputs. Variance-reduction methods make latent inference practical, with experiments in machine translation and visual question answering.",
+        "Prior attention asks where to attend before the answer is known. Posterior attention asks which alignment explains an observed answer. These are different conditional distributions. The paper’s inference network uses target information during training; this is distinct from supplying future target words to a left-to-right predictor at generation time."
+      ],
+      "citations": [
+        "latentattention2018"
+      ]
+    },
+    {
+      "id": "latent-attention-example",
+      "title": "What a posterior over attention tells you",
+      "paragraphs": [
+        "Imagine an image containing two people and a question asking who is holding a cup. Before seeing the answer, the model assigns attention probability to both people. Once the answer is observed, posterior inference redistributes probability toward alignments that explain it. This example defines an inference question independently of the visualization used to display the weights.",
+        "The distinction also matters when attention is composed with another probabilistic component. Explicit variables expose which quantities are conditioned on, which alternatives are integrated out, and what an approximation replaces. A sampled attention vector, its expectation, and its most probable value answer different questions; naming the distribution makes those choices inspectable."
+      ],
+      "citations": [
+        "latentattention2018"
+      ]
+    },
+    {
+      "id": "related-probabilistic-approaches",
+      "title": "How related attention methods differ",
+      "paragraphs": [
+        "Show, Attend and Tell (ICML 2015) studies deterministic soft attention and sampled hard attention for image captioning. Its stochastic formulation uses a variational lower bound and a sampling-based learning rule. It provides an early reference for probabilistic selection; Latent Alignment and Variational Attention develops learned posterior inference for alignment and tighter variational training.",
+        "Structured Attention Networks (ICLR 2017) defines distributions over structured selections, including subsequences and syntactic trees. Differentiable graphical-model inference supplies expected annotations to the surrounding network. This enriches the structure of attention. Computing an expected annotation remains a separate operation from marginalizing the final nonlinear prediction over every attention structure.",
+        "Variational Attention for Sequence-to-Sequence Models (COLING 2018) models the context vector with Gaussian random variables in a variational encoder-decoder. Its purpose is to prevent deterministic attention from bypassing the model’s latent space. The latent object is the context vector, distinct from the categorical or simplex-valued alignment variable in Latent Alignment and Variational Attention.",
+        "Bayesian Attention Modules (NeurIPS 2020) constructs stochastic attention weights by normalizing Weibull or lognormal variables. Reparameterized training and data-dependent priors make the modules usable across attention architectures. This develops the broad distribution-over-attention perspective with a different distribution family and training construction."
+      ],
+      "citations": [
+        "showattendtell2015",
+        "structuredattention2017",
+        "bahuleyan2018",
+        "bayesianattention2020",
+        "latentattention2018"
+      ]
+    },
+    {
+      "id": "modeling-choices",
+      "title": "Four questions for a probabilistic attention model",
+      "paragraphs": [
+        "Start with the random object: a selected position, a distribution over positions, a context vector, or an entire structured selection. Next specify the prior and the information available to the posterior. Then identify what the prediction integrates: an intermediate representation or the output likelihood. Finally state whether training and prediction enumerate states, sample them, use an expectation, or optimize a variational approximation.",
+        "These choices determine the meaning of the model. They also make comparisons useful: two systems both called “variational attention” need not represent the same latent quantity or solve the same inference problem."
+      ],
+      "table": {
+        "columns": [
+          "Method",
+          "Random or structured object",
+          "Role of inference"
+        ],
+        "rows": [
+          [
+            "Latent Alignment and Variational Attention",
+            "Categorical or Dirichlet alignment",
+            "Learn posterior alignment and approximate marginal likelihood"
+          ],
+          [
+            "Structured Attention Networks",
+            "Subsequence or tree selection",
+            "Compute expected annotations"
+          ],
+          [
+            "Variational Attention for Seq2Seq",
+            "Gaussian context vector",
+            "Preserve a stochastic path through the encoder-decoder"
+          ],
+          [
+            "Bayesian Attention Modules",
+            "Distribution over normalized attention weights",
+            "Reparameterized variational training"
+          ]
+        ]
+      },
+      "citations": [
+        "latentattention2018",
+        "structuredattention2017",
+        "bahuleyan2018",
+        "bayesianattention2020"
+      ]
+    }
+  ],
+  "related_guides": [
+    "structured-decoding",
+    "energy-based-text-generation"
+  ],
+  "demo": "attention",
+  "reading_order": [
+    "latentattention2018",
+    "showattendtell2015",
+    "structuredattention2017",
+    "bahuleyan2018",
+    "bayesianattention2020"
+  ],
+  "url": "https://yuntiandeng.com/research/probabilistic-attention/",
+  "papers": [
+    {
+      "id": "latentattention2018",
+      "title": "Latent Alignment and Variational Attention",
+      "authors": [
+        {
+          "given": "Yuntian",
+          "family": "Deng"
+        },
+        {
+          "given": "Yoon",
+          "family": "Kim"
+        },
+        {
+          "given": "Justin",
+          "family": "Chiu"
+        },
+        {
+          "given": "Demi",
+          "family": "Guo"
+        },
+        {
+          "given": "Alexander M.",
+          "family": "Rush"
+        }
+      ],
+      "year": 2018,
+      "venue": "NeurIPS 2018",
+      "paper_url": "https://arxiv.org/abs/1807.03756",
+      "pdf_url": "https://proceedings.neurips.cc/paper/2018/file/b691334ccf10d4ab144d672f7783c8a3-Paper.pdf",
+      "code_url": "https://github.com/harvardnlp/var-attn/",
+      "summary": "Models alignment as a latent variable and learns approximate posterior inference through variational attention.",
+      "connection": "A general framework for distributions over attention, beyond a deterministic attention vector.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "deng2018latent",
+      "source_urls": [
+        "https://arxiv.org/abs/1807.03756",
+        "https://arxiv.org/html/1807.03756v2"
+      ],
+      "equal_contribution": [
+        "Yuntian Deng",
+        "Yoon Kim"
+      ],
+      "arxiv_id": "1807.03756",
+      "arxiv_first_posted": "2018-07-10",
+      "abstract": "Neural attention has become central to many state-of-the-art models in natural language processing and related domains. Attention networks are an easy-to-train and effective method for softly simulating alignment; however, the approach does not marginalize over latent alignments in a probabilistic sense. This property makes it difficult to compare attention to other alignment approaches, to compose it with probabilistic models, and to perform posterior inference conditioned on observed data. A related latent approach, hard attention, fixes these issues, but is generally harder to train and less accurate. This work considers variational attention networks, alternatives to soft and hard attention for learning latent variable alignment models, with tighter approximation bounds based on amortized variational inference. We further propose methods for reducing the variance of gradients to make these approaches computationally feasible. Experiments show that for machine translation and visual question answering, inefficient exact latent variable models outperform standard neural attention, but these gains go away when using hard attention based training. On the other hand, variational attention retains most of the performance gain but with training speed comparable to neural attention.",
+      "abstract_source": "https://arxiv.org/html/1807.03756v2"
+    },
+    {
+      "id": "showattendtell2015",
+      "title": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention",
+      "authors": [
+        {
+          "given": "Kelvin",
+          "family": "Xu"
+        },
+        {
+          "given": "Jimmy Lei",
+          "family": "Ba"
+        },
+        {
+          "given": "Ryan",
+          "family": "Kiros"
+        },
+        {
+          "given": "Kyunghyun",
+          "family": "Cho"
+        },
+        {
+          "given": "Aaron",
+          "family": "Courville"
+        },
+        {
+          "given": "Ruslan",
+          "family": "Salakhutdinov"
+        },
+        {
+          "given": "Richard S.",
+          "family": "Zemel"
+        },
+        {
+          "given": "Yoshua",
+          "family": "Bengio"
+        }
+      ],
+      "year": 2015,
+      "venue": "ICML 2015",
+      "paper_url": "https://proceedings.mlr.press/v37/xuc15.html",
+      "pdf_url": "https://proceedings.mlr.press/v37/xuc15.pdf",
+      "summary": "Introduces deterministic soft and stochastic hard visual attention for image captioning.",
+      "connection": "An early stochastic-attention reference for the distinction between expected features and sampled selection.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "xu2015show",
+      "source_urls": [
+        "https://proceedings.mlr.press/v37/xuc15.pdf",
+        "https://arxiv.org/abs/1502.03044"
+      ],
+      "arxiv_id": "1502.03044",
+      "arxiv_first_posted": "2015-02-10"
+    },
+    {
+      "id": "structuredattention2017",
+      "title": "Structured Attention Networks",
+      "authors": [
+        {
+          "given": "Yoon",
+          "family": "Kim"
+        },
+        {
+          "given": "Carl",
+          "family": "Denton"
+        },
+        {
+          "given": "Luong",
+          "family": "Hoang"
+        },
+        {
+          "given": "Alexander M.",
+          "family": "Rush"
+        }
+      ],
+      "year": 2017,
+      "venue": "ICLR 2017",
+      "paper_url": "https://arxiv.org/abs/1702.00887",
+      "summary": "Uses differentiable graphical-model inference to attend over subsequences and syntactic trees.",
+      "connection": "Models structured selections and computes expected annotations; full prediction marginalization is a separate operation.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "kim2017structured",
+      "source_urls": [
+        "https://arxiv.org/abs/1702.00887",
+        "https://arxiv.org/html/1702.00887v3"
+      ],
+      "equal_contribution": [
+        "Yoon Kim",
+        "Carl Denton"
+      ],
+      "arxiv_id": "1702.00887",
+      "arxiv_first_posted": "2017-02-03"
+    },
+    {
+      "id": "bahuleyan2018",
+      "title": "Variational Attention for Sequence-to-Sequence Models",
+      "authors": [
+        {
+          "given": "Hareesh",
+          "family": "Bahuleyan"
+        },
+        {
+          "given": "Lili",
+          "family": "Mou"
+        },
+        {
+          "given": "Olga",
+          "family": "Vechtomova"
+        },
+        {
+          "given": "Pascal",
+          "family": "Poupart"
+        }
+      ],
+      "year": 2018,
+      "venue": "COLING 2018",
+      "paper_url": "https://aclanthology.org/C18-1142/",
+      "pdf_url": "https://aclanthology.org/C18-1142.pdf",
+      "summary": "Treats attention context vectors as Gaussian latent variables in a variational encoder-decoder.",
+      "connection": "Clarifies that the term variational attention also names a different random object: the context vector.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "bahuleyan2018variational",
+      "source_urls": [
+        "https://aclanthology.org/C18-1142/",
+        "https://arxiv.org/abs/1712.08207"
+      ],
+      "arxiv_id": "1712.08207",
+      "arxiv_first_posted": "2017-12-21"
+    },
+    {
+      "id": "bayesianattention2020",
+      "title": "Bayesian Attention Modules",
+      "authors": [
+        {
+          "given": "Xinjie",
+          "family": "Fan"
+        },
+        {
+          "given": "Shujian",
+          "family": "Zhang"
+        },
+        {
+          "given": "Bo",
+          "family": "Chen"
+        },
+        {
+          "given": "Mingyuan",
+          "family": "Zhou"
+        }
+      ],
+      "year": 2020,
+      "venue": "NeurIPS 2020",
+      "paper_url": "https://arxiv.org/abs/2010.10604",
+      "pdf_url": "https://proceedings.neurips.cc/paper_files/paper/2020/file/bcff3f632fd16ff099a49c2f0932b47a-Paper.pdf",
+      "summary": "Builds distributions over attention weights from normalized reparameterizable variables and learns them with Bayesian regularization.",
+      "connection": "Extends probabilistic attention to modular stochastic weights with data-dependent priors.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "fan2020bayesian",
+      "source_urls": [
+        "https://arxiv.org/abs/2010.10604",
+        "https://proceedings.neurips.cc/paper_files/paper/2020/file/bcff3f632fd16ff099a49c2f0932b47a-Paper.pdf"
+      ],
+      "equal_contribution": [
+        "Xinjie Fan",
+        "Shujian Zhang"
+      ],
+      "arxiv_id": "2010.10604",
+      "arxiv_first_posted": "2020-10-20"
+    }
+  ]
+}

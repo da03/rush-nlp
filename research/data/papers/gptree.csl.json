@@ -1,0 +1,36 @@
+[
+  {
+    "id": "gptree",
+    "type": "article",
+    "title": "GPTree: Towards Explainable Decision-Making via LLM-powered Decision Trees",
+    "author": [
+      {
+        "given": "Sichao",
+        "family": "Xiong"
+      },
+      {
+        "given": "Yigit",
+        "family": "Ihlamur"
+      },
+      {
+        "given": "Fuat",
+        "family": "Alican"
+      },
+      {
+        "given": "Aaron Ontoyin",
+        "family": "Yin"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/html/2411.08257v1",
+    "genre": "preprint",
+    "publisher": "arXiv"
+  }
+]

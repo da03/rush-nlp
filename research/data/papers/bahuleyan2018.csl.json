@@ -1,0 +1,34 @@
+[
+  {
+    "id": "bahuleyan2018variational",
+    "type": "paper-conference",
+    "title": "Variational Attention for Sequence-to-Sequence Models",
+    "author": [
+      {
+        "given": "Hareesh",
+        "family": "Bahuleyan"
+      },
+      {
+        "given": "Lili",
+        "family": "Mou"
+      },
+      {
+        "given": "Olga",
+        "family": "Vechtomova"
+      },
+      {
+        "given": "Pascal",
+        "family": "Poupart"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "COLING 2018",
+    "URL": "https://aclanthology.org/C18-1142/"
+  }
+]

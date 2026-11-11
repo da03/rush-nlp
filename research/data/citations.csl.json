@@ -1,0 +1,1113 @@
+[
+  {
+    "id": "treeprompting",
+    "type": "paper-conference",
+    "title": "Tree Prompting: Efficient Task Adaptation without Fine-Tuning",
+    "author": [
+      {
+        "given": "John X.",
+        "family": "Morris"
+      },
+      {
+        "given": "Chandan",
+        "family": "Singh"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      },
+      {
+        "given": "Jianfeng",
+        "family": "Gao"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "EMNLP 2023",
+    "URL": "https://arxiv.org/html/2310.14034v1",
+    "DOI": "10.18653/v1/2023.emnlp-main.384"
+  },
+  {
+    "id": "augtree",
+    "type": "article-journal",
+    "title": "Augmenting interpretable models with large language models during training",
+    "author": [
+      {
+        "given": "Chandan",
+        "family": "Singh"
+      },
+      {
+        "given": "Armin",
+        "family": "Askari"
+      },
+      {
+        "given": "Rich",
+        "family": "Caruana"
+      },
+      {
+        "given": "Jianfeng",
+        "family": "Gao"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "Nature Communications",
+    "URL": "https://www.nature.com/articles/s41467-023-43713-1",
+    "volume": "14",
+    "issue": "1",
+    "number": "7913",
+    "DOI": "10.1038/s41467-023-43713-1"
+  },
+  {
+    "id": "gptree",
+    "type": "article",
+    "title": "GPTree: Towards Explainable Decision-Making via LLM-powered Decision Trees",
+    "author": [
+      {
+        "given": "Sichao",
+        "family": "Xiong"
+      },
+      {
+        "given": "Yigit",
+        "family": "Ihlamur"
+      },
+      {
+        "given": "Fuat",
+        "family": "Alican"
+      },
+      {
+        "given": "Aaron Ontoyin",
+        "family": "Yin"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/html/2411.08257v1",
+    "genre": "preprint",
+    "publisher": "arXiv"
+  },
+  {
+    "id": "act",
+    "type": "article",
+    "title": "ACT: Agentic Classification Tree",
+    "author": [
+      {
+        "given": "Vincent",
+        "family": "Grari"
+      },
+      {
+        "given": "Tim",
+        "family": "Arni"
+      },
+      {
+        "given": "Thibault",
+        "family": "Laugel"
+      },
+      {
+        "given": "Sylvain",
+        "family": "Lamprier"
+      },
+      {
+        "given": "James",
+        "family": "Zou"
+      },
+      {
+        "given": "Marcin",
+        "family": "Detyniecki"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/html/2509.26433v4",
+    "genre": "preprint",
+    "publisher": "arXiv"
+  },
+  {
+    "id": "residualebm",
+    "type": "paper-conference",
+    "title": "Residual Energy-Based Models for Text Generation",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Anton",
+        "family": "Bakhtin"
+      },
+      {
+        "given": "Myle",
+        "family": "Ott"
+      },
+      {
+        "given": "Arthur",
+        "family": "Szlam"
+      },
+      {
+        "given": "Marc’Aurelio",
+        "family": "Ranzato"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "ICLR 2020",
+    "URL": "https://arxiv.org/html/2004.11714v1"
+  },
+  {
+    "id": "residualebmjmlr",
+    "type": "article-journal",
+    "title": "Residual Energy-Based Models for Text",
+    "author": [
+      {
+        "given": "Anton",
+        "family": "Bakhtin"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Sam",
+        "family": "Gross"
+      },
+      {
+        "given": "Myle",
+        "family": "Ott"
+      },
+      {
+        "given": "Marc’Aurelio",
+        "family": "Ranzato"
+      },
+      {
+        "given": "Arthur",
+        "family": "Szlam"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Journal of Machine Learning Research",
+    "URL": "https://www.jmlr.org/papers/v22/20-326.html",
+    "volume": "22",
+    "issue": "40",
+    "page": "1–41"
+  },
+  {
+    "id": "edlm",
+    "type": "paper-conference",
+    "title": "Energy-Based Diffusion Language Models for Text Generation",
+    "author": [
+      {
+        "given": "Minkai",
+        "family": "Xu"
+      },
+      {
+        "given": "Tomas",
+        "family": "Geffner"
+      },
+      {
+        "given": "Karsten",
+        "family": "Kreis"
+      },
+      {
+        "given": "Weili",
+        "family": "Nie"
+      },
+      {
+        "given": "Yilun",
+        "family": "Xu"
+      },
+      {
+        "given": "Jure",
+        "family": "Leskovec"
+      },
+      {
+        "given": "Stefano",
+        "family": "Ermon"
+      },
+      {
+        "given": "Arash",
+        "family": "Vahdat"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "container-title": "ICLR 2025",
+    "URL": "https://arxiv.org/html/2410.21357v4"
+  },
+  {
+    "id": "unifiedenergy",
+    "type": "article",
+    "title": "Unified Energy for Invariant and Independent Decoding in Diffusion Language Models",
+    "author": [
+      {
+        "given": "Yuchen",
+        "family": "Yan"
+      },
+      {
+        "given": "Minkai",
+        "family": "Xu"
+      },
+      {
+        "given": "Zaiquan",
+        "family": "Yang"
+      },
+      {
+        "given": "Yatao",
+        "family": "Bian"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/html/2606.09159v1",
+    "genre": "preprint",
+    "publisher": "arXiv"
+  },
+  {
+    "id": "neuraltrfnce",
+    "type": "paper-conference",
+    "title": "Learning Neural Trans-Dimensional Random Field Language Models with Noise-Contrastive Estimation",
+    "author": [
+      {
+        "given": "Bin",
+        "family": "Wang"
+      },
+      {
+        "given": "Zhijian",
+        "family": "Ou"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "ICASSP 2018",
+    "URL": "https://arxiv.org/abs/1710.10739"
+  },
+  {
+    "id": "deng2020cascaded",
+    "type": "paper-conference",
+    "title": "Cascaded Text Generation with Markov Transformers",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "NeurIPS 2020",
+    "URL": "https://arxiv.org/abs/2006.01112"
+  },
+  {
+    "id": "deng-rush-2021-sequence",
+    "type": "paper-conference",
+    "title": "Sequence-to-Lattice Models for Fast Translation",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "Findings of EMNLP 2021",
+    "URL": "https://aclanthology.org/2021.findings-emnlp.318/",
+    "DOI": "10.18653/v1/2021.findings-emnlp.318"
+  },
+  {
+    "id": "sun2019fast",
+    "type": "paper-conference",
+    "title": "Fast Structured Decoding for Sequence Models",
+    "author": [
+      {
+        "given": "Zhiqing",
+        "family": "Sun"
+      },
+      {
+        "given": "Zhuohan",
+        "family": "Li"
+      },
+      {
+        "given": "Haoqing",
+        "family": "Wang"
+      },
+      {
+        "given": "Di",
+        "family": "He"
+      },
+      {
+        "given": "Zi",
+        "family": "Lin"
+      },
+      {
+        "given": "Zhi-Hong",
+        "family": "Deng"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "container-title": "NeurIPS 2019",
+    "URL": "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html"
+  },
+  {
+    "id": "li2026factorization",
+    "type": "paper-conference",
+    "title": "Breaking the Factorization Barrier in Diffusion Language Models",
+    "author": [
+      {
+        "given": "Ian",
+        "family": "Li"
+      },
+      {
+        "given": "Zilei",
+        "family": "Shao"
+      },
+      {
+        "given": "Benjie",
+        "family": "Wang"
+      },
+      {
+        "given": "Rose",
+        "family": "Yu"
+      },
+      {
+        "given": "Guy",
+        "family": "Van den Broeck"
+      },
+      {
+        "given": "Anji",
+        "family": "Liu"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "ICML 2026",
+    "URL": "https://proceedings.mlr.press/v306/li26fd.html"
+  },
+  {
+    "id": "ji2026dadlm",
+    "type": "paper-conference",
+    "title": "DA-DLM: Explicitly Modeling Token Dependencies in Diffusion Language Models",
+    "author": [
+      {
+        "given": "Pengyu",
+        "family": "Ji"
+      },
+      {
+        "given": "Zichen",
+        "family": "Zhang"
+      },
+      {
+        "given": "Xiang",
+        "family": "Hu"
+      },
+      {
+        "given": "Kewei",
+        "family": "Tu"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "EMNLP 2026",
+    "URL": "https://aclanthology.org/2026.emnlp-main.2094/",
+    "DOI": "10.18653/2026.emnlp-main.2094"
+  },
+  {
+    "id": "rusanovsky2026lilicorr",
+    "type": "article",
+    "title": "LiLiCorr: Lightweight Likelihood Correlation of Parallel Drafts for Speculative Decoding",
+    "author": [
+      {
+        "given": "Matan",
+        "family": "Rusanovsky"
+      },
+      {
+        "given": "Yoav",
+        "family": "Miron"
+      },
+      {
+        "given": "Roy",
+        "family": "Uziel"
+      },
+      {
+        "given": "Omer",
+        "family": "Belhasin"
+      },
+      {
+        "given": "Hao",
+        "family": "Guo"
+      },
+      {
+        "given": "Ran",
+        "family": "Zilberstein"
+      },
+      {
+        "given": "Maor",
+        "family": "Ashkenazi"
+      },
+      {
+        "given": "Michael",
+        "family": "Elad"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/abs/2608.20530",
+    "genre": "preprint",
+    "publisher": "arXiv"
+  },
+  {
+    "id": "li2026diffuspec",
+    "type": "paper-conference",
+    "title": "DiffuSpec: Unlocking Diffusion Language Models for Speculative Decoding",
+    "author": [
+      {
+        "given": "Guanghao",
+        "family": "Li"
+      },
+      {
+        "given": "Zhihui",
+        "family": "Fu"
+      },
+      {
+        "given": "Min",
+        "family": "Fang"
+      },
+      {
+        "given": "Qibin",
+        "family": "Zhao"
+      },
+      {
+        "given": "Ming",
+        "family": "Tang"
+      },
+      {
+        "given": "Chun",
+        "family": "Yuan"
+      },
+      {
+        "given": "Jun",
+        "family": "Wang"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "Findings of ACL 2026",
+    "URL": "https://aclanthology.org/2026.findings-acl.1048/",
+    "DOI": "10.18653/v1/2026.findings-acl.1048"
+  },
+  {
+    "id": "deng2018latent",
+    "type": "paper-conference",
+    "title": "Latent Alignment and Variational Attention",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Yoon",
+        "family": "Kim"
+      },
+      {
+        "given": "Justin",
+        "family": "Chiu"
+      },
+      {
+        "given": "Demi",
+        "family": "Guo"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "NeurIPS 2018",
+    "URL": "https://arxiv.org/abs/1807.03756"
+  },
+  {
+    "id": "xu2015show",
+    "type": "paper-conference",
+    "title": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention",
+    "author": [
+      {
+        "given": "Kelvin",
+        "family": "Xu"
+      },
+      {
+        "given": "Jimmy Lei",
+        "family": "Ba"
+      },
+      {
+        "given": "Ryan",
+        "family": "Kiros"
+      },
+      {
+        "given": "Kyunghyun",
+        "family": "Cho"
+      },
+      {
+        "given": "Aaron",
+        "family": "Courville"
+      },
+      {
+        "given": "Ruslan",
+        "family": "Salakhutdinov"
+      },
+      {
+        "given": "Richard S.",
+        "family": "Zemel"
+      },
+      {
+        "given": "Yoshua",
+        "family": "Bengio"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "ICML 2015",
+    "URL": "https://proceedings.mlr.press/v37/xuc15.html"
+  },
+  {
+    "id": "kim2017structured",
+    "type": "paper-conference",
+    "title": "Structured Attention Networks",
+    "author": [
+      {
+        "given": "Yoon",
+        "family": "Kim"
+      },
+      {
+        "given": "Carl",
+        "family": "Denton"
+      },
+      {
+        "given": "Luong",
+        "family": "Hoang"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "container-title": "ICLR 2017",
+    "URL": "https://arxiv.org/abs/1702.00887"
+  },
+  {
+    "id": "bahuleyan2018variational",
+    "type": "paper-conference",
+    "title": "Variational Attention for Sequence-to-Sequence Models",
+    "author": [
+      {
+        "given": "Hareesh",
+        "family": "Bahuleyan"
+      },
+      {
+        "given": "Lili",
+        "family": "Mou"
+      },
+      {
+        "given": "Olga",
+        "family": "Vechtomova"
+      },
+      {
+        "given": "Pascal",
+        "family": "Poupart"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "COLING 2018",
+    "URL": "https://aclanthology.org/C18-1142/"
+  },
+  {
+    "id": "fan2020bayesian",
+    "type": "paper-conference",
+    "title": "Bayesian Attention Modules",
+    "author": [
+      {
+        "given": "Xinjie",
+        "family": "Fan"
+      },
+      {
+        "given": "Shujian",
+        "family": "Zhang"
+      },
+      {
+        "given": "Bo",
+        "family": "Chen"
+      },
+      {
+        "given": "Mingyuan",
+        "family": "Zhou"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "NeurIPS 2020",
+    "URL": "https://arxiv.org/abs/2010.10604"
+  },
+  {
+    "id": "deng-etal-2022-model",
+    "type": "paper-conference",
+    "title": "Model Criticism for Long-Form Text Generation",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Volodymyr",
+        "family": "Kuleshov"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "EMNLP 2022",
+    "URL": "https://aclanthology.org/2022.emnlp-main.815/",
+    "DOI": "10.18653/v1/2022.emnlp-main.815"
+  },
+  {
+    "id": "guan-etal-2021-openmeva",
+    "type": "paper-conference",
+    "title": "OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics",
+    "author": [
+      {
+        "given": "Jian",
+        "family": "Guan"
+      },
+      {
+        "given": "Zhexin",
+        "family": "Zhang"
+      },
+      {
+        "given": "Zhuoer",
+        "family": "Feng"
+      },
+      {
+        "given": "Zitao",
+        "family": "Liu"
+      },
+      {
+        "given": "Wenbiao",
+        "family": "Ding"
+      },
+      {
+        "given": "Xiaoxi",
+        "family": "Mao"
+      },
+      {
+        "given": "Changjie",
+        "family": "Fan"
+      },
+      {
+        "given": "Minlie",
+        "family": "Huang"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2021
+        ]
+      ]
+    },
+    "container-title": "ACL-IJCNLP 2021",
+    "URL": "https://aclanthology.org/2021.acl-long.500/",
+    "DOI": "10.18653/v1/2021.acl-long.500"
+  },
+  {
+    "id": "yang2024goodstory",
+    "type": "article",
+    "title": "What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation",
+    "author": [
+      {
+        "given": "Dingyi",
+        "family": "Yang"
+      },
+      {
+        "given": "Qin",
+        "family": "Jin"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/abs/2408.14622",
+    "genre": "preprint",
+    "publisher": "arXiv",
+    "DOI": "10.48550/arXiv.2408.14622"
+  },
+  {
+    "id": "deng2023markuptoimage",
+    "type": "paper-conference",
+    "title": "Markup-to-Image Diffusion Models with Scheduled Sampling",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Noriyuki",
+        "family": "Kojima"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "ICLR 2023",
+    "URL": "https://arxiv.org/abs/2210.05147",
+    "DOI": "10.48550/arXiv.2210.05147"
+  },
+  {
+    "id": "zhong2023contrastaugmented",
+    "type": "paper-conference",
+    "title": "Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation",
+    "author": [
+      {
+        "given": "Guojin",
+        "family": "Zhong"
+      },
+      {
+        "given": "Jin",
+        "family": "Yuan"
+      },
+      {
+        "given": "Pan",
+        "family": "Wang"
+      },
+      {
+        "given": "Kailun",
+        "family": "Yang"
+      },
+      {
+        "given": "Weili",
+        "family": "Guan"
+      },
+      {
+        "given": "Zhiyong",
+        "family": "Li"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "ACM Multimedia 2023",
+    "URL": "https://arxiv.org/abs/2308.01147"
+  },
+  {
+    "id": "pmlr-v202-ning23a",
+    "type": "paper-conference",
+    "title": "Input Perturbation Reduces Exposure Bias in Diffusion Models",
+    "author": [
+      {
+        "given": "Mang",
+        "family": "Ning"
+      },
+      {
+        "given": "Enver",
+        "family": "Sangineto"
+      },
+      {
+        "given": "Angelo",
+        "family": "Porrello"
+      },
+      {
+        "given": "Simone",
+        "family": "Calderara"
+      },
+      {
+        "given": "Rita",
+        "family": "Cucchiara"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "ICML 2023",
+    "URL": "https://proceedings.mlr.press/v202/ning23a.html"
+  },
+  {
+    "id": "zhang-etal-2025-interactive",
+    "type": "paper-conference",
+    "title": "Interactive Training: Feedback-Driven Neural Network Optimization",
+    "author": [
+      {
+        "given": "Wentao",
+        "family": "Zhang"
+      },
+      {
+        "given": "Yang Young",
+        "family": "Lu"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "container-title": "EMNLP 2025 System Demonstrations",
+    "URL": "https://aclanthology.org/2025.emnlp-demos.65/",
+    "DOI": "10.18653/v1/2025.emnlp-demos.65"
+  },
+  {
+    "id": "zhang2026interactivetraining2",
+    "type": "article",
+    "title": "Interactive Training 2: Auditable Control Plane for Live Model Training",
+    "author": [
+      {
+        "given": "Wentao",
+        "family": "Zhang"
+      },
+      {
+        "given": "Xuanhe",
+        "family": "Pan"
+      },
+      {
+        "given": "Han",
+        "family": "Zhou"
+      },
+      {
+        "given": "Yang",
+        "family": "Lu"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/abs/2607.18314",
+    "genre": "preprint",
+    "publisher": "arXiv",
+    "DOI": "10.48550/arXiv.2607.18314"
+  },
+  {
+    "id": "shabgahi2023livetune",
+    "type": "article",
+    "title": "LiveTune: Dynamic Parameter Tuning for Feedback-Driven Optimization",
+    "author": [
+      {
+        "given": "Soheil Zibakhsh",
+        "family": "Shabgahi"
+      },
+      {
+        "given": "Nojan",
+        "family": "Sheybani"
+      },
+      {
+        "given": "Aiden",
+        "family": "Tabrizi"
+      },
+      {
+        "given": "Farinaz",
+        "family": "Koushanfar"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/abs/2311.17279",
+    "genre": "preprint",
+    "publisher": "arXiv",
+    "DOI": "10.48550/arXiv.2311.17279"
+  },
+  {
+    "id": "rao2026aitrainingmanager",
+    "type": "article",
+    "title": "AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes",
+    "author": [
+      {
+        "given": "Anjali",
+        "family": "Rao"
+      },
+      {
+        "given": "Nikhil Kamalkumar",
+        "family": "Advani"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/abs/2606.29871",
+    "genre": "preprint",
+    "publisher": "arXiv",
+    "DOI": "10.48550/arXiv.2606.29871"
+  }
+]

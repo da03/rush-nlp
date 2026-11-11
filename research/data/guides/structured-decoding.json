@@ -1,0 +1,438 @@
+{
+  "id": "structured-decoding",
+  "title": "Structured Decoding: Higher-Order CRFs, Diffusion Language Models, and Candidate Lattices",
+  "eyebrow": "Joint models for parallel generation",
+  "description": "How Cascaded Text Generation and Sequence-to-Lattice connect higher-order CRFs, joint diffusion decoding, and candidate lattices for speculative generation.",
+  "lead": "Parallel neural computation does not require independent output decisions. Yuntian Deng and Alexander M. Rush developed higher-order CRF cascades for text generation in Cascaded Text Generation with Markov Transformers (NeurIPS 2020), followed by candidate-lattice generation with exact path search in Sequence-to-Lattice Models for Fast Translation (Findings of EMNLP 2021). These contributions connect to two current problems: modeling dependencies among tokens generated together by diffusion language models, and selecting coherent drafts from parallel token candidates.",
+  "original_papers": [
+    "cascaded2020",
+    "lattice2021"
+  ],
+  "terms": [
+    "structured decoding",
+    "CRF for text generation",
+    "higher-order CRF",
+    "Markov Transformer",
+    "joint diffusion decoding",
+    "token dependencies",
+    "candidate lattice",
+    "speculative decoding"
+  ],
+  "sections": [
+    {
+      "id": "parallel-computation-joint-decisions",
+      "title": "Why parallel predictions need a joint decision",
+      "paragraphs": [
+        "Consider two valid continuations: “the dog runs” and “the dogs run.” Independent choices at each position also admit “the dog run.” Better representations help a network predict each marginal, but a product of marginals still cannot express that the noun and verb must agree. An explicit joint model assigns scores to combinations, making compatibility part of the output distribution and decoding procedure.",
+        "This separates two design choices: how expensive neural scores are computed, and how the final sequence is selected. Scores for many alternatives can be computed together, then combined by a small structured inference algorithm. Sun and colleagues’ Fast Structured Decoding for Sequence Models (NeurIPS 2019) combines non-autoregressive emissions with an approximate first-order CRF and dynamic transitions. Higher-order contexts, successive pruning, and candidate-lattice construction provide additional design choices."
+      ],
+      "citations": [
+        "sun2019",
+        "cascaded2020",
+        "lattice2021"
+      ]
+    },
+    {
+      "id": "higher-order-crf-cascades",
+      "title": "Higher-order CRFs: Cascaded Text Generation with Markov Transformers",
+      "paragraphs": [
+        "Cascaded Text Generation introduces a sequence of CRFs with increasing Markov order. It begins with independent token scores, then adds dependencies over progressively longer spans. A single Markov Transformer supplies the potentials at every order through controlled context windows. Max-marginals score a span by the best complete sequence containing it; pruning retains promising spans before the next, more expressive stage.",
+        "The contribution combines higher-order output dependencies, shared neural parameterization, and parallel structured inference. This is distinct from the first-order dynamic CRF in Sun et al. The cascade restricts the search space, so its final result is exact within the retained states rather than an exhaustive optimum over every possible sentence. Its parallel dynamic-programming formulation has logarithmic depth in sequence length for fixed retained width."
+      ],
+      "citations": [
+        "cascaded2020",
+        "sun2019"
+      ]
+    },
+    {
+      "id": "joint-diffusion-modeling",
+      "title": "From higher-order CRFs to joint diffusion decoding",
+      "paragraphs": [
+        "Diffusion introduces a repeated version of the same coordination problem: several uncertain tokens are resolved during one denoising step. The connection to structured generation is a modeling principle: use a tractable joint distribution to couple those decisions while retaining parallel neural computation. A Markov order describes dependence across output positions; a diffusion timestep describes the progression from corrupted to recovered text. They are different axes.",
+        "CoDD, introduced in Breaking the Factorization Barrier in Diffusion Language Models (ICML 2026), combines factorized neural predictions with a probabilistic-circuit structural prior. Its experiments instantiate that prior with a hidden Markov model. The product supports joint inference without materializing a vocabulary-sized table for every possible token combination. This shares the structured-generation goal, while using latent-state structure and diffusion-conditioned inference rather than a cascade of increasing observed-token context orders.",
+        "DA-DLM (EMNLP 2026) makes the relationship to non-autoregressive translation explicit. It adapts directed-acyclic-graph modeling to iterative denoising: node groups correspond to output positions, and previously fixed tokens become anchors connected to unresolved candidates. Its graph changes as denoising proceeds. These are precise connections between earlier structured output modeling and present diffusion methods; they do not identify the original translation models as diffusion models."
+      ],
+      "citations": [
+        "cascaded2020",
+        "codd2026",
+        "dadlm2026"
+      ]
+    },
+    {
+      "id": "candidate-lattices",
+      "title": "Candidate lattices: Sequence-to-Lattice Models for Fast Translation",
+      "paragraphs": [
+        "Sequence-to-Lattice replaces a deep decoder with candidate lookup, neural edge scoring, and path search. A statistical alignment model proposes a small vocabulary at each output position. A deep encoder and a shallow scoring head evaluate transitions between candidates in parallel. Viterbi then selects the highest-scoring complete path.",
+        "The paper specifies a first-order conditional Markov model with locally normalized transition probabilities. Exact Viterbi search refers to the constructed candidate lattice. It neither restores candidates excluded during construction nor makes the model a globally normalized higher-order CRF. The central computational separation is reusable: build alternatives cheaply, score compatible neighbors together, and search the resulting graph."
+      ],
+      "citations": [
+        "lattice2021"
+      ]
+    },
+    {
+      "id": "speculative-candidate-lattices",
+      "title": "From candidate lattices to coherent speculative drafts",
+      "paragraphs": [
+        "Parallel speculative drafting creates a related setting: several candidates are available at each future position, but individually attractive choices need not form a useful draft. LiLiCorr keeps top-K candidates, computes incoming and outgoing vectors in a lightweight network, scores adjacent compatibility with batched operations, and performs a greedy walk. Its training objective targets accepted prefixes and co-adapts the drafter and scoring head.",
+        "The connection to Sequence-to-Lattice is the candidate–edge–path architecture. The differences are substantive: translation candidates come from an alignment-based lookup model; LiLiCorr candidates come from a parallel drafter. Sequence-to-Lattice uses exact Viterbi for a complete path objective; LiLiCorr uses local normalization and greedy selection aligned with prefix acceptance.",
+        "DiffuSpec uses a diffusion model as a parallel drafter and introduces Causal-consistency Path Search over its token lattice, together with draft-length adaptation from acceptance feedback. Here the graph mediates between bidirectional draft proposals and an autoregressive verifier. A lattice describes the candidate organization; the scoring rule and verification procedure determine what selecting a path accomplishes."
+      ],
+      "citations": [
+        "lattice2021",
+        "lilicorr2026",
+        "diffuspec2026"
+      ]
+    },
+    {
+      "id": "choose-objective",
+      "title": "Choose the inference objective before choosing the graph",
+      "paragraphs": [
+        "Three operations over the same graph answer different questions. Maximization finds the best complete path under a score. Marginalization sums over alternatives to measure probability or train a latent model. Sampling draws a sequence according to a distribution. Replacing one operation with another changes the algorithm even when the nodes and edges are identical.",
+        "A small numerical example makes the distinction concrete. Suppose the first decision offers A with probability 0.6 and B with probability 0.4. The strongest continuation after A has conditional probability 0.5; after B it has probability 0.9. Greedy selection begins with A. Whole-path maximization chooses B because 0.4 × 0.9 exceeds 0.6 × 0.5. In speculative decoding, the target verifier introduces another objective: the useful quantity is the accepted prefix, together with the cost of producing it.",
+        "To compare implementations, identify the candidate set, the edge dependence, the normalization, and the inference operation. Then measure the work that dominates runtime: neural passes, candidate scoring, dynamic programming, and verification. A graph alone establishes neither an exact decoder nor a speed advantage."
+      ],
+      "table": {
+        "columns": [
+          "Design",
+          "Dependence or score",
+          "Final operation"
+        ],
+        "rows": [
+          [
+            "Cascaded generation",
+            "Increasing Markov order; pruned spans",
+            "Structured maximization within retained states"
+          ],
+          [
+            "Sequence-to-Lattice",
+            "First-order conditional edge probabilities",
+            "Exact Viterbi on candidate lattice"
+          ],
+          [
+            "CoDD / DA-DLM",
+            "Joint structure inside denoising",
+            "Diffusion-conditioned inference"
+          ],
+          [
+            "LiLiCorr / DiffuSpec",
+            "Compatibility or causal draft paths",
+            "Draft selection followed by verification"
+          ]
+        ]
+      },
+      "citations": [
+        "cascaded2020",
+        "lattice2021",
+        "codd2026",
+        "dadlm2026",
+        "lilicorr2026",
+        "diffuspec2026"
+      ]
+    }
+  ],
+  "related_guides": [
+    "energy-based-text-generation",
+    "probabilistic-attention",
+    "llm-decision-trees"
+  ],
+  "demo": "lattice",
+  "reading_order": [
+    "cascaded2020",
+    "lattice2021",
+    "sun2019",
+    "codd2026",
+    "dadlm2026",
+    "lilicorr2026",
+    "diffuspec2026"
+  ],
+  "url": "https://yuntiandeng.com/research/structured-decoding/",
+  "papers": [
+    {
+      "id": "cascaded2020",
+      "title": "Cascaded Text Generation with Markov Transformers",
+      "authors": [
+        {
+          "given": "Yuntian",
+          "family": "Deng"
+        },
+        {
+          "given": "Alexander M.",
+          "family": "Rush"
+        }
+      ],
+      "year": 2020,
+      "venue": "NeurIPS 2020",
+      "paper_url": "https://arxiv.org/abs/2006.01112",
+      "pdf_url": "https://papers.nips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf",
+      "code_url": "https://github.com/harvardnlp/cascaded-generation",
+      "summary": "Higher-order CRF cascades for parallel text generation, parameterized by one Markov Transformer.",
+      "connection": "Increasing output dependence with tractable structured inference connects to joint modeling inside diffusion decoding.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "deng2020cascaded",
+      "source_urls": [
+        "https://arxiv.org/abs/2006.01112",
+        "https://arxiv.org/html/2006.01112v2"
+      ],
+      "arxiv_id": "2006.01112",
+      "arxiv_first_posted": "2020-06-01",
+      "abstract": "The two dominant approaches to neural text generation are fully autoregressive models, using serial beam search decoding, and non-autoregressive models, using parallel decoding with no output dependencies. This work proposes an autoregressive model with sub-linear parallel time generation. Noting that conditional random fields with bounded context can be decoded in parallel, we propose an efficient cascaded decoding approach for generating high-quality output. To parameterize this cascade, we introduce a Markov transformer, a variant of the popular fully autoregressive model that allows us to simultaneously decode with specific autoregressive context cutoffs. This approach requires only a small modification from standard autoregressive training, while showing competitive accuracy/speed tradeoff compared to existing methods on five machine translation datasets.",
+      "abstract_source": "https://arxiv.org/html/2006.01112v2"
+    },
+    {
+      "id": "lattice2021",
+      "title": "Sequence-to-Lattice Models for Fast Translation",
+      "authors": [
+        {
+          "given": "Yuntian",
+          "family": "Deng"
+        },
+        {
+          "given": "Alexander M.",
+          "family": "Rush"
+        }
+      ],
+      "year": 2021,
+      "venue": "Findings of EMNLP 2021",
+      "paper_url": "https://aclanthology.org/2021.findings-emnlp.318/",
+      "pdf_url": "https://aclanthology.org/2021.findings-emnlp.318.pdf",
+      "code_url": "https://github.com/harvardnlp/cascaded-generation",
+      "doi": "10.18653/v1/2021.findings-emnlp.318",
+      "summary": "Candidate lookup, parallel conditional edge scoring, and exact Viterbi decoding replace a deep translation decoder.",
+      "connection": "Its candidate–edge–path architecture connects to coherent parallel drafting; its objective and inference differ from speculative prefix selection.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "deng-rush-2021-sequence",
+      "source_urls": [
+        "https://aclanthology.org/2021.findings-emnlp.318/",
+        "https://aclanthology.org/2021.findings-emnlp.318.pdf"
+      ],
+      "abstract": "Non-autoregressive machine translation (NAT) approaches enable fast generation by utilizing parallelizable generative processes. The remaining bottleneck in these models is their decoder layers; unfortunately unlike in autoregressive models (Kasai et al., 2020), removing decoder layers from NAT models significantly degrades accuracy. This work proposes a sequence-to-lattice model that replaces the decoder with a search lattice. Our approach first constructs a candidate lattice using efficient lookup operations, generates lattice scores from a deep encoder, and finally finds the best path using dynamic programming. Experiments on three machine translation datasets show that our method is faster than past non-autoregressive generation approaches, and more accurate than naively reducing the number of decoder layers.",
+      "abstract_source": "https://aclanthology.org/2021.findings-emnlp.318/"
+    },
+    {
+      "id": "sun2019",
+      "title": "Fast Structured Decoding for Sequence Models",
+      "authors": [
+        {
+          "given": "Zhiqing",
+          "family": "Sun"
+        },
+        {
+          "given": "Zhuohan",
+          "family": "Li"
+        },
+        {
+          "given": "Haoqing",
+          "family": "Wang"
+        },
+        {
+          "given": "Di",
+          "family": "He"
+        },
+        {
+          "given": "Zi",
+          "family": "Lin"
+        },
+        {
+          "given": "Zhi-Hong",
+          "family": "Deng"
+        }
+      ],
+      "year": 2019,
+      "venue": "NeurIPS 2019",
+      "paper_url": "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html",
+      "pdf_url": "https://proceedings.neurips.cc/paper_files/paper/2019/file/74563ba21a90da13dacf2a73e3ddefa7-Paper.pdf",
+      "summary": "Adds approximate first-order CRF inference and dynamic transitions to non-autoregressive sequence models.",
+      "connection": "A first-order structured-decoding reference; Cascaded Text Generation develops higher-order cascades and shared Markov Transformer potentials.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "sun2019fast",
+      "source_urls": [
+        "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html",
+        "https://arxiv.org/abs/1910.11555"
+      ],
+      "arxiv_id": "1910.11555",
+      "arxiv_first_posted": "2019-10-25"
+    },
+    {
+      "id": "codd2026",
+      "title": "Breaking the Factorization Barrier in Diffusion Language Models",
+      "authors": [
+        {
+          "given": "Ian",
+          "family": "Li"
+        },
+        {
+          "given": "Zilei",
+          "family": "Shao"
+        },
+        {
+          "given": "Benjie",
+          "family": "Wang"
+        },
+        {
+          "given": "Rose",
+          "family": "Yu"
+        },
+        {
+          "given": "Guy",
+          "family": "Van den Broeck"
+        },
+        {
+          "given": "Anji",
+          "family": "Liu"
+        }
+      ],
+      "year": 2026,
+      "venue": "ICML 2026",
+      "paper_url": "https://proceedings.mlr.press/v306/li26fd.html",
+      "summary": "CoDD composes factorized diffusion predictions with a tractable probabilistic-circuit prior to model joint token dependencies.",
+      "connection": "Shares structured generation’s separation of parallel neural scoring from joint probabilistic inference.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "li2026factorization",
+      "source_urls": [
+        "https://proceedings.mlr.press/v306/li26fd.html",
+        "https://arxiv.org/abs/2603.00045",
+        "https://arxiv.org/html/2603.00045v3"
+      ],
+      "arxiv_id": "2603.00045",
+      "arxiv_first_posted": "2026-02-09"
+    },
+    {
+      "id": "dadlm2026",
+      "title": "DA-DLM: Explicitly Modeling Token Dependencies in Diffusion Language Models",
+      "authors": [
+        {
+          "given": "Pengyu",
+          "family": "Ji"
+        },
+        {
+          "given": "Zichen",
+          "family": "Zhang"
+        },
+        {
+          "given": "Xiang",
+          "family": "Hu"
+        },
+        {
+          "given": "Kewei",
+          "family": "Tu"
+        }
+      ],
+      "year": 2026,
+      "venue": "EMNLP 2026",
+      "paper_url": "https://aclanthology.org/2026.emnlp-main.2094/",
+      "pdf_url": "https://aclanthology.org/2026.emnlp-main.2094.pdf",
+      "doi": "10.18653/2026.emnlp-main.2094",
+      "summary": "Adapts directed-acyclic dependency modeling to iterative diffusion using position-oriented candidate groups and fixed-token anchors.",
+      "connection": "A direct transfer of structured output modeling from non-autoregressive translation to diffusion denoising.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "ji2026dadlm",
+      "source_urls": [
+        "https://aclanthology.org/2026.emnlp-main.2094/",
+        "https://aclanthology.org/2026.emnlp-main.2094.pdf",
+        "https://arxiv.org/abs/2609.15070"
+      ],
+      "arxiv_id": "2609.15070",
+      "arxiv_first_posted": "2026-09-14"
+    },
+    {
+      "id": "lilicorr2026",
+      "title": "LiLiCorr: Lightweight Likelihood Correlation of Parallel Drafts for Speculative Decoding",
+      "authors": [
+        {
+          "given": "Matan",
+          "family": "Rusanovsky"
+        },
+        {
+          "given": "Yoav",
+          "family": "Miron"
+        },
+        {
+          "given": "Roy",
+          "family": "Uziel"
+        },
+        {
+          "given": "Omer",
+          "family": "Belhasin"
+        },
+        {
+          "given": "Hao",
+          "family": "Guo"
+        },
+        {
+          "given": "Ran",
+          "family": "Zilberstein"
+        },
+        {
+          "given": "Maor",
+          "family": "Ashkenazi"
+        },
+        {
+          "given": "Michael",
+          "family": "Elad"
+        }
+      ],
+      "year": 2026,
+      "venue": "arXiv 2026",
+      "paper_url": "https://arxiv.org/abs/2608.20530",
+      "summary": "Scores adjacent compatibility among top-K parallel draft candidates and selects a draft through a cheap greedy walk.",
+      "connection": "Uses the candidate–edge–path pattern with local training and inference tailored to speculative prefix acceptance.",
+      "bibtex_type": "article",
+      "citation_key": "rusanovsky2026lilicorr",
+      "source_urls": [
+        "https://arxiv.org/abs/2608.20530",
+        "https://arxiv.org/html/2608.20530v2"
+      ],
+      "arxiv_id": "2608.20530",
+      "arxiv_first_posted": "2026-08-20",
+      "publication_type": "preprint",
+      "container_title": "arXiv"
+    },
+    {
+      "id": "diffuspec2026",
+      "title": "DiffuSpec: Unlocking Diffusion Language Models for Speculative Decoding",
+      "authors": [
+        {
+          "given": "Guanghao",
+          "family": "Li"
+        },
+        {
+          "given": "Zhihui",
+          "family": "Fu"
+        },
+        {
+          "given": "Min",
+          "family": "Fang"
+        },
+        {
+          "given": "Qibin",
+          "family": "Zhao"
+        },
+        {
+          "given": "Ming",
+          "family": "Tang"
+        },
+        {
+          "given": "Chun",
+          "family": "Yuan"
+        },
+        {
+          "given": "Jun",
+          "family": "Wang"
+        }
+      ],
+      "year": 2026,
+      "venue": "Findings of ACL 2026",
+      "paper_url": "https://aclanthology.org/2026.findings-acl.1048/",
+      "pdf_url": "https://aclanthology.org/2026.findings-acl.1048.pdf",
+      "doi": "10.18653/v1/2026.findings-acl.1048",
+      "summary": "Uses diffusion drafting, Causal-consistency Path Search over token lattices, and adaptive draft lengths.",
+      "connection": "Connects candidate-lattice path selection to autoregressive verification of parallel diffusion proposals.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "li2026diffuspec",
+      "source_urls": [
+        "https://aclanthology.org/2026.findings-acl.1048/",
+        "https://aclanthology.org/2026.findings-acl.1048.pdf"
+      ]
+    }
+  ]
+}

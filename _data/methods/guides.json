@@ -1,0 +1,792 @@
+[
+  {
+    "id": "llm-decision-trees",
+    "title": "LLM decision trees: from Tree Prompting to agentic classification",
+    "eyebrow": "Learned programs and prompting",
+    "description": "How Tree Prompting learns decision trees of prompted language-model calls, and how it relates to Aug-Tree, GPTree and Agentic Classification Tree.",
+    "lead": "Tree Prompting (EMNLP 2023) learns a decision tree in which a prompted language model makes each branching decision. Its learned prompts and control flow form a reusable program for a classification task. This mechanism connects directly to today’s LLM decision trees, natural-language question trees and agentic classification.",
+    "original_papers": [
+      "tree-prompting"
+    ],
+    "terms": [
+      "LLM decision trees",
+      "prompt-based decision trees",
+      "natural-language decision trees",
+      "agentic classification",
+      "learned prompt programs",
+      "dynamic prompting"
+    ],
+    "demo": "tree",
+    "related_guides": [
+      "probabilistic-attention"
+    ],
+    "reading_order": [
+      "tree-prompting",
+      "aug-tree",
+      "gptree",
+      "act"
+    ],
+    "sections": [
+      {
+        "id": "original-method",
+        "title": "What Tree Prompting introduced",
+        "paragraphs": [
+          "John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao and Yuntian Deng published Tree Prompting at EMNLP 2023; Morris and Singh contributed equally. The preprint was released on 21 October 2023. Each internal node evaluates a prompt with a frozen LM; its output selects a branch, and a leaf supplies the prediction.",
+          "The tree is learned from labeled examples. Candidate prompts include sampled demonstrations, instructions and dynamically generated prompts. In the dynamic version, iPrompt generates candidates for the examples reaching a node, then split quality selects the prompt. Both the node questions and the tree’s branching structure are learned."
+        ],
+        "citations": [
+          "tree-prompting"
+        ]
+      },
+      {
+        "id": "program-view",
+        "title": "Reading a prompt tree as a program",
+        "paragraphs": [
+          "Consider an illustrative support classifier. A first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. These example questions illustrate the control flow; they are not a tree reported in the paper.",
+          "The program consists of conditions, branches and return values. A conventional condition tests a numerical threshold or an exact string. A prompt-based condition asks the LM to interpret the input under an instruction. The instruction defines the question; the LM supplies the decision for this particular input.",
+          "A useful inspection separates three failures. The node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream."
+        ]
+      },
+      {
+        "id": "learning-and-cost",
+        "title": "What is learned, and what inference costs",
+        "paragraphs": [
+          "Adaptation lives in the selected prompts and tree structure, without updating LM weights. Under one-call-per-node features, a path of depth D takes D LM calls, rather than evaluating every node. The code provides a scikit-learn-style classifier interface.",
+          "Keep fitting cost separate from prediction cost. Fitting searches candidate questions and measures their behavior on labeled inputs; serving evaluates the retained path. A large search budget therefore does not imply the same expense for every new prediction.",
+          "For an implementation, specify the label set, output parser, stopping rule and behavior on an invalid model answer. Measure accuracy together with average path length and token usage. Two trees with equal depth still differ in cost when their prompts include different numbers of demonstrations. Save the fitted prompts and tree with the model version: changing the LM changes the meaning of its executable conditions."
+        ],
+        "citations": [
+          "tree-prompting"
+        ]
+      },
+      {
+        "id": "related-methods",
+        "title": "Compare where the language model enters",
+        "paragraphs": [
+          "Aug-Tree expands text features using an LLM during fitting, then deploys an interpretable tree without LM calls. It is a useful alternative when prediction must run with ordinary feature checks. GPTree builds LLM-powered trees and supports expert feedback on decision paths. ACT learns binary natural-language questions with impurity-based selection and TextGrad refinement.",
+          "These distinctions identify separate design choices: generating features, answering semantic questions, searching for better questions, and revising the resulting program. A paper that uses the word “tree” does not by that name specify which of these operations it performs."
+        ],
+        "table": {
+          "columns": [
+            "Method",
+            "Node or split",
+            "Role of the LM"
+          ],
+          "rows": [
+            [
+              "Tree Prompting · 2023",
+              "Learned prompt evaluated on the input",
+              "Executes branching decisions; dynamic variant also generates prompts"
+            ],
+            [
+              "Aug-Tree · 2023; preprint 2022",
+              "Disjunction of expanded text features",
+              "Constructs features during fitting"
+            ],
+            [
+              "GPTree · 2024",
+              "LLM-assisted decision rules and split types",
+              "Builds decisions with expert-feedback refinement"
+            ],
+            [
+              "ACT · 2025",
+              "Learned natural-language binary question",
+              "Proposes, evaluates and refines questions"
+            ]
+          ]
+        },
+        "citations": [
+          "tree-prompting",
+          "aug-tree",
+          "gptree",
+          "act"
+        ]
+      },
+      {
+        "id": "when-to-use",
+        "title": "When a learned question tree is useful",
+        "paragraphs": [
+          "Use this design when the task has a repeatable decision structure and labeled examples expose which distinctions matter. Intent routing, document classification and categorization all provide a natural setting for asking successive semantic questions. The tree stores task-specific structure outside the model weights.",
+          "Examine the complete system rather than the diagram alone. A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.",
+          "The accompanying illustration lets you follow a fixed tree and change branch choices. To build a learned classifier, start with the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples. Treat the illustration as a mechanism explanation, separate from an empirical accuracy result."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "energy-based-text-generation",
+    "title": "Energy-based text generation: residual models, resampling and diffusion",
+    "eyebrow": "Global sequence models",
+    "description": "Residual Energy-Based Models for Text Generation connects sequence-level energy, noise-contrastive estimation and importance resampling to energy-based diffusion language models.",
+    "lead": "Residual Energy-Based Models for Text Generation (ICLR 2020) turns a pretrained language model and a whole-sequence energy into a globally normalized generator. Energy-Based Diffusion Language Models (ICLR 2025) explicitly connects to this work and applies residual energy correction inside diffusion denoising. The shared mechanism is a base distribution multiplied by a learned preference over complete candidate sequences.",
+    "original_papers": [
+      "residual-ebm",
+      "residual-ebm-jmlr"
+    ],
+    "terms": [
+      "energy-based text generation",
+      "globally normalized language models",
+      "sample and rerank",
+      "importance resampling",
+      "energy-based diffusion language models",
+      "sequence-level energy",
+      "dependency-aware parallel decoding"
+    ],
+    "demo": "energy",
+    "related_guides": [
+      "structured-decoding",
+      "probabilistic-attention"
+    ],
+    "reading_order": [
+      "residual-ebm",
+      "residual-ebm-jmlr",
+      "edlm",
+      "unified-energy",
+      "neural-trf-nce"
+    ],
+    "sections": [
+      {
+        "id": "original-method",
+        "title": "The residual text-generation model",
+        "paragraphs": [
+          "Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam and Marc’Aurelio Ranzato introduced the ICLR 2020 text-generation framework. Its arXiv version is dated 22 April 2020. A fixed autoregressive LM supplies candidate sequences; a bidirectional energy function scores them. The paper develops importance-weighted conditional generation and lower and upper log-probability bounds for perplexity evaluation.",
+          "The distribution is <code>p(y | x) = q(y | x) exp(−E(x,y)) / Z(x)</code>. Here x is the context, y a complete continuation, q the base model, E the residual energy, and Z the normalizer over continuations. Lower energy increases probability relative to q. Noise-contrastive estimation trains the energy to distinguish real text from base-model samples."
+        ],
+        "citations": [
+          "residual-ebm"
+        ]
+      },
+      {
+        "id": "meaning-of-residual",
+        "title": "Why a discriminator can change a generator",
+        "paragraphs": [
+          "The JMLR 2021 article, Residual Energy-Based Models for Text, develops the connection between distinguishing generated text and improving its distribution. Anton Bakhtin and Yuntian Deng contributed equally; Sam Gross, Myle Ott, Marc’Aurelio Ranzato and Arthur Szlam complete the author list. A discriminator supplies information about where a generator overproduces or underproduces text. A residual model turns that information into a probability correction.",
+          "Read the product as two separate jobs. The base model provides fluent proposals and their relative frequency. The energy changes their relative desirability after viewing the sequence. An energy of zero everywhere leaves the base distribution unchanged. Adding the same constant to every energy also leaves the normalized distribution unchanged, because the constant cancels between numerator and denominator.",
+          "This gives a practical debugging check: changing a shared energy offset must not change candidate-selection probabilities. Changing a single candidate’s energy must change its probability in the expected direction. Those are algebraic properties, independent of which neural network computes the scores."
+        ],
+        "citations": [
+          "residual-ebm-jmlr"
+        ]
+      },
+      {
+        "id": "sample-score-resample",
+        "title": "Sample, score, then resample",
+        "paragraphs": [
+          "Draw candidates from q, score each with E, and select with normalized weights proportional to <code>exp(−E)</code>. This is importance resampling. Taking the highest-scoring candidate instead is reranking: it changes the selection rule. Both use a proposal-and-scoring pipeline, but define different output distributions.",
+          "For a worked example, assign three sampled candidates energies 0, log(2), and log(4). Their weights are 1, 1/2, and 1/4, giving selection probabilities 4/7, 2/7, and 1/7. Maximum-score selection always chooses the first candidate. Resampling preserves a distribution across the pool.",
+          "The base probability is already represented by drawing the pool from q. Multiplying each pool weight by q again changes the intended importance calculation. Likewise, a finite-pool normalizer is not an exact sum over all possible text. Increasing the number of proposals changes the approximation and the compute budget; changing the energy changes the target distribution."
+        ],
+        "citations": [
+          "residual-ebm",
+          "residual-ebm-jmlr"
+        ]
+      },
+      {
+        "id": "diffusion-connection",
+        "title": "The direct connection to diffusion language models",
+        "paragraphs": [
+          "Energy-Based Diffusion Language Models (EDLM), by Minkai Xu and colleagues, was released on 28 October 2024 and published at ICLR 2025. It multiplies a diffusion denoiser’s distribution by a sequence-level residual energy conditioned on the noisy sequence and timestep. This corrects dependencies missed by factorized token predictions within a denoising step.",
+          "EDLM uses either an autoregressive-model-derived energy or an energy trained by NCE, then generates through parallel importance sampling. It cites Deng et al. (2020) in its related work and explicitly uses that work in partition-function estimation. The relationship is mathematical and algorithmic: residual correction, contrastive training, resampling and likelihood estimation.",
+          "The 2020 model corrects an autoregressive proposal for text generation. EDLM corrects a denoising distribution inside an iterative diffusion process. The location of the correction changes; the base-times-energy construction connects them."
+        ],
+        "citations": [
+          "residual-ebm",
+          "edlm"
+        ]
+      },
+      {
+        "id": "method-comparison",
+        "title": "Compare the base, energy and inference",
+        "table": {
+          "columns": [
+            "Method",
+            "Base and correction",
+            "Inference or evaluation focus"
+          ],
+          "rows": [
+            [
+              "Neural TRF with NCE · 2018",
+              "Reference LM with exponential tilting",
+              "Speech-recognition rescoring"
+            ],
+            [
+              "Residual EBM · 2020",
+              "Autoregressive LM × sequence energy",
+              "Conditional generation by importance resampling; likelihood bounds"
+            ],
+            [
+              "EDLM · 2025",
+              "Diffusion denoiser × conditional sequence energy",
+              "Parallel proposals and resampling within denoising"
+            ],
+            [
+              "Unified Energy · 2026",
+              "Energy corrections for dependency and invariance",
+              "Improved diffusion decoding"
+            ]
+          ]
+        },
+        "paragraphs": [
+          "Wang and Ou’s neural TRF paper supplies an earlier residual formulation and NCE approach, credited explicitly in the 2020 paper. The 2020 contribution develops conditional text generation and likelihood evaluation around the residual model. Unified Energy (2026) extends the diffusion discussion by analyzing dependency and invariance errors and combining their energy corrections."
+        ],
+        "citations": [
+          "neural-trf-nce",
+          "residual-ebm",
+          "edlm",
+          "unified-energy"
+        ]
+      },
+      {
+        "id": "reading-the-demo",
+        "title": "Use the energy example to inspect the mechanism",
+        "paragraphs": [
+          "Change the energy strength β over the three-outcome distribution in the example. At β = 0, the probabilities are the base distribution. Increasing β shifts mass toward lower-energy outcomes, while the base probabilities still affect the result. The example computes the exact normalized distribution over three possible sequences; it does not draw a candidate pool or call a language model.",
+          "For importance resampling from candidates already drawn from the base model, the pool weights are exp(−E(x)). The base-model factor is already accounted for by that sampling step. This distinction connects the normalized model to its practical sampling procedure."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "structured-decoding",
+    "title": "Structured Decoding: Higher-Order CRFs, Diffusion Language Models, and Candidate Lattices",
+    "eyebrow": "Joint models for parallel generation",
+    "description": "How Cascaded Text Generation and Sequence-to-Lattice connect higher-order CRFs, joint diffusion decoding, and candidate lattices for speculative generation.",
+    "lead": "Parallel neural computation does not require independent output decisions. Yuntian Deng and Alexander M. Rush developed higher-order CRF cascades for text generation in Cascaded Text Generation with Markov Transformers (NeurIPS 2020), followed by candidate-lattice generation with exact path search in Sequence-to-Lattice Models for Fast Translation (Findings of EMNLP 2021). These contributions connect to two current problems: modeling dependencies among tokens generated together by diffusion language models, and selecting coherent drafts from parallel token candidates.",
+    "original_papers": [
+      "cascaded2020",
+      "lattice2021"
+    ],
+    "terms": [
+      "structured decoding",
+      "CRF for text generation",
+      "higher-order CRF",
+      "Markov Transformer",
+      "joint diffusion decoding",
+      "token dependencies",
+      "candidate lattice",
+      "speculative decoding"
+    ],
+    "sections": [
+      {
+        "id": "parallel-computation-joint-decisions",
+        "title": "Why parallel predictions need a joint decision",
+        "paragraphs": [
+          "Consider two valid continuations: “the dog runs” and “the dogs run.” Independent choices at each position also admit “the dog run.” Better representations help a network predict each marginal, but a product of marginals still cannot express that the noun and verb must agree. An explicit joint model assigns scores to combinations, making compatibility part of the output distribution and decoding procedure.",
+          "This separates two design choices: how expensive neural scores are computed, and how the final sequence is selected. Scores for many alternatives can be computed together, then combined by a small structured inference algorithm. Sun and colleagues’ Fast Structured Decoding for Sequence Models (NeurIPS 2019) combines non-autoregressive emissions with an approximate first-order CRF and dynamic transitions. Higher-order contexts, successive pruning, and candidate-lattice construction provide additional design choices."
+        ],
+        "citations": [
+          "sun2019",
+          "cascaded2020",
+          "lattice2021"
+        ]
+      },
+      {
+        "id": "higher-order-crf-cascades",
+        "title": "Higher-order CRFs: Cascaded Text Generation with Markov Transformers",
+        "paragraphs": [
+          "Cascaded Text Generation introduces a sequence of CRFs with increasing Markov order. It begins with independent token scores, then adds dependencies over progressively longer spans. A single Markov Transformer supplies the potentials at every order through controlled context windows. Max-marginals score a span by the best complete sequence containing it; pruning retains promising spans before the next, more expressive stage.",
+          "The contribution combines higher-order output dependencies, shared neural parameterization, and parallel structured inference. This is distinct from the first-order dynamic CRF in Sun et al. The cascade restricts the search space, so its final result is exact within the retained states rather than an exhaustive optimum over every possible sentence. Its parallel dynamic-programming formulation has logarithmic depth in sequence length for fixed retained width."
+        ],
+        "citations": [
+          "cascaded2020",
+          "sun2019"
+        ]
+      },
+      {
+        "id": "joint-diffusion-modeling",
+        "title": "From higher-order CRFs to joint diffusion decoding",
+        "paragraphs": [
+          "Diffusion introduces a repeated version of the same coordination problem: several uncertain tokens are resolved during one denoising step. The connection to structured generation is a modeling principle: use a tractable joint distribution to couple those decisions while retaining parallel neural computation. A Markov order describes dependence across output positions; a diffusion timestep describes the progression from corrupted to recovered text. They are different axes.",
+          "CoDD, introduced in Breaking the Factorization Barrier in Diffusion Language Models (ICML 2026), combines factorized neural predictions with a probabilistic-circuit structural prior. Its experiments instantiate that prior with a hidden Markov model. The product supports joint inference without materializing a vocabulary-sized table for every possible token combination. This shares the structured-generation goal, while using latent-state structure and diffusion-conditioned inference rather than a cascade of increasing observed-token context orders.",
+          "DA-DLM (EMNLP 2026) makes the relationship to non-autoregressive translation explicit. It adapts directed-acyclic-graph modeling to iterative denoising: node groups correspond to output positions, and previously fixed tokens become anchors connected to unresolved candidates. Its graph changes as denoising proceeds. These are precise connections between earlier structured output modeling and present diffusion methods; they do not identify the original translation models as diffusion models."
+        ],
+        "citations": [
+          "cascaded2020",
+          "codd2026",
+          "dadlm2026"
+        ]
+      },
+      {
+        "id": "candidate-lattices",
+        "title": "Candidate lattices: Sequence-to-Lattice Models for Fast Translation",
+        "paragraphs": [
+          "Sequence-to-Lattice replaces a deep decoder with candidate lookup, neural edge scoring, and path search. A statistical alignment model proposes a small vocabulary at each output position. A deep encoder and a shallow scoring head evaluate transitions between candidates in parallel. Viterbi then selects the highest-scoring complete path.",
+          "The paper specifies a first-order conditional Markov model with locally normalized transition probabilities. Exact Viterbi search refers to the constructed candidate lattice. It neither restores candidates excluded during construction nor makes the model a globally normalized higher-order CRF. The central computational separation is reusable: build alternatives cheaply, score compatible neighbors together, and search the resulting graph."
+        ],
+        "citations": [
+          "lattice2021"
+        ]
+      },
+      {
+        "id": "speculative-candidate-lattices",
+        "title": "From candidate lattices to coherent speculative drafts",
+        "paragraphs": [
+          "Parallel speculative drafting creates a related setting: several candidates are available at each future position, but individually attractive choices need not form a useful draft. LiLiCorr keeps top-K candidates, computes incoming and outgoing vectors in a lightweight network, scores adjacent compatibility with batched operations, and performs a greedy walk. Its training objective targets accepted prefixes and co-adapts the drafter and scoring head.",
+          "The connection to Sequence-to-Lattice is the candidate–edge–path architecture. The differences are substantive: translation candidates come from an alignment-based lookup model; LiLiCorr candidates come from a parallel drafter. Sequence-to-Lattice uses exact Viterbi for a complete path objective; LiLiCorr uses local normalization and greedy selection aligned with prefix acceptance.",
+          "DiffuSpec uses a diffusion model as a parallel drafter and introduces Causal-consistency Path Search over its token lattice, together with draft-length adaptation from acceptance feedback. Here the graph mediates between bidirectional draft proposals and an autoregressive verifier. A lattice describes the candidate organization; the scoring rule and verification procedure determine what selecting a path accomplishes."
+        ],
+        "citations": [
+          "lattice2021",
+          "lilicorr2026",
+          "diffuspec2026"
+        ]
+      },
+      {
+        "id": "choose-objective",
+        "title": "Choose the inference objective before choosing the graph",
+        "paragraphs": [
+          "Three operations over the same graph answer different questions. Maximization finds the best complete path under a score. Marginalization sums over alternatives to measure probability or train a latent model. Sampling draws a sequence according to a distribution. Replacing one operation with another changes the algorithm even when the nodes and edges are identical.",
+          "A small numerical example makes the distinction concrete. Suppose the first decision offers A with probability 0.6 and B with probability 0.4. The strongest continuation after A has conditional probability 0.5; after B it has probability 0.9. Greedy selection begins with A. Whole-path maximization chooses B because 0.4 × 0.9 exceeds 0.6 × 0.5. In speculative decoding, the target verifier introduces another objective: the useful quantity is the accepted prefix, together with the cost of producing it.",
+          "To compare implementations, identify the candidate set, the edge dependence, the normalization, and the inference operation. Then measure the work that dominates runtime: neural passes, candidate scoring, dynamic programming, and verification. A graph alone establishes neither an exact decoder nor a speed advantage."
+        ],
+        "table": {
+          "columns": [
+            "Design",
+            "Dependence or score",
+            "Final operation"
+          ],
+          "rows": [
+            [
+              "Cascaded generation",
+              "Increasing Markov order; pruned spans",
+              "Structured maximization within retained states"
+            ],
+            [
+              "Sequence-to-Lattice",
+              "First-order conditional edge probabilities",
+              "Exact Viterbi on candidate lattice"
+            ],
+            [
+              "CoDD / DA-DLM",
+              "Joint structure inside denoising",
+              "Diffusion-conditioned inference"
+            ],
+            [
+              "LiLiCorr / DiffuSpec",
+              "Compatibility or causal draft paths",
+              "Draft selection followed by verification"
+            ]
+          ]
+        },
+        "citations": [
+          "cascaded2020",
+          "lattice2021",
+          "codd2026",
+          "dadlm2026",
+          "lilicorr2026",
+          "diffuspec2026"
+        ]
+      }
+    ],
+    "related_guides": [
+      "energy-based-text-generation",
+      "probabilistic-attention",
+      "llm-decision-trees"
+    ],
+    "demo": "lattice",
+    "reading_order": [
+      "cascaded2020",
+      "lattice2021",
+      "sun2019",
+      "codd2026",
+      "dadlm2026",
+      "lilicorr2026",
+      "diffuspec2026"
+    ]
+  },
+  {
+    "id": "probabilistic-attention",
+    "title": "Attention as a Latent Variable: Modeling a Distribution over Attention",
+    "eyebrow": "Probabilistic attention and latent inference",
+    "description": "A guide to Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.",
+    "lead": "Latent Alignment and Variational Attention (NeurIPS 2018), by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. The general idea is to model a distribution over where a network attends and reason over that distribution, rather than pass one deterministic weighted average into the prediction network.",
+    "original_papers": [
+      "latentattention2018"
+    ],
+    "terms": [
+      "attention as a latent variable",
+      "probabilistic attention",
+      "distribution over attention",
+      "latent alignment",
+      "variational attention",
+      "stochastic attention",
+      "Bayesian attention",
+      "marginalizing attention"
+    ],
+    "sections": [
+      {
+        "id": "distribution-versus-weights",
+        "title": "Normalized attention weights and a probabilistic model",
+        "paragraphs": [
+          "An attention vector contains nonnegative weights that sum to one. That numerical property does not specify how uncertainty enters the prediction. A deterministic mechanism constructs one context vector from those weights and applies the downstream network once. A latent-variable mechanism defines alternative attention states, predicts under them, and integrates their contributions.",
+          "Write the attention state as z and the downstream computation as f. In general, f(E[z]) ≠ E[f(z)]. For a simple illustration, let z be 0 or 2 with equal probability and let f(z) = z². Applying f to the mean gives 1; averaging the two outputs gives 2. Neural prediction contains nonlinear operations, so moving the expectation across the network changes the model. This is the distinction between an average representation and an average over predictions."
+        ],
+        "citations": [
+          "latentattention2018",
+          "structuredattention2017"
+        ]
+      },
+      {
+        "id": "latent-alignment",
+        "title": "Latent alignment and variational attention",
+        "paragraphs": [
+          "The 2018 paper makes alignment an explicit variable in the generative model. It studies categorical alignments, which select one source element, and Dirichlet alignments, which distribute attention across a mixture of elements. Amortized variational inference learns a posterior conditioned on observed inputs and outputs. Variance-reduction methods make latent inference practical, with experiments in machine translation and visual question answering.",
+          "Prior attention asks where to attend before the answer is known. Posterior attention asks which alignment explains an observed answer. These are different conditional distributions. The paper’s inference network uses target information during training; this is distinct from supplying future target words to a left-to-right predictor at generation time."
+        ],
+        "citations": [
+          "latentattention2018"
+        ]
+      },
+      {
+        "id": "latent-attention-example",
+        "title": "What a posterior over attention tells you",
+        "paragraphs": [
+          "Imagine an image containing two people and a question asking who is holding a cup. Before seeing the answer, the model assigns attention probability to both people. Once the answer is observed, posterior inference redistributes probability toward alignments that explain it. This example defines an inference question independently of the visualization used to display the weights.",
+          "The distinction also matters when attention is composed with another probabilistic component. Explicit variables expose which quantities are conditioned on, which alternatives are integrated out, and what an approximation replaces. A sampled attention vector, its expectation, and its most probable value answer different questions; naming the distribution makes those choices inspectable."
+        ],
+        "citations": [
+          "latentattention2018"
+        ]
+      },
+      {
+        "id": "related-probabilistic-approaches",
+        "title": "How related attention methods differ",
+        "paragraphs": [
+          "Show, Attend and Tell (ICML 2015) studies deterministic soft attention and sampled hard attention for image captioning. Its stochastic formulation uses a variational lower bound and a sampling-based learning rule. It provides an early reference for probabilistic selection; Latent Alignment and Variational Attention develops learned posterior inference for alignment and tighter variational training.",
+          "Structured Attention Networks (ICLR 2017) defines distributions over structured selections, including subsequences and syntactic trees. Differentiable graphical-model inference supplies expected annotations to the surrounding network. This enriches the structure of attention. Computing an expected annotation remains a separate operation from marginalizing the final nonlinear prediction over every attention structure.",
+          "Variational Attention for Sequence-to-Sequence Models (COLING 2018) models the context vector with Gaussian random variables in a variational encoder-decoder. Its purpose is to prevent deterministic attention from bypassing the model’s latent space. The latent object is the context vector, distinct from the categorical or simplex-valued alignment variable in Latent Alignment and Variational Attention.",
+          "Bayesian Attention Modules (NeurIPS 2020) constructs stochastic attention weights by normalizing Weibull or lognormal variables. Reparameterized training and data-dependent priors make the modules usable across attention architectures. This develops the broad distribution-over-attention perspective with a different distribution family and training construction."
+        ],
+        "citations": [
+          "showattendtell2015",
+          "structuredattention2017",
+          "bahuleyan2018",
+          "bayesianattention2020",
+          "latentattention2018"
+        ]
+      },
+      {
+        "id": "modeling-choices",
+        "title": "Four questions for a probabilistic attention model",
+        "paragraphs": [
+          "Start with the random object: a selected position, a distribution over positions, a context vector, or an entire structured selection. Next specify the prior and the information available to the posterior. Then identify what the prediction integrates: an intermediate representation or the output likelihood. Finally state whether training and prediction enumerate states, sample them, use an expectation, or optimize a variational approximation.",
+          "These choices determine the meaning of the model. They also make comparisons useful: two systems both called “variational attention” need not represent the same latent quantity or solve the same inference problem."
+        ],
+        "table": {
+          "columns": [
+            "Method",
+            "Random or structured object",
+            "Role of inference"
+          ],
+          "rows": [
+            [
+              "Latent Alignment and Variational Attention",
+              "Categorical or Dirichlet alignment",
+              "Learn posterior alignment and approximate marginal likelihood"
+            ],
+            [
+              "Structured Attention Networks",
+              "Subsequence or tree selection",
+              "Compute expected annotations"
+            ],
+            [
+              "Variational Attention for Seq2Seq",
+              "Gaussian context vector",
+              "Preserve a stochastic path through the encoder-decoder"
+            ],
+            [
+              "Bayesian Attention Modules",
+              "Distribution over normalized attention weights",
+              "Reparameterized variational training"
+            ]
+          ]
+        },
+        "citations": [
+          "latentattention2018",
+          "structuredattention2017",
+          "bahuleyan2018",
+          "bayesianattention2020"
+        ]
+      }
+    ],
+    "related_guides": [
+      "structured-decoding",
+      "energy-based-text-generation"
+    ],
+    "demo": "attention",
+    "reading_order": [
+      "latentattention2018",
+      "showattendtell2015",
+      "structuredattention2017",
+      "bahuleyan2018",
+      "bayesianattention2020"
+    ]
+  },
+  {
+    "id": "long-form-evaluation",
+    "title": "Evaluating the structure of long-form text",
+    "eyebrow": "Coherence, coreference and narrative evaluation",
+    "description": "How latent-space model criticism evaluates discourse structure, entity behavior, and topicality beyond word-level fluency in generated text.",
+    "lead": "A fluent paragraph does not establish a coherent document. Model Criticism for Long-Form Text Generation, by Yuntian Deng, Volodymyr Kuleshov, and Alexander M. Rush, introduced a framework for comparing the high-level structures of real and generated text through explicit latent-variable critics. First released on October 16, 2022 and published at EMNLP 2022, it connects long-form evaluation to a concrete statistical question: does a generator reproduce the distribution of structures found in reference texts?",
+    "original_papers": [
+      "model-criticism"
+    ],
+    "terms": [
+      "long-form text evaluation",
+      "story evaluation",
+      "discourse coherence",
+      "entity consistency",
+      "model criticism in latent space",
+      "latent perplexity"
+    ],
+    "sections": [
+      {
+        "id": "fluency-and-structure",
+        "title": "Separate fluent wording from coherent structure",
+        "paragraphs": [
+          "Consider an article that introduces a method, presents results, and then returns to an unrelated introduction. Each sentence can be grammatical while the section sequence is structurally unusual. A narrative has related problems when entities disappear, reappear inconsistently, or follow implausible patterns across a long passage.",
+          "Word-level perplexity measures how well a model predicts tokens. It does not directly measure section transitions, coreference structure, or topical relationships. The paper demonstrates this distinction with synthetic data whose generative process is known: strong next-token prediction coexists with a poor fit to the underlying latent transitions."
+        ],
+        "citations": [
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "latent-critic",
+        "title": "Choose a critic that expresses the property being tested",
+        "paragraphs": [
+          "The framework introduces a critic with a generative model of latent structure and observed text. Its posterior maps a document into a distribution over latent variables. Criticism then compares the structures inferred from generated samples with those inferred from reference data, using the same critic for both.",
+          "One diagnostic is the expected negative log probability of inferred latent variables under the critic’s prior. Aggregating it produces a latent cross-entropy, reported as latent perplexity in the experiments. This makes the measured property explicit: an evaluator of section order and an evaluator of entity reuse need different latent models. The critic supplies an assumption about structure; it is not the language model under evaluation."
+        ],
+        "citations": [
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "three-properties",
+        "title": "Three structural questions",
+        "paragraphs": [
+          "Discourse coherence asks whether sections follow the transitions found in real documents. The experiments examine scientific articles and Wikipedia, including generation with and without explicit section-title cues. Coreference asks whether generated text reproduces the patterns of references to entities. Topicality asks whether topic relationships match reference documents.",
+          "These are distinct diagnoses. The paper finds that its transformer language models capture topical correlations while struggling with coherence and coreference. A single overall quality score would hide this difference. The conclusion concerns the evaluated models and critics; testing a new generator requires collecting its outputs and running the structural comparison again."
+        ],
+        "citations": [
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "evaluation-landscape",
+        "title": "Relate model criticism to story metrics",
+        "paragraphs": [
+          "OpenMEVA evaluates the evaluators. Its controlled perturbations test whether automatic metrics respond to errors in coherence and remain stable under meaning-preserving changes. Latent-space model criticism instead asks which structural distributions a generator has learned. The two approaches answer different experimental questions and fit together in an evaluation suite.",
+          "The story-evaluation survey by Dingyi Yang and Qin Jin organizes broader criteria such as coherence, character development, and interestingness. A critic for section transitions does not measure all these criteria. Human assessment or an LLM judge answers reader-facing questions; a specified structural critic supplies a reproducible diagnostic tied to a particular property."
+        ],
+        "citations": [
+          "openmeva",
+          "story-evaluation-survey",
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "evaluation-recipe",
+        "title": "Design a useful long-form evaluation",
+        "paragraphs": [
+          "Start with the failure you want to detect, then define its latent representation and reference corpus. Fit or specify the critic, check its behavior on real texts and known structural errors, and apply it identically to reference and generated samples. Keep generation conditions, document lengths, and sample counts visible so that the comparison answers the intended question.",
+          "Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code provide concrete starting points for coherence, coreference, and topicality rather than a single universal quality metric."
+        ],
+        "citations": [
+          "model-criticism",
+          "openmeva"
+        ]
+      }
+    ],
+    "related_guides": [
+      "probabilistic-attention",
+      "structured-decoding"
+    ],
+    "demo": "structure",
+    "reading_order": [
+      "model-criticism",
+      "openmeva",
+      "story-evaluation-survey"
+    ]
+  },
+  {
+    "id": "learned-rendering",
+    "title": "Learning to render LaTeX, SMILES, HTML and music notation",
+    "eyebrow": "Markup-to-image diffusion",
+    "description": "Diffusion models as learned renderers for mathematical formulas, molecules, table layouts, and music notation, with scheduled sampling to address exposure bias.",
+    "lead": "Markup-to-Image Diffusion Models with Scheduled Sampling, by Yuntian Deng, Noriyuki Kojima, and Alexander M. Rush, learns to turn symbolic descriptions into images. Released on October 11, 2022 and published at ICLR 2023, the work introduced diffusion-based rendering across LaTeX formulas, SMILES molecules, HTML table layouts, and LilyPond sheet music. It also studies a general diffusion problem: errors accumulate when sampling visits states that differ from the model’s training inputs.",
+    "original_papers": [
+      "markup-diffusion"
+    ],
+    "terms": [
+      "markup-to-image generation",
+      "learned rendering",
+      "LaTeX-to-image",
+      "SMILES-to-image",
+      "diffusion scheduled sampling",
+      "diffusion exposure bias"
+    ],
+    "sections": [
+      {
+        "id": "rendering-direction",
+        "title": "The input is markup; the output is an image",
+        "paragraphs": [
+          "A learned renderer receives a sequence that specifies a visual object and predicts its rendered pixels. LaTeX describes mathematical notation; SMILES describes atoms and bonds; HTML describes a table-like layout; LilyPond describes music notation. The four domains test symbolic content, layout, and dependencies that extend across the input sequence.",
+          "This direction matters. Image-to-LaTeX recognition recovers source notation from a picture. Markup-to-image generation performs the reverse task. The paper adapts paired data, including im2latex-100k, to learn this forward mapping from markup to pixels. It trains a conditional diffusion model rather than invoking a conventional rendering engine at inference time."
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "symbolic-fidelity",
+        "title": "A plausible image is not enough",
+        "paragraphs": [
+          "These images demand exact symbolic fidelity. An extra minus sign changes a formula; an incorrect bond changes a molecule; a shifted note changes a score. An image that resembles the right domain still fails when its symbols do not match the input. Layout errors also propagate: an extra symbol displaces what follows.",
+          "The paper therefore evaluates alignment with the reference rendering. Its primary metric treats binarized images as sequences of columns and uses dynamic time warping, with tolerance for small shifts. Pixel error and additional image-similarity metrics provide complementary measurements. The paper explicitly distinguishes these criteria from natural-image scores that emphasize visual fidelity and broad semantics."
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "scheduled-sampling",
+        "title": "Train the denoiser on its own intermediate states",
+        "paragraphs": [
+          "Standard diffusion training constructs noisy inputs from ground-truth images. During sampling, the next denoising step instead receives the result of previous model predictions. Mistakes in those predictions change the states encountered later. The paper analyzes this mismatch as a sequential decision problem with compounding errors, connecting diffusion sampling to exposure bias.",
+          "Scheduled sampling changes the training inputs so that the denoiser encounters model-generated states and learns to correct its own errors. This adapts a principle previously studied in sequence generation to diffusion training. The experiments compare scheduled sampling with the baseline across all four rendering domains. Recognizable output and faithful symbolic rendering remain separate evaluation targets; the paper reports failures as well as successful generations."
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "related-methods",
+        "title": "Follow the two research threads",
+        "paragraphs": [
+          "The rendering thread continues in FSA-CDM, by Guojin Zhong and colleagues, published at ACM Multimedia 2023. It evaluates the same four-domain task and adds fine-grained sequence alignment, contextual modeling, and contrastive training signals. Its contribution addresses how markup tokens correspond to visual structure, alongside the denoising process.",
+          "The diffusion-training thread connects to Input Perturbation Reduces Exposure Bias in Diffusion Models, published at ICML 2023. That method perturbs training inputs to simulate prediction errors. The shared question is how training should prepare a denoiser for the states it encounters during sampling. Model-generated inputs and synthetic perturbations are different answers, with different training procedures."
+        ],
+        "citations": [
+          "fsa-cdm",
+          "diffusion-input-perturbation",
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "inspect-results",
+        "title": "Inspect the original examples and implementation",
+        "paragraphs": [
+          "The released repository includes side-by-side animations of scheduled sampling, the baseline, and ground truth for formulas, tables, music, and molecules. These examples expose the intermediate denoising trajectory. Inspect whether symbols appear, disappear, merge, or move, then compare the final output against the exact input specification.",
+          "For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. Separate rendering accuracy from stylistic resemblance. The original datasets, checkpoints, code, and recorded examples establish a reproducible starting point without treating a successful example as evidence of exact rendering on every input."
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      }
+    ],
+    "related_guides": [
+      "structured-decoding",
+      "probabilistic-attention"
+    ],
+    "demo": "markup",
+    "reading_order": [
+      "markup-diffusion",
+      "fsa-cdm",
+      "diffusion-input-perturbation"
+    ]
+  },
+  {
+    "id": "interactive-training",
+    "title": "Controlling a running training job with humans and AI agents",
+    "eyebrow": "Feedback-driven neural network optimization",
+    "description": "Interactive Training connects live metrics to human and LLM interventions in running neural-network jobs; v2 adds typed controls and an ordered action journal.",
+    "lead": "Interactive Training: Feedback-Driven Neural Network Optimization, by Wentao Zhang, Yang Young Lu, and Yuntian Deng, makes an ongoing neural-network training process controllable by humans and AI agents. First released on October 2, 2025 and published at EMNLP 2025 System Demonstrations, it exposes optimizer settings, training data, and checkpoints through a control server. Interactive Training 2 extends this approach to a reusable protocol for live training, released on arXiv on July 17, 2026.",
+    "original_papers": [
+      "interactive-training-2025",
+      "interactive-training-2026"
+    ],
+    "terms": [
+      "interactive training",
+      "feedback-driven optimization",
+      "LLM training controller",
+      "live hyperparameter tuning",
+      "human-in-the-loop training",
+      "closed-loop training control"
+    ],
+    "sections": [
+      {
+        "id": "running-process",
+        "title": "Make the running process the object of control",
+        "paragraphs": [
+          "A training dashboard shows loss curves and evaluations. Interactive control connects those observations to changes in the process that is producing them. A researcher sees instability, changes the learning rate, and observes subsequent updates in the same run. An LLM controller uses the same feedback cycle: inspect evidence, request an intervention, and inspect its effect.",
+          "This differs from choosing a configuration before launch or proposing a new experiment after a run finishes. The active model and optimizer continue while exposed controls change. A checkpoint restore or a new round is a separate operation with its own state transition; the interface should record which operation actually occurred."
+        ],
+        "citations": [
+          "interactive-training-2025",
+          "interactive-training-2026"
+        ]
+      },
+      {
+        "id": "original-system",
+        "title": "The 2025 system: monitoring connected to intervention",
+        "paragraphs": [
+          "The original framework uses a control server to mediate between a human or automated agent and the training process. Its Trainer integration exposes commands for optimizer hyperparameters, data handling, and checkpoints. A live interface lets the controller observe training and submit changes instead of editing a static recipe and relaunching the program.",
+          "The paper presents three case studies spanning training stability, sensitivity to initial hyperparameters, and changing user needs. Its LLM-driven learning-rate example demonstrates an agent reading feedback and intervening during optimization. The system contribution is the connection among live observation, a control interface, and the training loop—not a replacement for the optimizer’s parameter updates."
+        ],
+        "citations": [
+          "interactive-training-2025"
+        ]
+      },
+      {
+        "id": "shared-protocol",
+        "title": "The 2026 extension: one protocol for different controllers",
+        "paragraphs": [
+          "Interactive Training 2, by Wentao Zhang, Xuanhe Pan, Han Zhou, Yang Lu, and Yuntian Deng, replaces a fixed Trainer-specific command vocabulary with registered settings and actions. A TrainingSession exposes typed controls and descriptions. Humans, scripts, heuristics, and LLM agents submit requests through the same interface.",
+          "The training application chooses control points at which queued requests are validated and applied. An ordered journal connects requests to execution results, evaluations, checkpoints, and controller decisions. The Aim workspace brings this record together with live metrics. The paper also distinguishes within-round interventions from cross-round planning: a new round starts a fresh model and optimizer, while a textual journal carries observations and reflections forward."
+        ],
+        "citations": [
+          "interactive-training-2026"
+        ]
+      },
+      {
+        "id": "research-context",
+        "title": "Compare mechanisms, controllers, and experiments",
+        "paragraphs": [
+          "LiveTune predates Interactive Training and exposes LiveVariables for changing optimization parameters without restarting the loop. It supplies an earlier mechanism for live parameter adjustment. Interactive Training’s focus is the human and AI-agent workflow around training, and v2 makes the control vocabulary and event record reusable across applications.",
+          "AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. This is a useful comparison at the controller level: what evidence reaches the agent, which actions it can request, and how later outcomes affect its decisions. Infrastructure support and measured controller performance are distinct contributions."
+        ],
+        "citations": [
+          "livetune",
+          "ai-training-manager",
+          "interactive-training-2025",
+          "interactive-training-2026"
+        ]
+      },
+      {
+        "id": "design-loop",
+        "title": "Design an observable feedback loop",
+        "paragraphs": [
+          "Expose controls that the training application can actually apply, and define when changes take effect. Record the observation that motivated a request, the requested value, the applied value, the step of application, and the subsequent measurements. A submitted request and a successful update are different events. Keeping them linked makes the behavior inspectable.",
+          "Evaluate an automated controller against a stated training objective under explicit workloads and budgets. Count its inference and intervention overhead, preserve the run history, and separate improvements within a continuing run from results of newly initialized rounds. The Interactive Training papers and implementation provide the machinery for this feedback loop; the controller and task determine what the loop accomplishes."
+        ],
+        "citations": [
+          "interactive-training-2025",
+          "interactive-training-2026",
+          "ai-training-manager"
+        ]
+      }
+    ],
+    "related_guides": [
+      "llm-decision-trees"
+    ],
+    "demo": "training",
+    "reading_order": [
+      "interactive-training-2025",
+      "interactive-training-2026",
+      "livetune",
+      "ai-training-manager"
+    ]
+  }
+]

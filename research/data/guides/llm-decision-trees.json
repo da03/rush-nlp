@@ -1,0 +1,282 @@
+{
+  "id": "llm-decision-trees",
+  "title": "LLM decision trees: from Tree Prompting to agentic classification",
+  "eyebrow": "Learned programs and prompting",
+  "description": "How Tree Prompting learns decision trees of prompted language-model calls, and how it relates to Aug-Tree, GPTree and Agentic Classification Tree.",
+  "lead": "Tree Prompting (EMNLP 2023) learns a decision tree in which a prompted language model makes each branching decision. Its learned prompts and control flow form a reusable program for a classification task. This mechanism connects directly to today’s LLM decision trees, natural-language question trees and agentic classification.",
+  "original_papers": [
+    "tree-prompting"
+  ],
+  "terms": [
+    "LLM decision trees",
+    "prompt-based decision trees",
+    "natural-language decision trees",
+    "agentic classification",
+    "learned prompt programs",
+    "dynamic prompting"
+  ],
+  "demo": "tree",
+  "related_guides": [
+    "probabilistic-attention"
+  ],
+  "reading_order": [
+    "tree-prompting",
+    "aug-tree",
+    "gptree",
+    "act"
+  ],
+  "sections": [
+    {
+      "id": "original-method",
+      "title": "What Tree Prompting introduced",
+      "paragraphs": [
+        "John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao and Yuntian Deng published Tree Prompting at EMNLP 2023; Morris and Singh contributed equally. The preprint was released on 21 October 2023. Each internal node evaluates a prompt with a frozen LM; its output selects a branch, and a leaf supplies the prediction.",
+        "The tree is learned from labeled examples. Candidate prompts include sampled demonstrations, instructions and dynamically generated prompts. In the dynamic version, iPrompt generates candidates for the examples reaching a node, then split quality selects the prompt. Both the node questions and the tree’s branching structure are learned."
+      ],
+      "citations": [
+        "tree-prompting"
+      ]
+    },
+    {
+      "id": "program-view",
+      "title": "Reading a prompt tree as a program",
+      "paragraphs": [
+        "Consider an illustrative support classifier. A first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. These example questions illustrate the control flow; they are not a tree reported in the paper.",
+        "The program consists of conditions, branches and return values. A conventional condition tests a numerical threshold or an exact string. A prompt-based condition asks the LM to interpret the input under an instruction. The instruction defines the question; the LM supplies the decision for this particular input.",
+        "A useful inspection separates three failures. The node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream."
+      ]
+    },
+    {
+      "id": "learning-and-cost",
+      "title": "What is learned, and what inference costs",
+      "paragraphs": [
+        "Adaptation lives in the selected prompts and tree structure, without updating LM weights. Under one-call-per-node features, a path of depth D takes D LM calls, rather than evaluating every node. The code provides a scikit-learn-style classifier interface.",
+        "Keep fitting cost separate from prediction cost. Fitting searches candidate questions and measures their behavior on labeled inputs; serving evaluates the retained path. A large search budget therefore does not imply the same expense for every new prediction.",
+        "For an implementation, specify the label set, output parser, stopping rule and behavior on an invalid model answer. Measure accuracy together with average path length and token usage. Two trees with equal depth still differ in cost when their prompts include different numbers of demonstrations. Save the fitted prompts and tree with the model version: changing the LM changes the meaning of its executable conditions."
+      ],
+      "citations": [
+        "tree-prompting"
+      ]
+    },
+    {
+      "id": "related-methods",
+      "title": "Compare where the language model enters",
+      "paragraphs": [
+        "Aug-Tree expands text features using an LLM during fitting, then deploys an interpretable tree without LM calls. It is a useful alternative when prediction must run with ordinary feature checks. GPTree builds LLM-powered trees and supports expert feedback on decision paths. ACT learns binary natural-language questions with impurity-based selection and TextGrad refinement.",
+        "These distinctions identify separate design choices: generating features, answering semantic questions, searching for better questions, and revising the resulting program. A paper that uses the word “tree” does not by that name specify which of these operations it performs."
+      ],
+      "table": {
+        "columns": [
+          "Method",
+          "Node or split",
+          "Role of the LM"
+        ],
+        "rows": [
+          [
+            "Tree Prompting · 2023",
+            "Learned prompt evaluated on the input",
+            "Executes branching decisions; dynamic variant also generates prompts"
+          ],
+          [
+            "Aug-Tree · 2023; preprint 2022",
+            "Disjunction of expanded text features",
+            "Constructs features during fitting"
+          ],
+          [
+            "GPTree · 2024",
+            "LLM-assisted decision rules and split types",
+            "Builds decisions with expert-feedback refinement"
+          ],
+          [
+            "ACT · 2025",
+            "Learned natural-language binary question",
+            "Proposes, evaluates and refines questions"
+          ]
+        ]
+      },
+      "citations": [
+        "tree-prompting",
+        "aug-tree",
+        "gptree",
+        "act"
+      ]
+    },
+    {
+      "id": "when-to-use",
+      "title": "When a learned question tree is useful",
+      "paragraphs": [
+        "Use this design when the task has a repeatable decision structure and labeled examples expose which distinctions matter. Intent routing, document classification and categorization all provide a natural setting for asking successive semantic questions. The tree stores task-specific structure outside the model weights.",
+        "Examine the complete system rather than the diagram alone. A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.",
+        "The accompanying illustration lets you follow a fixed tree and change branch choices. To build a learned classifier, start with the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples. Treat the illustration as a mechanism explanation, separate from an empirical accuracy result."
+      ]
+    }
+  ],
+  "url": "https://yuntiandeng.com/research/llm-decision-trees/",
+  "papers": [
+    {
+      "id": "tree-prompting",
+      "title": "Tree Prompting: Efficient Task Adaptation without Fine-Tuning",
+      "authors": [
+        {
+          "given": "John X.",
+          "family": "Morris"
+        },
+        {
+          "given": "Chandan",
+          "family": "Singh"
+        },
+        {
+          "given": "Alexander M.",
+          "family": "Rush"
+        },
+        {
+          "given": "Jianfeng",
+          "family": "Gao"
+        },
+        {
+          "given": "Yuntian",
+          "family": "Deng"
+        }
+      ],
+      "year": 2023,
+      "venue": "EMNLP 2023",
+      "paper_url": "https://arxiv.org/html/2310.14034v1",
+      "summary": "Learns a reusable decision tree whose internal decisions are prompted language-model calls, with few-shot, instruction and dynamically generated prompt candidates.",
+      "connection": "Original prompt-based decision-tree method: task adaptation changes the tree and prompts while keeping the language model fixed.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "treeprompting",
+      "source_urls": [
+        "https://arxiv.org/html/2310.14034v1"
+      ],
+      "pdf_url": "https://aclanthology.org/2023.emnlp-main.384.pdf",
+      "code_url": "https://github.com/csinva/tree-prompt",
+      "doi": "10.18653/v1/2023.emnlp-main.384",
+      "equal_contribution": [
+        "John X. Morris",
+        "Chandan Singh"
+      ],
+      "arxiv_id": "2310.14034",
+      "arxiv_first_posted": "2023-10-21",
+      "abstract": "Prompting language models (LMs) is the main interface for applying them to new tasks. However, for smaller LMs, prompting provides low accuracy compared to gradient-based fine-tuning. Tree Prompting is an approach to prompting which builds a decision tree of prompts, linking multiple LM calls together to solve a task. At inference time, each call to the LM is determined by efficiently routing the outcome of the previous call using the tree. Experiments on classification datasets show that Tree Prompting improves accuracy over competing methods and is competitive with fine-tuning. We also show that variants of Tree Prompting allow inspection of a model’s decision-making process.",
+      "abstract_source": "https://arxiv.org/html/2310.14034v1"
+    },
+    {
+      "id": "aug-tree",
+      "title": "Augmenting interpretable models with large language models during training",
+      "authors": [
+        {
+          "given": "Chandan",
+          "family": "Singh"
+        },
+        {
+          "given": "Armin",
+          "family": "Askari"
+        },
+        {
+          "given": "Rich",
+          "family": "Caruana"
+        },
+        {
+          "given": "Jianfeng",
+          "family": "Gao"
+        }
+      ],
+      "year": 2023,
+      "venue": "Nature Communications 14, 7913",
+      "paper_url": "https://www.nature.com/articles/s41467-023-43713-1",
+      "summary": "Aug-Tree uses language-model-generated expansions to construct interpretable text features for tree splits.",
+      "connection": "Contrasts training-time feature expansion with Tree Prompting’s language-model calls while traversing a tree.",
+      "bibtex_type": "article",
+      "citation_key": "augtree",
+      "source_urls": [
+        "https://www.nature.com/articles/s41467-023-43713-1"
+      ],
+      "first_public": "2022-09-23",
+      "doi": "10.1038/s41467-023-43713-1",
+      "container_title": "Nature Communications",
+      "volume": "14",
+      "issue": "1",
+      "article_number": "7913"
+    },
+    {
+      "id": "gptree",
+      "title": "GPTree: Towards Explainable Decision-Making via LLM-powered Decision Trees",
+      "authors": [
+        {
+          "given": "Sichao",
+          "family": "Xiong"
+        },
+        {
+          "given": "Yigit",
+          "family": "Ihlamur"
+        },
+        {
+          "given": "Fuat",
+          "family": "Alican"
+        },
+        {
+          "given": "Aaron Ontoyin",
+          "family": "Yin"
+        }
+      ],
+      "year": 2024,
+      "venue": "arXiv:2411.08257",
+      "paper_url": "https://arxiv.org/html/2411.08257v1",
+      "summary": "Builds decision trees with LLM-assisted splits and incorporates expert feedback to revise decision paths.",
+      "connection": "A later LLM decision-tree system with expert interaction and several split types.",
+      "bibtex_type": "article",
+      "citation_key": "gptree",
+      "source_urls": [
+        "https://arxiv.org/html/2411.08257v1"
+      ],
+      "arxiv_id": "2411.08257",
+      "arxiv_first_posted": "2024-11-13",
+      "publication_type": "preprint",
+      "container_title": "arXiv"
+    },
+    {
+      "id": "act",
+      "title": "ACT: Agentic Classification Tree",
+      "authors": [
+        {
+          "given": "Vincent",
+          "family": "Grari"
+        },
+        {
+          "given": "Tim",
+          "family": "Arni"
+        },
+        {
+          "given": "Thibault",
+          "family": "Laugel"
+        },
+        {
+          "given": "Sylvain",
+          "family": "Lamprier"
+        },
+        {
+          "given": "James",
+          "family": "Zou"
+        },
+        {
+          "given": "Marcin",
+          "family": "Detyniecki"
+        }
+      ],
+      "year": 2025,
+      "venue": "arXiv:2509.26433",
+      "paper_url": "https://arxiv.org/html/2509.26433v4",
+      "summary": "Learns classification trees of natural-language binary questions through impurity-based split selection and TextGrad refinement.",
+      "connection": "A later agentic formulation of learning question-based decision trees; compare question optimization and tree construction.",
+      "bibtex_type": "article",
+      "citation_key": "act",
+      "source_urls": [
+        "https://arxiv.org/html/2509.26433v4"
+      ],
+      "arxiv_id": "2509.26433",
+      "arxiv_first_posted": "2025-09-30",
+      "publication_type": "preprint",
+      "container_title": "arXiv"
+    }
+  ]
+}

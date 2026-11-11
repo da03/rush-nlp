@@ -1,0 +1,41 @@
+[
+  {
+    "id": "zhang2026interactivetraining2",
+    "type": "article",
+    "title": "Interactive Training 2: Auditable Control Plane for Live Model Training",
+    "author": [
+      {
+        "given": "Wentao",
+        "family": "Zhang"
+      },
+      {
+        "given": "Xuanhe",
+        "family": "Pan"
+      },
+      {
+        "given": "Han",
+        "family": "Zhou"
+      },
+      {
+        "given": "Yang",
+        "family": "Lu"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/abs/2607.18314",
+    "genre": "preprint",
+    "publisher": "arXiv",
+    "DOI": "10.48550/arXiv.2607.18314"
+  }
+]

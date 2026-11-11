@@ -1,0 +1,51 @@
+{
+  "id": "openmeva",
+  "title": "OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics",
+  "authors": [
+    {
+      "given": "Jian",
+      "family": "Guan"
+    },
+    {
+      "given": "Zhexin",
+      "family": "Zhang"
+    },
+    {
+      "given": "Zhuoer",
+      "family": "Feng"
+    },
+    {
+      "given": "Zitao",
+      "family": "Liu"
+    },
+    {
+      "given": "Wenbiao",
+      "family": "Ding"
+    },
+    {
+      "given": "Xiaoxi",
+      "family": "Mao"
+    },
+    {
+      "given": "Changjie",
+      "family": "Fan"
+    },
+    {
+      "given": "Minlie",
+      "family": "Huang"
+    }
+  ],
+  "year": 2021,
+  "venue": "ACL-IJCNLP 2021",
+  "paper_url": "https://aclanthology.org/2021.acl-long.500/",
+  "pdf_url": "https://aclanthology.org/2021.acl-long.500.pdf",
+  "doi": "10.18653/v1/2021.acl-long.500",
+  "summary": "A benchmark for testing automatic story metrics, including human correlation, generalization, robustness, and sensitivity to different coherence errors.",
+  "connection": "Tests whether an evaluator detects known story defects; complements latent-space criticism of a generator’s output distribution.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "guan-etal-2021-openmeva",
+  "source_urls": [
+    "https://aclanthology.org/2021.acl-long.500/"
+  ],
+  "record_url": "https://yuntiandeng.com/research/papers/openmeva/"
+}

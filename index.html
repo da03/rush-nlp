@@ -201,6 +201,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
     <a class="paper" href="{{paper.paper_url}}">{{paper.title}}</a><br>
     {{paper.authors}}.<br>
     {{paper.conference}}
+    {% if paper.research_guide %} <a class="tag tag-paper" href="{{ paper.research_guide | escape }}">research guide</a>{% endif %}
     {% if paper.pdf_url %} <a class="tag" href="{{ paper.pdf_url | escape }}">PDF</a>{% endif %}
     {% if paper.html_url %} <a class="tag" href="{{ paper.html_url | escape }}">HTML</a>{% endif %}
     {% if paper.reading_list %} <a class="tag tag-paper" href="{{paper.reading_list | escape}}">reading list</a>{% endif %}
@@ -212,7 +213,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
 </div>
 
 <h2 id="other-selected-works">Other Selected Works</h2>
-<p>For all my papers, visit <a href="/publications/">the publications page</a> or my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.</p>
+<p><a href="/research/">Research guides</a> connect these methods to current work through examples and related papers. For all my papers, visit <a href="/publications/">the publications page</a> or my <a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ">Google Scholar</a>.</p>
 <div class="papers-list">
 {% for paper in site.data.papers.notable %}
 <div class="paper-card" id="{{ paper.title | slugify }}">
@@ -225,6 +226,7 @@ I build open-source systems and <a href="https://yuntiandeng.com/demos/">interac
     <a class="paper" href="{{paper.paper_url}}">{{paper.title}}</a><br>
     {{paper.authors}}.<br>
     {{paper.conference}}
+    {% if paper.research_guide %} <a class="tag tag-paper" href="{{ paper.research_guide | escape }}">research guide</a>{% endif %}
     {% if paper.pdf_url %} <a class="tag" href="{{ paper.pdf_url | escape }}">PDF</a>{% endif %}
     {% if paper.html_url %} <a class="tag" href="{{ paper.html_url | escape }}">HTML</a>{% endif %}
     {% if paper.reading_list %} <a class="tag tag-paper" href="{{paper.reading_list | escape}}">reading list</a>{% endif %}

@@ -1,0 +1,45 @@
+{
+  "id": "act",
+  "title": "ACT: Agentic Classification Tree",
+  "authors": [
+    {
+      "given": "Vincent",
+      "family": "Grari"
+    },
+    {
+      "given": "Tim",
+      "family": "Arni"
+    },
+    {
+      "given": "Thibault",
+      "family": "Laugel"
+    },
+    {
+      "given": "Sylvain",
+      "family": "Lamprier"
+    },
+    {
+      "given": "James",
+      "family": "Zou"
+    },
+    {
+      "given": "Marcin",
+      "family": "Detyniecki"
+    }
+  ],
+  "year": 2025,
+  "venue": "arXiv:2509.26433",
+  "paper_url": "https://arxiv.org/html/2509.26433v4",
+  "summary": "Learns classification trees of natural-language binary questions through impurity-based split selection and TextGrad refinement.",
+  "connection": "A later agentic formulation of learning question-based decision trees; compare question optimization and tree construction.",
+  "bibtex_type": "article",
+  "citation_key": "act",
+  "source_urls": [
+    "https://arxiv.org/html/2509.26433v4"
+  ],
+  "arxiv_id": "2509.26433",
+  "arxiv_first_posted": "2025-09-30",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "record_url": "https://yuntiandeng.com/research/papers/act/"
+}

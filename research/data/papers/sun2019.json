@@ -1,0 +1,45 @@
+{
+  "id": "sun2019",
+  "title": "Fast Structured Decoding for Sequence Models",
+  "authors": [
+    {
+      "given": "Zhiqing",
+      "family": "Sun"
+    },
+    {
+      "given": "Zhuohan",
+      "family": "Li"
+    },
+    {
+      "given": "Haoqing",
+      "family": "Wang"
+    },
+    {
+      "given": "Di",
+      "family": "He"
+    },
+    {
+      "given": "Zi",
+      "family": "Lin"
+    },
+    {
+      "given": "Zhi-Hong",
+      "family": "Deng"
+    }
+  ],
+  "year": 2019,
+  "venue": "NeurIPS 2019",
+  "paper_url": "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html",
+  "pdf_url": "https://proceedings.neurips.cc/paper_files/paper/2019/file/74563ba21a90da13dacf2a73e3ddefa7-Paper.pdf",
+  "summary": "Adds approximate first-order CRF inference and dynamic transitions to non-autoregressive sequence models.",
+  "connection": "A first-order structured-decoding reference; Cascaded Text Generation develops higher-order cascades and shared Markov Transformer potentials.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "sun2019fast",
+  "source_urls": [
+    "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html",
+    "https://arxiv.org/abs/1910.11555"
+  ],
+  "arxiv_id": "1910.11555",
+  "arxiv_first_posted": "2019-10-25",
+  "record_url": "https://yuntiandeng.com/research/papers/sun2019/"
+}

@@ -1,0 +1,23 @@
+# Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation
+
+Guojin Zhong, Jin Yuan, Pan Wang, Kailun Yang, Weili Guan, Zhiyong Li. ACM Multimedia 2023 (2023).
+
+FSA-CDM combines fine-grained cross-modal sequence alignment, contextual modeling, and a contrast-augmented diffusion objective for markup-to-image generation.
+
+A subsequent markup-to-image method that builds on the task and four datasets introduced by Deng, Kojima, and Rush, addressing alignment and contrastive feedback.
+
+[Original paper](https://arxiv.org/abs/2308.01147)
+
+## Citation
+
+```bibtex
+@inproceedings{article_number,
+  title = {{Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation}},
+  author = {Zhong, Guojin and Yuan, Jin and Wang, Pan and Yang, Kailun and Guan, Weili and Li, Zhiyong},
+  year = {2023},
+  booktitle = {ACM Multimedia 2023},
+  url = {https://arxiv.org/abs/2308.01147},
+  eprint = {2308.01147},
+  archivePrefix = {arXiv}
+}
+```

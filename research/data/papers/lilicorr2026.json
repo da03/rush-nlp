@@ -1,0 +1,54 @@
+{
+  "id": "lilicorr2026",
+  "title": "LiLiCorr: Lightweight Likelihood Correlation of Parallel Drafts for Speculative Decoding",
+  "authors": [
+    {
+      "given": "Matan",
+      "family": "Rusanovsky"
+    },
+    {
+      "given": "Yoav",
+      "family": "Miron"
+    },
+    {
+      "given": "Roy",
+      "family": "Uziel"
+    },
+    {
+      "given": "Omer",
+      "family": "Belhasin"
+    },
+    {
+      "given": "Hao",
+      "family": "Guo"
+    },
+    {
+      "given": "Ran",
+      "family": "Zilberstein"
+    },
+    {
+      "given": "Maor",
+      "family": "Ashkenazi"
+    },
+    {
+      "given": "Michael",
+      "family": "Elad"
+    }
+  ],
+  "year": 2026,
+  "venue": "arXiv 2026",
+  "paper_url": "https://arxiv.org/abs/2608.20530",
+  "summary": "Scores adjacent compatibility among top-K parallel draft candidates and selects a draft through a cheap greedy walk.",
+  "connection": "Uses the candidate–edge–path pattern with local training and inference tailored to speculative prefix acceptance.",
+  "bibtex_type": "article",
+  "citation_key": "rusanovsky2026lilicorr",
+  "source_urls": [
+    "https://arxiv.org/abs/2608.20530",
+    "https://arxiv.org/html/2608.20530v2"
+  ],
+  "arxiv_id": "2608.20530",
+  "arxiv_first_posted": "2026-08-20",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "record_url": "https://yuntiandeng.com/research/papers/lilicorr2026/"
+}

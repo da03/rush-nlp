@@ -1,0 +1,44 @@
+{
+  "id": "fsa-cdm",
+  "title": "Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation",
+  "authors": [
+    {
+      "given": "Guojin",
+      "family": "Zhong"
+    },
+    {
+      "given": "Jin",
+      "family": "Yuan"
+    },
+    {
+      "given": "Pan",
+      "family": "Wang"
+    },
+    {
+      "given": "Kailun",
+      "family": "Yang"
+    },
+    {
+      "given": "Weili",
+      "family": "Guan"
+    },
+    {
+      "given": "Zhiyong",
+      "family": "Li"
+    }
+  ],
+  "year": 2023,
+  "venue": "ACM Multimedia 2023",
+  "paper_url": "https://arxiv.org/abs/2308.01147",
+  "pdf_url": "https://arxiv.org/pdf/2308.01147",
+  "summary": "FSA-CDM combines fine-grained cross-modal sequence alignment, contextual modeling, and a contrast-augmented diffusion objective for markup-to-image generation.",
+  "connection": "A subsequent markup-to-image method that builds on the task and four datasets introduced by Deng, Kojima, and Rush, addressing alignment and contrastive feedback.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "zhong2023contrastaugmented",
+  "source_urls": [
+    "https://arxiv.org/html/2308.01147v1"
+  ],
+  "arxiv_id": "2308.01147",
+  "arxiv_first_posted": "2023-08-02",
+  "record_url": "https://yuntiandeng.com/research/papers/fsa-cdm/"
+}

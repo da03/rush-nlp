@@ -1,0 +1,50 @@
+[
+  {
+    "id": "xu2015show",
+    "type": "paper-conference",
+    "title": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention",
+    "author": [
+      {
+        "given": "Kelvin",
+        "family": "Xu"
+      },
+      {
+        "given": "Jimmy Lei",
+        "family": "Ba"
+      },
+      {
+        "given": "Ryan",
+        "family": "Kiros"
+      },
+      {
+        "given": "Kyunghyun",
+        "family": "Cho"
+      },
+      {
+        "given": "Aaron",
+        "family": "Courville"
+      },
+      {
+        "given": "Ruslan",
+        "family": "Salakhutdinov"
+      },
+      {
+        "given": "Richard S.",
+        "family": "Zemel"
+      },
+      {
+        "given": "Yoshua",
+        "family": "Bengio"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2015
+        ]
+      ]
+    },
+    "container-title": "ICML 2015",
+    "URL": "https://proceedings.mlr.press/v37/xuc15.html"
+  }
+]

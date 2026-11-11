@@ -1,0 +1,37 @@
+{
+  "id": "bahuleyan2018",
+  "title": "Variational Attention for Sequence-to-Sequence Models",
+  "authors": [
+    {
+      "given": "Hareesh",
+      "family": "Bahuleyan"
+    },
+    {
+      "given": "Lili",
+      "family": "Mou"
+    },
+    {
+      "given": "Olga",
+      "family": "Vechtomova"
+    },
+    {
+      "given": "Pascal",
+      "family": "Poupart"
+    }
+  ],
+  "year": 2018,
+  "venue": "COLING 2018",
+  "paper_url": "https://aclanthology.org/C18-1142/",
+  "pdf_url": "https://aclanthology.org/C18-1142.pdf",
+  "summary": "Treats attention context vectors as Gaussian latent variables in a variational encoder-decoder.",
+  "connection": "Clarifies that the term variational attention also names a different random object: the context vector.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "bahuleyan2018variational",
+  "source_urls": [
+    "https://aclanthology.org/C18-1142/",
+    "https://arxiv.org/abs/1712.08207"
+  ],
+  "arxiv_id": "1712.08207",
+  "arxiv_first_posted": "2017-12-21",
+  "record_url": "https://yuntiandeng.com/research/papers/bahuleyan2018/"
+}

@@ -1,0 +1,32 @@
+{
+  "id": "ai-training-manager",
+  "title": "AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes",
+  "authors": [
+    {
+      "given": "Anjali",
+      "family": "Rao"
+    },
+    {
+      "given": "Nikhil Kamalkumar",
+      "family": "Advani"
+    }
+  ],
+  "year": 2026,
+  "venue": "arXiv",
+  "paper_url": "https://arxiv.org/abs/2606.29871",
+  "pdf_url": "https://arxiv.org/pdf/2606.29871",
+  "doi": "10.48550/arXiv.2606.29871",
+  "summary": "An asynchronous LLM supervisor observes training telemetry and proposes constrained changes to a running training recipe, with experiments on deliberately induced supervised-learning and reinforcement-learning failure modes.",
+  "connection": "Studies an automated controller over active training, complementing Interactive Training’s reusable infrastructure for human and automated controllers.",
+  "bibtex_type": "article",
+  "citation_key": "rao2026aitrainingmanager",
+  "source_urls": [
+    "https://arxiv.org/abs/2606.29871",
+    "https://arxiv.org/html/2606.29871v3"
+  ],
+  "arxiv_id": "2606.29871",
+  "arxiv_first_posted": "2026-06-29",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "record_url": "https://yuntiandeng.com/research/papers/ai-training-manager/"
+}

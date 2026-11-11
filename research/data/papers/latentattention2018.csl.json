@@ -1,0 +1,38 @@
+[
+  {
+    "id": "deng2018latent",
+    "type": "paper-conference",
+    "title": "Latent Alignment and Variational Attention",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Yoon",
+        "family": "Kim"
+      },
+      {
+        "given": "Justin",
+        "family": "Chiu"
+      },
+      {
+        "given": "Demi",
+        "family": "Guo"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "NeurIPS 2018",
+    "URL": "https://arxiv.org/abs/1807.03756"
+  }
+]

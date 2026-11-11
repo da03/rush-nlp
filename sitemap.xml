@@ -9,6 +9,16 @@ layout: null
   <url><loc>{{ '/talks/' | absolute_url | xml_escape }}</loc></url>
   <url><loc>{{ '/teaching/' | absolute_url | xml_escape }}</loc></url>
   <url><loc>{{ '/publications/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/research/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/research/papers/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/research/data/' | absolute_url | xml_escape }}</loc></url>
+  <url><loc>{{ '/research/about/' | absolute_url | xml_escape }}</loc></url>
+  {% for guide in site.data.methods.guides %}
+  <url><loc>{{ guide.id | prepend: '/research/' | append: '/' | absolute_url | xml_escape }}</loc></url>
+  {% endfor %}
+  {% for paper in site.data.methods.papers %}
+  <url><loc>{{ paper.id | prepend: '/research/papers/' | append: '/' | absolute_url | xml_escape }}</loc></url>
+  {% endfor %}
   <url><loc>{{ '/cv.pdf' | absolute_url | xml_escape }}</loc></url>
   {% for course in site.data.teaching.teaching %}
   <url><loc>{{ course.course_url | absolute_url | xml_escape }}</loc></url>

@@ -1,0 +1,1295 @@
+[
+  {
+    "id": "tree-prompting",
+    "title": "Tree Prompting: Efficient Task Adaptation without Fine-Tuning",
+    "authors": [
+      {
+        "given": "John X.",
+        "family": "Morris"
+      },
+      {
+        "given": "Chandan",
+        "family": "Singh"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      },
+      {
+        "given": "Jianfeng",
+        "family": "Gao"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "year": 2023,
+    "venue": "EMNLP 2023",
+    "paper_url": "https://arxiv.org/html/2310.14034v1",
+    "summary": "Learns a reusable decision tree whose internal decisions are prompted language-model calls, with few-shot, instruction and dynamically generated prompt candidates.",
+    "connection": "Original prompt-based decision-tree method: task adaptation changes the tree and prompts while keeping the language model fixed.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "treeprompting",
+    "source_urls": [
+      "https://arxiv.org/html/2310.14034v1"
+    ],
+    "pdf_url": "https://aclanthology.org/2023.emnlp-main.384.pdf",
+    "code_url": "https://github.com/csinva/tree-prompt",
+    "doi": "10.18653/v1/2023.emnlp-main.384",
+    "equal_contribution": [
+      "John X. Morris",
+      "Chandan Singh"
+    ],
+    "arxiv_id": "2310.14034",
+    "arxiv_first_posted": "2023-10-21",
+    "abstract": "Prompting language models (LMs) is the main interface for applying them to new tasks. However, for smaller LMs, prompting provides low accuracy compared to gradient-based fine-tuning. Tree Prompting is an approach to prompting which builds a decision tree of prompts, linking multiple LM calls together to solve a task. At inference time, each call to the LM is determined by efficiently routing the outcome of the previous call using the tree. Experiments on classification datasets show that Tree Prompting improves accuracy over competing methods and is competitive with fine-tuning. We also show that variants of Tree Prompting allow inspection of a model’s decision-making process.",
+    "abstract_source": "https://arxiv.org/html/2310.14034v1",
+    "record_url": "https://yuntiandeng.com/research/papers/tree-prompting/"
+  },
+  {
+    "id": "aug-tree",
+    "title": "Augmenting interpretable models with large language models during training",
+    "authors": [
+      {
+        "given": "Chandan",
+        "family": "Singh"
+      },
+      {
+        "given": "Armin",
+        "family": "Askari"
+      },
+      {
+        "given": "Rich",
+        "family": "Caruana"
+      },
+      {
+        "given": "Jianfeng",
+        "family": "Gao"
+      }
+    ],
+    "year": 2023,
+    "venue": "Nature Communications 14, 7913",
+    "paper_url": "https://www.nature.com/articles/s41467-023-43713-1",
+    "summary": "Aug-Tree uses language-model-generated expansions to construct interpretable text features for tree splits.",
+    "connection": "Contrasts training-time feature expansion with Tree Prompting’s language-model calls while traversing a tree.",
+    "bibtex_type": "article",
+    "citation_key": "augtree",
+    "source_urls": [
+      "https://www.nature.com/articles/s41467-023-43713-1"
+    ],
+    "first_public": "2022-09-23",
+    "doi": "10.1038/s41467-023-43713-1",
+    "container_title": "Nature Communications",
+    "volume": "14",
+    "issue": "1",
+    "article_number": "7913",
+    "record_url": "https://yuntiandeng.com/research/papers/aug-tree/"
+  },
+  {
+    "id": "gptree",
+    "title": "GPTree: Towards Explainable Decision-Making via LLM-powered Decision Trees",
+    "authors": [
+      {
+        "given": "Sichao",
+        "family": "Xiong"
+      },
+      {
+        "given": "Yigit",
+        "family": "Ihlamur"
+      },
+      {
+        "given": "Fuat",
+        "family": "Alican"
+      },
+      {
+        "given": "Aaron Ontoyin",
+        "family": "Yin"
+      }
+    ],
+    "year": 2024,
+    "venue": "arXiv:2411.08257",
+    "paper_url": "https://arxiv.org/html/2411.08257v1",
+    "summary": "Builds decision trees with LLM-assisted splits and incorporates expert feedback to revise decision paths.",
+    "connection": "A later LLM decision-tree system with expert interaction and several split types.",
+    "bibtex_type": "article",
+    "citation_key": "gptree",
+    "source_urls": [
+      "https://arxiv.org/html/2411.08257v1"
+    ],
+    "arxiv_id": "2411.08257",
+    "arxiv_first_posted": "2024-11-13",
+    "publication_type": "preprint",
+    "container_title": "arXiv",
+    "record_url": "https://yuntiandeng.com/research/papers/gptree/"
+  },
+  {
+    "id": "act",
+    "title": "ACT: Agentic Classification Tree",
+    "authors": [
+      {
+        "given": "Vincent",
+        "family": "Grari"
+      },
+      {
+        "given": "Tim",
+        "family": "Arni"
+      },
+      {
+        "given": "Thibault",
+        "family": "Laugel"
+      },
+      {
+        "given": "Sylvain",
+        "family": "Lamprier"
+      },
+      {
+        "given": "James",
+        "family": "Zou"
+      },
+      {
+        "given": "Marcin",
+        "family": "Detyniecki"
+      }
+    ],
+    "year": 2025,
+    "venue": "arXiv:2509.26433",
+    "paper_url": "https://arxiv.org/html/2509.26433v4",
+    "summary": "Learns classification trees of natural-language binary questions through impurity-based split selection and TextGrad refinement.",
+    "connection": "A later agentic formulation of learning question-based decision trees; compare question optimization and tree construction.",
+    "bibtex_type": "article",
+    "citation_key": "act",
+    "source_urls": [
+      "https://arxiv.org/html/2509.26433v4"
+    ],
+    "arxiv_id": "2509.26433",
+    "arxiv_first_posted": "2025-09-30",
+    "publication_type": "preprint",
+    "container_title": "arXiv",
+    "record_url": "https://yuntiandeng.com/research/papers/act/"
+  },
+  {
+    "id": "residual-ebm",
+    "title": "Residual Energy-Based Models for Text Generation",
+    "authors": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Anton",
+        "family": "Bakhtin"
+      },
+      {
+        "given": "Myle",
+        "family": "Ott"
+      },
+      {
+        "given": "Arthur",
+        "family": "Szlam"
+      },
+      {
+        "given": "Marc’Aurelio",
+        "family": "Ranzato"
+      }
+    ],
+    "year": 2020,
+    "venue": "ICLR 2020",
+    "paper_url": "https://arxiv.org/html/2004.11714v1",
+    "summary": "Combines a fixed autoregressive language model with a learned sequence-level energy, NCE training, conditional generation by importance resampling, and likelihood bounds.",
+    "connection": "Original text-generation and evaluation framework connecting sequence-level residual energies to modern energy-corrected diffusion decoding.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "residualebm",
+    "source_urls": [
+      "https://arxiv.org/html/2004.11714v1"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2004.11714",
+    "code_url": "https://github.com/da03/Residual-EBM",
+    "arxiv_id": "2004.11714",
+    "arxiv_first_posted": "2020-04-22",
+    "abstract": "Text generation is ubiquitous in many NLP tasks, from summarization, to dialogue and machine translation. The dominant parametric approach is based on locally normalized models which predict one word at a time. While these work remarkably well, they are plagued by exposure bias due to the greedy nature of the generation process. In this work, we investigate un-normalized energy-based models (EBMs) which operate not at the token but at the sequence level. In order to make training tractable, we first work in the residual of a pretrained locally normalized language model and second we train using noise contrastive estimation. Furthermore, since the EBM works at the sequence level, we can leverage pretrained bi-directional contextual representations, such as BERT and RoBERTa. Our experiments on two large language modeling datasets show that residual EBMs yield lower perplexity compared to locally normalized baselines. Moreover, generation via importance sampling is very efficient and of higher quality than the baseline models according to human evaluation.",
+    "abstract_source": "https://arxiv.org/html/2004.11714v1",
+    "record_url": "https://yuntiandeng.com/research/papers/residual-ebm/"
+  },
+  {
+    "id": "residual-ebm-jmlr",
+    "title": "Residual Energy-Based Models for Text",
+    "authors": [
+      {
+        "given": "Anton",
+        "family": "Bakhtin"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Sam",
+        "family": "Gross"
+      },
+      {
+        "given": "Myle",
+        "family": "Ott"
+      },
+      {
+        "given": "Marc’Aurelio",
+        "family": "Ranzato"
+      },
+      {
+        "given": "Arthur",
+        "family": "Szlam"
+      }
+    ],
+    "year": 2021,
+    "venue": "JMLR 22(40):1–41",
+    "paper_url": "https://www.jmlr.org/papers/v22/20-326.html",
+    "summary": "Studies statistical discrimination of human and model text and incorporates learned discriminators into globally normalized generation.",
+    "connection": "Extended treatment of the discriminator-to-generator connection and residual energy modeling.",
+    "bibtex_type": "article",
+    "citation_key": "residualebmjmlr",
+    "source_urls": [
+      "https://www.jmlr.org/papers/v22/20-326.html"
+    ],
+    "pdf_url": "https://www.jmlr.org/papers/volume22/20-326/20-326.pdf",
+    "equal_contribution": [
+      "Anton Bakhtin",
+      "Yuntian Deng"
+    ],
+    "container_title": "Journal of Machine Learning Research",
+    "volume": "22",
+    "issue": "40",
+    "pages": "1–41",
+    "abstract": "Current large-scale auto-regressive language models display impressive fluency and can generate convincing text. In this work we start by asking the question: Can the generations of these models be reliably distinguished from real text by statistical discriminators? We find experimentally that the answer is affirmative when we have access to the training data for the model, and guardedly affirmative even if we do not. This suggests that the auto-regressive models can be improved by incorporating the (globally normalized) discriminators into the generative process. We give a formalism for this using the Energy-Based Model framework, and show that it indeed improves the results of the generative models, measured both in terms of perplexity and in terms of human evaluation.",
+    "abstract_source": "https://www.jmlr.org/papers/v22/20-326.html",
+    "record_url": "https://yuntiandeng.com/research/papers/residual-ebm-jmlr/"
+  },
+  {
+    "id": "edlm",
+    "title": "Energy-Based Diffusion Language Models for Text Generation",
+    "authors": [
+      {
+        "given": "Minkai",
+        "family": "Xu"
+      },
+      {
+        "given": "Tomas",
+        "family": "Geffner"
+      },
+      {
+        "given": "Karsten",
+        "family": "Kreis"
+      },
+      {
+        "given": "Weili",
+        "family": "Nie"
+      },
+      {
+        "given": "Yilun",
+        "family": "Xu"
+      },
+      {
+        "given": "Jure",
+        "family": "Leskovec"
+      },
+      {
+        "given": "Stefano",
+        "family": "Ermon"
+      },
+      {
+        "given": "Arash",
+        "family": "Vahdat"
+      }
+    ],
+    "year": 2025,
+    "venue": "ICLR 2025",
+    "paper_url": "https://arxiv.org/html/2410.21357v4",
+    "summary": "Adds a full-sequence residual energy to each diffusion denoising distribution, with autoregressive or NCE parameterizations and parallel importance sampling.",
+    "connection": "Directly cites Deng et al. (2020), carrying residual correction and partition estimation into diffusion language modeling.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "edlm",
+    "source_urls": [
+      "https://arxiv.org/html/2410.21357v4"
+    ],
+    "arxiv_id": "2410.21357",
+    "arxiv_first_posted": "2024-10-28",
+    "record_url": "https://yuntiandeng.com/research/papers/edlm/"
+  },
+  {
+    "id": "unified-energy",
+    "title": "Unified Energy for Invariant and Independent Decoding in Diffusion Language Models",
+    "authors": [
+      {
+        "given": "Yuchen",
+        "family": "Yan"
+      },
+      {
+        "given": "Minkai",
+        "family": "Xu"
+      },
+      {
+        "given": "Zaiquan",
+        "family": "Yang"
+      },
+      {
+        "given": "Yatao",
+        "family": "Bian"
+      }
+    ],
+    "year": 2026,
+    "venue": "arXiv:2606.09159",
+    "paper_url": "https://arxiv.org/html/2606.09159v1",
+    "summary": "Combines energy corrections for dependency and invariance in diffusion decoding.",
+    "connection": "Extends the contemporary energy-corrected diffusion direction with a unified treatment of decoding errors.",
+    "bibtex_type": "article",
+    "citation_key": "unifiedenergy",
+    "source_urls": [
+      "https://arxiv.org/html/2606.09159v1"
+    ],
+    "arxiv_id": "2606.09159",
+    "arxiv_first_posted": "2026-06-08",
+    "publication_type": "preprint",
+    "container_title": "arXiv",
+    "record_url": "https://yuntiandeng.com/research/papers/unified-energy/"
+  },
+  {
+    "id": "neural-trf-nce",
+    "title": "Learning Neural Trans-Dimensional Random Field Language Models with Noise-Contrastive Estimation",
+    "authors": [
+      {
+        "given": "Bin",
+        "family": "Wang"
+      },
+      {
+        "given": "Zhijian",
+        "family": "Ou"
+      }
+    ],
+    "year": 2018,
+    "venue": "ICASSP 2018",
+    "paper_url": "https://arxiv.org/abs/1710.10739",
+    "summary": "Uses an exponentially tilted reference distribution and noise-contrastive estimation for neural random-field language models.",
+    "connection": "Earlier residual formulation and NCE training explicitly discussed in the 2020 paper; its evaluation centers on speech-recognition rescoring.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "neuraltrfnce",
+    "source_urls": [
+      "https://arxiv.org/abs/1710.10739"
+    ],
+    "arxiv_id": "1710.10739",
+    "arxiv_first_posted": "2017-10-30",
+    "record_url": "https://yuntiandeng.com/research/papers/neural-trf-nce/"
+  },
+  {
+    "id": "cascaded2020",
+    "title": "Cascaded Text Generation with Markov Transformers",
+    "authors": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "year": 2020,
+    "venue": "NeurIPS 2020",
+    "paper_url": "https://arxiv.org/abs/2006.01112",
+    "pdf_url": "https://papers.nips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf",
+    "code_url": "https://github.com/harvardnlp/cascaded-generation",
+    "summary": "Higher-order CRF cascades for parallel text generation, parameterized by one Markov Transformer.",
+    "connection": "Increasing output dependence with tractable structured inference connects to joint modeling inside diffusion decoding.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "deng2020cascaded",
+    "source_urls": [
+      "https://arxiv.org/abs/2006.01112",
+      "https://arxiv.org/html/2006.01112v2"
+    ],
+    "arxiv_id": "2006.01112",
+    "arxiv_first_posted": "2020-06-01",
+    "abstract": "The two dominant approaches to neural text generation are fully autoregressive models, using serial beam search decoding, and non-autoregressive models, using parallel decoding with no output dependencies. This work proposes an autoregressive model with sub-linear parallel time generation. Noting that conditional random fields with bounded context can be decoded in parallel, we propose an efficient cascaded decoding approach for generating high-quality output. To parameterize this cascade, we introduce a Markov transformer, a variant of the popular fully autoregressive model that allows us to simultaneously decode with specific autoregressive context cutoffs. This approach requires only a small modification from standard autoregressive training, while showing competitive accuracy/speed tradeoff compared to existing methods on five machine translation datasets.",
+    "abstract_source": "https://arxiv.org/html/2006.01112v2",
+    "record_url": "https://yuntiandeng.com/research/papers/cascaded2020/"
+  },
+  {
+    "id": "lattice2021",
+    "title": "Sequence-to-Lattice Models for Fast Translation",
+    "authors": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "year": 2021,
+    "venue": "Findings of EMNLP 2021",
+    "paper_url": "https://aclanthology.org/2021.findings-emnlp.318/",
+    "pdf_url": "https://aclanthology.org/2021.findings-emnlp.318.pdf",
+    "code_url": "https://github.com/harvardnlp/cascaded-generation",
+    "doi": "10.18653/v1/2021.findings-emnlp.318",
+    "summary": "Candidate lookup, parallel conditional edge scoring, and exact Viterbi decoding replace a deep translation decoder.",
+    "connection": "Its candidate–edge–path architecture connects to coherent parallel drafting; its objective and inference differ from speculative prefix selection.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "deng-rush-2021-sequence",
+    "source_urls": [
+      "https://aclanthology.org/2021.findings-emnlp.318/",
+      "https://aclanthology.org/2021.findings-emnlp.318.pdf"
+    ],
+    "abstract": "Non-autoregressive machine translation (NAT) approaches enable fast generation by utilizing parallelizable generative processes. The remaining bottleneck in these models is their decoder layers; unfortunately unlike in autoregressive models (Kasai et al., 2020), removing decoder layers from NAT models significantly degrades accuracy. This work proposes a sequence-to-lattice model that replaces the decoder with a search lattice. Our approach first constructs a candidate lattice using efficient lookup operations, generates lattice scores from a deep encoder, and finally finds the best path using dynamic programming. Experiments on three machine translation datasets show that our method is faster than past non-autoregressive generation approaches, and more accurate than naively reducing the number of decoder layers.",
+    "abstract_source": "https://aclanthology.org/2021.findings-emnlp.318/",
+    "record_url": "https://yuntiandeng.com/research/papers/lattice2021/"
+  },
+  {
+    "id": "sun2019",
+    "title": "Fast Structured Decoding for Sequence Models",
+    "authors": [
+      {
+        "given": "Zhiqing",
+        "family": "Sun"
+      },
+      {
+        "given": "Zhuohan",
+        "family": "Li"
+      },
+      {
+        "given": "Haoqing",
+        "family": "Wang"
+      },
+      {
+        "given": "Di",
+        "family": "He"
+      },
+      {
+        "given": "Zi",
+        "family": "Lin"
+      },
+      {
+        "given": "Zhi-Hong",
+        "family": "Deng"
+      }
+    ],
+    "year": 2019,
+    "venue": "NeurIPS 2019",
+    "paper_url": "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html",
+    "pdf_url": "https://proceedings.neurips.cc/paper_files/paper/2019/file/74563ba21a90da13dacf2a73e3ddefa7-Paper.pdf",
+    "summary": "Adds approximate first-order CRF inference and dynamic transitions to non-autoregressive sequence models.",
+    "connection": "A first-order structured-decoding reference; Cascaded Text Generation develops higher-order cascades and shared Markov Transformer potentials.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "sun2019fast",
+    "source_urls": [
+      "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html",
+      "https://arxiv.org/abs/1910.11555"
+    ],
+    "arxiv_id": "1910.11555",
+    "arxiv_first_posted": "2019-10-25",
+    "record_url": "https://yuntiandeng.com/research/papers/sun2019/"
+  },
+  {
+    "id": "codd2026",
+    "title": "Breaking the Factorization Barrier in Diffusion Language Models",
+    "authors": [
+      {
+        "given": "Ian",
+        "family": "Li"
+      },
+      {
+        "given": "Zilei",
+        "family": "Shao"
+      },
+      {
+        "given": "Benjie",
+        "family": "Wang"
+      },
+      {
+        "given": "Rose",
+        "family": "Yu"
+      },
+      {
+        "given": "Guy",
+        "family": "Van den Broeck"
+      },
+      {
+        "given": "Anji",
+        "family": "Liu"
+      }
+    ],
+    "year": 2026,
+    "venue": "ICML 2026",
+    "paper_url": "https://proceedings.mlr.press/v306/li26fd.html",
+    "summary": "CoDD composes factorized diffusion predictions with a tractable probabilistic-circuit prior to model joint token dependencies.",
+    "connection": "Shares structured generation’s separation of parallel neural scoring from joint probabilistic inference.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "li2026factorization",
+    "source_urls": [
+      "https://proceedings.mlr.press/v306/li26fd.html",
+      "https://arxiv.org/abs/2603.00045",
+      "https://arxiv.org/html/2603.00045v3"
+    ],
+    "arxiv_id": "2603.00045",
+    "arxiv_first_posted": "2026-02-09",
+    "record_url": "https://yuntiandeng.com/research/papers/codd2026/"
+  },
+  {
+    "id": "dadlm2026",
+    "title": "DA-DLM: Explicitly Modeling Token Dependencies in Diffusion Language Models",
+    "authors": [
+      {
+        "given": "Pengyu",
+        "family": "Ji"
+      },
+      {
+        "given": "Zichen",
+        "family": "Zhang"
+      },
+      {
+        "given": "Xiang",
+        "family": "Hu"
+      },
+      {
+        "given": "Kewei",
+        "family": "Tu"
+      }
+    ],
+    "year": 2026,
+    "venue": "EMNLP 2026",
+    "paper_url": "https://aclanthology.org/2026.emnlp-main.2094/",
+    "pdf_url": "https://aclanthology.org/2026.emnlp-main.2094.pdf",
+    "doi": "10.18653/2026.emnlp-main.2094",
+    "summary": "Adapts directed-acyclic dependency modeling to iterative diffusion using position-oriented candidate groups and fixed-token anchors.",
+    "connection": "A direct transfer of structured output modeling from non-autoregressive translation to diffusion denoising.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "ji2026dadlm",
+    "source_urls": [
+      "https://aclanthology.org/2026.emnlp-main.2094/",
+      "https://aclanthology.org/2026.emnlp-main.2094.pdf",
+      "https://arxiv.org/abs/2609.15070"
+    ],
+    "arxiv_id": "2609.15070",
+    "arxiv_first_posted": "2026-09-14",
+    "record_url": "https://yuntiandeng.com/research/papers/dadlm2026/"
+  },
+  {
+    "id": "lilicorr2026",
+    "title": "LiLiCorr: Lightweight Likelihood Correlation of Parallel Drafts for Speculative Decoding",
+    "authors": [
+      {
+        "given": "Matan",
+        "family": "Rusanovsky"
+      },
+      {
+        "given": "Yoav",
+        "family": "Miron"
+      },
+      {
+        "given": "Roy",
+        "family": "Uziel"
+      },
+      {
+        "given": "Omer",
+        "family": "Belhasin"
+      },
+      {
+        "given": "Hao",
+        "family": "Guo"
+      },
+      {
+        "given": "Ran",
+        "family": "Zilberstein"
+      },
+      {
+        "given": "Maor",
+        "family": "Ashkenazi"
+      },
+      {
+        "given": "Michael",
+        "family": "Elad"
+      }
+    ],
+    "year": 2026,
+    "venue": "arXiv 2026",
+    "paper_url": "https://arxiv.org/abs/2608.20530",
+    "summary": "Scores adjacent compatibility among top-K parallel draft candidates and selects a draft through a cheap greedy walk.",
+    "connection": "Uses the candidate–edge–path pattern with local training and inference tailored to speculative prefix acceptance.",
+    "bibtex_type": "article",
+    "citation_key": "rusanovsky2026lilicorr",
+    "source_urls": [
+      "https://arxiv.org/abs/2608.20530",
+      "https://arxiv.org/html/2608.20530v2"
+    ],
+    "arxiv_id": "2608.20530",
+    "arxiv_first_posted": "2026-08-20",
+    "publication_type": "preprint",
+    "container_title": "arXiv",
+    "record_url": "https://yuntiandeng.com/research/papers/lilicorr2026/"
+  },
+  {
+    "id": "diffuspec2026",
+    "title": "DiffuSpec: Unlocking Diffusion Language Models for Speculative Decoding",
+    "authors": [
+      {
+        "given": "Guanghao",
+        "family": "Li"
+      },
+      {
+        "given": "Zhihui",
+        "family": "Fu"
+      },
+      {
+        "given": "Min",
+        "family": "Fang"
+      },
+      {
+        "given": "Qibin",
+        "family": "Zhao"
+      },
+      {
+        "given": "Ming",
+        "family": "Tang"
+      },
+      {
+        "given": "Chun",
+        "family": "Yuan"
+      },
+      {
+        "given": "Jun",
+        "family": "Wang"
+      }
+    ],
+    "year": 2026,
+    "venue": "Findings of ACL 2026",
+    "paper_url": "https://aclanthology.org/2026.findings-acl.1048/",
+    "pdf_url": "https://aclanthology.org/2026.findings-acl.1048.pdf",
+    "doi": "10.18653/v1/2026.findings-acl.1048",
+    "summary": "Uses diffusion drafting, Causal-consistency Path Search over token lattices, and adaptive draft lengths.",
+    "connection": "Connects candidate-lattice path selection to autoregressive verification of parallel diffusion proposals.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "li2026diffuspec",
+    "source_urls": [
+      "https://aclanthology.org/2026.findings-acl.1048/",
+      "https://aclanthology.org/2026.findings-acl.1048.pdf"
+    ],
+    "record_url": "https://yuntiandeng.com/research/papers/diffuspec2026/"
+  },
+  {
+    "id": "latentattention2018",
+    "title": "Latent Alignment and Variational Attention",
+    "authors": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Yoon",
+        "family": "Kim"
+      },
+      {
+        "given": "Justin",
+        "family": "Chiu"
+      },
+      {
+        "given": "Demi",
+        "family": "Guo"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "year": 2018,
+    "venue": "NeurIPS 2018",
+    "paper_url": "https://arxiv.org/abs/1807.03756",
+    "pdf_url": "https://proceedings.neurips.cc/paper/2018/file/b691334ccf10d4ab144d672f7783c8a3-Paper.pdf",
+    "code_url": "https://github.com/harvardnlp/var-attn/",
+    "summary": "Models alignment as a latent variable and learns approximate posterior inference through variational attention.",
+    "connection": "A general framework for distributions over attention, beyond a deterministic attention vector.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "deng2018latent",
+    "source_urls": [
+      "https://arxiv.org/abs/1807.03756",
+      "https://arxiv.org/html/1807.03756v2"
+    ],
+    "equal_contribution": [
+      "Yuntian Deng",
+      "Yoon Kim"
+    ],
+    "arxiv_id": "1807.03756",
+    "arxiv_first_posted": "2018-07-10",
+    "abstract": "Neural attention has become central to many state-of-the-art models in natural language processing and related domains. Attention networks are an easy-to-train and effective method for softly simulating alignment; however, the approach does not marginalize over latent alignments in a probabilistic sense. This property makes it difficult to compare attention to other alignment approaches, to compose it with probabilistic models, and to perform posterior inference conditioned on observed data. A related latent approach, hard attention, fixes these issues, but is generally harder to train and less accurate. This work considers variational attention networks, alternatives to soft and hard attention for learning latent variable alignment models, with tighter approximation bounds based on amortized variational inference. We further propose methods for reducing the variance of gradients to make these approaches computationally feasible. Experiments show that for machine translation and visual question answering, inefficient exact latent variable models outperform standard neural attention, but these gains go away when using hard attention based training. On the other hand, variational attention retains most of the performance gain but with training speed comparable to neural attention.",
+    "abstract_source": "https://arxiv.org/html/1807.03756v2",
+    "record_url": "https://yuntiandeng.com/research/papers/latentattention2018/"
+  },
+  {
+    "id": "showattendtell2015",
+    "title": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention",
+    "authors": [
+      {
+        "given": "Kelvin",
+        "family": "Xu"
+      },
+      {
+        "given": "Jimmy Lei",
+        "family": "Ba"
+      },
+      {
+        "given": "Ryan",
+        "family": "Kiros"
+      },
+      {
+        "given": "Kyunghyun",
+        "family": "Cho"
+      },
+      {
+        "given": "Aaron",
+        "family": "Courville"
+      },
+      {
+        "given": "Ruslan",
+        "family": "Salakhutdinov"
+      },
+      {
+        "given": "Richard S.",
+        "family": "Zemel"
+      },
+      {
+        "given": "Yoshua",
+        "family": "Bengio"
+      }
+    ],
+    "year": 2015,
+    "venue": "ICML 2015",
+    "paper_url": "https://proceedings.mlr.press/v37/xuc15.html",
+    "pdf_url": "https://proceedings.mlr.press/v37/xuc15.pdf",
+    "summary": "Introduces deterministic soft and stochastic hard visual attention for image captioning.",
+    "connection": "An early stochastic-attention reference for the distinction between expected features and sampled selection.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "xu2015show",
+    "source_urls": [
+      "https://proceedings.mlr.press/v37/xuc15.pdf",
+      "https://arxiv.org/abs/1502.03044"
+    ],
+    "arxiv_id": "1502.03044",
+    "arxiv_first_posted": "2015-02-10",
+    "record_url": "https://yuntiandeng.com/research/papers/showattendtell2015/"
+  },
+  {
+    "id": "structuredattention2017",
+    "title": "Structured Attention Networks",
+    "authors": [
+      {
+        "given": "Yoon",
+        "family": "Kim"
+      },
+      {
+        "given": "Carl",
+        "family": "Denton"
+      },
+      {
+        "given": "Luong",
+        "family": "Hoang"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "year": 2017,
+    "venue": "ICLR 2017",
+    "paper_url": "https://arxiv.org/abs/1702.00887",
+    "summary": "Uses differentiable graphical-model inference to attend over subsequences and syntactic trees.",
+    "connection": "Models structured selections and computes expected annotations; full prediction marginalization is a separate operation.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "kim2017structured",
+    "source_urls": [
+      "https://arxiv.org/abs/1702.00887",
+      "https://arxiv.org/html/1702.00887v3"
+    ],
+    "equal_contribution": [
+      "Yoon Kim",
+      "Carl Denton"
+    ],
+    "arxiv_id": "1702.00887",
+    "arxiv_first_posted": "2017-02-03",
+    "record_url": "https://yuntiandeng.com/research/papers/structuredattention2017/"
+  },
+  {
+    "id": "bahuleyan2018",
+    "title": "Variational Attention for Sequence-to-Sequence Models",
+    "authors": [
+      {
+        "given": "Hareesh",
+        "family": "Bahuleyan"
+      },
+      {
+        "given": "Lili",
+        "family": "Mou"
+      },
+      {
+        "given": "Olga",
+        "family": "Vechtomova"
+      },
+      {
+        "given": "Pascal",
+        "family": "Poupart"
+      }
+    ],
+    "year": 2018,
+    "venue": "COLING 2018",
+    "paper_url": "https://aclanthology.org/C18-1142/",
+    "pdf_url": "https://aclanthology.org/C18-1142.pdf",
+    "summary": "Treats attention context vectors as Gaussian latent variables in a variational encoder-decoder.",
+    "connection": "Clarifies that the term variational attention also names a different random object: the context vector.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "bahuleyan2018variational",
+    "source_urls": [
+      "https://aclanthology.org/C18-1142/",
+      "https://arxiv.org/abs/1712.08207"
+    ],
+    "arxiv_id": "1712.08207",
+    "arxiv_first_posted": "2017-12-21",
+    "record_url": "https://yuntiandeng.com/research/papers/bahuleyan2018/"
+  },
+  {
+    "id": "bayesianattention2020",
+    "title": "Bayesian Attention Modules",
+    "authors": [
+      {
+        "given": "Xinjie",
+        "family": "Fan"
+      },
+      {
+        "given": "Shujian",
+        "family": "Zhang"
+      },
+      {
+        "given": "Bo",
+        "family": "Chen"
+      },
+      {
+        "given": "Mingyuan",
+        "family": "Zhou"
+      }
+    ],
+    "year": 2020,
+    "venue": "NeurIPS 2020",
+    "paper_url": "https://arxiv.org/abs/2010.10604",
+    "pdf_url": "https://proceedings.neurips.cc/paper_files/paper/2020/file/bcff3f632fd16ff099a49c2f0932b47a-Paper.pdf",
+    "summary": "Builds distributions over attention weights from normalized reparameterizable variables and learns them with Bayesian regularization.",
+    "connection": "Extends probabilistic attention to modular stochastic weights with data-dependent priors.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "fan2020bayesian",
+    "source_urls": [
+      "https://arxiv.org/abs/2010.10604",
+      "https://proceedings.neurips.cc/paper_files/paper/2020/file/bcff3f632fd16ff099a49c2f0932b47a-Paper.pdf"
+    ],
+    "equal_contribution": [
+      "Xinjie Fan",
+      "Shujian Zhang"
+    ],
+    "arxiv_id": "2010.10604",
+    "arxiv_first_posted": "2020-10-20",
+    "record_url": "https://yuntiandeng.com/research/papers/bayesianattention2020/"
+  },
+  {
+    "id": "model-criticism",
+    "title": "Model Criticism for Long-Form Text Generation",
+    "authors": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Volodymyr",
+        "family": "Kuleshov"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "year": 2022,
+    "venue": "EMNLP 2022",
+    "paper_url": "https://aclanthology.org/2022.emnlp-main.815/",
+    "pdf_url": "https://aclanthology.org/2022.emnlp-main.815.pdf",
+    "code_url": "https://github.com/da03/criticize_text_generation",
+    "doi": "10.18653/v1/2022.emnlp-main.815",
+    "summary": "A framework for evaluating high-level text structure by comparing real and generated data in latent spaces defined by explicit generative critics. Experiments study discourse coherence, coreference, and topicality.",
+    "connection": "The original method behind this guide: diagnostic evaluation of structural distributions, separate from word-level fluency.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "deng-etal-2022-model",
+    "source_urls": [
+      "https://aclanthology.org/2022.emnlp-main.815/",
+      "https://arxiv.org/html/2210.08444v1"
+    ],
+    "arxiv_id": "2210.08444",
+    "arxiv_first_posted": "2022-10-16",
+    "abstract": "Language models have demonstrated the ability to generate highly fluent text; however, it remains unclear whether their output retains coherent high-level structure (e.g., story progression). Here, we propose to apply a statistical tool, model criticism in latent space, to evaluate the high-level structure of the generated text. Model criticism compares the distributions between real and generated data in a latent space obtained according to an assumptive generative process. Different generative processes identify specific failure modes of the underlying model. We perform experiments on three representative aspects of high-level discourse—coherence, coreference, and topicality—and find that transformer-based language models are able to capture topical structures but have a harder time maintaining structural coherence or modeling coreference.",
+    "abstract_source": "https://arxiv.org/html/2210.08444v1",
+    "record_url": "https://yuntiandeng.com/research/papers/model-criticism/"
+  },
+  {
+    "id": "openmeva",
+    "title": "OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics",
+    "authors": [
+      {
+        "given": "Jian",
+        "family": "Guan"
+      },
+      {
+        "given": "Zhexin",
+        "family": "Zhang"
+      },
+      {
+        "given": "Zhuoer",
+        "family": "Feng"
+      },
+      {
+        "given": "Zitao",
+        "family": "Liu"
+      },
+      {
+        "given": "Wenbiao",
+        "family": "Ding"
+      },
+      {
+        "given": "Xiaoxi",
+        "family": "Mao"
+      },
+      {
+        "given": "Changjie",
+        "family": "Fan"
+      },
+      {
+        "given": "Minlie",
+        "family": "Huang"
+      }
+    ],
+    "year": 2021,
+    "venue": "ACL-IJCNLP 2021",
+    "paper_url": "https://aclanthology.org/2021.acl-long.500/",
+    "pdf_url": "https://aclanthology.org/2021.acl-long.500.pdf",
+    "doi": "10.18653/v1/2021.acl-long.500",
+    "summary": "A benchmark for testing automatic story metrics, including human correlation, generalization, robustness, and sensitivity to different coherence errors.",
+    "connection": "Tests whether an evaluator detects known story defects; complements latent-space criticism of a generator’s output distribution.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "guan-etal-2021-openmeva",
+    "source_urls": [
+      "https://aclanthology.org/2021.acl-long.500/"
+    ],
+    "record_url": "https://yuntiandeng.com/research/papers/openmeva/"
+  },
+  {
+    "id": "story-evaluation-survey",
+    "title": "What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation",
+    "authors": [
+      {
+        "given": "Dingyi",
+        "family": "Yang"
+      },
+      {
+        "given": "Qin",
+        "family": "Jin"
+      }
+    ],
+    "year": 2024,
+    "venue": "arXiv",
+    "paper_url": "https://arxiv.org/abs/2408.14622",
+    "pdf_url": "https://arxiv.org/pdf/2408.14622",
+    "doi": "10.48550/arXiv.2408.14622",
+    "summary": "A survey of story-quality criteria, human evaluation, automatic metrics, and evaluation benchmarks.",
+    "connection": "Places structural criticism within the broader evaluation of coherence, character development, and narrative quality.",
+    "bibtex_type": "article",
+    "citation_key": "yang2024goodstory",
+    "source_urls": [
+      "https://arxiv.org/abs/2408.14622",
+      "https://arxiv.org/pdf/2408.14622"
+    ],
+    "arxiv_id": "2408.14622",
+    "arxiv_first_posted": "2024-08-26",
+    "publication_type": "preprint",
+    "container_title": "arXiv",
+    "record_url": "https://yuntiandeng.com/research/papers/story-evaluation-survey/"
+  },
+  {
+    "id": "markup-diffusion",
+    "title": "Markup-to-Image Diffusion Models with Scheduled Sampling",
+    "authors": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Noriyuki",
+        "family": "Kojima"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "year": 2023,
+    "venue": "ICLR 2023",
+    "paper_url": "https://arxiv.org/abs/2210.05147",
+    "pdf_url": "https://arxiv.org/pdf/2210.05147",
+    "code_url": "https://github.com/da03/markup2im",
+    "doi": "10.48550/arXiv.2210.05147",
+    "summary": "Learns to render LaTeX, HTML table layouts, LilyPond music notation, and SMILES molecules with conditional diffusion. Scheduled sampling exposes denoisers to their own generated inputs to address compounding errors.",
+    "connection": "The original diffusion-based markup-to-image method and four-domain rendering benchmark discussed in this guide.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "deng2023markuptoimage",
+    "source_urls": [
+      "https://arxiv.org/html/2210.05147v1",
+      "https://github.com/da03/markup2im"
+    ],
+    "arxiv_id": "2210.05147",
+    "arxiv_first_posted": "2022-10-11",
+    "abstract": "Building on recent advances in image generation, we present a fully data-driven approach to rendering markup into images. The approach is based on diffusion models, which parameterize the distribution of data using a sequence of denoising operations on top of a Gaussian noise distribution. We view the diffusion denoising process as a sequential decision making process, and show that it exhibits compounding errors similar to exposure bias issues in imitation learning problems. To mitigate these issues, we adapt the scheduled sampling algorithm to diffusion training. We conduct experiments on four markup datasets: mathematical formulas (LaTeX), table layouts (HTML), sheet music (LilyPond), and molecular images (SMILES). These experiments each verify the effectiveness of the diffusion process and the use of scheduled sampling to fix generation issues. These results also show that the markup-to-image task presents a useful controlled compositional setting for diagnosing and analyzing generative image models.",
+    "abstract_source": "https://arxiv.org/html/2210.05147v1",
+    "record_url": "https://yuntiandeng.com/research/papers/markup-diffusion/"
+  },
+  {
+    "id": "fsa-cdm",
+    "title": "Contrast-augmented Diffusion Model with Fine-grained Sequence Alignment for Markup-to-Image Generation",
+    "authors": [
+      {
+        "given": "Guojin",
+        "family": "Zhong"
+      },
+      {
+        "given": "Jin",
+        "family": "Yuan"
+      },
+      {
+        "given": "Pan",
+        "family": "Wang"
+      },
+      {
+        "given": "Kailun",
+        "family": "Yang"
+      },
+      {
+        "given": "Weili",
+        "family": "Guan"
+      },
+      {
+        "given": "Zhiyong",
+        "family": "Li"
+      }
+    ],
+    "year": 2023,
+    "venue": "ACM Multimedia 2023",
+    "paper_url": "https://arxiv.org/abs/2308.01147",
+    "pdf_url": "https://arxiv.org/pdf/2308.01147",
+    "summary": "FSA-CDM combines fine-grained cross-modal sequence alignment, contextual modeling, and a contrast-augmented diffusion objective for markup-to-image generation.",
+    "connection": "A subsequent markup-to-image method that builds on the task and four datasets introduced by Deng, Kojima, and Rush, addressing alignment and contrastive feedback.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "zhong2023contrastaugmented",
+    "source_urls": [
+      "https://arxiv.org/html/2308.01147v1"
+    ],
+    "arxiv_id": "2308.01147",
+    "arxiv_first_posted": "2023-08-02",
+    "record_url": "https://yuntiandeng.com/research/papers/fsa-cdm/"
+  },
+  {
+    "id": "diffusion-input-perturbation",
+    "title": "Input Perturbation Reduces Exposure Bias in Diffusion Models",
+    "authors": [
+      {
+        "given": "Mang",
+        "family": "Ning"
+      },
+      {
+        "given": "Enver",
+        "family": "Sangineto"
+      },
+      {
+        "given": "Angelo",
+        "family": "Porrello"
+      },
+      {
+        "given": "Simone",
+        "family": "Calderara"
+      },
+      {
+        "given": "Rita",
+        "family": "Cucchiara"
+      }
+    ],
+    "year": 2023,
+    "venue": "ICML 2023",
+    "paper_url": "https://proceedings.mlr.press/v202/ning23a.html",
+    "pdf_url": "https://proceedings.mlr.press/v202/ning23a/ning23a.pdf",
+    "summary": "Studies accumulated sampling errors in diffusion models and trains with perturbed inputs to simulate inference-time prediction errors.",
+    "connection": "Addresses the same training–sampling mismatch through input perturbation, providing a comparison with scheduled sampling on model-generated states.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "pmlr-v202-ning23a",
+    "source_urls": [
+      "https://proceedings.mlr.press/v202/ning23a.html"
+    ],
+    "record_url": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/"
+  },
+  {
+    "id": "interactive-training-2025",
+    "title": "Interactive Training: Feedback-Driven Neural Network Optimization",
+    "authors": [
+      {
+        "given": "Wentao",
+        "family": "Zhang"
+      },
+      {
+        "given": "Yang Young",
+        "family": "Lu"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "year": 2025,
+    "venue": "EMNLP 2025 System Demonstrations",
+    "paper_url": "https://aclanthology.org/2025.emnlp-demos.65/",
+    "pdf_url": "https://aclanthology.org/2025.emnlp-demos.65.pdf",
+    "code_url": "https://github.com/yuntian-group/interactive-training",
+    "doi": "10.18653/v1/2025.emnlp-demos.65",
+    "summary": "An open-source framework in which humans and AI agents intervene in ongoing neural-network training through a control server, changing optimizer settings, training data, and model checkpoints.",
+    "connection": "The original Interactive Training system connects live monitoring with feedback-driven control of a running training process.",
+    "bibtex_type": "inproceedings",
+    "citation_key": "zhang-etal-2025-interactive",
+    "source_urls": [
+      "https://aclanthology.org/2025.emnlp-demos.65/",
+      "https://arxiv.org/html/2510.02297v1"
+    ],
+    "arxiv_id": "2510.02297",
+    "arxiv_first_posted": "2025-10-02",
+    "abstract": "Traditional neural network training typically follows fixed, predefined optimization recipes, lacking the flexibility to dynamically respond to instabilities or emerging training issues. In this paper, we introduce Interactive Training, an open-source framework that enables real-time, feedback-driven intervention during neural network training by human experts or automated AI agents. At its core, Interactive Training uses a control server to mediate communication between users or agents and the ongoing training process, allowing users to dynamically adjust optimizer hyperparameters, training data, and model checkpoints. Through three case studies, we demonstrate that Interactive Training achieves superior training stability, reduced sensitivity to initial hyperparameters, and improved adaptability to evolving user needs, paving the way toward a future training paradigm where AI agents autonomously monitor training logs, proactively resolve instabilities, and optimize training dynamics.",
+    "abstract_source": "https://arxiv.org/html/2510.02297v1",
+    "record_url": "https://yuntiandeng.com/research/papers/interactive-training-2025/"
+  },
+  {
+    "id": "interactive-training-2026",
+    "title": "Interactive Training 2: Auditable Control Plane for Live Model Training",
+    "authors": [
+      {
+        "given": "Wentao",
+        "family": "Zhang"
+      },
+      {
+        "given": "Xuanhe",
+        "family": "Pan"
+      },
+      {
+        "given": "Han",
+        "family": "Zhou"
+      },
+      {
+        "given": "Yang",
+        "family": "Lu"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "year": 2026,
+    "venue": "arXiv",
+    "paper_url": "https://arxiv.org/abs/2607.18314",
+    "pdf_url": "https://arxiv.org/pdf/2607.18314",
+    "code_url": "https://github.com/yuntian-group/interactive-training",
+    "doi": "10.48550/arXiv.2607.18314",
+    "summary": "A reusable protocol with typed settings, structured actions, application-selected control points, and an ordered journal shared by humans, scripts, and LLM controllers.",
+    "connection": "Extends the 2025 framework from a Trainer-specific command interface to a common control protocol across training workflows.",
+    "bibtex_type": "article",
+    "citation_key": "zhang2026interactivetraining2",
+    "source_urls": [
+      "https://arxiv.org/abs/2607.18314",
+      "https://arxiv.org/html/2607.18314v1",
+      "https://github.com/yuntian-group/interactive-training"
+    ],
+    "equal_contribution": [
+      "Wentao Zhang",
+      "Xuanhe Pan",
+      "Han Zhou"
+    ],
+    "arxiv_id": "2607.18314",
+    "arxiv_first_posted": "2026-07-17",
+    "publication_type": "preprint",
+    "container_title": "arXiv",
+    "abstract": "Experiment trackers show how training is progressing, but changing a live run still usually requires trainer-specific code. We present Interactive Training 2, an open-source control plane for steering training through a shared protocol. Training applications declare which settings and actions they expose, humans and automated controllers submit requests through the same interface, and the training loop validates and applies them at safe control points. A customized Aim workspace combines live metrics and controls with a chronological record of requests and outcomes. We demonstrate the system across five NLP and reinforcement-learning workflows. The released code and traces provide a reusable foundation for auditable human- and agent-guided training.",
+    "abstract_source": "https://arxiv.org/html/2607.18314v1",
+    "record_url": "https://yuntiandeng.com/research/papers/interactive-training-2026/"
+  },
+  {
+    "id": "livetune",
+    "title": "LiveTune: Dynamic Parameter Tuning for Feedback-Driven Optimization",
+    "authors": [
+      {
+        "given": "Soheil Zibakhsh",
+        "family": "Shabgahi"
+      },
+      {
+        "given": "Nojan",
+        "family": "Sheybani"
+      },
+      {
+        "given": "Aiden",
+        "family": "Tabrizi"
+      },
+      {
+        "given": "Farinaz",
+        "family": "Koushanfar"
+      }
+    ],
+    "year": 2023,
+    "venue": "arXiv",
+    "paper_url": "https://arxiv.org/abs/2311.17279",
+    "pdf_url": "https://arxiv.org/pdf/2311.17279",
+    "doi": "10.48550/arXiv.2311.17279",
+    "summary": "LiveVariables expose optimization parameters through designated system ports for real-time adjustment without restarting the optimization loop.",
+    "connection": "An earlier system for changing running optimization processes; compare its parameter mechanism with Interactive Training’s human/agent command interface and v2 protocol.",
+    "bibtex_type": "article",
+    "citation_key": "shabgahi2023livetune",
+    "source_urls": [
+      "https://arxiv.org/abs/2311.17279",
+      "https://arxiv.org/html/2311.17279v2"
+    ],
+    "arxiv_id": "2311.17279",
+    "arxiv_first_posted": "2023-11-28",
+    "publication_type": "preprint",
+    "container_title": "arXiv",
+    "record_url": "https://yuntiandeng.com/research/papers/livetune/"
+  },
+  {
+    "id": "ai-training-manager",
+    "title": "AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes",
+    "authors": [
+      {
+        "given": "Anjali",
+        "family": "Rao"
+      },
+      {
+        "given": "Nikhil Kamalkumar",
+        "family": "Advani"
+      }
+    ],
+    "year": 2026,
+    "venue": "arXiv",
+    "paper_url": "https://arxiv.org/abs/2606.29871",
+    "pdf_url": "https://arxiv.org/pdf/2606.29871",
+    "doi": "10.48550/arXiv.2606.29871",
+    "summary": "An asynchronous LLM supervisor observes training telemetry and proposes constrained changes to a running training recipe, with experiments on deliberately induced supervised-learning and reinforcement-learning failure modes.",
+    "connection": "Studies an automated controller over active training, complementing Interactive Training’s reusable infrastructure for human and automated controllers.",
+    "bibtex_type": "article",
+    "citation_key": "rao2026aitrainingmanager",
+    "source_urls": [
+      "https://arxiv.org/abs/2606.29871",
+      "https://arxiv.org/html/2606.29871v3"
+    ],
+    "arxiv_id": "2606.29871",
+    "arxiv_first_posted": "2026-06-29",
+    "publication_type": "preprint",
+    "container_title": "arXiv",
+    "record_url": "https://yuntiandeng.com/research/papers/ai-training-manager/"
+  }
+]

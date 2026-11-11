@@ -1,0 +1,208 @@
+{
+  "id": "long-form-evaluation",
+  "title": "Evaluating the structure of long-form text",
+  "eyebrow": "Coherence, coreference and narrative evaluation",
+  "description": "How latent-space model criticism evaluates discourse structure, entity behavior, and topicality beyond word-level fluency in generated text.",
+  "lead": "A fluent paragraph does not establish a coherent document. Model Criticism for Long-Form Text Generation, by Yuntian Deng, Volodymyr Kuleshov, and Alexander M. Rush, introduced a framework for comparing the high-level structures of real and generated text through explicit latent-variable critics. First released on October 16, 2022 and published at EMNLP 2022, it connects long-form evaluation to a concrete statistical question: does a generator reproduce the distribution of structures found in reference texts?",
+  "original_papers": [
+    "model-criticism"
+  ],
+  "terms": [
+    "long-form text evaluation",
+    "story evaluation",
+    "discourse coherence",
+    "entity consistency",
+    "model criticism in latent space",
+    "latent perplexity"
+  ],
+  "sections": [
+    {
+      "id": "fluency-and-structure",
+      "title": "Separate fluent wording from coherent structure",
+      "paragraphs": [
+        "Consider an article that introduces a method, presents results, and then returns to an unrelated introduction. Each sentence can be grammatical while the section sequence is structurally unusual. A narrative has related problems when entities disappear, reappear inconsistently, or follow implausible patterns across a long passage.",
+        "Word-level perplexity measures how well a model predicts tokens. It does not directly measure section transitions, coreference structure, or topical relationships. The paper demonstrates this distinction with synthetic data whose generative process is known: strong next-token prediction coexists with a poor fit to the underlying latent transitions."
+      ],
+      "citations": [
+        "model-criticism"
+      ]
+    },
+    {
+      "id": "latent-critic",
+      "title": "Choose a critic that expresses the property being tested",
+      "paragraphs": [
+        "The framework introduces a critic with a generative model of latent structure and observed text. Its posterior maps a document into a distribution over latent variables. Criticism then compares the structures inferred from generated samples with those inferred from reference data, using the same critic for both.",
+        "One diagnostic is the expected negative log probability of inferred latent variables under the critic’s prior. Aggregating it produces a latent cross-entropy, reported as latent perplexity in the experiments. This makes the measured property explicit: an evaluator of section order and an evaluator of entity reuse need different latent models. The critic supplies an assumption about structure; it is not the language model under evaluation."
+      ],
+      "citations": [
+        "model-criticism"
+      ]
+    },
+    {
+      "id": "three-properties",
+      "title": "Three structural questions",
+      "paragraphs": [
+        "Discourse coherence asks whether sections follow the transitions found in real documents. The experiments examine scientific articles and Wikipedia, including generation with and without explicit section-title cues. Coreference asks whether generated text reproduces the patterns of references to entities. Topicality asks whether topic relationships match reference documents.",
+        "These are distinct diagnoses. The paper finds that its transformer language models capture topical correlations while struggling with coherence and coreference. A single overall quality score would hide this difference. The conclusion concerns the evaluated models and critics; testing a new generator requires collecting its outputs and running the structural comparison again."
+      ],
+      "citations": [
+        "model-criticism"
+      ]
+    },
+    {
+      "id": "evaluation-landscape",
+      "title": "Relate model criticism to story metrics",
+      "paragraphs": [
+        "OpenMEVA evaluates the evaluators. Its controlled perturbations test whether automatic metrics respond to errors in coherence and remain stable under meaning-preserving changes. Latent-space model criticism instead asks which structural distributions a generator has learned. The two approaches answer different experimental questions and fit together in an evaluation suite.",
+        "The story-evaluation survey by Dingyi Yang and Qin Jin organizes broader criteria such as coherence, character development, and interestingness. A critic for section transitions does not measure all these criteria. Human assessment or an LLM judge answers reader-facing questions; a specified structural critic supplies a reproducible diagnostic tied to a particular property."
+      ],
+      "citations": [
+        "openmeva",
+        "story-evaluation-survey",
+        "model-criticism"
+      ]
+    },
+    {
+      "id": "evaluation-recipe",
+      "title": "Design a useful long-form evaluation",
+      "paragraphs": [
+        "Start with the failure you want to detect, then define its latent representation and reference corpus. Fit or specify the critic, check its behavior on real texts and known structural errors, and apply it identically to reference and generated samples. Keep generation conditions, document lengths, and sample counts visible so that the comparison answers the intended question.",
+        "Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code provide concrete starting points for coherence, coreference, and topicality rather than a single universal quality metric."
+      ],
+      "citations": [
+        "model-criticism",
+        "openmeva"
+      ]
+    }
+  ],
+  "related_guides": [
+    "probabilistic-attention",
+    "structured-decoding"
+  ],
+  "demo": "structure",
+  "reading_order": [
+    "model-criticism",
+    "openmeva",
+    "story-evaluation-survey"
+  ],
+  "url": "https://yuntiandeng.com/research/long-form-evaluation/",
+  "papers": [
+    {
+      "id": "model-criticism",
+      "title": "Model Criticism for Long-Form Text Generation",
+      "authors": [
+        {
+          "given": "Yuntian",
+          "family": "Deng"
+        },
+        {
+          "given": "Volodymyr",
+          "family": "Kuleshov"
+        },
+        {
+          "given": "Alexander M.",
+          "family": "Rush"
+        }
+      ],
+      "year": 2022,
+      "venue": "EMNLP 2022",
+      "paper_url": "https://aclanthology.org/2022.emnlp-main.815/",
+      "pdf_url": "https://aclanthology.org/2022.emnlp-main.815.pdf",
+      "code_url": "https://github.com/da03/criticize_text_generation",
+      "doi": "10.18653/v1/2022.emnlp-main.815",
+      "summary": "A framework for evaluating high-level text structure by comparing real and generated data in latent spaces defined by explicit generative critics. Experiments study discourse coherence, coreference, and topicality.",
+      "connection": "The original method behind this guide: diagnostic evaluation of structural distributions, separate from word-level fluency.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "deng-etal-2022-model",
+      "source_urls": [
+        "https://aclanthology.org/2022.emnlp-main.815/",
+        "https://arxiv.org/html/2210.08444v1"
+      ],
+      "arxiv_id": "2210.08444",
+      "arxiv_first_posted": "2022-10-16",
+      "abstract": "Language models have demonstrated the ability to generate highly fluent text; however, it remains unclear whether their output retains coherent high-level structure (e.g., story progression). Here, we propose to apply a statistical tool, model criticism in latent space, to evaluate the high-level structure of the generated text. Model criticism compares the distributions between real and generated data in a latent space obtained according to an assumptive generative process. Different generative processes identify specific failure modes of the underlying model. We perform experiments on three representative aspects of high-level discourse—coherence, coreference, and topicality—and find that transformer-based language models are able to capture topical structures but have a harder time maintaining structural coherence or modeling coreference.",
+      "abstract_source": "https://arxiv.org/html/2210.08444v1"
+    },
+    {
+      "id": "openmeva",
+      "title": "OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics",
+      "authors": [
+        {
+          "given": "Jian",
+          "family": "Guan"
+        },
+        {
+          "given": "Zhexin",
+          "family": "Zhang"
+        },
+        {
+          "given": "Zhuoer",
+          "family": "Feng"
+        },
+        {
+          "given": "Zitao",
+          "family": "Liu"
+        },
+        {
+          "given": "Wenbiao",
+          "family": "Ding"
+        },
+        {
+          "given": "Xiaoxi",
+          "family": "Mao"
+        },
+        {
+          "given": "Changjie",
+          "family": "Fan"
+        },
+        {
+          "given": "Minlie",
+          "family": "Huang"
+        }
+      ],
+      "year": 2021,
+      "venue": "ACL-IJCNLP 2021",
+      "paper_url": "https://aclanthology.org/2021.acl-long.500/",
+      "pdf_url": "https://aclanthology.org/2021.acl-long.500.pdf",
+      "doi": "10.18653/v1/2021.acl-long.500",
+      "summary": "A benchmark for testing automatic story metrics, including human correlation, generalization, robustness, and sensitivity to different coherence errors.",
+      "connection": "Tests whether an evaluator detects known story defects; complements latent-space criticism of a generator’s output distribution.",
+      "bibtex_type": "inproceedings",
+      "citation_key": "guan-etal-2021-openmeva",
+      "source_urls": [
+        "https://aclanthology.org/2021.acl-long.500/"
+      ]
+    },
+    {
+      "id": "story-evaluation-survey",
+      "title": "What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation",
+      "authors": [
+        {
+          "given": "Dingyi",
+          "family": "Yang"
+        },
+        {
+          "given": "Qin",
+          "family": "Jin"
+        }
+      ],
+      "year": 2024,
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2408.14622",
+      "pdf_url": "https://arxiv.org/pdf/2408.14622",
+      "doi": "10.48550/arXiv.2408.14622",
+      "summary": "A survey of story-quality criteria, human evaluation, automatic metrics, and evaluation benchmarks.",
+      "connection": "Places structural criticism within the broader evaluation of coherence, character development, and narrative quality.",
+      "bibtex_type": "article",
+      "citation_key": "yang2024goodstory",
+      "source_urls": [
+        "https://arxiv.org/abs/2408.14622",
+        "https://arxiv.org/pdf/2408.14622"
+      ],
+      "arxiv_id": "2408.14622",
+      "arxiv_first_posted": "2024-08-26",
+      "publication_type": "preprint",
+      "container_title": "arXiv"
+    }
+  ]
+}

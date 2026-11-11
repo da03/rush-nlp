@@ -19,6 +19,12 @@ permalink: /llms.txt
 - [Bibliography and citations](https://yuntiandeng.com/wildchat/data/): JSON, Markdown, BibTeX, and CSL-JSON.
 - [Exact URL directory](https://yuntiandeng.com/wildchat/data/navigation.json).
 
+## Methods and their current connections
+
+- [Research guides](https://yuntiandeng.com/research/): Prompted decision trees, energy-based generation, probabilistic attention, structured decoding, long-form evaluation, learned rendering, and interactive training.
+- [Guide directory](https://yuntiandeng.com/research/llms.txt): Topic pages and their plain-text exports.
+- [Papers and citations](https://yuntiandeng.com/research/data/): Full authors, original abstracts, method notes, BibTeX, CSL JSON, and Markdown.
+
 ## Earlier research: Image-to-Markup and IM2LATEX-100K (2016–2017)
 
 Yuntian Deng co-created IM2LATEX-100K with Anssi Kanervisto and Alexander M. Rush in the 2016 Image-to-Markup research. The ICML 2017 paper is by Yuntian Deng, Anssi Kanervisto, Jeffrey Ling, and Alexander M. Rush.

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "sun2019fast",
+    "type": "paper-conference",
+    "title": "Fast Structured Decoding for Sequence Models",
+    "author": [
+      {
+        "given": "Zhiqing",
+        "family": "Sun"
+      },
+      {
+        "given": "Zhuohan",
+        "family": "Li"
+      },
+      {
+        "given": "Haoqing",
+        "family": "Wang"
+      },
+      {
+        "given": "Di",
+        "family": "He"
+      },
+      {
+        "given": "Zi",
+        "family": "Lin"
+      },
+      {
+        "given": "Zhi-Hong",
+        "family": "Deng"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2019
+        ]
+      ]
+    },
+    "container-title": "NeurIPS 2019",
+    "URL": "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html"
+  }
+]

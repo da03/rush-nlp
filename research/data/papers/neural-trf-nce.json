@@ -1,0 +1,27 @@
+{
+  "id": "neural-trf-nce",
+  "title": "Learning Neural Trans-Dimensional Random Field Language Models with Noise-Contrastive Estimation",
+  "authors": [
+    {
+      "given": "Bin",
+      "family": "Wang"
+    },
+    {
+      "given": "Zhijian",
+      "family": "Ou"
+    }
+  ],
+  "year": 2018,
+  "venue": "ICASSP 2018",
+  "paper_url": "https://arxiv.org/abs/1710.10739",
+  "summary": "Uses an exponentially tilted reference distribution and noise-contrastive estimation for neural random-field language models.",
+  "connection": "Earlier residual formulation and NCE training explicitly discussed in the 2020 paper; its evaluation centers on speech-recognition rescoring.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "neuraltrfnce",
+  "source_urls": [
+    "https://arxiv.org/abs/1710.10739"
+  ],
+  "arxiv_id": "1710.10739",
+  "arxiv_first_posted": "2017-10-30",
+  "record_url": "https://yuntiandeng.com/research/papers/neural-trf-nce/"
+}

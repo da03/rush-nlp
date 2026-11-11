@@ -1,0 +1,40 @@
+{
+  "id": "structuredattention2017",
+  "title": "Structured Attention Networks",
+  "authors": [
+    {
+      "given": "Yoon",
+      "family": "Kim"
+    },
+    {
+      "given": "Carl",
+      "family": "Denton"
+    },
+    {
+      "given": "Luong",
+      "family": "Hoang"
+    },
+    {
+      "given": "Alexander M.",
+      "family": "Rush"
+    }
+  ],
+  "year": 2017,
+  "venue": "ICLR 2017",
+  "paper_url": "https://arxiv.org/abs/1702.00887",
+  "summary": "Uses differentiable graphical-model inference to attend over subsequences and syntactic trees.",
+  "connection": "Models structured selections and computes expected annotations; full prediction marginalization is a separate operation.",
+  "bibtex_type": "inproceedings",
+  "citation_key": "kim2017structured",
+  "source_urls": [
+    "https://arxiv.org/abs/1702.00887",
+    "https://arxiv.org/html/1702.00887v3"
+  ],
+  "equal_contribution": [
+    "Yoon Kim",
+    "Carl Denton"
+  ],
+  "arxiv_id": "1702.00887",
+  "arxiv_first_posted": "2017-02-03",
+  "record_url": "https://yuntiandeng.com/research/papers/structuredattention2017/"
+}

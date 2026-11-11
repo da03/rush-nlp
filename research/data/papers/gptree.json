@@ -1,0 +1,37 @@
+{
+  "id": "gptree",
+  "title": "GPTree: Towards Explainable Decision-Making via LLM-powered Decision Trees",
+  "authors": [
+    {
+      "given": "Sichao",
+      "family": "Xiong"
+    },
+    {
+      "given": "Yigit",
+      "family": "Ihlamur"
+    },
+    {
+      "given": "Fuat",
+      "family": "Alican"
+    },
+    {
+      "given": "Aaron Ontoyin",
+      "family": "Yin"
+    }
+  ],
+  "year": 2024,
+  "venue": "arXiv:2411.08257",
+  "paper_url": "https://arxiv.org/html/2411.08257v1",
+  "summary": "Builds decision trees with LLM-assisted splits and incorporates expert feedback to revise decision paths.",
+  "connection": "A later LLM decision-tree system with expert interaction and several split types.",
+  "bibtex_type": "article",
+  "citation_key": "gptree",
+  "source_urls": [
+    "https://arxiv.org/html/2411.08257v1"
+  ],
+  "arxiv_id": "2411.08257",
+  "arxiv_first_posted": "2024-11-13",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "record_url": "https://yuntiandeng.com/research/papers/gptree/"
+}

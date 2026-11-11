@@ -1,0 +1,26 @@
+[
+  {
+    "id": "neuraltrfnce",
+    "type": "paper-conference",
+    "title": "Learning Neural Trans-Dimensional Random Field Language Models with Noise-Contrastive Estimation",
+    "author": [
+      {
+        "given": "Bin",
+        "family": "Wang"
+      },
+      {
+        "given": "Zhijian",
+        "family": "Ou"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "container-title": "ICASSP 2018",
+    "URL": "https://arxiv.org/abs/1710.10739"
+  }
+]
