@@ -109,9 +109,19 @@
         "Examine the complete system rather than the diagram alone. A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.",
         "The accompanying illustration lets you follow a fixed tree and change branch choices. To build a learned classifier, start with the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples. Treat the illustration as a mechanism explanation, separate from an empirical accuracy result."
       ]
+    },
+    {
+      "id": "original-notebook",
+      "title": "Run the original Tree Prompting notebook",
+      "paragraphs": [
+        "The authors’ <a href=\"https://github.com/csinva/tree-prompt/blob/master/demo.ipynb\">original notebook</a> uses GPT-2 and Rotten Tomatoes examples to fit <code>TreePromptClassifier</code>, predict held-out labels, compare individual prompts, and draw the learned tree with <code>plot_tree</code>. Follow the <a href=\"https://github.com/csinva/tree-prompt\">repository installation instructions</a>; this notebook downloads the model and dataset."
+      ],
+      "citations": [
+        "tree-prompting"
+      ]
     }
   ],
-  "updated_at": "2026-11-10",
+  "updated_at": "2026-11-11",
   "url": "https://yuntiandeng.com/research/llm-decision-trees/",
   "papers": [
     {

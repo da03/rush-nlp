@@ -65,6 +65,16 @@ Change the energy strength β over the three-outcome distribution in the example
 For importance resampling from candidates already drawn from the base model, the pool weights are exp(−E(x)). The base-model factor is already accounted for by that sampling step. This distinction connects the normalized model to its practical sampling procedure.
 
 
+## Run finite-pool energy resampling
+
+Download the self-contained [energy-resampling notebook](https://yuntiandeng.com/research/examples/energy_resampling.ipynb) or [Python script](https://yuntiandeng.com/research/examples/energy_resampling.py). It computes the exact residual model on three outcomes, draws candidate pools from the base distribution, and selects entries using their energy weights.
+
+It also sums over all possible pool-count configurations to compute the exact output distribution induced by a finite pool. This exposes the approximation error without Monte Carlo noise. Duplicate candidates retain their multiplicity, and selecting by minimum energy is shown separately from probabilistic resampling.
+
+The code runs with Python 3.9+ and its standard library. [Download all three examples and numerical checks](https://yuntiandeng.com/research/examples/research-examples.zip).
+
+- [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1)
+
 ## References
 
 - Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc’Aurelio Ranzato. Residual Energy-Based Models for Text Generation. ICLR 2020. https://arxiv.org/html/2004.11714v1

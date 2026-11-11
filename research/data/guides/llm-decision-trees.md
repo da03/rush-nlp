@@ -56,6 +56,12 @@ Examine the complete system rather than the diagram alone. A readable question d
 The accompanying illustration lets you follow a fixed tree and change branch choices. To build a learned classifier, start with the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples. Treat the illustration as a mechanism explanation, separate from an empirical accuracy result.
 
 
+## Run the original Tree Prompting notebook
+
+The authors’ [original notebook](https://github.com/csinva/tree-prompt/blob/master/demo.ipynb) uses GPT-2 and Rotten Tomatoes examples to fit TreePromptClassifier, predict held-out labels, compare individual prompts, and draw the learned tree with plot_tree. Follow the [repository installation instructions](https://github.com/csinva/tree-prompt); this notebook downloads the model and dataset.
+
+- [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1)
+
 ## References
 
 - John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. Tree Prompting: Efficient Task Adaptation without Fine-Tuning. EMNLP 2023. https://arxiv.org/html/2310.14034v1

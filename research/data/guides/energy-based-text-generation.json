@@ -128,9 +128,21 @@
         "Change the energy strength β over the three-outcome distribution in the example. At β = 0, the probabilities are the base distribution. Increasing β shifts mass toward lower-energy outcomes, while the base probabilities still affect the result. The example computes the exact normalized distribution over three possible sequences; it does not draw a candidate pool or call a language model.",
         "For importance resampling from candidates already drawn from the base model, the pool weights are exp(−E(x)). The base-model factor is already accounted for by that sampling step. This distinction connects the normalized model to its practical sampling procedure."
       ]
+    },
+    {
+      "id": "runnable-energy-resampling",
+      "title": "Run finite-pool energy resampling",
+      "paragraphs": [
+        "Download the self-contained <a href=\"/research/examples/energy_resampling.ipynb\" download>energy-resampling notebook</a> or <a href=\"/research/examples/energy_resampling.py\" download>Python script</a>. It computes the exact residual model on three outcomes, draws candidate pools from the base distribution, and selects entries using their energy weights.",
+        "It also sums over all possible pool-count configurations to compute the exact output distribution induced by a finite pool. This exposes the approximation error without Monte Carlo noise. Duplicate candidates retain their multiplicity, and selecting by minimum energy is shown separately from probabilistic resampling.",
+        "The code runs with Python 3.9+ and its standard library. <a href=\"/research/examples/research-examples.zip\" download>Download all three examples and numerical checks</a>."
+      ],
+      "citations": [
+        "residual-ebm"
+      ]
     }
   ],
-  "updated_at": "2026-11-10",
+  "updated_at": "2026-11-11",
   "url": "https://yuntiandeng.com/research/energy-based-text-generation/",
   "papers": [
     {

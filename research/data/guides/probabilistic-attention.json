@@ -111,6 +111,18 @@
         "bahuleyan2018",
         "bayesianattention2020"
       ]
+    },
+    {
+      "id": "runnable-categorical-example",
+      "title": "Run exact and variational attention",
+      "paragraphs": [
+        "Download the self-contained <a href=\"/research/examples/latent_attention.ipynb\" download>attention notebook</a> or <a href=\"/research/examples/latent_attention.py\" download>Python script</a>. It compares averaging source features before a nonlinear predictor with averaging output probabilities over categorical attention states.",
+        "The example computes the posterior for an observed label and optimizes a categorical variational distribution. The difference between exact log likelihood and the ELBO equals KL divergence to the exact posterior. It uses fixed generative parameters for one observation; the paper learns an amortized inference network across examples and also studies Dirichlet attention.",
+        "The code runs with Python 3.9+ and its standard library, without model weights, API keys or GPU resources. <a href=\"/research/examples/research-examples.zip\" download>Download all three examples and numerical checks</a>."
+      ],
+      "citations": [
+        "latentattention2018"
+      ]
     }
   ],
   "related_guides": [
@@ -125,7 +137,7 @@
     "bahuleyan2018",
     "bayesianattention2020"
   ],
-  "updated_at": "2026-11-10",
+  "updated_at": "2026-11-11",
   "url": "https://yuntiandeng.com/research/probabilistic-attention/",
   "papers": [
     {

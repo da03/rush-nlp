@@ -110,9 +110,19 @@
           "Examine the complete system rather than the diagram alone. A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.",
           "The accompanying illustration lets you follow a fixed tree and change branch choices. To build a learned classifier, start with the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples. Treat the illustration as a mechanism explanation, separate from an empirical accuracy result."
         ]
+      },
+      {
+        "id": "original-notebook",
+        "title": "Run the original Tree Prompting notebook",
+        "paragraphs": [
+          "The authors’ <a href=\"https://github.com/csinva/tree-prompt/blob/master/demo.ipynb\">original notebook</a> uses GPT-2 and Rotten Tomatoes examples to fit <code>TreePromptClassifier</code>, predict held-out labels, compare individual prompts, and draw the learned tree with <code>plot_tree</code>. Follow the <a href=\"https://github.com/csinva/tree-prompt\">repository installation instructions</a>; this notebook downloads the model and dataset."
+        ],
+        "citations": [
+          "tree-prompting"
+        ]
       }
     ],
-    "updated_at": "2026-11-10",
+    "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/llm-decision-trees/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/llm-decision-trees.md"
   },
@@ -246,9 +256,21 @@
           "Change the energy strength β over the three-outcome distribution in the example. At β = 0, the probabilities are the base distribution. Increasing β shifts mass toward lower-energy outcomes, while the base probabilities still affect the result. The example computes the exact normalized distribution over three possible sequences; it does not draw a candidate pool or call a language model.",
           "For importance resampling from candidates already drawn from the base model, the pool weights are exp(−E(x)). The base-model factor is already accounted for by that sampling step. This distinction connects the normalized model to its practical sampling procedure."
         ]
+      },
+      {
+        "id": "runnable-energy-resampling",
+        "title": "Run finite-pool energy resampling",
+        "paragraphs": [
+          "Download the self-contained <a href=\"/research/examples/energy_resampling.ipynb\" download>energy-resampling notebook</a> or <a href=\"/research/examples/energy_resampling.py\" download>Python script</a>. It computes the exact residual model on three outcomes, draws candidate pools from the base distribution, and selects entries using their energy weights.",
+          "It also sums over all possible pool-count configurations to compute the exact output distribution induced by a finite pool. This exposes the approximation error without Monte Carlo noise. Duplicate candidates retain their multiplicity, and selecting by minimum energy is shown separately from probabilistic resampling.",
+          "The code runs with Python 3.9+ and its standard library. <a href=\"/research/examples/research-examples.zip\" download>Download all three examples and numerical checks</a>."
+        ],
+        "citations": [
+          "residual-ebm"
+        ]
       }
     ],
-    "updated_at": "2026-11-10",
+    "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/energy-based-text-generation/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/energy-based-text-generation.md"
   },
@@ -382,6 +404,19 @@
           "lilicorr2026",
           "diffuspec2026"
         ]
+      },
+      {
+        "id": "runnable-joint-decoding",
+        "title": "Run higher-order path search",
+        "paragraphs": [
+          "Download the self-contained <a href=\"/research/examples/joint_decoding.ipynb\" download>joint-decoding notebook</a> or <a href=\"/research/examples/joint_decoding.py\" download>Python script</a>. A three-token compatibility factor changes the sequence selected from a small candidate lattice. Max-sum dynamic programming finds the best path, and sum-product computes the global normalizer.",
+          "A separate locally normalized example demonstrates why greedy token selection and whole-path Viterbi search choose different paths. The examples expose exact structured inference on fixed scores. The papers supply the neural scoring, higher-order cascade, pruning and candidate-construction methods described above.",
+          "The code runs with Python 3.9+ and its standard library. <a href=\"/research/examples/research-examples.zip\" download>Download all three examples and numerical checks</a>."
+        ],
+        "citations": [
+          "cascaded2020",
+          "lattice2021"
+        ]
       }
     ],
     "related_guides": [
@@ -399,7 +434,7 @@
       "lilicorr2026",
       "diffuspec2026"
     ],
-    "updated_at": "2026-11-10",
+    "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/structured-decoding/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/structured-decoding.md"
   },
@@ -516,6 +551,18 @@
           "bahuleyan2018",
           "bayesianattention2020"
         ]
+      },
+      {
+        "id": "runnable-categorical-example",
+        "title": "Run exact and variational attention",
+        "paragraphs": [
+          "Download the self-contained <a href=\"/research/examples/latent_attention.ipynb\" download>attention notebook</a> or <a href=\"/research/examples/latent_attention.py\" download>Python script</a>. It compares averaging source features before a nonlinear predictor with averaging output probabilities over categorical attention states.",
+          "The example computes the posterior for an observed label and optimizes a categorical variational distribution. The difference between exact log likelihood and the ELBO equals KL divergence to the exact posterior. It uses fixed generative parameters for one observation; the paper learns an amortized inference network across examples and also studies Dirichlet attention.",
+          "The code runs with Python 3.9+ and its standard library, without model weights, API keys or GPU resources. <a href=\"/research/examples/research-examples.zip\" download>Download all three examples and numerical checks</a>."
+        ],
+        "citations": [
+          "latentattention2018"
+        ]
       }
     ],
     "related_guides": [
@@ -530,7 +577,7 @@
       "bahuleyan2018",
       "bayesianattention2020"
     ],
-    "updated_at": "2026-11-10",
+    "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/probabilistic-attention/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/probabilistic-attention.md"
   },

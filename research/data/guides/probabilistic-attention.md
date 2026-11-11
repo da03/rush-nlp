@@ -61,6 +61,16 @@ These choices determine the meaning of the model. They also make comparisons use
 - [Variational Attention for Sequence-to-Sequence Models](https://aclanthology.org/C18-1142/)
 - [Bayesian Attention Modules](https://arxiv.org/abs/2010.10604)
 
+## Run exact and variational attention
+
+Download the self-contained [attention notebook](https://yuntiandeng.com/research/examples/latent_attention.ipynb) or [Python script](https://yuntiandeng.com/research/examples/latent_attention.py). It compares averaging source features before a nonlinear predictor with averaging output probabilities over categorical attention states.
+
+The example computes the posterior for an observed label and optimizes a categorical variational distribution. The difference between exact log likelihood and the ELBO equals KL divergence to the exact posterior. It uses fixed generative parameters for one observation; the paper learns an amortized inference network across examples and also studies Dirichlet attention.
+
+The code runs with Python 3.9+ and its standard library, without model weights, API keys or GPU resources. [Download all three examples and numerical checks](https://yuntiandeng.com/research/examples/research-examples.zip).
+
+- [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756)
+
 ## References
 
 - Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, Alexander M. Rush. Latent Alignment and Variational Attention. NeurIPS 2018. https://arxiv.org/abs/1807.03756

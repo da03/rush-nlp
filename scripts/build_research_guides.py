@@ -25,6 +25,16 @@ GENERATED = []
 def plain(s):
     return html.unescape(re.sub('<[^>]+>', '', s))
 
+def markdown_text(s):
+    """Keep inline link destinations available in the plain-text guide export."""
+    def replace_link(match):
+        href = html.unescape(match.group(1))
+        if href.startswith('/'):
+            href = BASE + href
+        label = plain(match.group(2)).replace('[', r'\[').replace(']', r'\]')
+        return '[' + label + '](' + href.replace(' ', '%20') + ')'
+    return plain(re.sub(r'<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>', replace_link, s, flags=re.S))
+
 def url(path): return BASE + PREFIX + path
 def guide_url(g): return PREFIX + g['id'] + '/'
 def paper_url(p): return PREFIX + 'papers/' + p['id'] + '/'
@@ -135,10 +145,10 @@ def render_section(s):
     return out
 
 def markdown_guide(g):
-    text='# '+g['title']+'\n\n'+plain(g['lead'])+'\n\n'
+    text='# '+g['title']+'\n\n'+markdown_text(g['lead'])+'\n\n'
     for s in g['sections']:
-        text+='## '+s['title']+'\n\n'+'\n\n'.join(plain(x) for x in s.get('paragraphs',[]))+'\n\n'
-        if s.get('items'):text+='\n'.join('- '+plain(x) for x in s['items'])+'\n\n'
+        text+='## '+s['title']+'\n\n'+'\n\n'.join(markdown_text(x) for x in s.get('paragraphs',[]))+'\n\n'
+        if s.get('items'):text+='\n'.join('- '+markdown_text(x) for x in s['items'])+'\n\n'
         if s.get('table'):
             cols=s['table']['columns'];text+='| '+' | '.join(plain(x).replace('|','\\|') for x in cols)+' |\n| '+' | '.join('---' for _ in cols)+' |\n'
             text+='\n'.join('| '+' | '.join(plain(x).replace('|','\\|') for x in row)+' |' for row in s['table']['rows'])+'\n\n'

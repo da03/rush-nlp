@@ -128,6 +128,19 @@
         "lilicorr2026",
         "diffuspec2026"
       ]
+    },
+    {
+      "id": "runnable-joint-decoding",
+      "title": "Run higher-order path search",
+      "paragraphs": [
+        "Download the self-contained <a href=\"/research/examples/joint_decoding.ipynb\" download>joint-decoding notebook</a> or <a href=\"/research/examples/joint_decoding.py\" download>Python script</a>. A three-token compatibility factor changes the sequence selected from a small candidate lattice. Max-sum dynamic programming finds the best path, and sum-product computes the global normalizer.",
+        "A separate locally normalized example demonstrates why greedy token selection and whole-path Viterbi search choose different paths. The examples expose exact structured inference on fixed scores. The papers supply the neural scoring, higher-order cascade, pruning and candidate-construction methods described above.",
+        "The code runs with Python 3.9+ and its standard library. <a href=\"/research/examples/research-examples.zip\" download>Download all three examples and numerical checks</a>."
+      ],
+      "citations": [
+        "cascaded2020",
+        "lattice2021"
+      ]
     }
   ],
   "related_guides": [
@@ -145,7 +158,7 @@
     "lilicorr2026",
     "diffuspec2026"
   ],
-  "updated_at": "2026-11-10",
+  "updated_at": "2026-11-11",
   "url": "https://yuntiandeng.com/research/structured-decoding/",
   "papers": [
     {

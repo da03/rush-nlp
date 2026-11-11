@@ -75,6 +75,17 @@ To compare implementations, identify the candidate set, the edge dependence, the
 - [LiLiCorr: Lightweight Likelihood Correlation of Parallel Drafts for Speculative Decoding](https://arxiv.org/abs/2608.20530)
 - [DiffuSpec: Unlocking Diffusion Language Models for Speculative Decoding](https://aclanthology.org/2026.findings-acl.1048/)
 
+## Run higher-order path search
+
+Download the self-contained [joint-decoding notebook](https://yuntiandeng.com/research/examples/joint_decoding.ipynb) or [Python script](https://yuntiandeng.com/research/examples/joint_decoding.py). A three-token compatibility factor changes the sequence selected from a small candidate lattice. Max-sum dynamic programming finds the best path, and sum-product computes the global normalizer.
+
+A separate locally normalized example demonstrates why greedy token selection and whole-path Viterbi search choose different paths. The examples expose exact structured inference on fixed scores. The papers supply the neural scoring, higher-order cascade, pruning and candidate-construction methods described above.
+
+The code runs with Python 3.9+ and its standard library. [Download all three examples and numerical checks](https://yuntiandeng.com/research/examples/research-examples.zip).
+
+- [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112)
+- [Sequence-to-Lattice Models for Fast Translation](https://aclanthology.org/2021.findings-emnlp.318/)
+
 ## References
 
 - Yuntian Deng, Alexander M. Rush. Cascaded Text Generation with Markov Transformers. NeurIPS 2020. https://arxiv.org/abs/2006.01112
