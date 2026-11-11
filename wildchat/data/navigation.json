@@ -10,7 +10,7 @@ permalink: /wildchat/data/navigation.json
   "languages": ["en", "zh-Hans"],
   "chinese_edition": {
     "title": "WildChat：真实 ChatGPT 对话数据集与研究指南",
-    "description": "采集方式、数据版本、访问申请、原始论文与共享引用。",
+    "description": "采集方式、数据版本、访问申请、原始论文与引用。",
     "updated": "2026-11-11",
     "url": "https://yuntiandeng.com/wildchat/zh/"
   },
@@ -23,7 +23,7 @@ permalink: /wildchat/data/navigation.json
     {"title": "WildChat 中文指南", "language": "zh-Hans", "description": "真实用户与 ChatGPT 的多语言、多轮对话。", "url": "https://yuntiandeng.com/wildchat/zh/"},
     {"title": "数据版本、下载与访问", "language": "zh-Hans", "description": "比较公开版与 Full 版，记录采集范围与过滤条件。", "url": "https://yuntiandeng.com/wildchat/zh/releases/"},
     {"title": "WildChat 原始论文", "language": "zh-Hans", "description": "ICLR 2024 论文的贡献、数据采集与引用。", "url": "https://yuntiandeng.com/wildchat/zh/papers/wildchat/"},
-    {"title": "论文、引用与指南数据", "language": "zh-Hans", "description": "区分 WildChat 与 WildVis，获取共享的论文和引用记录。", "url": "https://yuntiandeng.com/wildchat/zh/data/"}
+    {"title": "论文、引用与指南数据", "language": "zh-Hans", "description": "区分 WildChat 与 WildVis，获取论文和引用记录。", "url": "https://yuntiandeng.com/wildchat/zh/data/"}
   ],
   "exports": [
     {"title": "Paper records", "format": "application/json", "url": "https://yuntiandeng.com/wildchat/data/papers.json"},
