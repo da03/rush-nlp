@@ -10,6 +10,7 @@ from xml.etree import ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 BASE = 'https://yuntiandeng.com'
 PREFIX = '/research/'
+LANG = 'en'
 e = html.escape
 META = json.loads((ROOT/'_data/methods/meta.json').read_text())
 GUIDES = json.loads((ROOT/'_data/methods/guides.json').read_text())
@@ -81,6 +82,11 @@ def paper_schema(p):
 
 def layout(title, desc, path, body, active='guides', paper=None):
     canonical=url(path)
+    english_url=BASE+'/research/'+path
+    chinese_url=BASE+'/research/zh/'+path
+    translations_ready=(ROOT/'_data/methods/zh/guides.json').exists()
+    alternates=(f'<link rel="alternate" hreflang="en" href="{english_url}"><link rel="alternate" hreflang="zh-Hans" href="{chinese_url}"><link rel="alternate" hreflang="x-default" href="{english_url}">' if translations_ready else '')
+    language_nav=(f'<a href="{chinese_url}" hreflang="zh-Hans" lang="zh-Hans">简体中文</a>' if LANG=='en' else f'<a href="{english_url}" hreflang="en" lang="en">English</a>') if translations_ready else ''
     updated_at=PAGE_DATES[path]
     guide=GP.get(path.rstrip('/'))
     json_path='data/papers/'+paper['id']+'.json' if paper else 'data/guides/'+guide['id']+'.json' if guide else 'data/papers.json'
@@ -101,14 +107,14 @@ def layout(title, desc, path, body, active='guides', paper=None):
     schema['dateModified']=updated_at
     nav=''.join('<a href="'+PREFIX+dest+'"'+(' aria-current="page"' if key==active else '')+'>'+label+'</a>' for key,label,dest in [('guides','Guides',''),('papers','Papers','papers/'),('data','Citations & data','data/')])
     return f'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="{LANG}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)} · Research notes</title><meta name="description" content="{e(desc,quote=True)}">
-<link rel="canonical" href="{canonical}"><meta property="og:title" content="{e(title,quote=True)}"><meta property="og:description" content="{e(desc,quote=True)}"><meta property="og:type" content="article"><meta property="og:url" content="{canonical}"><meta name="twitter:card" content="summary">
+<link rel="canonical" href="{canonical}">{alternates}<meta property="og:title" content="{e(title,quote=True)}"><meta property="og:description" content="{e(desc,quote=True)}"><meta property="og:type" content="article"><meta property="og:url" content="{canonical}"><meta name="twitter:card" content="summary">
 <link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
 <link rel="alternate" type="application/json" href="{PREFIX+json_path}" title="Machine-readable content"><link rel="alternate" type="text/markdown" href="{PREFIX+markdown_path}" title="Plain-text reading"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
 {extra}<script type="application/ld+json">{json.dumps(schema,ensure_ascii=False).replace('</','<\\/')}</script>
 <script src="/research/assets/research.js" defer></script></head><body>
-<a class="skip" href="#main">Skip to main content</a><header class="shell topbar"><a class="wordmark" href="/research/">Research notes<span>Language models & structured learning</span></a><nav class="nav" aria-label="Main navigation">{nav}<a href="/">Yuntian Deng ↗</a></nav></header>
+<a class="skip" href="#main">Skip to main content</a><header class="shell topbar"><a class="wordmark" href="/research/">Research notes<span>Language models & structured learning</span></a><nav class="nav" aria-label="Main navigation">{nav}{language_nav}<a href="/">Yuntian Deng ↗</a></nav></header>
 <main id="main" class="shell">{body}</main><footer class="shell footer"><div><p>Research notes by <a href="/">Yuntian Deng</a>.</p><p>Original methods, current connections, and reusable references.</p></div><div><p>References checked {META['references_checked_at']}.</p><p><a href="/research/about/">About this collection</a> · <a href="/research/data/navigation.json">URL directory</a> · <a href="/research/data/reading-list.md">Markdown</a></p></div></footer></body></html>'''
 
 def ref_links(ids):
@@ -258,4 +264,9 @@ for path in GENERATED.copy():
         page_path=path.removeprefix('research/').removesuffix('index.html')
         entry=ET.SubElement(root,'url');ET.SubElement(entry,'loc').text=BASE+'/'+path.removesuffix('index.html');ET.SubElement(entry,'lastmod').text=PAGE_DATES[page_path]
 emit('sitemap.xml','<?xml version="1.0" encoding="UTF-8"?>\n'+ET.tostring(root,encoding='unicode')+'\n')
+if (ROOT/'_data/methods/zh/guides.json').exists():
+    import sys
+    from build_research_zh import build as build_chinese
+    build_chinese(sys.modules[__name__])
+
 print(json.dumps({'guides':len(GUIDES),'papers':len(PAPERS),'generated_files':len(GENERATED)},indent=2))

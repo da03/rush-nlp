@@ -1,0 +1,34 @@
+[
+  {
+    "id": "kim2017structured",
+    "type": "paper-conference",
+    "title": "Structured Attention Networks",
+    "author": [
+      {
+        "given": "Yoon",
+        "family": "Kim"
+      },
+      {
+        "given": "Carl",
+        "family": "Denton"
+      },
+      {
+        "given": "Luong",
+        "family": "Hoang"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2017
+        ]
+      ]
+    },
+    "container-title": "ICLR 2017",
+    "URL": "https://arxiv.org/abs/1702.00887"
+  }
+]

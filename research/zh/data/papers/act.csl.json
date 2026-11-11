@@ -1,0 +1,44 @@
+[
+  {
+    "id": "act",
+    "type": "article",
+    "title": "ACT: Agentic Classification Tree",
+    "author": [
+      {
+        "given": "Vincent",
+        "family": "Grari"
+      },
+      {
+        "given": "Tim",
+        "family": "Arni"
+      },
+      {
+        "given": "Thibault",
+        "family": "Laugel"
+      },
+      {
+        "given": "Sylvain",
+        "family": "Lamprier"
+      },
+      {
+        "given": "James",
+        "family": "Zou"
+      },
+      {
+        "given": "Marcin",
+        "family": "Detyniecki"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/html/2509.26433v4",
+    "genre": "preprint",
+    "publisher": "arXiv"
+  }
+]

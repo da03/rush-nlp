@@ -1,0 +1,31 @@
+[
+  {
+    "id": "deng2023markuptoimage",
+    "type": "paper-conference",
+    "title": "Markup-to-Image Diffusion Models with Scheduled Sampling",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Noriyuki",
+        "family": "Kojima"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "ICLR 2023",
+    "URL": "https://arxiv.org/abs/2210.05147",
+    "DOI": "10.48550/arXiv.2210.05147"
+  }
+]

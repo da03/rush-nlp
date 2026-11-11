@@ -1,0 +1,42 @@
+[
+  {
+    "id": "li2026factorization",
+    "type": "paper-conference",
+    "title": "Breaking the Factorization Barrier in Diffusion Language Models",
+    "author": [
+      {
+        "given": "Ian",
+        "family": "Li"
+      },
+      {
+        "given": "Zilei",
+        "family": "Shao"
+      },
+      {
+        "given": "Benjie",
+        "family": "Wang"
+      },
+      {
+        "given": "Rose",
+        "family": "Yu"
+      },
+      {
+        "given": "Guy",
+        "family": "Van den Broeck"
+      },
+      {
+        "given": "Anji",
+        "family": "Liu"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "ICML 2026",
+    "URL": "https://proceedings.mlr.press/v306/li26fd.html"
+  }
+]

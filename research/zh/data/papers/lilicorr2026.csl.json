@@ -1,0 +1,52 @@
+[
+  {
+    "id": "rusanovsky2026lilicorr",
+    "type": "article",
+    "title": "LiLiCorr: Lightweight Likelihood Correlation of Parallel Drafts for Speculative Decoding",
+    "author": [
+      {
+        "given": "Matan",
+        "family": "Rusanovsky"
+      },
+      {
+        "given": "Yoav",
+        "family": "Miron"
+      },
+      {
+        "given": "Roy",
+        "family": "Uziel"
+      },
+      {
+        "given": "Omer",
+        "family": "Belhasin"
+      },
+      {
+        "given": "Hao",
+        "family": "Guo"
+      },
+      {
+        "given": "Ran",
+        "family": "Zilberstein"
+      },
+      {
+        "given": "Maor",
+        "family": "Ashkenazi"
+      },
+      {
+        "given": "Michael",
+        "family": "Elad"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/abs/2608.20530",
+    "genre": "preprint",
+    "publisher": "arXiv"
+  }
+]

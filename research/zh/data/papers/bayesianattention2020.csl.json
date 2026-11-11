@@ -1,0 +1,34 @@
+[
+  {
+    "id": "fan2020bayesian",
+    "type": "paper-conference",
+    "title": "Bayesian Attention Modules",
+    "author": [
+      {
+        "given": "Xinjie",
+        "family": "Fan"
+      },
+      {
+        "given": "Shujian",
+        "family": "Zhang"
+      },
+      {
+        "given": "Bo",
+        "family": "Chen"
+      },
+      {
+        "given": "Mingyuan",
+        "family": "Zhou"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "NeurIPS 2020",
+    "URL": "https://arxiv.org/abs/2010.10604"
+  }
+]

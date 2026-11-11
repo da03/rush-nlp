@@ -1,0 +1,43 @@
+{
+  "id": "structuredattention2017",
+  "title": "Structured Attention Networks",
+  "authors": [
+    {
+      "given": "Yoon",
+      "family": "Kim"
+    },
+    {
+      "given": "Carl",
+      "family": "Denton"
+    },
+    {
+      "given": "Luong",
+      "family": "Hoang"
+    },
+    {
+      "given": "Alexander M.",
+      "family": "Rush"
+    }
+  ],
+  "year": 2017,
+  "venue": "ICLR 2017",
+  "paper_url": "https://arxiv.org/abs/1702.00887",
+  "summary": "使用可微图模型推断，对子序列和句法树进行注意力计算。",
+  "connection": "建模结构化选择并计算期望表示；对完整预测进行边缘化是不同的操作。",
+  "bibtex_type": "inproceedings",
+  "citation_key": "kim2017structured",
+  "source_urls": [
+    "https://arxiv.org/abs/1702.00887",
+    "https://arxiv.org/html/1702.00887v3"
+  ],
+  "equal_contribution": [
+    "Yoon Kim",
+    "Carl Denton"
+  ],
+  "arxiv_id": "1702.00887",
+  "arxiv_first_posted": "2017-02-03",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/structuredattention2017/"
+}

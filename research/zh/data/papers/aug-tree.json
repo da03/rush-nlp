@@ -1,0 +1,42 @@
+{
+  "id": "aug-tree",
+  "title": "Augmenting interpretable models with large language models during training",
+  "authors": [
+    {
+      "given": "Chandan",
+      "family": "Singh"
+    },
+    {
+      "given": "Armin",
+      "family": "Askari"
+    },
+    {
+      "given": "Rich",
+      "family": "Caruana"
+    },
+    {
+      "given": "Jianfeng",
+      "family": "Gao"
+    }
+  ],
+  "year": 2023,
+  "venue": "Nature Communications 14, 7913",
+  "paper_url": "https://www.nature.com/articles/s41467-023-43713-1",
+  "summary": "Aug-Tree 使用语言模型生成的扩展内容，为树的划分构造可解释文本特征。",
+  "connection": "与 Tree Prompting 遍历树时调用语言模型的方式不同，它在训练阶段完成特征扩展。",
+  "bibtex_type": "article",
+  "citation_key": "augtree",
+  "source_urls": [
+    "https://www.nature.com/articles/s41467-023-43713-1"
+  ],
+  "first_public": "2022-09-23",
+  "doi": "10.1038/s41467-023-43713-1",
+  "container_title": "Nature Communications",
+  "volume": "14",
+  "issue": "1",
+  "article_number": "7913",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/aug-tree/"
+}

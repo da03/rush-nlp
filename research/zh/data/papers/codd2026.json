@@ -1,0 +1,48 @@
+{
+  "id": "codd2026",
+  "title": "Breaking the Factorization Barrier in Diffusion Language Models",
+  "authors": [
+    {
+      "given": "Ian",
+      "family": "Li"
+    },
+    {
+      "given": "Zilei",
+      "family": "Shao"
+    },
+    {
+      "given": "Benjie",
+      "family": "Wang"
+    },
+    {
+      "given": "Rose",
+      "family": "Yu"
+    },
+    {
+      "given": "Guy",
+      "family": "Van den Broeck"
+    },
+    {
+      "given": "Anji",
+      "family": "Liu"
+    }
+  ],
+  "year": 2026,
+  "venue": "ICML 2026",
+  "paper_url": "https://proceedings.mlr.press/v306/li26fd.html",
+  "summary": "CoDD 将因子化扩散预测与可进行高效推断的概率电路先验组合，建模 token 之间的联合依赖。",
+  "connection": "与结构化生成一样，将并行神经网络打分和联合概率推断分开处理。",
+  "bibtex_type": "inproceedings",
+  "citation_key": "li2026factorization",
+  "source_urls": [
+    "https://proceedings.mlr.press/v306/li26fd.html",
+    "https://arxiv.org/abs/2603.00045",
+    "https://arxiv.org/html/2603.00045v3"
+  ],
+  "arxiv_id": "2603.00045",
+  "arxiv_first_posted": "2026-02-09",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/codd2026/"
+}

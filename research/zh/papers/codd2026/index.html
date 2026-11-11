@@ -1,0 +1,48 @@
+<!doctype html>
+
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Breaking the Factorization Barrier in Diffusion Language Models · 研究导读</title><meta name="description" content="CoDD 将因子化扩散预测与可进行高效推断的概率电路先验组合，建模 token 之间的联合依赖。">
+
+<link rel="canonical" href="https://yuntiandeng.com/research/zh/papers/codd2026/"><link rel="alternate" hreflang="en" href="https://yuntiandeng.com/research/papers/codd2026/"><link rel="alternate" hreflang="zh-Hans" href="https://yuntiandeng.com/research/zh/papers/codd2026/"><link rel="alternate" hreflang="x-default" href="https://yuntiandeng.com/research/papers/codd2026/"><meta property="og:title" content="Breaking the Factorization Barrier in Diffusion Language Models"><meta property="og:description" content="CoDD 将因子化扩散预测与可进行高效推断的概率电路先验组合，建模 token 之间的联合依赖。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuntiandeng.com/research/zh/papers/codd2026/"><meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
+
+<link rel="alternate" type="application/json" href="/research/zh/data/papers/codd2026.json" title="机器可读内容"><link rel="alternate" type="text/markdown" href="/research/zh/data/papers/codd2026.md" title="纯文本版本"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
+
+<meta name="citation_title" content="Breaking the Factorization Barrier in Diffusion Language Models">
+
+<meta name="citation_author" content="Ian Li">
+
+<meta name="citation_author" content="Zilei Shao">
+
+<meta name="citation_author" content="Benjie Wang">
+
+<meta name="citation_author" content="Rose Yu">
+
+<meta name="citation_author" content="Guy Van den Broeck">
+
+<meta name="citation_author" content="Anji Liu">
+
+<meta name="citation_publication_date" content="2026">
+
+<meta name="citation_conference_title" content="ICML 2026">
+
+<meta name="citation_arxiv_id" content="2603.00045">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://yuntiandeng.com/research/zh/papers/codd2026/", "name": "Breaking the Factorization Barrier in Diffusion Language Models", "description": "CoDD 将因子化扩散预测与可进行高效推断的概率电路先验组合，建模 token 之间的联合依赖。", "inLanguage": "zh-Hans", "dateModified": "2026-11-11", "about": {"@context": "https://schema.org", "@type": "ScholarlyArticle", "@id": "https://yuntiandeng.com/research/papers/codd2026/", "name": "Breaking the Factorization Barrier in Diffusion Language Models", "headline": "Breaking the Factorization Barrier in Diffusion Language Models", "author": [{"@type": "Person", "name": "Ian Li"}, {"@type": "Person", "name": "Zilei Shao"}, {"@type": "Person", "name": "Benjie Wang"}, {"@type": "Person", "name": "Rose Yu"}, {"@type": "Person", "name": "Guy Van den Broeck"}, {"@type": "Person", "name": "Anji Liu"}], "datePublished": "2026", "description": "CoDD 将因子化扩散预测与可进行高效推断的概率电路先验组合，建模 token 之间的联合依赖。", "url": "https://yuntiandeng.com/research/papers/codd2026/", "sameAs": "https://proceedings.mlr.press/v306/li26fd.html", "isPartOf": {"@type": "CreativeWork", "name": "ICML 2026"}, "identifier": [{"@type": "PropertyValue", "propertyID": "arXiv", "value": "2603.00045"}], "inLanguage": "en"}}</script>
+
+<script src="/research/assets/research.zh.js" defer></script></head><body>
+
+<a class="skip" href="#main">跳转到正文</a><header class="shell topbar"><a class="wordmark" href="/research/zh/">研究导读<span>语言模型与结构化学习</span></a><nav class="nav" aria-label="主导航"><a href="/research/zh/">主题导读</a><a href="/research/zh/papers/" aria-current="page">论文</a><a href="/research/zh/data/">引用与数据</a><a href="https://yuntiandeng.com/research/papers/codd2026/" hreflang="en" lang="en">English</a><a href="/">Yuntian Deng ↗</a></nav></header>
+
+<main id="main" class="shell"><div class="back"><a href="/research/zh/papers/">← 论文目录</a></div><header class="hero"><p class="kicker">ICML 2026</p><h1>Breaking the Factorization Barrier in Diffusion Language Models</h1><p class="lead">Ian Li, Zilei Shao, Benjie Wang, Rose Yu, Guy Van den Broeck, Anji Liu</p><p class="meta">arXiv 首次公开：2026-02-09。引用年份：2026。</p><div class="actions"><a class="button" href="https://proceedings.mlr.press/v306/li26fd.html">阅读论文原文 ↗</a></div></header><div class="prose"><section><h2>方法与贡献</h2><p>CoDD 将因子化扩散预测与可进行高效推断的概率电路先验组合，建模 token 之间的联合依赖。</p><p>与结构化生成一样，将并行神经网络打分和联合概率推断分开处理。</p></section><section><h2>结合主题阅读</h2><p><a href="/research/zh/structured-decoding/">结构化解码：高阶 CRF、扩散语言模型与候选格 →</a></p></section><section id="citation"><h2>引用</h2><p>Ian Li, Zilei Shao, Benjie Wang, Rose Yu, Guy Van den Broeck, Anji Liu. Breaking the Factorization Barrier in Diffusion Language Models. ICML 2026.</p><div class="code-actions"><button type="button" data-copy="#bibtex" data-status="#copy-status">复制 BibTeX</button><a class="button secondary" href="/research/zh/data/papers/codd2026.bib" download>下载 BibTeX</a><a class="button secondary" href="/research/zh/data/papers/codd2026.csl.json" download>CSL JSON</a></div><p id="copy-status" class="status-message" role="status"></p><pre id="bibtex">@inproceedings{li2026factorization,
+  title = {{Breaking the Factorization Barrier in Diffusion Language Models}},
+  author = {Li, Ian and Shao, Zilei and Wang, Benjie and Yu, Rose and Van den Broeck, Guy and Liu, Anji},
+  year = {2026},
+  booktitle = {ICML 2026},
+  url = {https://proceedings.mlr.press/v306/li26fd.html},
+  eprint = {2603.00045},
+  archivePrefix = {arXiv}
+}
+</pre></section></div></main><footer class="shell footer"><div><p>研究导读作者： <a href="/">Yuntian Deng</a>.</p><p>从原始方法到当前研究，附可直接使用的参考文献。</p></div><div><p>参考文献核查日期：2026-11-10。</p><p><a href="/research/zh/about/">关于本系列</a> · <a href="/research/zh/data/navigation.json">页面目录</a> · <a href="/research/zh/data/reading-list.md">Markdown</a></p></div></footer></body></html>

@@ -1,0 +1,40 @@
+{
+  "id": "gptree",
+  "title": "GPTree: Towards Explainable Decision-Making via LLM-powered Decision Trees",
+  "authors": [
+    {
+      "given": "Sichao",
+      "family": "Xiong"
+    },
+    {
+      "given": "Yigit",
+      "family": "Ihlamur"
+    },
+    {
+      "given": "Fuat",
+      "family": "Alican"
+    },
+    {
+      "given": "Aaron Ontoyin",
+      "family": "Yin"
+    }
+  ],
+  "year": 2024,
+  "venue": "arXiv:2411.08257",
+  "paper_url": "https://arxiv.org/html/2411.08257v1",
+  "summary": "使用语言模型辅助的划分构建决策树，并结合专家反馈修改决策路径。",
+  "connection": "后续的大语言模型决策树系统，支持专家交互及多种划分类型。",
+  "bibtex_type": "article",
+  "citation_key": "gptree",
+  "source_urls": [
+    "https://arxiv.org/html/2411.08257v1"
+  ],
+  "arxiv_id": "2411.08257",
+  "arxiv_first_posted": "2024-11-13",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/gptree/"
+}

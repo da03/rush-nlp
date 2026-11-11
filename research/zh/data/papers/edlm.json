@@ -1,0 +1,54 @@
+{
+  "id": "edlm",
+  "title": "Energy-Based Diffusion Language Models for Text Generation",
+  "authors": [
+    {
+      "given": "Minkai",
+      "family": "Xu"
+    },
+    {
+      "given": "Tomas",
+      "family": "Geffner"
+    },
+    {
+      "given": "Karsten",
+      "family": "Kreis"
+    },
+    {
+      "given": "Weili",
+      "family": "Nie"
+    },
+    {
+      "given": "Yilun",
+      "family": "Xu"
+    },
+    {
+      "given": "Jure",
+      "family": "Leskovec"
+    },
+    {
+      "given": "Stefano",
+      "family": "Ermon"
+    },
+    {
+      "given": "Arash",
+      "family": "Vahdat"
+    }
+  ],
+  "year": 2025,
+  "venue": "ICLR 2025",
+  "paper_url": "https://arxiv.org/html/2410.21357v4",
+  "summary": "在每一步扩散去噪分布中加入完整序列的残差能量，采用自回归模型或 NCE 参数化，并通过并行重要性采样生成文本。",
+  "connection": "直接引用 Deng 等人（2020），将残差修正与配分函数估计用于扩散语言建模。",
+  "bibtex_type": "inproceedings",
+  "citation_key": "edlm",
+  "source_urls": [
+    "https://arxiv.org/html/2410.21357v4"
+  ],
+  "arxiv_id": "2410.21357",
+  "arxiv_first_posted": "2024-10-28",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/edlm/"
+}

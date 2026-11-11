@@ -85,7 +85,7 @@
     "openmeva",
     "story-evaluation-survey"
   ],
-  "updated_at": "2026-11-10",
+  "updated_at": "2026-11-11",
   "url": "https://yuntiandeng.com/research/long-form-evaluation/",
   "papers": [
     {
@@ -123,7 +123,14 @@
       "arxiv_first_posted": "2022-10-16",
       "abstract": "Language models have demonstrated the ability to generate highly fluent text; however, it remains unclear whether their output retains coherent high-level structure (e.g., story progression). Here, we propose to apply a statistical tool, model criticism in latent space, to evaluate the high-level structure of the generated text. Model criticism compares the distributions between real and generated data in a latent space obtained according to an assumptive generative process. Different generative processes identify specific failure modes of the underlying model. We perform experiments on three representative aspects of high-level discourse—coherence, coreference, and topicality—and find that transformer-based language models are able to capture topical structures but have a harder time maintaining structural coherence or modeling coreference.",
       "abstract_source": "https://arxiv.org/html/2210.08444v1",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/model-criticism/",
+          "summary": "通过在显式生成式检验模型定义的潜在空间中比较真实数据与生成数据，评估文本的高层结构。实验研究篇章连贯性、共指和主题性。",
+          "connection": "本指南的原始方法：对结构分布进行诊断式评估，与词元层面的流畅度分开。"
+        }
+      }
     },
     {
       "id": "openmeva",
@@ -174,7 +181,14 @@
       "source_urls": [
         "https://aclanthology.org/2021.acl-long.500/"
       ],
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/openmeva/",
+          "summary": "检验自动故事评估指标的基准，涵盖与人工判断的相关性、泛化、稳健性，以及对不同连贯性错误的敏感程度。",
+          "connection": "检验评估器能否发现已知的故事缺陷，与在潜在空间中诊断生成器输出分布的方法互补。"
+        }
+      }
     },
     {
       "id": "story-evaluation-survey",
@@ -206,7 +220,22 @@
       "arxiv_first_posted": "2024-08-26",
       "publication_type": "preprint",
       "container_title": "arXiv",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/story-evaluation-survey/",
+          "summary": "综述故事质量标准、人工评估、自动指标和评估基准。",
+          "connection": "将结构诊断放在连贯性、人物发展与叙事质量的更广泛评估背景中。"
+        }
+      }
     }
-  ]
+  ],
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/long-form-evaluation/",
+      "title": "如何评估长文本的结构",
+      "description": "潜在空间中的模型检验如何超越词元层面的流畅度，评估生成文本的篇章结构、实体行为与主题关系。",
+      "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/long-form-evaluation.md"
+    }
+  }
 }

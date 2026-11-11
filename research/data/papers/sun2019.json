@@ -41,6 +41,13 @@
   ],
   "arxiv_id": "1910.11555",
   "arxiv_first_posted": "2019-10-25",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/sun2019/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/sun2019/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/sun2019/",
+      "summary": "为非自回归序列模型加入近似一阶 CRF 推断和动态转移。",
+      "connection": "一阶结构化解码的参考工作；Cascaded Text Generation 发展了高阶级联和共享的 Markov Transformer 势函数。"
+    }
+  }
 }

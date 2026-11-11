@@ -33,6 +33,13 @@
   "arxiv_first_posted": "2024-11-13",
   "publication_type": "preprint",
   "container_title": "arXiv",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/gptree/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/gptree/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/gptree/",
+      "summary": "使用语言模型辅助的划分构建决策树，并结合专家反馈修改决策路径。",
+      "connection": "后续的大语言模型决策树系统，支持专家交互及多种划分类型。"
+    }
+  }
 }

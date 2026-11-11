@@ -1,0 +1,36 @@
+[
+  {
+    "id": "unifiedenergy",
+    "type": "article",
+    "title": "Unified Energy for Invariant and Independent Decoding in Diffusion Language Models",
+    "author": [
+      {
+        "given": "Yuchen",
+        "family": "Yan"
+      },
+      {
+        "given": "Minkai",
+        "family": "Xu"
+      },
+      {
+        "given": "Zaiquan",
+        "family": "Yang"
+      },
+      {
+        "given": "Yatao",
+        "family": "Bian"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "arXiv",
+    "URL": "https://arxiv.org/html/2606.09159v1",
+    "genre": "preprint",
+    "publisher": "arXiv"
+  }
+]

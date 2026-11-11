@@ -1,0 +1,31 @@
+[
+  {
+    "id": "zhang-etal-2025-interactive",
+    "type": "paper-conference",
+    "title": "Interactive Training: Feedback-Driven Neural Network Optimization",
+    "author": [
+      {
+        "given": "Wentao",
+        "family": "Zhang"
+      },
+      {
+        "given": "Yang Young",
+        "family": "Lu"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2025
+        ]
+      ]
+    },
+    "container-title": "EMNLP 2025 System Demonstrations",
+    "URL": "https://aclanthology.org/2025.emnlp-demos.65/",
+    "DOI": "10.18653/v1/2025.emnlp-demos.65"
+  }
+]

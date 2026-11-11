@@ -33,6 +33,13 @@
   ],
   "arxiv_id": "1712.08207",
   "arxiv_first_posted": "2017-12-21",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/bahuleyan2018/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/bahuleyan2018/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/bahuleyan2018/",
+      "summary": "在变分编码器—解码器中，把注意力上下文向量视为高斯隐变量。",
+      "connection": "说明“变分注意力”这一名称也用于另一个随机对象：上下文向量。"
+    }
+  }
 }

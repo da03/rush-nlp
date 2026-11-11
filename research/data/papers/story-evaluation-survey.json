@@ -28,6 +28,13 @@
   "arxiv_first_posted": "2024-08-26",
   "publication_type": "preprint",
   "container_title": "arXiv",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/story-evaluation-survey/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/story-evaluation-survey/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/story-evaluation-survey/",
+      "summary": "综述故事质量标准、人工评估、自动指标和评估基准。",
+      "connection": "将结构诊断放在连贯性、人物发展与叙事质量的更广泛评估背景中。"
+    }
+  }
 }

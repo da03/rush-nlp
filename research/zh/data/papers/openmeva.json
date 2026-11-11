@@ -1,0 +1,54 @@
+{
+  "id": "openmeva",
+  "title": "OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics",
+  "authors": [
+    {
+      "given": "Jian",
+      "family": "Guan"
+    },
+    {
+      "given": "Zhexin",
+      "family": "Zhang"
+    },
+    {
+      "given": "Zhuoer",
+      "family": "Feng"
+    },
+    {
+      "given": "Zitao",
+      "family": "Liu"
+    },
+    {
+      "given": "Wenbiao",
+      "family": "Ding"
+    },
+    {
+      "given": "Xiaoxi",
+      "family": "Mao"
+    },
+    {
+      "given": "Changjie",
+      "family": "Fan"
+    },
+    {
+      "given": "Minlie",
+      "family": "Huang"
+    }
+  ],
+  "year": 2021,
+  "venue": "ACL-IJCNLP 2021",
+  "paper_url": "https://aclanthology.org/2021.acl-long.500/",
+  "pdf_url": "https://aclanthology.org/2021.acl-long.500.pdf",
+  "doi": "10.18653/v1/2021.acl-long.500",
+  "summary": "检验自动故事评估指标的基准，涵盖与人工判断的相关性、泛化、稳健性，以及对不同连贯性错误的敏感程度。",
+  "connection": "检验评估器能否发现已知的故事缺陷，与在潜在空间中诊断生成器输出分布的方法互补。",
+  "bibtex_type": "inproceedings",
+  "citation_key": "guan-etal-2021-openmeva",
+  "source_urls": [
+    "https://aclanthology.org/2021.acl-long.500/"
+  ],
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/openmeva/"
+}

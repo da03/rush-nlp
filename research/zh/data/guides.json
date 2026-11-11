@@ -1,0 +1,860 @@
+[
+  {
+    "id": "llm-decision-trees",
+    "title": "大语言模型决策树：从 Tree Prompting 到智能体分类",
+    "eyebrow": "学习程序结构与提示词",
+    "description": "Tree Prompting 如何学习由语言模型提示调用组成的决策树，以及它与 Aug-Tree、GPTree 和 Agentic Classification Tree 的联系。",
+    "lead": "Tree Prompting（EMNLP 2023）学习一棵决策树，由接收提示词的语言模型完成每个节点的分支判断。学到的提示词与控制流程共同构成可重复用于分类任务的程序。这一机制直接连接了今天的大语言模型决策树、自然语言问题树和智能体分类。",
+    "original_papers": [
+      "tree-prompting"
+    ],
+    "terms": [
+      "大语言模型决策树",
+      "提示决策树",
+      "自然语言决策树",
+      "智能体分类",
+      "可学习的提示程序",
+      "动态提示"
+    ],
+    "demo": "tree",
+    "related_guides": [
+      "probabilistic-attention"
+    ],
+    "reading_order": [
+      "tree-prompting",
+      "aug-tree",
+      "gptree",
+      "act"
+    ],
+    "sections": [
+      {
+        "id": "original-method",
+        "title": "Tree Prompting 提出了什么",
+        "paragraphs": [
+          "John X. Morris、Chandan Singh、Alexander M. Rush、Jianfeng Gao 和 Yuntian Deng 在 EMNLP 2023 发表了 Tree Prompting；Morris 与 Singh 的贡献相同。预印本于 2023 年 10 月 21 日公开。每个内部节点让冻结参数的语言模型执行一条提示，再根据输出选择分支，最终由叶节点给出预测。",
+          "这棵树从带标签的样本中学习。候选提示包括采样得到的示例、指令以及动态生成的提示。在动态版本中，iPrompt 针对到达当前节点的样本生成候选提示，再根据划分质量选出提示。节点提出的问题与树的分支结构都从数据中学习得到。"
+        ],
+        "citations": [
+          "tree-prompting"
+        ]
+      },
+      {
+        "id": "program-view",
+        "title": "把提示树理解为程序",
+        "paragraphs": [
+          "以一个客服消息分类示例为例：第一个节点询问消息是否要求退款；如果回答“是”，第二个节点再询问消息是否涉及重复扣款。这条路径返回账单类标签；回答“否”则进入树的其他部分。这些问题用于说明控制流程，并非论文报告的某棵树。",
+          "这个程序由条件、分支和返回值组成。传统条件检查数值阈值或精确字符串；基于提示的条件让语言模型按指令理解输入。指令规定要问什么，语言模型给出针对当前输入的判断。",
+          "检查系统时，应区分三种错误：节点问了无关的问题；问题相关，但模型回答错误；前面的判断都正确，叶节点却分配了错误类别。记录实际经过的路径，就能区分这些错误。修改叶节点无法修复上游错误的语义判断。"
+        ]
+      },
+      {
+        "id": "learning-and-cost",
+        "title": "学习哪些内容，预测需要多少计算",
+        "paragraphs": [
+          "任务适配体现在选出的提示词和树结构中，无需更新语言模型权重。当每个节点的特征需要一次模型调用时，深度为 D 的路径需要 D 次调用，无需遍历整棵树。原始代码提供了兼容 scikit-learn 风格的分类器接口。",
+          "训练决策树的开销与预测开销应分别衡量。训练时搜索候选问题，并在带标签的输入上评估它们；部署时执行保留下来的决策路径。因此，搜索阶段投入大量计算，并不意味着每次预测都要付出同样的开销。",
+          "实现时需要明确标签集合、输出解析方式、停止规则，以及模型输出无效答案时的处理方式。除准确率外，还应测量平均路径长度和 token 用量。两棵深度相同的树，如果提示中包含的示例数量不同，计算开销也不同。保存训练好的提示词和树时，应同时记录模型版本：更换语言模型会改变这些可执行条件的含义。"
+        ],
+        "citations": [
+          "tree-prompting"
+        ]
+      },
+      {
+        "id": "related-methods",
+        "title": "比较语言模型在系统中承担的角色",
+        "paragraphs": [
+          "Aug-Tree 在训练时使用大语言模型扩展文本特征，部署后通过可解释的特征检查完成预测，无需调用语言模型。GPTree 构建由大语言模型支持的决策树，并允许专家通过反馈修改决策路径。ACT 则通过基于不纯度的选择与 TextGrad 优化，学习自然语言二元问题。",
+          "这些区别对应不同的设计选择：生成特征、回答语义问题、搜索更好的问题，以及修改得到的程序。论文名称中出现“树”，并不能说明它具体执行了哪些操作。"
+        ],
+        "table": {
+          "columns": [
+            "方法",
+            "节点或划分方式",
+            "语言模型的作用"
+          ],
+          "rows": [
+            [
+              "Tree Prompting · 2023",
+              "在输入上执行学到的提示词",
+              "执行分支判断；动态版本还生成提示词"
+            ],
+            [
+              "Aug-Tree · 2023；预印本 2022",
+              "扩展文本特征的逻辑或组合",
+              "在训练期间构造特征"
+            ],
+            [
+              "GPTree · 2024",
+              "语言模型辅助的决策规则与划分类型",
+              "构建决策，并结合专家反馈修改"
+            ],
+            [
+              "ACT · 2025",
+              "学到的自然语言二元问题",
+              "提出、评估并优化问题"
+            ]
+          ]
+        },
+        "citations": [
+          "tree-prompting",
+          "aug-tree",
+          "gptree",
+          "act"
+        ]
+      },
+      {
+        "id": "when-to-use",
+        "title": "什么任务适合学习问题树",
+        "paragraphs": [
+          "当任务具有可重复使用的决策结构，而且带标签的样本能揭示哪些区分最重要时，这种设计就有用。意图路由、文档分类和归类任务都适合逐步提出语义问题。树把任务专属的结构保存在模型权重之外。",
+          "检查对象应是完整系统，而不只是树形图。问题容易读懂，并不等于语言模型回答问题的过程也已被解释。先把路径记录为实际执行的决策流程，再用改写、歧义输入和改变后的事实测试节点。如果改变了决定性事实，节点仍选择同一分支，它就没有完成预期的判断。",
+          "本页示例展示一棵固定的树，读者可以查看不同输入经过的分支。要构建可学习的分类器，请从原始论文和代码入手，在训练样本上拟合，在验证集上选择树的大小，再用留出的样本评估保存下来的树。交互示例说明机制，不代表实测准确率。"
+        ]
+      },
+      {
+        "id": "original-notebook",
+        "title": "运行原始 Tree Prompting 笔记本",
+        "paragraphs": [
+          "作者的<a href=\"https://github.com/csinva/tree-prompt/blob/master/demo.ipynb\">原始笔记本</a>使用 GPT-2 和 Rotten Tomatoes 样本拟合 <code>TreePromptClassifier</code>，预测留出样本的标签，比较单条提示词，并通过 <code>plot_tree</code> 绘制学到的树。请按<a href=\"https://github.com/csinva/tree-prompt\">代码仓库的安装说明</a>准备环境；该笔记本会下载模型和数据集。"
+        ],
+        "citations": [
+          "tree-prompting"
+        ]
+      }
+    ],
+    "updated_at": "2026-11-11",
+    "url": "https://yuntiandeng.com/research/zh/llm-decision-trees/",
+    "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/llm-decision-trees.md"
+  },
+  {
+    "id": "energy-based-text-generation",
+    "title": "基于能量的文本生成：残差模型、重采样与扩散",
+    "eyebrow": "全局序列模型",
+    "description": "Residual Energy-Based Models for Text Generation 将序列级能量、噪声对比估计和重要性重采样联系起来，并与基于能量的扩散语言模型直接相连。",
+    "lead": "Residual Energy-Based Models for Text Generation（ICLR 2020）将预训练语言模型与整条序列的能量函数结合，构成全局归一化的生成模型。Energy-Based Diffusion Language Models（ICLR 2025）明确联系这项工作，并把残差能量修正放进扩散去噪步骤。两者共享的机制是：以基础分布为起点，再乘上模型学到的、针对完整候选序列的偏好。",
+    "original_papers": [
+      "residual-ebm",
+      "residual-ebm-jmlr"
+    ],
+    "terms": [
+      "基于能量的文本生成",
+      "全局归一化语言模型",
+      "采样与重排序（sample and rerank）",
+      "重要性重采样",
+      "基于能量的扩散语言模型",
+      "序列级能量",
+      "考虑依赖关系的并行解码"
+    ],
+    "demo": "energy",
+    "related_guides": [
+      "structured-decoding",
+      "probabilistic-attention"
+    ],
+    "reading_order": [
+      "residual-ebm",
+      "residual-ebm-jmlr",
+      "edlm",
+      "unified-energy",
+      "neural-trf-nce"
+    ],
+    "sections": [
+      {
+        "id": "original-method",
+        "title": "用于文本生成的残差能量模型",
+        "paragraphs": [
+          "Yuntian Deng、Anton Bakhtin、Myle Ott、Arthur Szlam 和 Marc’Aurelio Ranzato 在 ICLR 2020 论文中提出了这一文本生成框架，其 arXiv 版本发表于 2020 年 4 月 22 日。固定的自回归语言模型提供候选序列，双向能量函数对候选序列评分。论文围绕这一模型提出了基于重要性加权的条件生成方法，以及用于困惑度评估的对数概率上下界。",
+          "模型分布为 <code>p(y | x) = q(y | x) exp(−E(x,y)) / Z(x)</code>。其中，x 是上下文，y 是完整续写，q 是基础模型，E 是残差能量，Z 是对所有续写求和得到的归一化常数。能量越低，相对于 q 的概率就越高。训练采用噪声对比估计（noise-contrastive estimation，NCE），让能量函数区分真实文本和基础模型生成的样本。"
+        ],
+        "citations": [
+          "residual-ebm"
+        ]
+      },
+      {
+        "id": "meaning-of-residual",
+        "title": "判别器如何改变生成器",
+        "paragraphs": [
+          "JMLR 2021 论文 Residual Energy-Based Models for Text 进一步研究了如何将区分生成文本的能力用于改进生成分布。Anton Bakhtin 和 Yuntian Deng 贡献相同；其他作者为 Sam Gross、Myle Ott、Marc’Aurelio Ranzato 和 Arthur Szlam。判别器提供的信息指出生成器对哪些文本生成过多、对哪些文本生成不足；残差模型把这些信息转化为对概率的修正。",
+          "这个乘积中的两部分各司其职。基础模型提供流畅的候选文本及其相对出现频率；能量函数在看完整条序列后，调整不同候选的相对偏好。如果所有能量都为零，基础分布保持不变。给所有能量加上同一个常数，也不会改变归一化后的分布，因为这个常数在分子和分母中相互抵消。",
+          "这提供了直接的调试检查：改变所有候选共享的能量偏移量，不应改变选择概率；改变某一个候选的能量，应按预期方向改变它的概率。这些都是代数性质，与用哪种神经网络计算能量无关。"
+        ],
+        "citations": [
+          "residual-ebm-jmlr"
+        ]
+      },
+      {
+        "id": "sample-score-resample",
+        "title": "先采样，再评分，然后重采样",
+        "paragraphs": [
+          "先从 q 中抽取候选，用 E 为每个候选评分，再按照与 <code>exp(−E)</code> 成正比的归一化权重选择输出。这就是重要性重采样。若改为直接选择得分最高的候选，则是重排序（reranking）：选择规则发生了变化。两者都经过生成候选与评分这两个环节，但定义的输出分布不同。",
+          "例如，三个已采样候选的能量分别为 0、log(2) 和 log(4)，对应权重为 1、1/2 和 1/4，因此选择概率为 4/7、2/7 和 1/7。按最高分选择会始终输出第一个候选；重采样则保留候选池上的概率分布。",
+          "从 q 抽取候选池这一步已经体现了基础概率。若再给每个候选池权重乘一次 q，就改变了原本的重要性计算。同样，有限候选池中的归一化常数，也不等于对所有可能文本精确求和的结果。增加候选数会改变近似程度和计算开销；改变能量则会改变目标分布。"
+        ],
+        "citations": [
+          "residual-ebm",
+          "residual-ebm-jmlr"
+        ]
+      },
+      {
+        "id": "diffusion-connection",
+        "title": "与扩散语言模型的直接联系",
+        "paragraphs": [
+          "Minkai Xu 等人的 Energy-Based Diffusion Language Models（EDLM）于 2024 年 10 月 28 日发布，发表于 ICLR 2025。它在扩散去噪器的分布上乘以一个序列级残差能量项；该能量以带噪序列和时间步为条件，修正单个去噪步骤内因词元预测相互独立而遗漏的依赖关系。",
+          "EDLM 使用从自回归模型导出的能量，或用 NCE 训练的能量，再通过并行重要性采样生成文本。它在相关工作中引用 Deng 等人（2020），并在配分函数估计中明确采用这项工作。两者的联系体现在数学形式和算法上：残差修正、对比训练、重采样和似然估计。",
+          "2020 年的模型修正自回归候选分布，以完成文本生成；EDLM 则在迭代扩散过程中修正去噪分布。修正发生的位置不同，但“基础分布乘以能量权重”的构造将两者联系起来。"
+        ],
+        "citations": [
+          "residual-ebm",
+          "edlm"
+        ]
+      },
+      {
+        "id": "method-comparison",
+        "title": "比较基础分布、能量和推断方式",
+        "table": {
+          "columns": [
+            "方法",
+            "基础分布与修正",
+            "推断或评估重点"
+          ],
+          "rows": [
+            [
+              "Neural TRF with NCE · 2018",
+              "对参考语言模型进行指数倾斜",
+              "语音识别重评分"
+            ],
+            [
+              "Residual EBM · 2020",
+              "自回归语言模型 × 序列能量",
+              "通过重要性重采样进行条件生成；似然上下界"
+            ],
+            [
+              "EDLM · 2025",
+              "扩散去噪器 × 条件序列能量",
+              "在去噪步骤中并行生成候选并重采样"
+            ],
+            [
+              "Unified Energy · 2026",
+              "针对依赖关系与不变性的能量修正",
+              "改进扩散解码"
+            ]
+          ]
+        },
+        "paragraphs": [
+          "Wang 和 Ou 的 neural TRF 论文给出了更早的残差形式与 NCE 方法，2020 年论文明确引用了这项工作。2020 年工作的贡献是围绕残差模型建立条件文本生成与似然评估方法。Unified Energy（2026）进一步分析扩散解码中的依赖误差与不变性误差，并结合两类能量修正。"
+        ],
+        "citations": [
+          "neural-trf-nce",
+          "residual-ebm",
+          "edlm",
+          "unified-energy"
+        ]
+      },
+      {
+        "id": "reading-the-demo",
+        "title": "通过能量示例观察这一机制",
+        "paragraphs": [
+          "调整示例中三种结果上的能量强度 β。当 β = 0 时，输出概率就是基础分布。增大 β 会把概率质量移向能量更低的结果，而基础概率仍会影响最终分布。这个示例对三条可能序列计算精确的归一化分布；它不抽取候选池，也不调用语言模型。",
+          "如果候选已经从基础模型中采样，重要性重采样所用的候选池权重就是 exp(−E(x))。基础模型的概率因子已经由采样这一步体现。区分这两种计算，才能把归一化模型与实际采样流程对应起来。"
+        ]
+      },
+      {
+        "id": "runnable-energy-resampling",
+        "title": "运行有限候选池的能量重采样",
+        "paragraphs": [
+          "下载可独立运行的<a href=\"/research/examples/energy_resampling.ipynb\" download>能量重采样 notebook</a>或 <a href=\"/research/examples/energy_resampling.py\" download>Python 脚本</a>。示例先计算三种结果上的精确残差模型，再从基础分布中抽取候选池，按能量权重选择其中的候选。",
+          "代码还会遍历候选计数的所有组合，精确计算有限候选池所产生的输出分布，从而在没有蒙特卡洛噪声的情况下展示近似误差。重复出现的候选保留其出现次数；按最低能量选择和按概率重采样也分别展示。",
+          "代码使用 Python 3.9+ 及其标准库运行。<a href=\"/research/examples/research-examples.zip\" download>下载全部三个示例及数值检查</a>。"
+        ],
+        "citations": [
+          "residual-ebm"
+        ]
+      }
+    ],
+    "updated_at": "2026-11-11",
+    "url": "https://yuntiandeng.com/research/zh/energy-based-text-generation/",
+    "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/energy-based-text-generation.md"
+  },
+  {
+    "id": "structured-decoding",
+    "title": "结构化解码：高阶 CRF、扩散语言模型与候选格",
+    "eyebrow": "面向并行生成的联合模型",
+    "description": "Cascaded Text Generation 和 Sequence-to-Lattice 如何连接高阶条件随机场、联合扩散解码，以及用于投机生成的候选格。",
+    "lead": "神经网络的并行计算不要求各个输出独立决策。Yuntian Deng 和 Alexander M. Rush 在 Cascaded Text Generation with Markov Transformers（NeurIPS 2020）中提出了用于文本生成的高阶 CRF 级联模型，又在 Sequence-to-Lattice Models for Fast Translation（Findings of EMNLP 2021）中发展了结合精确路径搜索的候选格生成。这些贡献连接了今天的两个问题：建模扩散语言模型同时生成的 token 之间的依赖，以及从并行 token 候选中选出连贯的草稿。",
+    "original_papers": [
+      "cascaded2020",
+      "lattice2021"
+    ],
+    "terms": [
+      "结构化解码",
+      "用于文本生成的条件随机场",
+      "高阶 CRF",
+      "Markov Transformer",
+      "联合扩散解码",
+      "token 依赖",
+      "候选格",
+      "投机解码（推测解码）"
+    ],
+    "sections": [
+      {
+        "id": "parallel-computation-joint-decisions",
+        "title": "为什么并行预测需要联合决策",
+        "paragraphs": [
+          "考虑两个正确的英语续写：“the dog runs”和“the dogs run”。如果每个位置独立选择，也会组合出“the dog run”。更好的表示能够帮助网络预测各个位置的边缘分布，但边缘分布的乘积仍无法表达名词与动词必须保持一致。显式联合模型对组合打分，把兼容性纳入输出分布和解码过程。",
+          "这里有两个独立的设计问题：开销较大的神经网络分数如何计算，以及最终序列如何选择。大量备选项的分数可以并行计算，再由一个小型结构化推断算法组合。Sun 等人的 Fast Structured Decoding for Sequence Models（NeurIPS 2019）将非自回归发射分数与近似一阶 CRF、动态转移结合。高阶上下文、逐级剪枝和候选格构建则提供了进一步的设计选择。"
+        ],
+        "citations": [
+          "sun2019",
+          "cascaded2020",
+          "lattice2021"
+        ]
+      },
+      {
+        "id": "higher-order-crf-cascades",
+        "title": "高阶 CRF：Cascaded Text Generation with Markov Transformers",
+        "paragraphs": [
+          "Cascaded Text Generation 引入了马尔可夫阶数逐级增加的一系列条件随机场（CRF）。模型从独立 token 分数开始，逐渐加入跨越更长片段的依赖。一个 Markov Transformer 通过受控的上下文窗口，为各个阶数提供势函数。最大边缘值（max-marginal）用包含某个片段的最佳完整序列为该片段打分；进入表达能力更强的下一阶段之前，剪枝保留高分片段。",
+          "这一贡献结合了高阶输出依赖、共享的神经网络参数化，以及并行结构化推断，与 Sun 等人的一阶动态 CRF 不同。级联会限制搜索空间，因此最终结果的精确性针对保留的状态，而不是对所有可能句子进行穷尽搜索。当保留状态的宽度固定时，其并行动态规划计算深度随序列长度呈对数增长。"
+        ],
+        "citations": [
+          "cascaded2020",
+          "sun2019"
+        ]
+      },
+      {
+        "id": "joint-diffusion-modeling",
+        "title": "从高阶 CRF 到联合扩散解码",
+        "paragraphs": [
+          "扩散模型反复遇到同样的协调问题：一次去噪步骤中，要同时确定多个尚不明确的 token。它与结构化生成的联系在于一个建模原则：用计算成本可控的联合分布耦合这些决策，同时保留神经网络的并行计算。马尔可夫阶数描述输出位置之间的依赖范围；扩散时间步描述文本从受扰状态逐渐恢复的进程。这是两个不同的维度。",
+          "Breaking the Factorization Barrier in Diffusion Language Models（ICML 2026）提出 CoDD，将因子化的神经网络预测与概率电路形式的结构先验结合。实验用隐马尔可夫模型实现这一先验。二者的乘积支持联合推断，无需为所有 token 组合显式建立词表规模的表格。它与结构化生成具有共同目标，但采用隐状态结构和以扩散状态为条件的推断，而不是逐级增加已观测 token 上下文阶数的级联。",
+          "DA-DLM（EMNLP 2026）明确连接了这一问题与非自回归翻译。它把有向无环图建模用于迭代去噪：节点组对应输出位置，已经确定的 token 成为锚点，并连接尚未确定的候选。图结构随着去噪过程变化。这些是早期结构化输出建模与当前扩散方法之间的具体联系，并不把原始翻译模型定义为扩散模型。"
+        ],
+        "citations": [
+          "cascaded2020",
+          "codd2026",
+          "dadlm2026"
+        ]
+      },
+      {
+        "id": "candidate-lattices",
+        "title": "候选格：Sequence-to-Lattice Models for Fast Translation",
+        "paragraphs": [
+          "Sequence-to-Lattice 用候选查找、神经网络边打分和路径搜索取代深层解码器。统计对齐模型为每个输出位置提出一个小型候选词表。深层编码器与浅层打分头并行评估候选之间的转移，再由 Viterbi 算法选择分数最高的完整路径。",
+          "论文使用带局部归一化转移概率的一阶条件马尔可夫模型。精确 Viterbi 搜索的范围是已经构建好的候选格；它不会恢复构建时排除的候选，也不把模型变成全局归一化的高阶 CRF。其核心计算分工具有复用价值：低成本构造备选项，并行计算相邻候选的兼容性，再搜索得到的图。"
+        ],
+        "citations": [
+          "lattice2021"
+        ]
+      },
+      {
+        "id": "speculative-candidate-lattices",
+        "title": "从候选格到连贯的投机解码草稿",
+        "paragraphs": [
+          "并行投机解码（speculative decoding，也称推测解码）的草稿生成面临相关问题：每个未来位置都有多个候选，但单独看来最好的选择并不一定能组成有用的草稿。LiLiCorr 保留 top-K 候选，用轻量网络计算入边与出边向量，通过批量运算评估相邻兼容性，再执行贪心路径选择。其训练目标针对被接受的前缀，并联合适配草稿模型与打分头。",
+          "它与 Sequence-to-Lattice 的联系在于“候选—边—路径”架构。两者也存在实质区别：翻译候选来自基于对齐的查找模型；LiLiCorr 的候选来自并行草稿模型。Sequence-to-Lattice 对完整路径目标执行精确 Viterbi 搜索；LiLiCorr 使用局部归一化和贪心选择，使其服务于前缀接受目标。",
+          "DiffuSpec 使用扩散模型并行生成草稿，并在 token 候选格上引入 Causal-consistency Path Search（因果一致性路径搜索），同时根据接受情况的反馈调整草稿长度。这里的图连接双向草稿提议与自回归验证器。候选格规定候选如何组织；打分规则与验证过程则决定路径选择实际完成什么。"
+        ],
+        "citations": [
+          "lattice2021",
+          "lilicorr2026",
+          "diffuspec2026"
+        ]
+      },
+      {
+        "id": "choose-objective",
+        "title": "先确定推断目标，再选择图结构",
+        "paragraphs": [
+          "同一张图上的三种运算回答不同的问题。最大化寻找评分最高的完整路径；边缘化对备选状态求和，用于计算概率或训练隐变量模型；采样按照分布抽取序列。即使节点和边完全相同，把其中一种运算换成另一种也会改变算法。",
+          "一个小型数值例子能说明区别。假设第一次决策中，A 的概率为 0.6，B 为 0.4。A 后最强续写的条件概率为 0.5，B 后为 0.9。贪心选择先选 A；完整路径最大化则选择 B，因为 0.4 × 0.9 大于 0.6 × 0.5。在投机解码中，目标验证器又引入了新的目标：应衡量被接受的前缀，以及生成它所需的计算开销。",
+          "比较实现时，应明确候选集合、边上的依赖、归一化方式和推断运算，再测量主导运行时间的工作：神经网络前向计算、候选打分、动态规划和验证。单凭图结构，既不能证明解码精确，也不能证明速度更快。"
+        ],
+        "table": {
+          "columns": [
+            "设计",
+            "依赖或评分方式",
+            "最终运算"
+          ],
+          "rows": [
+            [
+              "Cascaded generation",
+              "递增的马尔可夫阶数；经过剪枝的片段",
+              "在保留状态内进行结构化最大化"
+            ],
+            [
+              "Sequence-to-Lattice",
+              "一阶条件边概率",
+              "在候选格上执行精确 Viterbi 搜索"
+            ],
+            [
+              "CoDD / DA-DLM",
+              "去噪内部的联合结构",
+              "以扩散状态为条件的推断"
+            ],
+            [
+              "LiLiCorr / DiffuSpec",
+              "兼容性评分或因果草稿路径",
+              "选择草稿后再验证"
+            ]
+          ]
+        },
+        "citations": [
+          "cascaded2020",
+          "lattice2021",
+          "codd2026",
+          "dadlm2026",
+          "lilicorr2026",
+          "diffuspec2026"
+        ]
+      },
+      {
+        "id": "runnable-joint-decoding",
+        "title": "运行高阶路径搜索示例",
+        "paragraphs": [
+          "下载可独立运行的<a href=\"/research/examples/joint_decoding.ipynb\" download>联合解码笔记本</a>或 <a href=\"/research/examples/joint_decoding.py\" download>Python 脚本</a>。一个涉及三个 token 的兼容性因子会改变从小型候选格中选出的序列。最大和动态规划寻找最佳路径，和积运算计算全局归一化常数。",
+          "另一个局部归一化示例展示了贪心 token 选择与完整路径 Viterbi 搜索为什么会选择不同的路径。这些示例在固定分数上演示精确结构化推断；原论文提供了上文介绍的神经网络打分、高阶级联、剪枝和候选构建方法。",
+          "代码使用 Python 3.9+ 及其标准库运行。<a href=\"/research/examples/research-examples.zip\" download>下载全部三个示例及数值检查</a>。"
+        ],
+        "citations": [
+          "cascaded2020",
+          "lattice2021"
+        ]
+      }
+    ],
+    "related_guides": [
+      "energy-based-text-generation",
+      "probabilistic-attention",
+      "llm-decision-trees"
+    ],
+    "demo": "lattice",
+    "reading_order": [
+      "cascaded2020",
+      "lattice2021",
+      "sun2019",
+      "codd2026",
+      "dadlm2026",
+      "lilicorr2026",
+      "diffuspec2026"
+    ],
+    "updated_at": "2026-11-11",
+    "url": "https://yuntiandeng.com/research/zh/structured-decoding/",
+    "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/structured-decoding.md"
+  },
+  {
+    "id": "probabilistic-attention",
+    "title": "把注意力建模为隐变量：学习注意力的概率分布",
+    "eyebrow": "概率注意力与隐变量推断",
+    "description": "Latent Alignment and Variational Attention 导读：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
+    "lead": "Yuntian Deng、Yoon Kim、Justin Chiu、Demi Guo 和 Alexander M. Rush 的 Latent Alignment and Variational Attention（NeurIPS 2018）将注意力建模为显式隐变量，并使用变分推断进行学习。其一般思路是对网络关注的位置建立概率分布，并对这一分布进行推断，而不是把一个确定性的加权平均向量传入预测网络。",
+    "original_papers": [
+      "latentattention2018"
+    ],
+    "terms": [
+      "注意力作为隐变量",
+      "概率注意力",
+      "注意力分布建模",
+      "隐对齐",
+      "变分注意力",
+      "随机注意力",
+      "贝叶斯注意力",
+      "注意力边缘化"
+    ],
+    "sections": [
+      {
+        "id": "distribution-versus-weights",
+        "title": "归一化注意力权重与概率模型有什么区别",
+        "paragraphs": [
+          "注意力向量由非负且和为一的权重组成。但这一数值性质并没有规定不确定性如何参与预测。确定性机制用这些权重构造一个上下文向量，然后执行一次下游网络。隐变量机制定义不同的注意力状态，在这些状态下分别预测，再综合它们的贡献。",
+          "用 z 表示注意力状态，用 f 表示下游计算。一般情况下，f(E[z]) ≠ E[f(z)]。例如，z 以相同概率取 0 或 2，且 f(z) = z²。先求均值再计算 f，结果为 1；分别计算两个输出再求平均，结果为 2。神经网络的预测包含非线性操作，因此把期望移到网络的另一侧会改变模型。这正是“对表示求平均”和“对预测求平均”的区别。"
+        ],
+        "citations": [
+          "latentattention2018",
+          "structuredattention2017"
+        ]
+      },
+      {
+        "id": "latent-alignment",
+        "title": "隐对齐与变分注意力",
+        "paragraphs": [
+          "2018 年的论文把对齐作为生成模型中的显式变量。论文研究了选取一个源元素的类别对齐，以及把注意力分配到多个元素混合上的狄利克雷（Dirichlet）对齐。摊销变分推断学习以观测输入和输出为条件的后验分布。方差缩减方法使隐变量推断能用于实际训练，实验涵盖机器翻译和视觉问答。",
+          "先验注意力回答“在知道答案之前应关注哪里”，后验注意力回答“哪些对齐能够解释已经观测到的答案”。这是两个不同的条件分布。论文的推断网络在训练时使用目标信息；这与生成阶段把未来目标词提供给从左到右的预测器是不同的操作。"
+        ],
+        "citations": [
+          "latentattention2018"
+        ]
+      },
+      {
+        "id": "latent-attention-example",
+        "title": "注意力后验告诉我们什么",
+        "paragraphs": [
+          "设想一张图片里有两个人，问题是“谁拿着杯子”。在看到答案之前，模型为两个人都分配注意力概率。观测到答案后，后验推断把概率重新分配给能够解释这个答案的对齐。这个例子提出的是一个推断问题，与用什么可视化方式展示权重无关。",
+          "当注意力与另一个概率模块组合时，这一区别同样重要。显式变量说明了哪些量是条件、哪些备选状态被积分消去，以及近似方法替换了哪一步。采样得到的注意力向量、它的期望和最大概率取值回答不同的问题；明确分布后，这些选择就能被逐项检查。"
+        ],
+        "citations": [
+          "latentattention2018"
+        ]
+      },
+      {
+        "id": "related-probabilistic-approaches",
+        "title": "相关注意力方法有何不同",
+        "paragraphs": [
+          "Show, Attend and Tell（ICML 2015）研究了用于图像描述生成的确定性软注意力和通过采样得到的硬注意力。其随机形式使用变分下界和基于采样的学习规则，是概率选择的早期研究。Latent Alignment and Variational Attention 进一步学习对齐的后验推断，并采用更紧的变分训练目标。",
+          "Structured Attention Networks（ICLR 2017）为结构化选择建立分布，包括子序列和句法树。可微的图模型推断向周围的网络提供期望表示，从而丰富注意力的结构。计算期望表示，与遍历注意力结构并对最终非线性预测进行边缘化，仍是两个不同的操作。",
+          "Variational Attention for Sequence-to-Sequence Models（COLING 2018）在变分编码器—解码器中用高斯随机变量建模上下文向量，目的是防止确定性注意力绕过模型的隐空间。这里的隐变量是上下文向量，而 Latent Alignment and Variational Attention 中的隐变量是类别值或单纯形上的对齐。",
+          "Bayesian Attention Modules（NeurIPS 2020）通过归一化 Weibull 或对数正态随机变量构造随机注意力权重。重参数化训练与依赖数据的先验使这些模块适用于不同的注意力架构。它以不同的分布族和训练方式，进一步发展了“对注意力建立分布”的一般视角。"
+        ],
+        "citations": [
+          "showattendtell2015",
+          "structuredattention2017",
+          "bahuleyan2018",
+          "bayesianattention2020",
+          "latentattention2018"
+        ]
+      },
+      {
+        "id": "modeling-choices",
+        "title": "理解概率注意力模型的四个问题",
+        "paragraphs": [
+          "首先确定随机对象：选中的位置、位置上的概率分布、上下文向量，还是完整的结构化选择。其次规定先验，以及后验能使用哪些信息。然后辨明预测时综合的是中间表示，还是输出似然。最后说明训练与预测是枚举状态、采样、使用期望，还是优化变分近似。",
+          "这些选择决定模型的含义，也使不同方法之间的比较具有实质内容：两个都叫“变分注意力”的系统，不一定表示同一个隐变量，也不一定解决同一个推断问题。"
+        ],
+        "table": {
+          "columns": [
+            "方法",
+            "随机对象或结构化对象",
+            "推断的作用"
+          ],
+          "rows": [
+            [
+              "Latent Alignment and Variational Attention",
+              "类别或狄利克雷对齐",
+              "学习对齐后验，近似边缘似然"
+            ],
+            [
+              "Structured Attention Networks",
+              "子序列或树的选择",
+              "计算期望表示"
+            ],
+            [
+              "Variational Attention for Seq2Seq",
+              "高斯上下文向量",
+              "保留经过编码器—解码器的随机路径"
+            ],
+            [
+              "Bayesian Attention Modules",
+              "归一化注意力权重的分布",
+              "重参数化变分训练"
+            ]
+          ]
+        },
+        "citations": [
+          "latentattention2018",
+          "structuredattention2017",
+          "bahuleyan2018",
+          "bayesianattention2020"
+        ]
+      },
+      {
+        "id": "runnable-categorical-example",
+        "title": "运行精确注意力与变分注意力示例",
+        "paragraphs": [
+          "下载可独立运行的<a href=\"/research/examples/latent_attention.ipynb\" download>注意力笔记本</a>或 <a href=\"/research/examples/latent_attention.py\" download>Python 脚本</a>。示例比较两种计算：先对源特征取平均再送入非线性预测器；在不同类别注意力状态下分别预测，再对输出概率取平均。",
+          "示例计算一个观测标签对应的后验，并优化类别变分分布。精确对数似然与证据下界（ELBO）之差，等于该变分分布到精确后验的 KL 散度。示例针对一个观测使用固定的生成参数；原论文则跨样本学习摊销推断网络，并研究了狄利克雷注意力。",
+          "代码使用 Python 3.9+ 及其标准库运行，无需模型权重、API 密钥或 GPU。<a href=\"/research/examples/research-examples.zip\" download>下载全部三个示例及数值检查</a>。"
+        ],
+        "citations": [
+          "latentattention2018"
+        ]
+      }
+    ],
+    "related_guides": [
+      "structured-decoding",
+      "energy-based-text-generation"
+    ],
+    "demo": "attention",
+    "reading_order": [
+      "latentattention2018",
+      "showattendtell2015",
+      "structuredattention2017",
+      "bahuleyan2018",
+      "bayesianattention2020"
+    ],
+    "updated_at": "2026-11-11",
+    "url": "https://yuntiandeng.com/research/zh/probabilistic-attention/",
+    "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/probabilistic-attention.md"
+  },
+  {
+    "id": "long-form-evaluation",
+    "title": "如何评估长文本的结构",
+    "eyebrow": "篇章连贯性、共指与叙事评估",
+    "description": "潜在空间中的模型检验如何超越词元层面的流畅度，评估生成文本的篇章结构、实体行为与主题关系。",
+    "lead": "一段话读起来流畅，并不代表整篇文档结构连贯。Yuntian Deng、Volodymyr Kuleshov 和 Alexander M. Rush 的 Model Criticism for Long-Form Text Generation 提出了一个框架：用显式的潜变量检验模型比较真实文本与生成文本的高层结构。论文于 2022 年 10 月 16 日首次发布，发表于 EMNLP 2022，将长文本评估转化为一个明确的统计问题：生成器是否重现了参考文本中的结构分布？",
+    "original_papers": [
+      "model-criticism"
+    ],
+    "terms": [
+      "长文本生成评估",
+      "故事生成评估",
+      "篇章连贯性",
+      "实体一致性",
+      "潜在空间中的模型检验（model criticism）",
+      "潜在困惑度（latent perplexity）"
+    ],
+    "sections": [
+      {
+        "id": "fluency-and-structure",
+        "title": "区分语言流畅与结构连贯",
+        "paragraphs": [
+          "设想一篇文章先介绍方法、再展示结果，随后却转回一段无关的引言。每句话的语法都正确，章节顺序仍然不合常理。叙事文本也有类似问题：实体突然消失、前后不一致地重新出现，或者在长篇内容中呈现不合理的变化模式。",
+          "词元层面的困惑度衡量模型预测词元的能力，却不直接衡量章节转移、共指结构或主题关系。论文用生成过程已知的合成数据说明了这一差别：模型即使擅长预测下一个词元，仍然会对底层潜在状态的转移拟合不佳。"
+        ],
+        "citations": [
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "latent-critic",
+        "title": "选择能够表达待测性质的检验模型",
+        "paragraphs": [
+          "这一框架引入一个检验模型（critic），显式建模潜在结构与观测文本的生成过程。它的后验把文档映射成潜变量上的分布。随后，对生成样本和参考数据使用同一个检验模型，比较两者推断出的结构。",
+          "一种诊断量是：在检验模型的先验分布下，推断出的潜变量所对应的负对数概率的期望。汇总后得到潜在交叉熵，实验中将其表示为潜在困惑度。这样，被测性质就变得明确：评估章节顺序与评估实体复用需要不同的潜变量模型。检验模型给出关于结构的假设，它与被评估的语言模型是两个不同的模型。"
+        ],
+        "citations": [
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "three-properties",
+        "title": "三个关于结构的问题",
+        "paragraphs": [
+          "篇章连贯性关注章节是否遵循真实文档中的转移模式。实验考察了科学论文与维基百科文本，包括提供和不提供显式章节标题提示的生成设置。共指关注生成文本是否重现实体指称的模式。主题性关注主题之间的关系是否与参考文档一致。",
+          "这些诊断分别回答不同的问题。论文发现，所评估的 Transformer 语言模型能够捕捉主题相关性，却难以掌握篇章连贯性和共指结构。单一的整体质量分数会掩盖这种差别。该结论对应论文中的模型与检验器；评估新的生成器，需要收集它的输出并重新进行结构比较。"
+        ],
+        "citations": [
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "evaluation-landscape",
+        "title": "模型检验与故事评估指标如何配合",
+        "paragraphs": [
+          "OpenMEVA 评估的是评估器本身。它用受控扰动检验自动指标能否识别连贯性错误，以及在不改变语义的变换下能否保持稳定。潜在空间中的模型检验则研究生成器学到了哪些结构分布。两者回答不同的实验问题，能够在同一套评估中配合使用。",
+          "Dingyi Yang 和 Qin Jin 的故事评估综述整理了连贯性、人物发展和趣味性等更广泛的标准。针对章节转移的检验器并不衡量所有这些标准。人工评估或 LLM 评判器回答读者关心的问题；明确指定结构的检验模型则提供可复现、针对具体性质的诊断。"
+        ],
+        "citations": [
+          "openmeva",
+          "story-evaluation-survey",
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "evaluation-recipe",
+        "title": "设计有用的长文本评估",
+        "paragraphs": [
+          "先明确要检测什么错误，再定义对应的潜在表示与参考语料。拟合或指定检验模型，检查它在真实文本和已知结构错误上的表现，然后以相同方式处理参考样本和生成样本。明确报告生成条件、文档长度和样本数量，让比较回答预定的问题。",
+          "分别报告词元层面与结构层面的指标。检查异常潜在分数背后的文本，也检查检验模型自身的推断错误。分布不匹配指出需要诊断的方向，并不意味着每一个不同寻常的故事都不好。原论文和开源代码为篇章连贯性、共指和主题性提供了具体起点，而非一个通用的单一质量指标。"
+        ],
+        "citations": [
+          "model-criticism",
+          "openmeva"
+        ]
+      }
+    ],
+    "related_guides": [
+      "probabilistic-attention",
+      "structured-decoding"
+    ],
+    "demo": "structure",
+    "reading_order": [
+      "model-criticism",
+      "openmeva",
+      "story-evaluation-survey"
+    ],
+    "updated_at": "2026-11-11",
+    "url": "https://yuntiandeng.com/research/zh/long-form-evaluation/",
+    "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/long-form-evaluation.md"
+  },
+  {
+    "id": "learned-rendering",
+    "title": "学习渲染 LaTeX、SMILES、HTML 与乐谱",
+    "eyebrow": "从标记语言到图像的扩散模型",
+    "description": "用扩散模型学习渲染数学公式、分子、表格布局和乐谱，并通过 Scheduled Sampling 处理暴露偏差。",
+    "lead": "Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 的 Markup-to-Image Diffusion Models with Scheduled Sampling 学习把符号描述转化为图像。论文于 2022 年 10 月 11 日发布，发表于 ICLR 2023，提出了覆盖 LaTeX 公式、SMILES 分子、HTML 表格布局和 LilyPond 乐谱的扩散渲染方法。它也研究了扩散模型中的一个普遍问题：采样过程中遇到的状态与训练输入不同时，错误会逐步累积。",
+    "original_papers": [
+      "markup-diffusion"
+    ],
+    "terms": [
+      "标记语言到图像生成（markup-to-image）",
+      "学习式渲染（learned rendering）",
+      "LaTeX 公式图像生成",
+      "SMILES 分子图像生成",
+      "扩散模型的 Scheduled Sampling",
+      "扩散模型的暴露偏差（exposure bias）"
+    ],
+    "sections": [
+      {
+        "id": "rendering-direction",
+        "title": "输入是标记语言，输出是图像",
+        "paragraphs": [
+          "学习式渲染器接收描述视觉对象的序列，预测渲染后的像素。LaTeX 描述数学记号，SMILES 描述原子与化学键，HTML 描述表格类布局，LilyPond 描述乐谱。这四个领域共同检验模型对符号内容、布局，以及跨越输入序列的依赖关系的处理能力。",
+          "必须区分任务方向。图像到 LaTeX 的识别任务从图片恢复源代码；标记语言到图像的生成任务则朝相反方向进行。论文调整了包括 im2latex-100k 在内的配对数据，学习从标记语言到像素的正向映射。它训练的是条件扩散模型，推理时不调用传统渲染引擎。"
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "symbolic-fidelity",
+        "title": "图像看起来像，并不等于符号正确",
+        "paragraphs": [
+          "这些图像要求精确保留符号。多一个减号就会改变公式，化学键错误就会改变分子，音符移位就会改变乐谱。即使图像的整体外观符合相应领域，只要符号与输入不一致，渲染就失败了。布局错误还会传播：多出的符号会挤动后续内容。",
+          "因此，论文评估生成结果与参考渲染图像的对齐程度。主要指标把二值图像视为由图像列组成的序列，使用动态时间规整（dynamic time warping），以容纳小幅位移。像素误差和其他图像相似性指标提供补充测量。论文明确区分了这些指标与侧重视觉逼真度和宽泛语义的自然图像指标。"
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "scheduled-sampling",
+        "title": "让去噪器在自己产生的中间状态上训练",
+        "paragraphs": [
+          "标准扩散训练从真实图像构造带噪输入；采样时，下一个去噪步骤接收的却是前面模型预测得到的结果。预测中的错误会改变后续步骤遇到的状态。论文把这种不匹配分析为一个错误会累积的序贯决策问题，将扩散采样与暴露偏差联系起来。",
+          "Scheduled Sampling 改变训练输入，让去噪器接触模型自己产生的状态，并学习修正自身错误。它将此前在序列生成中研究的原则用于扩散训练。实验在四个渲染领域中比较了 Scheduled Sampling 与基线。输出是否可辨认、符号是否忠实于输入，是两项不同的评估目标；论文同时报告了生成成功与失败的例子。"
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "related-methods",
+        "title": "沿两条研究线索继续阅读",
+        "paragraphs": [
+          "渲染这条线索延伸到 Guojin Zhong 等人在 ACM Multimedia 2023 发表的 FSA-CDM。它沿用四个领域的任务，加入细粒度序列对齐、上下文建模和对比训练信号。除了去噪过程，这项工作还研究标记语言中的词元如何对应图像结构。",
+          "扩散训练这条线索则联系到 ICML 2023 论文 Input Perturbation Reduces Exposure Bias in Diffusion Models。该方法通过扰动训练输入，模拟预测误差。共同的问题是：训练应如何让去噪器适应采样时遇到的状态？使用模型生成的输入与使用合成扰动，是两种不同的回答，也对应不同的训练流程。"
+        ],
+        "citations": [
+          "fsa-cdm",
+          "diffusion-input-perturbation",
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "inspect-results",
+        "title": "查看原始示例与实现",
+        "paragraphs": [
+          "开源仓库提供了公式、表格、乐谱和分子的并排动画，对照 Scheduled Sampling、基线和真实图像。这些示例展示了中间去噪轨迹。可以检查符号何时出现、消失、合并或移动，再把最终输出与精确的输入描述比较。",
+          "设计新的学习式渲染任务时，先确定配对的源数据与目标图像，识别哪些符号错误会改变含义，再选择能够暴露这些错误的指标。将渲染准确性与风格相似性分开。原始数据集、检查点、代码和记录的示例提供了可复现的起点；单个成功示例不等于对每种输入都能精确渲染。"
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      }
+    ],
+    "related_guides": [
+      "structured-decoding",
+      "probabilistic-attention"
+    ],
+    "demo": "markup",
+    "reading_order": [
+      "markup-diffusion",
+      "fsa-cdm",
+      "diffusion-input-perturbation"
+    ],
+    "updated_at": "2026-11-11",
+    "url": "https://yuntiandeng.com/research/zh/learned-rendering/",
+    "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/learned-rendering.md"
+  },
+  {
+    "id": "interactive-training",
+    "title": "让人和 AI 智能体控制正在运行的训练任务",
+    "eyebrow": "反馈驱动的神经网络优化",
+    "description": "Interactive Training 将实时指标与人和 LLM 对训练任务的干预相连；第二版加入带类型的控制项和有序操作日志。",
+    "lead": "Wentao Zhang、Yang Young Lu 和 Yuntian Deng 的 Interactive Training: Feedback-Driven Neural Network Optimization 让人和 AI 智能体能够控制正在进行的神经网络训练。论文于 2025 年 10 月 2 日首次发布，发表于 EMNLP 2025 System Demonstrations，通过控制服务器开放优化器设置、训练数据和检查点操作。2026 年 7 月 17 日在 arXiv 发布的 Interactive Training 2 将这一方法扩展为实时训练中可复用的控制协议。",
+    "original_papers": [
+      "interactive-training-2025",
+      "interactive-training-2026"
+    ],
+    "terms": [
+      "交互式训练（interactive training）",
+      "反馈驱动优化",
+      "LLM 训练控制器",
+      "训练中实时调节超参数",
+      "人参与的训练闭环（human-in-the-loop training）",
+      "训练闭环控制"
+    ],
+    "sections": [
+      {
+        "id": "running-process",
+        "title": "把正在运行的训练过程作为控制对象",
+        "paragraphs": [
+          "训练面板展示损失曲线与评估结果；交互式控制则把这些观测与产生它们的训练过程连接起来。研究者看到训练不稳定，修改学习率，再观察同一次运行中的后续更新。LLM 控制器也遵循同样的反馈循环：查看证据、请求干预、再检查干预效果。",
+          "这与启动前选择配置，或等一轮训练结束后再设计新实验不同。模型和优化器在继续运行，开放的控制项则在过程中发生变化。从检查点恢复和开启新一轮训练是另外的操作，各自有对应的状态转移；界面应记录实际执行了哪一种操作。"
+        ],
+        "citations": [
+          "interactive-training-2025",
+          "interactive-training-2026"
+        ]
+      },
+      {
+        "id": "original-system",
+        "title": "2025 年系统：把监控与干预连接起来",
+        "paragraphs": [
+          "原始框架通过控制服务器连接人或自动化智能体与训练进程。与 Trainer 的集成开放了优化器超参数、数据处理和检查点命令。控制者可以在实时界面中观察训练并提交修改，无需把修改写进静态配置后重新启动程序。",
+          "论文展示了三个案例，分别涉及训练稳定性、对初始超参数的敏感性和变化中的用户需求。其中，LLM 驱动的学习率调节示例展示了智能体如何读取反馈并在优化过程中干预。系统的贡献是把实时观测、控制接口和训练循环连接起来，而非替代优化器对模型参数的更新。"
+        ],
+        "citations": [
+          "interactive-training-2025"
+        ]
+      },
+      {
+        "id": "shared-protocol",
+        "title": "2026 年扩展：不同控制器共用一个协议",
+        "paragraphs": [
+          "Wentao Zhang、Xuanhe Pan、Han Zhou、Yang Lu 和 Yuntian Deng 的 Interactive Training 2 用可注册的设置与动作，替代固定、依赖特定 Trainer 的命令集合。TrainingSession 开放带类型的控制项及其说明。人、脚本、启发式方法和 LLM 智能体都通过同一个接口提交请求。",
+          "训练应用自行选择控制点，在这些位置验证并应用排队中的请求。有序日志把请求与执行结果、评估、检查点和控制器决策关联起来，Aim 工作区则将这些记录与实时指标放在一起。论文还区分了一轮训练内部的干预与跨轮次规划：新一轮会重新初始化模型和优化器，文字日志则把观测与反思传递到后续轮次。"
+        ],
+        "citations": [
+          "interactive-training-2026"
+        ]
+      },
+      {
+        "id": "research-context",
+        "title": "分别比较机制、控制器和实验",
+        "paragraphs": [
+          "LiveTune 早于 Interactive Training，通过 LiveVariables 在不重启优化循环的情况下修改优化参数，提供了更早的实时参数调节机制。Interactive Training 关注围绕训练展开的人与 AI 智能体工作流程；第二版进一步让控制项与事件记录能够在不同应用间复用。",
+          "AI Training Manager 研究一个受约束的 LLM 监督控制器，异步读取训练遥测数据并调整正在执行的训练配置。其实验在监督学习与强化学习中引入指定的失败模式。这为控制器层面的比较提供了实例：智能体能获得哪些证据、能请求哪些动作、后续结果如何影响其决策。基础设施支持与测得的控制器性能，是不同的贡献。"
+        ],
+        "citations": [
+          "livetune",
+          "ai-training-manager",
+          "interactive-training-2025",
+          "interactive-training-2026"
+        ]
+      },
+      {
+        "id": "design-loop",
+        "title": "设计能够观察和核查的反馈闭环",
+        "paragraphs": [
+          "开放训练应用实际能够执行的控制项，并定义修改在何时生效。记录触发请求的观测、请求值、实际应用值、生效的训练步数，以及后续测量结果。提交请求与成功完成更新是不同的事件；将两者关联起来，才能检查系统实际做了什么。",
+          "在明确的任务负载和预算下，按预先指定的训练目标评估自动化控制器。计算推理与干预开销，保留运行历史，并区分持续运行中的改进与新初始化轮次的结果。Interactive Training 论文和实现提供了搭建这一反馈闭环的机制；闭环实现什么目标，由控制器和任务共同决定。"
+        ],
+        "citations": [
+          "interactive-training-2025",
+          "interactive-training-2026",
+          "ai-training-manager"
+        ]
+      }
+    ],
+    "related_guides": [
+      "llm-decision-trees"
+    ],
+    "demo": "training",
+    "reading_order": [
+      "interactive-training-2025",
+      "interactive-training-2026",
+      "livetune",
+      "ai-training-manager"
+    ],
+    "updated_at": "2026-11-11",
+    "url": "https://yuntiandeng.com/research/zh/interactive-training/",
+    "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/interactive-training.md"
+  }
+]

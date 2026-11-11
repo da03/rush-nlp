@@ -33,6 +33,13 @@
   "arxiv_first_posted": "2026-06-08",
   "publication_type": "preprint",
   "container_title": "arXiv",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/unified-energy/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/unified-energy/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/unified-energy/",
+      "summary": "结合针对扩散解码中依赖关系与不变性的能量修正。",
+      "connection": "通过统一处理解码误差，扩展当前采用能量修正的扩散研究方向。"
+    }
+  }
 }

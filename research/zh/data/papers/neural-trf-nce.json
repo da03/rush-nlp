@@ -1,0 +1,30 @@
+{
+  "id": "neural-trf-nce",
+  "title": "Learning Neural Trans-Dimensional Random Field Language Models with Noise-Contrastive Estimation",
+  "authors": [
+    {
+      "given": "Bin",
+      "family": "Wang"
+    },
+    {
+      "given": "Zhijian",
+      "family": "Ou"
+    }
+  ],
+  "year": 2018,
+  "venue": "ICASSP 2018",
+  "paper_url": "https://arxiv.org/abs/1710.10739",
+  "summary": "对参考分布进行指数倾斜，并用噪声对比估计训练神经随机场语言模型。",
+  "connection": "2020 年论文明确讨论的更早残差形式与 NCE 训练方法，其评估以语音识别重评分为中心。",
+  "bibtex_type": "inproceedings",
+  "citation_key": "neuraltrfnce",
+  "source_urls": [
+    "https://arxiv.org/abs/1710.10739"
+  ],
+  "arxiv_id": "1710.10739",
+  "arxiv_first_posted": "2017-10-30",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/neural-trf-nce/"
+}

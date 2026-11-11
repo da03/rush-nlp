@@ -1,0 +1,35 @@
+{
+  "id": "story-evaluation-survey",
+  "title": "What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation",
+  "authors": [
+    {
+      "given": "Dingyi",
+      "family": "Yang"
+    },
+    {
+      "given": "Qin",
+      "family": "Jin"
+    }
+  ],
+  "year": 2024,
+  "venue": "arXiv",
+  "paper_url": "https://arxiv.org/abs/2408.14622",
+  "pdf_url": "https://arxiv.org/pdf/2408.14622",
+  "doi": "10.48550/arXiv.2408.14622",
+  "summary": "综述故事质量标准、人工评估、自动指标和评估基准。",
+  "connection": "将结构诊断放在连贯性、人物发展与叙事质量的更广泛评估背景中。",
+  "bibtex_type": "article",
+  "citation_key": "yang2024goodstory",
+  "source_urls": [
+    "https://arxiv.org/abs/2408.14622",
+    "https://arxiv.org/pdf/2408.14622"
+  ],
+  "arxiv_id": "2408.14622",
+  "arxiv_first_posted": "2024-08-26",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/story-evaluation-survey/"
+}

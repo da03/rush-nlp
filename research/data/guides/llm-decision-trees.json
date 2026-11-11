@@ -170,7 +170,14 @@
       "arxiv_first_posted": "2023-10-21",
       "abstract": "Prompting language models (LMs) is the main interface for applying them to new tasks. However, for smaller LMs, prompting provides low accuracy compared to gradient-based fine-tuning. Tree Prompting is an approach to prompting which builds a decision tree of prompts, linking multiple LM calls together to solve a task. At inference time, each call to the LM is determined by efficiently routing the outcome of the previous call using the tree. Experiments on classification datasets show that Tree Prompting improves accuracy over competing methods and is competitive with fine-tuning. We also show that variants of Tree Prompting allow inspection of a model’s decision-making process.",
       "abstract_source": "https://arxiv.org/html/2310.14034v1",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/tree-prompting/",
+          "summary": "学习可重复使用的决策树，其内部判断由接收提示词的语言模型调用完成；候选提示包括少样本示例、指令和动态生成的提示。",
+          "connection": "基于提示的决策树原始工作：通过修改树结构和提示词适配任务，同时保持语言模型参数不变。"
+        }
+      }
     },
     {
       "id": "aug-tree",
@@ -209,7 +216,14 @@
       "volume": "14",
       "issue": "1",
       "article_number": "7913",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/aug-tree/",
+          "summary": "Aug-Tree 使用语言模型生成的扩展内容，为树的划分构造可解释文本特征。",
+          "connection": "与 Tree Prompting 遍历树时调用语言模型的方式不同，它在训练阶段完成特征扩展。"
+        }
+      }
     },
     {
       "id": "gptree",
@@ -246,7 +260,14 @@
       "arxiv_first_posted": "2024-11-13",
       "publication_type": "preprint",
       "container_title": "arXiv",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/gptree/",
+          "summary": "使用语言模型辅助的划分构建决策树，并结合专家反馈修改决策路径。",
+          "connection": "后续的大语言模型决策树系统，支持专家交互及多种划分类型。"
+        }
+      }
     },
     {
       "id": "act",
@@ -291,7 +312,22 @@
       "arxiv_first_posted": "2025-09-30",
       "publication_type": "preprint",
       "container_title": "arXiv",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/act/",
+          "summary": "通过基于不纯度的划分选择与 TextGrad 优化，学习由自然语言二元问题组成的分类树。",
+          "connection": "后续以智能体方式学习问题决策树的工作；比较时应关注问题优化与树的构建方式。"
+        }
+      }
     }
-  ]
+  ],
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/llm-decision-trees/",
+      "title": "大语言模型决策树：从 Tree Prompting 到智能体分类",
+      "description": "Tree Prompting 如何学习由语言模型提示调用组成的决策树，以及它与 Aug-Tree、GPTree 和 Agentic Classification Tree 的联系。",
+      "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/llm-decision-trees.md"
+    }
+  }
 }

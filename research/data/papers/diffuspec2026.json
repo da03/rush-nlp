@@ -44,6 +44,13 @@
     "https://aclanthology.org/2026.findings-acl.1048/",
     "https://aclanthology.org/2026.findings-acl.1048.pdf"
   ],
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/diffuspec2026/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/diffuspec2026/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/diffuspec2026/",
+      "summary": "结合扩散草稿生成、token 候选格上的 Causal-consistency Path Search，以及自适应草稿长度。",
+      "connection": "把候选格路径选择与对并行扩散提议的自回归验证相连接。"
+    }
+  }
 }

@@ -1,0 +1,48 @@
+{
+  "id": "act",
+  "title": "ACT: Agentic Classification Tree",
+  "authors": [
+    {
+      "given": "Vincent",
+      "family": "Grari"
+    },
+    {
+      "given": "Tim",
+      "family": "Arni"
+    },
+    {
+      "given": "Thibault",
+      "family": "Laugel"
+    },
+    {
+      "given": "Sylvain",
+      "family": "Lamprier"
+    },
+    {
+      "given": "James",
+      "family": "Zou"
+    },
+    {
+      "given": "Marcin",
+      "family": "Detyniecki"
+    }
+  ],
+  "year": 2025,
+  "venue": "arXiv:2509.26433",
+  "paper_url": "https://arxiv.org/html/2509.26433v4",
+  "summary": "通过基于不纯度的划分选择与 TextGrad 优化，学习由自然语言二元问题组成的分类树。",
+  "connection": "后续以智能体方式学习问题决策树的工作；比较时应关注问题优化与树的构建方式。",
+  "bibtex_type": "article",
+  "citation_key": "act",
+  "source_urls": [
+    "https://arxiv.org/html/2509.26433v4"
+  ],
+  "arxiv_id": "2509.26433",
+  "arxiv_first_posted": "2025-09-30",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/act/"
+}

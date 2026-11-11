@@ -49,6 +49,13 @@
   ],
   "arxiv_id": "1502.03044",
   "arxiv_first_posted": "2015-02-10",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/showattendtell2015/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/showattendtell2015/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/showattendtell2015/",
+      "summary": "为图像描述生成引入确定性软视觉注意力和随机硬视觉注意力。",
+      "connection": "随机注意力的早期参考工作，用于理解期望特征与采样选择之间的区别。"
+    }
+  }
 }

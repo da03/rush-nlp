@@ -1,0 +1,42 @@
+<!doctype html>
+
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Input Perturbation Reduces Exposure Bias in Diffusion Models · 研究导读</title><meta name="description" content="研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。">
+
+<link rel="canonical" href="https://yuntiandeng.com/research/zh/papers/diffusion-input-perturbation/"><link rel="alternate" hreflang="en" href="https://yuntiandeng.com/research/papers/diffusion-input-perturbation/"><link rel="alternate" hreflang="zh-Hans" href="https://yuntiandeng.com/research/zh/papers/diffusion-input-perturbation/"><link rel="alternate" hreflang="x-default" href="https://yuntiandeng.com/research/papers/diffusion-input-perturbation/"><meta property="og:title" content="Input Perturbation Reduces Exposure Bias in Diffusion Models"><meta property="og:description" content="研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuntiandeng.com/research/zh/papers/diffusion-input-perturbation/"><meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
+
+<link rel="alternate" type="application/json" href="/research/zh/data/papers/diffusion-input-perturbation.json" title="机器可读内容"><link rel="alternate" type="text/markdown" href="/research/zh/data/papers/diffusion-input-perturbation.md" title="纯文本版本"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
+
+<meta name="citation_title" content="Input Perturbation Reduces Exposure Bias in Diffusion Models">
+
+<meta name="citation_author" content="Mang Ning">
+
+<meta name="citation_author" content="Enver Sangineto">
+
+<meta name="citation_author" content="Angelo Porrello">
+
+<meta name="citation_author" content="Simone Calderara">
+
+<meta name="citation_author" content="Rita Cucchiara">
+
+<meta name="citation_publication_date" content="2023">
+
+<meta name="citation_conference_title" content="ICML 2023">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://yuntiandeng.com/research/zh/papers/diffusion-input-perturbation/", "name": "Input Perturbation Reduces Exposure Bias in Diffusion Models", "description": "研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。", "inLanguage": "zh-Hans", "dateModified": "2026-11-11", "about": {"@context": "https://schema.org", "@type": "ScholarlyArticle", "@id": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/", "name": "Input Perturbation Reduces Exposure Bias in Diffusion Models", "headline": "Input Perturbation Reduces Exposure Bias in Diffusion Models", "author": [{"@type": "Person", "name": "Mang Ning"}, {"@type": "Person", "name": "Enver Sangineto"}, {"@type": "Person", "name": "Angelo Porrello"}, {"@type": "Person", "name": "Simone Calderara"}, {"@type": "Person", "name": "Rita Cucchiara"}], "datePublished": "2023", "description": "研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。", "url": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/", "sameAs": "https://proceedings.mlr.press/v202/ning23a.html", "isPartOf": {"@type": "CreativeWork", "name": "ICML 2023"}, "inLanguage": "en"}}</script>
+
+<script src="/research/assets/research.zh.js" defer></script></head><body>
+
+<a class="skip" href="#main">跳转到正文</a><header class="shell topbar"><a class="wordmark" href="/research/zh/">研究导读<span>语言模型与结构化学习</span></a><nav class="nav" aria-label="主导航"><a href="/research/zh/">主题导读</a><a href="/research/zh/papers/" aria-current="page">论文</a><a href="/research/zh/data/">引用与数据</a><a href="https://yuntiandeng.com/research/papers/diffusion-input-perturbation/" hreflang="en" lang="en">English</a><a href="/">Yuntian Deng ↗</a></nav></header>
+
+<main id="main" class="shell"><div class="back"><a href="/research/zh/papers/">← 论文目录</a></div><header class="hero"><p class="kicker">ICML 2023</p><h1>Input Perturbation Reduces Exposure Bias in Diffusion Models</h1><p class="lead">Mang Ning, Enver Sangineto, Angelo Porrello, Simone Calderara, Rita Cucchiara</p><div class="actions"><a class="button" href="https://proceedings.mlr.press/v202/ning23a.html">阅读论文原文 ↗</a></div></header><div class="prose"><section><h2>方法与贡献</h2><p>研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。</p><p>通过输入扰动处理同一种训练与采样不匹配问题，可与在模型生成状态上训练的 Scheduled Sampling 比较。</p></section><p><a href="https://proceedings.mlr.press/v202/ning23a/ning23a.pdf">阅读全文 PDF ↗</a></p><section><h2>结合主题阅读</h2><p><a href="/research/zh/learned-rendering/">学习渲染 LaTeX、SMILES、HTML 与乐谱 →</a></p></section><section id="citation"><h2>引用</h2><p>Mang Ning, Enver Sangineto, Angelo Porrello, Simone Calderara, Rita Cucchiara. Input Perturbation Reduces Exposure Bias in Diffusion Models. ICML 2023.</p><div class="code-actions"><button type="button" data-copy="#bibtex" data-status="#copy-status">复制 BibTeX</button><a class="button secondary" href="/research/zh/data/papers/diffusion-input-perturbation.bib" download>下载 BibTeX</a><a class="button secondary" href="/research/zh/data/papers/diffusion-input-perturbation.csl.json" download>CSL JSON</a></div><p id="copy-status" class="status-message" role="status"></p><pre id="bibtex">@inproceedings{pmlr-v202-ning23a,
+  title = {{Input Perturbation Reduces Exposure Bias in Diffusion Models}},
+  author = {Ning, Mang and Sangineto, Enver and Porrello, Angelo and Calderara, Simone and Cucchiara, Rita},
+  year = {2023},
+  booktitle = {ICML 2023},
+  url = {https://proceedings.mlr.press/v202/ning23a.html}
+}
+</pre></section></div></main><footer class="shell footer"><div><p>研究导读作者： <a href="/">Yuntian Deng</a>.</p><p>从原始方法到当前研究，附可直接使用的参考文献。</p></div><div><p>参考文献核查日期：2026-11-10。</p><p><a href="/research/zh/about/">关于本系列</a> · <a href="/research/zh/data/navigation.json">页面目录</a> · <a href="/research/zh/data/reading-list.md">Markdown</a></p></div></footer></body></html>

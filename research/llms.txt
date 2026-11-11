@@ -13,3 +13,9 @@
 - [Annotated bibliography](https://yuntiandeng.com/research/data/reading-list.md)
 - [Bibliography JSON](https://yuntiandeng.com/research/data/papers.json)
 - [URL directory](https://yuntiandeng.com/research/data/navigation.json)
+
+## 中文导读
+
+- [中文研究导读](https://yuntiandeng.com/research/zh/): 七个主题的中文说明，与英文版共用论文和引用记录。
+- [中文纯文本导读](https://yuntiandeng.com/research/zh/data/reading-list.md)
+- [中文论文描述 JSON](https://yuntiandeng.com/research/zh/data/papers.json)

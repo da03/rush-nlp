@@ -1,0 +1,47 @@
+<!doctype html>
+
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Residual Energy-Based Models for Text · 研究导读</title><meta name="description" content="研究如何从统计上区分人类文本与模型文本，并把学到的判别器用于全局归一化生成。">
+
+<link rel="canonical" href="https://yuntiandeng.com/research/zh/papers/residual-ebm-jmlr/"><link rel="alternate" hreflang="en" href="https://yuntiandeng.com/research/papers/residual-ebm-jmlr/"><link rel="alternate" hreflang="zh-Hans" href="https://yuntiandeng.com/research/zh/papers/residual-ebm-jmlr/"><link rel="alternate" hreflang="x-default" href="https://yuntiandeng.com/research/papers/residual-ebm-jmlr/"><meta property="og:title" content="Residual Energy-Based Models for Text"><meta property="og:description" content="研究如何从统计上区分人类文本与模型文本，并把学到的判别器用于全局归一化生成。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuntiandeng.com/research/zh/papers/residual-ebm-jmlr/"><meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
+
+<link rel="alternate" type="application/json" href="/research/zh/data/papers/residual-ebm-jmlr.json" title="机器可读内容"><link rel="alternate" type="text/markdown" href="/research/zh/data/papers/residual-ebm-jmlr.md" title="纯文本版本"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
+
+<meta name="citation_title" content="Residual Energy-Based Models for Text">
+
+<meta name="citation_author" content="Anton Bakhtin">
+
+<meta name="citation_author" content="Yuntian Deng">
+
+<meta name="citation_author" content="Sam Gross">
+
+<meta name="citation_author" content="Myle Ott">
+
+<meta name="citation_author" content="Marc’Aurelio Ranzato">
+
+<meta name="citation_author" content="Arthur Szlam">
+
+<meta name="citation_publication_date" content="2021">
+
+<meta name="citation_journal_title" content="Journal of Machine Learning Research">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://yuntiandeng.com/research/zh/papers/residual-ebm-jmlr/", "name": "Residual Energy-Based Models for Text", "description": "研究如何从统计上区分人类文本与模型文本，并把学到的判别器用于全局归一化生成。", "inLanguage": "zh-Hans", "dateModified": "2026-11-11", "about": {"@context": "https://schema.org", "@type": "ScholarlyArticle", "@id": "https://yuntiandeng.com/research/papers/residual-ebm-jmlr/", "name": "Residual Energy-Based Models for Text", "headline": "Residual Energy-Based Models for Text", "author": [{"@type": "Person", "name": "Anton Bakhtin"}, {"@type": "Person", "name": "Yuntian Deng"}, {"@type": "Person", "name": "Sam Gross"}, {"@type": "Person", "name": "Myle Ott"}, {"@type": "Person", "name": "Marc’Aurelio Ranzato"}, {"@type": "Person", "name": "Arthur Szlam"}], "datePublished": "2021", "description": "研究如何从统计上区分人类文本与模型文本，并把学到的判别器用于全局归一化生成。", "url": "https://yuntiandeng.com/research/papers/residual-ebm-jmlr/", "sameAs": "https://www.jmlr.org/papers/v22/20-326.html", "isPartOf": {"@type": "CreativeWork", "name": "JMLR 22(40):1–41"}, "abstract": "Current large-scale auto-regressive language models display impressive fluency and can generate convincing text. In this work we start by asking the question: Can the generations of these models be reliably distinguished from real text by statistical discriminators? We find experimentally that the answer is affirmative when we have access to the training data for the model, and guardedly affirmative even if we do not. This suggests that the auto-regressive models can be improved by incorporating the (globally normalized) discriminators into the generative process. We give a formalism for this using the Energy-Based Model framework, and show that it indeed improves the results of the generative models, measured both in terms of perplexity and in terms of human evaluation.", "inLanguage": "en"}}</script>
+
+<script src="/research/assets/research.zh.js" defer></script></head><body>
+
+<a class="skip" href="#main">跳转到正文</a><header class="shell topbar"><a class="wordmark" href="/research/zh/">研究导读<span>语言模型与结构化学习</span></a><nav class="nav" aria-label="主导航"><a href="/research/zh/">主题导读</a><a href="/research/zh/papers/" aria-current="page">论文</a><a href="/research/zh/data/">引用与数据</a><a href="https://yuntiandeng.com/research/papers/residual-ebm-jmlr/" hreflang="en" lang="en">English</a><a href="/">Yuntian Deng ↗</a></nav></header>
+
+<main id="main" class="shell"><div class="back"><a href="/research/zh/papers/">← 论文目录</a></div><header class="hero"><p class="kicker">JMLR 22(40):1–41</p><h1>Residual Energy-Based Models for Text</h1><p class="lead">Anton Bakhtin, Yuntian Deng, Sam Gross, Myle Ott, Marc’Aurelio Ranzato, Arthur Szlam</p><p class="meta">Anton Bakhtin and Yuntian Deng 为共同第一作者。</p><div class="actions"><a class="button" href="https://www.jmlr.org/papers/v22/20-326.html">阅读论文原文 ↗</a></div></header><div class="prose"><section><h2>方法与贡献</h2><p>研究如何从统计上区分人类文本与模型文本，并把学到的判别器用于全局归一化生成。</p><p>进一步讨论从判别器到生成器的联系，以及残差能量建模。</p></section><section id="abstract"><h2>原文摘要（英文）</h2><p>Current large-scale auto-regressive language models display impressive fluency and can generate convincing text. In this work we start by asking the question: Can the generations of these models be reliably distinguished from real text by statistical discriminators? We find experimentally that the answer is affirmative when we have access to the training data for the model, and guardedly affirmative even if we do not. This suggests that the auto-regressive models can be improved by incorporating the (globally normalized) discriminators into the generative process. We give a formalism for this using the Energy-Based Model framework, and show that it indeed improves the results of the generative models, measured both in terms of perplexity and in terms of human evaluation.</p></section><p><a href="https://www.jmlr.org/papers/volume22/20-326/20-326.pdf">阅读全文 PDF ↗</a></p><section><h2>结合主题阅读</h2><p><a href="/research/zh/energy-based-text-generation/">基于能量的文本生成：残差模型、重采样与扩散 →</a></p></section><section id="citation"><h2>引用</h2><p>Anton Bakhtin, Yuntian Deng, Sam Gross, Myle Ott, Marc’Aurelio Ranzato, Arthur Szlam. Residual Energy-Based Models for Text. JMLR 22(40):1–41.</p><div class="code-actions"><button type="button" data-copy="#bibtex" data-status="#copy-status">复制 BibTeX</button><a class="button secondary" href="/research/zh/data/papers/residual-ebm-jmlr.bib" download>下载 BibTeX</a><a class="button secondary" href="/research/zh/data/papers/residual-ebm-jmlr.csl.json" download>CSL JSON</a></div><p id="copy-status" class="status-message" role="status"></p><pre id="bibtex">@article{residualebmjmlr,
+  title = {{Residual Energy-Based Models for Text}},
+  author = {Bakhtin, Anton and Deng, Yuntian and Gross, Sam and Ott, Myle and Ranzato, Marc’Aurelio and Szlam, Arthur},
+  year = {2021},
+  journal = {Journal of Machine Learning Research},
+  url = {https://www.jmlr.org/papers/v22/20-326.html},
+  volume = {22},
+  number = {40},
+  pages = {1--41}
+}
+</pre></section></div></main><footer class="shell footer"><div><p>研究导读作者： <a href="/">Yuntian Deng</a>.</p><p>从原始方法到当前研究，附可直接使用的参考文献。</p></div><div><p>参考文献核查日期：2026-11-10。</p><p><a href="/research/zh/about/">关于本系列</a> · <a href="/research/zh/data/navigation.json">页面目录</a> · <a href="/research/zh/data/reading-list.md">Markdown</a></p></div></footer></body></html>

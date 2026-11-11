@@ -660,7 +660,7 @@
       "openmeva",
       "story-evaluation-survey"
     ],
-    "updated_at": "2026-11-10"
+    "updated_at": "2026-11-11"
   },
   {
     "id": "learned-rendering",
@@ -748,7 +748,7 @@
       "fsa-cdm",
       "diffusion-input-perturbation"
     ],
-    "updated_at": "2026-11-10"
+    "updated_at": "2026-11-11"
   },
   {
     "id": "interactive-training",
@@ -841,6 +841,6 @@
       "livetune",
       "ai-training-manager"
     ],
-    "updated_at": "2026-11-10"
+    "updated_at": "2026-11-11"
   }
 ]

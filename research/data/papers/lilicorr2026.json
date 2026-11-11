@@ -50,6 +50,13 @@
   "arxiv_first_posted": "2026-08-20",
   "publication_type": "preprint",
   "container_title": "arXiv",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/lilicorr2026/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/lilicorr2026/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/lilicorr2026/",
+      "summary": "对并行草稿的 top-K 候选计算相邻兼容性，再通过低开销的贪心路径选择得到草稿。",
+      "connection": "采用“候选—边—路径”结构，并使用针对投机解码前缀接受目标的局部训练与推断。"
+    }
+  }
 }

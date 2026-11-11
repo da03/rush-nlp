@@ -191,7 +191,14 @@
       "arxiv_first_posted": "2020-06-01",
       "abstract": "The two dominant approaches to neural text generation are fully autoregressive models, using serial beam search decoding, and non-autoregressive models, using parallel decoding with no output dependencies. This work proposes an autoregressive model with sub-linear parallel time generation. Noting that conditional random fields with bounded context can be decoded in parallel, we propose an efficient cascaded decoding approach for generating high-quality output. To parameterize this cascade, we introduce a Markov transformer, a variant of the popular fully autoregressive model that allows us to simultaneously decode with specific autoregressive context cutoffs. This approach requires only a small modification from standard autoregressive training, while showing competitive accuracy/speed tradeoff compared to existing methods on five machine translation datasets.",
       "abstract_source": "https://arxiv.org/html/2006.01112v2",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/cascaded2020/",
+          "summary": "用于并行文本生成的高阶 CRF 级联模型，由一个 Markov Transformer 统一参数化。",
+          "connection": "在保持结构化推断可计算的同时增强输出依赖，与扩散解码内部的联合建模相连接。"
+        }
+      }
     },
     {
       "id": "lattice2021",
@@ -222,7 +229,14 @@
       ],
       "abstract": "Non-autoregressive machine translation (NAT) approaches enable fast generation by utilizing parallelizable generative processes. The remaining bottleneck in these models is their decoder layers; unfortunately unlike in autoregressive models (Kasai et al., 2020), removing decoder layers from NAT models significantly degrades accuracy. This work proposes a sequence-to-lattice model that replaces the decoder with a search lattice. Our approach first constructs a candidate lattice using efficient lookup operations, generates lattice scores from a deep encoder, and finally finds the best path using dynamic programming. Experiments on three machine translation datasets show that our method is faster than past non-autoregressive generation approaches, and more accurate than naively reducing the number of decoder layers.",
       "abstract_source": "https://aclanthology.org/2021.findings-emnlp.318/",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/lattice2021/",
+          "summary": "用候选查找、并行条件边打分和精确 Viterbi 解码取代深层翻译解码器。",
+          "connection": "其“候选—边—路径”架构连接了连贯的并行草稿生成；其目标与推断方式不同于投机解码中的前缀选择。"
+        }
+      }
     },
     {
       "id": "sun2019",
@@ -267,7 +281,14 @@
       ],
       "arxiv_id": "1910.11555",
       "arxiv_first_posted": "2019-10-25",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/sun2019/",
+          "summary": "为非自回归序列模型加入近似一阶 CRF 推断和动态转移。",
+          "connection": "一阶结构化解码的参考工作；Cascaded Text Generation 发展了高阶级联和共享的 Markov Transformer 势函数。"
+        }
+      }
     },
     {
       "id": "codd2026",
@@ -312,7 +333,14 @@
       ],
       "arxiv_id": "2603.00045",
       "arxiv_first_posted": "2026-02-09",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/codd2026/",
+          "summary": "CoDD 将因子化扩散预测与可进行高效推断的概率电路先验组合，建模 token 之间的联合依赖。",
+          "connection": "与结构化生成一样，将并行神经网络打分和联合概率推断分开处理。"
+        }
+      }
     },
     {
       "id": "dadlm2026",
@@ -351,7 +379,14 @@
       ],
       "arxiv_id": "2609.15070",
       "arxiv_first_posted": "2026-09-14",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/dadlm2026/",
+          "summary": "通过按输出位置组织的候选组和已确定 token 构成的锚点，把有向无环图依赖建模用于迭代扩散。",
+          "connection": "把非自回归翻译中的结构化输出建模直接迁移到扩散去噪。"
+        }
+      }
     },
     {
       "id": "lilicorr2026",
@@ -405,7 +440,14 @@
       "arxiv_first_posted": "2026-08-20",
       "publication_type": "preprint",
       "container_title": "arXiv",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/lilicorr2026/",
+          "summary": "对并行草稿的 top-K 候选计算相邻兼容性，再通过低开销的贪心路径选择得到草稿。",
+          "connection": "采用“候选—边—路径”结构，并使用针对投机解码前缀接受目标的局部训练与推断。"
+        }
+      }
     },
     {
       "id": "diffuspec2026",
@@ -453,7 +495,22 @@
         "https://aclanthology.org/2026.findings-acl.1048/",
         "https://aclanthology.org/2026.findings-acl.1048.pdf"
       ],
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/diffuspec2026/",
+          "summary": "结合扩散草稿生成、token 候选格上的 Causal-consistency Path Search，以及自适应草稿长度。",
+          "connection": "把候选格路径选择与对并行扩散提议的自回归验证相连接。"
+        }
+      }
     }
-  ]
+  ],
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/structured-decoding/",
+      "title": "结构化解码：高阶 CRF、扩散语言模型与候选格",
+      "description": "Cascaded Text Generation 和 Sequence-to-Lattice 如何连接高阶条件随机场、联合扩散解码，以及用于投机生成的候选格。",
+      "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/structured-decoding.md"
+    }
+  }
 }

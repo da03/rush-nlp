@@ -1,0 +1,174 @@
+{
+  "language": "zh-Hans",
+  "updated_at": "2026-11-11",
+  "pages": [
+    {
+      "path": "",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "data/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "about/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "llm-decision-trees/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "energy-based-text-generation/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "structured-decoding/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "probabilistic-attention/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "long-form-evaluation/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "learned-rendering/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "interactive-training/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/tree-prompting/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/aug-tree/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/gptree/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/act/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/residual-ebm/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/residual-ebm-jmlr/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/edlm/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/unified-energy/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/neural-trf-nce/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/cascaded2020/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/lattice2021/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/sun2019/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/codd2026/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/dadlm2026/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/lilicorr2026/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/diffuspec2026/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/latentattention2018/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/showattendtell2015/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/structuredattention2017/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/bahuleyan2018/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/bayesianattention2020/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/model-criticism/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/openmeva/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/story-evaluation-survey/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/markup-diffusion/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/fsa-cdm/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/diffusion-input-perturbation/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/interactive-training-2025/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/interactive-training-2026/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/livetune/",
+      "updated_at": "2026-11-11"
+    },
+    {
+      "path": "papers/ai-training-manager/",
+      "updated_at": "2026-11-11"
+    }
+  ]
+}

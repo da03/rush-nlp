@@ -47,6 +47,13 @@
   "source_urls": [
     "https://aclanthology.org/2021.acl-long.500/"
   ],
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/openmeva/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/openmeva/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/openmeva/",
+      "summary": "检验自动故事评估指标的基准，涵盖与人工判断的相关性、泛化、稳健性，以及对不同连贯性错误的敏感程度。",
+      "connection": "检验评估器能否发现已知的故事缺陷，与在潜在空间中诊断生成器输出分布的方法互补。"
+    }
+  }
 }

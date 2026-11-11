@@ -1,6 +1,6 @@
 {
   "title": "Research notes",
-  "updated": "2026-11-10",
+  "updated": "2026-11-11",
   "home": "https://yuntiandeng.com/research/",
   "bibliography": "https://yuntiandeng.com/research/papers/",
   "downloads": "https://yuntiandeng.com/research/data/",
@@ -11,7 +11,10 @@
       "markdown": "https://yuntiandeng.com/research/data/guides/llm-decision-trees.md",
       "original_papers": [
         "tree-prompting"
-      ]
+      ],
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/llm-decision-trees/"
+      }
     },
     {
       "title": "Energy-based text generation: residual models, resampling and diffusion",
@@ -20,7 +23,10 @@
       "original_papers": [
         "residual-ebm",
         "residual-ebm-jmlr"
-      ]
+      ],
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/energy-based-text-generation/"
+      }
     },
     {
       "title": "Structured Decoding: Higher-Order CRFs, Diffusion Language Models, and Candidate Lattices",
@@ -29,7 +35,10 @@
       "original_papers": [
         "cascaded2020",
         "lattice2021"
-      ]
+      ],
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/structured-decoding/"
+      }
     },
     {
       "title": "Attention as a Latent Variable: Modeling a Distribution over Attention",
@@ -37,7 +46,10 @@
       "markdown": "https://yuntiandeng.com/research/data/guides/probabilistic-attention.md",
       "original_papers": [
         "latentattention2018"
-      ]
+      ],
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/probabilistic-attention/"
+      }
     },
     {
       "title": "Evaluating the structure of long-form text",
@@ -45,7 +57,10 @@
       "markdown": "https://yuntiandeng.com/research/data/guides/long-form-evaluation.md",
       "original_papers": [
         "model-criticism"
-      ]
+      ],
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/long-form-evaluation/"
+      }
     },
     {
       "title": "Learning to render LaTeX, SMILES, HTML and music notation",
@@ -53,7 +68,10 @@
       "markdown": "https://yuntiandeng.com/research/data/guides/learned-rendering.md",
       "original_papers": [
         "markup-diffusion"
-      ]
+      ],
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/learned-rendering/"
+      }
     },
     {
       "title": "Controlling a running training job with humans and AI agents",
@@ -62,7 +80,10 @@
       "original_papers": [
         "interactive-training-2025",
         "interactive-training-2026"
-      ]
+      ],
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/interactive-training/"
+      }
     }
   ],
   "papers": [
@@ -73,7 +94,10 @@
       "source": "https://arxiv.org/html/2310.14034v1",
       "json": "https://yuntiandeng.com/research/data/papers/tree-prompting.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/tree-prompting.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/tree-prompting.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/tree-prompting.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/tree-prompting/"
+      }
     },
     {
       "id": "aug-tree",
@@ -82,7 +106,10 @@
       "source": "https://www.nature.com/articles/s41467-023-43713-1",
       "json": "https://yuntiandeng.com/research/data/papers/aug-tree.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/aug-tree.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/aug-tree.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/aug-tree.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/aug-tree/"
+      }
     },
     {
       "id": "gptree",
@@ -91,7 +118,10 @@
       "source": "https://arxiv.org/html/2411.08257v1",
       "json": "https://yuntiandeng.com/research/data/papers/gptree.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/gptree.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/gptree.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/gptree.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/gptree/"
+      }
     },
     {
       "id": "act",
@@ -100,7 +130,10 @@
       "source": "https://arxiv.org/html/2509.26433v4",
       "json": "https://yuntiandeng.com/research/data/papers/act.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/act.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/act.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/act.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/act/"
+      }
     },
     {
       "id": "residual-ebm",
@@ -109,7 +142,10 @@
       "source": "https://arxiv.org/html/2004.11714v1",
       "json": "https://yuntiandeng.com/research/data/papers/residual-ebm.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/residual-ebm.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/residual-ebm.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/residual-ebm.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/residual-ebm/"
+      }
     },
     {
       "id": "residual-ebm-jmlr",
@@ -118,7 +154,10 @@
       "source": "https://www.jmlr.org/papers/v22/20-326.html",
       "json": "https://yuntiandeng.com/research/data/papers/residual-ebm-jmlr.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/residual-ebm-jmlr.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/residual-ebm-jmlr.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/residual-ebm-jmlr.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/residual-ebm-jmlr/"
+      }
     },
     {
       "id": "edlm",
@@ -127,7 +166,10 @@
       "source": "https://arxiv.org/html/2410.21357v4",
       "json": "https://yuntiandeng.com/research/data/papers/edlm.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/edlm.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/edlm.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/edlm.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/edlm/"
+      }
     },
     {
       "id": "unified-energy",
@@ -136,7 +178,10 @@
       "source": "https://arxiv.org/html/2606.09159v1",
       "json": "https://yuntiandeng.com/research/data/papers/unified-energy.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/unified-energy.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/unified-energy.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/unified-energy.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/unified-energy/"
+      }
     },
     {
       "id": "neural-trf-nce",
@@ -145,7 +190,10 @@
       "source": "https://arxiv.org/abs/1710.10739",
       "json": "https://yuntiandeng.com/research/data/papers/neural-trf-nce.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/neural-trf-nce.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/neural-trf-nce.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/neural-trf-nce.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/neural-trf-nce/"
+      }
     },
     {
       "id": "cascaded2020",
@@ -154,7 +202,10 @@
       "source": "https://arxiv.org/abs/2006.01112",
       "json": "https://yuntiandeng.com/research/data/papers/cascaded2020.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/cascaded2020.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/cascaded2020.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/cascaded2020.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/cascaded2020/"
+      }
     },
     {
       "id": "lattice2021",
@@ -163,7 +214,10 @@
       "source": "https://aclanthology.org/2021.findings-emnlp.318/",
       "json": "https://yuntiandeng.com/research/data/papers/lattice2021.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/lattice2021.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/lattice2021.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/lattice2021.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/lattice2021/"
+      }
     },
     {
       "id": "sun2019",
@@ -172,7 +226,10 @@
       "source": "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html",
       "json": "https://yuntiandeng.com/research/data/papers/sun2019.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/sun2019.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/sun2019.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/sun2019.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/sun2019/"
+      }
     },
     {
       "id": "codd2026",
@@ -181,7 +238,10 @@
       "source": "https://proceedings.mlr.press/v306/li26fd.html",
       "json": "https://yuntiandeng.com/research/data/papers/codd2026.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/codd2026.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/codd2026.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/codd2026.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/codd2026/"
+      }
     },
     {
       "id": "dadlm2026",
@@ -190,7 +250,10 @@
       "source": "https://aclanthology.org/2026.emnlp-main.2094/",
       "json": "https://yuntiandeng.com/research/data/papers/dadlm2026.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/dadlm2026.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/dadlm2026.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/dadlm2026.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/dadlm2026/"
+      }
     },
     {
       "id": "lilicorr2026",
@@ -199,7 +262,10 @@
       "source": "https://arxiv.org/abs/2608.20530",
       "json": "https://yuntiandeng.com/research/data/papers/lilicorr2026.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/lilicorr2026.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/lilicorr2026.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/lilicorr2026.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/lilicorr2026/"
+      }
     },
     {
       "id": "diffuspec2026",
@@ -208,7 +274,10 @@
       "source": "https://aclanthology.org/2026.findings-acl.1048/",
       "json": "https://yuntiandeng.com/research/data/papers/diffuspec2026.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/diffuspec2026.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/diffuspec2026.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/diffuspec2026.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/diffuspec2026/"
+      }
     },
     {
       "id": "latentattention2018",
@@ -217,7 +286,10 @@
       "source": "https://arxiv.org/abs/1807.03756",
       "json": "https://yuntiandeng.com/research/data/papers/latentattention2018.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/latentattention2018.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/latentattention2018.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/latentattention2018.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/latentattention2018/"
+      }
     },
     {
       "id": "showattendtell2015",
@@ -226,7 +298,10 @@
       "source": "https://proceedings.mlr.press/v37/xuc15.html",
       "json": "https://yuntiandeng.com/research/data/papers/showattendtell2015.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/showattendtell2015.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/showattendtell2015.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/showattendtell2015.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/showattendtell2015/"
+      }
     },
     {
       "id": "structuredattention2017",
@@ -235,7 +310,10 @@
       "source": "https://arxiv.org/abs/1702.00887",
       "json": "https://yuntiandeng.com/research/data/papers/structuredattention2017.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/structuredattention2017.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/structuredattention2017.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/structuredattention2017.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/structuredattention2017/"
+      }
     },
     {
       "id": "bahuleyan2018",
@@ -244,7 +322,10 @@
       "source": "https://aclanthology.org/C18-1142/",
       "json": "https://yuntiandeng.com/research/data/papers/bahuleyan2018.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/bahuleyan2018.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/bahuleyan2018.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/bahuleyan2018.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/bahuleyan2018/"
+      }
     },
     {
       "id": "bayesianattention2020",
@@ -253,7 +334,10 @@
       "source": "https://arxiv.org/abs/2010.10604",
       "json": "https://yuntiandeng.com/research/data/papers/bayesianattention2020.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/bayesianattention2020.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/bayesianattention2020.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/bayesianattention2020.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/bayesianattention2020/"
+      }
     },
     {
       "id": "model-criticism",
@@ -262,7 +346,10 @@
       "source": "https://aclanthology.org/2022.emnlp-main.815/",
       "json": "https://yuntiandeng.com/research/data/papers/model-criticism.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/model-criticism.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/model-criticism.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/model-criticism.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/model-criticism/"
+      }
     },
     {
       "id": "openmeva",
@@ -271,7 +358,10 @@
       "source": "https://aclanthology.org/2021.acl-long.500/",
       "json": "https://yuntiandeng.com/research/data/papers/openmeva.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/openmeva.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/openmeva.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/openmeva.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/openmeva/"
+      }
     },
     {
       "id": "story-evaluation-survey",
@@ -280,7 +370,10 @@
       "source": "https://arxiv.org/abs/2408.14622",
       "json": "https://yuntiandeng.com/research/data/papers/story-evaluation-survey.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/story-evaluation-survey.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/story-evaluation-survey.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/story-evaluation-survey.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/story-evaluation-survey/"
+      }
     },
     {
       "id": "markup-diffusion",
@@ -289,7 +382,10 @@
       "source": "https://arxiv.org/abs/2210.05147",
       "json": "https://yuntiandeng.com/research/data/papers/markup-diffusion.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/markup-diffusion.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/markup-diffusion.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/markup-diffusion.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/markup-diffusion/"
+      }
     },
     {
       "id": "fsa-cdm",
@@ -298,7 +394,10 @@
       "source": "https://arxiv.org/abs/2308.01147",
       "json": "https://yuntiandeng.com/research/data/papers/fsa-cdm.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/fsa-cdm.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/fsa-cdm.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/fsa-cdm.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/fsa-cdm/"
+      }
     },
     {
       "id": "diffusion-input-perturbation",
@@ -307,7 +406,10 @@
       "source": "https://proceedings.mlr.press/v202/ning23a.html",
       "json": "https://yuntiandeng.com/research/data/papers/diffusion-input-perturbation.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/diffusion-input-perturbation.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/diffusion-input-perturbation.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/diffusion-input-perturbation.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/diffusion-input-perturbation/"
+      }
     },
     {
       "id": "interactive-training-2025",
@@ -316,7 +418,10 @@
       "source": "https://aclanthology.org/2025.emnlp-demos.65/",
       "json": "https://yuntiandeng.com/research/data/papers/interactive-training-2025.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/interactive-training-2025.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/interactive-training-2025.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/interactive-training-2025.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/interactive-training-2025/"
+      }
     },
     {
       "id": "interactive-training-2026",
@@ -325,7 +430,10 @@
       "source": "https://arxiv.org/abs/2607.18314",
       "json": "https://yuntiandeng.com/research/data/papers/interactive-training-2026.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/interactive-training-2026.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/interactive-training-2026.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/interactive-training-2026.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/interactive-training-2026/"
+      }
     },
     {
       "id": "livetune",
@@ -334,7 +442,10 @@
       "source": "https://arxiv.org/abs/2311.17279",
       "json": "https://yuntiandeng.com/research/data/papers/livetune.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/livetune.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/livetune.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/livetune.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/livetune/"
+      }
     },
     {
       "id": "ai-training-manager",
@@ -343,7 +454,14 @@
       "source": "https://arxiv.org/abs/2606.29871",
       "json": "https://yuntiandeng.com/research/data/papers/ai-training-manager.json",
       "bibtex": "https://yuntiandeng.com/research/data/papers/ai-training-manager.bib",
-      "csl": "https://yuntiandeng.com/research/data/papers/ai-training-manager.csl.json"
+      "csl": "https://yuntiandeng.com/research/data/papers/ai-training-manager.csl.json",
+      "translations": {
+        "zh-Hans": "https://yuntiandeng.com/research/zh/papers/ai-training-manager/"
+      }
     }
-  ]
+  ],
+  "languages": {
+    "en": "https://yuntiandeng.com/research/",
+    "zh-Hans": "https://yuntiandeng.com/research/zh/"
+  }
 }

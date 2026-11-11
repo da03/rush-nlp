@@ -1,0 +1,39 @@
+<!doctype html>
+
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Sequence-to-Lattice Models for Fast Translation · 研究导读</title><meta name="description" content="用候选查找、并行条件边打分和精确 Viterbi 解码取代深层翻译解码器。">
+
+<link rel="canonical" href="https://yuntiandeng.com/research/zh/papers/lattice2021/"><link rel="alternate" hreflang="en" href="https://yuntiandeng.com/research/papers/lattice2021/"><link rel="alternate" hreflang="zh-Hans" href="https://yuntiandeng.com/research/zh/papers/lattice2021/"><link rel="alternate" hreflang="x-default" href="https://yuntiandeng.com/research/papers/lattice2021/"><meta property="og:title" content="Sequence-to-Lattice Models for Fast Translation"><meta property="og:description" content="用候选查找、并行条件边打分和精确 Viterbi 解码取代深层翻译解码器。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuntiandeng.com/research/zh/papers/lattice2021/"><meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
+
+<link rel="alternate" type="application/json" href="/research/zh/data/papers/lattice2021.json" title="机器可读内容"><link rel="alternate" type="text/markdown" href="/research/zh/data/papers/lattice2021.md" title="纯文本版本"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
+
+<meta name="citation_title" content="Sequence-to-Lattice Models for Fast Translation">
+
+<meta name="citation_author" content="Yuntian Deng">
+
+<meta name="citation_author" content="Alexander M. Rush">
+
+<meta name="citation_publication_date" content="2021">
+
+<meta name="citation_conference_title" content="Findings of EMNLP 2021">
+
+<meta name="citation_doi" content="10.18653/v1/2021.findings-emnlp.318">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://yuntiandeng.com/research/zh/papers/lattice2021/", "name": "Sequence-to-Lattice Models for Fast Translation", "description": "用候选查找、并行条件边打分和精确 Viterbi 解码取代深层翻译解码器。", "inLanguage": "zh-Hans", "dateModified": "2026-11-11", "about": {"@context": "https://schema.org", "@type": "ScholarlyArticle", "@id": "https://yuntiandeng.com/research/papers/lattice2021/", "name": "Sequence-to-Lattice Models for Fast Translation", "headline": "Sequence-to-Lattice Models for Fast Translation", "author": [{"@type": "Person", "name": "Yuntian Deng"}, {"@type": "Person", "name": "Alexander M. Rush"}], "datePublished": "2021", "description": "用候选查找、并行条件边打分和精确 Viterbi 解码取代深层翻译解码器。", "url": "https://yuntiandeng.com/research/papers/lattice2021/", "sameAs": "https://aclanthology.org/2021.findings-emnlp.318/", "isPartOf": {"@type": "CreativeWork", "name": "Findings of EMNLP 2021"}, "identifier": [{"@type": "PropertyValue", "propertyID": "DOI", "value": "10.18653/v1/2021.findings-emnlp.318"}], "abstract": "Non-autoregressive machine translation (NAT) approaches enable fast generation by utilizing parallelizable generative processes. The remaining bottleneck in these models is their decoder layers; unfortunately unlike in autoregressive models (Kasai et al., 2020), removing decoder layers from NAT models significantly degrades accuracy. This work proposes a sequence-to-lattice model that replaces the decoder with a search lattice. Our approach first constructs a candidate lattice using efficient lookup operations, generates lattice scores from a deep encoder, and finally finds the best path using dynamic programming. Experiments on three machine translation datasets show that our method is faster than past non-autoregressive generation approaches, and more accurate than naively reducing the number of decoder layers.", "inLanguage": "en"}}</script>
+
+<script src="/research/assets/research.zh.js" defer></script></head><body>
+
+<a class="skip" href="#main">跳转到正文</a><header class="shell topbar"><a class="wordmark" href="/research/zh/">研究导读<span>语言模型与结构化学习</span></a><nav class="nav" aria-label="主导航"><a href="/research/zh/">主题导读</a><a href="/research/zh/papers/" aria-current="page">论文</a><a href="/research/zh/data/">引用与数据</a><a href="https://yuntiandeng.com/research/papers/lattice2021/" hreflang="en" lang="en">English</a><a href="/">Yuntian Deng ↗</a></nav></header>
+
+<main id="main" class="shell"><div class="back"><a href="/research/zh/papers/">← 论文目录</a></div><header class="hero"><p class="kicker">Findings of EMNLP 2021</p><h1>Sequence-to-Lattice Models for Fast Translation</h1><p class="lead">Yuntian Deng, Alexander M. Rush</p><div class="actions"><a class="button" href="https://aclanthology.org/2021.findings-emnlp.318/">阅读论文原文 ↗</a><a class="button secondary" href="https://github.com/harvardnlp/cascaded-generation">代码 ↗</a></div></header><div class="prose"><section><h2>方法与贡献</h2><p>用候选查找、并行条件边打分和精确 Viterbi 解码取代深层翻译解码器。</p><p>其“候选—边—路径”架构连接了连贯的并行草稿生成；其目标与推断方式不同于投机解码中的前缀选择。</p></section><section id="abstract"><h2>原文摘要（英文）</h2><p>Non-autoregressive machine translation (NAT) approaches enable fast generation by utilizing parallelizable generative processes. The remaining bottleneck in these models is their decoder layers; unfortunately unlike in autoregressive models (Kasai et al., 2020), removing decoder layers from NAT models significantly degrades accuracy. This work proposes a sequence-to-lattice model that replaces the decoder with a search lattice. Our approach first constructs a candidate lattice using efficient lookup operations, generates lattice scores from a deep encoder, and finally finds the best path using dynamic programming. Experiments on three machine translation datasets show that our method is faster than past non-autoregressive generation approaches, and more accurate than naively reducing the number of decoder layers.</p></section><p><a href="https://aclanthology.org/2021.findings-emnlp.318.pdf">阅读全文 PDF ↗</a></p><section><h2>结合主题阅读</h2><p><a href="/research/zh/structured-decoding/">结构化解码：高阶 CRF、扩散语言模型与候选格 →</a></p></section><section id="citation"><h2>引用</h2><p>Yuntian Deng, Alexander M. Rush. Sequence-to-Lattice Models for Fast Translation. Findings of EMNLP 2021.</p><div class="code-actions"><button type="button" data-copy="#bibtex" data-status="#copy-status">复制 BibTeX</button><a class="button secondary" href="/research/zh/data/papers/lattice2021.bib" download>下载 BibTeX</a><a class="button secondary" href="/research/zh/data/papers/lattice2021.csl.json" download>CSL JSON</a></div><p id="copy-status" class="status-message" role="status"></p><pre id="bibtex">@inproceedings{deng-rush-2021-sequence,
+  title = {{Sequence-to-Lattice Models for Fast Translation}},
+  author = {Deng, Yuntian and Rush, Alexander M.},
+  year = {2021},
+  booktitle = {Findings of EMNLP 2021},
+  url = {https://aclanthology.org/2021.findings-emnlp.318/},
+  doi = {10.18653/v1/2021.findings-emnlp.318}
+}
+</pre></section></div></main><footer class="shell footer"><div><p>研究导读作者： <a href="/">Yuntian Deng</a>.</p><p>从原始方法到当前研究，附可直接使用的参考文献。</p></div><div><p>参考文献核查日期：2026-11-10。</p><p><a href="/research/zh/about/">关于本系列</a> · <a href="/research/zh/data/navigation.json">页面目录</a> · <a href="/research/zh/data/reading-list.md">Markdown</a></p></div></footer></body></html>

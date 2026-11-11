@@ -1,0 +1,40 @@
+<!doctype html>
+
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Cascaded Text Generation with Markov Transformers · 研究导读</title><meta name="description" content="用于并行文本生成的高阶 CRF 级联模型，由一个 Markov Transformer 统一参数化。">
+
+<link rel="canonical" href="https://yuntiandeng.com/research/zh/papers/cascaded2020/"><link rel="alternate" hreflang="en" href="https://yuntiandeng.com/research/papers/cascaded2020/"><link rel="alternate" hreflang="zh-Hans" href="https://yuntiandeng.com/research/zh/papers/cascaded2020/"><link rel="alternate" hreflang="x-default" href="https://yuntiandeng.com/research/papers/cascaded2020/"><meta property="og:title" content="Cascaded Text Generation with Markov Transformers"><meta property="og:description" content="用于并行文本生成的高阶 CRF 级联模型，由一个 Markov Transformer 统一参数化。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuntiandeng.com/research/zh/papers/cascaded2020/"><meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
+
+<link rel="alternate" type="application/json" href="/research/zh/data/papers/cascaded2020.json" title="机器可读内容"><link rel="alternate" type="text/markdown" href="/research/zh/data/papers/cascaded2020.md" title="纯文本版本"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
+
+<meta name="citation_title" content="Cascaded Text Generation with Markov Transformers">
+
+<meta name="citation_author" content="Yuntian Deng">
+
+<meta name="citation_author" content="Alexander M. Rush">
+
+<meta name="citation_publication_date" content="2020">
+
+<meta name="citation_conference_title" content="NeurIPS 2020">
+
+<meta name="citation_arxiv_id" content="2006.01112">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://yuntiandeng.com/research/zh/papers/cascaded2020/", "name": "Cascaded Text Generation with Markov Transformers", "description": "用于并行文本生成的高阶 CRF 级联模型，由一个 Markov Transformer 统一参数化。", "inLanguage": "zh-Hans", "dateModified": "2026-11-11", "about": {"@context": "https://schema.org", "@type": "ScholarlyArticle", "@id": "https://yuntiandeng.com/research/papers/cascaded2020/", "name": "Cascaded Text Generation with Markov Transformers", "headline": "Cascaded Text Generation with Markov Transformers", "author": [{"@type": "Person", "name": "Yuntian Deng"}, {"@type": "Person", "name": "Alexander M. Rush"}], "datePublished": "2020", "description": "用于并行文本生成的高阶 CRF 级联模型，由一个 Markov Transformer 统一参数化。", "url": "https://yuntiandeng.com/research/papers/cascaded2020/", "sameAs": "https://arxiv.org/abs/2006.01112", "isPartOf": {"@type": "CreativeWork", "name": "NeurIPS 2020"}, "identifier": [{"@type": "PropertyValue", "propertyID": "arXiv", "value": "2006.01112"}], "abstract": "The two dominant approaches to neural text generation are fully autoregressive models, using serial beam search decoding, and non-autoregressive models, using parallel decoding with no output dependencies. This work proposes an autoregressive model with sub-linear parallel time generation. Noting that conditional random fields with bounded context can be decoded in parallel, we propose an efficient cascaded decoding approach for generating high-quality output. To parameterize this cascade, we introduce a Markov transformer, a variant of the popular fully autoregressive model that allows us to simultaneously decode with specific autoregressive context cutoffs. This approach requires only a small modification from standard autoregressive training, while showing competitive accuracy/speed tradeoff compared to existing methods on five machine translation datasets.", "inLanguage": "en"}}</script>
+
+<script src="/research/assets/research.zh.js" defer></script></head><body>
+
+<a class="skip" href="#main">跳转到正文</a><header class="shell topbar"><a class="wordmark" href="/research/zh/">研究导读<span>语言模型与结构化学习</span></a><nav class="nav" aria-label="主导航"><a href="/research/zh/">主题导读</a><a href="/research/zh/papers/" aria-current="page">论文</a><a href="/research/zh/data/">引用与数据</a><a href="https://yuntiandeng.com/research/papers/cascaded2020/" hreflang="en" lang="en">English</a><a href="/">Yuntian Deng ↗</a></nav></header>
+
+<main id="main" class="shell"><div class="back"><a href="/research/zh/papers/">← 论文目录</a></div><header class="hero"><p class="kicker">NeurIPS 2020</p><h1>Cascaded Text Generation with Markov Transformers</h1><p class="lead">Yuntian Deng, Alexander M. Rush</p><p class="meta">arXiv 首次公开：2020-06-01。引用年份：2020。</p><div class="actions"><a class="button" href="https://arxiv.org/abs/2006.01112">阅读论文原文 ↗</a><a class="button secondary" href="https://github.com/harvardnlp/cascaded-generation">代码 ↗</a></div></header><div class="prose"><section><h2>方法与贡献</h2><p>用于并行文本生成的高阶 CRF 级联模型，由一个 Markov Transformer 统一参数化。</p><p>在保持结构化推断可计算的同时增强输出依赖，与扩散解码内部的联合建模相连接。</p></section><section id="abstract"><h2>原文摘要（英文）</h2><p>The two dominant approaches to neural text generation are fully autoregressive models, using serial beam search decoding, and non-autoregressive models, using parallel decoding with no output dependencies. This work proposes an autoregressive model with sub-linear parallel time generation. Noting that conditional random fields with bounded context can be decoded in parallel, we propose an efficient cascaded decoding approach for generating high-quality output. To parameterize this cascade, we introduce a Markov transformer, a variant of the popular fully autoregressive model that allows us to simultaneously decode with specific autoregressive context cutoffs. This approach requires only a small modification from standard autoregressive training, while showing competitive accuracy/speed tradeoff compared to existing methods on five machine translation datasets.</p></section><p><a href="https://papers.nips.cc/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Paper.pdf">阅读全文 PDF ↗</a></p><section><h2>结合主题阅读</h2><p><a href="/research/zh/structured-decoding/">结构化解码：高阶 CRF、扩散语言模型与候选格 →</a></p></section><section id="citation"><h2>引用</h2><p>Yuntian Deng, Alexander M. Rush. Cascaded Text Generation with Markov Transformers. NeurIPS 2020.</p><div class="code-actions"><button type="button" data-copy="#bibtex" data-status="#copy-status">复制 BibTeX</button><a class="button secondary" href="/research/zh/data/papers/cascaded2020.bib" download>下载 BibTeX</a><a class="button secondary" href="/research/zh/data/papers/cascaded2020.csl.json" download>CSL JSON</a></div><p id="copy-status" class="status-message" role="status"></p><pre id="bibtex">@inproceedings{deng2020cascaded,
+  title = {{Cascaded Text Generation with Markov Transformers}},
+  author = {Deng, Yuntian and Rush, Alexander M.},
+  year = {2020},
+  booktitle = {NeurIPS 2020},
+  url = {https://arxiv.org/abs/2006.01112},
+  eprint = {2006.01112},
+  archivePrefix = {arXiv}
+}
+</pre></section></div></main><footer class="shell footer"><div><p>研究导读作者： <a href="/">Yuntian Deng</a>.</p><p>从原始方法到当前研究，附可直接使用的参考文献。</p></div><div><p>参考文献核查日期：2026-11-10。</p><p><a href="/research/zh/about/">关于本系列</a> · <a href="/research/zh/data/navigation.json">页面目录</a> · <a href="/research/zh/data/reading-list.md">Markdown</a></p></div></footer></body></html>

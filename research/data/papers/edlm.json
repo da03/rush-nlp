@@ -47,6 +47,13 @@
   ],
   "arxiv_id": "2410.21357",
   "arxiv_first_posted": "2024-10-28",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/edlm/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/edlm/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/edlm/",
+      "summary": "在每一步扩散去噪分布中加入完整序列的残差能量，采用自回归模型或 NCE 参数化，并通过并行重要性采样生成文本。",
+      "connection": "直接引用 Deng 等人（2020），将残差修正与配分函数估计用于扩散语言建模。"
+    }
+  }
 }

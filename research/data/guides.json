@@ -124,7 +124,15 @@
     ],
     "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/llm-decision-trees/",
-    "markdown_url": "https://yuntiandeng.com/research/data/guides/llm-decision-trees.md"
+    "markdown_url": "https://yuntiandeng.com/research/data/guides/llm-decision-trees.md",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/llm-decision-trees/",
+        "title": "大语言模型决策树：从 Tree Prompting 到智能体分类",
+        "description": "Tree Prompting 如何学习由语言模型提示调用组成的决策树，以及它与 Aug-Tree、GPTree 和 Agentic Classification Tree 的联系。",
+        "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/llm-decision-trees.md"
+      }
+    }
   },
   {
     "id": "energy-based-text-generation",
@@ -272,7 +280,15 @@
     ],
     "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/energy-based-text-generation/",
-    "markdown_url": "https://yuntiandeng.com/research/data/guides/energy-based-text-generation.md"
+    "markdown_url": "https://yuntiandeng.com/research/data/guides/energy-based-text-generation.md",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/energy-based-text-generation/",
+        "title": "基于能量的文本生成：残差模型、重采样与扩散",
+        "description": "Residual Energy-Based Models for Text Generation 将序列级能量、噪声对比估计和重要性重采样联系起来，并与基于能量的扩散语言模型直接相连。",
+        "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/energy-based-text-generation.md"
+      }
+    }
   },
   {
     "id": "structured-decoding",
@@ -436,7 +452,15 @@
     ],
     "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/structured-decoding/",
-    "markdown_url": "https://yuntiandeng.com/research/data/guides/structured-decoding.md"
+    "markdown_url": "https://yuntiandeng.com/research/data/guides/structured-decoding.md",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/structured-decoding/",
+        "title": "结构化解码：高阶 CRF、扩散语言模型与候选格",
+        "description": "Cascaded Text Generation 和 Sequence-to-Lattice 如何连接高阶条件随机场、联合扩散解码，以及用于投机生成的候选格。",
+        "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/structured-decoding.md"
+      }
+    }
   },
   {
     "id": "probabilistic-attention",
@@ -579,7 +603,15 @@
     ],
     "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/probabilistic-attention/",
-    "markdown_url": "https://yuntiandeng.com/research/data/guides/probabilistic-attention.md"
+    "markdown_url": "https://yuntiandeng.com/research/data/guides/probabilistic-attention.md",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/probabilistic-attention/",
+        "title": "把注意力建模为隐变量：学习注意力的概率分布",
+        "description": "Latent Alignment and Variational Attention 导读：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
+        "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/probabilistic-attention.md"
+      }
+    }
   },
   {
     "id": "long-form-evaluation",
@@ -668,9 +700,17 @@
       "openmeva",
       "story-evaluation-survey"
     ],
-    "updated_at": "2026-11-10",
+    "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/long-form-evaluation/",
-    "markdown_url": "https://yuntiandeng.com/research/data/guides/long-form-evaluation.md"
+    "markdown_url": "https://yuntiandeng.com/research/data/guides/long-form-evaluation.md",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/long-form-evaluation/",
+        "title": "如何评估长文本的结构",
+        "description": "潜在空间中的模型检验如何超越词元层面的流畅度，评估生成文本的篇章结构、实体行为与主题关系。",
+        "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/long-form-evaluation.md"
+      }
+    }
   },
   {
     "id": "learned-rendering",
@@ -758,9 +798,17 @@
       "fsa-cdm",
       "diffusion-input-perturbation"
     ],
-    "updated_at": "2026-11-10",
+    "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/learned-rendering/",
-    "markdown_url": "https://yuntiandeng.com/research/data/guides/learned-rendering.md"
+    "markdown_url": "https://yuntiandeng.com/research/data/guides/learned-rendering.md",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/learned-rendering/",
+        "title": "学习渲染 LaTeX、SMILES、HTML 与乐谱",
+        "description": "用扩散模型学习渲染数学公式、分子、表格布局和乐谱，并通过 Scheduled Sampling 处理暴露偏差。",
+        "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/learned-rendering.md"
+      }
+    }
   },
   {
     "id": "interactive-training",
@@ -853,8 +901,16 @@
       "livetune",
       "ai-training-manager"
     ],
-    "updated_at": "2026-11-10",
+    "updated_at": "2026-11-11",
     "url": "https://yuntiandeng.com/research/interactive-training/",
-    "markdown_url": "https://yuntiandeng.com/research/data/guides/interactive-training.md"
+    "markdown_url": "https://yuntiandeng.com/research/data/guides/interactive-training.md",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/interactive-training/",
+        "title": "让人和 AI 智能体控制正在运行的训练任务",
+        "description": "Interactive Training 将实时指标与人和 LLM 对训练任务的干预相连；第二版加入带类型的控制项和有序操作日志。",
+        "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/interactive-training.md"
+      }
+    }
   }
 ]

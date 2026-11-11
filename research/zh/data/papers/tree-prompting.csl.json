@@ -1,0 +1,39 @@
+[
+  {
+    "id": "treeprompting",
+    "type": "paper-conference",
+    "title": "Tree Prompting: Efficient Task Adaptation without Fine-Tuning",
+    "author": [
+      {
+        "given": "John X.",
+        "family": "Morris"
+      },
+      {
+        "given": "Chandan",
+        "family": "Singh"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      },
+      {
+        "given": "Jianfeng",
+        "family": "Gao"
+      },
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "EMNLP 2023",
+    "URL": "https://arxiv.org/html/2310.14034v1",
+    "DOI": "10.18653/v1/2023.emnlp-main.384"
+  }
+]

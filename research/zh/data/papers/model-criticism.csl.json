@@ -1,0 +1,31 @@
+[
+  {
+    "id": "deng-etal-2022-model",
+    "type": "paper-conference",
+    "title": "Model Criticism for Long-Form Text Generation",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Volodymyr",
+        "family": "Kuleshov"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2022
+        ]
+      ]
+    },
+    "container-title": "EMNLP 2022",
+    "URL": "https://aclanthology.org/2022.emnlp-main.815/",
+    "DOI": "10.18653/v1/2022.emnlp-main.815"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "li2026diffuspec",
+    "type": "paper-conference",
+    "title": "DiffuSpec: Unlocking Diffusion Language Models for Speculative Decoding",
+    "author": [
+      {
+        "given": "Guanghao",
+        "family": "Li"
+      },
+      {
+        "given": "Zhihui",
+        "family": "Fu"
+      },
+      {
+        "given": "Min",
+        "family": "Fang"
+      },
+      {
+        "given": "Qibin",
+        "family": "Zhao"
+      },
+      {
+        "given": "Ming",
+        "family": "Tang"
+      },
+      {
+        "given": "Chun",
+        "family": "Yuan"
+      },
+      {
+        "given": "Jun",
+        "family": "Wang"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "Findings of ACL 2026",
+    "URL": "https://aclanthology.org/2026.findings-acl.1048/",
+    "DOI": "10.18653/v1/2026.findings-acl.1048"
+  }
+]

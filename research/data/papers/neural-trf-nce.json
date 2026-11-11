@@ -23,6 +23,13 @@
   ],
   "arxiv_id": "1710.10739",
   "arxiv_first_posted": "2017-10-30",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/neural-trf-nce/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/neural-trf-nce/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/neural-trf-nce/",
+      "summary": "对参考分布进行指数倾斜，并用噪声对比估计训练神经随机场语言模型。",
+      "connection": "2020 年论文明确讨论的更早残差形式与 NCE 训练方法，其评估以语音识别重评分为中心。"
+    }
+  }
 }

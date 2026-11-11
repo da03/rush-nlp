@@ -1,0 +1,38 @@
+[
+  {
+    "id": "residualebm",
+    "type": "paper-conference",
+    "title": "Residual Energy-Based Models for Text Generation",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Anton",
+        "family": "Bakhtin"
+      },
+      {
+        "given": "Myle",
+        "family": "Ott"
+      },
+      {
+        "given": "Arthur",
+        "family": "Szlam"
+      },
+      {
+        "given": "Marc’Aurelio",
+        "family": "Ranzato"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "ICLR 2020",
+    "URL": "https://arxiv.org/html/2004.11714v1"
+  }
+]

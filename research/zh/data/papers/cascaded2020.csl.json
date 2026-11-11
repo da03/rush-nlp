@@ -1,0 +1,26 @@
+[
+  {
+    "id": "deng2020cascaded",
+    "type": "paper-conference",
+    "title": "Cascaded Text Generation with Markov Transformers",
+    "author": [
+      {
+        "given": "Yuntian",
+        "family": "Deng"
+      },
+      {
+        "given": "Alexander M.",
+        "family": "Rush"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2020
+        ]
+      ]
+    },
+    "container-title": "NeurIPS 2020",
+    "URL": "https://arxiv.org/abs/2006.01112"
+  }
+]

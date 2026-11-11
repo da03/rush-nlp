@@ -28,6 +28,13 @@
   "arxiv_first_posted": "2026-06-29",
   "publication_type": "preprint",
   "container_title": "arXiv",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/ai-training-manager/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/ai-training-manager/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/ai-training-manager/",
+      "summary": "异步 LLM 监督控制器观察训练遥测数据，对正在执行的训练配置提出受约束的修改，并在刻意引入的监督学习与强化学习失败模式上实验。",
+      "connection": "研究对正在进行的训练实施自动控制，与 Interactive Training 为人和自动化控制器提供的可复用基础设施互补。"
+    }
+  }
 }

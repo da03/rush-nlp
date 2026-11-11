@@ -35,6 +35,13 @@
   "volume": "14",
   "issue": "1",
   "article_number": "7913",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/aug-tree/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/aug-tree/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/aug-tree/",
+      "summary": "Aug-Tree 使用语言模型生成的扩展内容，为树的划分构造可解释文本特征。",
+      "connection": "与 Tree Prompting 遍历树时调用语言模型的方式不同，它在训练阶段完成特征扩展。"
+    }
+  }
 }

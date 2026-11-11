@@ -1,0 +1,52 @@
+<!doctype html>
+
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Energy-Based Diffusion Language Models for Text Generation · 研究导读</title><meta name="description" content="在每一步扩散去噪分布中加入完整序列的残差能量，采用自回归模型或 NCE 参数化，并通过并行重要性采样生成文本。">
+
+<link rel="canonical" href="https://yuntiandeng.com/research/zh/papers/edlm/"><link rel="alternate" hreflang="en" href="https://yuntiandeng.com/research/papers/edlm/"><link rel="alternate" hreflang="zh-Hans" href="https://yuntiandeng.com/research/zh/papers/edlm/"><link rel="alternate" hreflang="x-default" href="https://yuntiandeng.com/research/papers/edlm/"><meta property="og:title" content="Energy-Based Diffusion Language Models for Text Generation"><meta property="og:description" content="在每一步扩散去噪分布中加入完整序列的残差能量，采用自回归模型或 NCE 参数化，并通过并行重要性采样生成文本。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuntiandeng.com/research/zh/papers/edlm/"><meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
+
+<link rel="alternate" type="application/json" href="/research/zh/data/papers/edlm.json" title="机器可读内容"><link rel="alternate" type="text/markdown" href="/research/zh/data/papers/edlm.md" title="纯文本版本"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
+
+<meta name="citation_title" content="Energy-Based Diffusion Language Models for Text Generation">
+
+<meta name="citation_author" content="Minkai Xu">
+
+<meta name="citation_author" content="Tomas Geffner">
+
+<meta name="citation_author" content="Karsten Kreis">
+
+<meta name="citation_author" content="Weili Nie">
+
+<meta name="citation_author" content="Yilun Xu">
+
+<meta name="citation_author" content="Jure Leskovec">
+
+<meta name="citation_author" content="Stefano Ermon">
+
+<meta name="citation_author" content="Arash Vahdat">
+
+<meta name="citation_publication_date" content="2025">
+
+<meta name="citation_conference_title" content="ICLR 2025">
+
+<meta name="citation_arxiv_id" content="2410.21357">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://yuntiandeng.com/research/zh/papers/edlm/", "name": "Energy-Based Diffusion Language Models for Text Generation", "description": "在每一步扩散去噪分布中加入完整序列的残差能量，采用自回归模型或 NCE 参数化，并通过并行重要性采样生成文本。", "inLanguage": "zh-Hans", "dateModified": "2026-11-11", "about": {"@context": "https://schema.org", "@type": "ScholarlyArticle", "@id": "https://yuntiandeng.com/research/papers/edlm/", "name": "Energy-Based Diffusion Language Models for Text Generation", "headline": "Energy-Based Diffusion Language Models for Text Generation", "author": [{"@type": "Person", "name": "Minkai Xu"}, {"@type": "Person", "name": "Tomas Geffner"}, {"@type": "Person", "name": "Karsten Kreis"}, {"@type": "Person", "name": "Weili Nie"}, {"@type": "Person", "name": "Yilun Xu"}, {"@type": "Person", "name": "Jure Leskovec"}, {"@type": "Person", "name": "Stefano Ermon"}, {"@type": "Person", "name": "Arash Vahdat"}], "datePublished": "2025", "description": "在每一步扩散去噪分布中加入完整序列的残差能量，采用自回归模型或 NCE 参数化，并通过并行重要性采样生成文本。", "url": "https://yuntiandeng.com/research/papers/edlm/", "sameAs": "https://arxiv.org/html/2410.21357v4", "isPartOf": {"@type": "CreativeWork", "name": "ICLR 2025"}, "identifier": [{"@type": "PropertyValue", "propertyID": "arXiv", "value": "2410.21357"}], "inLanguage": "en"}}</script>
+
+<script src="/research/assets/research.zh.js" defer></script></head><body>
+
+<a class="skip" href="#main">跳转到正文</a><header class="shell topbar"><a class="wordmark" href="/research/zh/">研究导读<span>语言模型与结构化学习</span></a><nav class="nav" aria-label="主导航"><a href="/research/zh/">主题导读</a><a href="/research/zh/papers/" aria-current="page">论文</a><a href="/research/zh/data/">引用与数据</a><a href="https://yuntiandeng.com/research/papers/edlm/" hreflang="en" lang="en">English</a><a href="/">Yuntian Deng ↗</a></nav></header>
+
+<main id="main" class="shell"><div class="back"><a href="/research/zh/papers/">← 论文目录</a></div><header class="hero"><p class="kicker">ICLR 2025</p><h1>Energy-Based Diffusion Language Models for Text Generation</h1><p class="lead">Minkai Xu, Tomas Geffner, Karsten Kreis, Weili Nie, Yilun Xu, Jure Leskovec, Stefano Ermon, Arash Vahdat</p><p class="meta">arXiv 首次公开：2024-10-28。引用年份：2025。</p><div class="actions"><a class="button" href="https://arxiv.org/html/2410.21357v4">阅读论文原文 ↗</a></div></header><div class="prose"><section><h2>方法与贡献</h2><p>在每一步扩散去噪分布中加入完整序列的残差能量，采用自回归模型或 NCE 参数化，并通过并行重要性采样生成文本。</p><p>直接引用 Deng 等人（2020），将残差修正与配分函数估计用于扩散语言建模。</p></section><section><h2>结合主题阅读</h2><p><a href="/research/zh/energy-based-text-generation/">基于能量的文本生成：残差模型、重采样与扩散 →</a></p></section><section id="citation"><h2>引用</h2><p>Minkai Xu, Tomas Geffner, Karsten Kreis, Weili Nie, Yilun Xu, Jure Leskovec, Stefano Ermon, Arash Vahdat. Energy-Based Diffusion Language Models for Text Generation. ICLR 2025.</p><div class="code-actions"><button type="button" data-copy="#bibtex" data-status="#copy-status">复制 BibTeX</button><a class="button secondary" href="/research/zh/data/papers/edlm.bib" download>下载 BibTeX</a><a class="button secondary" href="/research/zh/data/papers/edlm.csl.json" download>CSL JSON</a></div><p id="copy-status" class="status-message" role="status"></p><pre id="bibtex">@inproceedings{edlm,
+  title = {{Energy-Based Diffusion Language Models for Text Generation}},
+  author = {Xu, Minkai and Geffner, Tomas and Kreis, Karsten and Nie, Weili and Xu, Yilun and Leskovec, Jure and Ermon, Stefano and Vahdat, Arash},
+  year = {2025},
+  booktitle = {ICLR 2025},
+  url = {https://arxiv.org/html/2410.21357v4},
+  eprint = {2410.21357},
+  archivePrefix = {arXiv}
+}
+</pre></section></div></main><footer class="shell footer"><div><p>研究导读作者： <a href="/">Yuntian Deng</a>.</p><p>从原始方法到当前研究，附可直接使用的参考文献。</p></div><div><p>参考文献核查日期：2026-11-10。</p><p><a href="/research/zh/about/">关于本系列</a> · <a href="/research/zh/data/navigation.json">页面目录</a> · <a href="/research/zh/data/reading-list.md">Markdown</a></p></div></footer></body></html>

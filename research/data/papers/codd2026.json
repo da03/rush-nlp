@@ -41,6 +41,13 @@
   ],
   "arxiv_id": "2603.00045",
   "arxiv_first_posted": "2026-02-09",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/codd2026/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/codd2026/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/codd2026/",
+      "summary": "CoDD 将因子化扩散预测与可进行高效推断的概率电路先验组合，建模 token 之间的联合依赖。",
+      "connection": "与结构化生成一样，将并行神经网络打分和联合概率推断分开处理。"
+    }
+  }
 }

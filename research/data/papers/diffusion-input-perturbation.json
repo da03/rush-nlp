@@ -34,6 +34,13 @@
   "source_urls": [
     "https://proceedings.mlr.press/v202/ning23a.html"
   ],
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/diffusion-input-perturbation/",
+      "summary": "研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。",
+      "connection": "通过输入扰动处理同一种训练与采样不匹配问题，可与在模型生成状态上训练的 Scheduled Sampling 比较。"
+    }
+  }
 }

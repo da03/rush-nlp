@@ -1,0 +1,52 @@
+<!doctype html>
+
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Show, Attend and Tell: Neural Image Caption Generation with Visual Attention · 研究导读</title><meta name="description" content="为图像描述生成引入确定性软视觉注意力和随机硬视觉注意力。">
+
+<link rel="canonical" href="https://yuntiandeng.com/research/zh/papers/showattendtell2015/"><link rel="alternate" hreflang="en" href="https://yuntiandeng.com/research/papers/showattendtell2015/"><link rel="alternate" hreflang="zh-Hans" href="https://yuntiandeng.com/research/zh/papers/showattendtell2015/"><link rel="alternate" hreflang="x-default" href="https://yuntiandeng.com/research/papers/showattendtell2015/"><meta property="og:title" content="Show, Attend and Tell: Neural Image Caption Generation with Visual Attention"><meta property="og:description" content="为图像描述生成引入确定性软视觉注意力和随机硬视觉注意力。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuntiandeng.com/research/zh/papers/showattendtell2015/"><meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
+
+<link rel="alternate" type="application/json" href="/research/zh/data/papers/showattendtell2015.json" title="机器可读内容"><link rel="alternate" type="text/markdown" href="/research/zh/data/papers/showattendtell2015.md" title="纯文本版本"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
+
+<meta name="citation_title" content="Show, Attend and Tell: Neural Image Caption Generation with Visual Attention">
+
+<meta name="citation_author" content="Kelvin Xu">
+
+<meta name="citation_author" content="Jimmy Lei Ba">
+
+<meta name="citation_author" content="Ryan Kiros">
+
+<meta name="citation_author" content="Kyunghyun Cho">
+
+<meta name="citation_author" content="Aaron Courville">
+
+<meta name="citation_author" content="Ruslan Salakhutdinov">
+
+<meta name="citation_author" content="Richard S. Zemel">
+
+<meta name="citation_author" content="Yoshua Bengio">
+
+<meta name="citation_publication_date" content="2015">
+
+<meta name="citation_conference_title" content="ICML 2015">
+
+<meta name="citation_arxiv_id" content="1502.03044">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://yuntiandeng.com/research/zh/papers/showattendtell2015/", "name": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention", "description": "为图像描述生成引入确定性软视觉注意力和随机硬视觉注意力。", "inLanguage": "zh-Hans", "dateModified": "2026-11-11", "about": {"@context": "https://schema.org", "@type": "ScholarlyArticle", "@id": "https://yuntiandeng.com/research/papers/showattendtell2015/", "name": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention", "headline": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention", "author": [{"@type": "Person", "name": "Kelvin Xu"}, {"@type": "Person", "name": "Jimmy Lei Ba"}, {"@type": "Person", "name": "Ryan Kiros"}, {"@type": "Person", "name": "Kyunghyun Cho"}, {"@type": "Person", "name": "Aaron Courville"}, {"@type": "Person", "name": "Ruslan Salakhutdinov"}, {"@type": "Person", "name": "Richard S. Zemel"}, {"@type": "Person", "name": "Yoshua Bengio"}], "datePublished": "2015", "description": "为图像描述生成引入确定性软视觉注意力和随机硬视觉注意力。", "url": "https://yuntiandeng.com/research/papers/showattendtell2015/", "sameAs": "https://proceedings.mlr.press/v37/xuc15.html", "isPartOf": {"@type": "CreativeWork", "name": "ICML 2015"}, "identifier": [{"@type": "PropertyValue", "propertyID": "arXiv", "value": "1502.03044"}], "inLanguage": "en"}}</script>
+
+<script src="/research/assets/research.zh.js" defer></script></head><body>
+
+<a class="skip" href="#main">跳转到正文</a><header class="shell topbar"><a class="wordmark" href="/research/zh/">研究导读<span>语言模型与结构化学习</span></a><nav class="nav" aria-label="主导航"><a href="/research/zh/">主题导读</a><a href="/research/zh/papers/" aria-current="page">论文</a><a href="/research/zh/data/">引用与数据</a><a href="https://yuntiandeng.com/research/papers/showattendtell2015/" hreflang="en" lang="en">English</a><a href="/">Yuntian Deng ↗</a></nav></header>
+
+<main id="main" class="shell"><div class="back"><a href="/research/zh/papers/">← 论文目录</a></div><header class="hero"><p class="kicker">ICML 2015</p><h1>Show, Attend and Tell: Neural Image Caption Generation with Visual Attention</h1><p class="lead">Kelvin Xu, Jimmy Lei Ba, Ryan Kiros, Kyunghyun Cho, Aaron Courville, Ruslan Salakhutdinov, Richard S. Zemel, Yoshua Bengio</p><p class="meta">arXiv 首次公开：2015-02-10。引用年份：2015。</p><div class="actions"><a class="button" href="https://proceedings.mlr.press/v37/xuc15.html">阅读论文原文 ↗</a></div></header><div class="prose"><section><h2>方法与贡献</h2><p>为图像描述生成引入确定性软视觉注意力和随机硬视觉注意力。</p><p>随机注意力的早期参考工作，用于理解期望特征与采样选择之间的区别。</p></section><p><a href="https://proceedings.mlr.press/v37/xuc15.pdf">阅读全文 PDF ↗</a></p><section><h2>结合主题阅读</h2><p><a href="/research/zh/probabilistic-attention/">把注意力建模为隐变量：学习注意力的概率分布 →</a></p></section><section id="citation"><h2>引用</h2><p>Kelvin Xu, Jimmy Lei Ba, Ryan Kiros, Kyunghyun Cho, Aaron Courville, Ruslan Salakhutdinov, Richard S. Zemel, Yoshua Bengio. Show, Attend and Tell: Neural Image Caption Generation with Visual Attention. ICML 2015.</p><div class="code-actions"><button type="button" data-copy="#bibtex" data-status="#copy-status">复制 BibTeX</button><a class="button secondary" href="/research/zh/data/papers/showattendtell2015.bib" download>下载 BibTeX</a><a class="button secondary" href="/research/zh/data/papers/showattendtell2015.csl.json" download>CSL JSON</a></div><p id="copy-status" class="status-message" role="status"></p><pre id="bibtex">@inproceedings{xu2015show,
+  title = {{Show, Attend and Tell: Neural Image Caption Generation with Visual Attention}},
+  author = {Xu, Kelvin and Ba, Jimmy Lei and Kiros, Ryan and Cho, Kyunghyun and Courville, Aaron and Salakhutdinov, Ruslan and Zemel, Richard S. and Bengio, Yoshua},
+  year = {2015},
+  booktitle = {ICML 2015},
+  url = {https://proceedings.mlr.press/v37/xuc15.html},
+  eprint = {1502.03044},
+  archivePrefix = {arXiv}
+}
+</pre></section></div></main><footer class="shell footer"><div><p>研究导读作者： <a href="/">Yuntian Deng</a>.</p><p>从原始方法到当前研究，附可直接使用的参考文献。</p></div><div><p>参考文献核查日期：2026-11-10。</p><p><a href="/research/zh/about/">关于本系列</a> · <a href="/research/zh/data/navigation.json">页面目录</a> · <a href="/research/zh/data/reading-list.md">Markdown</a></p></div></footer></body></html>

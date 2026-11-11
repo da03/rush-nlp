@@ -186,7 +186,14 @@
       "arxiv_first_posted": "2018-07-10",
       "abstract": "Neural attention has become central to many state-of-the-art models in natural language processing and related domains. Attention networks are an easy-to-train and effective method for softly simulating alignment; however, the approach does not marginalize over latent alignments in a probabilistic sense. This property makes it difficult to compare attention to other alignment approaches, to compose it with probabilistic models, and to perform posterior inference conditioned on observed data. A related latent approach, hard attention, fixes these issues, but is generally harder to train and less accurate. This work considers variational attention networks, alternatives to soft and hard attention for learning latent variable alignment models, with tighter approximation bounds based on amortized variational inference. We further propose methods for reducing the variance of gradients to make these approaches computationally feasible. Experiments show that for machine translation and visual question answering, inefficient exact latent variable models outperform standard neural attention, but these gains go away when using hard attention based training. On the other hand, variational attention retains most of the performance gain but with training speed comparable to neural attention.",
       "abstract_source": "https://arxiv.org/html/1807.03756v2",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/latentattention2018/",
+          "summary": "将对齐建模为隐变量，并通过变分注意力学习近似后验推断。",
+          "connection": "对注意力建立概率分布的一般框架，超越单个确定性注意力向量。"
+        }
+      }
     },
     {
       "id": "showattendtell2015",
@@ -239,7 +246,14 @@
       ],
       "arxiv_id": "1502.03044",
       "arxiv_first_posted": "2015-02-10",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/showattendtell2015/",
+          "summary": "为图像描述生成引入确定性软视觉注意力和随机硬视觉注意力。",
+          "connection": "随机注意力的早期参考工作，用于理解期望特征与采样选择之间的区别。"
+        }
+      }
     },
     {
       "id": "structuredattention2017",
@@ -279,7 +293,14 @@
       ],
       "arxiv_id": "1702.00887",
       "arxiv_first_posted": "2017-02-03",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/structuredattention2017/",
+          "summary": "使用可微图模型推断，对子序列和句法树进行注意力计算。",
+          "connection": "建模结构化选择并计算期望表示；对完整预测进行边缘化是不同的操作。"
+        }
+      }
     },
     {
       "id": "bahuleyan2018",
@@ -316,7 +337,14 @@
       ],
       "arxiv_id": "1712.08207",
       "arxiv_first_posted": "2017-12-21",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/bahuleyan2018/",
+          "summary": "在变分编码器—解码器中，把注意力上下文向量视为高斯隐变量。",
+          "connection": "说明“变分注意力”这一名称也用于另一个随机对象：上下文向量。"
+        }
+      }
     },
     {
       "id": "bayesianattention2020",
@@ -357,7 +385,22 @@
       ],
       "arxiv_id": "2010.10604",
       "arxiv_first_posted": "2020-10-20",
-      "updated_at": "2026-11-10"
+      "updated_at": "2026-11-11",
+      "translations": {
+        "zh-Hans": {
+          "url": "https://yuntiandeng.com/research/zh/papers/bayesianattention2020/",
+          "summary": "由归一化的可重参数化随机变量构造注意力权重分布，并使用贝叶斯正则化学习。",
+          "connection": "把概率注意力发展为带有数据依赖先验的模块化随机权重。"
+        }
+      }
     }
-  ]
+  ],
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/probabilistic-attention/",
+      "title": "把注意力建模为隐变量：学习注意力的概率分布",
+      "description": "Latent Alignment and Variational Attention 导读：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
+      "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/probabilistic-attention.md"
+    }
+  }
 }

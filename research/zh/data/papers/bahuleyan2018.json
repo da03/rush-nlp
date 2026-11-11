@@ -1,0 +1,40 @@
+{
+  "id": "bahuleyan2018",
+  "title": "Variational Attention for Sequence-to-Sequence Models",
+  "authors": [
+    {
+      "given": "Hareesh",
+      "family": "Bahuleyan"
+    },
+    {
+      "given": "Lili",
+      "family": "Mou"
+    },
+    {
+      "given": "Olga",
+      "family": "Vechtomova"
+    },
+    {
+      "given": "Pascal",
+      "family": "Poupart"
+    }
+  ],
+  "year": 2018,
+  "venue": "COLING 2018",
+  "paper_url": "https://aclanthology.org/C18-1142/",
+  "pdf_url": "https://aclanthology.org/C18-1142.pdf",
+  "summary": "在变分编码器—解码器中，把注意力上下文向量视为高斯隐变量。",
+  "connection": "说明“变分注意力”这一名称也用于另一个随机对象：上下文向量。",
+  "bibtex_type": "inproceedings",
+  "citation_key": "bahuleyan2018variational",
+  "source_urls": [
+    "https://aclanthology.org/C18-1142/",
+    "https://arxiv.org/abs/1712.08207"
+  ],
+  "arxiv_id": "1712.08207",
+  "arxiv_first_posted": "2017-12-21",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/bahuleyan2018/"
+}

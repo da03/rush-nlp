@@ -1,0 +1,35 @@
+[
+  {
+    "id": "ji2026dadlm",
+    "type": "paper-conference",
+    "title": "DA-DLM: Explicitly Modeling Token Dependencies in Diffusion Language Models",
+    "author": [
+      {
+        "given": "Pengyu",
+        "family": "Ji"
+      },
+      {
+        "given": "Zichen",
+        "family": "Zhang"
+      },
+      {
+        "given": "Xiang",
+        "family": "Hu"
+      },
+      {
+        "given": "Kewei",
+        "family": "Tu"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    },
+    "container-title": "EMNLP 2026",
+    "URL": "https://aclanthology.org/2026.emnlp-main.2094/",
+    "DOI": "10.18653/2026.emnlp-main.2094"
+  }
+]

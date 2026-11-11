@@ -36,6 +36,13 @@
   "arxiv_first_posted": "2023-11-28",
   "publication_type": "preprint",
   "container_title": "arXiv",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/livetune/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/livetune/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/livetune/",
+      "summary": "LiveVariables 通过指定的系统端口开放优化参数，支持在不重启优化循环的情况下实时调整参数。",
+      "connection": "更早的运行中优化过程调节系统；可将其参数机制与 Interactive Training 的人和智能体命令接口及第二版协议比较。"
+    }
+  }
 }

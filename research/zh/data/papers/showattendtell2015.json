@@ -1,0 +1,56 @@
+{
+  "id": "showattendtell2015",
+  "title": "Show, Attend and Tell: Neural Image Caption Generation with Visual Attention",
+  "authors": [
+    {
+      "given": "Kelvin",
+      "family": "Xu"
+    },
+    {
+      "given": "Jimmy Lei",
+      "family": "Ba"
+    },
+    {
+      "given": "Ryan",
+      "family": "Kiros"
+    },
+    {
+      "given": "Kyunghyun",
+      "family": "Cho"
+    },
+    {
+      "given": "Aaron",
+      "family": "Courville"
+    },
+    {
+      "given": "Ruslan",
+      "family": "Salakhutdinov"
+    },
+    {
+      "given": "Richard S.",
+      "family": "Zemel"
+    },
+    {
+      "given": "Yoshua",
+      "family": "Bengio"
+    }
+  ],
+  "year": 2015,
+  "venue": "ICML 2015",
+  "paper_url": "https://proceedings.mlr.press/v37/xuc15.html",
+  "pdf_url": "https://proceedings.mlr.press/v37/xuc15.pdf",
+  "summary": "为图像描述生成引入确定性软视觉注意力和随机硬视觉注意力。",
+  "connection": "随机注意力的早期参考工作，用于理解期望特征与采样选择之间的区别。",
+  "bibtex_type": "inproceedings",
+  "citation_key": "xu2015show",
+  "source_urls": [
+    "https://proceedings.mlr.press/v37/xuc15.pdf",
+    "https://arxiv.org/abs/1502.03044"
+  ],
+  "arxiv_id": "1502.03044",
+  "arxiv_first_posted": "2015-02-10",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/showattendtell2015/"
+}

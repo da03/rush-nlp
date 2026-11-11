@@ -1,0 +1,48 @@
+<!doctype html>
+
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Fast Structured Decoding for Sequence Models · 研究导读</title><meta name="description" content="为非自回归序列模型加入近似一阶 CRF 推断和动态转移。">
+
+<link rel="canonical" href="https://yuntiandeng.com/research/zh/papers/sun2019/"><link rel="alternate" hreflang="en" href="https://yuntiandeng.com/research/papers/sun2019/"><link rel="alternate" hreflang="zh-Hans" href="https://yuntiandeng.com/research/zh/papers/sun2019/"><link rel="alternate" hreflang="x-default" href="https://yuntiandeng.com/research/papers/sun2019/"><meta property="og:title" content="Fast Structured Decoding for Sequence Models"><meta property="og:description" content="为非自回归序列模型加入近似一阶 CRF 推断和动态转移。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuntiandeng.com/research/zh/papers/sun2019/"><meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
+
+<link rel="alternate" type="application/json" href="/research/zh/data/papers/sun2019.json" title="机器可读内容"><link rel="alternate" type="text/markdown" href="/research/zh/data/papers/sun2019.md" title="纯文本版本"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
+
+<meta name="citation_title" content="Fast Structured Decoding for Sequence Models">
+
+<meta name="citation_author" content="Zhiqing Sun">
+
+<meta name="citation_author" content="Zhuohan Li">
+
+<meta name="citation_author" content="Haoqing Wang">
+
+<meta name="citation_author" content="Di He">
+
+<meta name="citation_author" content="Zi Lin">
+
+<meta name="citation_author" content="Zhi-Hong Deng">
+
+<meta name="citation_publication_date" content="2019">
+
+<meta name="citation_conference_title" content="NeurIPS 2019">
+
+<meta name="citation_arxiv_id" content="1910.11555">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://yuntiandeng.com/research/zh/papers/sun2019/", "name": "Fast Structured Decoding for Sequence Models", "description": "为非自回归序列模型加入近似一阶 CRF 推断和动态转移。", "inLanguage": "zh-Hans", "dateModified": "2026-11-11", "about": {"@context": "https://schema.org", "@type": "ScholarlyArticle", "@id": "https://yuntiandeng.com/research/papers/sun2019/", "name": "Fast Structured Decoding for Sequence Models", "headline": "Fast Structured Decoding for Sequence Models", "author": [{"@type": "Person", "name": "Zhiqing Sun"}, {"@type": "Person", "name": "Zhuohan Li"}, {"@type": "Person", "name": "Haoqing Wang"}, {"@type": "Person", "name": "Di He"}, {"@type": "Person", "name": "Zi Lin"}, {"@type": "Person", "name": "Zhi-Hong Deng"}], "datePublished": "2019", "description": "为非自回归序列模型加入近似一阶 CRF 推断和动态转移。", "url": "https://yuntiandeng.com/research/papers/sun2019/", "sameAs": "https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html", "isPartOf": {"@type": "CreativeWork", "name": "NeurIPS 2019"}, "identifier": [{"@type": "PropertyValue", "propertyID": "arXiv", "value": "1910.11555"}], "inLanguage": "en"}}</script>
+
+<script src="/research/assets/research.zh.js" defer></script></head><body>
+
+<a class="skip" href="#main">跳转到正文</a><header class="shell topbar"><a class="wordmark" href="/research/zh/">研究导读<span>语言模型与结构化学习</span></a><nav class="nav" aria-label="主导航"><a href="/research/zh/">主题导读</a><a href="/research/zh/papers/" aria-current="page">论文</a><a href="/research/zh/data/">引用与数据</a><a href="https://yuntiandeng.com/research/papers/sun2019/" hreflang="en" lang="en">English</a><a href="/">Yuntian Deng ↗</a></nav></header>
+
+<main id="main" class="shell"><div class="back"><a href="/research/zh/papers/">← 论文目录</a></div><header class="hero"><p class="kicker">NeurIPS 2019</p><h1>Fast Structured Decoding for Sequence Models</h1><p class="lead">Zhiqing Sun, Zhuohan Li, Haoqing Wang, Di He, Zi Lin, Zhi-Hong Deng</p><p class="meta">arXiv 首次公开：2019-10-25。引用年份：2019。</p><div class="actions"><a class="button" href="https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html">阅读论文原文 ↗</a></div></header><div class="prose"><section><h2>方法与贡献</h2><p>为非自回归序列模型加入近似一阶 CRF 推断和动态转移。</p><p>一阶结构化解码的参考工作；Cascaded Text Generation 发展了高阶级联和共享的 Markov Transformer 势函数。</p></section><p><a href="https://proceedings.neurips.cc/paper_files/paper/2019/file/74563ba21a90da13dacf2a73e3ddefa7-Paper.pdf">阅读全文 PDF ↗</a></p><section><h2>结合主题阅读</h2><p><a href="/research/zh/structured-decoding/">结构化解码：高阶 CRF、扩散语言模型与候选格 →</a></p></section><section id="citation"><h2>引用</h2><p>Zhiqing Sun, Zhuohan Li, Haoqing Wang, Di He, Zi Lin, Zhi-Hong Deng. Fast Structured Decoding for Sequence Models. NeurIPS 2019.</p><div class="code-actions"><button type="button" data-copy="#bibtex" data-status="#copy-status">复制 BibTeX</button><a class="button secondary" href="/research/zh/data/papers/sun2019.bib" download>下载 BibTeX</a><a class="button secondary" href="/research/zh/data/papers/sun2019.csl.json" download>CSL JSON</a></div><p id="copy-status" class="status-message" role="status"></p><pre id="bibtex">@inproceedings{sun2019fast,
+  title = {{Fast Structured Decoding for Sequence Models}},
+  author = {Sun, Zhiqing and Li, Zhuohan and Wang, Haoqing and He, Di and Lin, Zi and Deng, Zhi-Hong},
+  year = {2019},
+  booktitle = {NeurIPS 2019},
+  url = {https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html},
+  eprint = {1910.11555},
+  archivePrefix = {arXiv}
+}
+</pre></section></div></main><footer class="shell footer"><div><p>研究导读作者： <a href="/">Yuntian Deng</a>.</p><p>从原始方法到当前研究，附可直接使用的参考文献。</p></div><div><p>参考文献核查日期：2026-11-10。</p><p><a href="/research/zh/about/">关于本系列</a> · <a href="/research/zh/data/navigation.json">页面目录</a> · <a href="/research/zh/data/reading-list.md">Markdown</a></p></div></footer></body></html>

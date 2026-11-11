@@ -1,0 +1,38 @@
+[
+  {
+    "id": "pmlr-v202-ning23a",
+    "type": "paper-conference",
+    "title": "Input Perturbation Reduces Exposure Bias in Diffusion Models",
+    "author": [
+      {
+        "given": "Mang",
+        "family": "Ning"
+      },
+      {
+        "given": "Enver",
+        "family": "Sangineto"
+      },
+      {
+        "given": "Angelo",
+        "family": "Porrello"
+      },
+      {
+        "given": "Simone",
+        "family": "Calderara"
+      },
+      {
+        "given": "Rita",
+        "family": "Cucchiara"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "ICML 2023",
+    "URL": "https://proceedings.mlr.press/v202/ning23a.html"
+  }
+]

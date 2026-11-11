@@ -1,0 +1,38 @@
+[
+  {
+    "id": "augtree",
+    "type": "article-journal",
+    "title": "Augmenting interpretable models with large language models during training",
+    "author": [
+      {
+        "given": "Chandan",
+        "family": "Singh"
+      },
+      {
+        "given": "Armin",
+        "family": "Askari"
+      },
+      {
+        "given": "Rich",
+        "family": "Caruana"
+      },
+      {
+        "given": "Jianfeng",
+        "family": "Gao"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "container-title": "Nature Communications",
+    "URL": "https://www.nature.com/articles/s41467-023-43713-1",
+    "volume": "14",
+    "issue": "1",
+    "number": "7913",
+    "DOI": "10.1038/s41467-023-43713-1"
+  }
+]

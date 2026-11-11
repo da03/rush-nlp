@@ -18,6 +18,9 @@ layout: null
   {% for paper in site.data.methods.papers %}
   <url><loc>{{ paper.id | prepend: '/research/papers/' | append: '/' | absolute_url | xml_escape }}</loc><lastmod>{{ paper.updated_at | xml_escape }}</lastmod></url>
   {% endfor %}
+  {% for chinese_page in site.data.methods.zh.meta.pages %}
+  <url><loc>{{ chinese_page.path | prepend: '/research/zh/' | absolute_url | xml_escape }}</loc><lastmod>{{ chinese_page.updated_at | xml_escape }}</lastmod></url>
+  {% endfor %}
   <url><loc>{{ '/cv.pdf' | absolute_url | xml_escape }}</loc></url>
   {% for course in site.data.teaching.teaching %}
   <url><loc>{{ course.course_url | absolute_url | xml_escape }}</loc></url>

@@ -45,8 +45,15 @@
     "arxiv_first_posted": "2023-10-21",
     "abstract": "Prompting language models (LMs) is the main interface for applying them to new tasks. However, for smaller LMs, prompting provides low accuracy compared to gradient-based fine-tuning. Tree Prompting is an approach to prompting which builds a decision tree of prompts, linking multiple LM calls together to solve a task. At inference time, each call to the LM is determined by efficiently routing the outcome of the previous call using the tree. Experiments on classification datasets show that Tree Prompting improves accuracy over competing methods and is competitive with fine-tuning. We also show that variants of Tree Prompting allow inspection of a model’s decision-making process.",
     "abstract_source": "https://arxiv.org/html/2310.14034v1",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/tree-prompting/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/tree-prompting/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/tree-prompting/",
+        "summary": "学习可重复使用的决策树，其内部判断由接收提示词的语言模型调用完成；候选提示包括少样本示例、指令和动态生成的提示。",
+        "connection": "基于提示的决策树原始工作：通过修改树结构和提示词适配任务，同时保持语言模型参数不变。"
+      }
+    }
   },
   {
     "id": "aug-tree",
@@ -85,8 +92,15 @@
     "volume": "14",
     "issue": "1",
     "article_number": "7913",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/aug-tree/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/aug-tree/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/aug-tree/",
+        "summary": "Aug-Tree 使用语言模型生成的扩展内容，为树的划分构造可解释文本特征。",
+        "connection": "与 Tree Prompting 遍历树时调用语言模型的方式不同，它在训练阶段完成特征扩展。"
+      }
+    }
   },
   {
     "id": "gptree",
@@ -123,8 +137,15 @@
     "arxiv_first_posted": "2024-11-13",
     "publication_type": "preprint",
     "container_title": "arXiv",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/gptree/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/gptree/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/gptree/",
+        "summary": "使用语言模型辅助的划分构建决策树，并结合专家反馈修改决策路径。",
+        "connection": "后续的大语言模型决策树系统，支持专家交互及多种划分类型。"
+      }
+    }
   },
   {
     "id": "act",
@@ -169,8 +190,15 @@
     "arxiv_first_posted": "2025-09-30",
     "publication_type": "preprint",
     "container_title": "arXiv",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/act/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/act/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/act/",
+        "summary": "通过基于不纯度的划分选择与 TextGrad 优化，学习由自然语言二元问题组成的分类树。",
+        "connection": "后续以智能体方式学习问题决策树的工作；比较时应关注问题优化与树的构建方式。"
+      }
+    }
   },
   {
     "id": "residual-ebm",
@@ -213,8 +241,15 @@
     "arxiv_first_posted": "2020-04-22",
     "abstract": "Text generation is ubiquitous in many NLP tasks, from summarization, to dialogue and machine translation. The dominant parametric approach is based on locally normalized models which predict one word at a time. While these work remarkably well, they are plagued by exposure bias due to the greedy nature of the generation process. In this work, we investigate un-normalized energy-based models (EBMs) which operate not at the token but at the sequence level. In order to make training tractable, we first work in the residual of a pretrained locally normalized language model and second we train using noise contrastive estimation. Furthermore, since the EBM works at the sequence level, we can leverage pretrained bi-directional contextual representations, such as BERT and RoBERTa. Our experiments on two large language modeling datasets show that residual EBMs yield lower perplexity compared to locally normalized baselines. Moreover, generation via importance sampling is very efficient and of higher quality than the baseline models according to human evaluation.",
     "abstract_source": "https://arxiv.org/html/2004.11714v1",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/residual-ebm/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/residual-ebm/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/residual-ebm/",
+        "summary": "将固定的自回归语言模型与学到的序列级能量结合，使用 NCE 训练、基于重要性重采样的条件生成，以及似然上下界。",
+        "connection": "本指南讨论的原始文本生成与评估框架，将序列级残差能量与当前采用能量修正的扩散解码联系起来。"
+      }
+    }
   },
   {
     "id": "residual-ebm-jmlr",
@@ -266,8 +301,15 @@
     "pages": "1–41",
     "abstract": "Current large-scale auto-regressive language models display impressive fluency and can generate convincing text. In this work we start by asking the question: Can the generations of these models be reliably distinguished from real text by statistical discriminators? We find experimentally that the answer is affirmative when we have access to the training data for the model, and guardedly affirmative even if we do not. This suggests that the auto-regressive models can be improved by incorporating the (globally normalized) discriminators into the generative process. We give a formalism for this using the Energy-Based Model framework, and show that it indeed improves the results of the generative models, measured both in terms of perplexity and in terms of human evaluation.",
     "abstract_source": "https://www.jmlr.org/papers/v22/20-326.html",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/residual-ebm-jmlr/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/residual-ebm-jmlr/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/residual-ebm-jmlr/",
+        "summary": "研究如何从统计上区分人类文本与模型文本，并把学到的判别器用于全局归一化生成。",
+        "connection": "进一步讨论从判别器到生成器的联系，以及残差能量建模。"
+      }
+    }
   },
   {
     "id": "edlm",
@@ -318,8 +360,15 @@
     ],
     "arxiv_id": "2410.21357",
     "arxiv_first_posted": "2024-10-28",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/edlm/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/edlm/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/edlm/",
+        "summary": "在每一步扩散去噪分布中加入完整序列的残差能量，采用自回归模型或 NCE 参数化，并通过并行重要性采样生成文本。",
+        "connection": "直接引用 Deng 等人（2020），将残差修正与配分函数估计用于扩散语言建模。"
+      }
+    }
   },
   {
     "id": "unified-energy",
@@ -356,8 +405,15 @@
     "arxiv_first_posted": "2026-06-08",
     "publication_type": "preprint",
     "container_title": "arXiv",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/unified-energy/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/unified-energy/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/unified-energy/",
+        "summary": "结合针对扩散解码中依赖关系与不变性的能量修正。",
+        "connection": "通过统一处理解码误差，扩展当前采用能量修正的扩散研究方向。"
+      }
+    }
   },
   {
     "id": "neural-trf-nce",
@@ -384,8 +440,15 @@
     ],
     "arxiv_id": "1710.10739",
     "arxiv_first_posted": "2017-10-30",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/neural-trf-nce/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/neural-trf-nce/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/neural-trf-nce/",
+        "summary": "对参考分布进行指数倾斜，并用噪声对比估计训练神经随机场语言模型。",
+        "connection": "2020 年论文明确讨论的更早残差形式与 NCE 训练方法，其评估以语音识别重评分为中心。"
+      }
+    }
   },
   {
     "id": "cascaded2020",
@@ -417,8 +480,15 @@
     "arxiv_first_posted": "2020-06-01",
     "abstract": "The two dominant approaches to neural text generation are fully autoregressive models, using serial beam search decoding, and non-autoregressive models, using parallel decoding with no output dependencies. This work proposes an autoregressive model with sub-linear parallel time generation. Noting that conditional random fields with bounded context can be decoded in parallel, we propose an efficient cascaded decoding approach for generating high-quality output. To parameterize this cascade, we introduce a Markov transformer, a variant of the popular fully autoregressive model that allows us to simultaneously decode with specific autoregressive context cutoffs. This approach requires only a small modification from standard autoregressive training, while showing competitive accuracy/speed tradeoff compared to existing methods on five machine translation datasets.",
     "abstract_source": "https://arxiv.org/html/2006.01112v2",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/cascaded2020/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/cascaded2020/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/cascaded2020/",
+        "summary": "用于并行文本生成的高阶 CRF 级联模型，由一个 Markov Transformer 统一参数化。",
+        "connection": "在保持结构化推断可计算的同时增强输出依赖，与扩散解码内部的联合建模相连接。"
+      }
+    }
   },
   {
     "id": "lattice2021",
@@ -449,8 +519,15 @@
     ],
     "abstract": "Non-autoregressive machine translation (NAT) approaches enable fast generation by utilizing parallelizable generative processes. The remaining bottleneck in these models is their decoder layers; unfortunately unlike in autoregressive models (Kasai et al., 2020), removing decoder layers from NAT models significantly degrades accuracy. This work proposes a sequence-to-lattice model that replaces the decoder with a search lattice. Our approach first constructs a candidate lattice using efficient lookup operations, generates lattice scores from a deep encoder, and finally finds the best path using dynamic programming. Experiments on three machine translation datasets show that our method is faster than past non-autoregressive generation approaches, and more accurate than naively reducing the number of decoder layers.",
     "abstract_source": "https://aclanthology.org/2021.findings-emnlp.318/",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/lattice2021/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/lattice2021/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/lattice2021/",
+        "summary": "用候选查找、并行条件边打分和精确 Viterbi 解码取代深层翻译解码器。",
+        "connection": "其“候选—边—路径”架构连接了连贯的并行草稿生成；其目标与推断方式不同于投机解码中的前缀选择。"
+      }
+    }
   },
   {
     "id": "sun2019",
@@ -495,8 +572,15 @@
     ],
     "arxiv_id": "1910.11555",
     "arxiv_first_posted": "2019-10-25",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/sun2019/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/sun2019/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/sun2019/",
+        "summary": "为非自回归序列模型加入近似一阶 CRF 推断和动态转移。",
+        "connection": "一阶结构化解码的参考工作；Cascaded Text Generation 发展了高阶级联和共享的 Markov Transformer 势函数。"
+      }
+    }
   },
   {
     "id": "codd2026",
@@ -541,8 +625,15 @@
     ],
     "arxiv_id": "2603.00045",
     "arxiv_first_posted": "2026-02-09",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/codd2026/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/codd2026/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/codd2026/",
+        "summary": "CoDD 将因子化扩散预测与可进行高效推断的概率电路先验组合，建模 token 之间的联合依赖。",
+        "connection": "与结构化生成一样，将并行神经网络打分和联合概率推断分开处理。"
+      }
+    }
   },
   {
     "id": "dadlm2026",
@@ -581,8 +672,15 @@
     ],
     "arxiv_id": "2609.15070",
     "arxiv_first_posted": "2026-09-14",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/dadlm2026/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/dadlm2026/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/dadlm2026/",
+        "summary": "通过按输出位置组织的候选组和已确定 token 构成的锚点，把有向无环图依赖建模用于迭代扩散。",
+        "connection": "把非自回归翻译中的结构化输出建模直接迁移到扩散去噪。"
+      }
+    }
   },
   {
     "id": "lilicorr2026",
@@ -636,8 +734,15 @@
     "arxiv_first_posted": "2026-08-20",
     "publication_type": "preprint",
     "container_title": "arXiv",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/lilicorr2026/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/lilicorr2026/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/lilicorr2026/",
+        "summary": "对并行草稿的 top-K 候选计算相邻兼容性，再通过低开销的贪心路径选择得到草稿。",
+        "connection": "采用“候选—边—路径”结构，并使用针对投机解码前缀接受目标的局部训练与推断。"
+      }
+    }
   },
   {
     "id": "diffuspec2026",
@@ -685,8 +790,15 @@
       "https://aclanthology.org/2026.findings-acl.1048/",
       "https://aclanthology.org/2026.findings-acl.1048.pdf"
     ],
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/diffuspec2026/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/diffuspec2026/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/diffuspec2026/",
+        "summary": "结合扩散草稿生成、token 候选格上的 Causal-consistency Path Search，以及自适应草稿长度。",
+        "connection": "把候选格路径选择与对并行扩散提议的自回归验证相连接。"
+      }
+    }
   },
   {
     "id": "latentattention2018",
@@ -734,8 +846,15 @@
     "arxiv_first_posted": "2018-07-10",
     "abstract": "Neural attention has become central to many state-of-the-art models in natural language processing and related domains. Attention networks are an easy-to-train and effective method for softly simulating alignment; however, the approach does not marginalize over latent alignments in a probabilistic sense. This property makes it difficult to compare attention to other alignment approaches, to compose it with probabilistic models, and to perform posterior inference conditioned on observed data. A related latent approach, hard attention, fixes these issues, but is generally harder to train and less accurate. This work considers variational attention networks, alternatives to soft and hard attention for learning latent variable alignment models, with tighter approximation bounds based on amortized variational inference. We further propose methods for reducing the variance of gradients to make these approaches computationally feasible. Experiments show that for machine translation and visual question answering, inefficient exact latent variable models outperform standard neural attention, but these gains go away when using hard attention based training. On the other hand, variational attention retains most of the performance gain but with training speed comparable to neural attention.",
     "abstract_source": "https://arxiv.org/html/1807.03756v2",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/latentattention2018/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/latentattention2018/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/latentattention2018/",
+        "summary": "将对齐建模为隐变量，并通过变分注意力学习近似后验推断。",
+        "connection": "对注意力建立概率分布的一般框架，超越单个确定性注意力向量。"
+      }
+    }
   },
   {
     "id": "showattendtell2015",
@@ -788,8 +907,15 @@
     ],
     "arxiv_id": "1502.03044",
     "arxiv_first_posted": "2015-02-10",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/showattendtell2015/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/showattendtell2015/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/showattendtell2015/",
+        "summary": "为图像描述生成引入确定性软视觉注意力和随机硬视觉注意力。",
+        "connection": "随机注意力的早期参考工作，用于理解期望特征与采样选择之间的区别。"
+      }
+    }
   },
   {
     "id": "structuredattention2017",
@@ -829,8 +955,15 @@
     ],
     "arxiv_id": "1702.00887",
     "arxiv_first_posted": "2017-02-03",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/structuredattention2017/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/structuredattention2017/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/structuredattention2017/",
+        "summary": "使用可微图模型推断，对子序列和句法树进行注意力计算。",
+        "connection": "建模结构化选择并计算期望表示；对完整预测进行边缘化是不同的操作。"
+      }
+    }
   },
   {
     "id": "bahuleyan2018",
@@ -867,8 +1000,15 @@
     ],
     "arxiv_id": "1712.08207",
     "arxiv_first_posted": "2017-12-21",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/bahuleyan2018/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/bahuleyan2018/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/bahuleyan2018/",
+        "summary": "在变分编码器—解码器中，把注意力上下文向量视为高斯隐变量。",
+        "connection": "说明“变分注意力”这一名称也用于另一个随机对象：上下文向量。"
+      }
+    }
   },
   {
     "id": "bayesianattention2020",
@@ -909,8 +1049,15 @@
     ],
     "arxiv_id": "2010.10604",
     "arxiv_first_posted": "2020-10-20",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/bayesianattention2020/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/bayesianattention2020/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/bayesianattention2020/",
+        "summary": "由归一化的可重参数化随机变量构造注意力权重分布，并使用贝叶斯正则化学习。",
+        "connection": "把概率注意力发展为带有数据依赖先验的模块化随机权重。"
+      }
+    }
   },
   {
     "id": "model-criticism",
@@ -947,8 +1094,15 @@
     "arxiv_first_posted": "2022-10-16",
     "abstract": "Language models have demonstrated the ability to generate highly fluent text; however, it remains unclear whether their output retains coherent high-level structure (e.g., story progression). Here, we propose to apply a statistical tool, model criticism in latent space, to evaluate the high-level structure of the generated text. Model criticism compares the distributions between real and generated data in a latent space obtained according to an assumptive generative process. Different generative processes identify specific failure modes of the underlying model. We perform experiments on three representative aspects of high-level discourse—coherence, coreference, and topicality—and find that transformer-based language models are able to capture topical structures but have a harder time maintaining structural coherence or modeling coreference.",
     "abstract_source": "https://arxiv.org/html/2210.08444v1",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/model-criticism/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/model-criticism/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/model-criticism/",
+        "summary": "通过在显式生成式检验模型定义的潜在空间中比较真实数据与生成数据，评估文本的高层结构。实验研究篇章连贯性、共指和主题性。",
+        "connection": "本指南的原始方法：对结构分布进行诊断式评估，与词元层面的流畅度分开。"
+      }
+    }
   },
   {
     "id": "openmeva",
@@ -999,8 +1153,15 @@
     "source_urls": [
       "https://aclanthology.org/2021.acl-long.500/"
     ],
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/openmeva/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/openmeva/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/openmeva/",
+        "summary": "检验自动故事评估指标的基准，涵盖与人工判断的相关性、泛化、稳健性，以及对不同连贯性错误的敏感程度。",
+        "connection": "检验评估器能否发现已知的故事缺陷，与在潜在空间中诊断生成器输出分布的方法互补。"
+      }
+    }
   },
   {
     "id": "story-evaluation-survey",
@@ -1032,8 +1193,15 @@
     "arxiv_first_posted": "2024-08-26",
     "publication_type": "preprint",
     "container_title": "arXiv",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/story-evaluation-survey/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/story-evaluation-survey/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/story-evaluation-survey/",
+        "summary": "综述故事质量标准、人工评估、自动指标和评估基准。",
+        "connection": "将结构诊断放在连贯性、人物发展与叙事质量的更广泛评估背景中。"
+      }
+    }
   },
   {
     "id": "markup-diffusion",
@@ -1070,8 +1238,15 @@
     "arxiv_first_posted": "2022-10-11",
     "abstract": "Building on recent advances in image generation, we present a fully data-driven approach to rendering markup into images. The approach is based on diffusion models, which parameterize the distribution of data using a sequence of denoising operations on top of a Gaussian noise distribution. We view the diffusion denoising process as a sequential decision making process, and show that it exhibits compounding errors similar to exposure bias issues in imitation learning problems. To mitigate these issues, we adapt the scheduled sampling algorithm to diffusion training. We conduct experiments on four markup datasets: mathematical formulas (LaTeX), table layouts (HTML), sheet music (LilyPond), and molecular images (SMILES). These experiments each verify the effectiveness of the diffusion process and the use of scheduled sampling to fix generation issues. These results also show that the markup-to-image task presents a useful controlled compositional setting for diagnosing and analyzing generative image models.",
     "abstract_source": "https://arxiv.org/html/2210.05147v1",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/markup-diffusion/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/markup-diffusion/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/markup-diffusion/",
+        "summary": "通过条件扩散学习渲染 LaTeX、HTML 表格布局、LilyPond 乐谱和 SMILES 分子。Scheduled Sampling 让去噪器接触自己生成的输入，以处理逐步累积的错误。",
+        "connection": "本指南讨论的原始扩散式标记语言到图像方法，以及覆盖四个领域的渲染基准。"
+      }
+    }
   },
   {
     "id": "fsa-cdm",
@@ -1115,8 +1290,15 @@
     ],
     "arxiv_id": "2308.01147",
     "arxiv_first_posted": "2023-08-02",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/fsa-cdm/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/fsa-cdm/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/fsa-cdm/",
+        "summary": "FSA-CDM 将细粒度跨模态序列对齐、上下文建模和对比增强的扩散目标结合，用于标记语言到图像生成。",
+        "connection": "这项后续工作沿用 Deng、Kojima 和 Rush 提出的任务与四个数据集，研究对齐与对比反馈。"
+      }
+    }
   },
   {
     "id": "diffusion-input-perturbation",
@@ -1154,8 +1336,15 @@
     "source_urls": [
       "https://proceedings.mlr.press/v202/ning23a.html"
     ],
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/diffusion-input-perturbation/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/diffusion-input-perturbation/",
+        "summary": "研究扩散模型采样过程中累积的错误，并在训练中扰动输入，以模拟推理时的预测误差。",
+        "connection": "通过输入扰动处理同一种训练与采样不匹配问题，可与在模型生成状态上训练的 Scheduled Sampling 比较。"
+      }
+    }
   },
   {
     "id": "interactive-training-2025",
@@ -1192,8 +1381,15 @@
     "arxiv_first_posted": "2025-10-02",
     "abstract": "Traditional neural network training typically follows fixed, predefined optimization recipes, lacking the flexibility to dynamically respond to instabilities or emerging training issues. In this paper, we introduce Interactive Training, an open-source framework that enables real-time, feedback-driven intervention during neural network training by human experts or automated AI agents. At its core, Interactive Training uses a control server to mediate communication between users or agents and the ongoing training process, allowing users to dynamically adjust optimizer hyperparameters, training data, and model checkpoints. Through three case studies, we demonstrate that Interactive Training achieves superior training stability, reduced sensitivity to initial hyperparameters, and improved adaptability to evolving user needs, paving the way toward a future training paradigm where AI agents autonomously monitor training logs, proactively resolve instabilities, and optimize training dynamics.",
     "abstract_source": "https://arxiv.org/html/2510.02297v1",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/interactive-training-2025/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/interactive-training-2025/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/interactive-training-2025/",
+        "summary": "一个开源框架，让人和 AI 智能体通过控制服务器干预正在进行的神经网络训练，修改优化器设置、训练数据和模型检查点。",
+        "connection": "原始 Interactive Training 系统将实时监控与对运行中训练过程的反馈控制连接起来。"
+      }
+    }
   },
   {
     "id": "interactive-training-2026",
@@ -1246,8 +1442,15 @@
     "container_title": "arXiv",
     "abstract": "Experiment trackers show how training is progressing, but changing a live run still usually requires trainer-specific code. We present Interactive Training 2, an open-source control plane for steering training through a shared protocol. Training applications declare which settings and actions they expose, humans and automated controllers submit requests through the same interface, and the training loop validates and applies them at safe control points. A customized Aim workspace combines live metrics and controls with a chronological record of requests and outcomes. We demonstrate the system across five NLP and reinforcement-learning workflows. The released code and traces provide a reusable foundation for auditable human- and agent-guided training.",
     "abstract_source": "https://arxiv.org/html/2607.18314v1",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/interactive-training-2026/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/interactive-training-2026/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/interactive-training-2026/",
+        "summary": "可复用的协议，提供带类型的设置、结构化动作、由应用选择的控制点，以及由人、脚本和 LLM 控制器共用的有序日志。",
+        "connection": "将 2025 年框架从依赖特定 Trainer 的命令接口，扩展为不同训练流程共用的控制协议。"
+      }
+    }
   },
   {
     "id": "livetune",
@@ -1287,8 +1490,15 @@
     "arxiv_first_posted": "2023-11-28",
     "publication_type": "preprint",
     "container_title": "arXiv",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/livetune/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/livetune/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/livetune/",
+        "summary": "LiveVariables 通过指定的系统端口开放优化参数，支持在不重启优化循环的情况下实时调整参数。",
+        "connection": "更早的运行中优化过程调节系统；可将其参数机制与 Interactive Training 的人和智能体命令接口及第二版协议比较。"
+      }
+    }
   },
   {
     "id": "ai-training-manager",
@@ -1320,7 +1530,14 @@
     "arxiv_first_posted": "2026-06-29",
     "publication_type": "preprint",
     "container_title": "arXiv",
-    "updated_at": "2026-11-10",
-    "record_url": "https://yuntiandeng.com/research/papers/ai-training-manager/"
+    "updated_at": "2026-11-11",
+    "record_url": "https://yuntiandeng.com/research/papers/ai-training-manager/",
+    "translations": {
+      "zh-Hans": {
+        "url": "https://yuntiandeng.com/research/zh/papers/ai-training-manager/",
+        "summary": "异步 LLM 监督控制器观察训练遥测数据，对正在执行的训练配置提出受约束的修改，并在刻意引入的监督学习与强化学习失败模式上实验。",
+        "connection": "研究对正在进行的训练实施自动控制，与 Interactive Training 为人和自动化控制器提供的可复用基础设施互补。"
+      }
+    }
   }
 ]

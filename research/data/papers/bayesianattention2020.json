@@ -37,6 +37,13 @@
   ],
   "arxiv_id": "2010.10604",
   "arxiv_first_posted": "2020-10-20",
-  "updated_at": "2026-11-10",
-  "record_url": "https://yuntiandeng.com/research/papers/bayesianattention2020/"
+  "updated_at": "2026-11-11",
+  "record_url": "https://yuntiandeng.com/research/papers/bayesianattention2020/",
+  "translations": {
+    "zh-Hans": {
+      "url": "https://yuntiandeng.com/research/zh/papers/bayesianattention2020/",
+      "summary": "由归一化的可重参数化随机变量构造注意力权重分布，并使用贝叶斯正则化学习。",
+      "connection": "把概率注意力发展为带有数据依赖先验的模块化随机权重。"
+    }
+  }
 }

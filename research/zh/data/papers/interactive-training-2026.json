@@ -1,0 +1,56 @@
+{
+  "id": "interactive-training-2026",
+  "title": "Interactive Training 2: Auditable Control Plane for Live Model Training",
+  "authors": [
+    {
+      "given": "Wentao",
+      "family": "Zhang"
+    },
+    {
+      "given": "Xuanhe",
+      "family": "Pan"
+    },
+    {
+      "given": "Han",
+      "family": "Zhou"
+    },
+    {
+      "given": "Yang",
+      "family": "Lu"
+    },
+    {
+      "given": "Yuntian",
+      "family": "Deng"
+    }
+  ],
+  "year": 2026,
+  "venue": "arXiv",
+  "paper_url": "https://arxiv.org/abs/2607.18314",
+  "pdf_url": "https://arxiv.org/pdf/2607.18314",
+  "code_url": "https://github.com/yuntian-group/interactive-training",
+  "doi": "10.48550/arXiv.2607.18314",
+  "summary": "可复用的协议，提供带类型的设置、结构化动作、由应用选择的控制点，以及由人、脚本和 LLM 控制器共用的有序日志。",
+  "connection": "将 2025 年框架从依赖特定 Trainer 的命令接口，扩展为不同训练流程共用的控制协议。",
+  "bibtex_type": "article",
+  "citation_key": "zhang2026interactivetraining2",
+  "source_urls": [
+    "https://arxiv.org/abs/2607.18314",
+    "https://arxiv.org/html/2607.18314v1",
+    "https://github.com/yuntian-group/interactive-training"
+  ],
+  "equal_contribution": [
+    "Wentao Zhang",
+    "Xuanhe Pan",
+    "Han Zhou"
+  ],
+  "arxiv_id": "2607.18314",
+  "arxiv_first_posted": "2026-07-17",
+  "publication_type": "preprint",
+  "container_title": "arXiv",
+  "abstract": "Experiment trackers show how training is progressing, but changing a live run still usually requires trainer-specific code. We present Interactive Training 2, an open-source control plane for steering training through a shared protocol. Training applications declare which settings and actions they expose, humans and automated controllers submit requests through the same interface, and the training loop validates and applies them at safe control points. A customized Aim workspace combines live metrics and controls with a chronological record of requests and outcomes. We demonstrate the system across five NLP and reinforcement-learning workflows. The released code and traces provide a reusable foundation for auditable human- and agent-guided training.",
+  "abstract_source": "https://arxiv.org/html/2607.18314v1",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/interactive-training-2026/"
+}

@@ -1,0 +1,55 @@
+{
+  "id": "residual-ebm-jmlr",
+  "title": "Residual Energy-Based Models for Text",
+  "authors": [
+    {
+      "given": "Anton",
+      "family": "Bakhtin"
+    },
+    {
+      "given": "Yuntian",
+      "family": "Deng"
+    },
+    {
+      "given": "Sam",
+      "family": "Gross"
+    },
+    {
+      "given": "Myle",
+      "family": "Ott"
+    },
+    {
+      "given": "Marc’Aurelio",
+      "family": "Ranzato"
+    },
+    {
+      "given": "Arthur",
+      "family": "Szlam"
+    }
+  ],
+  "year": 2021,
+  "venue": "JMLR 22(40):1–41",
+  "paper_url": "https://www.jmlr.org/papers/v22/20-326.html",
+  "summary": "研究如何从统计上区分人类文本与模型文本，并把学到的判别器用于全局归一化生成。",
+  "connection": "进一步讨论从判别器到生成器的联系，以及残差能量建模。",
+  "bibtex_type": "article",
+  "citation_key": "residualebmjmlr",
+  "source_urls": [
+    "https://www.jmlr.org/papers/v22/20-326.html"
+  ],
+  "pdf_url": "https://www.jmlr.org/papers/volume22/20-326/20-326.pdf",
+  "equal_contribution": [
+    "Anton Bakhtin",
+    "Yuntian Deng"
+  ],
+  "container_title": "Journal of Machine Learning Research",
+  "volume": "22",
+  "issue": "40",
+  "pages": "1–41",
+  "abstract": "Current large-scale auto-regressive language models display impressive fluency and can generate convincing text. In this work we start by asking the question: Can the generations of these models be reliably distinguished from real text by statistical discriminators? We find experimentally that the answer is affirmative when we have access to the training data for the model, and guardedly affirmative even if we do not. This suggests that the auto-regressive models can be improved by incorporating the (globally normalized) discriminators into the generative process. We give a formalism for this using the Energy-Based Model framework, and show that it indeed improves the results of the generative models, measured both in terms of perplexity and in terms of human evaluation.",
+  "abstract_source": "https://www.jmlr.org/papers/v22/20-326.html",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/residual-ebm-jmlr/"
+}

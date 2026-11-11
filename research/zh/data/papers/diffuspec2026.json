@@ -1,0 +1,51 @@
+{
+  "id": "diffuspec2026",
+  "title": "DiffuSpec: Unlocking Diffusion Language Models for Speculative Decoding",
+  "authors": [
+    {
+      "given": "Guanghao",
+      "family": "Li"
+    },
+    {
+      "given": "Zhihui",
+      "family": "Fu"
+    },
+    {
+      "given": "Min",
+      "family": "Fang"
+    },
+    {
+      "given": "Qibin",
+      "family": "Zhao"
+    },
+    {
+      "given": "Ming",
+      "family": "Tang"
+    },
+    {
+      "given": "Chun",
+      "family": "Yuan"
+    },
+    {
+      "given": "Jun",
+      "family": "Wang"
+    }
+  ],
+  "year": 2026,
+  "venue": "Findings of ACL 2026",
+  "paper_url": "https://aclanthology.org/2026.findings-acl.1048/",
+  "pdf_url": "https://aclanthology.org/2026.findings-acl.1048.pdf",
+  "doi": "10.18653/v1/2026.findings-acl.1048",
+  "summary": "结合扩散草稿生成、token 候选格上的 Causal-consistency Path Search，以及自适应草稿长度。",
+  "connection": "把候选格路径选择与对并行扩散提议的自回归验证相连接。",
+  "bibtex_type": "inproceedings",
+  "citation_key": "li2026diffuspec",
+  "source_urls": [
+    "https://aclanthology.org/2026.findings-acl.1048/",
+    "https://aclanthology.org/2026.findings-acl.1048.pdf"
+  ],
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/diffuspec2026/"
+}

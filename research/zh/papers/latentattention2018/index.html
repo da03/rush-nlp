@@ -1,0 +1,46 @@
+<!doctype html>
+
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Latent Alignment and Variational Attention · 研究导读</title><meta name="description" content="将对齐建模为隐变量，并通过变分注意力学习近似后验推断。">
+
+<link rel="canonical" href="https://yuntiandeng.com/research/zh/papers/latentattention2018/"><link rel="alternate" hreflang="en" href="https://yuntiandeng.com/research/papers/latentattention2018/"><link rel="alternate" hreflang="zh-Hans" href="https://yuntiandeng.com/research/zh/papers/latentattention2018/"><link rel="alternate" hreflang="x-default" href="https://yuntiandeng.com/research/papers/latentattention2018/"><meta property="og:title" content="Latent Alignment and Variational Attention"><meta property="og:description" content="将对齐建模为隐变量，并通过变分注意力学习近似后验推断。"><meta property="og:type" content="article"><meta property="og:url" content="https://yuntiandeng.com/research/zh/papers/latentattention2018/"><meta name="twitter:card" content="summary">
+
+<link rel="icon" href="/images/favicon.ico"><link rel="stylesheet" href="/research/assets/research.css">
+
+<link rel="alternate" type="application/json" href="/research/zh/data/papers/latentattention2018.json" title="机器可读内容"><link rel="alternate" type="text/markdown" href="/research/zh/data/papers/latentattention2018.md" title="纯文本版本"><link rel="describedby" type="application/json" href="/research/data/navigation.json">
+
+<meta name="citation_title" content="Latent Alignment and Variational Attention">
+
+<meta name="citation_author" content="Yuntian Deng">
+
+<meta name="citation_author" content="Yoon Kim">
+
+<meta name="citation_author" content="Justin Chiu">
+
+<meta name="citation_author" content="Demi Guo">
+
+<meta name="citation_author" content="Alexander M. Rush">
+
+<meta name="citation_publication_date" content="2018">
+
+<meta name="citation_conference_title" content="NeurIPS 2018">
+
+<meta name="citation_arxiv_id" content="1807.03756">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "url": "https://yuntiandeng.com/research/zh/papers/latentattention2018/", "name": "Latent Alignment and Variational Attention", "description": "将对齐建模为隐变量，并通过变分注意力学习近似后验推断。", "inLanguage": "zh-Hans", "dateModified": "2026-11-11", "about": {"@context": "https://schema.org", "@type": "ScholarlyArticle", "@id": "https://yuntiandeng.com/research/papers/latentattention2018/", "name": "Latent Alignment and Variational Attention", "headline": "Latent Alignment and Variational Attention", "author": [{"@type": "Person", "name": "Yuntian Deng"}, {"@type": "Person", "name": "Yoon Kim"}, {"@type": "Person", "name": "Justin Chiu"}, {"@type": "Person", "name": "Demi Guo"}, {"@type": "Person", "name": "Alexander M. Rush"}], "datePublished": "2018", "description": "将对齐建模为隐变量，并通过变分注意力学习近似后验推断。", "url": "https://yuntiandeng.com/research/papers/latentattention2018/", "sameAs": "https://arxiv.org/abs/1807.03756", "isPartOf": {"@type": "CreativeWork", "name": "NeurIPS 2018"}, "identifier": [{"@type": "PropertyValue", "propertyID": "arXiv", "value": "1807.03756"}], "abstract": "Neural attention has become central to many state-of-the-art models in natural language processing and related domains. Attention networks are an easy-to-train and effective method for softly simulating alignment; however, the approach does not marginalize over latent alignments in a probabilistic sense. This property makes it difficult to compare attention to other alignment approaches, to compose it with probabilistic models, and to perform posterior inference conditioned on observed data. A related latent approach, hard attention, fixes these issues, but is generally harder to train and less accurate. This work considers variational attention networks, alternatives to soft and hard attention for learning latent variable alignment models, with tighter approximation bounds based on amortized variational inference. We further propose methods for reducing the variance of gradients to make these approaches computationally feasible. Experiments show that for machine translation and visual question answering, inefficient exact latent variable models outperform standard neural attention, but these gains go away when using hard attention based training. On the other hand, variational attention retains most of the performance gain but with training speed comparable to neural attention.", "inLanguage": "en"}}</script>
+
+<script src="/research/assets/research.zh.js" defer></script></head><body>
+
+<a class="skip" href="#main">跳转到正文</a><header class="shell topbar"><a class="wordmark" href="/research/zh/">研究导读<span>语言模型与结构化学习</span></a><nav class="nav" aria-label="主导航"><a href="/research/zh/">主题导读</a><a href="/research/zh/papers/" aria-current="page">论文</a><a href="/research/zh/data/">引用与数据</a><a href="https://yuntiandeng.com/research/papers/latentattention2018/" hreflang="en" lang="en">English</a><a href="/">Yuntian Deng ↗</a></nav></header>
+
+<main id="main" class="shell"><div class="back"><a href="/research/zh/papers/">← 论文目录</a></div><header class="hero"><p class="kicker">NeurIPS 2018</p><h1>Latent Alignment and Variational Attention</h1><p class="lead">Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, Alexander M. Rush</p><p class="meta">Yuntian Deng and Yoon Kim 为共同第一作者。</p><p class="meta">arXiv 首次公开：2018-07-10。引用年份：2018。</p><div class="actions"><a class="button" href="https://arxiv.org/abs/1807.03756">阅读论文原文 ↗</a><a class="button secondary" href="https://github.com/harvardnlp/var-attn/">代码 ↗</a></div></header><div class="prose"><section><h2>方法与贡献</h2><p>将对齐建模为隐变量，并通过变分注意力学习近似后验推断。</p><p>对注意力建立概率分布的一般框架，超越单个确定性注意力向量。</p></section><section id="abstract"><h2>原文摘要（英文）</h2><p>Neural attention has become central to many state-of-the-art models in natural language processing and related domains. Attention networks are an easy-to-train and effective method for softly simulating alignment; however, the approach does not marginalize over latent alignments in a probabilistic sense. This property makes it difficult to compare attention to other alignment approaches, to compose it with probabilistic models, and to perform posterior inference conditioned on observed data. A related latent approach, hard attention, fixes these issues, but is generally harder to train and less accurate. This work considers variational attention networks, alternatives to soft and hard attention for learning latent variable alignment models, with tighter approximation bounds based on amortized variational inference. We further propose methods for reducing the variance of gradients to make these approaches computationally feasible. Experiments show that for machine translation and visual question answering, inefficient exact latent variable models outperform standard neural attention, but these gains go away when using hard attention based training. On the other hand, variational attention retains most of the performance gain but with training speed comparable to neural attention.</p></section><p><a href="https://proceedings.neurips.cc/paper/2018/file/b691334ccf10d4ab144d672f7783c8a3-Paper.pdf">阅读全文 PDF ↗</a></p><section><h2>结合主题阅读</h2><p><a href="/research/zh/probabilistic-attention/">把注意力建模为隐变量：学习注意力的概率分布 →</a></p></section><section id="citation"><h2>引用</h2><p>Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, Alexander M. Rush. Latent Alignment and Variational Attention. NeurIPS 2018.</p><div class="code-actions"><button type="button" data-copy="#bibtex" data-status="#copy-status">复制 BibTeX</button><a class="button secondary" href="/research/zh/data/papers/latentattention2018.bib" download>下载 BibTeX</a><a class="button secondary" href="/research/zh/data/papers/latentattention2018.csl.json" download>CSL JSON</a></div><p id="copy-status" class="status-message" role="status"></p><pre id="bibtex">@inproceedings{deng2018latent,
+  title = {{Latent Alignment and Variational Attention}},
+  author = {Deng, Yuntian and Kim, Yoon and Chiu, Justin and Guo, Demi and Rush, Alexander M.},
+  year = {2018},
+  booktitle = {NeurIPS 2018},
+  url = {https://arxiv.org/abs/1807.03756},
+  eprint = {1807.03756},
+  archivePrefix = {arXiv}
+}
+</pre></section></div></main><footer class="shell footer"><div><p>研究导读作者： <a href="/">Yuntian Deng</a>.</p><p>从原始方法到当前研究，附可直接使用的参考文献。</p></div><div><p>参考文献核查日期：2026-11-10。</p><p><a href="/research/zh/about/">关于本系列</a> · <a href="/research/zh/data/navigation.json">页面目录</a> · <a href="/research/zh/data/reading-list.md">Markdown</a></p></div></footer></body></html>

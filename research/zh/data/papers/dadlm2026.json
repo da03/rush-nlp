@@ -1,0 +1,42 @@
+{
+  "id": "dadlm2026",
+  "title": "DA-DLM: Explicitly Modeling Token Dependencies in Diffusion Language Models",
+  "authors": [
+    {
+      "given": "Pengyu",
+      "family": "Ji"
+    },
+    {
+      "given": "Zichen",
+      "family": "Zhang"
+    },
+    {
+      "given": "Xiang",
+      "family": "Hu"
+    },
+    {
+      "given": "Kewei",
+      "family": "Tu"
+    }
+  ],
+  "year": 2026,
+  "venue": "EMNLP 2026",
+  "paper_url": "https://aclanthology.org/2026.emnlp-main.2094/",
+  "pdf_url": "https://aclanthology.org/2026.emnlp-main.2094.pdf",
+  "doi": "10.18653/2026.emnlp-main.2094",
+  "summary": "通过按输出位置组织的候选组和已确定 token 构成的锚点，把有向无环图依赖建模用于迭代扩散。",
+  "connection": "把非自回归翻译中的结构化输出建模直接迁移到扩散去噪。",
+  "bibtex_type": "inproceedings",
+  "citation_key": "ji2026dadlm",
+  "source_urls": [
+    "https://aclanthology.org/2026.emnlp-main.2094/",
+    "https://aclanthology.org/2026.emnlp-main.2094.pdf",
+    "https://arxiv.org/abs/2609.15070"
+  ],
+  "arxiv_id": "2609.15070",
+  "arxiv_first_posted": "2026-09-14",
+  "updated_at": "2026-11-11",
+  "description_language": "zh-Hans",
+  "abstract_language": "en",
+  "record_url": "https://yuntiandeng.com/research/zh/papers/dadlm2026/"
+}
