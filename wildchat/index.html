@@ -12,6 +12,7 @@ permalink: /wildchat/
   <h1>WildChat</h1>
   <p class="wc-lead">Real conversations for studying how people use language models.</p>
   <p>WildChat collects multilingual, multi-turn conversations between consenting users and ChatGPT. It supports research on user behavior, safety, evaluation, and instruction tuning.</p>
+  <p>Download <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M">WildChat-4.8M</a> or request access to <a href="https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full">WildChat-4.8M-Full</a>.</p>
   <p class="wc-links"><a href="{{ original.paper_url }}">Original paper</a><a href="/wildchat/releases/">Choose a dataset release</a><a href="/wildchat/research/">Research using WildChat</a><a href="https://wildvisualizer.com/">Explore with WildVis</a></p>
 </header>
 
@@ -19,7 +20,6 @@ permalink: /wildchat/
   <p class="wc-kicker">The original contribution · {{ original.venue }}</p>
   <h2 id="contribution-title">{{ original.title }}</h2>
   <p class="wc-authors">{% include wildchat/authors.html authors=original.authors %}</p>
-  <p class="wc-muted">{{ original.author_note }}</p>
   <p>{{ original.summary }}</p>
   <p>The collection pairs conversation text with timestamps, geographic metadata, hashed IP addresses, and request headers. These enable analyses of language-model use across conversations, locations, and time. <a href="{{ original.evidence_url }}">Read the collection methods and analyses.</a></p>
 </section>
