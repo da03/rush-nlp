@@ -6,7 +6,7 @@
       </div>
       <div class="footer-social">
         <ul class="social-media-list">
-          <li><a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ" aria-label="Google Scholar">Scholar</a></li>
+          {% if page.lang == 'zh-Hans' %}<li><a href="/publications/">论文列表</a></li>{% else %}<li><a href="https://scholar.google.com/citations?user=tk0e5lYAAAAJ" aria-label="Google Scholar">Scholar</a></li>{% endif %}
           {% if site.github_username %}
           <li>{% include icon-github.html username=site.github_username %}</li>
           {% endif %}

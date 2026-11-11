@@ -926,3 +926,11 @@ html[lang="zh-Hans"] .post-content {
 html[lang="zh-Hans"] .paper-summary {
     margin: 10px 0;
 }
+
+html[lang="zh-Hans"] .research-themes {
+    grid-template-columns: repeat(2, 1fr);
+
+    @include media-query($on-palm) {
+        grid-template-columns: 1fr;
+    }
+}
