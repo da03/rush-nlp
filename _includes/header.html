@@ -11,10 +11,16 @@
       {% if page.homepage_locale %}
       <details class="language-menu">
         {% assign current_language = site.data.homepage_languages | where: 'id', page.homepage_locale | first %}
-        <summary aria-label="{{ homepage_copy.labels.language | escape }}">{{ current_language.label }}</summary>
+        <summary aria-label="{{ homepage_copy.labels.language | escape }}: {{ current_language.label | escape }}">
+          <span dir="{{ current_language.dir }}">{{ current_language.label }}</span>
+          <svg class="language-menu__chevron" width="12" height="12" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m4 6 4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </summary>
         <ul>
           {% for language in site.data.homepage_languages %}
-          <li><a href="{{ language.path }}" lang="{{ language.lang }}" hreflang="{{ language.lang }}" dir="{{ language.dir }}"{% if language.id == page.homepage_locale %} aria-current="page"{% endif %}>{{ language.label }}</a></li>
+          <li><a href="{{ language.path }}" lang="{{ language.lang }}" hreflang="{{ language.lang }}"{% if language.id == page.homepage_locale %} aria-current="page"{% endif %}>
+            <span dir="{{ language.dir }}">{{ language.label }}</span>
+            {% if language.id == page.homepage_locale %}<svg class="language-menu__check" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m3 8 3 3 7-7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>{% endif %}
+          </a></li>
           {% endfor %}
         </ul>
       </details>

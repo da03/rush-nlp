@@ -937,39 +937,66 @@ html[lang="zh-Hans"] .research-themes {
 
 .language-menu {
     position: relative;
+    flex-shrink: 0;
     font-size: 14px;
+    line-height: 20px;
     summary {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         cursor: pointer;
-        padding: 10px;
-        min-height: 44px;
+        padding: 7px 12px;
+        min-height: 36px;
         box-sizing: border-box;
         white-space: nowrap;
+        list-style: none;
+        color: var(--fg);
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        &::-webkit-details-marker { display: none; }
     }
+    summary:hover, &[open] summary { background: var(--bg-subtle); }
+    &__chevron, &__check { flex-shrink: 0; }
+    &__chevron { color: var(--fg-muted); }
+    &[open] .language-menu__chevron { transform: rotate(180deg); }
     ul {
         position: absolute;
-        inset-inline-end: 0;
+        inset-inline-start: 0;
         top: 100%;
         z-index: 60;
-        min-width: 150px;
+        width: 170px;
+        max-width: calc(100vw - 32px);
+        max-height: calc(100vh - 88px);
+        max-height: calc(100dvh - 88px);
+        overflow-y: auto;
+        box-sizing: border-box;
         margin: 4px 0 0;
         padding: 4px;
         list-style: none;
         background: var(--bg);
         border: 1px solid var(--border);
         border-radius: 8px;
-        box-shadow: var(--shadow-md);
+        box-shadow: var(--shadow-sm);
     }
     li { margin: 0; }
     a {
-        display: block;
-        padding: 10px 12px;
-        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 8px;
+        min-height: 36px;
         box-sizing: border-box;
-        text-align: match-parent;
         border-radius: 4px;
+        &, &:visited { color: var(--fg); }
+        &:hover { text-decoration: none; }
     }
     a:hover, a[aria-current="page"] { background: var(--bg-subtle); }
     a[aria-current="page"] { font-weight: 600; }
+    @media (max-width: 600px), (pointer: coarse) {
+        summary, a { min-height: 44px; }
+    }
 }
 
 .localized-homepage {
