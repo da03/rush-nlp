@@ -75,6 +75,24 @@ class Homepages(unittest.TestCase):
                     for term in ('2311.01460', '2405.14838', '2023', 'Implicit CoT', 'latent reasoning', 'Internalized reasoning'):
                         self.assertIn(term, page.raw)
 
+    def test_language_suggestion_is_available_on_english_homepage(self):
+        for language, page in self.pages():
+            with self.subTest(language=language['id']):
+                self.assertEqual(len(page.matches('script', src='/js/language-preference.js')), 1)
+                config = re.search(r'<script id="homepage-languages" type="application/json">(.*?)</script>', page.raw, re.S)
+                self.assertIsNotNone(config)
+                self.assertEqual(json.loads(config.group(1)), LANGUAGES)
+                self.assertEqual([a['data-language-id'] for a in page.matches('a') if 'data-language-id' in a],
+                                 [l['id'] for l in LANGUAGES])
+                prompt = page.matches('aside', id='language-suggestion')
+                self.assertEqual(len(prompt), 1 if language['id'] == 'en' else 0)
+                if prompt:
+                    self.assertIn('hidden', prompt[0])
+                    self.assertEqual(len(page.matches('a', id='language-suggestion-link')), 1)
+                    self.assertEqual(len(page.matches('button', id='language-suggestion-stay', type='button')), 1)
+        publications = Page(SITE / 'publications/index.html')
+        self.assertFalse(publications.matches('script', src='/js/language-preference.js'))
+
     def test_unique_ids_and_working_internal_links(self):
         for language, page in self.pages():
             ids = [a['id'] for _, a in page.tags if 'id' in a]

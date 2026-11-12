@@ -10,6 +10,15 @@
 
     {% include header.html %}
 
+    {% if page.homepage_locale == 'en' %}
+    <aside id="language-suggestion" class="language-suggestion" aria-label="Language" hidden>
+      <div class="wrapper">
+        <a id="language-suggestion-link" href="/" translate="no"></a>
+        <button id="language-suggestion-stay" type="button">Continue in English</button>
+      </div>
+    </aside>
+    {% endif %}
+
     <main id="main" class="page-content" tabindex="-1">
       <div class="wrapper">
         {{ content }}
@@ -22,6 +31,10 @@
 
     <script src="{{ '/js/theme.js' | prepend: site.baseurl }}" defer></script>
     <script src="{{ '/js/nav.js' | prepend: site.baseurl }}" defer></script>
+    {% if page.homepage_locale %}
+    <script id="homepage-languages" type="application/json">{{ site.data.homepage_languages | jsonify }}</script>
+    <script src="{{ '/js/language-preference.js' | prepend: site.baseurl }}" defer></script>
+    {% endif %}
 
   </body>
 
