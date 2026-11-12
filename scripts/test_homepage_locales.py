@@ -49,6 +49,8 @@ class Homepages(unittest.TestCase):
                 self.assertNotIn('{{', page.raw)
                 self.assertNotIn('{%', page.raw)
                 self.assertEqual(page.matches('a', **{'aria-current': 'page', 'hreflang': language['lang']})[0]['href'], language['path'])
+                self.assertEqual([a['hreflang'] for a in page.matches('a') if 'hreflang' in a],
+                                 [l['lang'] for l in LANGUAGES])
 
     def test_shared_person_and_localized_metadata(self):
         for language, page in self.pages():
@@ -106,11 +108,13 @@ class Homepages(unittest.TestCase):
             self.assertIn(DOMAIN + language['path'], urls)
             self.assertIn(f"[{language['label']}]({DOMAIN + language['path']})", guide)
 
-    def test_existing_english_and_chinese_main_unchanged(self):
+    def test_existing_homepage_content_unchanged(self):
         if BASELINE is None:
             self.skipTest('Pass --baseline to compare existing content')
-        for path in ('index.html', 'zh/index.html'):
-            self.assertEqual(main_html(BASELINE / path), main_html(SITE / path), path)
+        for language in LANGUAGES:
+            path = Path(language['path'].strip('/')) / 'index.html'
+            if (BASELINE / path).is_file():
+                self.assertEqual(main_html(BASELINE / path), main_html(SITE / path), path)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)

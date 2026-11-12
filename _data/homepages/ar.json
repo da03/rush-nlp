@@ -1,0 +1,145 @@
+{
+  "seo_title": "Yuntian Deng | جامعة واترلو",
+  "description": "Yuntian Deng، أستاذ مساعد في جامعة واترلو. أبحاث في البرامج العصبية، ونماذج العالم العصبية، وسلسلة التفكير الضمنية (Implicit CoT)، واستخدام النماذج اللغوية في الواقع.",
+  "affiliations_html": [
+    "<strong>أستاذ مساعد</strong>، كلية علوم الحاسوب بجامعة واترلو",
+    "<strong><bdi lang=\"en\" dir=\"ltr\">Associate</bdi></strong>، <bdi lang=\"en\" dir=\"ltr\">Harvard SEAS</bdi>",
+    "<strong><bdi lang=\"en\" dir=\"ltr\">Faculty Affiliate</bdi></strong>، <bdi lang=\"en\" dir=\"ltr\">Vector Institute</bdi>",
+    "دكتوراه في علوم الحاسوب، جامعة هارفارد"
+  ],
+  "intro_html": [
+    "أبحث في معالجة اللغة الطبيعية وتعلّم الآلة: كيف تتعلّم النماذج العصبية إجراء حسابات نعبّر عنها عادةً ببرامج رمزية أو خطوات استدلال صريحة. تطوّر مجموعتي أساليب لتحويل أوصاف الدوال باللغة الطبيعية إلى برامج عصبية قابلة لإعادة الاستخدام (<a href=\"https://programasweights.com\"><bdi lang=\"en\" dir=\"ltr\">ProgramAsWeights</bdi></a>)، ومحاكاة بيئات الحوسبة التفاعلية بنماذج توليدية (<a href=\"https://neural-os.com\"><bdi lang=\"en\" dir=\"ltr\">NeuralOS</bdi></a>)، وتدرس <a href=\"https://latent-implicit-thinking.github.io/\">سلسلة التفكير الضمنية (<bdi lang=\"en\" dir=\"ltr\">Implicit CoT</bdi>)</a> واستيعاب الاستدلال داخل النموذج. ندرس أيضًا كيف يستخدم الناس النماذج اللغوية، من خلال محادثات <a href=\"/wildchat/\"><bdi lang=\"en\" dir=\"ltr\">WildChat</bdi></a> وأدوات التحليل في <a href=\"https://wildvisualizer.com\"><bdi lang=\"en\" dir=\"ltr\">WildVis</bdi></a>.",
+    "أبني أنظمة مفتوحة المصدر و<a href=\"/demos/\">عروضًا تفاعلية</a> تتيح للباحثين استكشاف هذه الأفكار وتقييمها والبناء عليها. استخدمت <bdi lang=\"en\" dir=\"ltr\">OpenAI</bdi> و<bdi lang=\"en\" dir=\"ltr\">Anthropic</bdi> بيانات <bdi lang=\"en\" dir=\"ltr\">WildChat</bdi> لتقييم سلامة النماذج. وشاركت في تطوير <a href=\"https://opennmt.net/\"><bdi lang=\"en\" dir=\"ltr\">OpenNMT</bdi></a>، وهو مجموعة أدوات مفتوحة المصدر للترجمة الآلية العصبية تُستخدم على نطاق واسع في البحث والصناعة. حصلت على الدكتوراه في علوم الحاسوب من جامعة هارفارد بإشراف <a href=\"https://rush-nlp.com/\"><bdi lang=\"en\" dir=\"ltr\">Alexander Rush</bdi></a> و<a href=\"https://www.eecs.harvard.edu/shieber/\"><bdi lang=\"en\" dir=\"ltr\">Stuart Shieber</bdi></a>، ثم عملت باحثًا لما بعد الدكتوراه مع <a href=\"https://yejinc.github.io/\"><bdi lang=\"en\" dir=\"ltr\">Yejin Choi</bdi></a> في <bdi lang=\"en\" dir=\"ltr\">Allen Institute for AI</bdi>."
+  ],
+  "vision_label": "من حلّ المشكلات إلى بناء الأدوات",
+  "vision": "أرى أن تدريب النماذج مسبقًا على تحويل المهام المتكررة إلى برامج عصبية صغيرة قابلة لإعادة الاستخدام، بدلًا من حلّ المشكلة من الصفر في كل مرة، من أكثر الاتجاهات إثارةً في مستقبل الذكاء الاصطناعي.",
+  "labels": {
+    "home": "الرئيسية",
+    "language": "اللغة",
+    "research": "مجالات البحث",
+    "papers": "الأوراق البحثية",
+    "guides": "أدلة البحث",
+    "students": "الانضمام إلى المجموعة",
+    "cv": "السيرة الذاتية",
+    "publications": "المنشورات",
+    "contact": "تواصل",
+    "featured": "أوراق بحثية مختارة",
+    "paper_project": "الورقة والمشروع",
+    "code": "الكود والموارد",
+    "all_publications": "جميع المنشورات وبيانات الاستشهاد",
+    "updated": "آخر تحديث",
+    "skip": "انتقل إلى المحتوى الرئيسي",
+    "menu": "فتح القائمة أو إغلاقها",
+    "theme_dark": "التبديل إلى المظهر الداكن",
+    "theme_light": "التبديل إلى المظهر الفاتح"
+  },
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights (PAW)",
+      "description": "نمط جديد للبرمجة: نحوّل أوصاف الدوال باللغة الطبيعية إلى برامج عصبية قابلة لإعادة الاستخدام، لتحلّ محل الكود الرمزي للدوال الضبابية. هدفنا هو البرمجة دون أن يكون الكود وسيطًا.",
+      "links": [
+        {
+          "title": "المشروع والعروض التفاعلية",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "نظرة على الأبحاث",
+          "url": "https://programasweights.com/research/"
+        },
+        {
+          "title": "قائمة القراءة",
+          "url": "https://programasweights.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "نماذج العالم العصبية (Neural World Models)",
+      "description": "كيف تتعلّم النماذج التوليدية سلوك بيئات الحوسبة التفاعلية؟ يحاكي NeuralOS أنظمة التشغيل من البداية إلى النهاية بنماذج توليدية عصبية تنتج تغيّرات الواجهة استجابةً لأفعال المستخدم.",
+      "links": [
+        {
+          "title": "عرض تفاعلي",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "قائمة القراءة",
+          "url": "https://neural-os.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "سلسلة التفكير الضمنية (Implicit CoT)",
+      "description": "كنّا أول من اقترح الاستدلال بسلسلة التفكير الضمنية (Implicit CoT، ويُسمّى أيضًا latent reasoning) في عام 2023: تستدل النماذج اللغوية عبر حالات خفية متصلة بدلًا من كتابة الخطوات الوسيطة بالكلمات. تشمل أساليبنا تقطير المعرفة وتعلّم استيعاب الاستدلال داخل النموذج خطوة بخطوة (Internalized reasoning).",
+      "links": [
+        {
+          "title": "ورقة 2023",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "ورقة 2024",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "عرض تفاعلي",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "دليل الأوراق البحثية",
+          "url": "https://latent-implicit-thinking.github.io/"
+        },
+        {
+          "title": "ورشة ICLR 2026",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "استخدام النماذج اللغوية في الواقع",
+      "description": "كيف يستخدم الناس النماذج اللغوية الكبيرة في الممارسة؟ نجمع ملايين المحادثات الحقيقية ونحلّلها لدراسة أنماط الاستخدام وسلامة النماذج والسلوكيات الناشئة، وننشر البيانات وأدوات التحليل للاستخدام المفتوح.",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "نحوّل أوصاف الدوال باللغة الطبيعية إلى برامج عصبية تنفّذ حسابات الدوال من خلال أوزان النموذج."
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "نحاكي أنظمة التشغيل من البداية إلى النهاية بنماذج توليدية عصبية تنتج تغيّرات الواجهة استجابةً لأفعال المستخدم."
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "في عام 2023، اقترحنا لأول مرة الاستدلال بسلسلة التفكير الضمنية عبر حالات خفية متصلة، واستخدمنا تقطير المعرفة لنقل الاستدلال الصريح إلى داخل النموذج."
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "نحذف خطوات الاستدلال الصريحة تدريجيًا أثناء التدريب، ليتعلّم النموذج الاستدلال داخليًا وإنتاج الإجابة مباشرةً."
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "نجمع محادثات متعددة اللغات والجولات بين مستخدمين حقيقيين وChatGPT، لتوفير بيانات لدراسة سلوك المستخدمين وسلامة النماذج وتدريب النماذج اللغوية."
+    }
+  ],
+  "guides_html": [
+    "تتناول <a href=\"/research/\">أدلة البحث في النماذج اللغوية والتعلّم البنيوي</a> أسلوب <bdi lang=\"en\" dir=\"ltr\">Tree Prompting</bdi>، والنماذج القائمة على الطاقة، والانتباه الاحتمالي، وفك الترميز البنيوي، وتقييم النصوص الطويلة، والتصيير بالتعلّم، والتدريب التفاعلي. وتضم الأوراق الأصلية، وأمثلة على الأساليب، والأعمال ذات الصلة، وبيانات الاستشهاد.",
+    "يعرض <a href=\"https://im2markup.yuntiandeng.com/\"><bdi lang=\"en\" dir=\"ltr\">Image-to-Markup</bdi> و<bdi lang=\"en\" dir=\"ltr\">IM2LATEX-100K</bdi></a> أبحاثنا في تحويل الصور إلى <bdi lang=\"en\" dir=\"ltr\">LaTeX</bdi> خلال عامَي 2016–2017، مع مجموعة البيانات والكود والعروض التفاعلية."
+  ],
+  "students_html": "إذا كنت مهتمًا بالانضمام إلى مجموعتي، فابدأ بقراءة <a href=\"https://programasweights.com/\"><bdi lang=\"en\" dir=\"ltr\">ProgramAsWeights</bdi></a> و<a href=\"https://neural-os.com/\"><bdi lang=\"en\" dir=\"ltr\">NeuralOS</bdi></a> وأبحاثنا في سلسلة التفكير الضمنية (<a href=\"https://arxiv.org/abs/2311.01460\"><bdi lang=\"en\" dir=\"ltr\">Implicit CoT</bdi> في 2023</a>؛ <a href=\"https://arxiv.org/abs/2405.14838\">استيعاب الاستدلال تدريجيًا في 2024</a>). اذكر باختصار في رسالتك الاتجاه البحثي الذي يهمك. نظرًا لكثرة الرسائل، لا أستطيع الرد على الاستفسارات التي لا تتناول موضوعًا بحثيًا محددًا."
+}

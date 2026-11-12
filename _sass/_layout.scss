@@ -967,9 +967,10 @@ html[lang="zh-Hans"] .research-themes {
         z-index: 60;
         width: 170px;
         max-width: calc(100vw - 32px);
-        max-height: calc(100vh - 88px);
-        max-height: calc(100dvh - 88px);
+        max-height: min(440px, calc(100vh - 88px));
+        max-height: min(440px, calc(100dvh - 88px));
         overflow-y: auto;
+        overscroll-behavior: contain;
         box-sizing: border-box;
         margin: 4px 0 0;
         padding: 4px;

@@ -1,0 +1,145 @@
+{
+  "seo_title": "Yuntian Deng | वाटरलू विश्वविद्यालय",
+  "description": "Yuntian Deng, वाटरलू विश्वविद्यालय में सहायक प्रोफेसर। शोध: न्यूरल प्रोग्राम, न्यूरल वर्ल्ड मॉडल, अंतर्निहित विचार-श्रृंखला (Implicit CoT) और वास्तविक दुनिया में भाषा मॉडल का उपयोग।",
+  "affiliations_html": [
+    "<strong>सहायक प्रोफेसर</strong>, कंप्यूटर विज्ञान स्कूल, वाटरलू विश्वविद्यालय",
+    "<strong>Associate</strong>, Harvard SEAS",
+    "<strong>Faculty Affiliate</strong>, Vector Institute",
+    "कंप्यूटर विज्ञान में पीएचडी, हार्वर्ड विश्वविद्यालय"
+  ],
+  "intro_html": [
+    "मैं प्राकृतिक भाषा प्रसंस्करण और मशीन लर्निंग में शोध करता हूँ: न्यूरल मॉडल उन गणनाओं को कैसे सीखें जिन्हें आम तौर पर प्रतीकात्मक प्रोग्राम या तर्क के स्पष्ट चरणों के ज़रिए व्यक्त किया जाता है। मेरा समूह प्राकृतिक भाषा में दिए गए फ़ंक्शन के विवरण को दोबारा इस्तेमाल किए जा सकने वाले न्यूरल प्रोग्राम में संकलित करता है (<a href=\"https://programasweights.com\">ProgramAsWeights</a>), जनरेटिव मॉडल से इंटरैक्टिव कंप्यूटिंग परिवेशों का अनुकरण करता है (<a href=\"https://neural-os.com\">NeuralOS</a>), और <a href=\"https://latent-implicit-thinking.github.io/\">अंतर्निहित विचार-श्रृंखला (Implicit CoT)</a> तथा तर्क को मॉडल के भीतर समाहित करने पर काम करता है। हम <a href=\"/wildchat/\">WildChat</a> की बातचीत और <a href=\"https://wildvisualizer.com\">WildVis</a> के विश्लेषण टूल से यह भी अध्ययन करते हैं कि लोग भाषा मॉडल का उपयोग कैसे करते हैं।",
+    "मैं ओपन-सोर्स सिस्टम और <a href=\"/demos/\">इंटरैक्टिव डेमो</a> बनाता हूँ, ताकि शोधकर्ता इन विचारों को आज़मा सकें, उनका मूल्यांकन कर सकें और उन्हें आगे बढ़ा सकें। OpenAI और Anthropic ने मॉडल सुरक्षा के मूल्यांकन में WildChat का उपयोग किया है। मैं न्यूरल मशीन अनुवाद के ओपन-सोर्स टूलकिट <a href=\"https://opennmt.net/\">OpenNMT</a> का सह-विकासकर्ता भी हूँ, जिसका शोध और उद्योग में व्यापक उपयोग होता है। मैंने हार्वर्ड विश्वविद्यालय से <a href=\"https://rush-nlp.com/\">Alexander Rush</a> और <a href=\"https://www.eecs.harvard.edu/shieber/\">Stuart Shieber</a> के मार्गदर्शन में कंप्यूटर विज्ञान में पीएचडी की। इसके बाद Allen Institute for AI में <a href=\"https://yejinc.github.io/\">Yejin Choi</a> के साथ पोस्टडॉक्टरल शोध किया।"
+  ],
+  "vision_label": "समस्याएँ हल करने से उपकरण बनाने तक",
+  "vision": "मेरा मानना है कि हर बार समस्या को नए सिरे से हल करने के बजाय, प्रीट्रेनिंग के ज़रिए मॉडल को दोहराए जाने वाले कामों को छोटे, पुनः उपयोग योग्य न्यूरल प्रोग्राम में संकलित करना सिखाना AI के भविष्य की सबसे रोमांचक दिशाओं में से एक है।",
+  "labels": {
+    "home": "मुखपृष्ठ",
+    "language": "भाषा",
+    "research": "शोध के क्षेत्र",
+    "papers": "शोधपत्र",
+    "guides": "शोध मार्गदर्शिकाएँ",
+    "students": "समूह से जुड़ें",
+    "cv": "जीवनवृत्त",
+    "publications": "प्रकाशन",
+    "contact": "संपर्क",
+    "featured": "चुनिंदा शोधपत्र",
+    "paper_project": "शोधपत्र और परियोजना",
+    "code": "कोड और संसाधन",
+    "all_publications": "सभी प्रकाशन और उद्धरण विवरण",
+    "updated": "अद्यतन",
+    "skip": "मुख्य सामग्री पर जाएँ",
+    "menu": "मेन्यू खोलें या बंद करें",
+    "theme_dark": "डार्क थीम चुनें",
+    "theme_light": "लाइट थीम चुनें"
+  },
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights (PAW)",
+      "description": "प्रोग्रामिंग का एक नया तरीका: प्राकृतिक भाषा में दिए गए फ़ंक्शन के विवरण को पुनः उपयोग योग्य न्यूरल प्रोग्राम में संकलित करना, ताकि फ़ज़ी फ़ंक्शन के लिए प्रतीकात्मक कोड की जगह न्यूरल प्रोग्राम काम करें। हमारा लक्ष्य कोड को मध्यस्थ बनाए बिना प्रोग्रामिंग करना है।",
+      "links": [
+        {
+          "title": "परियोजना और डेमो",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "शोध परिचय",
+          "url": "https://programasweights.com/research/"
+        },
+        {
+          "title": "पठन सूची",
+          "url": "https://programasweights.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "न्यूरल वर्ल्ड मॉडल (Neural World Models)",
+      "description": "जनरेटिव मॉडल इंटरैक्टिव कंप्यूटिंग परिवेशों का व्यवहार कैसे सीखते हैं? NeuralOS न्यूरल जनरेटिव मॉडल से पूरे ऑपरेटिंग सिस्टम का अनुकरण करता है और उपयोगकर्ता की गतिविधियों के जवाब में इंटरफ़ेस में बदलाव उत्पन्न करता है।",
+      "links": [
+        {
+          "title": "इंटरैक्टिव डेमो",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "पठन सूची",
+          "url": "https://neural-os.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "अंतर्निहित विचार-श्रृंखला (Implicit CoT)",
+      "description": "हमने 2023 में पहली बार अंतर्निहित विचार-श्रृंखला से तर्क करने (Implicit CoT, जिसे latent reasoning भी कहते हैं) का प्रस्ताव रखा: भाषा मॉडल बीच के चरणों को शब्दों में लिखने के बजाय सतत hidden states के ज़रिए तर्क करते हैं। हमारी विधियों में नॉलेज डिस्टिलेशन और तर्क को चरण-दर-चरण मॉडल के भीतर समाहित करना सिखाना (Internalized reasoning) शामिल हैं।",
+      "links": [
+        {
+          "title": "2023 का शोधपत्र",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "2024 का शोधपत्र",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "इंटरैक्टिव डेमो",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "शोधपत्रों की मार्गदर्शिका",
+          "url": "https://latent-implicit-thinking.github.io/"
+        },
+        {
+          "title": "ICLR 2026 कार्यशाला",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "वास्तविक दुनिया में भाषा मॉडल का उपयोग",
+      "description": "लोग बड़े भाषा मॉडल का उपयोग कैसे करते हैं? हम उपयोग के तरीकों, मॉडल सुरक्षा और उभरते व्यवहारों का अध्ययन करने के लिए लाखों वास्तविक बातचीत एकत्र करके उनका विश्लेषण करते हैं। डेटा और विश्लेषण टूल खुले रूप में उपलब्ध कराते हैं।",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "प्राकृतिक भाषा में दिए गए फ़ंक्शन के विवरण को न्यूरल प्रोग्राम में संकलित करते हैं, जो मॉडल के वज़न के ज़रिए फ़ंक्शन की गणनाएँ करते हैं।"
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "न्यूरल जनरेटिव मॉडल से पूरे ऑपरेटिंग सिस्टम का अनुकरण करते हैं और उपयोगकर्ता की गतिविधियों के आधार पर इंटरफ़ेस में बदलाव उत्पन्न करते हैं।"
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "हमने 2023 में पहली बार सतत hidden states के ज़रिए अंतर्निहित विचार-श्रृंखला से तर्क करने का प्रस्ताव रखा और नॉलेज डिस्टिलेशन से स्पष्ट तर्क प्रक्रिया को मॉडल के भीतर स्थानांतरित किया।"
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "प्रशिक्षण के दौरान तर्क के स्पष्ट चरणों को धीरे-धीरे हटाकर मॉडल को भीतर ही तर्क करना और सीधे उत्तर देना सिखाते हैं।"
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "वास्तविक उपयोगकर्ताओं और ChatGPT के बीच कई भाषाओं में हुई बहु-चरणीय बातचीत एकत्र करते हैं, ताकि उपयोगकर्ता व्यवहार, मॉडल सुरक्षा और भाषा मॉडल के प्रशिक्षण का अध्ययन किया जा सके।"
+    }
+  ],
+  "guides_html": [
+    "<a href=\"/research/\">भाषा मॉडल और संरचित अधिगम की शोध मार्गदर्शिकाएँ</a> Tree Prompting, ऊर्जा-आधारित मॉडल, प्रायिकतात्मक अटेंशन, संरचित डिकोडिंग, लंबे पाठ के मूल्यांकन, सीखकर रेंडरिंग करने और इंटरैक्टिव प्रशिक्षण को समझाती हैं। इनमें मूल शोधपत्र, विधियों के उदाहरण, संबंधित शोध और उद्धरण विवरण दिए गए हैं।",
+    "<a href=\"https://im2markup.yuntiandeng.com/\">Image-to-Markup और IM2LATEX-100K</a> में चित्रों को LaTeX में बदलने पर हमारा 2016–2017 का शोध, डेटासेट, कोड और इंटरैक्टिव डेमो मिलेंगे।"
+  ],
+  "students_html": "मेरे समूह से जुड़ने में रुचि है तो पहले <a href=\"https://programasweights.com/\">ProgramAsWeights</a>, <a href=\"https://neural-os.com/\">NeuralOS</a> और अंतर्निहित विचार-श्रृंखला पर हमारा शोध पढ़ें (<a href=\"https://arxiv.org/abs/2311.01460\">2023 का Implicit CoT शोधपत्र</a>; <a href=\"https://arxiv.org/abs/2405.14838\">2024 का चरण-दर-चरण आंतरिकीकरण शोधपत्र</a>)। अपने संदेश में संक्षेप में बताएँ कि किस शोध दिशा में आपकी रुचि है। बड़ी संख्या में ईमेल मिलने के कारण मैं उन संदेशों का उत्तर नहीं दे सकता जिनमें किसी स्पष्ट शोध विषय का ज़िक्र नहीं है।"
+}

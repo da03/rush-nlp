@@ -1,10 +1,18 @@
 [
   {"id":"en","lang":"en","label":"English","path":"/","dir":"ltr"},
   {"id":"zh","lang":"zh-Hans","label":"中文","path":"/zh/","dir":"ltr"},
-  {"id":"fa","lang":"fa","label":"فارسی","path":"/fa/","dir":"rtl"},
+  {"id":"fr","lang":"fr","label":"Français","path":"/fr/","dir":"ltr"},
+  {"id":"de","lang":"de","label":"Deutsch","path":"/de/","dir":"ltr"},
   {"id":"ja","lang":"ja","label":"日本語","path":"/ja/","dir":"ltr"},
   {"id":"ko","lang":"ko","label":"한국어","path":"/ko/","dir":"ltr"},
   {"id":"es","lang":"es","label":"Español","path":"/es/","dir":"ltr"},
-  {"id":"fr","lang":"fr","label":"Français","path":"/fr/","dir":"ltr"},
-  {"id":"pt-BR","lang":"pt-BR","label":"Português","path":"/pt-br/","dir":"ltr"}
+  {"id":"pt-BR","lang":"pt-BR","label":"Português","path":"/pt-br/","dir":"ltr"},
+  {"id":"ru","lang":"ru","label":"Русский","path":"/ru/","dir":"ltr"},
+  {"id":"ar","lang":"ar","label":"العربية","path":"/ar/","dir":"rtl"},
+  {"id":"fa","lang":"fa","label":"فارسی","path":"/fa/","dir":"rtl"},
+  {"id":"hi","lang":"hi","label":"हिन्दी","path":"/hi/","dir":"ltr"},
+  {"id":"it","lang":"it","label":"Italiano","path":"/it/","dir":"ltr"},
+  {"id":"id","lang":"id","label":"Bahasa Indonesia","path":"/id/","dir":"ltr"},
+  {"id":"tr","lang":"tr","label":"Türkçe","path":"/tr/","dir":"ltr"},
+  {"id":"vi","lang":"vi","label":"Tiếng Việt","path":"/vi/","dir":"ltr"}
 ]

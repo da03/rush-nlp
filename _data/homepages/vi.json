@@ -1,0 +1,145 @@
+{
+  "seo_title": "Yuntian Deng | University of Waterloo",
+  "description": "Yuntian Deng, Assistant Professor tại University of Waterloo. Nghiên cứu về chương trình nơ-ron, mô hình thế giới nơ-ron, Implicit CoT và cách sử dụng mô hình ngôn ngữ trong thực tế.",
+  "affiliations_html": [
+    "<strong>Assistant Professor</strong>, School of Computer Science, University of Waterloo",
+    "<strong>Associate</strong>, Harvard SEAS",
+    "<strong>Faculty Affiliate</strong>, Vector Institute",
+    "Tiến sĩ Khoa học máy tính, Harvard University"
+  ],
+  "intro_html": [
+    "Tôi nghiên cứu xử lý ngôn ngữ tự nhiên và học máy: dạy mô hình nơ-ron thực hiện các phép tính thường được biểu diễn bằng chương trình ký hiệu hoặc các bước suy luận tường minh. Nhóm của tôi biên dịch đặc tả hàm bằng ngôn ngữ tự nhiên thành chương trình nơ-ron có thể tái sử dụng (<a href=\"https://programasweights.com\">ProgramAsWeights</a>), mô phỏng môi trường máy tính tương tác bằng mô hình tạo sinh (<a href=\"https://neural-os.com\">NeuralOS</a>), đồng thời nghiên cứu <a href=\"https://latent-implicit-thinking.github.io/\">chuỗi suy nghĩ ngầm (Implicit CoT)</a> và nội hóa suy luận. Chúng tôi cũng nghiên cứu cách sử dụng mô hình ngôn ngữ qua các cuộc hội thoại <a href=\"/wildchat/\">WildChat</a> và công cụ phân tích <a href=\"https://wildvisualizer.com\">WildVis</a>.",
+    "Tôi xây dựng các hệ thống mã nguồn mở và <a href=\"/demos/\">demo tương tác</a> để các nhà nghiên cứu khám phá, đánh giá và phát triển tiếp những ý tưởng này. OpenAI và Anthropic đã dùng WildChat để đánh giá độ an toàn của mô hình. Tôi cũng đồng phát triển <a href=\"https://opennmt.net/\">OpenNMT</a>, bộ công cụ mã nguồn mở cho dịch máy nơ-ron được sử dụng rộng rãi trong nghiên cứu và công nghiệp. Tôi nhận bằng Tiến sĩ Khoa học máy tính tại Harvard University dưới sự hướng dẫn của <a href=\"https://rush-nlp.com/\">Alexander Rush</a> và <a href=\"https://www.eecs.harvard.edu/shieber/\">Stuart Shieber</a>, rồi nghiên cứu sau tiến sĩ cùng <a href=\"https://yejinc.github.io/\">Yejin Choi</a> tại Allen Institute for AI."
+  ],
+  "vision_label": "Từ giải bài toán đến xây dựng công cụ",
+  "vision": "Tôi tin rằng tiền huấn luyện mô hình để biên dịch các tác vụ lặp lại thành chương trình nơ-ron nhỏ, có thể tái sử dụng, thay vì luôn giải lại bài toán từ đầu, là một trong những hướng phát triển hấp dẫn nhất của AI trong tương lai.",
+  "labels": {
+    "home": "Trang chủ",
+    "language": "Ngôn ngữ",
+    "research": "Hướng nghiên cứu",
+    "papers": "Bài báo",
+    "guides": "Hướng dẫn nghiên cứu",
+    "students": "Tham gia nhóm",
+    "cv": "CV",
+    "publications": "Công bố",
+    "contact": "Liên hệ",
+    "featured": "Bài báo tiêu biểu",
+    "paper_project": "Bài báo và dự án",
+    "code": "Mã nguồn và tài nguyên",
+    "all_publications": "Toàn bộ công bố và trích dẫn",
+    "updated": "Cập nhật",
+    "skip": "Chuyển đến nội dung chính",
+    "menu": "Mở hoặc đóng trình đơn",
+    "theme_dark": "Chuyển sang giao diện tối",
+    "theme_light": "Chuyển sang giao diện sáng"
+  },
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights (PAW)",
+      "description": "Một mô hình lập trình mới: biên dịch đặc tả hàm bằng ngôn ngữ tự nhiên thành chương trình nơ-ron có thể tái sử dụng, thay thế mã ký hiệu cho các hàm mờ. Mục tiêu của chúng tôi là lập trình không cần mã làm trung gian.",
+      "links": [
+        {
+          "title": "Dự án và demo",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "Tổng quan nghiên cứu",
+          "url": "https://programasweights.com/research/"
+        },
+        {
+          "title": "Danh sách tài liệu",
+          "url": "https://programasweights.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "Mô hình thế giới nơ-ron (Neural World Models)",
+      "description": "Các mô hình tạo sinh học hành vi của môi trường máy tính tương tác như thế nào? NeuralOS mô phỏng toàn bộ hệ điều hành bằng mô hình tạo sinh nơ-ron, tạo ra các thay đổi giao diện để đáp ứng thao tác của người dùng.",
+      "links": [
+        {
+          "title": "Demo tương tác",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "Danh sách tài liệu",
+          "url": "https://neural-os.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "Chuỗi suy nghĩ ngầm (Implicit CoT)",
+      "description": "Chúng tôi là những người đầu tiên đề xuất suy luận bằng chuỗi suy nghĩ ngầm (Implicit CoT, còn gọi là latent reasoning) vào năm 2023: mô hình ngôn ngữ suy luận qua các trạng thái ẩn liên tục thay vì viết các bước trung gian thành lời. Các phương pháp của chúng tôi gồm chưng cất tri thức và học cách nội hóa suy luận từng bước (Internalized reasoning).",
+      "links": [
+        {
+          "title": "Bài báo năm 2023",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "Bài báo năm 2024",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "Demo tương tác",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "Hướng dẫn đọc",
+          "url": "https://latent-implicit-thinking.github.io/"
+        },
+        {
+          "title": "Workshop ICLR 2026",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "Sử dụng mô hình ngôn ngữ trong thực tế",
+      "description": "Mọi người sử dụng mô hình ngôn ngữ lớn như thế nào trong thực tế? Chúng tôi thu thập và phân tích hàng triệu cuộc hội thoại thực để nghiên cứu cách sử dụng, độ an toàn của mô hình và các hành vi nảy sinh, đồng thời công bố dữ liệu mở và công cụ phân tích.",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "Biên dịch đặc tả hàm bằng ngôn ngữ tự nhiên thành chương trình nơ-ron, dùng trọng số mô hình để thực hiện các phép tính của hàm."
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "Mô phỏng toàn bộ hệ điều hành bằng mô hình tạo sinh nơ-ron, tạo ra các thay đổi giao diện từ thao tác của người dùng."
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "Năm 2023, chúng tôi là những người đầu tiên đề xuất suy luận bằng chuỗi suy nghĩ ngầm qua các trạng thái ẩn liên tục, đồng thời dùng chưng cất tri thức để chuyển suy luận tường minh vào bên trong mô hình."
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "Loại bỏ dần các bước suy luận tường minh trong quá trình huấn luyện để dạy mô hình suy luận bên trong và đưa ra câu trả lời trực tiếp."
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "Tập hợp các cuộc hội thoại đa ngôn ngữ, nhiều lượt giữa người dùng thực và ChatGPT để nghiên cứu hành vi người dùng, độ an toàn của mô hình và việc huấn luyện mô hình ngôn ngữ."
+    }
+  ],
+  "guides_html": [
+    "<a href=\"/research/\">Hướng dẫn nghiên cứu về mô hình ngôn ngữ và học có cấu trúc</a> trình bày Tree Prompting, mô hình dựa trên năng lượng, cơ chế chú ý xác suất, giải mã có cấu trúc, đánh giá văn bản dài, kết xuất hình ảnh thông qua học máy và huấn luyện tương tác. Các hướng dẫn tập hợp bài báo gốc, ví dụ phương pháp, nghiên cứu liên quan và trích dẫn.",
+    "<a href=\"https://im2markup.yuntiandeng.com/\">Image-to-Markup và IM2LATEX-100K</a> trình bày nghiên cứu của chúng tôi trong giai đoạn 2016–2017 về chuyển đổi hình ảnh thành LaTeX, kèm bộ dữ liệu, mã nguồn và demo tương tác."
+  ],
+  "students_html": "Nếu muốn tham gia nhóm của tôi, hãy bắt đầu bằng việc đọc <a href=\"https://programasweights.com/\">ProgramAsWeights</a>, <a href=\"https://neural-os.com/\">NeuralOS</a> và nghiên cứu về chuỗi suy nghĩ ngầm của chúng tôi (<a href=\"https://arxiv.org/abs/2311.01460\">Implicit CoT năm 2023</a>; <a href=\"https://arxiv.org/abs/2405.14838\">nội hóa từng bước năm 2024</a>). Trong thư, hãy trình bày ngắn gọn hướng nghiên cứu bạn quan tâm. Do số lượng thư lớn, tôi không thể trả lời các thư không đề cập đến một chủ đề nghiên cứu cụ thể."
+}

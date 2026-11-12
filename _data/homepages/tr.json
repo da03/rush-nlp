@@ -1,0 +1,145 @@
+{
+  "seo_title": "Yuntian Deng | University of Waterloo",
+  "description": "Yuntian Deng, University of Waterloo’da Assistant Professor. Sinirsel programlar, sinirsel dünya modelleri, Implicit CoT ve dil modellerinin gerçek dünyadaki kullanımı üzerine araştırmalar.",
+  "affiliations_html": [
+    "<strong>Assistant Professor</strong>, University of Waterloo School of Computer Science",
+    "<strong>Associate</strong>, Harvard SEAS",
+    "<strong>Faculty Affiliate</strong>, Vector Institute",
+    "Bilgisayar bilimi doktorası, Harvard University"
+  ],
+  "intro_html": [
+    "Doğal dil işleme ve makine öğrenmesi alanlarında, genellikle sembolik programlarla veya açık akıl yürütme adımlarıyla ifade edilen hesaplamaları sinirsel modellere öğretmek üzerine çalışıyorum. Grubum, doğal dildeki fonksiyon tanımlarını yeniden kullanılabilir sinirsel programlara derliyor (<a href=\"https://programasweights.com\">ProgramAsWeights</a>), etkileşimli bilgisayar ortamlarını üretici modellerle simüle ediyor (<a href=\"https://neural-os.com\">NeuralOS</a>) ve <a href=\"https://latent-implicit-thinking.github.io/\">örtük düşünce zincirlerini (Implicit CoT)</a> ve akıl yürütmenin içselleştirilmesini araştırıyor. Ayrıca <a href=\"/wildchat/\">WildChat</a> konuşmaları ve <a href=\"https://wildvisualizer.com\">WildVis</a> analiz araçlarıyla dil modellerinin gerçek dünyadaki kullanımını inceliyoruz.",
+    "Araştırmacıların bu fikirleri keşfetmesi, değerlendirmesi ve geliştirmesi için açık kaynaklı sistemler ve <a href=\"/demos/\">etkileşimli demolar</a> geliştiriyorum. OpenAI ve Anthropic, model güvenliğini değerlendirmek için WildChat’i kullandı. Araştırma ve endüstride yaygın olarak kullanılan, sinirsel makine çevirisi için açık kaynaklı bir araç seti olan <a href=\"https://opennmt.net/\">OpenNMT</a>’nin ortak geliştiricilerinden biriyim. Harvard University’de <a href=\"https://rush-nlp.com/\">Alexander Rush</a> ve <a href=\"https://www.eecs.harvard.edu/shieber/\">Stuart Shieber</a> danışmanlığında bilgisayar bilimi doktoramı tamamladım. Ardından Allen Institute for AI’da <a href=\"https://yejinc.github.io/\">Yejin Choi</a> ile doktora sonrası araştırmalar yaptım."
+  ],
+  "vision_label": "Problem çözmekten araç geliştirmeye",
+  "vision": "Modelleri, her problemi baştan çözmek yerine tekrarlanan görevleri küçük ve yeniden kullanılabilir sinirsel programlara derleyecek şekilde ön eğitmenin, yapay zekânın geleceği için en heyecan verici araştırma yönlerinden biri olduğuna inanıyorum.",
+  "labels": {
+    "home": "Ana sayfa",
+    "language": "Dil",
+    "research": "Araştırma alanları",
+    "papers": "Makaleler",
+    "guides": "Araştırma rehberleri",
+    "students": "Gruba katılın",
+    "cv": "Özgeçmiş",
+    "publications": "Yayınlar",
+    "contact": "İletişim",
+    "featured": "Seçilmiş makaleler",
+    "paper_project": "Makale ve proje",
+    "code": "Kod ve kaynaklar",
+    "all_publications": "Tüm yayınlar ve atıf bilgileri",
+    "updated": "Güncelleme",
+    "skip": "Ana içeriğe geç",
+    "menu": "Menüyü aç veya kapat",
+    "theme_dark": "Koyu temaya geç",
+    "theme_light": "Açık temaya geç"
+  },
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights (PAW)",
+      "description": "Yeni bir programlama paradigması: doğal dildeki fonksiyon tanımlarını yeniden kullanılabilir sinirsel programlara derleyerek bulanık fonksiyonlar için sembolik kodun yerini almak. Amacımız, kodu aracı olarak kullanmadan programlamak.",
+      "links": [
+        {
+          "title": "Proje ve demolar",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "Araştırmaya genel bakış",
+          "url": "https://programasweights.com/research/"
+        },
+        {
+          "title": "Okuma listesi",
+          "url": "https://programasweights.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "Sinirsel dünya modelleri (Neural World Models)",
+      "description": "Üretici modeller, etkileşimli bilgisayar ortamlarının davranışını nasıl öğrenir? NeuralOS, kullanıcı eylemlerine yanıt olarak arayüz değişiklikleri üreten sinirsel üretici modellerle işletim sistemlerini uçtan uca simüle eder.",
+      "links": [
+        {
+          "title": "Etkileşimli demo",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "Okuma listesi",
+          "url": "https://neural-os.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "Örtük düşünce zinciri (Implicit CoT)",
+      "description": "Örtük düşünce zinciriyle akıl yürütmeyi (Implicit CoT, latent reasoning olarak da adlandırılır) ilk kez biz 2023’te önerdik: dil modelleri, ara adımları sözcüklerle yazmak yerine sürekli gizli durumlar üzerinden akıl yürütür. Yöntemlerimiz arasında bilgi damıtma ve akıl yürütmeyi adım adım içselleştirmeyi öğrenme (Internalized reasoning) yer alır.",
+      "links": [
+        {
+          "title": "2023 makalesi",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "2024 makalesi",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "Etkileşimli demo",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "Okuma rehberi",
+          "url": "https://latent-implicit-thinking.github.io/"
+        },
+        {
+          "title": "ICLR 2026 çalıştayı",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "Dil modellerinin gerçek dünyadaki kullanımı",
+      "description": "İnsanlar büyük dil modellerini pratikte nasıl kullanıyor? Kullanım biçimlerini, model güvenliğini ve ortaya çıkan davranışları incelemek için milyonlarca gerçek konuşmayı topluyor ve analiz ediyoruz. Açık veri ve analiz araçları yayımlıyoruz.",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "Doğal dildeki fonksiyon tanımlarını sinirsel programlara derler; fonksiyonların hesaplamalarını model ağırlıklarıyla yürütür."
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "Kullanıcı eylemlerinden arayüz değişiklikleri üreten sinirsel üretici modellerle işletim sistemlerini uçtan uca simüle eder."
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "2023’te, sürekli gizli durumlar üzerinden örtük düşünce zinciriyle akıl yürütmeyi ilk kez biz önerdik ve açık akıl yürütmeyi modelin içine aktarmak için bilgi damıtma kullandık."
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "Modele içsel olarak akıl yürütmeyi ve doğrudan yanıt üretmeyi öğretmek için eğitim sırasında açık akıl yürütme adımlarını aşamalı olarak kaldırır."
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "Kullanıcı davranışını, model güvenliğini ve dil modeli eğitimini incelemek için gerçek kullanıcılarla ChatGPT arasındaki çok dilli ve çok turlu konuşmaları bir araya getirir."
+    }
+  ],
+  "guides_html": [
+    "<a href=\"/research/\">Dil modelleri ve yapılandırılmış öğrenme araştırma rehberleri</a>; Tree Prompting, enerji tabanlı modeller, olasılıksal dikkat, yapılandırılmış kod çözme, uzun metin değerlendirmesi, öğrenme yoluyla görüntü oluşturma ve etkileşimli eğitimi ele alır. Özgün makaleleri, yöntem örneklerini, ilgili çalışmaları ve atıf bilgilerini bir araya getirir.",
+    "<a href=\"https://im2markup.yuntiandeng.com/\">Image-to-Markup ve IM2LATEX-100K</a>, görüntüleri LaTeX’e dönüştürme üzerine 2016–2017’de yaptığımız çalışmaları veri seti, kod ve etkileşimli demolarla sunar."
+  ],
+  "students_html": "Grubuma katılmak istiyorsanız önce <a href=\"https://programasweights.com/\">ProgramAsWeights</a>, <a href=\"https://neural-os.com/\">NeuralOS</a> ve örtük düşünce zinciri çalışmalarımızı okuyun (<a href=\"https://arxiv.org/abs/2311.01460\">2023 Implicit CoT</a>; <a href=\"https://arxiv.org/abs/2405.14838\">2024 adım adım içselleştirme</a>). Mesajınızda hangi araştırma alanının ilginizi çektiğini kısaca açıklayın. Gelen mesajların sayısı nedeniyle belirli bir araştırma konusundan söz etmeyen başvurulara yanıt veremiyorum."
+}

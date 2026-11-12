@@ -1,0 +1,145 @@
+{
+  "seo_title": "Yuntian Deng | University of Waterloo",
+  "description": "Yuntian Deng, Assistant Professor в University of Waterloo. Исследования нейронных программ, нейронных моделей мира, Implicit CoT и использования языковых моделей.",
+  "affiliations_html": [
+    "<strong>Assistant Professor</strong>, School of Computer Science, University of Waterloo",
+    "<strong>Associate</strong>, Harvard SEAS",
+    "<strong>Faculty Affiliate</strong>, Vector Institute",
+    "PhD по информатике, Harvard University"
+  ],
+  "intro_html": [
+    "В исследованиях обработки естественного языка и машинного обучения я изучаю, как нейронные модели осваивают вычисления, которые обычно выражают символическими программами или явными шагами рассуждения. Моя группа компилирует описания функций на естественном языке в многократно используемые нейронные программы (<a href=\"https://programasweights.com\">ProgramAsWeights</a>), моделирует интерактивные компьютерные среды с помощью генеративных моделей (<a href=\"https://neural-os.com\">NeuralOS</a>) и исследует <a href=\"https://latent-implicit-thinking.github.io/\">неявные цепочки рассуждений (Implicit CoT)</a> и интернализацию рассуждений. Мы также изучаем использование языковых моделей на основе диалогов <a href=\"/wildchat/\">WildChat</a> и инструментов анализа <a href=\"https://wildvisualizer.com\">WildVis</a>.",
+    "Я разрабатываю системы с открытым исходным кодом и <a href=\"/demos/\">интерактивные демонстрации</a>, чтобы другие исследователи могли изучать, оценивать и развивать эти идеи. OpenAI и Anthropic использовали WildChat для оценки безопасности своих моделей. Я также совместно разработал <a href=\"https://opennmt.net/\">OpenNMT</a> — набор инструментов с открытым исходным кодом для нейронного машинного перевода, который широко используется в исследованиях и промышленности. Я получил степень PhD по информатике в Harvard University под руководством <a href=\"https://rush-nlp.com/\">Alexander Rush</a> и <a href=\"https://www.eecs.harvard.edu/shieber/\">Stuart Shieber</a>, а затем работал постдокторантом с <a href=\"https://yejinc.github.io/\">Yejin Choi</a> в Allen Institute for AI."
+  ],
+  "vision_label": "От решения задач к созданию инструментов",
+  "vision": "Одно из самых интересных для меня направлений развития ИИ — предобучение моделей, которые компилируют повторяющиеся задачи в небольшие нейронные программы для многократного использования, вместо того чтобы каждый раз решать задачу с нуля.",
+  "labels": {
+    "home": "Главная",
+    "language": "Язык",
+    "research": "Направления исследований",
+    "papers": "Статьи",
+    "guides": "Обзоры исследований",
+    "students": "Присоединиться к группе",
+    "cv": "CV",
+    "publications": "Публикации",
+    "contact": "Контакты",
+    "featured": "Избранные статьи",
+    "paper_project": "Статья и проект",
+    "code": "Код и материалы",
+    "all_publications": "Все публикации и библиографические ссылки",
+    "updated": "Обновлено",
+    "skip": "Перейти к основному содержанию",
+    "menu": "Открыть или закрыть меню",
+    "theme_dark": "Включить темную тему",
+    "theme_light": "Включить светлую тему"
+  },
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights (PAW)",
+      "description": "Новая парадигма программирования: описания функций на естественном языке компилируются в нейронные программы для многократного использования, заменяя символический код нечетких функций. Наша цель — программирование без кода как промежуточного представления.",
+      "links": [
+        {
+          "title": "Проект и демонстрации",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "Обзор исследований",
+          "url": "https://programasweights.com/research/"
+        },
+        {
+          "title": "Список литературы",
+          "url": "https://programasweights.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "Нейронные модели мира (Neural World Models)",
+      "description": "Как генеративные модели учатся воспроизводить поведение интерактивных компьютерных сред? NeuralOS моделирует операционные системы целиком с помощью нейронных генеративных моделей, создавая изменения интерфейса в ответ на действия пользователя.",
+      "links": [
+        {
+          "title": "Интерактивная демонстрация",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "Список литературы",
+          "url": "https://neural-os.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "Неявная цепочка рассуждений (Implicit CoT)",
+      "description": "В 2023 году мы первыми предложили рассуждение с неявной цепочкой рассуждений (Implicit CoT, также известное как latent reasoning): языковые модели рассуждают с помощью непрерывных скрытых состояний, не записывая промежуточные шаги словами. Наша работа включает дистилляцию знаний и пошаговую интернализацию рассуждений (Internalized reasoning).",
+      "links": [
+        {
+          "title": "Статья 2023 года",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "Статья 2024 года",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "Интерактивная демонстрация",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "Список литературы",
+          "url": "https://latent-implicit-thinking.github.io/"
+        },
+        {
+          "title": "Воркшоп ICLR 2026",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "Использование языковых моделей на практике",
+      "description": "Как люди используют большие языковые модели? Мы собираем и анализируем миллионы реальных диалогов, чтобы изучать способы использования, безопасность моделей и возникающие формы поведения. Мы публикуем открытые данные и инструменты анализа.",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "Компилирует описания функций на естественном языке в нейронные программы, используя веса модели для выполнения вычислений этих функций."
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "Моделирует операционные системы целиком с помощью нейронных генеративных моделей, создавая изменения интерфейса на основе действий пользователя."
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "В 2023 году мы первыми предложили рассуждение с неявной цепочкой рассуждений через непрерывные скрытые состояния и применили дистилляцию знаний для переноса явных рассуждений внутрь модели."
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "Постепенно удаляет явные шаги рассуждения при обучении, чтобы модель научилась рассуждать внутри себя и сразу выдавать ответ."
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "Содержит многоязычные многоходовые диалоги реальных пользователей с ChatGPT для исследования поведения пользователей, безопасности моделей и обучения языковых моделей."
+    }
+  ],
+  "guides_html": [
+    "<a href=\"/research/\">Обзоры исследований языковых моделей и структурного обучения</a> посвящены Tree Prompting, энергетическим моделям, вероятностному вниманию, структурному декодированию, оценке длинных текстов, рендерингу через обучение и интерактивному обучению. В них собраны оригинальные статьи, примеры методов, связанные работы и библиографические ссылки.",
+    "<a href=\"https://im2markup.yuntiandeng.com/\">Image-to-Markup и IM2LATEX-100K</a> представляет наши работы 2016–2017 годов по преобразованию изображений в LaTeX, а также набор данных, код и интерактивные демонстрации."
+  ],
+  "students_html": "Если вы хотите присоединиться к моей группе, начните с работ о <a href=\"https://programasweights.com/\">ProgramAsWeights</a>, <a href=\"https://neural-os.com/\">NeuralOS</a> и неявных цепочках рассуждений (<a href=\"https://arxiv.org/abs/2311.01460\">Implicit CoT, 2023</a>; <a href=\"https://arxiv.org/abs/2405.14838\">пошаговая интернализация, 2024</a>). В сообщении кратко опишите интересующее вас направление исследований. Из-за большого числа писем я не могу отвечать на обращения без конкретной исследовательской темы."
+}

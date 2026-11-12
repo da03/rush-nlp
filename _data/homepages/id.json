@@ -1,0 +1,145 @@
+{
+  "seo_title": "Yuntian Deng | University of Waterloo",
+  "description": "Yuntian Deng, Assistant Professor di University of Waterloo. Riset tentang program neural, model dunia neural, Implicit CoT, dan penggunaan model bahasa di dunia nyata.",
+  "affiliations_html": [
+    "<strong>Assistant Professor</strong>, School of Computer Science, University of Waterloo",
+    "<strong>Associate</strong>, Harvard SEAS",
+    "<strong>Faculty Affiliate</strong>, Vector Institute",
+    "PhD Ilmu Komputer, Harvard University"
+  ],
+  "intro_html": [
+    "Saya meneliti pemrosesan bahasa alami dan pembelajaran mesin: mengajarkan model neural untuk menjalankan komputasi yang biasanya dinyatakan melalui program simbolik atau langkah penalaran eksplisit. Kelompok saya mengompilasi deskripsi fungsi dalam bahasa alami menjadi program neural yang dapat digunakan kembali (<a href=\"https://programasweights.com\">ProgramAsWeights</a>), menyimulasikan lingkungan komputasi interaktif dengan model generatif (<a href=\"https://neural-os.com\">NeuralOS</a>), serta mempelajari <a href=\"https://latent-implicit-thinking.github.io/\">rantai pemikiran implisit (Implicit CoT)</a> dan internalisasi penalaran. Kami juga meneliti penggunaan model bahasa melalui percakapan <a href=\"/wildchat/\">WildChat</a> dan alat analisis <a href=\"https://wildvisualizer.com\">WildVis</a>.",
+    "Saya membangun sistem sumber terbuka dan <a href=\"/demos/\">demo interaktif</a> agar peneliti dapat mengeksplorasi, mengevaluasi, dan mengembangkan ide-ide ini. OpenAI dan Anthropic telah menggunakan WildChat untuk mengevaluasi keamanan model. Saya juga turut mengembangkan <a href=\"https://opennmt.net/\">OpenNMT</a>, perangkat sumber terbuka untuk penerjemahan mesin neural yang digunakan secara luas dalam riset dan industri. Saya meraih PhD Ilmu Komputer di Harvard University dengan bimbingan <a href=\"https://rush-nlp.com/\">Alexander Rush</a> dan <a href=\"https://www.eecs.harvard.edu/shieber/\">Stuart Shieber</a>, lalu menjalani riset pascadoktoral bersama <a href=\"https://yejinc.github.io/\">Yejin Choi</a> di Allen Institute for AI."
+  ],
+  "vision_label": "Dari pemecah masalah menjadi pembuat alat",
+  "vision": "Saya percaya bahwa prapelatihan model untuk mengompilasi tugas berulang menjadi program neural kecil yang dapat digunakan kembali, alih-alih selalu menyelesaikan masalah dari nol, adalah salah satu arah masa depan AI yang paling menarik.",
+  "labels": {
+    "home": "Beranda",
+    "language": "Bahasa",
+    "research": "Arah riset",
+    "papers": "Makalah",
+    "guides": "Panduan riset",
+    "students": "Bergabung dengan kelompok",
+    "cv": "CV",
+    "publications": "Publikasi",
+    "contact": "Kontak",
+    "featured": "Makalah pilihan",
+    "paper_project": "Makalah dan proyek",
+    "code": "Kode dan sumber daya",
+    "all_publications": "Semua publikasi dan sitasi",
+    "updated": "Diperbarui",
+    "skip": "Langsung ke konten utama",
+    "menu": "Buka atau tutup menu",
+    "theme_dark": "Gunakan tema gelap",
+    "theme_light": "Gunakan tema terang"
+  },
+  "research_themes": [
+    {
+      "id": "programasweights",
+      "title": "ProgramAsWeights (PAW)",
+      "description": "Paradigma pemrograman baru: mengompilasi spesifikasi fungsi dalam bahasa alami menjadi program neural yang dapat digunakan kembali, menggantikan kode simbolik untuk fungsi fuzzy. Tujuan kami adalah pemrograman tanpa perantara kode.",
+      "links": [
+        {
+          "title": "Proyek dan demo",
+          "url": "https://programasweights.com"
+        },
+        {
+          "title": "Ikhtisar riset",
+          "url": "https://programasweights.com/research/"
+        },
+        {
+          "title": "Daftar bacaan",
+          "url": "https://programasweights.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "neuralos",
+      "title": "Model dunia neural (Neural World Models)",
+      "description": "Bagaimana model generatif mempelajari perilaku lingkungan komputasi interaktif? NeuralOS menyimulasikan sistem operasi secara menyeluruh dengan model generatif neural yang menghasilkan perubahan antarmuka sebagai respons terhadap tindakan pengguna.",
+      "links": [
+        {
+          "title": "Demo interaktif",
+          "url": "https://neural-os.com"
+        },
+        {
+          "title": "Daftar bacaan",
+          "url": "https://neural-os.com/reading-list/"
+        }
+      ]
+    },
+    {
+      "id": "implicit-chain-of-thought",
+      "title": "Rantai pemikiran implisit (Implicit CoT)",
+      "description": "Kami adalah yang pertama mengusulkan penalaran dengan rantai pemikiran implisit (Implicit CoT, juga disebut latent reasoning) pada 2023: model bahasa bernalar melalui keadaan tersembunyi kontinu, bukan dengan menuliskan langkah perantara dalam kata-kata. Metode kami mencakup distilasi pengetahuan dan pelatihan untuk menginternalisasi penalaran langkah demi langkah (Internalized reasoning).",
+      "links": [
+        {
+          "title": "Makalah 2023",
+          "url": "https://arxiv.org/abs/2311.01460"
+        },
+        {
+          "title": "Makalah 2024",
+          "url": "https://arxiv.org/abs/2405.14838"
+        },
+        {
+          "title": "Demo interaktif",
+          "url": "https://huggingface.co/spaces/yuntian-deng/gpt2-multiplication"
+        },
+        {
+          "title": "Panduan bacaan",
+          "url": "https://latent-implicit-thinking.github.io/"
+        },
+        {
+          "title": "Lokakarya ICLR 2026",
+          "url": "https://latent-implicit-thinking.github.io/workshop/2026/"
+        }
+      ]
+    },
+    {
+      "id": "llm-usage",
+      "title": "Penggunaan model bahasa di dunia nyata",
+      "description": "Bagaimana orang menggunakan model bahasa besar dalam praktik? Kami mengumpulkan dan menganalisis jutaan percakapan nyata untuk mempelajari pola penggunaan, keamanan model, dan perilaku yang muncul, serta menyediakan data terbuka dan alat analisis.",
+      "links": [
+        {
+          "title": "WildChat",
+          "url": "/wildchat/"
+        },
+        {
+          "title": "AI Observatory",
+          "url": "https://www.dataprovenance.org/ai_observatory.pdf"
+        },
+        {
+          "title": "WildVis",
+          "url": "https://wildvisualizer.com"
+        }
+      ]
+    }
+  ],
+  "papers": [
+    {
+      "title": "Program-as-Weights: A Programming Paradigm for Fuzzy Functions",
+      "description": "Mengompilasi spesifikasi fungsi dalam bahasa alami menjadi program neural, dengan bobot model yang menjalankan komputasi fungsi tersebut."
+    },
+    {
+      "title": "NeuralOS: Towards Simulating Operating Systems via Neural Generative Models",
+      "description": "Menyimulasikan sistem operasi secara menyeluruh dengan model generatif neural yang menghasilkan perubahan antarmuka berdasarkan tindakan pengguna."
+    },
+    {
+      "title": "Implicit Chain of Thought Reasoning via Knowledge Distillation",
+      "description": "Pada 2023, kami menjadi yang pertama mengusulkan penalaran dengan rantai pemikiran implisit melalui keadaan tersembunyi kontinu, dan menggunakan distilasi pengetahuan untuk memindahkan penalaran eksplisit ke dalam model."
+    },
+    {
+      "title": "From Explicit CoT to Implicit CoT: Learning to Internalize CoT Step by Step",
+      "description": "Secara bertahap menghapus langkah penalaran eksplisit selama pelatihan untuk mengajarkan model bernalar secara internal dan langsung menghasilkan jawaban."
+    },
+    {
+      "title": "WildChat: 1M ChatGPT Interaction Logs in the Wild",
+      "description": "Mengumpulkan percakapan multibahasa yang mencakup banyak giliran antara pengguna nyata dan ChatGPT untuk mempelajari perilaku pengguna, keamanan model, dan pelatihan model bahasa."
+    }
+  ],
+  "guides_html": [
+    "<a href=\"/research/\">Panduan riset model bahasa dan pembelajaran terstruktur</a> membahas Tree Prompting, model berbasis energi, perhatian probabilistik, dekode terstruktur, evaluasi teks panjang, rendering melalui pembelajaran, dan pelatihan interaktif. Panduan ini memuat makalah asli, contoh metode, penelitian terkait, dan sitasi.",
+    "<a href=\"https://im2markup.yuntiandeng.com/\">Image-to-Markup dan IM2LATEX-100K</a> menyajikan riset kami pada 2016–2017 tentang konversi gambar menjadi LaTeX, beserta dataset, kode, dan demo interaktif."
+  ],
+  "students_html": "Jika ingin bergabung dengan kelompok saya, mulailah dengan membaca <a href=\"https://programasweights.com/\">ProgramAsWeights</a>, <a href=\"https://neural-os.com/\">NeuralOS</a>, dan riset kami tentang rantai pemikiran implisit (<a href=\"https://arxiv.org/abs/2311.01460\">Implicit CoT 2023</a>; <a href=\"https://arxiv.org/abs/2405.14838\">internalisasi bertahap 2024</a>). Dalam pesan Anda, jelaskan secara singkat arah riset yang menarik bagi Anda. Karena banyaknya pesan yang masuk, saya tidak dapat membalas pertanyaan yang tidak membahas topik riset tertentu."
+}

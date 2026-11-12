@@ -6,7 +6,8 @@ layout: null
   <url><loc>{{ '/' | absolute_url | xml_escape }}</loc></url>
   <url><loc>{{ '/zh/' | absolute_url | xml_escape }}</loc><lastmod>2026-11-11</lastmod></url>
   {% for language in site.data.homepage_languages %}{% unless language.id == 'en' or language.id == 'zh' %}
-  <url><loc>{{ language.path | absolute_url | xml_escape }}</loc><lastmod>2026-11-11</lastmod></url>
+  {% assign homepage = site.pages | where: 'homepage_locale', language.id | first %}
+  <url><loc>{{ language.path | absolute_url | xml_escape }}</loc>{% if homepage.last_modified_at %}<lastmod>{{ homepage.last_modified_at | date: '%Y-%m-%d' }}</lastmod>{% endif %}</url>
   {% endunless %}{% endfor %}
   <url><loc>{{ '/group/' | absolute_url | xml_escape }}</loc></url>
   <url><loc>{{ '/demos/' | absolute_url | xml_escape }}</loc></url>
