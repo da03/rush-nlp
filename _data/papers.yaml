@@ -132,6 +132,11 @@ notable:
       image: /images/overview.png
       slides:
 papers:
+    - title: "SurfacePrint: Typographic Fingerprints of LLMs"
+      authors: Wentao Zhang, Sajad Ebrahimi, Nima Jamali, Bardia Shirsalimian, Kelly McConvey, Jalehsadat Mahdavimoghaddam, Maksym Taranukhin, Maura R. Grossman, Vered Shwartz, Ebrahim Bagheri, <strong>Yuntian Deng</strong>
+      paper_url:
+      conference: EACL 2027
+      year: 2027
     - title: "Compile by Training: Turning Natural-Language Specifications into Local Neural Functions"
       authors: <strong>Yuntian Deng</strong>, Pengyu Nie, Stuart Shieber
       paper_url: https://aclanthology.org/2026.emnlp-demos.78/
