@@ -43,7 +43,7 @@
 
   <meta property="og:title" content="{{ seo_title | escape }}">
   <meta property="og:site_name" content="{{ site.title | escape }}">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="{{ page.og_type | default: 'website' | escape }}">
   <meta property="og:url" content="{{ canonical_url | escape }}">
   <meta property="og:description" content="{{ seo_description | escape }}">
   <meta property="og:image" content="https://yuntiandeng.com/images/yuntian-deng.jpg">

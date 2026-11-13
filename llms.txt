@@ -6,6 +6,11 @@ permalink: /llms.txt
 
 > {{ site.description | strip_html | normalize_whitespace }}
 
+## AI as tool builder
+
+- [From AI as Problem Solver to AI as Tool Builder](https://yuntiandeng.com/ai-as-tool-builder/): Yuntian Deng's June 5, 2026 essay on pretraining models to produce reusable neural programs and the vision behind Program-as-Weights.
+- [Program-as-Weights research](https://programasweights.com/research/ai-as-tool-builder/): The compiler–interpreter system and original paper.
+
 ## Research directions
 
 {% for theme in site.data.research_themes -%}

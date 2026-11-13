@@ -3,7 +3,10 @@ layout: null
 ---
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>{{ '/' | absolute_url | xml_escape }}</loc></url>
+  {% assign homepage = site.pages | where: 'url', '/' | first %}
+  <url><loc>{{ '/' | absolute_url | xml_escape }}</loc><lastmod>{{ homepage.last_modified_at | date: '%Y-%m-%d' }}</lastmod></url>
+  {% assign vision = site.pages | where: 'url', '/ai-as-tool-builder/' | first %}
+  <url><loc>{{ vision.url | absolute_url | xml_escape }}</loc><lastmod>{{ vision.last_modified_at | date: '%Y-%m-%d' }}</lastmod></url>
   <url><loc>{{ '/zh/' | absolute_url | xml_escape }}</loc><lastmod>2026-11-11</lastmod></url>
   {% for language in site.data.homepage_languages %}{% unless language.id == 'en' or language.id == 'zh' %}
   {% assign homepage = site.pages | where: 'homepage_locale', language.id | first %}
