@@ -16,7 +16,7 @@ This separates two design choices: how expensive neural scores are computed, and
 
 Cascaded Text Generation introduces a sequence of CRFs with increasing Markov order. It begins with independent token scores, then adds dependencies over progressively longer spans. A single Markov Transformer supplies the potentials at every order through controlled context windows. Max-marginals score a span by the best complete sequence containing it; pruning retains promising spans before the next, more expressive stage.
 
-The contribution combines higher-order output dependencies, shared neural parameterization, and parallel structured inference. This is distinct from the first-order dynamic CRF in Sun et al. The cascade restricts the search space, so its final result is exact within the retained states rather than an exhaustive optimum over every possible sentence. Its parallel dynamic-programming formulation has logarithmic depth in sequence length for fixed retained width.
+The contribution combines higher-order output dependencies, shared neural parameterization, and parallel structured inference. This is distinct from the first-order dynamic CRF in Sun et al. Its parallel dynamic-programming formulation has logarithmic depth in sequence length for fixed retained width.
 
 - [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112)
 - [Fast Structured Decoding for Sequence Models](https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html)
@@ -59,7 +59,7 @@ Three operations over the same graph answer different questions. Maximization fi
 
 A small numerical example makes the distinction concrete. Suppose the first decision offers A with probability 0.6 and B with probability 0.4. The strongest continuation after A has conditional probability 0.5; after B it has probability 0.9. Greedy selection begins with A. Whole-path maximization chooses B because 0.4 × 0.9 exceeds 0.6 × 0.5. In speculative decoding, the target verifier introduces another objective: the useful quantity is the accepted prefix, together with the cost of producing it.
 
-To compare implementations, identify the candidate set, the edge dependence, the normalization, and the inference operation. Then measure the work that dominates runtime: neural passes, candidate scoring, dynamic programming, and verification. Exactness depends on the retained search space and inference algorithm; speed depends on the costs of these stages.
+To compare implementations, identify the candidate set, the edge dependence, the normalization, and the inference operation. Then measure the work that dominates runtime: neural passes, candidate scoring, dynamic programming, and verification.
 
 | Design | Dependence or score | Final operation |
 | --- | --- | --- |

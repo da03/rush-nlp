@@ -37,7 +37,7 @@
       "title": "Higher-order CRFs: Cascaded Text Generation with Markov Transformers",
       "paragraphs": [
         "Cascaded Text Generation introduces a sequence of CRFs with increasing Markov order. It begins with independent token scores, then adds dependencies over progressively longer spans. A single Markov Transformer supplies the potentials at every order through controlled context windows. Max-marginals score a span by the best complete sequence containing it; pruning retains promising spans before the next, more expressive stage.",
-        "The contribution combines higher-order output dependencies, shared neural parameterization, and parallel structured inference. This is distinct from the first-order dynamic CRF in Sun et al. The cascade restricts the search space, so its final result is exact within the retained states rather than an exhaustive optimum over every possible sentence. Its parallel dynamic-programming formulation has logarithmic depth in sequence length for fixed retained width."
+        "The contribution combines higher-order output dependencies, shared neural parameterization, and parallel structured inference. This is distinct from the first-order dynamic CRF in Sun et al. Its parallel dynamic-programming formulation has logarithmic depth in sequence length for fixed retained width."
       ],
       "citations": [
         "cascaded2020",
@@ -89,7 +89,7 @@
       "paragraphs": [
         "Three operations over the same graph answer different questions. Maximization finds the best complete path under a score. Marginalization sums over alternatives to measure probability or train a latent model. Sampling draws a sequence according to a distribution. Replacing one operation with another changes the algorithm even when the nodes and edges are identical.",
         "A small numerical example makes the distinction concrete. Suppose the first decision offers A with probability 0.6 and B with probability 0.4. The strongest continuation after A has conditional probability 0.5; after B it has probability 0.9. Greedy selection begins with A. Whole-path maximization chooses B because 0.4 × 0.9 exceeds 0.6 × 0.5. In speculative decoding, the target verifier introduces another objective: the useful quantity is the accepted prefix, together with the cost of producing it.",
-        "To compare implementations, identify the candidate set, the edge dependence, the normalization, and the inference operation. Then measure the work that dominates runtime: neural passes, candidate scoring, dynamic programming, and verification. Exactness depends on the retained search space and inference algorithm; speed depends on the costs of these stages."
+        "To compare implementations, identify the candidate set, the edge dependence, the normalization, and the inference operation. Then measure the work that dominates runtime: neural passes, candidate scoring, dynamic programming, and verification."
       ],
       "table": {
         "columns": [
@@ -158,7 +158,7 @@
     "lilicorr2026",
     "diffuspec2026"
   ],
-  "updated_at": "2026-11-11",
+  "updated_at": "2026-11-14",
   "url": "https://yuntiandeng.com/research/structured-decoding/",
   "papers": [
     {
