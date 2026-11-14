@@ -49,7 +49,7 @@
   "container_title": "arXiv",
   "abstract": "Experiment trackers show how training is progressing, but changing a live run still usually requires trainer-specific code. We present Interactive Training 2, an open-source control plane for steering training through a shared protocol. Training applications declare which settings and actions they expose, humans and automated controllers submit requests through the same interface, and the training loop validates and applies them at safe control points. A customized Aim workspace combines live metrics and controls with a chronological record of requests and outcomes. We demonstrate the system across five NLP and reinforcement-learning workflows. The released code and traces provide a reusable foundation for auditable human- and agent-guided training.",
   "abstract_source": "https://arxiv.org/html/2607.18314v1",
-  "updated_at": "2026-11-11",
+  "updated_at": "2026-11-14",
   "description_language": "zh-Hans",
   "abstract_language": "en",
   "record_url": "https://yuntiandeng.com/research/zh/papers/interactive-training-2026/"

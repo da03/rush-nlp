@@ -103,7 +103,7 @@ def build(m):
                         paper['@id'] = paper['@id'].replace('/research/zh/', '/research/')
                         paper['url'] = paper['@id']
                         paper['inLanguage'] = 'en'
-                        schema = {'@context': 'https://schema.org', '@type': 'WebPage', 'url': schema['url'], 'name': schema['name'], 'description': schema['description'], 'inLanguage': 'zh-Hans', 'dateModified': meta['updated_at'], 'about': paper}
+                        schema = {'@context': 'https://schema.org', '@type': 'WebPage', 'url': schema['url'], 'name': schema['name'], 'description': schema['description'], 'inLanguage': 'zh-Hans', 'dateModified': schema['dateModified'], 'about': paper}
                     else:
                         schema['inLanguage'] = 'zh-Hans'
                         for field in ('headline', 'description'):
@@ -119,7 +119,8 @@ def build(m):
     m.LANG = 'zh-Hans'
     m.PREFIX = '/research/zh/'
     m.GUIDES = guides
-    m.PAPERS = [{**p, **overlays[p['id']], 'updated_at': meta['updated_at'], 'description_language': 'zh-Hans', 'abstract_language': 'en'} for p in english_papers]
+    page_dates = {p['path']: p['updated_at'] for p in meta['pages']}
+    m.PAPERS = [{**p, **overlays[p['id']], 'updated_at': page_dates['papers/'+p['id']+'/'], 'description_language': 'zh-Hans', 'abstract_language': 'en'} for p in english_papers]
     m.GP = {g['id']: g for g in m.GUIDES}
     m.PP = {p['id']: p for p in m.PAPERS}
     m.PAGE_DATES = {p['path']: p['updated_at'] for p in meta['pages']}

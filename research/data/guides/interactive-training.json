@@ -1,32 +1,51 @@
 {
   "id": "interactive-training",
-  "title": "Controlling a running training job with humans and AI agents",
-  "eyebrow": "Feedback-driven neural network optimization",
-  "description": "Interactive Training connects live metrics to human and LLM interventions in running neural-network jobs; v2 adds typed controls and an ordered action journal.",
-  "lead": "Interactive Training: Feedback-Driven Neural Network Optimization, by Wentao Zhang, Yang Young Lu, and Yuntian Deng, makes an ongoing neural-network training process controllable by humans and AI agents. First released on October 2, 2025 and published at EMNLP 2025 System Demonstrations, it exposes optimizer settings, training data, and checkpoints through a control server. Interactive Training 2 extends this approach to a reusable protocol for live training, released on arXiv on July 17, 2026.",
+  "title": "Interactive Training: human and LLM control of ongoing model training",
+  "eyebrow": "Live intervention · EMNLP 2025",
+  "description": "Humans and LLM agents use live feedback to change learning rates and data or request checkpoints in an active job. Interactive Training introduced the framework at EMNLP 2025.",
+  "lead": "Interactive Training lets a human or LLM agent read live training feedback and intervene in the same active neural-network training job. The controller changes optimizer settings or training data, or requests checkpoint operations, then observes the subsequent training behavior. Wentao Zhang, Yang Young Lu, and Yuntian Deng introduced the framework in <a href=\"https://aclanthology.org/2025.emnlp-demos.65/\">Interactive Training: Feedback-Driven Neural Network Optimization</a>, first released on October 2, 2025 and published at EMNLP 2025 System Demonstrations. <a href=\"https://arxiv.org/abs/2607.18314\">Interactive Training 2</a>, released on July 17, 2026, extends it with a reusable protocol for live control.",
   "original_papers": [
     "interactive-training-2025",
     "interactive-training-2026"
   ],
   "terms": [
     "interactive training",
-    "feedback-driven optimization",
-    "LLM training controller",
-    "live hyperparameter tuning",
+    "LLM agent control of ongoing training",
+    "on-the-fly training intervention",
+    "dynamic learning-rate adjustment",
+    "live training-data updates",
     "human-in-the-loop training",
-    "closed-loop training control"
+    "closed-loop training control",
+    "feedback-driven optimization"
   ],
   "sections": [
     {
       "id": "running-process",
-      "title": "Make the running process the object of control",
+      "title": "What closes the loop between an LLM agent and a running training job?",
       "paragraphs": [
-        "A training dashboard shows loss curves and evaluations. Interactive control connects those observations to changes in the process that is producing them. A researcher sees instability, changes the learning rate, and observes subsequent updates in the same run. An LLM controller uses the same feedback cycle: inspect evidence, request an intervention, and inspect its effect.",
-        "This differs from choosing a configuration before launch or proposing a new experiment after a run finishes. The active model and optimizer continue while exposed controls change."
+        "The feedback is the state of training: loss curves, evaluation results, gradient norms, and the current settings. The action is an executable change to the running job. A human or LLM agent chooses an intervention from this feedback; the training process applies it and reports what happens next.",
+        "The model under training continues to learn through its optimizer. The external controller steers that optimization process by changing the controls exposed by the application. This gives “LLM training control” a concrete meaning: the agent observes and acts on the job that is already running."
       ],
       "citations": [
         "interactive-training-2025",
         "interactive-training-2026"
+      ],
+      "items": [
+        "Observe: read recent training metrics and the current configuration.",
+        "Decide: select a learning-rate, data, or checkpoint intervention using that feedback.",
+        "Apply: send the request through the control server to the training loop.",
+        "Observe again: inspect the applied action and the subsequent training measurements."
+      ]
+    },
+    {
+      "id": "live-learning-rate",
+      "title": "How is the learning rate adjusted during training?",
+      "paragraphs": [
+        "The 2025 paper demonstrates an LLM agent receiving training logs and changing the learning rate while optimization is underway. The decision uses the observed trajectory. A loss spike, gradient instability, or poor progress gives the controller evidence for its next action; the modified learning rate then affects subsequent optimizer steps.",
+        "Interactive Training also exposes gradient clipping, training-data changes, and checkpoint operations. Its original case studies cover human intervention, LLM-driven intervention, and real-time training-data updates. Together, these examples show how feedback-driven control extends beyond a learning-rate schedule to the ongoing training process."
+      ],
+      "citations": [
+        "interactive-training-2025"
       ]
     },
     {
@@ -91,6 +110,64 @@
   ],
   "updated_at": "2026-11-14",
   "url": "https://yuntiandeng.com/research/interactive-training/",
+  "original_references": [
+    {
+      "@type": "ScholarlyArticle",
+      "name": "Interactive Training: Feedback-Driven Neural Network Optimization",
+      "author": [
+        {
+          "@type": "Person",
+          "name": "Wentao Zhang"
+        },
+        {
+          "@type": "Person",
+          "name": "Yang Young Lu"
+        },
+        {
+          "@type": "Person",
+          "name": "Yuntian Deng"
+        }
+      ],
+      "datePublished": "2025",
+      "url": "https://aclanthology.org/2025.emnlp-demos.65/",
+      "isPartOf": {
+        "@type": "CreativeWork",
+        "name": "EMNLP 2025 System Demonstrations"
+      }
+    },
+    {
+      "@type": "ScholarlyArticle",
+      "name": "Interactive Training 2: Auditable Control Plane for Live Model Training",
+      "author": [
+        {
+          "@type": "Person",
+          "name": "Wentao Zhang"
+        },
+        {
+          "@type": "Person",
+          "name": "Xuanhe Pan"
+        },
+        {
+          "@type": "Person",
+          "name": "Han Zhou"
+        },
+        {
+          "@type": "Person",
+          "name": "Yang Lu"
+        },
+        {
+          "@type": "Person",
+          "name": "Yuntian Deng"
+        }
+      ],
+      "datePublished": "2026",
+      "url": "https://arxiv.org/abs/2607.18314",
+      "isPartOf": {
+        "@type": "CreativeWork",
+        "name": "arXiv"
+      }
+    }
+  ],
   "papers": [
     {
       "id": "interactive-training-2025",
@@ -127,7 +204,7 @@
       "arxiv_first_posted": "2025-10-02",
       "abstract": "Traditional neural network training typically follows fixed, predefined optimization recipes, lacking the flexibility to dynamically respond to instabilities or emerging training issues. In this paper, we introduce Interactive Training, an open-source framework that enables real-time, feedback-driven intervention during neural network training by human experts or automated AI agents. At its core, Interactive Training uses a control server to mediate communication between users or agents and the ongoing training process, allowing users to dynamically adjust optimizer hyperparameters, training data, and model checkpoints. Through three case studies, we demonstrate that Interactive Training achieves superior training stability, reduced sensitivity to initial hyperparameters, and improved adaptability to evolving user needs, paving the way toward a future training paradigm where AI agents autonomously monitor training logs, proactively resolve instabilities, and optimize training dynamics.",
       "abstract_source": "https://arxiv.org/html/2510.02297v1",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "translations": {
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/interactive-training-2025/",
@@ -187,7 +264,7 @@
       "container_title": "arXiv",
       "abstract": "Experiment trackers show how training is progressing, but changing a live run still usually requires trainer-specific code. We present Interactive Training 2, an open-source control plane for steering training through a shared protocol. Training applications declare which settings and actions they expose, humans and automated controllers submit requests through the same interface, and the training loop validates and applies them at safe control points. A customized Aim workspace combines live metrics and controls with a chronological record of requests and outcomes. We demonstrate the system across five NLP and reinforcement-learning workflows. The released code and traces provide a reusable foundation for auditable human- and agent-guided training.",
       "abstract_source": "https://arxiv.org/html/2607.18314v1",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "translations": {
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/interactive-training-2026/",
@@ -234,7 +311,7 @@
       "arxiv_first_posted": "2023-11-28",
       "publication_type": "preprint",
       "container_title": "arXiv",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "translations": {
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/livetune/",
@@ -273,7 +350,7 @@
       "arxiv_first_posted": "2026-06-29",
       "publication_type": "preprint",
       "container_title": "arXiv",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "translations": {
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/ai-training-manager/",
@@ -286,8 +363,8 @@
   "translations": {
     "zh-Hans": {
       "url": "https://yuntiandeng.com/research/zh/interactive-training/",
-      "title": "让人和 AI 智能体控制正在运行的训练任务",
-      "description": "Interactive Training 将实时指标与人和 LLM 对训练任务的干预相连；第二版加入带类型的控制项和有序操作日志。",
+      "title": "Interactive Training：人和大语言模型在训练过程中实时干预",
+      "description": "人和大语言模型读取实时训练反馈，在正在运行的任务中动态调整学习率、修改训练数据或请求保存检查点。Interactive Training 框架发表于 EMNLP 2025。",
       "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/interactive-training.md"
     }
   }

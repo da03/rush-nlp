@@ -1,15 +1,33 @@
-# 让人和 AI 智能体控制正在运行的训练任务
+# Interactive Training：人和大语言模型在训练过程中实时干预
 
-Wentao Zhang、Yang Young Lu 和 Yuntian Deng 的 Interactive Training: Feedback-Driven Neural Network Optimization 让人和 AI 智能体能够控制正在进行的神经网络训练。论文于 2025 年 10 月 2 日首次发布，发表于 EMNLP 2025 System Demonstrations，通过控制服务器开放优化器设置、训练数据和检查点操作。2026 年 7 月 17 日在 arXiv 发布的 Interactive Training 2 将这一方法扩展为实时训练中可复用的控制协议。
+Interactive Training 让人或大语言模型智能体读取实时训练反馈，并在同一个正在运行的神经网络训练任务中进行干预。控制器修改优化器设置或训练数据，或请求执行检查点操作，再观察后续训练行为。Wentao Zhang、Yang Young Lu 和 Yuntian Deng 在 [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/) 中提出这一框架，论文于 2025 年 10 月 2 日首次发布，发表于 EMNLP 2025 System Demonstrations。2026 年 7 月 17 日发布的 [Interactive Training 2](https://arxiv.org/abs/2607.18314) 将它扩展为可复用的实时训练控制协议。
 
-## 把正在运行的训练过程作为控制对象
+## 原始研究
 
-训练面板展示损失曲线与评估结果；交互式控制则把这些观测与产生它们的训练过程连接起来。研究者看到训练不稳定，修改学习率，再观察同一次运行中的后续更新。LLM 控制器也遵循同样的反馈循环：查看证据、请求干预、再检查干预效果。
+- Wentao Zhang, Yang Young Lu, Yuntian Deng. [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/). EMNLP 2025 System Demonstrations. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/interactive-training-2025/#citation).
+- Wentao Zhang, Xuanhe Pan, Han Zhou, Yang Lu, Yuntian Deng. [Interactive Training 2: Auditable Control Plane for Live Model Training](https://arxiv.org/abs/2607.18314). arXiv · 2026. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/interactive-training-2026/#citation).
 
-这与启动前选择配置，或等一轮训练结束后再设计新实验不同。模型和优化器在继续运行，开放的控制项则在过程中发生变化。
+## 大语言模型如何与正在运行的训练任务形成闭环？
+
+反馈来自训练状态：损失曲线、评估结果、梯度范数和当前设置。动作是训练任务能够执行的修改。人或大语言模型智能体根据反馈选择干预，训练进程执行修改，再报告后续结果。
+
+被训练的模型继续通过优化器学习；外部控制器通过应用开放的控制项来调节优化过程。“大语言模型控制训练过程”在这里有明确含义：智能体观察并干预已经运行起来的训练任务。
+
+- 观察：读取近期训练指标与当前配置。
+- 决策：根据反馈选择学习率、数据或检查点干预。
+- 执行：通过控制服务器把请求传给训练循环。
+- 再次观察：检查实际执行的修改与后续训练指标。
 
 - [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/)
 - [Interactive Training 2: Auditable Control Plane for Live Model Training](https://arxiv.org/abs/2607.18314)
+
+## 如何在训练过程中动态调整学习率？
+
+2025 年论文展示了大语言模型智能体接收训练日志、在优化进行过程中修改学习率的案例。决策依据已经观测到的训练轨迹：损失突增、梯度不稳定或训练进展不足，都为下一次干预提供信息；修改后的学习率作用于后续优化器更新。
+
+Interactive Training 还开放梯度裁剪、训练数据修改和检查点操作。原始论文的三个案例分别展示人工干预、大语言模型驱动的干预以及实时训练数据更新。这些案例把反馈驱动控制从学习率调度扩展到正在进行的训练过程。
+
+- [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/)
 
 ## 2025 年系统：把监控与干预连接起来
 

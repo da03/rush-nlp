@@ -1,12 +1,42 @@
-# 学习渲染 LaTeX、SMILES、HTML 与乐谱
+# 扩散模型渲染 LaTeX 公式与 SMILES 分子结构图
 
-Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 的 Markup-to-Image Diffusion Models with Scheduled Sampling 学习把符号描述转化为图像。论文于 2022 年 10 月 11 日发布，发表于 ICLR 2023，提出了覆盖 LaTeX 公式、SMILES 分子、HTML 表格布局和 LilyPond 乐谱的扩散渲染方法。它也研究了扩散模型中的一个普遍问题：采样过程中遇到的状态与训练输入不同时，错误会逐步累积。
+扩散模型能够学习把给定的 LaTeX 公式代码渲染成数学公式图片，也能把给定的 SMILES 字符串渲染成二维分子结构图。Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 在 [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147) 中提出这一方法，论文于 2022 年 10 月 11 日发布，发表于 ICLR 2023。这个学习式渲染器覆盖 LaTeX 数学公式、SMILES 分子、HTML 表格布局和 LilyPond 乐谱，并通过 Scheduled Sampling 让去噪器学习修正自身中间预测中的错误。
 
-## 输入是标记语言，输出是图像
+## 原始研究
 
-学习式渲染器接收描述视觉对象的序列，预测渲染后的像素。LaTeX 描述数学记号，SMILES 描述原子与化学键，HTML 描述表格类布局，LilyPond 描述乐谱。这四个领域共同检验模型对符号内容、布局，以及跨越输入序列的依赖关系的处理能力。
+- Yuntian Deng, Noriyuki Kojima, Alexander M. Rush. [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147). ICLR 2023. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/markup-diffusion/#citation).
 
-图像到 LaTeX 的识别任务从图片恢复源代码；标记语言到图像的生成任务则朝相反方向进行。论文调整了包括 im2latex-100k 在内的配对数据，学习从标记语言到像素的正向映射。它训练的是条件扩散模型，推理时不调用传统渲染引擎。
+## 如何用扩散模型把 LaTeX 代码渲染成公式图片？
+
+输入是 LaTeX 源代码，输出是这段代码指定的公式图像。例如，\frac{a}{b} + c^2 描述一个分数，后面接一个平方项。学习式渲染器需要把分子放在分母上方，并正确放置上标。在这个任务中，扩散是生成图像的方法；输入的公式代码决定要画出的数学内容。
+
+模型从标记语言与渲染图像的配对数据中学习这一映射，其中包括 im2latex-100k 的公式数据。推理时，输入的标记序列作为条件，参与连续的图像去噪步骤。去噪器把图像噪声转化为渲染后的像素，学习源词元、符号和布局之间的关系。
+
+同一个输入到图像的任务也覆盖 HTML 表格布局与 LilyPond 乐谱。表格单元格需要位于指定的行列位置，音符需要表达源代码中的音高和时值；这些对应关系为生成模型提供了具体的结构要求。
+
+- [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
+
+## 如何从 SMILES 字符串生成二维分子结构图？
+
+SMILES 用原子与化学键的序列指定分子。SMILES 到图像的渲染任务把这个分子作为输入，由扩散模型生成对应的二维分子结构图。例如，CC(=O)O 指定乙酸；图像需要保留其中的原子、单键以及碳氧双键。这个例子用于说明任务格式，原始模型的生成结果见论文和代码仓库。
+
+输入的 SMILES 已经确定分子身份，模型学习的是如何用像素画出该分子结构。Markup-to-Image 的分子实验比较生成图像与参考结构图，直接检验图像是否对应给定的符号描述。
+
+- [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
+
+## 观察学习式渲染器的去噪过程
+
+以下动画来自原始代码仓库中的 Scheduled Sampling 结果，记录图像从噪声逐步形成渲染输出的过程。
+
+[原始代码、生成示例与参考图像 ↗](https://github.com/da03/markup2im)
+
+![连续去噪状态逐步形成数学公式图像](https://yuntiandeng.com/images/math_rendering.gif)
+
+LaTeX 到公式图像：原始 Scheduled Sampling 模型的去噪过程记录。
+
+![连续去噪状态逐步形成二维分子结构图](https://yuntiandeng.com/images/molecules_rendering.gif)
+
+SMILES 到分子结构图：原始 Scheduled Sampling 模型的分子绘图过程记录。
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 

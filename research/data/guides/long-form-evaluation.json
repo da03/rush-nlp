@@ -1,9 +1,9 @@
 {
   "id": "long-form-evaluation",
-  "title": "Evaluating the structure of long-form text",
+  "title": "Evaluating generated text beyond fluency: story structure and entity consistency",
   "eyebrow": "Coherence, coreference and narrative evaluation",
-  "description": "How latent-space model criticism evaluates discourse structure, entity behavior, and topicality beyond word-level fluency in generated text.",
-  "lead": "A fluent paragraph does not establish a coherent document. Model Criticism for Long-Form Text Generation, by Yuntian Deng, Volodymyr Kuleshov, and Alexander M. Rush, introduced a framework for comparing the high-level structures of real and generated text through explicit latent-variable critics. First released on October 16, 2022 and published at EMNLP 2022, it connects long-form evaluation to a concrete statistical question: does a generator reproduce the distribution of structures found in reference texts?",
+  "description": "Model Criticism for Long-Form Text Generation (Deng, Kuleshov and Rush, EMNLP 2022) evaluates discourse coherence, coreference and topicality through latent structure.",
+  "lead": "<a href=\"https://aclanthology.org/2022.emnlp-main.815/\">Model Criticism for Long-Form Text Generation</a>, by Yuntian Deng, Volodymyr Kuleshov, and Alexander M. Rush, evaluates the high-level structure of language-model output: how a document progresses, how it refers to entities, and how its topics relate. First released on October 16, 2022 and published at EMNLP 2022, it introduced a framework that maps real and generated text into latent structures and compares their distributions. This gives long-form text evaluation a structural test alongside word-level fluency.",
   "original_papers": [
     "model-criticism"
   ],
@@ -13,14 +13,16 @@
     "discourse coherence",
     "entity consistency",
     "model criticism in latent space",
-    "latent perplexity"
+    "latent perplexity",
+    "generated-text entity consistency",
+    "story structure beyond fluency"
   ],
   "sections": [
     {
       "id": "fluency-and-structure",
       "title": "Separate fluent wording from coherent structure",
       "paragraphs": [
-        "Consider an article that introduces a method, presents results, and then returns to an unrelated introduction. Each sentence can be grammatical while the section sequence is structurally unusual. A narrative has related problems when entities disappear, reappear inconsistently, or follow implausible patterns across a long passage.",
+        "A generated story reads: “Mira left the key at home. At the locked cabin, she opened the door with that key.” Both sentences are fluent; the story skips the event that makes the key available. An article presents another structural problem when it introduces a method, gives results, and then switches to an unrelated introduction. Evaluating these outputs requires stating the high-level property being tested.",
         "Word-level perplexity measures how well a model predicts tokens. It does not directly measure section transitions, coreference structure, or topical relationships. The paper demonstrates this distinction with synthetic data whose generative process is known: strong next-token prediction coexists with a poor fit to the underlying latent transitions."
       ],
       "citations": [
@@ -44,6 +46,17 @@
       "paragraphs": [
         "Discourse coherence asks whether sections follow the transitions found in real documents. The experiments examine scientific articles and Wikipedia, including generation with and without explicit section-title cues. Coreference asks whether generated text reproduces the patterns of references to entities. Topicality asks whether topic relationships match reference documents.",
         "These are distinct diagnoses. The paper finds that its transformer language models capture topical correlations while struggling with coherence and coreference. A single overall quality score would hide this difference."
+      ],
+      "citations": [
+        "model-criticism"
+      ]
+    },
+    {
+      "id": "entity-reference-example",
+      "title": "Entity consistency in generated stories",
+      "paragraphs": [
+        "Consider “Nora gave Eli a key. She left. Eli opened the door.” An entity representation assigns the two mentions of Nora, “Nora” and “She,” to one entity, and the two mentions of Eli to another. It records which entity each expression refers to and where the mention occurs. This turns a passage into a sequence of entity references that can be compared across human-written and generated stories.",
+        "The paper’s coreference experiment extracts these mention patterns and scores their distribution with a critic, including patterns in which a pronoun lacks a local antecedent. Its discourse critic examines section transitions, and its topic critic examines topic relationships. An evaluation of the key’s location in the earlier story would specify event and object-state variables as the property to test."
       ],
       "citations": [
         "model-criticism"
@@ -87,6 +100,32 @@
   ],
   "updated_at": "2026-11-14",
   "url": "https://yuntiandeng.com/research/long-form-evaluation/",
+  "original_references": [
+    {
+      "@type": "ScholarlyArticle",
+      "name": "Model Criticism for Long-Form Text Generation",
+      "author": [
+        {
+          "@type": "Person",
+          "name": "Yuntian Deng"
+        },
+        {
+          "@type": "Person",
+          "name": "Volodymyr Kuleshov"
+        },
+        {
+          "@type": "Person",
+          "name": "Alexander M. Rush"
+        }
+      ],
+      "datePublished": "2022",
+      "url": "https://aclanthology.org/2022.emnlp-main.815/",
+      "isPartOf": {
+        "@type": "CreativeWork",
+        "name": "EMNLP 2022"
+      }
+    }
+  ],
   "papers": [
     {
       "id": "model-criticism",
@@ -123,7 +162,7 @@
       "arxiv_first_posted": "2022-10-16",
       "abstract": "Language models have demonstrated the ability to generate highly fluent text; however, it remains unclear whether their output retains coherent high-level structure (e.g., story progression). Here, we propose to apply a statistical tool, model criticism in latent space, to evaluate the high-level structure of the generated text. Model criticism compares the distributions between real and generated data in a latent space obtained according to an assumptive generative process. Different generative processes identify specific failure modes of the underlying model. We perform experiments on three representative aspects of high-level discourse—coherence, coreference, and topicality—and find that transformer-based language models are able to capture topical structures but have a harder time maintaining structural coherence or modeling coreference.",
       "abstract_source": "https://arxiv.org/html/2210.08444v1",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "translations": {
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/model-criticism/",
@@ -181,7 +220,7 @@
       "source_urls": [
         "https://aclanthology.org/2021.acl-long.500/"
       ],
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "translations": {
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/openmeva/",
@@ -220,7 +259,7 @@
       "arxiv_first_posted": "2024-08-26",
       "publication_type": "preprint",
       "container_title": "arXiv",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "translations": {
         "zh-Hans": {
           "url": "https://yuntiandeng.com/research/zh/papers/story-evaluation-survey/",
@@ -233,8 +272,8 @@
   "translations": {
     "zh-Hans": {
       "url": "https://yuntiandeng.com/research/zh/long-form-evaluation/",
-      "title": "如何评估长文本的结构",
-      "description": "潜在空间中的模型检验如何超越词元层面的流畅度，评估生成文本的篇章结构、实体行为与主题关系。",
+      "title": "长文本生成评估：语言流畅度、故事结构与实体一致性",
+      "description": "Yuntian Deng、Volodymyr Kuleshov 和 Alexander M. Rush 的 Model Criticism（EMNLP 2022）用潜在结构评估长文本生成的篇章连贯性、实体共指与主题关系。",
       "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/long-form-evaluation.md"
     }
   }

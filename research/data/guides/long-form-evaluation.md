@@ -1,10 +1,14 @@
-# Evaluating the structure of long-form text
+# Evaluating generated text beyond fluency: story structure and entity consistency
 
-A fluent paragraph does not establish a coherent document. Model Criticism for Long-Form Text Generation, by Yuntian Deng, Volodymyr Kuleshov, and Alexander M. Rush, introduced a framework for comparing the high-level structures of real and generated text through explicit latent-variable critics. First released on October 16, 2022 and published at EMNLP 2022, it connects long-form evaluation to a concrete statistical question: does a generator reproduce the distribution of structures found in reference texts?
+[Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/), by Yuntian Deng, Volodymyr Kuleshov, and Alexander M. Rush, evaluates the high-level structure of language-model output: how a document progresses, how it refers to entities, and how its topics relate. First released on October 16, 2022 and published at EMNLP 2022, it introduced a framework that maps real and generated text into latent structures and compares their distributions. This gives long-form text evaluation a structural test alongside word-level fluency.
+
+## Original research
+
+- Yuntian Deng, Volodymyr Kuleshov, Alexander M. Rush. [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/). EMNLP 2022. [Record and citation](https://yuntiandeng.com/research/papers/model-criticism/#citation).
 
 ## Separate fluent wording from coherent structure
 
-Consider an article that introduces a method, presents results, and then returns to an unrelated introduction. Each sentence can be grammatical while the section sequence is structurally unusual. A narrative has related problems when entities disappear, reappear inconsistently, or follow implausible patterns across a long passage.
+A generated story reads: “Mira left the key at home. At the locked cabin, she opened the door with that key.” Both sentences are fluent; the story skips the event that makes the key available. An article presents another structural problem when it introduces a method, gives results, and then switches to an unrelated introduction. Evaluating these outputs requires stating the high-level property being tested.
 
 Word-level perplexity measures how well a model predicts tokens. It does not directly measure section transitions, coreference structure, or topical relationships. The paper demonstrates this distinction with synthetic data whose generative process is known: strong next-token prediction coexists with a poor fit to the underlying latent transitions.
 
@@ -23,6 +27,14 @@ One diagnostic is the expected negative log probability of inferred latent varia
 Discourse coherence asks whether sections follow the transitions found in real documents. The experiments examine scientific articles and Wikipedia, including generation with and without explicit section-title cues. Coreference asks whether generated text reproduces the patterns of references to entities. Topicality asks whether topic relationships match reference documents.
 
 These are distinct diagnoses. The paper finds that its transformer language models capture topical correlations while struggling with coherence and coreference. A single overall quality score would hide this difference.
+
+- [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
+
+## Entity consistency in generated stories
+
+Consider “Nora gave Eli a key. She left. Eli opened the door.” An entity representation assigns the two mentions of Nora, “Nora” and “She,” to one entity, and the two mentions of Eli to another. It records which entity each expression refers to and where the mention occurs. This turns a passage into a sequence of entity references that can be compared across human-written and generated stories.
+
+The paper’s coreference experiment extracts these mention patterns and scores their distribution with a critic, including patterns in which a pronoun lacks a local antecedent. Its discourse critic examines section transitions, and its topic critic examines topic relationships. An evaluation of the key’s location in the earlier story would specify event and object-state variables as the property to test.
 
 - [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
 

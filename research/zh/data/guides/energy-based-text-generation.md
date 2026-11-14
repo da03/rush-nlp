@@ -1,8 +1,13 @@
-# 基于能量的文本生成：残差模型、重采样与扩散
+# 能量模型如何生成文本：全序列评分、重采样与扩散语言模型
 
-Residual Energy-Based Models for Text Generation（ICLR 2020）将预训练语言模型与整条序列的能量函数结合，构成全局归一化的生成模型。Energy-Based Diffusion Language Models（ICLR 2025）明确联系这项工作，并把残差能量修正放进扩散去噪步骤。两者共享的机制是：以基础分布为起点，再乘上模型学到的、针对完整候选序列的偏好。
+序列级能量模型先对完整续写评分，再用这些分数改变语言模型生成文本的分布。Yuntian Deng、Anton Bakhtin、Myle Ott、Arthur Szlam 和 Marc’Aurelio Ranzato 在 [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1)（ICLR 2020）中，将自回归候选分布与学习得到的全序列能量结合，构成全局归一化的文本生成模型。这一形式直接连接了基于能量的扩散语言模型：残差能量在一次去噪步骤内耦合多个 token 的预测。
 
-## 用于文本生成的残差能量模型
+## 原始研究
+
+- Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc’Aurelio Ranzato. [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1). ICLR 2020. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/residual-ebm/#citation).
+- Anton Bakhtin, Yuntian Deng, Sam Gross, Myle Ott, Marc’Aurelio Ranzato, Arthur Szlam. [Residual Energy-Based Models for Text](https://www.jmlr.org/papers/v22/20-326.html). JMLR 22(40):1–41 · 2021. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/residual-ebm-jmlr/#citation).
+
+## 全序列能量函数如何用于文本生成
 
 Yuntian Deng、Anton Bakhtin、Myle Ott、Arthur Szlam 和 Marc’Aurelio Ranzato 在 ICLR 2020 论文中提出了这一文本生成框架，其 arXiv 版本发表于 2020 年 4 月 22 日。固定的自回归语言模型提供候选序列，双向能量函数对候选序列评分。论文围绕这一模型提出了基于重要性加权的条件生成方法，以及用于困惑度评估的对数概率上下界。
 
@@ -30,6 +35,15 @@ JMLR 2021 论文 Residual Energy-Based Models for Text 进一步研究了如何�
 
 - [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1)
 - [Residual Energy-Based Models for Text](https://www.jmlr.org/papers/v22/20-326.html)
+
+## 能量函数在哪里建模 token 之间的依赖？
+
+能量函数接收完整的候选续写。对于前缀相同、结尾不同的序列，它可以给出不同分数，因此最终选择取决于这些词组合起来的表现。基础模型提出文本，序列级能量改变完整续写的概率。
+
+在扩散文本生成中，去噪器并行提出多个尚未确定的 token。EDLM 以当前带噪文本为条件，将同样的“基础分布乘以能量权重”形式用于这些候选序列。序列能量对 token 依赖进行联合修正，这就是残差能量文本生成与基于能量的扩散解码之间的具体联系。
+
+- [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1)
+- [Energy-Based Diffusion Language Models for Text Generation](https://arxiv.org/html/2410.21357v4)
 
 ## 与扩散语言模型的直接联系
 

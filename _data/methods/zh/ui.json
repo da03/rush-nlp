@@ -208,5 +208,6 @@
   "Repeating sections": "章节反复循环",
   "A critic maps text to a structural representation. The paper compares distributions of these representations over real and generated corpora.": "评估模型将文本映射为结构表示。论文比较真实语料与生成语料中这些表示的分布。",
   "Three ways to structure model decisions": "模型决策的三种结构",
-  "A branching prompt tree, a sequence-level energy score, and jointly scored candidate paths.": "分支提示树、序列级能量得分与联合打分的候选路径。"
+  "A branching prompt tree, a sequence-level energy score, and jointly scored candidate paths.": "分支提示树、序列级能量得分与联合打分的候选路径。",
+  "Record and citation": "论文记录与引用"
 }

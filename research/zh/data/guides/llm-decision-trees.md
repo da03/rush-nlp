@@ -1,18 +1,22 @@
-# 大语言模型决策树：从 Tree Prompting 到智能体分类
+# 大语言模型决策树：用提示词做文本分类，无需微调
 
-Tree Prompting（EMNLP 2023）学习一棵决策树，由接收提示词的语言模型完成每个节点的分支判断。学到的提示词与控制流程共同构成可重复用于分类任务的程序。这一机制直接连接了今天的大语言模型决策树、自然语言问题树和智能体分类。
+John X. Morris、Chandan Singh、Alexander M. Rush、Jianfeng Gao 和 Yuntian Deng 在 [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1)（EMNLP 2023）中提出用提示词决策树进行文本分类。每个内部节点让冻结的大语言模型判断输入文本，根据回答选择下一条分支，最终由叶节点返回类别。节点提示词和分支结构从带标签的样本中学习，组成可重复执行的任务程序；整个过程无需微调语言模型参数。
+
+## 原始研究
+
+- John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1). EMNLP 2023. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/tree-prompting/#citation).
 
 ## Tree Prompting 提出了什么
 
-John X. Morris、Chandan Singh、Alexander M. Rush、Jianfeng Gao 和 Yuntian Deng 在 EMNLP 2023 发表了 Tree Prompting；Morris 与 Singh 的贡献相同。预印本于 2023 年 10 月 21 日公开。每个内部节点让冻结参数的语言模型执行一条提示，再根据输出选择分支，最终由叶节点给出预测。
+Tree Prompting 预印本于 2023 年 10 月 21 日公开，发表于 EMNLP 2023；John X. Morris 与 Chandan Singh 的贡献相同。一个节点包含提示词、语言模型调用，以及把模型输出映射到分支的规则。从根节点到叶节点的完整路径，就是分类器处理一条输入的执行记录。
 
 这棵树从带标签的样本中学习。候选提示包括采样得到的示例、指令以及动态生成的提示。在动态版本中，iPrompt 针对到达当前节点的样本生成候选提示，再根据划分质量选出提示。节点提出的问题与树的分支结构都从数据中学习得到。
 
 - [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1)
 
-## 把提示树理解为程序
+## 输入文本 → 节点判断 → 分类结果
 
-在一个客服消息分类示例中，第一个节点询问消息是否要求退款；如果回答“是”，第二个节点再询问消息是否涉及重复扣款。这条路径返回账单类标签；回答“否”则进入树的其他部分。这个固定示例展示控制流程；论文中的树则从数据中学习。
+看一个客服文本分类示例：输入是“同一笔订单扣了两次款，请退回重复扣款”。第一个节点问“消息是否要求退款”，模型回答“是”后进入下一个节点；该节点问“是否涉及重复扣款”，回答“是”后到达“重复扣款”类别的叶节点。输入是待分类文本，中间结果是语言模型的判断，输出是类别。这个固定示例展示程序的控制流程；原论文从数据中学习节点提示词与树结构。
 
 这个程序由条件、分支和返回值组成。传统条件检查数值阈值或精确字符串；基于提示的条件让语言模型按指令理解输入。指令规定要问什么，语言模型给出针对当前输入的判断。
 

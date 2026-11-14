@@ -1,9 +1,9 @@
 {
   "id": "llm-decision-trees",
-  "title": "大语言模型决策树：从 Tree Prompting 到智能体分类",
+  "title": "大语言模型决策树：用提示词做文本分类，无需微调",
   "eyebrow": "学习程序结构与提示词",
-  "description": "Tree Prompting 如何学习由语言模型提示调用组成的决策树，以及它与 Aug-Tree、GPTree 和 Agentic Classification Tree 的联系。",
-  "lead": "Tree Prompting（EMNLP 2023）学习一棵决策树，由接收提示词的语言模型完成每个节点的分支判断。学到的提示词与控制流程共同构成可重复用于分类任务的程序。这一机制直接连接了今天的大语言模型决策树、自然语言问题树和智能体分类。",
+  "description": "Tree Prompting（EMNLP 2023）从带标签文本学习决策树：每个内部节点用提示词调用冻结的大语言模型，根据回答选择分支，由叶节点输出类别，无需微调模型。",
+  "lead": "John X. Morris、Chandan Singh、Alexander M. Rush、Jianfeng Gao 和 Yuntian Deng 在 <a href=\"https://arxiv.org/html/2310.14034v1\">Tree Prompting: Efficient Task Adaptation without Fine-Tuning</a>（EMNLP 2023）中提出用提示词决策树进行文本分类。每个内部节点让冻结的大语言模型判断输入文本，根据回答选择下一条分支，最终由叶节点返回类别。节点提示词和分支结构从带标签的样本中学习，组成可重复执行的任务程序；整个过程无需微调语言模型参数。",
   "original_papers": [
     "tree-prompting"
   ],
@@ -13,7 +13,8 @@
     "自然语言决策树",
     "智能体分类",
     "可学习的提示程序",
-    "动态提示"
+    "动态提示",
+    "无需微调的文本分类"
   ],
   "demo": "tree",
   "related_guides": [
@@ -30,7 +31,7 @@
       "id": "original-method",
       "title": "Tree Prompting 提出了什么",
       "paragraphs": [
-        "John X. Morris、Chandan Singh、Alexander M. Rush、Jianfeng Gao 和 Yuntian Deng 在 EMNLP 2023 发表了 Tree Prompting；Morris 与 Singh 的贡献相同。预印本于 2023 年 10 月 21 日公开。每个内部节点让冻结参数的语言模型执行一条提示，再根据输出选择分支，最终由叶节点给出预测。",
+        "Tree Prompting 预印本于 2023 年 10 月 21 日公开，发表于 EMNLP 2023；John X. Morris 与 Chandan Singh 的贡献相同。一个节点包含提示词、语言模型调用，以及把模型输出映射到分支的规则。从根节点到叶节点的完整路径，就是分类器处理一条输入的执行记录。",
         "这棵树从带标签的样本中学习。候选提示包括采样得到的示例、指令以及动态生成的提示。在动态版本中，iPrompt 针对到达当前节点的样本生成候选提示，再根据划分质量选出提示。节点提出的问题与树的分支结构都从数据中学习得到。"
       ],
       "citations": [
@@ -39,9 +40,9 @@
     },
     {
       "id": "program-view",
-      "title": "把提示树理解为程序",
+      "title": "输入文本 → 节点判断 → 分类结果",
       "paragraphs": [
-        "在一个客服消息分类示例中，第一个节点询问消息是否要求退款；如果回答“是”，第二个节点再询问消息是否涉及重复扣款。这条路径返回账单类标签；回答“否”则进入树的其他部分。这个固定示例展示控制流程；论文中的树则从数据中学习。",
+        "看一个客服文本分类示例：输入是“同一笔订单扣了两次款，请退回重复扣款”。第一个节点问“消息是否要求退款”，模型回答“是”后进入下一个节点；该节点问“是否涉及重复扣款”，回答“是”后到达“重复扣款”类别的叶节点。输入是待分类文本，中间结果是语言模型的判断，输出是类别。这个固定示例展示程序的控制流程；原论文从数据中学习节点提示词与树结构。",
         "这个程序由条件、分支和返回值组成。传统条件检查数值阈值或精确字符串；基于提示的条件让语言模型按指令理解输入。指令规定要问什么，语言模型给出针对当前输入的判断。",
         "路径日志能区分三种错误：节点问了无关的问题；问题相关，但模型回答错误；前面的判断都正确，叶节点却分配了错误类别。记录实际经过的路径，就能区分这些错误。"
       ]
@@ -122,6 +123,40 @@
   ],
   "updated_at": "2026-11-14",
   "url": "https://yuntiandeng.com/research/zh/llm-decision-trees/",
+  "original_references": [
+    {
+      "@type": "ScholarlyArticle",
+      "name": "Tree Prompting: Efficient Task Adaptation without Fine-Tuning",
+      "author": [
+        {
+          "@type": "Person",
+          "name": "John X. Morris"
+        },
+        {
+          "@type": "Person",
+          "name": "Chandan Singh"
+        },
+        {
+          "@type": "Person",
+          "name": "Alexander M. Rush"
+        },
+        {
+          "@type": "Person",
+          "name": "Jianfeng Gao"
+        },
+        {
+          "@type": "Person",
+          "name": "Yuntian Deng"
+        }
+      ],
+      "datePublished": "2023",
+      "url": "https://arxiv.org/html/2310.14034v1",
+      "isPartOf": {
+        "@type": "CreativeWork",
+        "name": "EMNLP 2023"
+      }
+    }
+  ],
   "papers": [
     {
       "id": "tree-prompting",
@@ -169,7 +204,7 @@
       "arxiv_first_posted": "2023-10-21",
       "abstract": "Prompting language models (LMs) is the main interface for applying them to new tasks. However, for smaller LMs, prompting provides low accuracy compared to gradient-based fine-tuning. Tree Prompting is an approach to prompting which builds a decision tree of prompts, linking multiple LM calls together to solve a task. At inference time, each call to the LM is determined by efficiently routing the outcome of the previous call using the tree. Experiments on classification datasets show that Tree Prompting improves accuracy over competing methods and is competitive with fine-tuning. We also show that variants of Tree Prompting allow inspection of a model’s decision-making process.",
       "abstract_source": "https://arxiv.org/html/2310.14034v1",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "description_language": "zh-Hans",
       "abstract_language": "en"
     },
@@ -210,7 +245,7 @@
       "volume": "14",
       "issue": "1",
       "article_number": "7913",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "description_language": "zh-Hans",
       "abstract_language": "en"
     },
@@ -249,7 +284,7 @@
       "arxiv_first_posted": "2024-11-13",
       "publication_type": "preprint",
       "container_title": "arXiv",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "description_language": "zh-Hans",
       "abstract_language": "en"
     },
@@ -296,7 +331,7 @@
       "arxiv_first_posted": "2025-09-30",
       "publication_type": "preprint",
       "container_title": "arXiv",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "description_language": "zh-Hans",
       "abstract_language": "en"
     }

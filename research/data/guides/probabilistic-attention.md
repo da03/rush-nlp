@@ -1,6 +1,10 @@
 # Attention as a Latent Variable: Modeling a Distribution over Attention
 
-Latent Alignment and Variational Attention (NeurIPS 2018), by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. The general idea is to model a distribution over where a network attends and reason over that distribution, rather than pass one deterministic weighted average into the prediction network.
+[Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756), by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. First released on July 10, 2018 and published at NeurIPS 2018, it models a distribution over where a network attends and integrates predictions over that distribution. Categorical and Dirichlet alignments make this a general approach to modeling attention uncertainty.
+
+## Original research
+
+- Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, Alexander M. Rush. [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756). NeurIPS 2018. [Record and citation](https://yuntiandeng.com/research/papers/latentattention2018/#citation).
 
 ## Normalized attention weights and a probabilistic model
 
@@ -10,6 +14,14 @@ Write the attention state as z and the downstream computation as f. In general, 
 
 - [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756)
 - [Structured Attention Networks](https://arxiv.org/abs/1702.00887)
+
+## Marginalizing attention at the output
+
+Let x include the observed input and the query, y be the output, and z be a categorical attention state. The latent model predicts p(y | x) = Σ_z p(z | x) p(y | x, z). Each attention state supplies an output distribution; its attention probability weights that distribution. A continuous attention state uses an integral in place of the sum.
+
+During training, the observed answer y lets an inference network learn q(z | x, y), a posterior approximation used by the variational objective. At prediction time, the model combines outputs using p(z | x). For translation, the training inference network sees the source and target sentence; generation uses the source and the target prefix already produced.
+
+- [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756)
 
 ## Latent alignment and variational attention
 

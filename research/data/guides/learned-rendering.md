@@ -1,12 +1,42 @@
-# Learning to render LaTeX, SMILES, HTML and music notation
+# Diffusion rendering: LaTeX formulas and SMILES molecule images
 
-Markup-to-Image Diffusion Models with Scheduled Sampling, by Yuntian Deng, Noriyuki Kojima, and Alexander M. Rush, learns to turn symbolic descriptions into images. Released on October 11, 2022 and published at ICLR 2023, the work introduced diffusion-based rendering across LaTeX formulas, SMILES molecules, HTML table layouts, and LilyPond sheet music. It also studies a general diffusion problem: errors accumulate when sampling visits states that differ from the model’s training inputs.
+A diffusion model can learn to render a supplied LaTeX formula into a mathematical image, or a supplied SMILES string into a two-dimensional molecular structure image. Yuntian Deng, Noriyuki Kojima, and Alexander M. Rush introduced this approach in [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147), released on October 11, 2022 and published at ICLR 2023. Their learned renderer covers LaTeX mathematics, SMILES molecules, HTML table layouts, and LilyPond sheet music. Scheduled sampling trains the denoiser to correct errors in its own intermediate predictions.
 
-## The input is markup; the output is an image
+## Original research
 
-A learned renderer receives a sequence that specifies a visual object and predicts its rendered pixels. LaTeX describes mathematical notation; SMILES describes atoms and bonds; HTML describes a table-like layout; LilyPond describes music notation. The four domains test symbolic content, layout, and dependencies that extend across the input sequence.
+- Yuntian Deng, Noriyuki Kojima, Alexander M. Rush. [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147). ICLR 2023. [Record and citation](https://yuntiandeng.com/research/papers/markup-diffusion/#citation).
 
-Image-to-LaTeX recognition recovers source notation from a picture. Markup-to-image generation performs the reverse task. The paper adapts paired data, including im2latex-100k, to learn this forward mapping from markup to pixels. It trains a conditional diffusion model rather than invoking a conventional rendering engine at inference time.
+## How does a diffusion model render a LaTeX formula?
+
+The input is LaTeX source code and the output is an image of the specified formula. For example, \frac{a}{b} + c^2 describes a fraction followed by a squared term. A learned renderer must place the numerator above the denominator and position the superscript correctly. In this task, diffusion is the image-generation method; the formula supplied to it defines the mathematical content.
+
+The model learns this mapping from paired markup and rendered images, including the formula pairs in im2latex-100k. At inference, it conditions a sequence of image-denoising steps on the supplied markup. The denoiser turns image noise into the rendered pixels, learning the relationship between source tokens, symbols, and layout.
+
+The same input-to-image formulation applies to HTML table layouts and LilyPond music notation. These domains make the dependencies concrete: a table cell must occupy its specified row and column, and a note must have the pitch and duration described by the source.
+
+- [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
+
+## How does a SMILES string become a molecular drawing?
+
+SMILES specifies the molecule through an atom-and-bond sequence. In SMILES-to-image rendering, that molecule is supplied as the input, and the diffusion model generates its two-dimensional structural drawing. For example, CC(=O)O specifies acetic acid; the drawing must preserve the stated atoms, single bonds, and carbon–oxygen double bond. This is a task-format example, with original model outputs available in the paper and code repository.
+
+The molecular identity is fixed by the input SMILES. What the model learns is how to depict that structure in pixels. The Markup-to-Image experiments evaluate agreement with a reference drawing, connecting the generated image directly to the supplied symbolic description.
+
+- [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
+
+## Watch the learned renderer denoise an image
+
+These recorded trajectories come from the original repository’s Scheduled Sampling results. Each animation follows an image from noise to a rendered output.
+
+[Original code, generated examples, and reference images ↗](https://github.com/da03/markup2im)
+
+![Successive denoising states forming a mathematical formula image](https://yuntiandeng.com/images/math_rendering.gif)
+
+LaTeX-to-image: a recorded denoising trajectory from the original scheduled-sampling model.
+
+![Successive denoising states forming a two-dimensional molecular structure diagram](https://yuntiandeng.com/images/molecules_rendering.gif)
+
+SMILES-to-image: a recorded molecular-drawing trajectory from the original scheduled-sampling model.
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 

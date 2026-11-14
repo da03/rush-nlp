@@ -1,15 +1,33 @@
-# Controlling a running training job with humans and AI agents
+# Interactive Training: human and LLM control of ongoing model training
 
-Interactive Training: Feedback-Driven Neural Network Optimization, by Wentao Zhang, Yang Young Lu, and Yuntian Deng, makes an ongoing neural-network training process controllable by humans and AI agents. First released on October 2, 2025 and published at EMNLP 2025 System Demonstrations, it exposes optimizer settings, training data, and checkpoints through a control server. Interactive Training 2 extends this approach to a reusable protocol for live training, released on arXiv on July 17, 2026.
+Interactive Training lets a human or LLM agent read live training feedback and intervene in the same active neural-network training job. The controller changes optimizer settings or training data, or requests checkpoint operations, then observes the subsequent training behavior. Wentao Zhang, Yang Young Lu, and Yuntian Deng introduced the framework in [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/), first released on October 2, 2025 and published at EMNLP 2025 System Demonstrations. [Interactive Training 2](https://arxiv.org/abs/2607.18314), released on July 17, 2026, extends it with a reusable protocol for live control.
 
-## Make the running process the object of control
+## Original research
 
-A training dashboard shows loss curves and evaluations. Interactive control connects those observations to changes in the process that is producing them. A researcher sees instability, changes the learning rate, and observes subsequent updates in the same run. An LLM controller uses the same feedback cycle: inspect evidence, request an intervention, and inspect its effect.
+- Wentao Zhang, Yang Young Lu, Yuntian Deng. [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/). EMNLP 2025 System Demonstrations. [Record and citation](https://yuntiandeng.com/research/papers/interactive-training-2025/#citation).
+- Wentao Zhang, Xuanhe Pan, Han Zhou, Yang Lu, Yuntian Deng. [Interactive Training 2: Auditable Control Plane for Live Model Training](https://arxiv.org/abs/2607.18314). arXiv · 2026. [Record and citation](https://yuntiandeng.com/research/papers/interactive-training-2026/#citation).
 
-This differs from choosing a configuration before launch or proposing a new experiment after a run finishes. The active model and optimizer continue while exposed controls change.
+## What closes the loop between an LLM agent and a running training job?
+
+The feedback is the state of training: loss curves, evaluation results, gradient norms, and the current settings. The action is an executable change to the running job. A human or LLM agent chooses an intervention from this feedback; the training process applies it and reports what happens next.
+
+The model under training continues to learn through its optimizer. The external controller steers that optimization process by changing the controls exposed by the application. This gives “LLM training control” a concrete meaning: the agent observes and acts on the job that is already running.
+
+- Observe: read recent training metrics and the current configuration.
+- Decide: select a learning-rate, data, or checkpoint intervention using that feedback.
+- Apply: send the request through the control server to the training loop.
+- Observe again: inspect the applied action and the subsequent training measurements.
 
 - [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/)
 - [Interactive Training 2: Auditable Control Plane for Live Model Training](https://arxiv.org/abs/2607.18314)
+
+## How is the learning rate adjusted during training?
+
+The 2025 paper demonstrates an LLM agent receiving training logs and changing the learning rate while optimization is underway. The decision uses the observed trajectory. A loss spike, gradient instability, or poor progress gives the controller evidence for its next action; the modified learning rate then affects subsequent optimizer steps.
+
+Interactive Training also exposes gradient clipping, training-data changes, and checkpoint operations. Its original case studies cover human intervention, LLM-driven intervention, and real-time training-data updates. Together, these examples show how feedback-driven control extends beyond a learning-rate schedule to the ongoing training process.
+
+- [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/)
 
 ## The 2025 system: monitoring connected to intervention
 

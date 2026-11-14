@@ -1,8 +1,13 @@
-# Energy-based text generation: residual models, resampling and diffusion
+# Energy-based text generation: whole-sequence scoring, resampling and diffusion
 
-Residual Energy-Based Models for Text Generation (ICLR 2020) turns a pretrained language model and a whole-sequence energy into a globally normalized generator. Energy-Based Diffusion Language Models (ICLR 2025) explicitly connects to this work and applies residual energy correction inside diffusion denoising. The shared mechanism is a base distribution multiplied by a learned preference over complete candidate sequences.
+A sequence-level energy model scores complete continuations, then uses those scores to change what a language model generates. [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1), by Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam and Marc’Aurelio Ranzato (ICLR 2020), combines an autoregressive proposal with a learned whole-sequence energy in a globally normalized model. This formulation connects directly to energy-based diffusion language models, where the residual energy couples token predictions within a denoising step.
 
-## The residual text-generation model
+## Original research
+
+- Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc’Aurelio Ranzato. [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1). ICLR 2020. [Record and citation](https://yuntiandeng.com/research/papers/residual-ebm/#citation).
+- Anton Bakhtin, Yuntian Deng, Sam Gross, Myle Ott, Marc’Aurelio Ranzato, Arthur Szlam. [Residual Energy-Based Models for Text](https://www.jmlr.org/papers/v22/20-326.html). JMLR 22(40):1–41 · 2021. [Record and citation](https://yuntiandeng.com/research/papers/residual-ebm-jmlr/#citation).
+
+## How a whole-sequence energy generates text
 
 Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam and Marc’Aurelio Ranzato introduced the ICLR 2020 text-generation framework. Its arXiv version is dated 22 April 2020. A fixed autoregressive LM supplies candidate sequences; a bidirectional energy function scores them. The paper develops importance-weighted conditional generation and lower and upper log-probability bounds for perplexity evaluation.
 
@@ -30,6 +35,15 @@ The base probability is already represented by drawing the pool from q. Multiply
 
 - [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1)
 - [Residual Energy-Based Models for Text](https://www.jmlr.org/papers/v22/20-326.html)
+
+## Where does the model represent dependencies between tokens?
+
+The energy receives the complete candidate continuation. It can assign different scores to sequences that share a prefix but end differently, so the final selection depends on the words together. The base model proposes the text; the sequence-level energy changes the probability of the resulting continuation.
+
+In diffusion generation, a denoiser proposes several unresolved tokens in parallel. EDLM applies the same base-times-energy construction to these proposed sequences, conditioned on the current noisy text. The sequence energy provides a joint correction for token dependencies. This is the concrete connection between residual EBM text generation and energy-based diffusion decoding.
+
+- [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1)
+- [Energy-Based Diffusion Language Models for Text Generation](https://arxiv.org/html/2410.21357v4)
 
 ## The direct connection to diffusion language models
 

@@ -2,8 +2,8 @@
   "id": "probabilistic-attention",
   "title": "Attention as a Latent Variable: Modeling a Distribution over Attention",
   "eyebrow": "Probabilistic attention and latent inference",
-  "description": "Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.",
-  "lead": "Latent Alignment and Variational Attention (NeurIPS 2018), by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. The general idea is to model a distribution over where a network attends and reason over that distribution, rather than pass one deterministic weighted average into the prediction network.",
+  "description": "Yuntian Deng and colleagues’ Latent Alignment and Variational Attention (NeurIPS 2018) models attention as a latent variable with output marginalization and learned posterior inference.",
+  "lead": "<a href=\"https://arxiv.org/abs/1807.03756\">Latent Alignment and Variational Attention</a>, by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. First released on July 10, 2018 and published at NeurIPS 2018, it models a distribution over where a network attends and integrates predictions over that distribution. Categorical and Dirichlet alignments make this a general approach to modeling attention uncertainty.",
   "original_papers": [
     "latentattention2018"
   ],
@@ -28,6 +28,17 @@
       "citations": [
         "latentattention2018",
         "structuredattention2017"
+      ]
+    },
+    {
+      "id": "marginalizing-attention",
+      "title": "Marginalizing attention at the output",
+      "paragraphs": [
+        "Let x include the observed input and the query, y be the output, and z be a categorical attention state. The latent model predicts <code>p(y | x) = Σ_z p(z | x) p(y | x, z)</code>. Each attention state supplies an output distribution; its attention probability weights that distribution. A continuous attention state uses an integral in place of the sum.",
+        "During training, the observed answer y lets an inference network learn <code>q(z | x, y)</code>, a posterior approximation used by the variational objective. At prediction time, the model combines outputs using <code>p(z | x)</code>. For translation, the training inference network sees the source and target sentence; generation uses the source and the target prefix already produced."
+      ],
+      "citations": [
+        "latentattention2018"
       ]
     },
     {
@@ -139,6 +150,40 @@
   ],
   "updated_at": "2026-11-14",
   "url": "https://yuntiandeng.com/research/probabilistic-attention/",
+  "original_references": [
+    {
+      "@type": "ScholarlyArticle",
+      "name": "Latent Alignment and Variational Attention",
+      "author": [
+        {
+          "@type": "Person",
+          "name": "Yuntian Deng"
+        },
+        {
+          "@type": "Person",
+          "name": "Yoon Kim"
+        },
+        {
+          "@type": "Person",
+          "name": "Justin Chiu"
+        },
+        {
+          "@type": "Person",
+          "name": "Demi Guo"
+        },
+        {
+          "@type": "Person",
+          "name": "Alexander M. Rush"
+        }
+      ],
+      "datePublished": "2018",
+      "url": "https://arxiv.org/abs/1807.03756",
+      "isPartOf": {
+        "@type": "CreativeWork",
+        "name": "NeurIPS 2018"
+      }
+    }
+  ],
   "papers": [
     {
       "id": "latentattention2018",
@@ -399,7 +444,7 @@
     "zh-Hans": {
       "url": "https://yuntiandeng.com/research/zh/probabilistic-attention/",
       "title": "把注意力建模为隐变量：学习注意力的概率分布",
-      "description": "Latent Alignment and Variational Attention：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
+      "description": "Yuntian Deng 等人的 Latent Alignment and Variational Attention（NeurIPS 2018）将注意力建模为隐变量：对输出概率进行边缘化，并用变分推断学习注意力后验。",
       "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/probabilistic-attention.md"
     }
   }

@@ -2,13 +2,13 @@
 
 > 研究方法、原始论文、当前研究联系与引用。
 
-- [大语言模型决策树：从 Tree Prompting 到智能体分类](https://yuntiandeng.com/research/zh/llm-decision-trees/): Tree Prompting 如何学习由语言模型提示调用组成的决策树，以及它与 Aug-Tree、GPTree 和 Agentic Classification Tree 的联系。
-- [基于能量的文本生成：残差模型、重采样与扩散](https://yuntiandeng.com/research/zh/energy-based-text-generation/): Residual Energy-Based Models for Text Generation 将序列级能量、噪声对比估计和重要性重采样联系起来，并与基于能量的扩散语言模型直接相连。
-- [结构化解码：高阶 CRF、扩散语言模型与候选格](https://yuntiandeng.com/research/zh/structured-decoding/): Cascaded Text Generation 和 Sequence-to-Lattice 如何连接高阶条件随机场、联合扩散解码，以及用于投机生成的候选格。
-- [把注意力建模为隐变量：学习注意力的概率分布](https://yuntiandeng.com/research/zh/probabilistic-attention/): Latent Alignment and Variational Attention：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。
-- [如何评估长文本的结构](https://yuntiandeng.com/research/zh/long-form-evaluation/): 潜在空间中的模型检验如何超越词元层面的流畅度，评估生成文本的篇章结构、实体行为与主题关系。
-- [学习渲染 LaTeX、SMILES、HTML 与乐谱](https://yuntiandeng.com/research/zh/learned-rendering/): 用扩散模型学习渲染数学公式、分子、表格布局和乐谱，并通过 Scheduled Sampling 处理暴露偏差。
-- [让人和 AI 智能体控制正在运行的训练任务](https://yuntiandeng.com/research/zh/interactive-training/): Interactive Training 将实时指标与人和 LLM 对训练任务的干预相连；第二版加入带类型的控制项和有序操作日志。
+- [大语言模型决策树：用提示词做文本分类，无需微调](https://yuntiandeng.com/research/zh/llm-decision-trees/): Tree Prompting（EMNLP 2023）从带标签文本学习决策树：每个内部节点用提示词调用冻结的大语言模型，根据回答选择分支，由叶节点输出类别，无需微调模型。
+- [能量模型如何生成文本：全序列评分、重采样与扩散语言模型](https://yuntiandeng.com/research/zh/energy-based-text-generation/): Yuntian Deng 等人在 ICLR 2020 的 Residual Energy-Based Models for Text Generation：全局归一化文本生成、先采样再评分与重采样，以及序列级能量如何连接扩散语言模型中的 token 依赖。
+- [条件随机场用于文本生成：高阶 CRF、扩散联合解码与候选格](https://yuntiandeng.com/research/zh/structured-decoding/): Yuntian Deng 和 Alexander M. Rush 的 Cascaded Text Generation（NeurIPS 2020）与 Sequence-to-Lattice（EMNLP Findings 2021）：以输出词元为变量进行结构化文本生成，并连接扩散语言模型的联合解码与 token 依赖。
+- [把注意力建模为隐变量：学习注意力的概率分布](https://yuntiandeng.com/research/zh/probabilistic-attention/): Yuntian Deng 等人的 Latent Alignment and Variational Attention（NeurIPS 2018）将注意力建模为隐变量：对输出概率进行边缘化，并用变分推断学习注意力后验。
+- [长文本生成评估：语言流畅度、故事结构与实体一致性](https://yuntiandeng.com/research/zh/long-form-evaluation/): Yuntian Deng、Volodymyr Kuleshov 和 Alexander M. Rush 的 Model Criticism（EMNLP 2022）用潜在结构评估长文本生成的篇章连贯性、实体共指与主题关系。
+- [扩散模型渲染 LaTeX 公式与 SMILES 分子结构图](https://yuntiandeng.com/research/zh/learned-rendering/): 扩散模型学习把给定 LaTeX 代码渲染成公式图片，把给定 SMILES 字符串渲染成二维分子结构图。原始论文由 Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 发表于 ICLR 2023。
+- [Interactive Training：人和大语言模型在训练过程中实时干预](https://yuntiandeng.com/research/zh/interactive-training/): 人和大语言模型读取实时训练反馈，在正在运行的任务中动态调整学习率、修改训练数据或请求保存检查点。Interactive Training 框架发表于 EMNLP 2025。
 
 - [论文导读目录](https://yuntiandeng.com/research/zh/data/reading-list.md)
 - [论文目录 JSON](https://yuntiandeng.com/research/zh/data/papers.json)

@@ -1,18 +1,22 @@
-# LLM decision trees: from Tree Prompting to agentic classification
+# LLM decision trees for text classification without fine-tuning
 
-Tree Prompting (EMNLP 2023) learns a decision tree in which a prompted language model makes each branching decision. Its learned prompts and control flow form a reusable program for a classification task. This mechanism connects directly to today’s LLM decision trees, natural-language question trees and agentic classification.
+In [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1) (EMNLP 2023), John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, and Yuntian Deng learn decision trees that classify text through prompted language-model calls. Each internal node asks the frozen model to judge the input; its answer selects the next branch, and the reached leaf returns a class. The learned prompts and branching structure form a reusable program for the task.
+
+## Original research
+
+- John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1). EMNLP 2023. [Record and citation](https://yuntiandeng.com/research/papers/tree-prompting/#citation).
 
 ## What Tree Prompting introduced
 
-John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao and Yuntian Deng published Tree Prompting at EMNLP 2023; Morris and Singh contributed equally. The preprint was released on 21 October 2023. Each internal node evaluates a prompt with a frozen LM; its output selects a branch, and a leaf supplies the prediction.
+The Tree Prompting preprint was released on 21 October 2023 and published at EMNLP 2023; John X. Morris and Chandan Singh contributed equally. A node combines a prompt, an LM call, and a rule mapping the output to a branch. A complete root-to-leaf path is the classifier’s execution trace for one input.
 
 The tree is learned from labeled examples. Candidate prompts include sampled demonstrations, instructions and dynamically generated prompts. In the dynamic version, iPrompt generates candidates for the examples reaching a node, then split quality selects the prompt. Both the node questions and the tree’s branching structure are learned.
 
 - [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1)
 
-## Reading a prompt tree as a program
+## From input text to node decisions to a class
 
-In a worked support-classification example, a first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. This fixed example illustrates control flow; the paper learns its trees from data.
+Consider a worked support-classification example with input “I was charged twice; please refund the duplicate payment.” A first node asks whether the message requests a refund. Its yes branch reaches a node asking about a duplicate charge; that yes branch ends at a duplicate-billing leaf. The input is a message, the intermediate values are LM judgments, and the output is its category. This fixed example illustrates control flow; the paper learns its trees from data.
 
 The program consists of conditions, branches and return values. A conventional condition tests a numerical threshold or an exact string. A prompt-based condition asks the LM to interpret the input under an instruction. The instruction defines the question; the LM supplies the decision for this particular input.
 

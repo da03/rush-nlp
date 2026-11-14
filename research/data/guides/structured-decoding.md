@@ -1,6 +1,20 @@
-# Structured Decoding: Higher-Order CRFs, Diffusion Language Models, and Candidate Lattices
+# CRFs for text generation: higher-order decoding, diffusion and candidate lattices
 
-Parallel neural computation does not require independent output decisions. Yuntian Deng and Alexander M. Rush developed higher-order CRF cascades for text generation in Cascaded Text Generation with Markov Transformers (NeurIPS 2020), followed by candidate-lattice generation with exact path search in Sequence-to-Lattice Models for Fast Translation (Findings of EMNLP 2021). These contributions connect to two current problems: modeling dependencies among tokens generated together by diffusion language models, and selecting coherent drafts from parallel token candidates.
+A conditional random field can generate text by making the output words its variables and decoding their joint sequence. Yuntian Deng and Alexander M. Rush developed higher-order CRF cascades in [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112) (NeurIPS 2020), then candidate-lattice generation with exact path search in [Sequence-to-Lattice Models for Fast Translation](https://aclanthology.org/2021.findings-emnlp.318/) (Findings of EMNLP 2021). These models connect parallel neural computation to dependent output decisions—the same coordination problem encountered when diffusion language models generate several tokens together.
+
+## Original research
+
+- Yuntian Deng, Alexander M. Rush. [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112). NeurIPS 2020. [Record and citation](https://yuntiandeng.com/research/papers/cascaded2020/#citation).
+- Yuntian Deng, Alexander M. Rush. [Sequence-to-Lattice Models for Fast Translation](https://aclanthology.org/2021.findings-emnlp.318/). Findings of EMNLP 2021. [Record and citation](https://yuntiandeng.com/research/papers/lattice2021/#citation).
+
+## How does a CRF generate a sentence?
+
+Let x be a source sentence and y₁, …, yₙ the target words to generate. Each yᵢ ranges over candidate output tokens. Potentials score combinations of neighboring words, conditioned on x; structured decoding chooses the output sequence. The predicted variables are the words of the translation itself.
+
+Deng and Rush’s Cascaded Text Generation, first released on 1 June 2020, increases the Markov order across a cascade of CRFs. Higher-order factors score longer token spans, and a shared Markov Transformer computes their potentials. Their 2021 Sequence-to-Lattice model instead constructs a compact candidate lattice and scores first-order transitions before Viterbi path search. Both generate target sentences by modeling dependencies among output words.
+
+- [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112)
+- [Sequence-to-Lattice Models for Fast Translation](https://aclanthology.org/2021.findings-emnlp.318/)
 
 ## Why parallel predictions need a joint decision
 
@@ -21,7 +35,7 @@ The contribution combines higher-order output dependencies, shared neural parame
 - [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112)
 - [Fast Structured Decoding for Sequence Models](https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html)
 
-## From higher-order CRFs to joint diffusion decoding
+## How structured generation connects to joint diffusion decoding
 
 Diffusion introduces a repeated version of the same coordination problem: several uncertain tokens are resolved during one denoising step. The connection to structured generation is a modeling principle: use a tractable joint distribution to couple those decisions while retaining parallel neural computation. A Markov order describes dependence across output positions; a diffusion timestep describes the progression from corrupted to recovered text. They are different axes.
 

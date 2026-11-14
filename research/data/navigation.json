@@ -1,12 +1,12 @@
 {
   "title": "Research notes",
-  "updated": "2026-11-11",
+  "updated": "2026-11-14",
   "home": "https://yuntiandeng.com/research/",
   "bibliography": "https://yuntiandeng.com/research/papers/",
   "downloads": "https://yuntiandeng.com/research/data/",
   "guides": [
     {
-      "title": "LLM decision trees: from Tree Prompting to agentic classification",
+      "title": "LLM decision trees for text classification without fine-tuning",
       "url": "https://yuntiandeng.com/research/llm-decision-trees/",
       "markdown": "https://yuntiandeng.com/research/data/guides/llm-decision-trees.md",
       "original_papers": [
@@ -17,7 +17,7 @@
       }
     },
     {
-      "title": "Energy-based text generation: residual models, resampling and diffusion",
+      "title": "Energy-based text generation: whole-sequence scoring, resampling and diffusion",
       "url": "https://yuntiandeng.com/research/energy-based-text-generation/",
       "markdown": "https://yuntiandeng.com/research/data/guides/energy-based-text-generation.md",
       "original_papers": [
@@ -29,7 +29,7 @@
       }
     },
     {
-      "title": "Structured Decoding: Higher-Order CRFs, Diffusion Language Models, and Candidate Lattices",
+      "title": "CRFs for text generation: higher-order decoding, diffusion and candidate lattices",
       "url": "https://yuntiandeng.com/research/structured-decoding/",
       "markdown": "https://yuntiandeng.com/research/data/guides/structured-decoding.md",
       "original_papers": [
@@ -52,7 +52,7 @@
       }
     },
     {
-      "title": "Evaluating the structure of long-form text",
+      "title": "Evaluating generated text beyond fluency: story structure and entity consistency",
       "url": "https://yuntiandeng.com/research/long-form-evaluation/",
       "markdown": "https://yuntiandeng.com/research/data/guides/long-form-evaluation.md",
       "original_papers": [
@@ -63,7 +63,7 @@
       }
     },
     {
-      "title": "Learning to render LaTeX, SMILES, HTML and music notation",
+      "title": "Diffusion rendering: LaTeX formulas and SMILES molecule images",
       "url": "https://yuntiandeng.com/research/learned-rendering/",
       "markdown": "https://yuntiandeng.com/research/data/guides/learned-rendering.md",
       "original_papers": [
@@ -74,7 +74,7 @@
       }
     },
     {
-      "title": "Controlling a running training job with humans and AI agents",
+      "title": "Interactive Training: human and LLM control of ongoing model training",
       "url": "https://yuntiandeng.com/research/interactive-training/",
       "markdown": "https://yuntiandeng.com/research/data/guides/interactive-training.md",
       "original_papers": [

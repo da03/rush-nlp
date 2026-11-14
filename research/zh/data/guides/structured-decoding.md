@@ -1,6 +1,20 @@
-# 结构化解码：高阶 CRF、扩散语言模型与候选格
+# 条件随机场用于文本生成：高阶 CRF、扩散联合解码与候选格
 
-神经网络的并行计算不要求各个输出独立决策。Yuntian Deng 和 Alexander M. Rush 在 Cascaded Text Generation with Markov Transformers（NeurIPS 2020）中提出了用于文本生成的高阶 CRF 级联模型，又在 Sequence-to-Lattice Models for Fast Translation（Findings of EMNLP 2021）中发展了结合精确路径搜索的候选格生成。这些贡献连接了今天的两个问题：建模扩散语言模型同时生成的 token 之间的依赖，以及从并行 token 候选中选出连贯的草稿。
+条件随机场可以直接用于文本生成：把要生成的词作为变量，联合解码出完整输出序列。Yuntian Deng 和 Alexander M. Rush 在 [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112)（NeurIPS 2020）中提出高阶 CRF 级联模型，随后在 [Sequence-to-Lattice Models for Fast Translation](https://aclanthology.org/2021.findings-emnlp.318/)（Findings of EMNLP 2021）中发展了结合精确路径搜索的候选格生成。这些模型把神经网络的并行计算与存在依赖的输出决策结合起来；扩散语言模型同时生成多个 token 时，也面临这一协调问题。
+
+## 原始研究
+
+- Yuntian Deng, Alexander M. Rush. [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112). NeurIPS 2020. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/cascaded2020/#citation).
+- Yuntian Deng, Alexander M. Rush. [Sequence-to-Lattice Models for Fast Translation](https://aclanthology.org/2021.findings-emnlp.318/). Findings of EMNLP 2021. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/lattice2021/#citation).
+
+## CRF 如何直接生成一句话？
+
+设 x 为源句，y₁、…、yₙ 为需要生成的目标词。每个 yᵢ 的取值是候选输出 token；势函数以 x 为条件，对相邻词的组合打分，再通过结构化解码选出输出序列。这里被预测的变量就是译文本身的词。
+
+Deng 和 Rush 的 Cascaded Text Generation 于 2020 年 6 月 1 日首次发布，在 CRF 级联中逐步提高马尔可夫阶数。高阶因子对更长的 token 片段打分，共享的 Markov Transformer 计算这些势函数。两人在 2021 年的 Sequence-to-Lattice 中构建紧凑候选格，计算一阶转移分数，再用 Viterbi 搜索路径。这两种方法都通过建模输出词之间的依赖来生成目标句子。
+
+- [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112)
+- [Sequence-to-Lattice Models for Fast Translation](https://aclanthology.org/2021.findings-emnlp.318/)
 
 ## 为什么并行预测需要联合决策
 
@@ -21,7 +35,7 @@ Cascaded Text Generation 引入了马尔可夫阶数逐级增加的一系列条�
 - [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112)
 - [Fast Structured Decoding for Sequence Models](https://proceedings.neurips.cc/paper_files/paper/2019/hash/74563ba21a90da13dacf2a73e3ddefa7-Abstract.html)
 
-## 从高阶 CRF 到联合扩散解码
+## 结构化文本生成如何连接扩散语言模型的联合解码
 
 扩散模型反复遇到同样的协调问题：一次去噪步骤中，要同时确定多个尚不明确的 token。它与结构化生成的联系在于一个建模原则：用计算成本可控的联合分布耦合这些决策，同时保留神经网络的并行计算。马尔可夫阶数描述输出位置之间的依赖范围；扩散时间步描述文本从受扰状态逐渐恢复的进程。这是两个不同的维度。
 

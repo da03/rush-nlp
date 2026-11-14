@@ -1,12 +1,12 @@
 {
   "title": "Research notes",
-  "updated": "2026-11-11",
+  "updated": "2026-11-14",
   "home": "https://yuntiandeng.com/research/zh/",
   "bibliography": "https://yuntiandeng.com/research/zh/papers/",
   "downloads": "https://yuntiandeng.com/research/zh/data/",
   "guides": [
     {
-      "title": "大语言模型决策树：从 Tree Prompting 到智能体分类",
+      "title": "大语言模型决策树：用提示词做文本分类，无需微调",
       "url": "https://yuntiandeng.com/research/zh/llm-decision-trees/",
       "markdown": "https://yuntiandeng.com/research/zh/data/guides/llm-decision-trees.md",
       "original_papers": [
@@ -14,7 +14,7 @@
       ]
     },
     {
-      "title": "基于能量的文本生成：残差模型、重采样与扩散",
+      "title": "能量模型如何生成文本：全序列评分、重采样与扩散语言模型",
       "url": "https://yuntiandeng.com/research/zh/energy-based-text-generation/",
       "markdown": "https://yuntiandeng.com/research/zh/data/guides/energy-based-text-generation.md",
       "original_papers": [
@@ -23,7 +23,7 @@
       ]
     },
     {
-      "title": "结构化解码：高阶 CRF、扩散语言模型与候选格",
+      "title": "条件随机场用于文本生成：高阶 CRF、扩散联合解码与候选格",
       "url": "https://yuntiandeng.com/research/zh/structured-decoding/",
       "markdown": "https://yuntiandeng.com/research/zh/data/guides/structured-decoding.md",
       "original_papers": [
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "title": "如何评估长文本的结构",
+      "title": "长文本生成评估：语言流畅度、故事结构与实体一致性",
       "url": "https://yuntiandeng.com/research/zh/long-form-evaluation/",
       "markdown": "https://yuntiandeng.com/research/zh/data/guides/long-form-evaluation.md",
       "original_papers": [
@@ -48,7 +48,7 @@
       ]
     },
     {
-      "title": "学习渲染 LaTeX、SMILES、HTML 与乐谱",
+      "title": "扩散模型渲染 LaTeX 公式与 SMILES 分子结构图",
       "url": "https://yuntiandeng.com/research/zh/learned-rendering/",
       "markdown": "https://yuntiandeng.com/research/zh/data/guides/learned-rendering.md",
       "original_papers": [
@@ -56,7 +56,7 @@
       ]
     },
     {
-      "title": "让人和 AI 智能体控制正在运行的训练任务",
+      "title": "Interactive Training：人和大语言模型在训练过程中实时干预",
       "url": "https://yuntiandeng.com/research/zh/interactive-training/",
       "markdown": "https://yuntiandeng.com/research/zh/data/guides/interactive-training.md",
       "original_papers": [

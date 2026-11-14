@@ -40,6 +40,14 @@ def url(path): return BASE + PREFIX + path
 def guide_url(g): return PREFIX + g['id'] + '/'
 def paper_url(p): return PREFIX + 'papers/' + p['id'] + '/'
 def authors(p): return ', '.join((a['given']+' '+a['family']).strip() for a in p['authors'])
+def publication(p):
+    return p['venue'] if str(p['year']) in p['venue'] else p['venue']+' · '+str(p['year'])
+def original_references(g):
+    return [{'@type':'ScholarlyArticle','name':PP[i]['title'],
+             'author':[{'@type':'Person','name':a['given']+' '+a['family']} for a in PP[i]['authors']],
+             'datePublished':str(PP[i]['year']),'url':PP[i]['paper_url'],
+             'isPartOf':{'@type':'CreativeWork','name':PP[i]['venue']}}
+            for i in g['original_papers']]
 def paragraph(s): return '<p>'+s+'</p>'
 def name(p): return e(p['title'])
 
@@ -104,6 +112,7 @@ def layout(title, desc, path, body, active='guides', paper=None):
         schema=paper_schema(paper)
     else:
         schema={'@context':'https://schema.org','@type':'CollectionPage' if active in ['papers','data'] else 'Article','headline':title,'description':desc,'url':canonical,'author':{'@type':'Person','name':'Yuntian Deng','url':BASE}}
+        if guide: schema['citation']=original_references(guide)
     schema['dateModified']=updated_at
     nav=''.join('<a href="'+PREFIX+dest+'"'+(' aria-current="page"' if key==active else '')+'>'+label+'</a>' for key,label,dest in [('guides','Guides',''),('papers','Papers','papers/'),('data','Citations & data','data/')])
     return f'''<!doctype html>
@@ -143,6 +152,8 @@ def demo(kind):
 def render_section(s):
     out='<section id="'+e(s['id'])+'"><h2>'+e(s['title'])+'</h2>'
     out+=''.join(paragraph(x) for x in s.get('paragraphs',[]))
+    if s.get('figures'):
+        out+='<div class="rendering-gallery">'+''.join('<figure><img src="'+e(f['src'],quote=True)+'" alt="'+e(f['alt'],quote=True)+'" width="'+str(f['width'])+'" height="'+str(f['height'])+'" loading="lazy"><figcaption>'+e(f['caption'])+'</figcaption></figure>' for f in s['figures'])+'</div>'
     if s.get('equation'):out+='<div class="math">'+s['equation']+'</div>'
     if s.get('items'):out+='<ul>'+''.join('<li>'+x+'</li>' for x in s['items'])+'</ul>'
     if s.get('table'):out+=table(s['table']['columns'],s['table']['rows'])
@@ -152,9 +163,16 @@ def render_section(s):
 
 def markdown_guide(g):
     text='# '+g['title']+'\n\n'+markdown_text(g['lead'])+'\n\n'
+    text+='## Original research\n\n'
+    for pid in g['original_papers']:
+        p=PP[pid]
+        text+='- '+authors(p)+'. ['+p['title']+']('+p['paper_url']+'). '+publication(p)+'. [Record and citation]('+BASE+paper_url(p)+'#citation).\n'
+    text+='\n'
     for s in g['sections']:
         text+='## '+s['title']+'\n\n'+'\n\n'.join(markdown_text(x) for x in s.get('paragraphs',[]))+'\n\n'
         if s.get('items'):text+='\n'.join('- '+markdown_text(x) for x in s['items'])+'\n\n'
+        for f in s.get('figures',[]):
+            text+='!['+f['alt']+']('+BASE+f['src']+')\n\n'+f['caption']+'\n\n'
         if s.get('table'):
             cols=s['table']['columns'];text+='| '+' | '.join(plain(x).replace('|','\\|') for x in cols)+' |\n| '+' | '.join('---' for _ in cols)+' |\n'
             text+='\n'.join('| '+' | '.join(plain(x).replace('|','\\|') for x in row)+' |' for row in s['table']['rows'])+'\n\n'
@@ -166,7 +184,7 @@ def markdown_guide(g):
     return text
 
 def build_guide(g):
-    originals='<div class="originals"><p class="kicker">Original research</p>'+''.join('<p><a href="'+paper_url(PP[i])+'">'+name(PP[i])+'</a><br>'+e(authors(PP[i]))+' · '+e(PP[i]['venue'])+'</p>' for i in g['original_papers'])+'</div>'
+    originals='<div class="originals"><p class="kicker">Original research</p>'+''.join('<p><a href="'+e(PP[i]['paper_url'],quote=True)+'">'+name(PP[i])+'</a><br>'+e(authors(PP[i]))+' · '+e(publication(PP[i]))+'<br><a class="citation-link" href="'+paper_url(PP[i])+'#citation">Record and citation</a></p>' for i in g['original_papers'])+'</div>'
     hero='<div class="back"><a href="/research/">← All guides</a></div><header class="hero"><p class="kicker">'+e(g['eyebrow'])+'</p><h1>'+e(g['title'])+'</h1><p class="lead">'+g['lead']+'</p>'+originals+'</header>'
     toc='<aside class="toc"><h2>In this guide</h2><nav aria-label="On this page">'+''.join('<a href="#'+s['id']+'">'+e(s['title'])+'</a>' for s in g['sections'])+'<a href="#reading-list">Papers & implementations</a></nav><div class="terms">'+''.join('<span class="tag">'+e(t)+'</span>' for t in g['terms'])+'</div><p><a href="/research/data/guides/'+g['id']+'.md">Read as Markdown ↗</a></p></aside>'
     content=demo(g['demo'])+''.join(render_section(s) for s in g['sections'])
@@ -177,7 +195,7 @@ def build_guide(g):
     content+='</section><div class="related">'+''.join('<a href="'+guide_url(GP[i])+'">'+e(GP[i]['title'])+' →</a>' for i in g.get('related_guides',[]) if i in GP)+'</div>'
     emit(g['id']+'/index.html',layout(g['title'],g['description'],g['id']+'/',hero+'<div class="article-grid"><div class="prose">'+content+'</div>'+toc+'</div>'))
     emit('data/guides/'+g['id']+'.md',markdown_guide(g))
-    json_emit('data/guides/'+g['id']+'.json',{**g,'url':BASE+guide_url(g),'papers':[PP[i] for i in g['reading_order']]})
+    json_emit('data/guides/'+g['id']+'.json',{**g,'url':BASE+guide_url(g),'original_references':original_references(g),'papers':[PP[i] for i in g['reading_order']]})
 
 def build_paper(p):
     body='<div class="back"><a href="/research/papers/">← Bibliography</a></div><header class="hero"><p class="kicker">'+e(p['venue'])+'</p><h1>'+name(p)+'</h1><p class="lead">'+e(authors(p))+'</p>'
@@ -216,7 +234,7 @@ def build_bibliography():
 
 def build_exports():
     json_emit('data/papers.json',[{**p,'record_url':BASE+paper_url(p)} for p in PAPERS])
-    json_emit('data/guides.json',[{**g,'url':BASE+guide_url(g),'markdown_url':url('data/guides/'+g['id']+'.md')} for g in GUIDES])
+    json_emit('data/guides.json',[{**g,'url':BASE+guide_url(g),'markdown_url':url('data/guides/'+g['id']+'.md'),'original_references':original_references(g)} for g in GUIDES])
     json_emit('data/citations.csl.json',[csl(p) for p in PAPERS])
     emit('data/citations.bib','\n'.join(bibtex(p) for p in PAPERS))
     md='# Research notes: language models and structured learning\n\n'

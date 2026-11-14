@@ -2,6 +2,8 @@
 """Check bilingual routing, shared citations and local download destinations."""
 from pathlib import Path
 import json
+import html
+import re
 import unittest
 from html.parser import HTMLParser
 from urllib.parse import urlparse, unquote
@@ -20,6 +22,32 @@ class Page(HTMLParser):
         return [a for t,a in self.tags if t == tag and all(a.get(k)==v for k,v in attrs.items())]
 
 class Locales(unittest.TestCase):
+    def test_original_attribution_survives_each_reading_format(self):
+        papers = {p['id']:p for p in json.loads((ROOT/'_data/methods/papers.json').read_text())}
+        for locale in ('', 'zh/'):
+            for guide in json.loads((ROOT/('_data/methods/'+locale+'guides.json')).read_text()):
+                base = ROOT/('research/'+locale)
+                page = (base/guide['id']/'index.html').read_text()
+                opening = html.unescape(page.split('<div class="originals">', 1)[1].split('</div>', 1)[0])
+                markdown = (base/'data/guides'/f"{guide['id']}.md").read_text()
+                opening_md = markdown.split('## '+guide['sections'][0]['title'], 1)[0]
+                data = json.loads((base/'data/guides'/f"{guide['id']}.json").read_text())
+                schema = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>',page).group(1))
+                self.assertEqual(data['original_references'], schema['citation'])
+                self.assertEqual(len(schema['citation']),len(guide['original_papers']))
+                for pid, citation in zip(guide['original_papers'],schema['citation']):
+                    paper = papers[pid]
+                    self.assertEqual(citation['url'],paper['paper_url'])
+                    self.assertEqual(citation['datePublished'],str(paper['year']))
+                    for value in (paper['title'],paper['paper_url'],str(paper['year'])):
+                        self.assertIn(value,opening)
+                        self.assertIn(value,opening_md)
+                    names = [' '.join((a['given'],a['family'])).strip() for a in paper['authors']]
+                    self.assertEqual([a['name'] for a in citation['author']],names)
+                    for name in names:
+                        self.assertIn(name,opening)
+                        self.assertIn(name,opening_md)
+
     def test_reciprocal_routes(self):
         paths = json.loads((ROOT/'_data/methods/zh/meta.json').read_text())['pages']
         self.assertEqual(len(paths), 42)
@@ -58,6 +86,10 @@ class Locales(unittest.TestCase):
         expected={BASE+'/research/zh/'+p['path']:p['updated_at'] for p in paths}
         actual={x.find('s:loc',ns).text:x.find('s:lastmod',ns).text for x in ET.parse(ROOT/'research/zh/sitemap.xml').getroot()}
         self.assertEqual(actual,expected)
+        for url, modified in actual.items():
+            page = (ROOT/(url.removeprefix(BASE+'/'))/'index.html').read_text()
+            schema = json.loads(re.search(r'<script type="application/ld\+json">(.*?)</script>',page).group(1))
+            self.assertEqual(schema['dateModified'], modified, url)
         combined=[x.text for x in ET.parse(ROOT/'research/sitemap.xml').findall('.//s:loc',ns)]
         self.assertEqual(len(combined),len(set(combined)))
         self.assertTrue(expected.keys()<=set(combined))

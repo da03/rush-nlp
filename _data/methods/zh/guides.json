@@ -1,10 +1,10 @@
 [
   {
     "id": "llm-decision-trees",
-    "title": "大语言模型决策树：从 Tree Prompting 到智能体分类",
+    "title": "大语言模型决策树：用提示词做文本分类，无需微调",
     "eyebrow": "学习程序结构与提示词",
-    "description": "Tree Prompting 如何学习由语言模型提示调用组成的决策树，以及它与 Aug-Tree、GPTree 和 Agentic Classification Tree 的联系。",
-    "lead": "Tree Prompting（EMNLP 2023）学习一棵决策树，由接收提示词的语言模型完成每个节点的分支判断。学到的提示词与控制流程共同构成可重复用于分类任务的程序。这一机制直接连接了今天的大语言模型决策树、自然语言问题树和智能体分类。",
+    "description": "Tree Prompting（EMNLP 2023）从带标签文本学习决策树：每个内部节点用提示词调用冻结的大语言模型，根据回答选择分支，由叶节点输出类别，无需微调模型。",
+    "lead": "John X. Morris、Chandan Singh、Alexander M. Rush、Jianfeng Gao 和 Yuntian Deng 在 <a href=\"https://arxiv.org/html/2310.14034v1\">Tree Prompting: Efficient Task Adaptation without Fine-Tuning</a>（EMNLP 2023）中提出用提示词决策树进行文本分类。每个内部节点让冻结的大语言模型判断输入文本，根据回答选择下一条分支，最终由叶节点返回类别。节点提示词和分支结构从带标签的样本中学习，组成可重复执行的任务程序；整个过程无需微调语言模型参数。",
     "original_papers": [
       "tree-prompting"
     ],
@@ -14,7 +14,8 @@
       "自然语言决策树",
       "智能体分类",
       "可学习的提示程序",
-      "动态提示"
+      "动态提示",
+      "无需微调的文本分类"
     ],
     "demo": "tree",
     "related_guides": [
@@ -31,7 +32,7 @@
         "id": "original-method",
         "title": "Tree Prompting 提出了什么",
         "paragraphs": [
-          "John X. Morris、Chandan Singh、Alexander M. Rush、Jianfeng Gao 和 Yuntian Deng 在 EMNLP 2023 发表了 Tree Prompting；Morris 与 Singh 的贡献相同。预印本于 2023 年 10 月 21 日公开。每个内部节点让冻结参数的语言模型执行一条提示，再根据输出选择分支，最终由叶节点给出预测。",
+          "Tree Prompting 预印本于 2023 年 10 月 21 日公开，发表于 EMNLP 2023；John X. Morris 与 Chandan Singh 的贡献相同。一个节点包含提示词、语言模型调用，以及把模型输出映射到分支的规则。从根节点到叶节点的完整路径，就是分类器处理一条输入的执行记录。",
           "这棵树从带标签的样本中学习。候选提示包括采样得到的示例、指令以及动态生成的提示。在动态版本中，iPrompt 针对到达当前节点的样本生成候选提示，再根据划分质量选出提示。节点提出的问题与树的分支结构都从数据中学习得到。"
         ],
         "citations": [
@@ -40,9 +41,9 @@
       },
       {
         "id": "program-view",
-        "title": "把提示树理解为程序",
+        "title": "输入文本 → 节点判断 → 分类结果",
         "paragraphs": [
-          "在一个客服消息分类示例中，第一个节点询问消息是否要求退款；如果回答“是”，第二个节点再询问消息是否涉及重复扣款。这条路径返回账单类标签；回答“否”则进入树的其他部分。这个固定示例展示控制流程；论文中的树则从数据中学习。",
+          "看一个客服文本分类示例：输入是“同一笔订单扣了两次款，请退回重复扣款”。第一个节点问“消息是否要求退款”，模型回答“是”后进入下一个节点；该节点问“是否涉及重复扣款”，回答“是”后到达“重复扣款”类别的叶节点。输入是待分类文本，中间结果是语言模型的判断，输出是类别。这个固定示例展示程序的控制流程；原论文从数据中学习节点提示词与树结构。",
           "这个程序由条件、分支和返回值组成。传统条件检查数值阈值或精确字符串；基于提示的条件让语言模型按指令理解输入。指令规定要问什么，语言模型给出针对当前输入的判断。",
           "路径日志能区分三种错误：节点问了无关的问题；问题相关，但模型回答错误；前面的判断都正确，叶节点却分配了错误类别。记录实际经过的路径，就能区分这些错误。"
         ]
@@ -125,10 +126,10 @@
   },
   {
     "id": "energy-based-text-generation",
-    "title": "基于能量的文本生成：残差模型、重采样与扩散",
+    "title": "能量模型如何生成文本：全序列评分、重采样与扩散语言模型",
     "eyebrow": "全局序列模型",
-    "description": "Residual Energy-Based Models for Text Generation 将序列级能量、噪声对比估计和重要性重采样联系起来，并与基于能量的扩散语言模型直接相连。",
-    "lead": "Residual Energy-Based Models for Text Generation（ICLR 2020）将预训练语言模型与整条序列的能量函数结合，构成全局归一化的生成模型。Energy-Based Diffusion Language Models（ICLR 2025）明确联系这项工作，并把残差能量修正放进扩散去噪步骤。两者共享的机制是：以基础分布为起点，再乘上模型学到的、针对完整候选序列的偏好。",
+    "description": "Yuntian Deng 等人在 ICLR 2020 的 Residual Energy-Based Models for Text Generation：全局归一化文本生成、先采样再评分与重采样，以及序列级能量如何连接扩散语言模型中的 token 依赖。",
+    "lead": "序列级能量模型先对完整续写评分，再用这些分数改变语言模型生成文本的分布。Yuntian Deng、Anton Bakhtin、Myle Ott、Arthur Szlam 和 Marc’Aurelio Ranzato 在 <a href=\"https://arxiv.org/html/2004.11714v1\">Residual Energy-Based Models for Text Generation</a>（ICLR 2020）中，将自回归候选分布与学习得到的全序列能量结合，构成全局归一化的文本生成模型。这一形式直接连接了基于能量的扩散语言模型：残差能量在一次去噪步骤内耦合多个 token 的预测。",
     "original_papers": [
       "residual-ebm",
       "residual-ebm-jmlr"
@@ -140,7 +141,9 @@
       "重要性重采样",
       "基于能量的扩散语言模型",
       "序列级能量",
-      "考虑依赖关系的并行解码"
+      "考虑依赖关系的并行解码",
+      "能量函数建模序列依赖",
+      "扩散语言模型的 token 依赖"
     ],
     "demo": "energy",
     "related_guides": [
@@ -157,7 +160,7 @@
     "sections": [
       {
         "id": "original-method",
-        "title": "用于文本生成的残差能量模型",
+        "title": "全序列能量函数如何用于文本生成",
         "paragraphs": [
           "Yuntian Deng、Anton Bakhtin、Myle Ott、Arthur Szlam 和 Marc’Aurelio Ranzato 在 ICLR 2020 论文中提出了这一文本生成框架，其 arXiv 版本发表于 2020 年 4 月 22 日。固定的自回归语言模型提供候选序列，双向能量函数对候选序列评分。论文围绕这一模型提出了基于重要性加权的条件生成方法，以及用于困惑度评估的对数概率上下界。",
           "模型分布为 <code>p(y | x) = q(y | x) exp(−E(x,y)) / Z(x)</code>。其中，x 是上下文，y 是完整续写，q 是基础模型，E 是残差能量，Z 是对所有续写求和得到的归一化常数。能量越低，相对于 q 的概率就越高。训练采用噪声对比估计（noise-contrastive estimation，NCE），让能量函数区分真实文本和基础模型生成的样本。"
@@ -189,6 +192,18 @@
         "citations": [
           "residual-ebm",
           "residual-ebm-jmlr"
+        ]
+      },
+      {
+        "id": "sequence-dependencies",
+        "title": "能量函数在哪里建模 token 之间的依赖？",
+        "paragraphs": [
+          "能量函数接收完整的候选续写。对于前缀相同、结尾不同的序列，它可以给出不同分数，因此最终选择取决于这些词组合起来的表现。基础模型提出文本，序列级能量改变完整续写的概率。",
+          "在扩散文本生成中，去噪器并行提出多个尚未确定的 token。EDLM 以当前带噪文本为条件，将同样的“基础分布乘以能量权重”形式用于这些候选序列。序列能量对 token 依赖进行联合修正，这就是残差能量文本生成与基于能量的扩散解码之间的具体联系。"
+        ],
+        "citations": [
+          "residual-ebm",
+          "edlm"
         ]
       },
       {
@@ -271,10 +286,10 @@
   },
   {
     "id": "structured-decoding",
-    "title": "结构化解码：高阶 CRF、扩散语言模型与候选格",
+    "title": "条件随机场用于文本生成：高阶 CRF、扩散联合解码与候选格",
     "eyebrow": "面向并行生成的联合模型",
-    "description": "Cascaded Text Generation 和 Sequence-to-Lattice 如何连接高阶条件随机场、联合扩散解码，以及用于投机生成的候选格。",
-    "lead": "神经网络的并行计算不要求各个输出独立决策。Yuntian Deng 和 Alexander M. Rush 在 Cascaded Text Generation with Markov Transformers（NeurIPS 2020）中提出了用于文本生成的高阶 CRF 级联模型，又在 Sequence-to-Lattice Models for Fast Translation（Findings of EMNLP 2021）中发展了结合精确路径搜索的候选格生成。这些贡献连接了今天的两个问题：建模扩散语言模型同时生成的 token 之间的依赖，以及从并行 token 候选中选出连贯的草稿。",
+    "description": "Yuntian Deng 和 Alexander M. Rush 的 Cascaded Text Generation（NeurIPS 2020）与 Sequence-to-Lattice（EMNLP Findings 2021）：以输出词元为变量进行结构化文本生成，并连接扩散语言模型的联合解码与 token 依赖。",
+    "lead": "条件随机场可以直接用于文本生成：把要生成的词作为变量，联合解码出完整输出序列。Yuntian Deng 和 Alexander M. Rush 在 <a href=\"https://arxiv.org/abs/2006.01112\">Cascaded Text Generation with Markov Transformers</a>（NeurIPS 2020）中提出高阶 CRF 级联模型，随后在 <a href=\"https://aclanthology.org/2021.findings-emnlp.318/\">Sequence-to-Lattice Models for Fast Translation</a>（Findings of EMNLP 2021）中发展了结合精确路径搜索的候选格生成。这些模型把神经网络的并行计算与存在依赖的输出决策结合起来；扩散语言模型同时生成多个 token 时，也面临这一协调问题。",
     "original_papers": [
       "cascaded2020",
       "lattice2021"
@@ -287,9 +302,24 @@
       "联合扩散解码",
       "token 依赖",
       "候选格",
-      "投机解码（推测解码）"
+      "投机解码（推测解码）",
+      "CRF 生成文本",
+      "扩散语言模型联合解码",
+      "并行 token 依赖建模"
     ],
     "sections": [
+      {
+        "id": "crf-generates-output-tokens",
+        "title": "CRF 如何直接生成一句话？",
+        "paragraphs": [
+          "设 x 为源句，y₁、…、yₙ 为需要生成的目标词。每个 yᵢ 的取值是候选输出 token；势函数以 x 为条件，对相邻词的组合打分，再通过结构化解码选出输出序列。这里被预测的变量就是译文本身的词。",
+          "Deng 和 Rush 的 Cascaded Text Generation 于 2020 年 6 月 1 日首次发布，在 CRF 级联中逐步提高马尔可夫阶数。高阶因子对更长的 token 片段打分，共享的 Markov Transformer 计算这些势函数。两人在 2021 年的 Sequence-to-Lattice 中构建紧凑候选格，计算一阶转移分数，再用 Viterbi 搜索路径。这两种方法都通过建模输出词之间的依赖来生成目标句子。"
+        ],
+        "citations": [
+          "cascaded2020",
+          "lattice2021"
+        ]
+      },
       {
         "id": "parallel-computation-joint-decisions",
         "title": "为什么并行预测需要联合决策",
@@ -317,7 +347,7 @@
       },
       {
         "id": "joint-diffusion-modeling",
-        "title": "从高阶 CRF 到联合扩散解码",
+        "title": "结构化文本生成如何连接扩散语言模型的联合解码",
         "paragraphs": [
           "扩散模型反复遇到同样的协调问题：一次去噪步骤中，要同时确定多个尚不明确的 token。它与结构化生成的联系在于一个建模原则：用计算成本可控的联合分布耦合这些决策，同时保留神经网络的并行计算。马尔可夫阶数描述输出位置之间的依赖范围；扩散时间步描述文本从受扰状态逐渐恢复的进程。这是两个不同的维度。",
           "Breaking the Factorization Barrier in Diffusion Language Models（ICML 2026）提出 CoDD，将因子化的神经网络预测与概率电路形式的结构先验结合。实验用隐马尔可夫模型实现这一先验。二者的乘积支持联合推断，无需为所有 token 组合显式建立词表规模的表格。它与结构化生成具有共同目标，但采用隐状态结构和以扩散状态为条件的推断，而不是逐级增加已观测 token 上下文阶数的级联。",
@@ -435,8 +465,8 @@
     "id": "probabilistic-attention",
     "title": "把注意力建模为隐变量：学习注意力的概率分布",
     "eyebrow": "概率注意力与隐变量推断",
-    "description": "Latent Alignment and Variational Attention：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
-    "lead": "Yuntian Deng、Yoon Kim、Justin Chiu、Demi Guo 和 Alexander M. Rush 的 Latent Alignment and Variational Attention（NeurIPS 2018）将注意力建模为显式隐变量，并使用变分推断进行学习。其一般思路是对网络关注的位置建立概率分布，并对这一分布进行推断，而不是把一个确定性的加权平均向量传入预测网络。",
+    "description": "Yuntian Deng 等人的 Latent Alignment and Variational Attention（NeurIPS 2018）将注意力建模为隐变量：对输出概率进行边缘化，并用变分推断学习注意力后验。",
+    "lead": "Yuntian Deng、Yoon Kim、Justin Chiu、Demi Guo 和 Alexander M. Rush 的 <a href=\"https://arxiv.org/abs/1807.03756\">Latent Alignment and Variational Attention</a> 于 2018 年 7 月 10 日首次发布，发表于 NeurIPS 2018。论文把注意力建模为显式隐变量，为网络关注的位置建立概率分布，并综合不同注意力状态下的预测。类别对齐与狄利克雷对齐给出了建模注意力不确定性的一般方法，变分推断用于学习注意力后验。",
     "original_papers": [
       "latentattention2018"
     ],
@@ -461,6 +491,17 @@
         "citations": [
           "latentattention2018",
           "structuredattention2017"
+        ]
+      },
+      {
+        "id": "marginalizing-attention",
+        "title": "注意力边缘化：在输出概率上求和",
+        "paragraphs": [
+          "令 x 包含观测输入和查询，y 表示输出，z 表示类别注意力状态。隐变量模型的预测是 <code>p(y | x) = Σ_z p(z | x) p(y | x, z)</code>：先在每个注意力状态下计算输出分布，再按该状态的注意力概率加权求和。连续注意力状态则把求和换成积分。",
+          "训练时，已知答案 y 使推断网络能够学习后验近似 <code>q(z | x, y)</code>，并据此优化变分目标。预测时，模型使用 <code>p(z | x)</code> 综合各状态下的输出。在机器翻译中，训练用的推断网络读取源句和目标句；生成时使用源句与已经生成的目标前缀。"
+        ],
+        "citations": [
+          "latentattention2018"
         ]
       },
       {
@@ -574,10 +615,10 @@
   },
   {
     "id": "long-form-evaluation",
-    "title": "如何评估长文本的结构",
+    "title": "长文本生成评估：语言流畅度、故事结构与实体一致性",
     "eyebrow": "篇章连贯性、共指与叙事评估",
-    "description": "潜在空间中的模型检验如何超越词元层面的流畅度，评估生成文本的篇章结构、实体行为与主题关系。",
-    "lead": "一段话读起来流畅，并不代表整篇文档结构连贯。Yuntian Deng、Volodymyr Kuleshov 和 Alexander M. Rush 的 Model Criticism for Long-Form Text Generation 提出了一个框架：用显式的潜变量检验模型比较真实文本与生成文本的高层结构。论文于 2022 年 10 月 16 日首次发布，发表于 EMNLP 2022，将长文本评估转化为一个明确的统计问题：生成器是否重现了参考文本中的结构分布？",
+    "description": "Yuntian Deng、Volodymyr Kuleshov 和 Alexander M. Rush 的 Model Criticism（EMNLP 2022）用潜在结构评估长文本生成的篇章连贯性、实体共指与主题关系。",
+    "lead": "Yuntian Deng、Volodymyr Kuleshov 和 Alexander M. Rush 的 <a href=\"https://aclanthology.org/2022.emnlp-main.815/\">Model Criticism for Long-Form Text Generation</a> 评估语言模型生成文本的高层结构：文档如何推进、人物与实体如何被指称、主题之间如何关联。论文于 2022 年 10 月 16 日首次发布，发表于 EMNLP 2022，提出将真实文本与生成文本映射到潜在结构、再比较结构分布的框架。长文本生成的评估因此同时考察词句流畅度与篇章结构。",
     "original_papers": [
       "model-criticism"
     ],
@@ -587,14 +628,16 @@
       "篇章连贯性",
       "实体一致性",
       "潜在空间中的模型检验（model criticism）",
-      "潜在困惑度（latent perplexity）"
+      "潜在困惑度（latent perplexity）",
+      "生成文本中的实体一致性",
+      "故事结构评估"
     ],
     "sections": [
       {
         "id": "fluency-and-structure",
         "title": "区分语言流畅与结构连贯",
         "paragraphs": [
-          "设想一篇文章先介绍方法、再展示结果，随后却转回一段无关的引言。每句话的语法都正确，章节顺序仍然不合常理。叙事文本也有类似问题：实体突然消失、前后不一致地重新出现，或者在长篇内容中呈现不合理的变化模式。",
+          "一段生成的故事写道：“小林把钥匙留在家里。到了上锁的木屋，她用那把钥匙打开了门。”两句话都流畅，情节却缺少重新拿到钥匙的事件。另一类问题出现在文章结构中：先介绍方法、再展示结果，随后突然转入一段无关的引言。评估这些文本，需要先明确要检验哪一种高层性质。",
           "词元层面的困惑度衡量模型预测词元的能力，却不直接衡量章节转移、共指结构或主题关系。论文用生成过程已知的合成数据说明了这一差别：模型即使擅长预测下一个词元，仍然会对底层潜在状态的转移拟合不佳。"
         ],
         "citations": [
@@ -618,6 +661,17 @@
         "paragraphs": [
           "篇章连贯性关注章节是否遵循真实文档中的转移模式。实验考察了科学论文与维基百科文本，包括提供和不提供显式章节标题提示的生成设置。共指关注生成文本是否重现实体指称的模式。主题性关注主题之间的关系是否与参考文档一致。",
           "这些诊断分别回答不同的问题。论文发现，所评估的 Transformer 语言模型能够捕捉主题相关性，却难以掌握篇章连贯性和共指结构。单一的整体质量分数会掩盖这种差别。"
+        ],
+        "citations": [
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "entity-reference-example",
+        "title": "故事生成中的实体一致性与共指链",
+        "paragraphs": [
+          "例如：“小林把钥匙交给小周。她离开了。小周打开了门。”实体表示把“小林”和“她”归入同一实体，把两次“小周”归入另一个实体，并记录各次提及的位置。这样，故事段落就变成了实体指称序列，可以在人工写作与生成文本之间比较。",
+          "原论文的共指实验抽取这些提及模式，用检验模型评估其分布，包括代词缺少局部先行词的模式。篇章检验模型考察章节转移，主题检验模型考察主题关系。若要评估前文故事中的钥匙位置，则应明确把事件与物体状态设为待测的结构变量。"
         ],
         "citations": [
           "model-criticism"
@@ -663,28 +717,68 @@
   },
   {
     "id": "learned-rendering",
-    "title": "学习渲染 LaTeX、SMILES、HTML 与乐谱",
-    "eyebrow": "从标记语言到图像的扩散模型",
-    "description": "用扩散模型学习渲染数学公式、分子、表格布局和乐谱，并通过 Scheduled Sampling 处理暴露偏差。",
-    "lead": "Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 的 Markup-to-Image Diffusion Models with Scheduled Sampling 学习把符号描述转化为图像。论文于 2022 年 10 月 11 日发布，发表于 ICLR 2023，提出了覆盖 LaTeX 公式、SMILES 分子、HTML 表格布局和 LilyPond 乐谱的扩散渲染方法。它也研究了扩散模型中的一个普遍问题：采样过程中遇到的状态与训练输入不同时，错误会逐步累积。",
+    "title": "扩散模型渲染 LaTeX 公式与 SMILES 分子结构图",
+    "eyebrow": "标记语言到图像的扩散模型 · ICLR 2023",
+    "description": "扩散模型学习把给定 LaTeX 代码渲染成公式图片，把给定 SMILES 字符串渲染成二维分子结构图。原始论文由 Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 发表于 ICLR 2023。",
+    "lead": "扩散模型能够学习把给定的 LaTeX 公式代码渲染成数学公式图片，也能把给定的 SMILES 字符串渲染成二维分子结构图。Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 在 <a href=\"https://arxiv.org/abs/2210.05147\">Markup-to-Image Diffusion Models with Scheduled Sampling</a> 中提出这一方法，论文于 2022 年 10 月 11 日发布，发表于 ICLR 2023。这个学习式渲染器覆盖 LaTeX 数学公式、SMILES 分子、HTML 表格布局和 LilyPond 乐谱，并通过 Scheduled Sampling 让去噪器学习修正自身中间预测中的错误。",
     "original_papers": [
       "markup-diffusion"
     ],
     "terms": [
+      "扩散模型渲染",
+      "LaTeX 代码生成公式图片",
+      "SMILES 字符串生成分子结构图",
       "标记语言到图像生成（markup-to-image）",
       "学习式渲染（learned rendering）",
-      "LaTeX 公式图像生成",
-      "SMILES 分子图像生成",
       "扩散模型的 Scheduled Sampling",
       "扩散模型的暴露偏差（exposure bias）"
     ],
     "sections": [
       {
         "id": "rendering-direction",
-        "title": "输入是标记语言，输出是图像",
+        "title": "如何用扩散模型把 LaTeX 代码渲染成公式图片？",
         "paragraphs": [
-          "学习式渲染器接收描述视觉对象的序列，预测渲染后的像素。LaTeX 描述数学记号，SMILES 描述原子与化学键，HTML 描述表格类布局，LilyPond 描述乐谱。这四个领域共同检验模型对符号内容、布局，以及跨越输入序列的依赖关系的处理能力。",
-          "图像到 LaTeX 的识别任务从图片恢复源代码；标记语言到图像的生成任务则朝相反方向进行。论文调整了包括 im2latex-100k 在内的配对数据，学习从标记语言到像素的正向映射。它训练的是条件扩散模型，推理时不调用传统渲染引擎。"
+          "输入是 LaTeX 源代码，输出是这段代码指定的公式图像。例如，<code>\\frac{a}{b} + c^2</code> 描述一个分数，后面接一个平方项。学习式渲染器需要把分子放在分母上方，并正确放置上标。在这个任务中，扩散是生成图像的方法；输入的公式代码决定要画出的数学内容。",
+          "模型从标记语言与渲染图像的配对数据中学习这一映射，其中包括 im2latex-100k 的公式数据。推理时，输入的标记序列作为条件，参与连续的图像去噪步骤。去噪器把图像噪声转化为渲染后的像素，学习源词元、符号和布局之间的关系。",
+          "同一个输入到图像的任务也覆盖 HTML 表格布局与 LilyPond 乐谱。表格单元格需要位于指定的行列位置，音符需要表达源代码中的音高和时值；这些对应关系为生成模型提供了具体的结构要求。"
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "smiles-molecule-rendering",
+        "title": "如何从 SMILES 字符串生成二维分子结构图？",
+        "paragraphs": [
+          "SMILES 用原子与化学键的序列指定分子。SMILES 到图像的渲染任务把这个分子作为输入，由扩散模型生成对应的二维分子结构图。例如，<code>CC(=O)O</code> 指定乙酸；图像需要保留其中的原子、单键以及碳氧双键。这个例子用于说明任务格式，原始模型的生成结果见论文和代码仓库。",
+          "输入的 SMILES 已经确定分子身份，模型学习的是如何用像素画出该分子结构。Markup-to-Image 的分子实验比较生成图像与参考结构图，直接检验图像是否对应给定的符号描述。"
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "rendering-trajectories",
+        "title": "观察学习式渲染器的去噪过程",
+        "paragraphs": [
+          "以下动画来自原始代码仓库中的 Scheduled Sampling 结果，记录图像从噪声逐步形成渲染输出的过程。",
+          "<a href=\"https://github.com/da03/markup2im\">原始代码、生成示例与参考图像 ↗</a>"
+        ],
+        "figures": [
+          {
+            "src": "/images/math_rendering.gif",
+            "width": 320,
+            "height": 64,
+            "alt": "连续去噪状态逐步形成数学公式图像",
+            "caption": "LaTeX 到公式图像：原始 Scheduled Sampling 模型的去噪过程记录。"
+          },
+          {
+            "src": "/images/molecules_rendering.gif",
+            "width": 128,
+            "height": 128,
+            "alt": "连续去噪状态逐步形成二维分子结构图",
+            "caption": "SMILES 到分子结构图：原始 Scheduled Sampling 模型的分子绘图过程记录。"
+          }
         ],
         "citations": [
           "markup-diffusion"
@@ -751,33 +845,52 @@
   },
   {
     "id": "interactive-training",
-    "title": "让人和 AI 智能体控制正在运行的训练任务",
-    "eyebrow": "反馈驱动的神经网络优化",
-    "description": "Interactive Training 将实时指标与人和 LLM 对训练任务的干预相连；第二版加入带类型的控制项和有序操作日志。",
-    "lead": "Wentao Zhang、Yang Young Lu 和 Yuntian Deng 的 Interactive Training: Feedback-Driven Neural Network Optimization 让人和 AI 智能体能够控制正在进行的神经网络训练。论文于 2025 年 10 月 2 日首次发布，发表于 EMNLP 2025 System Demonstrations，通过控制服务器开放优化器设置、训练数据和检查点操作。2026 年 7 月 17 日在 arXiv 发布的 Interactive Training 2 将这一方法扩展为实时训练中可复用的控制协议。",
+    "title": "Interactive Training：人和大语言模型在训练过程中实时干预",
+    "eyebrow": "实时训练干预 · EMNLP 2025",
+    "description": "人和大语言模型读取实时训练反馈，在正在运行的任务中动态调整学习率、修改训练数据或请求保存检查点。Interactive Training 框架发表于 EMNLP 2025。",
+    "lead": "Interactive Training 让人或大语言模型智能体读取实时训练反馈，并在同一个正在运行的神经网络训练任务中进行干预。控制器修改优化器设置或训练数据，或请求执行检查点操作，再观察后续训练行为。Wentao Zhang、Yang Young Lu 和 Yuntian Deng 在 <a href=\"https://aclanthology.org/2025.emnlp-demos.65/\">Interactive Training: Feedback-Driven Neural Network Optimization</a> 中提出这一框架，论文于 2025 年 10 月 2 日首次发布，发表于 EMNLP 2025 System Demonstrations。2026 年 7 月 17 日发布的 <a href=\"https://arxiv.org/abs/2607.18314\">Interactive Training 2</a> 将它扩展为可复用的实时训练控制协议。",
     "original_papers": [
       "interactive-training-2025",
       "interactive-training-2026"
     ],
     "terms": [
-      "交互式训练（interactive training）",
-      "反馈驱动优化",
-      "LLM 训练控制器",
-      "训练中实时调节超参数",
-      "人参与的训练闭环（human-in-the-loop training）",
-      "训练闭环控制"
+      "交互式训练（Interactive Training）",
+      "大语言模型控制训练过程",
+      "训练过程中动态调整学习率",
+      "训练中实时干预",
+      "实时更新训练数据",
+      "人参与的训练闭环",
+      "训练过程闭环控制",
+      "反馈驱动优化"
     ],
     "sections": [
       {
         "id": "running-process",
-        "title": "把正在运行的训练过程作为控制对象",
+        "title": "大语言模型如何与正在运行的训练任务形成闭环？",
         "paragraphs": [
-          "训练面板展示损失曲线与评估结果；交互式控制则把这些观测与产生它们的训练过程连接起来。研究者看到训练不稳定，修改学习率，再观察同一次运行中的后续更新。LLM 控制器也遵循同样的反馈循环：查看证据、请求干预、再检查干预效果。",
-          "这与启动前选择配置，或等一轮训练结束后再设计新实验不同。模型和优化器在继续运行，开放的控制项则在过程中发生变化。"
+          "反馈来自训练状态：损失曲线、评估结果、梯度范数和当前设置。动作是训练任务能够执行的修改。人或大语言模型智能体根据反馈选择干预，训练进程执行修改，再报告后续结果。",
+          "被训练的模型继续通过优化器学习；外部控制器通过应用开放的控制项来调节优化过程。“大语言模型控制训练过程”在这里有明确含义：智能体观察并干预已经运行起来的训练任务。"
         ],
         "citations": [
           "interactive-training-2025",
           "interactive-training-2026"
+        ],
+        "items": [
+          "观察：读取近期训练指标与当前配置。",
+          "决策：根据反馈选择学习率、数据或检查点干预。",
+          "执行：通过控制服务器把请求传给训练循环。",
+          "再次观察：检查实际执行的修改与后续训练指标。"
+        ]
+      },
+      {
+        "id": "live-learning-rate",
+        "title": "如何在训练过程中动态调整学习率？",
+        "paragraphs": [
+          "2025 年论文展示了大语言模型智能体接收训练日志、在优化进行过程中修改学习率的案例。决策依据已经观测到的训练轨迹：损失突增、梯度不稳定或训练进展不足，都为下一次干预提供信息；修改后的学习率作用于后续优化器更新。",
+          "Interactive Training 还开放梯度裁剪、训练数据修改和检查点操作。原始论文的三个案例分别展示人工干预、大语言模型驱动的干预以及实时训练数据更新。这些案例把反馈驱动控制从学习率调度扩展到正在进行的训练过程。"
+        ],
+        "citations": [
+          "interactive-training-2025"
         ]
       },
       {

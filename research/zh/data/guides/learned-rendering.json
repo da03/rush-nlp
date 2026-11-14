@@ -1,27 +1,67 @@
 {
   "id": "learned-rendering",
-  "title": "学习渲染 LaTeX、SMILES、HTML 与乐谱",
-  "eyebrow": "从标记语言到图像的扩散模型",
-  "description": "用扩散模型学习渲染数学公式、分子、表格布局和乐谱，并通过 Scheduled Sampling 处理暴露偏差。",
-  "lead": "Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 的 Markup-to-Image Diffusion Models with Scheduled Sampling 学习把符号描述转化为图像。论文于 2022 年 10 月 11 日发布，发表于 ICLR 2023，提出了覆盖 LaTeX 公式、SMILES 分子、HTML 表格布局和 LilyPond 乐谱的扩散渲染方法。它也研究了扩散模型中的一个普遍问题：采样过程中遇到的状态与训练输入不同时，错误会逐步累积。",
+  "title": "扩散模型渲染 LaTeX 公式与 SMILES 分子结构图",
+  "eyebrow": "标记语言到图像的扩散模型 · ICLR 2023",
+  "description": "扩散模型学习把给定 LaTeX 代码渲染成公式图片，把给定 SMILES 字符串渲染成二维分子结构图。原始论文由 Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 发表于 ICLR 2023。",
+  "lead": "扩散模型能够学习把给定的 LaTeX 公式代码渲染成数学公式图片，也能把给定的 SMILES 字符串渲染成二维分子结构图。Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 在 <a href=\"https://arxiv.org/abs/2210.05147\">Markup-to-Image Diffusion Models with Scheduled Sampling</a> 中提出这一方法，论文于 2022 年 10 月 11 日发布，发表于 ICLR 2023。这个学习式渲染器覆盖 LaTeX 数学公式、SMILES 分子、HTML 表格布局和 LilyPond 乐谱，并通过 Scheduled Sampling 让去噪器学习修正自身中间预测中的错误。",
   "original_papers": [
     "markup-diffusion"
   ],
   "terms": [
+    "扩散模型渲染",
+    "LaTeX 代码生成公式图片",
+    "SMILES 字符串生成分子结构图",
     "标记语言到图像生成（markup-to-image）",
     "学习式渲染（learned rendering）",
-    "LaTeX 公式图像生成",
-    "SMILES 分子图像生成",
     "扩散模型的 Scheduled Sampling",
     "扩散模型的暴露偏差（exposure bias）"
   ],
   "sections": [
     {
       "id": "rendering-direction",
-      "title": "输入是标记语言，输出是图像",
+      "title": "如何用扩散模型把 LaTeX 代码渲染成公式图片？",
       "paragraphs": [
-        "学习式渲染器接收描述视觉对象的序列，预测渲染后的像素。LaTeX 描述数学记号，SMILES 描述原子与化学键，HTML 描述表格类布局，LilyPond 描述乐谱。这四个领域共同检验模型对符号内容、布局，以及跨越输入序列的依赖关系的处理能力。",
-        "图像到 LaTeX 的识别任务从图片恢复源代码；标记语言到图像的生成任务则朝相反方向进行。论文调整了包括 im2latex-100k 在内的配对数据，学习从标记语言到像素的正向映射。它训练的是条件扩散模型，推理时不调用传统渲染引擎。"
+        "输入是 LaTeX 源代码，输出是这段代码指定的公式图像。例如，<code>\\frac{a}{b} + c^2</code> 描述一个分数，后面接一个平方项。学习式渲染器需要把分子放在分母上方，并正确放置上标。在这个任务中，扩散是生成图像的方法；输入的公式代码决定要画出的数学内容。",
+        "模型从标记语言与渲染图像的配对数据中学习这一映射，其中包括 im2latex-100k 的公式数据。推理时，输入的标记序列作为条件，参与连续的图像去噪步骤。去噪器把图像噪声转化为渲染后的像素，学习源词元、符号和布局之间的关系。",
+        "同一个输入到图像的任务也覆盖 HTML 表格布局与 LilyPond 乐谱。表格单元格需要位于指定的行列位置，音符需要表达源代码中的音高和时值；这些对应关系为生成模型提供了具体的结构要求。"
+      ],
+      "citations": [
+        "markup-diffusion"
+      ]
+    },
+    {
+      "id": "smiles-molecule-rendering",
+      "title": "如何从 SMILES 字符串生成二维分子结构图？",
+      "paragraphs": [
+        "SMILES 用原子与化学键的序列指定分子。SMILES 到图像的渲染任务把这个分子作为输入，由扩散模型生成对应的二维分子结构图。例如，<code>CC(=O)O</code> 指定乙酸；图像需要保留其中的原子、单键以及碳氧双键。这个例子用于说明任务格式，原始模型的生成结果见论文和代码仓库。",
+        "输入的 SMILES 已经确定分子身份，模型学习的是如何用像素画出该分子结构。Markup-to-Image 的分子实验比较生成图像与参考结构图，直接检验图像是否对应给定的符号描述。"
+      ],
+      "citations": [
+        "markup-diffusion"
+      ]
+    },
+    {
+      "id": "rendering-trajectories",
+      "title": "观察学习式渲染器的去噪过程",
+      "paragraphs": [
+        "以下动画来自原始代码仓库中的 Scheduled Sampling 结果，记录图像从噪声逐步形成渲染输出的过程。",
+        "<a href=\"https://github.com/da03/markup2im\">原始代码、生成示例与参考图像 ↗</a>"
+      ],
+      "figures": [
+        {
+          "src": "/images/math_rendering.gif",
+          "width": 320,
+          "height": 64,
+          "alt": "连续去噪状态逐步形成数学公式图像",
+          "caption": "LaTeX 到公式图像：原始 Scheduled Sampling 模型的去噪过程记录。"
+        },
+        {
+          "src": "/images/molecules_rendering.gif",
+          "width": 128,
+          "height": 128,
+          "alt": "连续去噪状态逐步形成二维分子结构图",
+          "caption": "SMILES 到分子结构图：原始 Scheduled Sampling 模型的分子绘图过程记录。"
+        }
       ],
       "citations": [
         "markup-diffusion"
@@ -86,6 +126,32 @@
   ],
   "updated_at": "2026-11-14",
   "url": "https://yuntiandeng.com/research/zh/learned-rendering/",
+  "original_references": [
+    {
+      "@type": "ScholarlyArticle",
+      "name": "Markup-to-Image Diffusion Models with Scheduled Sampling",
+      "author": [
+        {
+          "@type": "Person",
+          "name": "Yuntian Deng"
+        },
+        {
+          "@type": "Person",
+          "name": "Noriyuki Kojima"
+        },
+        {
+          "@type": "Person",
+          "name": "Alexander M. Rush"
+        }
+      ],
+      "datePublished": "2023",
+      "url": "https://arxiv.org/abs/2210.05147",
+      "isPartOf": {
+        "@type": "CreativeWork",
+        "name": "ICLR 2023"
+      }
+    }
+  ],
   "papers": [
     {
       "id": "markup-diffusion",
@@ -122,7 +188,7 @@
       "arxiv_first_posted": "2022-10-11",
       "abstract": "Building on recent advances in image generation, we present a fully data-driven approach to rendering markup into images. The approach is based on diffusion models, which parameterize the distribution of data using a sequence of denoising operations on top of a Gaussian noise distribution. We view the diffusion denoising process as a sequential decision making process, and show that it exhibits compounding errors similar to exposure bias issues in imitation learning problems. To mitigate these issues, we adapt the scheduled sampling algorithm to diffusion training. We conduct experiments on four markup datasets: mathematical formulas (LaTeX), table layouts (HTML), sheet music (LilyPond), and molecular images (SMILES). These experiments each verify the effectiveness of the diffusion process and the use of scheduled sampling to fix generation issues. These results also show that the markup-to-image task presents a useful controlled compositional setting for diagnosing and analyzing generative image models.",
       "abstract_source": "https://arxiv.org/html/2210.05147v1",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "description_language": "zh-Hans",
       "abstract_language": "en"
     },
@@ -168,7 +234,7 @@
       ],
       "arxiv_id": "2308.01147",
       "arxiv_first_posted": "2023-08-02",
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "description_language": "zh-Hans",
       "abstract_language": "en"
     },
@@ -208,7 +274,7 @@
       "source_urls": [
         "https://proceedings.mlr.press/v202/ning23a.html"
       ],
-      "updated_at": "2026-11-11",
+      "updated_at": "2026-11-14",
       "description_language": "zh-Hans",
       "abstract_language": "en"
     }

@@ -1,6 +1,10 @@
 # 把注意力建模为隐变量：学习注意力的概率分布
 
-Yuntian Deng、Yoon Kim、Justin Chiu、Demi Guo 和 Alexander M. Rush 的 Latent Alignment and Variational Attention（NeurIPS 2018）将注意力建模为显式隐变量，并使用变分推断进行学习。其一般思路是对网络关注的位置建立概率分布，并对这一分布进行推断，而不是把一个确定性的加权平均向量传入预测网络。
+Yuntian Deng、Yoon Kim、Justin Chiu、Demi Guo 和 Alexander M. Rush 的 [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756) 于 2018 年 7 月 10 日首次发布，发表于 NeurIPS 2018。论文把注意力建模为显式隐变量，为网络关注的位置建立概率分布，并综合不同注意力状态下的预测。类别对齐与狄利克雷对齐给出了建模注意力不确定性的一般方法，变分推断用于学习注意力后验。
+
+## 原始研究
+
+- Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, Alexander M. Rush. [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756). NeurIPS 2018. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/latentattention2018/#citation).
 
 ## 归一化注意力权重与概率模型有什么区别
 
@@ -10,6 +14,14 @@ Yuntian Deng、Yoon Kim、Justin Chiu、Demi Guo 和 Alexander M. Rush 的 Laten
 
 - [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756)
 - [Structured Attention Networks](https://arxiv.org/abs/1702.00887)
+
+## 注意力边缘化：在输出概率上求和
+
+令 x 包含观测输入和查询，y 表示输出，z 表示类别注意力状态。隐变量模型的预测是 p(y | x) = Σ_z p(z | x) p(y | x, z)：先在每个注意力状态下计算输出分布，再按该状态的注意力概率加权求和。连续注意力状态则把求和换成积分。
+
+训练时，已知答案 y 使推断网络能够学习后验近似 q(z | x, y)，并据此优化变分目标。预测时，模型使用 p(z | x) 综合各状态下的输出。在机器翻译中，训练用的推断网络读取源句和目标句；生成时使用源句与已经生成的目标前缀。
+
+- [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756)
 
 ## 隐对齐与变分注意力
 

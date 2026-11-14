@@ -1,10 +1,10 @@
 [
   {
     "id": "llm-decision-trees",
-    "title": "LLM decision trees: from Tree Prompting to agentic classification",
+    "title": "LLM decision trees for text classification without fine-tuning",
     "eyebrow": "Learned programs and prompting",
-    "description": "How Tree Prompting learns decision trees of prompted language-model calls, and how it relates to Aug-Tree, GPTree and Agentic Classification Tree.",
-    "lead": "Tree Prompting (EMNLP 2023) learns a decision tree in which a prompted language model makes each branching decision. Its learned prompts and control flow form a reusable program for a classification task. This mechanism connects directly to today’s LLM decision trees, natural-language question trees and agentic classification.",
+    "description": "Tree Prompting (EMNLP 2023) learns a text classifier whose internal nodes prompt a frozen language model and use its answers to select branches.",
+    "lead": "In <a href=\"https://arxiv.org/html/2310.14034v1\">Tree Prompting: Efficient Task Adaptation without Fine-Tuning</a> (EMNLP 2023), John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, and Yuntian Deng learn decision trees that classify text through prompted language-model calls. Each internal node asks the frozen model to judge the input; its answer selects the next branch, and the reached leaf returns a class. The learned prompts and branching structure form a reusable program for the task.",
     "original_papers": [
       "tree-prompting"
     ],
@@ -14,7 +14,8 @@
       "natural-language decision trees",
       "agentic classification",
       "learned prompt programs",
-      "dynamic prompting"
+      "dynamic prompting",
+      "text classification without fine-tuning"
     ],
     "demo": "tree",
     "related_guides": [
@@ -31,7 +32,7 @@
         "id": "original-method",
         "title": "What Tree Prompting introduced",
         "paragraphs": [
-          "John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao and Yuntian Deng published Tree Prompting at EMNLP 2023; Morris and Singh contributed equally. The preprint was released on 21 October 2023. Each internal node evaluates a prompt with a frozen LM; its output selects a branch, and a leaf supplies the prediction.",
+          "The Tree Prompting preprint was released on 21 October 2023 and published at EMNLP 2023; John X. Morris and Chandan Singh contributed equally. A node combines a prompt, an LM call, and a rule mapping the output to a branch. A complete root-to-leaf path is the classifier’s execution trace for one input.",
           "The tree is learned from labeled examples. Candidate prompts include sampled demonstrations, instructions and dynamically generated prompts. In the dynamic version, iPrompt generates candidates for the examples reaching a node, then split quality selects the prompt. Both the node questions and the tree’s branching structure are learned."
         ],
         "citations": [
@@ -40,9 +41,9 @@
       },
       {
         "id": "program-view",
-        "title": "Reading a prompt tree as a program",
+        "title": "From input text to node decisions to a class",
         "paragraphs": [
-          "In a worked support-classification example, a first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. This fixed example illustrates control flow; the paper learns its trees from data.",
+          "Consider a worked support-classification example with input “I was charged twice; please refund the duplicate payment.” A first node asks whether the message requests a refund. Its yes branch reaches a node asking about a duplicate charge; that yes branch ends at a duplicate-billing leaf. The input is a message, the intermediate values are LM judgments, and the output is its category. This fixed example illustrates control flow; the paper learns its trees from data.",
           "The program consists of conditions, branches and return values. A conventional condition tests a numerical threshold or an exact string. A prompt-based condition asks the LM to interpret the input under an instruction. The instruction defines the question; the LM supplies the decision for this particular input.",
           "A path log distinguishes three failure types: the node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable."
         ]
@@ -124,21 +125,55 @@
     "updated_at": "2026-11-14",
     "url": "https://yuntiandeng.com/research/llm-decision-trees/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/llm-decision-trees.md",
+    "original_references": [
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Tree Prompting: Efficient Task Adaptation without Fine-Tuning",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "John X. Morris"
+          },
+          {
+            "@type": "Person",
+            "name": "Chandan Singh"
+          },
+          {
+            "@type": "Person",
+            "name": "Alexander M. Rush"
+          },
+          {
+            "@type": "Person",
+            "name": "Jianfeng Gao"
+          },
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          }
+        ],
+        "datePublished": "2023",
+        "url": "https://arxiv.org/html/2310.14034v1",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "EMNLP 2023"
+        }
+      }
+    ],
     "translations": {
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/llm-decision-trees/",
-        "title": "大语言模型决策树：从 Tree Prompting 到智能体分类",
-        "description": "Tree Prompting 如何学习由语言模型提示调用组成的决策树，以及它与 Aug-Tree、GPTree 和 Agentic Classification Tree 的联系。",
+        "title": "大语言模型决策树：用提示词做文本分类，无需微调",
+        "description": "Tree Prompting（EMNLP 2023）从带标签文本学习决策树：每个内部节点用提示词调用冻结的大语言模型，根据回答选择分支，由叶节点输出类别，无需微调模型。",
         "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/llm-decision-trees.md"
       }
     }
   },
   {
     "id": "energy-based-text-generation",
-    "title": "Energy-based text generation: residual models, resampling and diffusion",
+    "title": "Energy-based text generation: whole-sequence scoring, resampling and diffusion",
     "eyebrow": "Global sequence models",
-    "description": "Residual Energy-Based Models for Text Generation connects sequence-level energy, noise-contrastive estimation and importance resampling to energy-based diffusion language models.",
-    "lead": "Residual Energy-Based Models for Text Generation (ICLR 2020) turns a pretrained language model and a whole-sequence energy into a globally normalized generator. Energy-Based Diffusion Language Models (ICLR 2025) explicitly connects to this work and applies residual energy correction inside diffusion denoising. The shared mechanism is a base distribution multiplied by a learned preference over complete candidate sequences.",
+    "description": "Residual Energy-Based Models for Text Generation (Yuntian Deng et al., ICLR 2020): globally normalized text generation, sample-and-score inference, and the connection to energy-based diffusion language models.",
+    "lead": "A sequence-level energy model scores complete continuations, then uses those scores to change what a language model generates. <a href=\"https://arxiv.org/html/2004.11714v1\">Residual Energy-Based Models for Text Generation</a>, by Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam and Marc’Aurelio Ranzato (ICLR 2020), combines an autoregressive proposal with a learned whole-sequence energy in a globally normalized model. This formulation connects directly to energy-based diffusion language models, where the residual energy couples token predictions within a denoising step.",
     "original_papers": [
       "residual-ebm",
       "residual-ebm-jmlr"
@@ -150,7 +185,9 @@
       "importance resampling",
       "energy-based diffusion language models",
       "sequence-level energy",
-      "dependency-aware parallel decoding"
+      "dependency-aware parallel decoding",
+      "whole-sequence scoring",
+      "token dependencies in diffusion language models"
     ],
     "demo": "energy",
     "related_guides": [
@@ -167,7 +204,7 @@
     "sections": [
       {
         "id": "original-method",
-        "title": "The residual text-generation model",
+        "title": "How a whole-sequence energy generates text",
         "paragraphs": [
           "Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam and Marc’Aurelio Ranzato introduced the ICLR 2020 text-generation framework. Its arXiv version is dated 22 April 2020. A fixed autoregressive LM supplies candidate sequences; a bidirectional energy function scores them. The paper develops importance-weighted conditional generation and lower and upper log-probability bounds for perplexity evaluation.",
           "The distribution is <code>p(y | x) = q(y | x) exp(−E(x,y)) / Z(x)</code>. Here x is the context, y a complete continuation, q the base model, E the residual energy, and Z the normalizer over continuations. Lower energy increases probability relative to q. Noise-contrastive estimation trains the energy to distinguish real text from base-model samples."
@@ -199,6 +236,18 @@
         "citations": [
           "residual-ebm",
           "residual-ebm-jmlr"
+        ]
+      },
+      {
+        "id": "sequence-dependencies",
+        "title": "Where does the model represent dependencies between tokens?",
+        "paragraphs": [
+          "The energy receives the complete candidate continuation. It can assign different scores to sequences that share a prefix but end differently, so the final selection depends on the words together. The base model proposes the text; the sequence-level energy changes the probability of the resulting continuation.",
+          "In diffusion generation, a denoiser proposes several unresolved tokens in parallel. EDLM applies the same base-times-energy construction to these proposed sequences, conditioned on the current noisy text. The sequence energy provides a joint correction for token dependencies. This is the concrete connection between residual EBM text generation and energy-based diffusion decoding."
+        ],
+        "citations": [
+          "residual-ebm",
+          "edlm"
         ]
       },
       {
@@ -280,21 +329,91 @@
     "updated_at": "2026-11-14",
     "url": "https://yuntiandeng.com/research/energy-based-text-generation/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/energy-based-text-generation.md",
+    "original_references": [
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Residual Energy-Based Models for Text Generation",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          },
+          {
+            "@type": "Person",
+            "name": "Anton Bakhtin"
+          },
+          {
+            "@type": "Person",
+            "name": "Myle Ott"
+          },
+          {
+            "@type": "Person",
+            "name": "Arthur Szlam"
+          },
+          {
+            "@type": "Person",
+            "name": "Marc’Aurelio Ranzato"
+          }
+        ],
+        "datePublished": "2020",
+        "url": "https://arxiv.org/html/2004.11714v1",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "ICLR 2020"
+        }
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Residual Energy-Based Models for Text",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Anton Bakhtin"
+          },
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          },
+          {
+            "@type": "Person",
+            "name": "Sam Gross"
+          },
+          {
+            "@type": "Person",
+            "name": "Myle Ott"
+          },
+          {
+            "@type": "Person",
+            "name": "Marc’Aurelio Ranzato"
+          },
+          {
+            "@type": "Person",
+            "name": "Arthur Szlam"
+          }
+        ],
+        "datePublished": "2021",
+        "url": "https://www.jmlr.org/papers/v22/20-326.html",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "JMLR 22(40):1–41"
+        }
+      }
+    ],
     "translations": {
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/energy-based-text-generation/",
-        "title": "基于能量的文本生成：残差模型、重采样与扩散",
-        "description": "Residual Energy-Based Models for Text Generation 将序列级能量、噪声对比估计和重要性重采样联系起来，并与基于能量的扩散语言模型直接相连。",
+        "title": "能量模型如何生成文本：全序列评分、重采样与扩散语言模型",
+        "description": "Yuntian Deng 等人在 ICLR 2020 的 Residual Energy-Based Models for Text Generation：全局归一化文本生成、先采样再评分与重采样，以及序列级能量如何连接扩散语言模型中的 token 依赖。",
         "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/energy-based-text-generation.md"
       }
     }
   },
   {
     "id": "structured-decoding",
-    "title": "Structured Decoding: Higher-Order CRFs, Diffusion Language Models, and Candidate Lattices",
+    "title": "CRFs for text generation: higher-order decoding, diffusion and candidate lattices",
     "eyebrow": "Joint models for parallel generation",
-    "description": "How Cascaded Text Generation and Sequence-to-Lattice connect higher-order CRFs, joint diffusion decoding, and candidate lattices for speculative generation.",
-    "lead": "Parallel neural computation does not require independent output decisions. Yuntian Deng and Alexander M. Rush developed higher-order CRF cascades for text generation in Cascaded Text Generation with Markov Transformers (NeurIPS 2020), followed by candidate-lattice generation with exact path search in Sequence-to-Lattice Models for Fast Translation (Findings of EMNLP 2021). These contributions connect to two current problems: modeling dependencies among tokens generated together by diffusion language models, and selecting coherent drafts from parallel token candidates.",
+    "description": "Yuntian Deng and Alexander M. Rush’s Cascaded Text Generation (NeurIPS 2020) and Sequence-to-Lattice (EMNLP Findings 2021): generate output tokens with structured inference and connect their dependencies to joint diffusion decoding.",
+    "lead": "A conditional random field can generate text by making the output words its variables and decoding their joint sequence. Yuntian Deng and Alexander M. Rush developed higher-order CRF cascades in <a href=\"https://arxiv.org/abs/2006.01112\">Cascaded Text Generation with Markov Transformers</a> (NeurIPS 2020), then candidate-lattice generation with exact path search in <a href=\"https://aclanthology.org/2021.findings-emnlp.318/\">Sequence-to-Lattice Models for Fast Translation</a> (Findings of EMNLP 2021). These models connect parallel neural computation to dependent output decisions—the same coordination problem encountered when diffusion language models generate several tokens together.",
     "original_papers": [
       "cascaded2020",
       "lattice2021"
@@ -307,9 +426,23 @@
       "joint diffusion decoding",
       "token dependencies",
       "candidate lattice",
-      "speculative decoding"
+      "speculative decoding",
+      "conditional random field text generation",
+      "parallel tokens with dependencies"
     ],
     "sections": [
+      {
+        "id": "crf-generates-output-tokens",
+        "title": "How does a CRF generate a sentence?",
+        "paragraphs": [
+          "Let x be a source sentence and y₁, …, yₙ the target words to generate. Each yᵢ ranges over candidate output tokens. Potentials score combinations of neighboring words, conditioned on x; structured decoding chooses the output sequence. The predicted variables are the words of the translation itself.",
+          "Deng and Rush’s Cascaded Text Generation, first released on 1 June 2020, increases the Markov order across a cascade of CRFs. Higher-order factors score longer token spans, and a shared Markov Transformer computes their potentials. Their 2021 Sequence-to-Lattice model instead constructs a compact candidate lattice and scores first-order transitions before Viterbi path search. Both generate target sentences by modeling dependencies among output words."
+        ],
+        "citations": [
+          "cascaded2020",
+          "lattice2021"
+        ]
+      },
       {
         "id": "parallel-computation-joint-decisions",
         "title": "Why parallel predictions need a joint decision",
@@ -337,7 +470,7 @@
       },
       {
         "id": "joint-diffusion-modeling",
-        "title": "From higher-order CRFs to joint diffusion decoding",
+        "title": "How structured generation connects to joint diffusion decoding",
         "paragraphs": [
           "Diffusion introduces a repeated version of the same coordination problem: several uncertain tokens are resolved during one denoising step. The connection to structured generation is a modeling principle: use a tractable joint distribution to couple those decisions while retaining parallel neural computation. A Markov order describes dependence across output positions; a diffusion timestep describes the progression from corrupted to recovered text. They are different axes.",
           "CoDD, introduced in Breaking the Factorization Barrier in Diffusion Language Models (ICML 2026), combines factorized neural predictions with a probabilistic-circuit structural prior. Its experiments instantiate that prior with a hidden Markov model. The product supports joint inference without materializing a vocabulary-sized table for every possible token combination. This shares the structured-generation goal, while using latent-state structure and diffusion-conditioned inference rather than a cascade of increasing observed-token context orders.",
@@ -452,11 +585,53 @@
     "updated_at": "2026-11-14",
     "url": "https://yuntiandeng.com/research/structured-decoding/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/structured-decoding.md",
+    "original_references": [
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Cascaded Text Generation with Markov Transformers",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          },
+          {
+            "@type": "Person",
+            "name": "Alexander M. Rush"
+          }
+        ],
+        "datePublished": "2020",
+        "url": "https://arxiv.org/abs/2006.01112",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "NeurIPS 2020"
+        }
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Sequence-to-Lattice Models for Fast Translation",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          },
+          {
+            "@type": "Person",
+            "name": "Alexander M. Rush"
+          }
+        ],
+        "datePublished": "2021",
+        "url": "https://aclanthology.org/2021.findings-emnlp.318/",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "Findings of EMNLP 2021"
+        }
+      }
+    ],
     "translations": {
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/structured-decoding/",
-        "title": "结构化解码：高阶 CRF、扩散语言模型与候选格",
-        "description": "Cascaded Text Generation 和 Sequence-to-Lattice 如何连接高阶条件随机场、联合扩散解码，以及用于投机生成的候选格。",
+        "title": "条件随机场用于文本生成：高阶 CRF、扩散联合解码与候选格",
+        "description": "Yuntian Deng 和 Alexander M. Rush 的 Cascaded Text Generation（NeurIPS 2020）与 Sequence-to-Lattice（EMNLP Findings 2021）：以输出词元为变量进行结构化文本生成，并连接扩散语言模型的联合解码与 token 依赖。",
         "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/structured-decoding.md"
       }
     }
@@ -465,8 +640,8 @@
     "id": "probabilistic-attention",
     "title": "Attention as a Latent Variable: Modeling a Distribution over Attention",
     "eyebrow": "Probabilistic attention and latent inference",
-    "description": "Latent Alignment and Variational Attention: distributions over attention, categorical and Dirichlet alignments, marginalization, and posterior inference.",
-    "lead": "Latent Alignment and Variational Attention (NeurIPS 2018), by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. The general idea is to model a distribution over where a network attends and reason over that distribution, rather than pass one deterministic weighted average into the prediction network.",
+    "description": "Yuntian Deng and colleagues’ Latent Alignment and Variational Attention (NeurIPS 2018) models attention as a latent variable with output marginalization and learned posterior inference.",
+    "lead": "<a href=\"https://arxiv.org/abs/1807.03756\">Latent Alignment and Variational Attention</a>, by Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander M. Rush, develops attention as an explicit latent variable with variational inference. First released on July 10, 2018 and published at NeurIPS 2018, it models a distribution over where a network attends and integrates predictions over that distribution. Categorical and Dirichlet alignments make this a general approach to modeling attention uncertainty.",
     "original_papers": [
       "latentattention2018"
     ],
@@ -491,6 +666,17 @@
         "citations": [
           "latentattention2018",
           "structuredattention2017"
+        ]
+      },
+      {
+        "id": "marginalizing-attention",
+        "title": "Marginalizing attention at the output",
+        "paragraphs": [
+          "Let x include the observed input and the query, y be the output, and z be a categorical attention state. The latent model predicts <code>p(y | x) = Σ_z p(z | x) p(y | x, z)</code>. Each attention state supplies an output distribution; its attention probability weights that distribution. A continuous attention state uses an integral in place of the sum.",
+          "During training, the observed answer y lets an inference network learn <code>q(z | x, y)</code>, a posterior approximation used by the variational objective. At prediction time, the model combines outputs using <code>p(z | x)</code>. For translation, the training inference network sees the source and target sentence; generation uses the source and the target prefix already produced."
+        ],
+        "citations": [
+          "latentattention2018"
         ]
       },
       {
@@ -603,21 +789,55 @@
     "updated_at": "2026-11-14",
     "url": "https://yuntiandeng.com/research/probabilistic-attention/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/probabilistic-attention.md",
+    "original_references": [
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Latent Alignment and Variational Attention",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          },
+          {
+            "@type": "Person",
+            "name": "Yoon Kim"
+          },
+          {
+            "@type": "Person",
+            "name": "Justin Chiu"
+          },
+          {
+            "@type": "Person",
+            "name": "Demi Guo"
+          },
+          {
+            "@type": "Person",
+            "name": "Alexander M. Rush"
+          }
+        ],
+        "datePublished": "2018",
+        "url": "https://arxiv.org/abs/1807.03756",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "NeurIPS 2018"
+        }
+      }
+    ],
     "translations": {
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/probabilistic-attention/",
         "title": "把注意力建模为隐变量：学习注意力的概率分布",
-        "description": "Latent Alignment and Variational Attention：注意力的概率分布、类别与狄利克雷对齐、边缘化和后验推断。",
+        "description": "Yuntian Deng 等人的 Latent Alignment and Variational Attention（NeurIPS 2018）将注意力建模为隐变量：对输出概率进行边缘化，并用变分推断学习注意力后验。",
         "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/probabilistic-attention.md"
       }
     }
   },
   {
     "id": "long-form-evaluation",
-    "title": "Evaluating the structure of long-form text",
+    "title": "Evaluating generated text beyond fluency: story structure and entity consistency",
     "eyebrow": "Coherence, coreference and narrative evaluation",
-    "description": "How latent-space model criticism evaluates discourse structure, entity behavior, and topicality beyond word-level fluency in generated text.",
-    "lead": "A fluent paragraph does not establish a coherent document. Model Criticism for Long-Form Text Generation, by Yuntian Deng, Volodymyr Kuleshov, and Alexander M. Rush, introduced a framework for comparing the high-level structures of real and generated text through explicit latent-variable critics. First released on October 16, 2022 and published at EMNLP 2022, it connects long-form evaluation to a concrete statistical question: does a generator reproduce the distribution of structures found in reference texts?",
+    "description": "Model Criticism for Long-Form Text Generation (Deng, Kuleshov and Rush, EMNLP 2022) evaluates discourse coherence, coreference and topicality through latent structure.",
+    "lead": "<a href=\"https://aclanthology.org/2022.emnlp-main.815/\">Model Criticism for Long-Form Text Generation</a>, by Yuntian Deng, Volodymyr Kuleshov, and Alexander M. Rush, evaluates the high-level structure of language-model output: how a document progresses, how it refers to entities, and how its topics relate. First released on October 16, 2022 and published at EMNLP 2022, it introduced a framework that maps real and generated text into latent structures and compares their distributions. This gives long-form text evaluation a structural test alongside word-level fluency.",
     "original_papers": [
       "model-criticism"
     ],
@@ -627,14 +847,16 @@
       "discourse coherence",
       "entity consistency",
       "model criticism in latent space",
-      "latent perplexity"
+      "latent perplexity",
+      "generated-text entity consistency",
+      "story structure beyond fluency"
     ],
     "sections": [
       {
         "id": "fluency-and-structure",
         "title": "Separate fluent wording from coherent structure",
         "paragraphs": [
-          "Consider an article that introduces a method, presents results, and then returns to an unrelated introduction. Each sentence can be grammatical while the section sequence is structurally unusual. A narrative has related problems when entities disappear, reappear inconsistently, or follow implausible patterns across a long passage.",
+          "A generated story reads: “Mira left the key at home. At the locked cabin, she opened the door with that key.” Both sentences are fluent; the story skips the event that makes the key available. An article presents another structural problem when it introduces a method, gives results, and then switches to an unrelated introduction. Evaluating these outputs requires stating the high-level property being tested.",
           "Word-level perplexity measures how well a model predicts tokens. It does not directly measure section transitions, coreference structure, or topical relationships. The paper demonstrates this distinction with synthetic data whose generative process is known: strong next-token prediction coexists with a poor fit to the underlying latent transitions."
         ],
         "citations": [
@@ -658,6 +880,17 @@
         "paragraphs": [
           "Discourse coherence asks whether sections follow the transitions found in real documents. The experiments examine scientific articles and Wikipedia, including generation with and without explicit section-title cues. Coreference asks whether generated text reproduces the patterns of references to entities. Topicality asks whether topic relationships match reference documents.",
           "These are distinct diagnoses. The paper finds that its transformer language models capture topical correlations while struggling with coherence and coreference. A single overall quality score would hide this difference."
+        ],
+        "citations": [
+          "model-criticism"
+        ]
+      },
+      {
+        "id": "entity-reference-example",
+        "title": "Entity consistency in generated stories",
+        "paragraphs": [
+          "Consider “Nora gave Eli a key. She left. Eli opened the door.” An entity representation assigns the two mentions of Nora, “Nora” and “She,” to one entity, and the two mentions of Eli to another. It records which entity each expression refers to and where the mention occurs. This turns a passage into a sequence of entity references that can be compared across human-written and generated stories.",
+          "The paper’s coreference experiment extracts these mention patterns and scores their distribution with a critic, including patterns in which a pronoun lacks a local antecedent. Its discourse critic examines section transitions, and its topic critic examines topic relationships. An evaluation of the key’s location in the earlier story would specify event and object-state variables as the property to test."
         ],
         "citations": [
           "model-criticism"
@@ -702,39 +935,106 @@
     "updated_at": "2026-11-14",
     "url": "https://yuntiandeng.com/research/long-form-evaluation/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/long-form-evaluation.md",
+    "original_references": [
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Model Criticism for Long-Form Text Generation",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          },
+          {
+            "@type": "Person",
+            "name": "Volodymyr Kuleshov"
+          },
+          {
+            "@type": "Person",
+            "name": "Alexander M. Rush"
+          }
+        ],
+        "datePublished": "2022",
+        "url": "https://aclanthology.org/2022.emnlp-main.815/",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "EMNLP 2022"
+        }
+      }
+    ],
     "translations": {
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/long-form-evaluation/",
-        "title": "如何评估长文本的结构",
-        "description": "潜在空间中的模型检验如何超越词元层面的流畅度，评估生成文本的篇章结构、实体行为与主题关系。",
+        "title": "长文本生成评估：语言流畅度、故事结构与实体一致性",
+        "description": "Yuntian Deng、Volodymyr Kuleshov 和 Alexander M. Rush 的 Model Criticism（EMNLP 2022）用潜在结构评估长文本生成的篇章连贯性、实体共指与主题关系。",
         "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/long-form-evaluation.md"
       }
     }
   },
   {
     "id": "learned-rendering",
-    "title": "Learning to render LaTeX, SMILES, HTML and music notation",
-    "eyebrow": "Markup-to-image diffusion",
-    "description": "Diffusion models as learned renderers for mathematical formulas, molecules, table layouts, and music notation, with scheduled sampling to address exposure bias.",
-    "lead": "Markup-to-Image Diffusion Models with Scheduled Sampling, by Yuntian Deng, Noriyuki Kojima, and Alexander M. Rush, learns to turn symbolic descriptions into images. Released on October 11, 2022 and published at ICLR 2023, the work introduced diffusion-based rendering across LaTeX formulas, SMILES molecules, HTML table layouts, and LilyPond sheet music. It also studies a general diffusion problem: errors accumulate when sampling visits states that differ from the model’s training inputs.",
+    "title": "Diffusion rendering: LaTeX formulas and SMILES molecule images",
+    "eyebrow": "Markup-to-image diffusion · ICLR 2023",
+    "description": "Learned diffusion rendering turns supplied LaTeX code into formula images and SMILES strings into molecular drawings. Original ICLR 2023 work by Yuntian Deng, Noriyuki Kojima, and Alexander M. Rush.",
+    "lead": "A diffusion model can learn to render a supplied LaTeX formula into a mathematical image, or a supplied SMILES string into a two-dimensional molecular structure image. Yuntian Deng, Noriyuki Kojima, and Alexander M. Rush introduced this approach in <a href=\"https://arxiv.org/abs/2210.05147\">Markup-to-Image Diffusion Models with Scheduled Sampling</a>, released on October 11, 2022 and published at ICLR 2023. Their learned renderer covers LaTeX mathematics, SMILES molecules, HTML table layouts, and LilyPond sheet music. Scheduled sampling trains the denoiser to correct errors in its own intermediate predictions.",
     "original_papers": [
       "markup-diffusion"
     ],
     "terms": [
-      "markup-to-image generation",
-      "learned rendering",
+      "diffusion rendering",
       "LaTeX-to-image",
       "SMILES-to-image",
+      "molecular structure drawing",
+      "markup-to-image generation",
+      "learned rendering",
       "diffusion scheduled sampling",
       "diffusion exposure bias"
     ],
     "sections": [
       {
         "id": "rendering-direction",
-        "title": "The input is markup; the output is an image",
+        "title": "How does a diffusion model render a LaTeX formula?",
         "paragraphs": [
-          "A learned renderer receives a sequence that specifies a visual object and predicts its rendered pixels. LaTeX describes mathematical notation; SMILES describes atoms and bonds; HTML describes a table-like layout; LilyPond describes music notation. The four domains test symbolic content, layout, and dependencies that extend across the input sequence.",
-          "Image-to-LaTeX recognition recovers source notation from a picture. Markup-to-image generation performs the reverse task. The paper adapts paired data, including im2latex-100k, to learn this forward mapping from markup to pixels. It trains a conditional diffusion model rather than invoking a conventional rendering engine at inference time."
+          "The input is LaTeX source code and the output is an image of the specified formula. For example, <code>\\frac{a}{b} + c^2</code> describes a fraction followed by a squared term. A learned renderer must place the numerator above the denominator and position the superscript correctly. In this task, diffusion is the image-generation method; the formula supplied to it defines the mathematical content.",
+          "The model learns this mapping from paired markup and rendered images, including the formula pairs in im2latex-100k. At inference, it conditions a sequence of image-denoising steps on the supplied markup. The denoiser turns image noise into the rendered pixels, learning the relationship between source tokens, symbols, and layout.",
+          "The same input-to-image formulation applies to HTML table layouts and LilyPond music notation. These domains make the dependencies concrete: a table cell must occupy its specified row and column, and a note must have the pitch and duration described by the source."
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "smiles-molecule-rendering",
+        "title": "How does a SMILES string become a molecular drawing?",
+        "paragraphs": [
+          "SMILES specifies the molecule through an atom-and-bond sequence. In SMILES-to-image rendering, that molecule is supplied as the input, and the diffusion model generates its two-dimensional structural drawing. For example, <code>CC(=O)O</code> specifies acetic acid; the drawing must preserve the stated atoms, single bonds, and carbon–oxygen double bond. This is a task-format example, with original model outputs available in the paper and code repository.",
+          "The molecular identity is fixed by the input SMILES. What the model learns is how to depict that structure in pixels. The Markup-to-Image experiments evaluate agreement with a reference drawing, connecting the generated image directly to the supplied symbolic description."
+        ],
+        "citations": [
+          "markup-diffusion"
+        ]
+      },
+      {
+        "id": "rendering-trajectories",
+        "title": "Watch the learned renderer denoise an image",
+        "paragraphs": [
+          "These recorded trajectories come from the original repository’s Scheduled Sampling results. Each animation follows an image from noise to a rendered output.",
+          "<a href=\"https://github.com/da03/markup2im\">Original code, generated examples, and reference images ↗</a>"
+        ],
+        "figures": [
+          {
+            "src": "/images/math_rendering.gif",
+            "width": 320,
+            "height": 64,
+            "alt": "Successive denoising states forming a mathematical formula image",
+            "caption": "LaTeX-to-image: a recorded denoising trajectory from the original scheduled-sampling model."
+          },
+          {
+            "src": "/images/molecules_rendering.gif",
+            "width": 128,
+            "height": 128,
+            "alt": "Successive denoising states forming a two-dimensional molecular structure diagram",
+            "caption": "SMILES-to-image: a recorded molecular-drawing trajectory from the original scheduled-sampling model."
+          }
         ],
         "citations": [
           "markup-diffusion"
@@ -800,44 +1100,89 @@
     "updated_at": "2026-11-14",
     "url": "https://yuntiandeng.com/research/learned-rendering/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/learned-rendering.md",
+    "original_references": [
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Markup-to-Image Diffusion Models with Scheduled Sampling",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          },
+          {
+            "@type": "Person",
+            "name": "Noriyuki Kojima"
+          },
+          {
+            "@type": "Person",
+            "name": "Alexander M. Rush"
+          }
+        ],
+        "datePublished": "2023",
+        "url": "https://arxiv.org/abs/2210.05147",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "ICLR 2023"
+        }
+      }
+    ],
     "translations": {
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/learned-rendering/",
-        "title": "学习渲染 LaTeX、SMILES、HTML 与乐谱",
-        "description": "用扩散模型学习渲染数学公式、分子、表格布局和乐谱，并通过 Scheduled Sampling 处理暴露偏差。",
+        "title": "扩散模型渲染 LaTeX 公式与 SMILES 分子结构图",
+        "description": "扩散模型学习把给定 LaTeX 代码渲染成公式图片，把给定 SMILES 字符串渲染成二维分子结构图。原始论文由 Yuntian Deng、Noriyuki Kojima 和 Alexander M. Rush 发表于 ICLR 2023。",
         "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/learned-rendering.md"
       }
     }
   },
   {
     "id": "interactive-training",
-    "title": "Controlling a running training job with humans and AI agents",
-    "eyebrow": "Feedback-driven neural network optimization",
-    "description": "Interactive Training connects live metrics to human and LLM interventions in running neural-network jobs; v2 adds typed controls and an ordered action journal.",
-    "lead": "Interactive Training: Feedback-Driven Neural Network Optimization, by Wentao Zhang, Yang Young Lu, and Yuntian Deng, makes an ongoing neural-network training process controllable by humans and AI agents. First released on October 2, 2025 and published at EMNLP 2025 System Demonstrations, it exposes optimizer settings, training data, and checkpoints through a control server. Interactive Training 2 extends this approach to a reusable protocol for live training, released on arXiv on July 17, 2026.",
+    "title": "Interactive Training: human and LLM control of ongoing model training",
+    "eyebrow": "Live intervention · EMNLP 2025",
+    "description": "Humans and LLM agents use live feedback to change learning rates and data or request checkpoints in an active job. Interactive Training introduced the framework at EMNLP 2025.",
+    "lead": "Interactive Training lets a human or LLM agent read live training feedback and intervene in the same active neural-network training job. The controller changes optimizer settings or training data, or requests checkpoint operations, then observes the subsequent training behavior. Wentao Zhang, Yang Young Lu, and Yuntian Deng introduced the framework in <a href=\"https://aclanthology.org/2025.emnlp-demos.65/\">Interactive Training: Feedback-Driven Neural Network Optimization</a>, first released on October 2, 2025 and published at EMNLP 2025 System Demonstrations. <a href=\"https://arxiv.org/abs/2607.18314\">Interactive Training 2</a>, released on July 17, 2026, extends it with a reusable protocol for live control.",
     "original_papers": [
       "interactive-training-2025",
       "interactive-training-2026"
     ],
     "terms": [
       "interactive training",
-      "feedback-driven optimization",
-      "LLM training controller",
-      "live hyperparameter tuning",
+      "LLM agent control of ongoing training",
+      "on-the-fly training intervention",
+      "dynamic learning-rate adjustment",
+      "live training-data updates",
       "human-in-the-loop training",
-      "closed-loop training control"
+      "closed-loop training control",
+      "feedback-driven optimization"
     ],
     "sections": [
       {
         "id": "running-process",
-        "title": "Make the running process the object of control",
+        "title": "What closes the loop between an LLM agent and a running training job?",
         "paragraphs": [
-          "A training dashboard shows loss curves and evaluations. Interactive control connects those observations to changes in the process that is producing them. A researcher sees instability, changes the learning rate, and observes subsequent updates in the same run. An LLM controller uses the same feedback cycle: inspect evidence, request an intervention, and inspect its effect.",
-          "This differs from choosing a configuration before launch or proposing a new experiment after a run finishes. The active model and optimizer continue while exposed controls change."
+          "The feedback is the state of training: loss curves, evaluation results, gradient norms, and the current settings. The action is an executable change to the running job. A human or LLM agent chooses an intervention from this feedback; the training process applies it and reports what happens next.",
+          "The model under training continues to learn through its optimizer. The external controller steers that optimization process by changing the controls exposed by the application. This gives “LLM training control” a concrete meaning: the agent observes and acts on the job that is already running."
         ],
         "citations": [
           "interactive-training-2025",
           "interactive-training-2026"
+        ],
+        "items": [
+          "Observe: read recent training metrics and the current configuration.",
+          "Decide: select a learning-rate, data, or checkpoint intervention using that feedback.",
+          "Apply: send the request through the control server to the training loop.",
+          "Observe again: inspect the applied action and the subsequent training measurements."
+        ]
+      },
+      {
+        "id": "live-learning-rate",
+        "title": "How is the learning rate adjusted during training?",
+        "paragraphs": [
+          "The 2025 paper demonstrates an LLM agent receiving training logs and changing the learning rate while optimization is underway. The decision uses the observed trajectory. A loss spike, gradient instability, or poor progress gives the controller evidence for its next action; the modified learning rate then affects subsequent optimizer steps.",
+          "Interactive Training also exposes gradient clipping, training-data changes, and checkpoint operations. Its original case studies cover human intervention, LLM-driven intervention, and real-time training-data updates. Together, these examples show how feedback-driven control extends beyond a learning-rate schedule to the ongoing training process."
+        ],
+        "citations": [
+          "interactive-training-2025"
         ]
       },
       {
@@ -903,11 +1248,69 @@
     "updated_at": "2026-11-14",
     "url": "https://yuntiandeng.com/research/interactive-training/",
     "markdown_url": "https://yuntiandeng.com/research/data/guides/interactive-training.md",
+    "original_references": [
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Interactive Training: Feedback-Driven Neural Network Optimization",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Wentao Zhang"
+          },
+          {
+            "@type": "Person",
+            "name": "Yang Young Lu"
+          },
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          }
+        ],
+        "datePublished": "2025",
+        "url": "https://aclanthology.org/2025.emnlp-demos.65/",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "EMNLP 2025 System Demonstrations"
+        }
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "name": "Interactive Training 2: Auditable Control Plane for Live Model Training",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "Wentao Zhang"
+          },
+          {
+            "@type": "Person",
+            "name": "Xuanhe Pan"
+          },
+          {
+            "@type": "Person",
+            "name": "Han Zhou"
+          },
+          {
+            "@type": "Person",
+            "name": "Yang Lu"
+          },
+          {
+            "@type": "Person",
+            "name": "Yuntian Deng"
+          }
+        ],
+        "datePublished": "2026",
+        "url": "https://arxiv.org/abs/2607.18314",
+        "isPartOf": {
+          "@type": "CreativeWork",
+          "name": "arXiv"
+        }
+      }
+    ],
     "translations": {
       "zh-Hans": {
         "url": "https://yuntiandeng.com/research/zh/interactive-training/",
-        "title": "让人和 AI 智能体控制正在运行的训练任务",
-        "description": "Interactive Training 将实时指标与人和 LLM 对训练任务的干预相连；第二版加入带类型的控制项和有序操作日志。",
+        "title": "Interactive Training：人和大语言模型在训练过程中实时干预",
+        "description": "人和大语言模型读取实时训练反馈，在正在运行的任务中动态调整学习率、修改训练数据或请求保存检查点。Interactive Training 框架发表于 EMNLP 2025。",
         "markdown_url": "https://yuntiandeng.com/research/zh/data/guides/interactive-training.md"
       }
     }

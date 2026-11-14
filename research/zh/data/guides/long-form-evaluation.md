@@ -1,10 +1,14 @@
-# 如何评估长文本的结构
+# 长文本生成评估：语言流畅度、故事结构与实体一致性
 
-一段话读起来流畅，并不代表整篇文档结构连贯。Yuntian Deng、Volodymyr Kuleshov 和 Alexander M. Rush 的 Model Criticism for Long-Form Text Generation 提出了一个框架：用显式的潜变量检验模型比较真实文本与生成文本的高层结构。论文于 2022 年 10 月 16 日首次发布，发表于 EMNLP 2022，将长文本评估转化为一个明确的统计问题：生成器是否重现了参考文本中的结构分布？
+Yuntian Deng、Volodymyr Kuleshov 和 Alexander M. Rush 的 [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/) 评估语言模型生成文本的高层结构：文档如何推进、人物与实体如何被指称、主题之间如何关联。论文于 2022 年 10 月 16 日首次发布，发表于 EMNLP 2022，提出将真实文本与生成文本映射到潜在结构、再比较结构分布的框架。长文本生成的评估因此同时考察词句流畅度与篇章结构。
+
+## 原始研究
+
+- Yuntian Deng, Volodymyr Kuleshov, Alexander M. Rush. [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/). EMNLP 2022. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/model-criticism/#citation).
 
 ## 区分语言流畅与结构连贯
 
-设想一篇文章先介绍方法、再展示结果，随后却转回一段无关的引言。每句话的语法都正确，章节顺序仍然不合常理。叙事文本也有类似问题：实体突然消失、前后不一致地重新出现，或者在长篇内容中呈现不合理的变化模式。
+一段生成的故事写道：“小林把钥匙留在家里。到了上锁的木屋，她用那把钥匙打开了门。”两句话都流畅，情节却缺少重新拿到钥匙的事件。另一类问题出现在文章结构中：先介绍方法、再展示结果，随后突然转入一段无关的引言。评估这些文本，需要先明确要检验哪一种高层性质。
 
 词元层面的困惑度衡量模型预测词元的能力，却不直接衡量章节转移、共指结构或主题关系。论文用生成过程已知的合成数据说明了这一差别：模型即使擅长预测下一个词元，仍然会对底层潜在状态的转移拟合不佳。
 
@@ -23,6 +27,14 @@
 篇章连贯性关注章节是否遵循真实文档中的转移模式。实验考察了科学论文与维基百科文本，包括提供和不提供显式章节标题提示的生成设置。共指关注生成文本是否重现实体指称的模式。主题性关注主题之间的关系是否与参考文档一致。
 
 这些诊断分别回答不同的问题。论文发现，所评估的 Transformer 语言模型能够捕捉主题相关性，却难以掌握篇章连贯性和共指结构。单一的整体质量分数会掩盖这种差别。
+
+- [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
+
+## 故事生成中的实体一致性与共指链
+
+例如：“小林把钥匙交给小周。她离开了。小周打开了门。”实体表示把“小林”和“她”归入同一实体，把两次“小周”归入另一个实体，并记录各次提及的位置。这样，故事段落就变成了实体指称序列，可以在人工写作与生成文本之间比较。
+
+原论文的共指实验抽取这些提及模式，用检验模型评估其分布，包括代词缺少局部先行词的模式。篇章检验模型考察章节转移，主题检验模型考察主题关系。若要评估前文故事中的钥匙位置，则应明确把事件与物体状态设为待测的结构变量。
 
 - [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
 
