@@ -22,7 +22,7 @@ One diagnostic is the expected negative log probability of inferred latent varia
 
 Discourse coherence asks whether sections follow the transitions found in real documents. The experiments examine scientific articles and Wikipedia, including generation with and without explicit section-title cues. Coreference asks whether generated text reproduces the patterns of references to entities. Topicality asks whether topic relationships match reference documents.
 
-These are distinct diagnoses. The paper finds that its transformer language models capture topical correlations while struggling with coherence and coreference. A single overall quality score would hide this difference. The conclusion concerns the evaluated models and critics; testing a new generator requires collecting its outputs and running the structural comparison again.
+These are distinct diagnoses. The paper finds that its transformer language models capture topical correlations while struggling with coherence and coreference. A single overall quality score would hide this difference.
 
 - [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
 
@@ -30,7 +30,7 @@ These are distinct diagnoses. The paper finds that its transformer language mode
 
 OpenMEVA evaluates the evaluators. Its controlled perturbations test whether automatic metrics respond to errors in coherence and remain stable under meaning-preserving changes. Latent-space model criticism instead asks which structural distributions a generator has learned. The two approaches answer different experimental questions and fit together in an evaluation suite.
 
-The story-evaluation survey by Dingyi Yang and Qin Jin organizes broader criteria such as coherence, character development, and interestingness. A critic for section transitions does not measure all these criteria. Human assessment or an LLM judge answers reader-facing questions; a specified structural critic supplies a reproducible diagnostic tied to a particular property.
+The story-evaluation survey by Dingyi Yang and Qin Jin organizes broader criteria such as coherence, character development, and interestingness. Human assessment or an LLM judge answers reader-facing questions; a specified structural critic supplies a reproducible diagnostic tied to a particular property.
 
 - [OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics](https://aclanthology.org/2021.acl-long.500/)
 - [What Makes a Good Story and How Can We Measure It? A Comprehensive Survey of Story Evaluation](https://arxiv.org/abs/2408.14622)
@@ -40,7 +40,7 @@ The story-evaluation survey by Dingyi Yang and Qin Jin organizes broader criteri
 
 Start with the failure you want to detect, then define its latent representation and reference corpus. Fit or specify the critic, check its behavior on real texts and known structural errors, and apply it identically to reference and generated samples. Keep generation conditions, document lengths, and sample counts visible so that the comparison answers the intended question.
 
-Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code implement separate diagnostics for coherence, coreference, and topicality.
+Report word-level and structural measurements separately. The original paper and released code implement separate diagnostics for coherence, coreference, and topicality.
 
 - [Model Criticism for Long-Form Text Generation](https://aclanthology.org/2022.emnlp-main.815/)
 - [OpenMEVA: A Benchmark for Evaluating Open-ended Story Generation Metrics](https://aclanthology.org/2021.acl-long.500/)

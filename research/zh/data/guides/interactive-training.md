@@ -6,7 +6,7 @@ Wentao Zhang、Yang Young Lu 和 Yuntian Deng 的 Interactive Training: Feedback
 
 训练面板展示损失曲线与评估结果；交互式控制则把这些观测与产生它们的训练过程连接起来。研究者看到训练不稳定，修改学习率，再观察同一次运行中的后续更新。LLM 控制器也遵循同样的反馈循环：查看证据、请求干预、再检查干预效果。
 
-这与启动前选择配置，或等一轮训练结束后再设计新实验不同。模型和优化器在继续运行，开放的控制项则在过程中发生变化。从检查点恢复和开启新一轮训练是另外的操作，各自有对应的状态转移；界面应记录实际执行了哪一种操作。
+这与启动前选择配置，或等一轮训练结束后再设计新实验不同。模型和优化器在继续运行，开放的控制项则在过程中发生变化。
 
 - [Interactive Training: Feedback-Driven Neural Network Optimization](https://aclanthology.org/2025.emnlp-demos.65/)
 - [Interactive Training 2: Auditable Control Plane for Live Model Training](https://arxiv.org/abs/2607.18314)
@@ -31,7 +31,7 @@ Wentao Zhang、Xuanhe Pan、Han Zhou、Yang Lu 和 Yuntian Deng 的 Interactive 
 
 LiveTune 早于 Interactive Training，通过 LiveVariables 在不重启优化循环的情况下修改优化参数，提供了更早的实时参数调节机制。Interactive Training 关注围绕训练展开的人与 AI 智能体工作流程；第二版进一步让控制项与事件记录能够在不同应用间复用。
 
-AI Training Manager 研究一个受约束的 LLM 监督控制器，异步读取训练遥测数据并调整正在执行的训练配置。其实验在监督学习与强化学习中引入指定的失败模式。控制器层面的比较涉及智能体能获得的证据、能请求的动作，以及后续结果对决策的影响。基础设施支持与测得的控制器性能，是不同的贡献。
+AI Training Manager 研究一个受约束的 LLM 监督控制器，异步读取训练遥测数据并调整正在执行的训练配置。其实验在监督学习与强化学习中引入指定的失败模式。控制器层面的比较涉及智能体能获得的证据、能请求的动作，以及后续结果对决策的影响。
 
 - [LiveTune: Dynamic Parameter Tuning for Feedback-Driven Optimization](https://arxiv.org/abs/2311.17279)
 - [AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes](https://arxiv.org/abs/2606.29871)

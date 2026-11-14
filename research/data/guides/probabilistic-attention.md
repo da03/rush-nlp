@@ -15,7 +15,7 @@ Write the attention state as z and the downstream computation as f. In general, 
 
 The 2018 paper makes alignment an explicit variable in the generative model. It studies categorical alignments, which select one source element, and Dirichlet alignments, which distribute attention across a mixture of elements. Amortized variational inference learns a posterior conditioned on observed inputs and outputs. Variance-reduction methods make latent inference practical, with experiments in machine translation and visual question answering.
 
-Prior attention asks where to attend before the answer is known. Posterior attention asks which alignment explains an observed answer. These are different conditional distributions. The paper’s inference network uses target information during training; this is distinct from supplying future target words to a left-to-right predictor at generation time.
+Prior attention asks where to attend before the answer is known. Posterior attention asks which alignment explains an observed answer. These are different conditional distributions.
 
 - [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756)
 

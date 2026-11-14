@@ -60,7 +60,7 @@ Wang and Ou’s neural TRF paper supplies an earlier residual formulation and NC
 
 ## Use the energy example to inspect the mechanism
 
-Change the energy strength β over the three-outcome distribution in the example. At β = 0, the probabilities are the base distribution. Increasing β shifts mass toward lower-energy outcomes, while the base probabilities still affect the result. The example computes the exact normalized distribution over three possible sequences; it does not draw a candidate pool or call a language model.
+Change the energy strength β over the three-outcome distribution in the example. At β = 0, the probabilities are the base distribution. Increasing β shifts mass toward lower-energy outcomes, while the base probabilities still affect the result.
 
 For importance resampling from candidates already drawn from the base model, the pool weights are exp(−E(x)). The base-model factor is already accounted for by that sampling step. This distinction connects the normalized model to its practical sampling procedure.
 

@@ -22,7 +22,7 @@
       "title": "Make the running process the object of control",
       "paragraphs": [
         "A training dashboard shows loss curves and evaluations. Interactive control connects those observations to changes in the process that is producing them. A researcher sees instability, changes the learning rate, and observes subsequent updates in the same run. An LLM controller uses the same feedback cycle: inspect evidence, request an intervention, and inspect its effect.",
-        "This differs from choosing a configuration before launch or proposing a new experiment after a run finishes. The active model and optimizer continue while exposed controls change. A checkpoint restore or a new round is a separate operation with its own state transition; the interface should record which operation actually occurred."
+        "This differs from choosing a configuration before launch or proposing a new experiment after a run finishes. The active model and optimizer continue while exposed controls change."
       ],
       "citations": [
         "interactive-training-2025",
@@ -56,7 +56,7 @@
       "title": "Compare mechanisms, controllers, and experiments",
       "paragraphs": [
         "LiveTune predates Interactive Training and exposes LiveVariables for changing optimization parameters without restarting the loop. It supplies an earlier mechanism for live parameter adjustment. Interactive Training’s focus is the human and AI-agent workflow around training, and v2 makes the control vocabulary and event record reusable across applications.",
-        "AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. Controller-level comparisons concern the evidence available to the agent, the actions it can request, and how later outcomes affect its decisions. Infrastructure support and measured controller performance are distinct contributions."
+        "AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. Controller-level comparisons concern the evidence available to the agent, the actions it can request, and how later outcomes affect its decisions."
       ],
       "citations": [
         "livetune",
@@ -89,7 +89,7 @@
     "livetune",
     "ai-training-manager"
   ],
-  "updated_at": "2026-11-11",
+  "updated_at": "2026-11-14",
   "url": "https://yuntiandeng.com/research/interactive-training/",
   "papers": [
     {

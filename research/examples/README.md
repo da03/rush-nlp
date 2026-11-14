@@ -27,8 +27,7 @@ It compares averaging features before prediction with marginalizing the
 prediction over the categorical alignment. It then computes the observed-label
 posterior and optimizes a free categorical variational distribution for that
 observation. The exact log likelihood minus the ELBO equals the KL divergence
-to the posterior. The paper's amortized neural inference network and Dirichlet
-model are separate extensions beyond this finite categorical example.
+to the posterior.
 
 ## Independent decisions and joint decoding
 
@@ -46,8 +45,7 @@ shows greedy selection and whole-path maximization choosing different paths
 in a locally normalized Markov lattice. This normalization differs from the
 globally normalized CRF above.
 
-These are fixed-score examples. They do not run a Markov Transformer, cascade
-pruning, translation, diffusion denoising, or a speed benchmark. The
+These are fixed-score examples. The
 [structured-decoding guide](https://yuntiandeng.com/research/structured-decoding/)
 connects the full methods to joint diffusion decoding and candidate drafting.
 

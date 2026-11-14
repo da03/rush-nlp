@@ -20,11 +20,11 @@
     },
     {
       "path": "llm-decision-trees/",
-      "updated_at": "2026-11-11"
+      "updated_at": "2026-11-14"
     },
     {
       "path": "energy-based-text-generation/",
-      "updated_at": "2026-11-11"
+      "updated_at": "2026-11-14"
     },
     {
       "path": "structured-decoding/",
@@ -32,19 +32,19 @@
     },
     {
       "path": "probabilistic-attention/",
-      "updated_at": "2026-11-11"
+      "updated_at": "2026-11-14"
     },
     {
       "path": "long-form-evaluation/",
-      "updated_at": "2026-11-11"
+      "updated_at": "2026-11-14"
     },
     {
       "path": "learned-rendering/",
-      "updated_at": "2026-11-11"
+      "updated_at": "2026-11-14"
     },
     {
       "path": "interactive-training/",
-      "updated_at": "2026-11-11"
+      "updated_at": "2026-11-14"
     },
     {
       "path": "papers/tree-prompting/",

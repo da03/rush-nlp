@@ -22,7 +22,7 @@ The paper therefore evaluates alignment with the reference rendering. Its primar
 
 Standard diffusion training constructs noisy inputs from ground-truth images. During sampling, the next denoising step instead receives the result of previous model predictions. Mistakes in those predictions change the states encountered later. The paper analyzes this mismatch as a sequential decision problem with compounding errors, connecting diffusion sampling to exposure bias.
 
-Scheduled sampling changes the training inputs so that the denoiser encounters model-generated states and learns to correct its own errors. This adapts a principle previously studied in sequence generation to diffusion training. The experiments compare scheduled sampling with the baseline across all four rendering domains. Recognizable output and faithful symbolic rendering remain separate evaluation targets; the paper reports failures as well as successful generations.
+Scheduled sampling changes the training inputs so that the denoiser encounters model-generated states and learns to correct its own errors. This adapts a principle previously studied in sequence generation to diffusion training. The experiments compare scheduled sampling with the baseline across all four rendering domains.
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 
@@ -38,9 +38,9 @@ The diffusion-training thread connects to Input Perturbation Reduces Exposure Bi
 
 ## Inspect the original examples and implementation
 
-The released repository includes side-by-side animations of scheduled sampling, the baseline, and ground truth for formulas, tables, music, and molecules. These examples expose the intermediate denoising trajectory. Inspect whether symbols appear, disappear, merge, or move, then compare the final output against the exact input specification.
+The released repository includes side-by-side animations of scheduled sampling, the baseline, and ground truth for formulas, tables, music, and molecules. These examples expose the intermediate denoising trajectory.
 
-For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. Separate rendering accuracy from stylistic resemblance. The released resources include the original datasets, checkpoints, code, and recorded examples.
+For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. The released resources include the original datasets, checkpoints, code, and recorded examples.
 
 - [Markup-to-Image Diffusion Models with Scheduled Sampling](https://arxiv.org/abs/2210.05147)
 

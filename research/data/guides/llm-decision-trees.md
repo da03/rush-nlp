@@ -16,7 +16,7 @@ In a worked support-classification example, a first node asks whether a message 
 
 The program consists of conditions, branches and return values. A conventional condition tests a numerical threshold or an exact string. A prompt-based condition asks the LM to interpret the input under an instruction. The instruction defines the question; the LM supplies the decision for this particular input.
 
-A path log distinguishes three failure types: the node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream.
+A path log distinguishes three failure types: the node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable.
 
 
 ## What is learned, and what inference costs
@@ -51,9 +51,7 @@ These distinctions identify separate design choices: generating features, answer
 
 Use this design when the task has a repeatable decision structure and labeled examples expose which distinctions matter. Intent routing, document classification and categorization all provide a natural setting for asking successive semantic questions. The tree stores task-specific structure outside the model weights.
 
-A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.
-
-Choose among example messages to follow their paths through a fixed tree. The interactive illustration demonstrates control flow, not classification accuracy. To train a classifier, use the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples.
+Choose among example messages to follow their paths through a fixed tree. To train a classifier, use the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples.
 
 
 ## Run the original Tree Prompting notebook

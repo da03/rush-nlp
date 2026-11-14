@@ -44,7 +44,7 @@
         "paragraphs": [
           "In a worked support-classification example, a first node asks whether a message requests a refund. On the yes branch, a second asks whether it describes a duplicate charge. That path returns a billing category; a no answer follows another part of the tree. This fixed example illustrates control flow; the paper learns its trees from data.",
           "The program consists of conditions, branches and return values. A conventional condition tests a numerical threshold or an exact string. A prompt-based condition asks the LM to interpret the input under an instruction. The instruction defines the question; the LM supplies the decision for this particular input.",
-          "A path log distinguishes three failure types: the node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable. Editing a leaf does not repair a bad semantic judgment upstream."
+          "A path log distinguishes three failure types: the node asks an irrelevant question; the model answers a relevant question incorrectly; or the leaf assigns the wrong class after correct answers. Recording the actual path makes these failures distinguishable."
         ]
       },
       {
@@ -107,8 +107,7 @@
         "title": "When a learned question tree is useful",
         "paragraphs": [
           "Use this design when the task has a repeatable decision structure and labeled examples expose which distinctions matter. Intent routing, document classification and categorization all provide a natural setting for asking successive semantic questions. The tree stores task-specific structure outside the model weights.",
-          "A readable question does not reveal how the LM answered it. Report the path as the executed decision process, then test its nodes on paraphrases, ambiguous inputs and changed facts. If changing the decisive fact leaves the branch unchanged, the node is failing its intended role.",
-          "Choose among example messages to follow their paths through a fixed tree. The interactive illustration demonstrates control flow, not classification accuracy. To train a classifier, use the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples."
+          "Choose among example messages to follow their paths through a fixed tree. To train a classifier, use the original paper and code, fit on training examples, select tree size on validation data, and evaluate the saved tree on held-out examples."
         ]
       },
       {
@@ -122,7 +121,7 @@
         ]
       }
     ],
-    "updated_at": "2026-11-11"
+    "updated_at": "2026-11-14"
   },
   {
     "id": "energy-based-text-generation",
@@ -251,7 +250,7 @@
         "id": "reading-the-demo",
         "title": "Use the energy example to inspect the mechanism",
         "paragraphs": [
-          "Change the energy strength β over the three-outcome distribution in the example. At β = 0, the probabilities are the base distribution. Increasing β shifts mass toward lower-energy outcomes, while the base probabilities still affect the result. The example computes the exact normalized distribution over three possible sequences; it does not draw a candidate pool or call a language model.",
+          "Change the energy strength β over the three-outcome distribution in the example. At β = 0, the probabilities are the base distribution. Increasing β shifts mass toward lower-energy outcomes, while the base probabilities still affect the result.",
           "For importance resampling from candidates already drawn from the base model, the pool weights are exp(−E(x)). The base-model factor is already accounted for by that sampling step. This distinction connects the normalized model to its practical sampling procedure."
         ]
       },
@@ -268,7 +267,7 @@
         ]
       }
     ],
-    "updated_at": "2026-11-11"
+    "updated_at": "2026-11-14"
   },
   {
     "id": "structured-decoding",
@@ -469,7 +468,7 @@
         "title": "Latent alignment and variational attention",
         "paragraphs": [
           "The 2018 paper makes alignment an explicit variable in the generative model. It studies categorical alignments, which select one source element, and Dirichlet alignments, which distribute attention across a mixture of elements. Amortized variational inference learns a posterior conditioned on observed inputs and outputs. Variance-reduction methods make latent inference practical, with experiments in machine translation and visual question answering.",
-          "Prior attention asks where to attend before the answer is known. Posterior attention asks which alignment explains an observed answer. These are different conditional distributions. The paper’s inference network uses target information during training; this is distinct from supplying future target words to a left-to-right predictor at generation time."
+          "Prior attention asks where to attend before the answer is known. Posterior attention asks which alignment explains an observed answer. These are different conditional distributions."
         ],
         "citations": [
           "latentattention2018"
@@ -571,7 +570,7 @@
       "bahuleyan2018",
       "bayesianattention2020"
     ],
-    "updated_at": "2026-11-11"
+    "updated_at": "2026-11-14"
   },
   {
     "id": "long-form-evaluation",
@@ -618,7 +617,7 @@
         "title": "Three structural questions",
         "paragraphs": [
           "Discourse coherence asks whether sections follow the transitions found in real documents. The experiments examine scientific articles and Wikipedia, including generation with and without explicit section-title cues. Coreference asks whether generated text reproduces the patterns of references to entities. Topicality asks whether topic relationships match reference documents.",
-          "These are distinct diagnoses. The paper finds that its transformer language models capture topical correlations while struggling with coherence and coreference. A single overall quality score would hide this difference. The conclusion concerns the evaluated models and critics; testing a new generator requires collecting its outputs and running the structural comparison again."
+          "These are distinct diagnoses. The paper finds that its transformer language models capture topical correlations while struggling with coherence and coreference. A single overall quality score would hide this difference."
         ],
         "citations": [
           "model-criticism"
@@ -629,7 +628,7 @@
         "title": "Relate model criticism to story metrics",
         "paragraphs": [
           "OpenMEVA evaluates the evaluators. Its controlled perturbations test whether automatic metrics respond to errors in coherence and remain stable under meaning-preserving changes. Latent-space model criticism instead asks which structural distributions a generator has learned. The two approaches answer different experimental questions and fit together in an evaluation suite.",
-          "The story-evaluation survey by Dingyi Yang and Qin Jin organizes broader criteria such as coherence, character development, and interestingness. A critic for section transitions does not measure all these criteria. Human assessment or an LLM judge answers reader-facing questions; a specified structural critic supplies a reproducible diagnostic tied to a particular property."
+          "The story-evaluation survey by Dingyi Yang and Qin Jin organizes broader criteria such as coherence, character development, and interestingness. Human assessment or an LLM judge answers reader-facing questions; a specified structural critic supplies a reproducible diagnostic tied to a particular property."
         ],
         "citations": [
           "openmeva",
@@ -642,7 +641,7 @@
         "title": "Design a long-form evaluation",
         "paragraphs": [
           "Start with the failure you want to detect, then define its latent representation and reference corpus. Fit or specify the critic, check its behavior on real texts and known structural errors, and apply it identically to reference and generated samples. Keep generation conditions, document lengths, and sample counts visible so that the comparison answers the intended question.",
-          "Report word-level and structural measurements separately. Inspect examples behind unusual latent scores, including errors in the critic’s own inference. Distributional mismatch identifies a diagnostic target; it does not establish that every unusual individual story is bad. The original paper and released code implement separate diagnostics for coherence, coreference, and topicality."
+          "Report word-level and structural measurements separately. The original paper and released code implement separate diagnostics for coherence, coreference, and topicality."
         ],
         "citations": [
           "model-criticism",
@@ -660,7 +659,7 @@
       "openmeva",
       "story-evaluation-survey"
     ],
-    "updated_at": "2026-11-11"
+    "updated_at": "2026-11-14"
   },
   {
     "id": "learned-rendering",
@@ -707,7 +706,7 @@
         "title": "Train the denoiser on its own intermediate states",
         "paragraphs": [
           "Standard diffusion training constructs noisy inputs from ground-truth images. During sampling, the next denoising step instead receives the result of previous model predictions. Mistakes in those predictions change the states encountered later. The paper analyzes this mismatch as a sequential decision problem with compounding errors, connecting diffusion sampling to exposure bias.",
-          "Scheduled sampling changes the training inputs so that the denoiser encounters model-generated states and learns to correct its own errors. This adapts a principle previously studied in sequence generation to diffusion training. The experiments compare scheduled sampling with the baseline across all four rendering domains. Recognizable output and faithful symbolic rendering remain separate evaluation targets; the paper reports failures as well as successful generations."
+          "Scheduled sampling changes the training inputs so that the denoiser encounters model-generated states and learns to correct its own errors. This adapts a principle previously studied in sequence generation to diffusion training. The experiments compare scheduled sampling with the baseline across all four rendering domains."
         ],
         "citations": [
           "markup-diffusion"
@@ -730,8 +729,8 @@
         "id": "inspect-results",
         "title": "Inspect the original examples and implementation",
         "paragraphs": [
-          "The released repository includes side-by-side animations of scheduled sampling, the baseline, and ground truth for formulas, tables, music, and molecules. These examples expose the intermediate denoising trajectory. Inspect whether symbols appear, disappear, merge, or move, then compare the final output against the exact input specification.",
-          "For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. Separate rendering accuracy from stylistic resemblance. The released resources include the original datasets, checkpoints, code, and recorded examples."
+          "The released repository includes side-by-side animations of scheduled sampling, the baseline, and ground truth for formulas, tables, music, and molecules. These examples expose the intermediate denoising trajectory.",
+          "For a new learned-rendering task, define paired source and target data, identify the symbolic errors that change meaning, and select metrics that expose them. The released resources include the original datasets, checkpoints, code, and recorded examples."
         ],
         "citations": [
           "markup-diffusion"
@@ -748,7 +747,7 @@
       "fsa-cdm",
       "diffusion-input-perturbation"
     ],
-    "updated_at": "2026-11-11"
+    "updated_at": "2026-11-14"
   },
   {
     "id": "interactive-training",
@@ -774,7 +773,7 @@
         "title": "Make the running process the object of control",
         "paragraphs": [
           "A training dashboard shows loss curves and evaluations. Interactive control connects those observations to changes in the process that is producing them. A researcher sees instability, changes the learning rate, and observes subsequent updates in the same run. An LLM controller uses the same feedback cycle: inspect evidence, request an intervention, and inspect its effect.",
-          "This differs from choosing a configuration before launch or proposing a new experiment after a run finishes. The active model and optimizer continue while exposed controls change. A checkpoint restore or a new round is a separate operation with its own state transition; the interface should record which operation actually occurred."
+          "This differs from choosing a configuration before launch or proposing a new experiment after a run finishes. The active model and optimizer continue while exposed controls change."
         ],
         "citations": [
           "interactive-training-2025",
@@ -808,7 +807,7 @@
         "title": "Compare mechanisms, controllers, and experiments",
         "paragraphs": [
           "LiveTune predates Interactive Training and exposes LiveVariables for changing optimization parameters without restarting the loop. It supplies an earlier mechanism for live parameter adjustment. Interactive Training’s focus is the human and AI-agent workflow around training, and v2 makes the control vocabulary and event record reusable across applications.",
-          "AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. Controller-level comparisons concern the evidence available to the agent, the actions it can request, and how later outcomes affect its decisions. Infrastructure support and measured controller performance are distinct contributions."
+          "AI Training Manager studies a bounded LLM supervisor that asynchronously reads telemetry and adjusts a running recipe. Its experiments introduce specific failure modes in supervised learning and reinforcement learning. Controller-level comparisons concern the evidence available to the agent, the actions it can request, and how later outcomes affect its decisions."
         ],
         "citations": [
           "livetune",
@@ -841,6 +840,6 @@
       "livetune",
       "ai-training-manager"
     ],
-    "updated_at": "2026-11-11"
+    "updated_at": "2026-11-14"
   }
 ]
