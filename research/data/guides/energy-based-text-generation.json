@@ -154,6 +154,15 @@
       "citations": [
         "residual-ebm"
       ]
+    },
+    {
+      "id": "coverage-and-discussion",
+      "title": "Coverage and discussion",
+      "items": [
+        "<strong>Chinese media coverage · 机器之心 · 2020-06-23.</strong> <a href=\"https://m.thepaper.cn/baijiahao_7963084\">Residual energy-based text generation</a> (republished on The Paper / 澎湃新闻). Explains whole-sequence scoring, global normalization, and importance resampling.",
+        "<strong>Community technical post · English · 2024-06-10.</strong> <a href=\"https://aklein.bearblog.dev/monarc/\">Adam Klein: MonArc</a>. Introduces a token-level residual energy model and compares it with the sequence-level model in <em>Residual Energy-Based Models for Text Generation</em>."
+      ],
+      "citations": []
     }
   ],
   "updated_at": "2026-11-14",

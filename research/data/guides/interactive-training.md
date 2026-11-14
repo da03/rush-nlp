@@ -66,6 +66,13 @@ Evaluate an automated controller against a stated training objective under expli
 - [Interactive Training 2: Auditable Control Plane for Live Model Training](https://arxiv.org/abs/2607.18314)
 - [AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes](https://arxiv.org/abs/2606.29871)
 
+## Coverage and discussion
+
+
+
+- Author announcement · English · 2025-10-03. [Interactive Training: author introduction and dashboard walkthrough](https://huggingface.co/papers/2510.02297). Yuntian Deng explains live intervention and the dashboard’s optimizer, model, checkpoint, and dataset controls.
+
+
 ## References
 
 - Wentao Zhang, Yang Young Lu, Yuntian Deng. Interactive Training: Feedback-Driven Neural Network Optimization. EMNLP 2025 System Demonstrations. https://aclanthology.org/2025.emnlp-demos.65/

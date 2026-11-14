@@ -100,6 +100,13 @@ The code runs with Python 3.9+ and its standard library. [Download all three exa
 - [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112)
 - [Sequence-to-Lattice Models for Fast Translation](https://aclanthology.org/2021.findings-emnlp.318/)
 
+## Coverage and discussion
+
+
+
+- Public peer review · English · NeurIPS 2020. [Reviews of Cascaded Text Generation with Markov Transformers](https://papers.neurips.cc/paper_files/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Review.html). Four reviews discuss the higher-order CRF cascade, parallel max-marginal computation, and translation experiments.
+
+
 ## References
 
 - Yuntian Deng, Alexander M. Rush. Cascaded Text Generation with Markov Transformers. NeurIPS 2020. https://arxiv.org/abs/2006.01112

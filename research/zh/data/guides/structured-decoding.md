@@ -100,6 +100,13 @@ DiffuSpec 使用扩散模型并行生成草稿，并在 token 候选格上引入
 - [Cascaded Text Generation with Markov Transformers](https://arxiv.org/abs/2006.01112)
 - [Sequence-to-Lattice Models for Fast Translation](https://aclanthology.org/2021.findings-emnlp.318/)
 
+## 报道与讨论
+
+
+
+- 公开同行评审 · 英文 · NeurIPS 2020。 [Cascaded Text Generation with Markov Transformers 的评审](https://papers.neurips.cc/paper_files/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Review.html)。四份评审讨论高阶 CRF 级联、并行最大边缘值计算与机器翻译实验。
+
+
 ## 参考文献
 
 - Yuntian Deng, Alexander M. Rush. Cascaded Text Generation with Markov Transformers. NeurIPS 2020. https://arxiv.org/abs/2006.01112

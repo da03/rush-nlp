@@ -89,6 +89,14 @@ Wang 和 Ou 的 neural TRF 论文给出了更早的残差形式与 NCE 方法，
 
 - [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1)
 
+## 报道与讨论
+
+
+
+- 中文媒体报道 · 机器之心 · 2020-06-23。 [残差能量模型用于文本生成](https://m.thepaper.cn/baijiahao_7963084)（澎湃新闻转载）。介绍整段文本评分、全局归一化与重要性重采样。
+- 社区技术文章 · 英文 · 2024-06-10。 [Adam Klein：MonArc](https://aklein.bearblog.dev/monarc/)。介绍 token 级残差能量模型，并与 Residual Energy-Based Models for Text Generation 中的序列级模型进行比较。
+
+
 ## 参考文献
 
 - Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc’Aurelio Ranzato. Residual Energy-Based Models for Text Generation. ICLR 2020. https://arxiv.org/html/2004.11714v1

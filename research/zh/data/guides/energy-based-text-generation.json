@@ -154,6 +154,15 @@
       "citations": [
         "residual-ebm"
       ]
+    },
+    {
+      "id": "coverage-and-discussion",
+      "title": "报道与讨论",
+      "items": [
+        "<strong>中文媒体报道 · 机器之心 · 2020-06-23。</strong> <a href=\"https://m.thepaper.cn/baijiahao_7963084\">残差能量模型用于文本生成</a>（澎湃新闻转载）。介绍整段文本评分、全局归一化与重要性重采样。",
+        "<strong>社区技术文章 · 英文 · 2024-06-10。</strong> <a href=\"https://aklein.bearblog.dev/monarc/\">Adam Klein：MonArc</a>。介绍 token 级残差能量模型，并与 <em>Residual Energy-Based Models for Text Generation</em> 中的序列级模型进行比较。"
+      ],
+      "citations": []
     }
   ],
   "updated_at": "2026-11-14",

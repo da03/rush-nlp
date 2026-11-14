@@ -83,6 +83,13 @@ The code runs with Python 3.9+ and its standard library, without model weights, 
 
 - [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756)
 
+## Coverage and discussion
+
+
+
+- Chinese media coverage · 机器之心 · 2018-07-26. [Variational attention and latent alignment](https://cloud.tencent.com/developer/article/1170898) (republished by the outlet on Tencent Cloud on 2018-07-30). Explains attention as a latent variable, the source-and-target-conditioned posterior, and a German–English alignment example.
+
+
 ## References
 
 - Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, Alexander M. Rush. Latent Alignment and Variational Attention. NeurIPS 2018. https://arxiv.org/abs/1807.03756

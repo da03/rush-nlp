@@ -66,6 +66,13 @@ AI Training Manager 研究一个受约束的 LLM 监督控制器，异步读取�
 - [Interactive Training 2: Auditable Control Plane for Live Model Training](https://arxiv.org/abs/2607.18314)
 - [AI Training Manager: Bounded Closed-Loop Control of Adaptive Training Recipes](https://arxiv.org/abs/2606.29871)
 
+## 报道与讨论
+
+
+
+- 作者发布介绍 · 英文 · 2025-10-03。 [Interactive Training：作者介绍与训练面板说明](https://huggingface.co/papers/2510.02297)。Yuntian Deng 介绍训练过程中的实时干预，并说明面板中的优化器、模型、检查点与数据集控制项。
+
+
 ## 参考文献
 
 - Wentao Zhang, Yang Young Lu, Yuntian Deng. Interactive Training: Feedback-Driven Neural Network Optimization. EMNLP 2025 System Demonstrations. https://aclanthology.org/2025.emnlp-demos.65/

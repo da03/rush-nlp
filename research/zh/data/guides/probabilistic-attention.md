@@ -83,6 +83,13 @@ Latent Alignment and Variational Attention 使用类别值或单纯形上的对�
 
 - [Latent Alignment and Variational Attention](https://arxiv.org/abs/1807.03756)
 
+## 报道与讨论
+
+
+
+- 中文媒体报道 · 机器之心 · 2018-07-26。 [变分注意力与隐变量对齐](https://cloud.tencent.com/developer/article/1170898)（该媒体于 2018-07-30 在腾讯云转载）。介绍将注意力建模为隐变量、以源句和目标句为条件的后验，以及德英翻译中的对齐示例。
+
+
 ## 参考文献
 
 - Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, Alexander M. Rush. Latent Alignment and Variational Attention. NeurIPS 2018. https://arxiv.org/abs/1807.03756

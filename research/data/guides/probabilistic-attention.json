@@ -134,6 +134,14 @@
       "citations": [
         "latentattention2018"
       ]
+    },
+    {
+      "id": "coverage-and-discussion",
+      "title": "Coverage and discussion",
+      "items": [
+        "<strong>Chinese media coverage · 机器之心 · 2018-07-26.</strong> <a href=\"https://cloud.tencent.com/developer/article/1170898\">Variational attention and latent alignment</a> (republished by the outlet on Tencent Cloud on 2018-07-30). Explains attention as a latent variable, the source-and-target-conditioned posterior, and a German–English alignment example."
+      ],
+      "citations": []
     }
   ],
   "related_guides": [

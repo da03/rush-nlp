@@ -96,6 +96,14 @@
         "interactive-training-2026",
         "ai-training-manager"
       ]
+    },
+    {
+      "id": "coverage-and-discussion",
+      "title": "报道与讨论",
+      "items": [
+        "<strong>作者发布介绍 · 英文 · 2025-10-03。</strong> <a href=\"https://huggingface.co/papers/2510.02297\">Interactive Training：作者介绍与训练面板说明</a>。Yuntian Deng 介绍训练过程中的实时干预，并说明面板中的优化器、模型、检查点与数据集控制项。"
+      ],
+      "citations": []
     }
   ],
   "related_guides": [

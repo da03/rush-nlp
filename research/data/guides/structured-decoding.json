@@ -155,6 +155,14 @@
         "cascaded2020",
         "lattice2021"
       ]
+    },
+    {
+      "id": "coverage-and-discussion",
+      "title": "Coverage and discussion",
+      "items": [
+        "<strong>Public peer review · English · NeurIPS 2020.</strong> <a href=\"https://papers.neurips.cc/paper_files/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Review.html\">Reviews of Cascaded Text Generation with Markov Transformers</a>. Four reviews discuss the higher-order CRF cascade, parallel max-marginal computation, and translation experiments."
+      ],
+      "citations": []
     }
   ],
   "related_guides": [

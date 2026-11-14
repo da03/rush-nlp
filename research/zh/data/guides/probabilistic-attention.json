@@ -134,6 +134,14 @@
       "citations": [
         "latentattention2018"
       ]
+    },
+    {
+      "id": "coverage-and-discussion",
+      "title": "报道与讨论",
+      "items": [
+        "<strong>中文媒体报道 · 机器之心 · 2018-07-26。</strong> <a href=\"https://cloud.tencent.com/developer/article/1170898\">变分注意力与隐变量对齐</a>（该媒体于 2018-07-30 在腾讯云转载）。介绍将注意力建模为隐变量、以源句和目标句为条件的后验，以及德英翻译中的对齐示例。"
+      ],
+      "citations": []
     }
   ],
   "related_guides": [

@@ -96,6 +96,14 @@
         "interactive-training-2026",
         "ai-training-manager"
       ]
+    },
+    {
+      "id": "coverage-and-discussion",
+      "title": "Coverage and discussion",
+      "items": [
+        "<strong>Author announcement · English · 2025-10-03.</strong> <a href=\"https://huggingface.co/papers/2510.02297\">Interactive Training: author introduction and dashboard walkthrough</a>. Yuntian Deng explains live intervention and the dashboard’s optimizer, model, checkpoint, and dataset controls."
+      ],
+      "citations": []
     }
   ],
   "related_guides": [

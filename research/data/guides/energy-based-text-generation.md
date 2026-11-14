@@ -89,6 +89,14 @@ The code runs with Python 3.9+ and its standard library. [Download all three exa
 
 - [Residual Energy-Based Models for Text Generation](https://arxiv.org/html/2004.11714v1)
 
+## Coverage and discussion
+
+
+
+- Chinese media coverage · 机器之心 · 2020-06-23. [Residual energy-based text generation](https://m.thepaper.cn/baijiahao_7963084) (republished on The Paper / 澎湃新闻). Explains whole-sequence scoring, global normalization, and importance resampling.
+- Community technical post · English · 2024-06-10. [Adam Klein: MonArc](https://aklein.bearblog.dev/monarc/). Introduces a token-level residual energy model and compares it with the sequence-level model in Residual Energy-Based Models for Text Generation.
+
+
 ## References
 
 - Yuntian Deng, Anton Bakhtin, Myle Ott, Arthur Szlam, Marc’Aurelio Ranzato. Residual Energy-Based Models for Text Generation. ICLR 2020. https://arxiv.org/html/2004.11714v1

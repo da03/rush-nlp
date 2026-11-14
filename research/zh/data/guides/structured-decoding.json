@@ -156,6 +156,14 @@
         "cascaded2020",
         "lattice2021"
       ]
+    },
+    {
+      "id": "coverage-and-discussion",
+      "title": "报道与讨论",
+      "items": [
+        "<strong>公开同行评审 · 英文 · NeurIPS 2020。</strong> <a href=\"https://papers.neurips.cc/paper_files/paper/2020/file/01a0683665f38d8e5e567b3b15ca98bf-Review.html\">Cascaded Text Generation with Markov Transformers 的评审</a>。四份评审讨论高阶 CRF 级联、并行最大边缘值计算与机器翻译实验。"
+      ],
+      "citations": []
     }
   ],
   "related_guides": [
