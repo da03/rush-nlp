@@ -26,7 +26,8 @@ Each entry lists its preprint or publication date and citation details.
 - Relationship: {{ paper.relationship_label }}
 - Topic: {{ paper.category }}
 - Data used: {{ paper.dataset_version }}
-- Research record: {{ paper.record_url }}
+{% if paper.dataset_releases %}- Current release: {{ paper.dataset_release_summary }} {% for release in paper.dataset_releases %}{{ release.action }} [{{ release.name }}]({{ release.url }}){% unless forloop.last %}, or {% endunless %}{% endfor %}.
+{% endif %}- Research record: {{ paper.record_url }}
 - Paper: {{ paper.paper_url }}
 {% if paper.arxiv %}- arXiv: https://arxiv.org/abs/{{ paper.arxiv }}
 {% endif %}{% if paper.code_url %}- Code and resources: {{ paper.code_url }}

@@ -37,7 +37,20 @@
     "arxiv": "2405.01470",
     "category": "dataset",
     "relationship": "original",
-    "dataset_version": "The original paper's approximately one-million-conversation release; some experiments use earlier collection windows.",
+    "dataset_version": "The original paper introduced WildChat's one-million-conversation release.",
+    "dataset_release_summary": "WildChat has grown from one million to 4.8 million real ChatGPT conversations.",
+    "dataset_releases": [
+      {
+        "name": "WildChat-4.8M",
+        "action": "Download",
+        "url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M"
+      },
+      {
+        "name": "WildChat-4.8M-Full",
+        "action": "request access to",
+        "url": "https://huggingface.co/datasets/yuntian-deng/WildChat-4.8M-Full"
+      }
+    ],
     "summary": "Introduces consented, multilingual, multi-turn conversations with GPT-3.5 and GPT-4, together with timestamps and metadata for studying use across time and locations. The paper examines language and prompt diversity, toxicity and jailbreaks, and instruction tuning with WildLlama.",
     "finding": "WildChat covers 68 languages with more than 100 user prompts each. The paper demonstrates instruction tuning with a Llama-2 7B model.",
     "evidence_url": "https://arxiv.org/html/2405.01470v1",
