@@ -202,7 +202,7 @@ def build_paper(p):
     if p.get('equal_contribution'):body+='<p class="meta">'+e(' and '.join(p['equal_contribution']))+' contributed equally.</p>'
     if p.get('arxiv_first_posted'):body+='<p class="meta">First posted on arXiv: '+e(p['arxiv_first_posted'])+'. Citation year: '+str(p['year'])+'.</p>'
     elif p.get('first_public'):body+='<p class="meta">First public version: '+e(p['first_public'])+'. Citation year: '+str(p['year'])+'.</p>'
-    body+='<div class="actions"><a class="button" href="'+e(p['paper_url'],quote=True)+'">Read the paper ↗</a>'+('<a class="button secondary" href="'+e(p['code_url'],quote=True)+'">Code ↗</a>' if p.get('code_url') else '')+'</div></header><div class="prose"><section><h2>Method and contribution</h2><p>'+p['summary']+'</p><p>'+p.get('connection','')+'</p></section>'
+    body+='<div class="actions"><a class="button" href="'+e(p['paper_url'],quote=True)+'">Read the paper ↗</a>'+('<a class="button secondary" href="'+e(p['code_url'],quote=True)+'">Code ↗</a>' if p.get('code_url') else '')+('<a class="button secondary" href="'+e(p['demo_url'],quote=True)+'">'+e(p.get('demo_label','Demo'))+' ↗</a>' if p.get('demo_url') else '')+'</div></header><div class="prose"><section><h2>Method and contribution</h2><p>'+p['summary']+'</p><p>'+p.get('connection','')+'</p></section>'
     if p.get('abstract'):body+='<section id="abstract"><h2>Abstract</h2><p>'+e(p['abstract'])+'</p></section>'
     if p.get('pdf_url'):body+='<p><a href="'+e(p['pdf_url'],quote=True)+'">Read the full paper PDF ↗</a></p>'
     related=[g for g in GUIDES if p['id'] in g['reading_order']]
