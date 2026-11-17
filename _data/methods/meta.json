@@ -3,15 +3,15 @@
   "static_pages": [
     {
       "path": "",
-      "updated_at": "2026-11-14"
+      "updated_at": "2026-11-17"
     },
     {
       "path": "papers/",
-      "updated_at": "2026-11-14"
+      "updated_at": "2026-11-17"
     },
     {
       "path": "data/",
-      "updated_at": "2026-11-14"
+      "updated_at": "2026-11-17"
     },
     {
       "path": "about/",

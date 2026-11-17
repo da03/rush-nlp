@@ -2,7 +2,7 @@
 
 John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. EMNLP 2023 (2023).
 
-Learns a reusable decision tree whose internal decisions are prompted language-model calls, with few-shot, instruction and dynamically generated prompt candidates.
+Tree Prompting (EMNLP 2023) learns a decision tree of prompts for text classification without fine-tuning the language model. Training selects prompts and branching structure; inference follows a root-to-leaf path of LM calls.
 
 Original prompt-based decision-tree method: task adaptation changes the tree and prompts while keeping the language model fixed.
 

@@ -1,6 +1,6 @@
 # 语言模型与结构化学习：中文研究导读
 
-- [大语言模型决策树：用提示词做文本分类，无需微调](https://yuntiandeng.com/research/zh/llm-decision-trees/) — Tree Prompting（EMNLP 2023）从带标签文本学习决策树：每个内部节点用提示词调用冻结的大语言模型，根据回答选择分支，由叶节点输出类别，无需微调模型。
+- [Tree Prompting：无需微调的大语言模型文本分类决策树](https://yuntiandeng.com/research/zh/llm-decision-trees/) — Tree Prompting（EMNLP 2023）从带标签文本学习决策树：每个内部节点用提示词调用冻结的大语言模型，根据回答选择分支，由叶节点输出类别，无需微调模型。
 - [能量模型如何生成文本：全序列评分、重采样与扩散语言模型](https://yuntiandeng.com/research/zh/energy-based-text-generation/) — Yuntian Deng 等人在 ICLR 2020 的 Residual Energy-Based Models for Text Generation：全局归一化文本生成、先采样再评分与重采样，以及序列级能量如何连接扩散语言模型中的 token 依赖。
 - [条件随机场用于文本生成：高阶 CRF、扩散联合解码与候选格](https://yuntiandeng.com/research/zh/structured-decoding/) — Yuntian Deng 和 Alexander M. Rush 的 Cascaded Text Generation（NeurIPS 2020）与 Sequence-to-Lattice（EMNLP Findings 2021）：以输出词元为变量进行结构化文本生成，并连接扩散语言模型的联合解码与 token 依赖。
 - [把注意力建模为隐变量：学习注意力的概率分布](https://yuntiandeng.com/research/zh/probabilistic-attention/) — Yuntian Deng 等人的 Latent Alignment and Variational Attention（NeurIPS 2018）将注意力建模为隐变量：对输出概率进行边缘化，并用变分推断学习注意力后验。
@@ -14,7 +14,7 @@
 
 John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. EMNLP 2023.
 
-学习可重复使用的决策树，其内部判断由接收提示词的语言模型调用完成；候选提示包括少样本示例、指令和动态生成的提示。
+Tree Prompting（EMNLP 2023）学习由提示词组成的决策树，在不微调语言模型的情况下完成文本分类。训练选择提示词和分支结构；推理沿根节点到叶节点的路径调用语言模型。
 
 基于提示的决策树原始工作：通过修改树结构和提示词适配任务，同时保持语言模型参数不变。
 

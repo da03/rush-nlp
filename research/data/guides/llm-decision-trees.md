@@ -1,16 +1,24 @@
-# LLM decision trees for text classification without fine-tuning
+# Tree Prompting: LLM decision trees for text classification without fine-tuning
 
 In [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1) (EMNLP 2023), John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, and Yuntian Deng learn decision trees that classify text through prompted language-model calls. Each internal node asks the frozen model to judge the input; its answer selects the next branch, and the reached leaf returns a class. The learned prompts and branching structure form a reusable program for the task.
 
 ## Original research
 
-- John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1). EMNLP 2023. [Record and citation](https://yuntiandeng.com/research/papers/tree-prompting/#citation).
+- John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1). EMNLP 2023. [Tree Prompting (EMNLP 2023): paper and citation](https://yuntiandeng.com/research/papers/tree-prompting/#citation).
 
 ## What Tree Prompting introduced
 
 The Tree Prompting preprint was released on 21 October 2023 and published at EMNLP 2023; John X. Morris and Chandan Singh contributed equally. A node combines a prompt, an LM call, and a rule mapping the output to a branch. A complete root-to-leaf path is the classifier’s execution trace for one input.
 
 The tree is learned from labeled examples. Candidate prompts include sampled demonstrations, instructions and dynamically generated prompts. In the dynamic version, iPrompt generates candidates for the examples reaching a node, then split quality selects the prompt. Both the node questions and the tree’s branching structure are learned.
+
+- [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1)
+
+## Tree Prompting versus Tree of Thoughts
+
+Tree Prompting (EMNLP 2023) learns a reusable classification tree from labeled examples. Internal nodes call a frozen language model with a prompt, its response selects a branch, and a leaf returns a class. The learned tree classifies new inputs.
+
+[Tree of Thoughts (NeurIPS 2023)](https://arxiv.org/abs/2305.10601) searches paths of intermediate reasoning steps for the current problem, evaluating candidate thoughts and using lookahead or backtracking to choose the next step. The trees serve different purposes: Tree Prompting learns prompts and control flow for classification; Tree of Thoughts searches reasoning paths while solving a problem.
 
 - [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1)
 

@@ -39,6 +39,7 @@ def markdown_text(s):
 def url(path): return BASE + PREFIX + path
 def guide_url(g): return PREFIX + g['id'] + '/'
 def paper_url(p): return PREFIX + 'papers/' + p['id'] + '/'
+def citation_label(p): return 'Tree Prompting (EMNLP 2023): paper and citation' if p['id']=='tree-prompting' else 'Record and citation'
 def authors(p): return ', '.join((a['given']+' '+a['family']).strip() for a in p['authors'])
 def publication(p):
     return p['venue'] if str(p['year']) in p['venue'] else p['venue']+' · '+str(p['year'])
@@ -166,7 +167,7 @@ def markdown_guide(g):
     text+='## Original research\n\n'
     for pid in g['original_papers']:
         p=PP[pid]
-        text+='- '+authors(p)+'. ['+p['title']+']('+p['paper_url']+'). '+publication(p)+'. [Record and citation]('+BASE+paper_url(p)+'#citation).\n'
+        text+='- '+authors(p)+'. ['+p['title']+']('+p['paper_url']+'). '+publication(p)+'. ['+citation_label(p)+']('+BASE+paper_url(p)+'#citation).\n'
     text+='\n'
     for s in g['sections']:
         text+='## '+s['title']+'\n\n'+'\n\n'.join(markdown_text(x) for x in s.get('paragraphs',[]))+'\n\n'
@@ -184,7 +185,7 @@ def markdown_guide(g):
     return text
 
 def build_guide(g):
-    originals='<div class="originals"><p class="kicker">Original research</p>'+''.join('<p><a href="'+e(PP[i]['paper_url'],quote=True)+'">'+name(PP[i])+'</a><br>'+e(authors(PP[i]))+' · '+e(publication(PP[i]))+'<br><a class="citation-link" href="'+paper_url(PP[i])+'#citation">Record and citation</a></p>' for i in g['original_papers'])+'</div>'
+    originals='<div class="originals"><p class="kicker">Original research</p>'+''.join('<p><a href="'+e(PP[i]['paper_url'],quote=True)+'">'+name(PP[i])+'</a><br>'+e(authors(PP[i]))+' · '+e(publication(PP[i]))+'<br><a class="citation-link" href="'+paper_url(PP[i])+'#citation">'+e(citation_label(PP[i]))+'</a></p>' for i in g['original_papers'])+'</div>'
     hero='<div class="back"><a href="/research/">← All guides</a></div><header class="hero"><p class="kicker">'+e(g['eyebrow'])+'</p><h1>'+e(g['title'])+'</h1><p class="lead">'+g['lead']+'</p>'+originals+'</header>'
     toc='<aside class="toc"><h2>In this guide</h2><nav aria-label="On this page">'+''.join('<a href="#'+s['id']+'">'+e(s['title'])+'</a>' for s in g['sections'])+'<a href="#reading-list">Papers & implementations</a></nav><div class="terms">'+''.join('<span class="tag">'+e(t)+'</span>' for t in g['terms'])+'</div><p><a href="/research/data/guides/'+g['id']+'.md">Read as Markdown ↗</a></p></aside>'
     content=demo(g['demo'])+''.join(render_section(s) for s in g['sections'])

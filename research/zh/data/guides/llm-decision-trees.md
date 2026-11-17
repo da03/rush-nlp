@@ -1,16 +1,24 @@
-# 大语言模型决策树：用提示词做文本分类，无需微调
+# Tree Prompting：无需微调的大语言模型文本分类决策树
 
 John X. Morris、Chandan Singh、Alexander M. Rush、Jianfeng Gao 和 Yuntian Deng 在 [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1)（EMNLP 2023）中提出用提示词决策树进行文本分类。每个内部节点让冻结的大语言模型判断输入文本，根据回答选择下一条分支，最终由叶节点返回类别。节点提示词和分支结构从带标签的样本中学习，组成可重复执行的任务程序；整个过程无需微调语言模型参数。
 
 ## 原始研究
 
-- John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1). EMNLP 2023. [论文记录与引用](https://yuntiandeng.com/research/zh/papers/tree-prompting/#citation).
+- John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1). EMNLP 2023. [Tree Prompting（EMNLP 2023）：论文与引用](https://yuntiandeng.com/research/zh/papers/tree-prompting/#citation).
 
 ## Tree Prompting 提出了什么
 
 Tree Prompting 预印本于 2023 年 10 月 21 日公开，发表于 EMNLP 2023；John X. Morris 与 Chandan Singh 的贡献相同。一个节点包含提示词、语言模型调用，以及把模型输出映射到分支的规则。从根节点到叶节点的完整路径，就是分类器处理一条输入的执行记录。
 
 这棵树从带标签的样本中学习。候选提示包括采样得到的示例、指令以及动态生成的提示。在动态版本中，iPrompt 针对到达当前节点的样本生成候选提示，再根据划分质量选出提示。节点提出的问题与树的分支结构都从数据中学习得到。
+
+- [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1)
+
+## Tree Prompting 与 Tree of Thoughts 有什么区别
+
+Tree Prompting（EMNLP 2023）从带标签的样本中学习可重复使用的分类树。内部节点用提示词调用冻结的语言模型，模型回答决定下一条分支，叶节点输出类别。学习得到的树用于分类新的输入。
+
+[Tree of Thoughts（NeurIPS 2023）](https://arxiv.org/abs/2305.10601)针对当前问题搜索由中间推理步骤组成的路径，通过评估候选思路、前瞻和回溯来选择下一步。两种方法中的树承担不同作用：Tree Prompting 学习用于分类的提示词与控制流程；Tree of Thoughts 在解决一个问题时搜索推理路径。
 
 - [Tree Prompting: Efficient Task Adaptation without Fine-Tuning](https://arxiv.org/html/2310.14034v1)
 

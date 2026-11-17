@@ -1,12 +1,12 @@
 {
   "title": "Research notes",
-  "updated": "2026-11-14",
+  "updated": "2026-11-17",
   "home": "https://yuntiandeng.com/research/",
   "bibliography": "https://yuntiandeng.com/research/papers/",
   "downloads": "https://yuntiandeng.com/research/data/",
   "guides": [
     {
-      "title": "LLM decision trees for text classification without fine-tuning",
+      "title": "Tree Prompting: LLM decision trees for text classification without fine-tuning",
       "url": "https://yuntiandeng.com/research/llm-decision-trees/",
       "markdown": "https://yuntiandeng.com/research/data/guides/llm-decision-trees.md",
       "original_papers": [

@@ -1,6 +1,6 @@
 # Research notes: language models and structured learning
 
-- [LLM decision trees for text classification without fine-tuning](https://yuntiandeng.com/research/llm-decision-trees/) — Tree Prompting (EMNLP 2023) learns a text classifier whose internal nodes prompt a frozen language model and use its answers to select branches.
+- [Tree Prompting: LLM decision trees for text classification without fine-tuning](https://yuntiandeng.com/research/llm-decision-trees/) — Tree Prompting (EMNLP 2023) learns a text classifier whose internal nodes prompt a frozen language model and use its answers to select branches.
 - [Energy-based text generation: whole-sequence scoring, resampling and diffusion](https://yuntiandeng.com/research/energy-based-text-generation/) — Residual Energy-Based Models for Text Generation (Yuntian Deng et al., ICLR 2020): globally normalized text generation, sample-and-score inference, and the connection to energy-based diffusion language models.
 - [CRFs for text generation: higher-order decoding, diffusion and candidate lattices](https://yuntiandeng.com/research/structured-decoding/) — Yuntian Deng and Alexander M. Rush’s Cascaded Text Generation (NeurIPS 2020) and Sequence-to-Lattice (EMNLP Findings 2021): generate output tokens with structured inference and connect their dependencies to joint diffusion decoding.
 - [Attention as a Latent Variable: Modeling a Distribution over Attention](https://yuntiandeng.com/research/probabilistic-attention/) — Yuntian Deng and colleagues’ Latent Alignment and Variational Attention (NeurIPS 2018) models attention as a latent variable with output marginalization and learned posterior inference.
@@ -14,7 +14,7 @@
 
 John X. Morris, Chandan Singh, Alexander M. Rush, Jianfeng Gao, Yuntian Deng. EMNLP 2023.
 
-Learns a reusable decision tree whose internal decisions are prompted language-model calls, with few-shot, instruction and dynamically generated prompt candidates.
+Tree Prompting (EMNLP 2023) learns a decision tree of prompts for text classification without fine-tuning the language model. Training selects prompts and branching structure; inference follows a root-to-leaf path of LM calls.
 
 Original prompt-based decision-tree method: task adaptation changes the tree and prompts while keeping the language model fixed.
 
